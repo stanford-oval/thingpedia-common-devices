@@ -24,8 +24,9 @@ module.exports = new Tp.DeviceClass({
 
         this.hwAddress = state.hwAddress;
 
-        this.uniqueId = 'test-device-' + state.hwAddress.replace(/:/g,'-');
+        this.uniqueId = 'com.thingpedia.test-' + state.hwAddress.replace(/:/g,'-');
 
+        this.globalName = 'test';
         this.name = "ThingEngine™ Test Device %s".format(this.hwAddress);
         this.description = "This is a ThingEngine Test Device running at %s, port %d. It does nothing."
             .format(this.host, this.port);

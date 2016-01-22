@@ -14,7 +14,8 @@ module.exports = new Tp.DeviceClass({
     _init: function(engine, state) {
         this.parent(engine, state);
 
-        this.uniqueId = 'sportradar';
+        this.globalName = 'sportradar';
+        this.uniqueId = 'us.sportradar';
         this.isTransient = true;
 
         this.name = "SportRadar";

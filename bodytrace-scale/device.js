@@ -19,6 +19,9 @@ module.exports = new Tp.DeviceClass({
         this.username = state.username;
         this.password = state.password;
 
+        // NOTE: for legacy reasons, this is bodytrace-scale-*, not com.bodytrace.scale-* as one would
+        // hope
+        // please do not follow this example
         this.uniqueId = 'bodytrace-scale-' + this.serial;
 
         this.name = "BodyTrace Scale %s".format(this.serial);

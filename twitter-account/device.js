@@ -91,7 +91,7 @@ function runOAuthStep2(engine, req) {
         });
     }).then(function(result) {
         result = JSON.parse(result);
-        return engine.devices.loadOneDevice({ kind: 'twitter-account',
+        return engine.devices.loadOneDevice({ kind: 'com.twitter',
                                               accessToken: twitter.accessToken,
                                               accessTokenSecret: twitter.accessTokenSecret,
                                               userId: result['id_str'],
@@ -117,11 +117,14 @@ module.exports = new Tp.DeviceClass({
     Name: 'TwitterAccountDevice',
     Extends: Tp.OnlineAccount,
     UseOAuth2: runOAuth2,
-    Kinds: ['twitter'],
 
     _init: function(engine, state) {
         this.parent(engine, state);
 
+        this.globalName = 'twitter';
+        // NOTE: for legacy reasons, this is twitter-account-*, not com.twitter-* as one would
+        // hope
+        // please do not follow this example
         this.uniqueId = 'twitter-account-' + this.userId;
         this.name = "Twitter Account %s".format(this.screenName);
         this.description = "This is your Twitter Account. You can use it to be updated on the status of your friends, and update them with your thoughts.";

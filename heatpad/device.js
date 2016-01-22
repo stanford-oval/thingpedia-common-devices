@@ -9,7 +9,8 @@
 const Tp = require('thingpedia');
 
 module.exports = new Tp.DeviceClass({
-    Name: 'HeatPadDevice',
+    Name: 'ParklonHeatPadDevice',
+    Kinds: ['heatpad'],
 
     _init: function(engine, state) {
         this.parent(engine, state);
@@ -17,10 +18,10 @@ module.exports = new Tp.DeviceClass({
         this.account = state.account;
         this.password = state.password;
 
-        this.uniqueId = 'thingengine-device-heatpad-' + this.account;
+        this.uniqueId = 'com.parklonamerica.heatpad-iris-' + this.account;
 
-        this.name = "Heatpad Device";
-        this.description = "The device allows you to turn on/off your heatpad.";
+        this.name = "Parklon Iris Warm Water Mat";
+        this.description = "The device allows you to turn on/off your Parklon heatpad.";
     },
 
     get ownerTier() {
