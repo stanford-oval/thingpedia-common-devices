@@ -1,13 +1,13 @@
 zipfiles = \
-	bluetooth-generic.zip \
-	twitter-account.zip \
-	bodytrace-scale.zip \
-	heatpad.zip \
-	sportradar.zip \
-	weather.zip \
-	test.zip \
-	facebook.zip \
-	google-account.zip
+	org.thingpedia.bluetooth.generic.zip \
+	com.twitter.zip \
+	com.bodytrace.scale.zip \
+	com.parklonamerica.heatpad.zip \
+	us.sportradar.zip \
+	yr.no.weather.zip \
+	org.thingpedia.test.zip \
+	com.facebook.zip \
+	com.google.zip
 
 all: $(zipfiles)
 

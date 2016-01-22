@@ -17,7 +17,7 @@ module.exports = new Tp.DeviceClass({
     _init: function(engine, state) {
         this.parent(engine, state);
 
-        this.uniqueId = 'yrno-weather';
+        this.uniqueId = 'no.yr.weather';
 
         this.name = "Yr.no Weather";
         this.description = "Yr.no Weather shows the current weather conditions and weather forecast where your phone is";
