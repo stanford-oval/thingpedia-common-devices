@@ -5,7 +5,9 @@ zipfiles = \
 	heatpad.zip \
 	sportradar.zip \
 	weather.zip \
-	test.zip
+	test.zip \
+	facebook.zip \
+	google-account.zip
 
 all: $(zipfiles)
 
