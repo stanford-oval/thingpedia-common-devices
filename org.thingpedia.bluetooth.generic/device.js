@@ -13,7 +13,7 @@ module.exports = new Tp.DeviceClass({
 
     UseDiscovery: function(engine, publicData, privateData) {
         if (privateData.paired) {
-            engine.devices.loadOneDevice({ kind: 'com.thingpedia.bluetooth.generic',
+            engine.devices.loadOneDevice({ kind: 'org.thingpedia.bluetooth.generic',
                                            uuids: publicData.uuids,
                                            class: publicData.class,
                                            hwAddress: privateData.address,
@@ -29,7 +29,7 @@ module.exports = new Tp.DeviceClass({
         this.alias = state.alias;
         this.hwAddress = state.hwAddress;
 
-        this.uniqueId = 'com.thingpedia.bluetooth.generic-' + state.hwAddress.replace(/:/g,'-');
+        this.uniqueId = 'org.thingpedia.bluetooth.generic-' + state.hwAddress.replace(/:/g,'-');
         this.descriptors = ['bluetooth/' + state.hwAddress];
 
         this.name = "Bluetooth Device %s".format(this.alias);
