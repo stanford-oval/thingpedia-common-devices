@@ -22,10 +22,6 @@ module.exports = new Tp.DeviceClass({
         this.description = "SportRadar is a quick source of Sport Results and info and stuff.";
     },
 
-    get ownerTier() {
-        return Tp.Tier.GLOBAL;
-    },
-
     checkAvailable: function() {
         return Tp.Availability.AVAILABLE;
     }

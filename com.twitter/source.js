@@ -116,6 +116,7 @@ module.exports = new Tp.ChannelClass({
     _stopStreaming: function() {
         this._stream.close();
         this._stream = null;
+        return Q();
     },
 
     _doClose: function() {

@@ -24,10 +24,6 @@ module.exports = new Tp.DeviceClass({
         this.description = "The device allows you to turn on/off your Parklon heatpad.";
     },
 
-    get ownerTier() {
-        return Tp.Tier.SERVER;
-    },
-
     checkAvailable: function() {
         return Tp.Availability.AVAILABLE;
     },

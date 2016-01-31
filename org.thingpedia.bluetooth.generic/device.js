@@ -14,6 +14,7 @@ module.exports = new Tp.DeviceClass({
     UseDiscovery: function(engine, publicData, privateData) {
         if (privateData.paired) {
             engine.devices.loadOneDevice({ kind: 'org.thingpedia.bluetooth.generic',
+                                           discoveredBy: engine.ownTier,
                                            uuids: publicData.uuids,
                                            class: publicData.class,
                                            hwAddress: privateData.address,

@@ -23,10 +23,6 @@ module.exports = new Tp.DeviceClass({
         this.description = "Yr.no Weather shows the current weather conditions and weather forecast where your phone is";
     },
 
-    get ownerTier() {
-        return Tp.Tier.GLOBAL;
-    },
-
     checkAvailable: function() {
         return Tp.Availability.AVAILABLE;
     }
