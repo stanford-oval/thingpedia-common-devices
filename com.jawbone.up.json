@@ -1,0 +1,91 @@
+{
+  "auth": {
+    "type": "oauth2"
+  },
+  "types": [
+    "activity-tracker",
+    "fitness-tracker",
+    "heartrate-monitor",
+    "sleep-tracker"
+  ],
+  "triggers": {
+    "getbody": {
+      "args": [
+        "time",
+        "place",
+        "weight",
+        "leanMass",
+        "bodyFat",
+        "bmi"
+      ],
+      "schema": [
+        "Date",
+        "Location",
+        "Measure(kg)",
+        "Number",
+        "Number",
+        "Number"
+      ],
+      "doc": "retrieve your latest body shape measurement, as known by the UP app; `leanMass` and `bodyFat` are percentages, `bmi` is the body mass index"
+    },
+    "getheartrate": {
+      "args": [
+        "time",
+        "place",
+        "heartrate"
+      ],
+      "schema": [
+        "Date",
+        "Location",
+        "Number"
+      ],
+      "doc": "retrieve your resting heart rate, in beats per minute"
+    },
+    "getmove": {
+      "args": [
+        "updateTime",
+        "day",
+        "distance",
+        "steps",
+        "activeTime",
+        "inactiveTime",
+        "calories"
+      ],
+      "schema": [
+        "Date",
+        "String",
+        "Measure(m)",
+        "Number",
+        "Measure(ms)",
+        "Measure(ms)",
+        "Measure(kcal)"
+      ],
+      "doc": "retrieve your daily movement statistics"
+    },
+    "getsleep": {
+      "args": [
+        "time",
+        "place",
+        "awakeTime",
+        "asleepTime",
+        "duration",
+        "rem",
+        "light",
+        "deep"
+      ],
+      "schema": [
+        "Date",
+        "Location",
+        "Date",
+        "Date",
+        "Measure(ms)",
+        "Measure(ms)",
+        "Measure(ms)",
+        "Measure(ms)"
+      ],
+      "doc": "retrieve your latest sleep record; `rem`, `light` and `deep` are the durations of the respective sleep phases"
+    }
+  },
+  "actions": {},
+  "params": {}
+}
