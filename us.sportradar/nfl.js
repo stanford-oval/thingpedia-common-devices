@@ -24,9 +24,11 @@ module.exports = new Tp.ChannelClass({
         if (params.length < 5)
             throw new TypeError("Missing required parameters");
 
-        params = params.slice(0, 5);
-        this.url = NFL_URL.format.apply(NFL_URL, params);
-        this.filterString = params.join('-');
+        this._params = params.slice(0, 5).map(function(p) {
+            return String(p.value);
+        });
+        this.url = String.prototype.format.apply(NFL_URL, this._params);
+        this.filterString = this._params.join('-');
     },
 
     _onResponse: function(response) {
