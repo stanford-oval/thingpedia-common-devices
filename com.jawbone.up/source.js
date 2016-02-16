@@ -84,5 +84,3 @@ module.exports = function(what, interval, formatter) {
         }
     });
 }
-
-
