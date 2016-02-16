@@ -29,18 +29,8 @@ const CONSUMER_KEY = process.env['TWITTER_CONSUMER_KEY'] || 'VZRViA2T4qy7CBZjU5j
 // Twitter uses OAuth 1.0, so this needs to be here...
 const CONSUMER_SECRET = process.env['TWITTER_CONSUMER_SECRET'] || rot13('hsTCqM6neIt3hqum6zvnDCIqQkUuyWtSjKBoqZFONvzVXfb7OJ');
 
-// XOR these comments for testing
-//var THINGENGINE_CLOUD_ORIGIN = 'http://127.0.0.1:8080';
-var THINGENGINE_CLOUD_ORIGIN = 'https://thingengine.stanford.edu';
-// not this one though
-var THINGENGINE_LOCAL_ORIGIN = 'http://127.0.0.1:3000';
-
 function makeTwitterApi(engine, accessToken, accessTokenSecret) {
-    var origin;
-    if (engine.ownTier === 'cloud')
-        origin = THINGENGINE_CLOUD_ORIGIN;
-    else
-        origin = THINGENGINE_LOCAL_ORIGIN;
+    var origin = platform.getOrigin();
     return new Twitter({
         consumerKey: CONSUMER_KEY,
         consumerSecret: CONSUMER_SECRET,
