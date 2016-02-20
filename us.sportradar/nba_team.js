@@ -50,7 +50,7 @@ module.exports = new Tp.ChannelClass({
 
             if (parsed.status !== this._lastStatus) {
                 var currentEvent = [this._awayAlias, this._homeAlias, false,
-                                    parsed.away.name, parsed.home.name,
+                                    this._awayName, this._homeName,
                                     parsed.status, parsed.away.points, parsed.home.points];
 
                 if (this._observedTeam === this._homeAlias) {
@@ -66,6 +66,7 @@ module.exports = new Tp.ChannelClass({
             if (parsed.status !== 'closed') {
                 this._nextGameTimer = setTimeout(this._onNextGameEvent.bind(this), 5 * 60000); // poll after 5 minutes
             } else {
+                this._nextGameTimer = null;
                 this._gameId = null;
             }
         }.bind(this)).catch(function(e) {
@@ -82,11 +83,14 @@ module.exports = new Tp.ChannelClass({
         var games = parsed.games;
         var game = null;
         for (var i = 0; i < games.length; i++) {
-            game = games[i];
-            if (game.home.alias === this._observedTeam || game.away.alias === this._observedTeam)
+            console.log('Candidate game ' + games[i].away.alias + ' @ ' + games[i].home.alias);
+            if (games[i].home.alias === this._observedTeam || games[i].away.alias === this._observedTeam) {
+                game = games[i];
                 break;
+            }
         }
         if (game === null) {
+            console.log('No game found for today');
             clearTimeout(this._nextGameTimer);
             this._nextGameTimer = null;
             this._gameId = null;
@@ -98,10 +102,13 @@ module.exports = new Tp.ChannelClass({
             return;
         }
 
+        console.log('Found game ' + game.id + ': ' + game.away.alias + ' @ ' + game.home.alias);
         this._lastStatus = null;
         this._gameId = game.id;
         this._awayAlias = game.away.alias;
         this._homeAlias = game.home.alias;
+        this._awayName = game.away.name;
+        this._homeName = game.home.name;
 
         var timeout;
         if (game.status === 'scheduled') {
@@ -109,9 +116,10 @@ module.exports = new Tp.ChannelClass({
             var now = new Date();
             timeout = scheduled.getTime() - now.getTime() + 1000;
         } else {
-            timeout = 50;
+            timeout = 5000;
         }
 
+        clearTimeout(this._nextGameTimer);
         this._nextGameTimer = setTimeout(this._onNextGameEvent.bind(this), timeout);
     },
 });
