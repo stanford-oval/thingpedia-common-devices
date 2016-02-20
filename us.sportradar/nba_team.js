@@ -29,7 +29,8 @@ module.exports = new Tp.ChannelClass({
             return String(p.value);
         });
         this._observedTeam = this._params[0];
-        this.url = String.prototype.format.apply(NBA_SCHEDULE_URL, this._params);
+
+        this._updateUrl();
         this.filterString = this._params.join('-');
 
         this._gameId = null;
@@ -42,6 +43,12 @@ module.exports = new Tp.ChannelClass({
         clearTimeout(this._nextGameTimer);
         this._nextGameTimer = null;
         return this.parent();
+    },
+
+    _updateUrl: function() {
+        var now = new Date;
+        this.url = NBA_SCHEDULE_URL.format(now.getFullYear(), now.getMonth() + 1, now.getDate());
+        console.log('url', this.url);
     },
 
     _onNextGameEvent: function() {
