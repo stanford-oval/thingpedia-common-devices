@@ -51,23 +51,26 @@ module.exports = new Tp.ChannelClass({
         console.log('url', this.url);
     },
 
+    _emit: function(status, awayPoints, homePoints) {
+        var currentEvent = [this._awayAlias, this._homeAlias, false,
+                            this._awayName, this._homeName, status,
+                            this._scheduledTime, awayPoints, homePoints];
+        if (this._observedTeam === this._homeAlias) {
+            currentEvent[0] = this._homeAlias;
+            currentEvent[1] = this._awayAlias;
+            currentEvent[2] = true;
+        }
+
+        this.emitEvent(currentEvent);
+    },
+
     _onNextGameEvent: function() {
         Tp.Helpers.Http.get(NBA_BOXSCORE_URL.format(this._gameId)).then(function(response) {
             var parsed = JSON.parse(response);
 
             if (parsed.status !== this._lastStatus) {
-                var currentEvent = [this._awayAlias, this._homeAlias, false,
-                                    this._awayName, this._homeName,
-                                    parsed.status, parsed.away.points, parsed.home.points];
-
-                if (this._observedTeam === this._homeAlias) {
-                    currentEvent[0] = this._homeAlias;
-                    currentEvent[1] = this._awayAlias;
-                    currentEvent[2] = true;
-                }
-
                 this._lastStatus = parsed.status;
-                this.emitEvent(currentEvent);
+                this._emit(parsed.status, parsed.away.points, parsed.home.points);
             }
 
             if (parsed.status !== 'closed') {
@@ -120,9 +123,13 @@ module.exports = new Tp.ChannelClass({
         var timeout;
         if (game.status === 'scheduled') {
             var scheduled = new Date(game.scheduled);
+            this._scheduledTime = scheduled;
             var now = new Date();
             timeout = scheduled.getTime() - now.getTime() + 1000;
+
+            this._emit('scheduled', 0, 0);
         } else {
+            this._scheduledTime = new Date();
             timeout = 5000;
         }
 
