@@ -125,9 +125,11 @@ module.exports = new Tp.ChannelClass({
             var scheduled = new Date(game.scheduled);
             this._scheduledTime = scheduled;
             var now = new Date();
-            timeout = scheduled.getTime() - now.getTime() + 1000;
-
-            this._emit('scheduled', 0, 0);
+            timeout = scheduled.getTime() - now.getTime() + 5000;
+            if (timeout >= 5000)
+                this._emit('scheduled', 0, 0);
+            else
+                timeout = 5000;
         } else {
             this._scheduledTime = new Date();
             timeout = 5000;
