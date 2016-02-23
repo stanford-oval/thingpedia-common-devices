@@ -85,6 +85,11 @@ module.exports = new Tp.ChannelClass({
         }).done();
     },
 
+    _onTick: function() {
+        this._updateUrl();
+        return this.parent();
+    },
+
     _onResponse: function(response) {
         if (!response)
             return;
