@@ -8,34 +8,26 @@
 
 const Tp = require('thingpedia');
 
-// A... "something", that lives off some IP and port address
+// A... "something", that lives off some web service
 // using some unknown protocol
 module.exports = new Tp.DeviceClass({
     Name: 'TestDevice',
+    UseOAuth2: function(engine) {
+        // replace with real auth -- see docs
+        engine.devices.loadOneDevice({ kind: 'org.thingpedia.test',
+                                       userId: '12345678',
+                                       userName: 'john_doe' }, true);
+        return null;
+    },
 
     _init: function(engine, state) {
         this.parent(engine, state);
 
-        this.host = state.host;
-        this.port = state.port;
-
-        if (typeof state.port != 'number' || isNaN(state.port))
-            throw new TypeError('Invalid port number ' + state.port);
-
-        this.hwAddress = state.hwAddress;
-
-        this.uniqueId = 'org.thingpedia.test-' + state.hwAddress.replace(/:/g,'-');
+        this.uniqueId = 'org.thingpedia.test-' + state.userId;
 
         this.globalName = 'test';
-        this.name = "ThingEngine™ Test Device %s".format(this.hwAddress);
-        this.description = "This is a ThingEngine Test Device running at %s, port %d. It does nothing."
-            .format(this.host, this.port);
-    },
-
-    // we live on the public Internet!
-    // ...or not
-    // doesn't really matter
-    checkAvailable: function() {
-        return Tp.Availability.AVAILABLE;
+        this.name = "ThingEngine™ Test Device";
+        this.description = "This is a ThingEngine Test Device belonging to "
+            .format(this.state.userName);
     },
 });

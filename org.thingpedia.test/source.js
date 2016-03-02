@@ -27,9 +27,6 @@ module.exports = new Tp.ChannelClass({
     },
 
     _doOpen: function() {
-        setTimeout(function() {
-            this.emitEvent([42]);
-        }.bind(this), 0);
         return this.parent();
     },
 });
