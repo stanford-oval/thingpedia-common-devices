@@ -10,12 +10,34 @@ const Tp = require('thingpedia');
 
 module.exports = new Tp.DeviceClass({
     Name: 'GoogleAccountDevice',
-    Extends: Tp.OnlineAccount,
+    UseOAuth2: Tp.Helpers.OAuth2({
+		kind: 'com.google',
+		client_id: '739906609557-o52ck15e1ge7deb8l0e80q92mpua1p55.apps.googleusercontent.com',
+		client_secret: 'drAqNZnVS_9jHl6KBENOPVXR',
+		scope: ['openid', 'profile', 'email',
+                'https://mail.google.com/',
+                'https://www.googleapis.com/auth/plus.me',
+                'https://www.googleapis.com/auth/fitness.activity.read',
+                'https://www.googleapis.com/auth/fitness.location.read',
+                'https://www.googleapis.com/auth/fitness.body.read'],
+		authorize: 'https://accounts.google.com/o/oauth2/auth',
+		get_access_token: 'https://www.googleapis.com/oauth2/v3/token',
+		callback: function(engine, accessToken, refreshToken) {
+			var auth = 'Bearer ' + accessToken;
+			return Tp.Helpers.Http.get('https://www.googleapis.com/oauth2/v2/userinfo', { auth: auth, accept: 'application/json' })
+			.then(function(response) {
+				var parsed = JSON.parse(response);
+				return engine.devices.loadOneDevice({ kind: 'com.google',
+													  accessToken: accessToken,
+													  refreshToken: refreshToken,
+													  profileId: parsed.id }, true);
+			});
+		}
+	}),
 
     _init: function(engine, state) {
         this.parent(engine, state);
 
-        this.globalName = 'google';
         // NOTE: for legacy reasons, this is google-account-*, not com.google-* as one would
         // hope
         // please do not follow this example
@@ -32,27 +54,10 @@ module.exports = new Tp.DeviceClass({
         return this.state.accessToken;
     },
 
-    _getGoogleApi: function() {
-        if (this._googleApi)
-            return this._googleApi;
-
-        // on-demand load so we don't try to load
-        // the android APIs where we don't have them
-        if (platform.hasCapability('android-api'))
-            this._googleApi = require('./androidapi')(this);
-        else
-            this._googleApi = require('./webapi')(this);
-        return this._googleApi;
-    },
-
     queryInterface: function(iface) {
         switch (iface) {
         case 'oauth2':
             return this;
-        case 'google-docs':
-            return this._getGoogleApi().googleDocs;
-        case 'google-fit':
-            return this._getGoogleApi().googleFit;
 
         default:
             return null;
@@ -60,10 +65,6 @@ module.exports = new Tp.DeviceClass({
     },
 
     refreshCredentials: function() {
-        // if we're using the android API we have nothing to do
-        if (platform.hasCapability('android-api'))
-            return;
-
         // FINISHME refresh the access token using the refresh token
     },
 });
