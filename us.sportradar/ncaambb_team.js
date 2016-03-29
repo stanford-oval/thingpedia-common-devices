@@ -3,19 +3,20 @@
 // This file is part of ThingEngine
 //
 // Copyright 2015 Giovanni Campagna <gcampagn@cs.stanford.edu>
+//           2016 Riad S. Wahby <rsw@cs.stanford.edu> - modified for use with NCAA Men's basketball
 //
 // See COPYING for details
 
 const Q = require('q');
 const Tp = require('thingpedia');
 
-const NBA_API_KEY = 'w4meerq84mmrwksr8yz3xvms';
-const NBA_SCHEDULE_URL = 'https://api.sportradar.us/nba-t3/games/%d/%d/%d/schedule.json?api_key=' + NBA_API_KEY;
-const NBA_BOXSCORE_URL = 'https://api.sportradar.us/nba-t3/games/%s/boxscore.json?api_key=' + NBA_API_KEY;
+const NCAAMB_API_KEY = 'fuuzg9drg4ac9g9e57hynw5t';
+const NCAAMB_SCHEDULE_URL = 'https://api.sportradar.us/ncaamb-t3/games/%d/%d/%d/schedule.json?api_key=' + NCAAMB_API_KEY;
+const NCAAMB_BOXSCORE_URL = 'https://api.sportradar.us/ncaamb-t3/games/%s/boxscore.json?api_key=' + NCAAMB_API_KEY;
 const POLL_INTERVAL = 24 * 3600 * 1000; // 1day
 
 module.exports = new Tp.ChannelClass({
-    Name: 'SportRadarNbaChannel',
+    Name: 'SportRadarNCAAMBBChannel',
     Extends: Tp.HttpPollingTrigger,
     interval: POLL_INTERVAL,
 
@@ -29,6 +30,7 @@ module.exports = new Tp.ChannelClass({
             return String(p.value);
         });
         this._observedTeam = this._params[0];
+        this._observedTeamLC = this._params[0].toLowerCase();
 
         this._updateUrl();
         this.filterString = this._params.join('-');
@@ -47,7 +49,7 @@ module.exports = new Tp.ChannelClass({
 
     _updateUrl: function() {
         var now = new Date;
-        this.url = NBA_SCHEDULE_URL.format(now.getFullYear(), now.getMonth() + 1, now.getDate());
+        this.url = NCAAMB_SCHEDULE_URL.format(now.getFullYear(), now.getMonth() + 1, now.getDate());
         //console.log('url', this.url);
     },
 
@@ -65,7 +67,7 @@ module.exports = new Tp.ChannelClass({
     },
 
     _onNextGameEvent: function() {
-        Tp.Helpers.Http.get(NBA_BOXSCORE_URL.format(this._gameId)).then(function(response) {
+        Tp.Helpers.Http.get(NCAAMB_BOXSCORE_URL.format(this._gameId)).then(function(response) {
             var parsed = JSON.parse(response);
 
             if (parsed.status !== this._lastStatus) {
@@ -80,7 +82,7 @@ module.exports = new Tp.ChannelClass({
                 this._gameId = null;
             }
         }.bind(this)).catch(function(e) {
-            console.error('Failed to process NBA game updates: ' + e.message);
+            console.error('Failed to process NCAAMB game updates: ' + e.message);
             console.error(e.stack);
         }).done();
     },
@@ -98,8 +100,11 @@ module.exports = new Tp.ChannelClass({
         var games = parsed.games;
         var game = null;
         for (var i = 0; i < games.length; i++) {
-            //console.log('Candidate game ' + games[i].away.alias + ' @ ' + games[i].home.alias);
-            if (games[i].home.alias === this._observedTeam || games[i].away.alias === this._observedTeam) {
+            console.log('Candidate game ' + games[i].away.alias + ' @ ' + games[i].home.alias);
+            // lots of teams; let's do some text matching against the team name, too
+            if (games[i].home.alias === this._observedTeam || games[i].away.alias === this._observedTeam ||
+                games[i].home.name.toLowerCase().indexOf(this._observedTeamLC) !== -1 ||
+                games[i].away.name.toLowerCase().indexOf(this._observedTeamLC) !== -1) {
                 game = games[i];
                 break;
             }

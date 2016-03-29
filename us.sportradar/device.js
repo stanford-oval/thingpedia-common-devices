@@ -3,6 +3,7 @@
 // This file is part of ThingEngine
 //
 // Copyright 2015 Giovanni Campagna <gcampagn@cs.stanford.edu>
+//           2016 Riad S. Wahby <rsw@cs.stanford.edu> - extended with additional sports
 //
 // See COPYING for details
 
@@ -14,16 +15,10 @@ module.exports = new Tp.DeviceClass({
     _init: function(engine, state) {
         this.parent(engine, state);
 
-        this.globalName = 'sportradar';
         this.uniqueId = 'us.sportradar';
         this.isTransient = true;
 
         this.name = "SportRadar";
-        this.description = "SportRadar is a quick source of Sport Results and info and stuff.";
-    },
-
-    checkAvailable: function() {
-        return Tp.Availability.AVAILABLE;
+        this.description = "SportRadar is a quick source of Sport Results and info and stuff. Supports NFL, NBA, European and USA Soccer, MLB, NCAAFB, and NCAAMBB.";
     }
 });
-
