@@ -6,11 +6,11 @@
 //
 // See COPYING for details
 
-const Source = require('./source');
+const Poll = require('./poll');
 
-const POLL_INTERVAL = 6 * 3600 * 1000; // 6h
+const POLL_INTERVAL = 300 * 1000; // 5m
 
-module.exports = Source('heartrates', POLL_INTERVAL, function(event) {
+module.exports = Poll('heartrates', POLL_INTERVAL, function(event) {
     return [event.time_updated * 1000, { x: event.place_lon, y: event.place_lat },
             event.resting_heartrate];
 });

@@ -14,7 +14,8 @@ all: $(zipfiles)
 
 %.zip: %
 	cd $< ; \
-	npm install ; \
+	npm install --only=prod --no-optional ; \
+	npm dedupe ; \
 	zip -r $(abspath $@) *
 
 clean:

@@ -8,9 +8,7 @@
 
 const Source = require('./source');
 
-const POLL_INTERVAL = 3600 * 1000; // 1h
-
-module.exports = Source('sleeps', POLL_INTERVAL, function(event) {
+module.exports = Source('sleeps', 'sleep', function(event) {
     return [event.time_updated * 1000, { x: event.place_lon, y: event.place_lat },
             event.details.awake_time * 1000, event.details.asleep_time * 1000,
             event.details.duration * 1000,

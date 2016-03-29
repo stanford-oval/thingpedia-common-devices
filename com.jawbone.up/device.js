@@ -6,7 +6,20 @@
 //
 // See COPYING for details
 
+const crypto = require('crypto');
 const Tp = require('thingpedia');
+
+function rot13(x) {
+    return Array.prototype.map.call(x, function(ch) {
+        var code = ch.charCodeAt(0);
+        if (code >= 0x41 && code <= 0x5a)
+            code = (((code - 0x41) + 13) % 26) + 0x41;
+        else if (code >= 0x61 && code <= 0x7a)
+            code = (((code - 0x61) + 13) % 26) + 0x61;
+
+        return String.fromCharCode(code);
+    }).join('');
+}
 
 module.exports = new Tp.DeviceClass({
     Name: 'JawboneUpDevice',
@@ -47,6 +60,9 @@ module.exports = new Tp.DeviceClass({
         this.name = "Jawbone UP %s".format(this.userId);
         this.description = "This is a Jawbone UP owned by %s"
             .format(this.userName);
+
+        this._hooks = {};
+        this._hookCount = 0;
     },
 
     get userId() {
@@ -83,5 +99,65 @@ module.exports = new Tp.DeviceClass({
     refreshCredentials: function() {
         // FINISHME refresh the access token using the refresh token
     },
+
+    registerWebhook: function(hook, channel) {
+        this._hooks[hook] = channel;
+        this._hookCount++;
+        if (this._hookCount === 1)
+            this._doRegisterWebhook();
+    },
+
+    unregisterWebhook: function(hook) {
+        delete this._hooks[hook];
+        this._hookCount--;
+        if (this._hookCount === 0)
+            this._doUnregisterWebhook();
+    },
+
+    _onWebhook: function(method, query, headers, body) {
+        var hash = crypto.createHash('sha256');
+        hash.update('v3sYocgyPaE');
+        hash.update(rot13('2pp9o8sr34n733no1o3s603s4sn4so2p81os095o'));
+        var secretHash = hash.digest('hex');
+
+        try {
+            body.events.forEach(function(event) {
+                if (event.action !== 'creation' && event.action !== 'updation')
+                    return;
+
+                var hook = this._hooks[event.type];
+                if (!hook)
+                    return;
+
+                if (event.secret_hash !== secretHash)
+                    console.log('Invalid secret hash on event, was ' + event.secret_hash + ', wanted ' + secretHash);
+                hook.onHook(event.event_xid);
+            }, this);
+        } catch(e) {
+            console.error('Failed to process Jawbone webhook call: ' + e.message);
+        }
+    },
+
+    _doRegisterWebhook: function() {
+        var webhookApi = platform.getCapability('webhook-api');
+        var base = webhookApi.getWebhookBase();
+        var url = base + '/' + this.uniqueId;
+        webhookApi.registerWebhook(this.uniqueId, this._onWebhook.bind(this));
+
+        Tp.Helpers.Http.post('https://jawbone.com/nudge/api/v.1.1/users/@me/pubsub?webhook=' + encodeURIComponent(url), '',
+                             { auth: 'Bearer ' + this.accessToken }).catch(function(e) {
+            console.error('Failed to register Jawbone webhook: ' + e.message);
+        }).done();
+    },
+
+    _doUnregisterWebhook: function() {
+        var webhookApi = platform.getCapability('webhook-api');
+        webhookApi.unregisterWebhook(this.uniqueId);
+
+        Tp.Helpers.Http.request('https://jawbone.com/nudge/api/v.1.1/users/@me/pubsub', 'DELETE', '',
+                                { auth: 'Bearer ' + this.accessToken }).catch(function(e) {
+            console.error('Failed to unregister Jawbone webhook: ' + e.message);
+        }).done();
+    }
 });
 
