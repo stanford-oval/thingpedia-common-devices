@@ -10,15 +10,32 @@ const Tp = require('thingpedia');
 
 module.exports = new Tp.DeviceClass({
     Name: 'FacebookDevice',
-    Extends: Tp.OnlineAccount,
+    UseOAuth2: Tp.Helpers.OAuth2({
+        kind: 'com.facebook',
+        client_id: '979879085397010',
+        client_secret: '770o8qs05o487po44261r7701n46p549',
+        scope: ['email', 'public_profile', 'user_friends', 'user_photos', 'publish_actions'],
+        authorize: 'https://www.facebook.com/dialog/oauth',
+        get_access_token: 'https://graph.facebook.com/oauth/access_token',
+        callback: function(engine, accessToken, refreshToken) {
+            return Tp.Helpers.Http.get('https://graph.facebook.com/me',
+                                       { auth: "Bearer " + accessToken, accept: 'application/json' })
+                .then(function(response) {
+                    var parsed = JSON.parse(response);
+                    return engine.devices.loadOneDevice({ kind: 'com.facebook',
+                                                          accessToken: accessToken,
+                                                          refreshToken: refreshToken,
+                                                          profileId: parsed.id }, true);
+                });
+        }
+    }),
 
     _init: function(engine, state) {
         this.parent(engine, state);
 
-        this.globalName = 'facebook';
         this.uniqueId = 'com.facebook-' + this.profileId;
         this.name = "Facebook Account %s".format(this.profileId);
-        this.description = "This is your Facebook Account. You can use it to access your wall, follow your friends, send messages and more.";
+        this.description = "This is your Facebook Account. You can use it to access your wall, follow your friends and more.";
     },
 
     get profileId() {

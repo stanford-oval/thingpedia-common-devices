@@ -1,6 +1,4 @@
 {
-  "name": "Facebook Account %s",
-  "description": "This is your Facebook Account",
   "auth": {
     "type": "oauth2"
   },
@@ -9,6 +7,48 @@
   ],
   "global-name": "facebook",
   "params": {},
-  "triggers": {},
-  "actions": {}
+  "triggers": {
+    "new_post": {
+      "args": [
+        "message",
+        "from",
+        "yours"
+      ],
+      "schema": [
+        "String",
+        "String",
+        "Boolean"
+      ],
+      "doc": "get new posts from your timeline"
+    },
+    "new_picture": {
+      "args": [
+        "url"
+      ],
+      "schema": [
+        "String"
+      ],
+      "doc": "trigger when a new picture is uploaded"
+    }
+  },
+  "actions": {
+    "post": {
+      "args": [
+        "text"
+      ],
+      "schema": [
+        "String"
+      ],
+      "doc": "post a status update to Facebook"
+    },
+    "post_picture": {
+      "args": [
+        "url"
+      ],
+      "schema": [
+        "String"
+      ],
+      "doc": "upload a photo to your Facebook"
+    }
+  }
 }

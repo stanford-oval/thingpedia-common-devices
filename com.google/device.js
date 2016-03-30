@@ -14,14 +14,11 @@ module.exports = new Tp.DeviceClass({
 		kind: 'com.google',
 		client_id: '739906609557-o52ck15e1ge7deb8l0e80q92mpua1p55.apps.googleusercontent.com',
 		client_secret: 'drAqNZnVS_9jHl6KBENOPVXR',
-		scope: ['openid', 'profile', 'email',
+		scope: ['openid','profile','email',
                 'https://mail.google.com/',
                 'https://www.googleapis.com/auth/plus.me',
-                'https://www.googleapis.com/auth/fitness.activity.read',
-                'https://www.googleapis.com/auth/fitness.location.read',
-                'https://www.googleapis.com/auth/fitness.body.read',
                 'https://www.googleapis.com/auth/drive',
-        		'https://www.googleapis.com/auth/drive.appdata',
+                'https://www.googleapis.com/auth/drive.appdata',
                 'https://www.googleapis.com/auth/drive.file'],
 		authorize: 'https://accounts.google.com/o/oauth2/auth',
 		get_access_token: 'https://www.googleapis.com/oauth2/v3/token',
@@ -46,7 +43,7 @@ module.exports = new Tp.DeviceClass({
         // please do not follow this example
         this.uniqueId = 'google-account-' + this.profileId;
         this.name = "Google Account %s".format(this.profileId);
-        this.description = "This is your Google Account. You can use it to access Google Fit data, emails, calendars and more.";
+        this.description = "This is your Google Account. You can use it to access emails, files, calendars and more.";
     },
 
     get profileId() {
