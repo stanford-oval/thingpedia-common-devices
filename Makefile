@@ -8,7 +8,8 @@ zipfiles = \
 	org.thingpedia.test.zip \
 	com.facebook.zip \
 	com.google.zip \
-	com.jawbone.up.zip
+	com.jawbone.up.zip \
+	com.twilio.zip
 
 all: $(zipfiles)
 
