@@ -19,7 +19,10 @@ module.exports = new Tp.DeviceClass({
                 'https://www.googleapis.com/auth/plus.me',
                 'https://www.googleapis.com/auth/fitness.activity.read',
                 'https://www.googleapis.com/auth/fitness.location.read',
-                'https://www.googleapis.com/auth/fitness.body.read'],
+                'https://www.googleapis.com/auth/fitness.body.read',
+                'https://www.googleapis.com/auth/drive',
+        		'https://www.googleapis.com/auth/drive.appdata',
+                'https://www.googleapis.com/auth/drive.file'],
 		authorize: 'https://accounts.google.com/o/oauth2/auth',
 		get_access_token: 'https://www.googleapis.com/oauth2/v3/token',
 		callback: function(engine, accessToken, refreshToken) {
