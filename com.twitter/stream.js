@@ -3,6 +3,7 @@
 // This file is part of ThingEngine
 //
 // Copyright 2015 Giovanni Campagna <gcampagn@cs.stanford.edu>
+// Copyright 2015 Benjamin Schwartz <bschwart@stanford.edu>, Senthil Nathan <svnathan@stanford.edu>
 //
 // See COPYING for details
 
@@ -10,13 +11,15 @@ const lang = require('lang');
 const Q = require('q');
 const events = require('events');
 
+const RefCounted = require('thingpedia/lib/ref_counted');
 const OAuthUtils = require('./oauth_utils');
 
 module.exports = new lang.Class({
     Name: 'TwitterStream',
-    Extends: events.EventEmitter,
+    Extends: RefCounted,
 
     _init: function(twitter) {
+        this.parent();
         this._twitter = twitter;
 
         this._connection = null;
@@ -29,16 +32,18 @@ module.exports = new lang.Class({
             this.emit('delete-tweet', payload.delete);
         else if (payload.scrub_geo || payload.limit || payload.friends ||
                  payload.status_withheld || payload.user_withheld) // ignored
-            return;
-        else if (payload.disconnect)
-            this.close();
-        else if (payload.warning)
-            console.log('Received warning on Twitter Stream: ' + payload.warning.message);
+             return;
+         else if (payload.disconnect)
+             this.close();
+         else if (payload.warning)
+             console.log('Received warning on Twitter Stream: ' + payload.warning.message);
         else if (payload.event === 'user_update')
             // FIXME update the device with new info
             return;
         else if (payload.event) // ignored
             return;
+        else if (payload.direct_message)
+            this.emit('dm', payload)
         else // tweet!
             this.emit('tweet', payload);
     },
@@ -78,7 +83,7 @@ module.exports = new lang.Class({
             this._maybeParseOneItem(); // tail call
     },
 
-    open: function() {
+    _doOpen: function() {
         if (this._connection)
             return this._connection;
 
@@ -109,7 +114,7 @@ module.exports = new lang.Class({
         return this._connection;
     },
 
-    close: function() {
+    _doClose: function() {
         if (!this._connection)
             return Q();
 

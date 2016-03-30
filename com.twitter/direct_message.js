@@ -2,7 +2,7 @@
 //
 // This file is part of ThingEngine
 //
-// Copyright 2015 Giovanni Campagna <gcampagn@cs.stanford.edu>
+// Copyright 2015 Benjamin Schwartz <bschwart@stanford.edu>, Senthil Nathan <svnathan@stanford.edu>
 //
 // See COPYING for details
 
@@ -18,7 +18,7 @@ function rep(x, n) {
 }
 
 module.exports = new Tp.ChannelClass({
-    Name: 'TwitterSourceChannel',
+    Name: 'TwitterDMSourceChannel',
     RequiredCapabilities: ['channel-state'],
 
     _init: function(engine, state, device) {
@@ -30,14 +30,15 @@ module.exports = new Tp.ChannelClass({
         this._stream = device.queryInterface('twitter-stream');
     },
 
-    _processOneTweet: function(tweet) {
-        var idStr = tweet.id_str;
+    _processOneDM: function(payload) {
+        var dm = payload.direct_message;
+        var idStr = dm.id_str;
         var sinceId = this._state.get('since_id');
         var padIdStr, padSinceId;
 
         if (idStr === undefined) {
             console.log('Missing id_str in Tweet?');
-            console.log(tweet);
+            console.log(dm);
             return;
         }
 
@@ -59,22 +60,9 @@ module.exports = new Tp.ChannelClass({
 
         this._state.set('since_id', idStr);
 
-        var hashtags = [];
-        for (var i = 0; i < tweet.entities.hashtags.length; i++) {
-            hashtags.push(tweet.entities.hashtags[i].text);
-        }
-
-        var urls = [];
-        for (var i = 0; i < tweet.entities.urls.length; i++) {
-            urls.push(tweet.entities.urls[i].expanded_url);
-        }
-
-        var event = [tweet.text,
-                     hashtags,
-                     urls,
-                     tweet.user.screen_name,
-                     tweet.in_reply_to_screen_name,
-                     tweet.user.screen_name === this.device.screenName];
+        var event = [dm.sender_screen_name,
+                     dm.text,
+                     dm.sender_screen_name === this.device.screenName];
         this.emitEvent(event);
     },
 
@@ -84,11 +72,11 @@ module.exports = new Tp.ChannelClass({
 
         return Q.Promise(function(callback, errback) {
             var since_id = this._state.get('since_id');
-            return twitter.getHomeTimeline({ since_id: since_id, count: 200 }, errback, callback);
+            return twitter.getCustomApiCall('direct_messages', { since_id: since_id, count: 200 }, errback, callback);
         }.bind(this)).then(function(results) {
             results = JSON.parse(results);
             for (var i = results.length-1; i >= 0; i--) {
-                this._processOneTweet(results[i]);
+                this._processOneDM({ direct_message: results[i] });
             }
         }.bind(this)).catch(function(e) {
             console.log('Failed to poll Twitter for new data: ' + e);
@@ -97,8 +85,8 @@ module.exports = new Tp.ChannelClass({
     },
 
     _startStreaming: function() {
-        this._tweetListener = this._processOneTweet.bind(this);
-        this._stream.on('tweet', this._tweetListener);
+        this._dmListener = this._processOneDM.bind(this);
+        this._stream.on('dm', this._dmListener);
         return this._stream.open();
     },
 
@@ -114,7 +102,7 @@ module.exports = new Tp.ChannelClass({
     },
 
     _stopStreaming: function() {
-        this._stream.removeListener('tweet', this._tweetListener);
+        this._stream.removeListener('dm', this._dmListener);
         return this._stream.close();
     },
 

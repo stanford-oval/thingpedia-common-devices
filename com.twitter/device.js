@@ -11,6 +11,7 @@ const Q = require('q');
 const Url = require('url');
 
 const Twitter = require('twitter-node-client').Twitter;
+const TwitterStream = require('./stream');
 
 // encryption ;)
 function rot13(x) {
@@ -105,19 +106,19 @@ function runOAuth2(engine, req) {
 
 module.exports = new Tp.DeviceClass({
     Name: 'TwitterAccountDevice',
-    Extends: Tp.OnlineAccount,
     UseOAuth2: runOAuth2,
 
     _init: function(engine, state) {
         this.parent(engine, state);
 
-        this.globalName = 'twitter';
         // NOTE: for legacy reasons, this is twitter-account-*, not com.twitter-* as one would
         // hope
         // please do not follow this example
         this.uniqueId = 'twitter-account-' + this.userId;
         this.name = "Twitter Account %s".format(this.screenName);
         this.description = "This is your Twitter Account. You can use it to be updated on the status of your friends, and update them with your thoughts.";
+
+        this._stream = null;
     },
 
     get screenName() {
@@ -140,6 +141,10 @@ module.exports = new Tp.DeviceClass({
         switch (iface) {
         case 'twitter':
             return makeTwitterApi(this.engine, this.accessToken, this.accessTokenSecret);
+        case 'twitter-stream':
+            if (this._stream === null)
+                this._stream = new TwitterStream(makeTwitterApi(this.engine, this.accessToken, this.accessTokenSecret));
+            return this._stream;
         default:
             return null;
         }
