@@ -52,7 +52,7 @@ module.exports = new Tp.ChannelClass({
 	},
 
   	_doOpen: function() {
-		var webhookApi = platform.getCapability('webhook-api');
+		var webhookApi = this.engine.platform.getCapability('webhook-api');
 		this._id = this.uniqueId;
 		this.url = webhookApi.getWebhookBase() + '/' + this._id;
 		this._listener = this._onCallback.bind(this);
@@ -60,7 +60,7 @@ module.exports = new Tp.ChannelClass({
 	},
 
 	_doClose: function() {
-		var webhookApi = platform.getCapability('webhook-api');
+		var webhookApi = this.engine.platform.getCapability('webhook-api');
 		webhookApi.unregisterWebhook(this._id, this._listener);
 	},
 

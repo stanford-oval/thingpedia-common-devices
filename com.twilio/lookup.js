@@ -20,7 +20,6 @@ var messagingClient = require('twilio')(accountSid, authToken);
 
 module.exports = new Tp.ChannelClass({
 	Name: "Lookup",
-	RequiredCapabilities: ['webhook-api'],
 
 	sendEvent: function(event) {
 		var recipientNumber = event[0];

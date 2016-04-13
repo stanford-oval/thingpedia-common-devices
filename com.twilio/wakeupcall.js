@@ -63,7 +63,7 @@ module.exports = new Tp.ChannelClass({
 
   	_doOpen: function() {
 		console.log("in do open");
-		var webhookApi = platform.getCapability('webhook-api');
+		var webhookApi = this.engine.platform.getCapability('webhook-api');
 		this._id = this.uniqueId; // make some ID (eg. this.uniqueId)
 		this.url = webhookApi.getWebhookBase() + '/' + this._id;
 		this._listener = this._onCallback.bind(this);
@@ -72,7 +72,7 @@ module.exports = new Tp.ChannelClass({
 
 	_doClose: function() {
 		console.log("in do close");
-		var webhookApi = platform.getCapability('webhook-api');
+		var webhookApi = this.engine.platform.getCapability('webhook-api');
 		webhookApi.unregisterWebhook(this._id, this._listener);
 	    },
 

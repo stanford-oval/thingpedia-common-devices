@@ -139,7 +139,7 @@ module.exports = new Tp.DeviceClass({
     },
 
     _doRegisterWebhook: function() {
-        var webhookApi = platform.getCapability('webhook-api');
+        var webhookApi = this.engine.platform.getCapability('webhook-api');
         var base = webhookApi.getWebhookBase();
         var url = base + '/' + this.uniqueId;
         webhookApi.registerWebhook(this.uniqueId, this._onWebhook.bind(this));
@@ -151,7 +151,7 @@ module.exports = new Tp.DeviceClass({
     },
 
     _doUnregisterWebhook: function() {
-        var webhookApi = platform.getCapability('webhook-api');
+        var webhookApi = this.engine.platform.getCapability('webhook-api');
         webhookApi.unregisterWebhook(this.uniqueId);
 
         Tp.Helpers.Http.request('https://jawbone.com/nudge/api/v.1.1/users/@me/pubsub', 'DELETE', '',
