@@ -10,7 +10,8 @@ zipfiles = \
 	com.google.zip \
 	com.jawbone.up.zip \
 	com.twilio.zip \
-	com.foaas.zip
+	com.foaas.zip \
+	com.nest.zip
 
 all: $(zipfiles)
 
