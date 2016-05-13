@@ -6,6 +6,7 @@
 // Copyright 2015 Benjamin Schwartz <bschwart@stanford.edu>, Senthil Nathan <svnathan@stanford.edu>
 //
 // See COPYING for details
+"use strict";
 
 const lang = require('lang');
 const Q = require('q');
@@ -14,20 +15,17 @@ const events = require('events');
 const RefCounted = require('thingpedia/lib/ref_counted');
 const OAuthUtils = require('./oauth_utils');
 
-module.exports = new lang.Class({
-    Name: 'TwitterStream',
-    Extends: RefCounted,
-
-    _init: function(twitter) {
-        this.parent();
+module.exports = class TwitterStream extends RefCounted {
+    constructor(twitter) {
+        super();
         this._twitter = twitter;
 
         this._connection = null;
         this._dataBuffer = '';
         this._bytesRead = 0;
-    },
+    }
 
-    _processOneItem: function(payload) {
+    _processOneItem(payload) {
         if (payload.delete)
             this.emit('delete-tweet', payload.delete);
         else if (payload.scrub_geo || payload.limit || payload.friends ||
@@ -46,9 +44,9 @@ module.exports = new lang.Class({
             this.emit('dm', payload)
         else // tweet!
             this.emit('tweet', payload);
-    },
+    }
 
-    _maybeParseOneItem: function() {
+    _maybeParseOneItem() {
         if (/^(\r\n)+$/.test(this._dataBuffer)) {
             this._dataBuffer = '';
             this._bytesRead = 0;
@@ -81,9 +79,9 @@ module.exports = new lang.Class({
 
         if (this._bytesRead > 0)
             this._maybeParseOneItem(); // tail call
-    },
+    }
 
-    _doOpen: function() {
+    _doOpen() {
         if (this._connection)
             return this._connection;
 
@@ -112,12 +110,12 @@ module.exports = new lang.Class({
         }.bind(this));
 
         return this._connection;
-    },
+    }
 
-    _doClose: function() {
+    _doClose() {
         if (!this._connection)
             return Q();
 
         return this._connection.then(function(sock) { sock.close() });
     }
-});
+}

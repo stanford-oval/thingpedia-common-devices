@@ -7,36 +7,15 @@
 // See COPYING for details
 "use strict";
 
+const Firebase = require('firebase');
 const Tp = require('thingpedia');
 
 const Collections = require('./collections');
 const NestDeviceCollection = Collections.NestDeviceCollection;
 const UnionObjectSet = Collections.UnionObjectSet;
 
-const ThermostatDevice = new Tp.DeviceClass({
-    Name: 'NestThermostatDevice',
-
-    _init: function(engine, state, url) {
-        this.parent(engine, state);
-
-        this.url = url;
-        this.uniqueId = 'com.nest-' + state.device_id;
-        this.isTransient = true;
-    },
-
-    get name() {
-        return 'Nest Thermostat ' + this.state.name;
-    },
-
-    get description() {
-        return 'This is your ' + this.state.name_long;
-    },
-
-    checkAvailable: function() {
-        return this.state.is_online ? Tp.Availability.AVAILABLE :
-            Tp.Availability.UNAVAILABLE;
-    }
-});
+const ThermostatDevice = require('./thermostat');
+const CameraDevice = require('./camera');
 
 const SmokeAlarmDevice = new Tp.DeviceClass({
     Name: 'NestSmokeAlarmDevice',
@@ -47,6 +26,10 @@ const SmokeAlarmDevice = new Tp.DeviceClass({
         this.url = url;
         this.uniqueId = 'com.nest-' + state.device_id;
         this.isTransient = true;
+    },
+
+    get kind() {
+        return 'com.nest';
     },
 
     get name() {
@@ -62,31 +45,9 @@ const SmokeAlarmDevice = new Tp.DeviceClass({
             Tp.Availability.UNAVAILABLE;
     }
 });
-
-const CameraDevice = new Tp.DeviceClass({
-    Name: 'NestCameraDevice',
-
-    _init: function(engine, state, url) {
-        this.parent(engine, state);
-
-        this.url = url;
-        this.uniqueId = 'com.nest-' + state.device_id;
-        this.isTransient = true;
-    },
-
-    get name() {
-        return 'Nest Camera ' + this.state.name;
-    },
-
-    get description() {
-        return 'This is your ' + this.state.name_long;
-    },
-
-    checkAvailable: function() {
-        return this.state.is_online ? Tp.Availability.AVAILABLE :
-            Tp.Availability.UNAVAILABLE;
-    }
-});
+SmokeAlarmDevice.metadata = {
+    types: ['smoke-alarm']
+};
 
 module.exports = new Tp.DeviceClass({
     Name: 'NestDevice',
@@ -102,7 +63,7 @@ module.exports = new Tp.DeviceClass({
             var auth = 'Bearer ' + accessToken;
             return engine.devices.loadOneDevice({ kind: 'com.nest',
                                                   accessToken: accessToken,
-                                                  refreshToken: refreshToken });
+                                                  refreshToken: refreshToken }, true);
         }
     }),
 
@@ -145,7 +106,7 @@ module.exports = new Tp.DeviceClass({
     refFirebaseClient: function() {
         if (this._firebaseClient === null) {
             this._firebaseClient = new Firebase('wss://developer-api.nest.com/');
-            this._firebaseClient.auth(this.accessToken);
+            this._firebaseClient.authWithCustomToken(this.accessToken);
         }
 
         this._firebaseClientCount ++;

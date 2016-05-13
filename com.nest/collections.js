@@ -19,26 +19,38 @@ class NestDeviceCollection extends ObjectSet.Simple {
 
         this._childAddedListener = this._onChildAdded.bind(this);
         this._childRemovedListener = this._onChildRemoved.bind(this);
+        this._childChangedListener = this._onChildChanged.bind(this);
     }
 
     _onChildAdded(state) {
         var url = this._path + '/' + state.key();
-        var obj = new (this._childConstructor)(this._device.engine, state, url);
+        var obj = new (this._childConstructor)(this._device.engine, state.val(), url, this._device);
         this.addOne(obj);
     }
 
     _onChildRemoved(state) {
-        var uniqueId = 'com.nest-' + state.device_id;
+        var uniqueId = 'com.nest-' + state.val().device_id;
         this.removeById(uniqueId);
+    }
+
+    _onChildChanged(state) {
+        var uniqueId = 'com.nest-' + state.val().device_id;
+        var device = this.getById(uniqueId);
+        if (device !== undefined)
+            device.updateState(state.val());
     }
 
     start() {
         this._firebase = this._device.refFirebaseClient().child(this._path);
         this._firebase.on('child_added', this._childAddedListener);
         this._firebase.on('child_removed', this._childRemovedListener);
+        this._firebase.on('child_changed', this._childChangedListener);
     }
 
     stop() {
+        this._firebase.off('child_added', this._childAddedListener);
+        this._firebase.off('child_removed', this._childRemovedListener);
+        this._firebase.off('child_changed', this._childChangedListener);
         this._firebase = null;
         this._device.unrefFirebaseClient();
     }
