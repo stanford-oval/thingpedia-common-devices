@@ -106,7 +106,7 @@ module.exports = new Tp.DeviceClass({
         return Tp.Helpers.Http.post(TESLA_BASE_URI + '/oauth/token',
                                     'grant_type=password&client_id=' + TESLA_CLIENT_ID
                                     + '&client_secret=' + TESLA_CLIENT_SECRET
-                                    + '&email=' + encodeURIComponent(this.state.user)
+                                    + '&email=' + encodeURIComponent(this.state.username)
                                     + '&password=' + encodeURIComponent(this.state.password))
             .then((response) => {
                 this.accessToken = JSON.parse(response).access_token;
