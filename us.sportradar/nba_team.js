@@ -99,7 +99,8 @@ module.exports = new Tp.ChannelClass({
         var game = null;
         for (var i = 0; i < games.length; i++) {
             //console.log('Candidate game ' + games[i].away.alias + ' @ ' + games[i].home.alias);
-            if (games[i].home.alias === this._observedTeam || games[i].away.alias === this._observedTeam) {
+            if (games[i].home.alias.toLowerCase() === this._observedTeam.toLowerCase() ||
+                games[i].away.alias.toLowerCase() === this._observedTeam.toLowerCase()) {
                 game = games[i];
                 break;
             }
@@ -120,8 +121,8 @@ module.exports = new Tp.ChannelClass({
         //console.log('Found game ' + game.id + ': ' + game.away.alias + ' @ ' + game.home.alias);
         this._lastStatus = null;
         this._gameId = game.id;
-        this._awayAlias = game.away.alias;
-        this._homeAlias = game.home.alias;
+        this._awayAlias = game.away.alias.toLowerCase();
+        this._homeAlias = game.home.alias.toLowerCase();
         this._awayName = game.away.name;
         this._homeName = game.home.name;
 
