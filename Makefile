@@ -14,7 +14,8 @@ zipfiles = \
 	com.foaas.zip \
 	com.nest.zip \
 	com.tesla.zip \
-	com.9gag.zip
+	com.9gag.zip \
+	com.slack.zip
 
 all: $(zipfiles)
 
