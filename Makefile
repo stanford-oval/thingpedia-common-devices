@@ -1,7 +1,6 @@
 NULL =
 
 zipfiles = \
-	org.thingpedia.bluetooth.generic.zip \
 	com.twitter.zip \
 	com.bodytrace.scale.zip \
 	com.parklonamerica.heatpad.zip \
