@@ -35,7 +35,7 @@ function makeTwitterApi(engine, accessToken, accessTokenSecret) {
     return new Twitter({
         consumerKey: CONSUMER_KEY,
         consumerSecret: CONSUMER_SECRET,
-        callBackUrl: origin + '/devices/oauth2/callback/twitter-account',
+        callBackUrl: origin + '/devices/oauth2/callback/com.twitter',
         accessToken: accessToken,
         accessTokenSecret: accessTokenSecret
     });
