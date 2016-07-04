@@ -1,66 +1,115 @@
 {
-  "auth": {
-    "type": "oauth2"
-  },
+  "params": {},
+  "global-name": "twitter",
   "types": [
     "online-account"
   ],
-  "params": {},
-  "global-name": "twitter",
+  "child_types": [],
+  "auth": {
+    "type": "oauth2"
+  },
   "triggers": {
     "source": {
       "args": [
-        "text",
-        "hashtags",
-        "urls",
-        "from",
-        "inReplyTo",
-        "yours"
+        {
+          "name": "text",
+          "type": "String",
+          "question": ""
+        },
+        {
+          "name": "hashtags",
+          "type": "Array(String)",
+          "question": ""
+        },
+        {
+          "name": "urls",
+          "type": "Array(String)",
+          "question": ""
+        },
+        {
+          "name": "from",
+          "type": "String",
+          "question": ""
+        },
+        {
+          "name": "inReplyTo",
+          "type": "String",
+          "question": ""
+        },
+        {
+          "name": "yours",
+          "type": "Boolean",
+          "question": ""
+        }
       ],
-      "schema": [
-        "String",
-        "Array(String)",
-        "Array(String)",
-        "String",
-        "String",
-        "Boolean"
-      ],
-      "doc": "trigger on any tweet from you or anyone you follow"
+      "doc": "trigger on any tweet from you or anyone you follow",
+      "confirmation": "you or anyone you follow tweets",
+      "canonical": "receive tweet",
+      "examples": []
     },
     "direct_message": {
       "args": [
-        "from",
-        "message",
-        "yours"
+        {
+          "name": "from",
+          "type": "String",
+          "question": ""
+        },
+        {
+          "name": "message",
+          "type": "String",
+          "question": ""
+        },
+        {
+          "name": "yours",
+          "type": "Boolean",
+          "question": ""
+        }
       ],
-      "schema": [
-        "String",
-        "String",
-        "Boolean"
-      ],
-      "doc": "trigger on any direct message you send or receive"
+      "doc": "trigger on any direct message you send or receive",
+      "confirmation": "you send or receive a direct message on twitter",
+      "canonical": "receive dm",
+      "examples": []
     }
   },
   "actions": {
     "sink": {
       "args": [
-        "status"
+        {
+          "name": "status",
+          "type": "String",
+          "question": "What do you want to tweet?"
+        }
       ],
-      "schema": [
-        "String"
-      ],
-      "doc": "post a tweet; use # to include a hashtag and @ to reply"
+      "doc": "post a tweet; use # to include a hashtag and @ to reply",
+      "confirmation": "tweet $status",
+      "canonical": "post",
+      "examples": [
+        "tweet $status",
+        "post on twitter saying $status"
+      ]
     },
     "send_direct_message": {
       "args": [
-        "to",
-        "message"
+        {
+          "name": "to",
+          "type": "String",
+          "question": ""
+        },
+        {
+          "name": "message",
+          "type": "String",
+          "question": ""
+        }
       ],
-      "schema": [
-        "String",
-        "String"
-      ],
-      "doc": "send a direct message"
+      "doc": "send a direct message",
+      "confirmation": "send a direct message on twitter to $to saying $message",
+      "canonical": "send dm",
+      "examples": [
+        "send a dm on twitter to $to saying $message",
+        "send a direct message on twitter to $to saying $message",
+        "dm $to on twitter saying $message"
+      ]
     }
-  }
+  },
+  "queries": {}
 }
