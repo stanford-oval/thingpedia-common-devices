@@ -17,7 +17,8 @@ zipfiles = \
 	com.9gag.zip \
 	com.slack.zip \
 	org.thingpedia.bluetooth.speaker.a2dp.zip \
-	com.bing.zip
+	com.bing.zip \
+	com.thecatapi.zip
 
 all: $(zipfiles)
 
@@ -41,6 +42,7 @@ BABEL_IGNORE = \
 
 build/%: % node_modules
 	./node_modules/.bin/babel --preset es2015 --ignore $(subst $(space),$(comma),$(BABEL_IGNORE)) -D -d $@ $<
+	touch $@
 
 clean:
 	rm -f *.zip
