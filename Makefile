@@ -15,7 +15,9 @@ zipfiles = \
 	com.nest.zip \
 	com.tesla.zip \
 	com.9gag.zip \
-	com.slack.zip
+	com.slack.zip \
+	org.thingpedia.bluetooth.speaker.a2dp.zip \
+	com.bing.zip
 
 all: $(zipfiles)
 
