@@ -30,9 +30,9 @@ module.exports = new Tp.ChannelClass({
     _onResponse: function(data) {
         var x = JSON.parse(data);
 
-        var lastPostId = state.get('last-post-id');
+        var lastPostId = this.state.get('last-post-id');
         if (lastPostId === undefined || x.data[0].id !== lastPostId) {
-            state.set('last-post-id', x.data[0].id);
+            this.state.set('last-post-id', x.data[0].id);
 
             var post = x.data[0];
             this.emitEvent([post.caption, post.link, post.images.large]);
