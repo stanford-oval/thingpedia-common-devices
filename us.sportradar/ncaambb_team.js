@@ -23,13 +23,10 @@ module.exports = new Tp.ChannelClass({
     _init: function(engine, device, params) {
         this.parent();
 
-        if (params.length < 1)
+        this._params = params.slice(0, 1);
+        this._observedTeam = params[0];
+        if (!this._observedTeam)
             throw new TypeError("Missing required parameter");
-
-        this._params = params.slice(0, 1).map(function(p) {
-            return String(p.value);
-        });
-        this._observedTeam = this._params[0];
         this._observedTeamLC = this._params[0].toLowerCase();
 
         this._updateUrl();
