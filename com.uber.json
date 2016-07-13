@@ -1,0 +1,109 @@
+{
+  "params": {},
+  "global-name": "uber",
+  "types": [
+    "data-source"
+  ],
+  "child_types": [],
+  "auth": {
+    "type": "none"
+  },
+  "triggers": {},
+  "actions": {},
+  "queries": {
+    "time_estimate": {
+      "args": [
+        {
+          "name": "start",
+          "type": "Location",
+          "question": "Where do you want to call Uber?",
+          "required": true
+        },
+        {
+          "name": "name",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "estimate",
+          "type": "Measure(ms)",
+          "question": "",
+          "required": false
+        }
+      ],
+      "doc": "returns ETAs for all Uber products (pool, uberX, select, etc.) offered at a given location",
+      "confirmation": "get ETAs for uber services at $start",
+      "canonical": "get time estimate",
+      "examples": [
+        "how far is uber",
+        "get time estimate for uber"
+      ]
+    },
+    "price_estimate": {
+      "args": [
+        {
+          "name": "start",
+          "type": "Location",
+          "question": "Where do you want to be picked up?",
+          "required": true
+        },
+        {
+          "name": "end",
+          "type": "Location",
+          "question": "Where do you want to go?",
+          "required": true
+        },
+        {
+          "name": "name",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "low_estimate",
+          "type": "Number",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "high_estimate",
+          "type": "Number",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "currency_code",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "surge",
+          "type": "Number",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "duration",
+          "type": "Measure(ms)",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "distance",
+          "type": "Measure(m)",
+          "question": "",
+          "required": false
+        }
+      ],
+      "doc": "returns estimated prices for a given trip on all available products",
+      "confirmation": "get estimated prices for Uber from $start to $end",
+      "canonical": "get price estimate",
+      "examples": [
+        "how much is an uber from $start to $end?",
+        "give me a price estimate for uber from $start to $end"
+      ]
+    }
+  }
+}
