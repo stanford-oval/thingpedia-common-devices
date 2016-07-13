@@ -21,7 +21,8 @@ zipfiles = \
 	com.thecatapi.zip \
 	org.thingpedia.emailsender.zip \
 	com.github.zip \
-	com.linkedin.zip
+	com.linkedin.zip \
+	com.xkcd.zip
 
 all: $(zipfiles)
 
