@@ -19,7 +19,8 @@ zipfiles = \
 	org.thingpedia.bluetooth.speaker.a2dp.zip \
 	com.bing.zip \
 	com.thecatapi.zip \
-	org.thingpedia.emailsender.zip
+	org.thingpedia.emailsender.zip \
+	com.github.zip
 
 all: $(zipfiles)
 

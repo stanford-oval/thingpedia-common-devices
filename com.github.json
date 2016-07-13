@@ -1,0 +1,221 @@
+{
+  "params": {},
+  "global-name": "github",
+  "types": [
+    "online-account"
+  ],
+  "child_types": [],
+  "auth": {
+    "type": "oauth2"
+  },
+  "triggers": {
+    "new_issue": {
+      "args": [
+        {
+          "name": "repo_name",
+          "type": "String",
+          "question": "What repository do you want to watch?",
+          "required": true
+        },
+        {
+          "name": "user",
+          "type": "String",
+          "question": "What user are you interested in?",
+          "required": false
+        },
+        {
+          "name": "number",
+          "type": "Number",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "title",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "body",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "time",
+          "type": "Date",
+          "question": "",
+          "required": false
+        }
+      ],
+      "doc": "trigger on new issues on a particular repository",
+      "confirmation": "a new issue is opened on Github",
+      "canonical": "new issue",
+      "examples": [
+        "monitor issues on Github for $repo_name",
+        "notify me if someone opens an issue on Github for $repo_name",
+        "notify me if $user opens an issue on Github"
+      ]
+    },
+    "new_commit": {
+      "args": [
+        {
+          "name": "repo_name",
+          "type": "String",
+          "question": "What repository do you want to watch?",
+          "required": true
+        },
+        {
+          "name": "user",
+          "type": "String",
+          "question": "What user are you interested in?",
+          "required": false
+        },
+        {
+          "name": "message",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "time",
+          "type": "Date",
+          "question": "",
+          "required": false
+        }
+      ],
+      "doc": "trigger on new commits to a particular repository",
+      "confirmation": "there is a new commit on Github",
+      "canonical": "new commit",
+      "examples": [
+        "monitor commits in $repo_name",
+        "notify me if someone commits in $repo_name",
+        "notify me if $user commits in $repo_name"
+      ]
+    },
+    "new_milestone": {
+      "args": [
+        {
+          "name": "repo_name",
+          "type": "String",
+          "question": "What repository do you want to watch?",
+          "required": true
+        },
+        {
+          "name": "user",
+          "type": "String",
+          "question": "What user are you interested in?",
+          "required": false
+        },
+        {
+          "name": "description",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "time",
+          "type": "Date",
+          "question": "",
+          "required": false
+        }
+      ],
+      "doc": "trigger on new milestones from a particular repository",
+      "confirmation": "a new milestone is created on github",
+      "canonical": "new milestone",
+      "examples": [
+        "monitor milestones in $repo_name on Github",
+        "monitor milestones created by $user in $repo_name on github"
+      ]
+    },
+    "new_issue_comment": {
+      "args": [
+        {
+          "name": "repo_name",
+          "type": "String",
+          "question": "What repository do you want to watch?",
+          "required": true
+        },
+        {
+          "name": "user",
+          "type": "String",
+          "question": "What user are you interested in?",
+          "required": false
+        },
+        {
+          "name": "issue_number",
+          "type": "Number",
+          "question": "What issue number to want to watch?",
+          "required": false
+        },
+        {
+          "name": "body",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "time",
+          "type": "Date",
+          "question": "",
+          "required": false
+        }
+      ],
+      "doc": "trigger on new comments on issues",
+      "confirmation": "a new comment is posted on an issue on Github",
+      "canonical": "new issue comment",
+      "examples": [
+        "monitor all issue comments in $repo_name on github",
+        "notify me if $user comments on some issue in $repo_name on github",
+        "notify me if someone comments on issue $issue_number in $repo_name on github"
+      ]
+    }
+  },
+  "actions": {
+    "add_email": {
+      "args": [
+        {
+          "name": "email",
+          "type": "String",
+          "question": "What email do you want to add?",
+          "required": false
+        }
+      ],
+      "doc": "Add a new email to account",
+      "confirmation": "add $email to your Github account",
+      "canonical": "add email",
+      "examples": [
+        "add e-mail $email to my github"
+      ]
+    },
+    "comment_issue": {
+      "args": [
+        {
+          "name": "repo_name",
+          "type": "String",
+          "question": "What repository do you want to comment on?",
+          "required": false
+        },
+        {
+          "name": "issue_number",
+          "type": "Number",
+          "question": "What issue do you want to comment on?",
+          "required": false
+        },
+        {
+          "name": "body",
+          "type": "String",
+          "question": "What do you want to comment?",
+          "required": false
+        }
+      ],
+      "doc": "post a new comment on a given issue",
+      "confirmation": "comment on issue $issue_number in $repo_name on Github",
+      "canonical": "comment on issue",
+      "examples": [
+        "comment on issue $issue_number in $repo_name on Github"
+      ]
+    }
+  },
+  "queries": {}
+}
