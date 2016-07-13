@@ -1,62 +1,78 @@
 {
   "params": {},
-  "name": "Linkedin Account %2$s",
-  "description": "This is your Linkedin Account. You can share it with your friends and they will receive your updates.",
-  "auth": {
-    "type": "oauth2",
-    "client_id": "75j2y6wjan5rt2",
-    "client_secret": "RuNnl6Yro69G78lX",
-    "authorize": "https://www.linkedin.com/uas/oauth2/authorization",
-    "get_access_token": "https://www.linkedin.com/uas/oauth2/accessToken",
-    "set_state": true,
-    "get_profile": "https://api.linkedin.com/v1/people/~:(id,formatted-name)?format=json",
-    "profile": [
-      "id",
-      "formattedName"
-    ]
-  },
+  "global-name": "linkedin",
   "types": [
     "online-account"
   ],
-  "global-name": "linkedin",
-  "triggers": {
-    "profile": {
-      "url": "https://api.linkedin.com/v1/people/~:(id,formatted-name,headline,industry,specialties,positions,picture-url)?format=json",
-      "poll-interval": 86400000,
-      "params": [
-        "formattedName",
-        "headline",
-        "industry",
-        "specialties",
-        "positions",
-        "pictureUrl"
+  "child_types": [],
+  "auth": {
+    "type": "oauth2"
+  },
+  "triggers": {},
+  "queries": {
+    "get_profile": {
+      "args": [
+        {
+          "name": "formattedName",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "headline",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "industry",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "specialties",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "positions",
+          "type": "Array(String)",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "pictureUrl",
+          "type": "String",
+          "question": "",
+          "required": false
+        }
       ],
-      "schema": [
-        "String",
-        "String",
-        "String",
-        "String",
-        "Any",
-        "String"
-      ],
-      "doc": "retrieve your LinkedIn profile"
+      "doc": "retrieve your LinkedIn profile",
+      "confirmation": "retrieve your LinkedIn profile",
+      "canonical": "get profile",
+      "examples": [
+        "get my LinkedIn profile"
+      ]
     }
   },
   "actions": {
     "share": {
-      "url": "https://api.linkedin.com/v1/people/~/shares?format=json",
-      "params": [
-        "comment"
-      ],
-      "schema": [
-        "String"
-      ],
-      "default": {
-        "visibility": {
-          "code": "anyone"
+      "args": [
+        {
+          "name": "comment",
+          "type": "String",
+          "question": "What do you want to post? Include a link to a page.",
+          "required": false
         }
-      },
-      "doc": "share a comment and a link on your page"
+      ],
+      "doc": "share a comment and a link on your page",
+      "confirmation": "share $comment on your LinkedIn profile",
+      "canonical": "post",
+      "examples": [
+        "post $comment on LinkedIn"
+      ]
     }
   }
 }
