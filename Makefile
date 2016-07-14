@@ -25,7 +25,8 @@ zipfiles = \
 	com.xkcd.zip \
 	com.uber.zip \
 	com.yandex.translate.zip \
-	com.yahoo.finance.zip
+	com.yahoo.finance.zip \
+	org.thingpedia.rss.zip
 
 all: $(zipfiles)
 
