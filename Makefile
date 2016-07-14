@@ -23,7 +23,9 @@ zipfiles = \
 	com.github.zip \
 	com.linkedin.zip \
 	com.xkcd.zip \
-	com.uber.zip
+	com.uber.zip \
+	com.yandex.translate.zip \
+	com.yahoo.finance.zip
 
 all: $(zipfiles)
 

@@ -1,0 +1,72 @@
+{
+  "params": {},
+  "global-name": "ytranslate",
+  "types": [
+    "data-source"
+  ],
+  "child_types": [],
+  "auth": {
+    "type": "none"
+  },
+  "triggers": {},
+  "actions": {},
+  "queries": {
+    "translate": {
+      "args": [
+        {
+          "name": "source_language",
+          "type": "String",
+          "question": "What's the source language? Use an ISO language code like it, en or zh.",
+          "required": false
+        },
+        {
+          "name": "target_language",
+          "type": "String",
+          "question": "What's the target language? Use an ISO language code like it, en or zh.",
+          "required": true
+        },
+        {
+          "name": "text",
+          "type": "String",
+          "question": "What do you want to translate?",
+          "required": true
+        },
+        {
+          "name": "translated_text",
+          "type": "String",
+          "question": "",
+          "required": false
+        }
+      ],
+      "doc": "Translate text from source to destination language",
+      "confirmation": "translate $text to $target_language using Yandex",
+      "canonical": "translate",
+      "examples": [
+        "translate $text to $target_language with yandex",
+        "translate $text from $source_language to $target_language with yandex"
+      ]
+    },
+    "detect_language": {
+      "args": [
+        {
+          "name": "text",
+          "type": "String",
+          "question": "What text do you want to analyze?",
+          "required": false
+        },
+        {
+          "name": "detected_language",
+          "type": "String",
+          "question": "",
+          "required": false
+        }
+      ],
+      "doc": "returns the ISO code of the guessed language of the given text",
+      "confirmation": "detect the language of $text using Yandex",
+      "canonical": "detect language",
+      "examples": [
+        "guess language of $text with yandex"
+      ]
+    }
+  }
+}
