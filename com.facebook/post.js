@@ -5,7 +5,7 @@
 // Copyright 2016 Elena Kane Frey <ekfrey@stanford.edu>
 //                Meredith Grace Marks <mgmarks@stanford.edu>,
 //
-// See COPYING for details
+// See LICENSE for details
 
 const Tp = require('thingpedia');
 

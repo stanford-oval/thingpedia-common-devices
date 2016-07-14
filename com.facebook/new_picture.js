@@ -5,7 +5,7 @@
 // Copyright 2016 Lingxiao Li <csimstu@stanford.edu>
 //                Kaidi Yan <kaidi@stanford.edu>
 //
-// See COPYING for details
+// See LICENSE for details
 
 const Tp = require('thingpedia');
 

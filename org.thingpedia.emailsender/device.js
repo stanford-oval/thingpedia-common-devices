@@ -1,11 +1,9 @@
 // -*- mode: js; indent-tabs-mode: nil; js-basic-offset: 4 -*-
 //
-// This file is part of ThingEngine
-//
 // Copyright 2016 Yingran Xu <yingran@stanford.edu>
 //                Yaqi Zhang <yaqiz@stanford.edu>
 //
-// See COPYING for details
+// See LICENSE for details
 
 const Tp = require('thingpedia');
 

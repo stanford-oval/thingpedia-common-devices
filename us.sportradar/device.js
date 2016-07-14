@@ -1,11 +1,9 @@
 // -*- mode: js; indent-tabs-mode: nil; js-basic-offset: 4 -*-
 //
-// This file is part of ThingEngine
-//
 // Copyright 2015 Giovanni Campagna <gcampagn@cs.stanford.edu>
 //           2016 Riad S. Wahby <rsw@cs.stanford.edu> - extended with additional sports
 //
-// See COPYING for details
+// See LICENSE for details
 
 const Tp = require('thingpedia');
 

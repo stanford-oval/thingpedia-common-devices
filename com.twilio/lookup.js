@@ -5,7 +5,7 @@
 // Copyright 2016 Weston Makoto Mizumoto <westonm1@stanford.edu>
 //                Dersu Abolfathi <dersua@stanford.edu>
 //
-// See COPYING for details
+// See LICENSE for details
 
 const Tp = require('thingpedia');
 const LookupsClient = require('twilio').LookupsClient;

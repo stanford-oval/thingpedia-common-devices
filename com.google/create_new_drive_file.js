@@ -5,7 +5,7 @@
 // Copyright 2016 Linyu He <linyu90@stanford.edu>
 //                Lingbin Li <lingbin@stanford.edu>
 //
-// See COPYING for details
+// See LICENSE for details
 
 const Tp = require('thingpedia');
 

@@ -1,11 +1,9 @@
 // -*- mode: js; indent-tabs-mode: nil; js-basic-offset: 4 -*-
 //
-// This file is part of ThingEngine
-//
 // Copyright 2015 Giovanni Campagna <gcampagn@cs.stanford.edu>
 // Copyright 2015 Benjamin Schwartz <bschwart@stanford.edu>, Senthil Nathan <svnathan@stanford.edu>
 //
-// See COPYING for details
+// See LICENSE for details
 "use strict";
 
 const lang = require('lang');

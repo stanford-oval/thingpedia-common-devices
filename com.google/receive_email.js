@@ -5,7 +5,7 @@
 // Copyright 2016 Huafei Wang <huafei@stanford.edu>
 //                Ye Yuan <yy0222@stanford.edu>
 //
-// See COPYING for details
+// See LICENSE for details
 
 const Tp = require('thingpedia');
 

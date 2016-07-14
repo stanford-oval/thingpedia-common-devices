@@ -1,7 +1,5 @@
 // -*- mode: js; indent-tabs-mode: nil; js-basic-offset: 4 -*-
 //
-// This file is part of ThingEngine
-//
 // Copyright 2016 Luke Hsiao & Jeff Setter
 
 const Tp = require('thingpedia');

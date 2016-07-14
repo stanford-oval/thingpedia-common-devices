@@ -5,7 +5,7 @@
 // Copyright 2016 Quinlan Rachel Jung <quinlanj@stanford.edu>
 //                Tushar Paul <aritpaul@stanford.edu>,
 //
-// See COPYING for details
+// See LICENSE for details
 
 const Tp = require('thingpedia');
 

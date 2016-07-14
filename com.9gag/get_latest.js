@@ -2,7 +2,7 @@
 //
 // Copyright 2016 <ashwinpp@stanford.edu>
 //
-// See COPYING for details
+// See LICENSE for details
 
 const Tp = require('thingpedia');
 
