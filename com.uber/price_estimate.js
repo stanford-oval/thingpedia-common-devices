@@ -43,11 +43,11 @@ module.exports = new Tp.ChannelClass({
             start_latitude: start.y,
             start_longitude: start.x,
             end_latitude: end.y,
-            end_latitude: end.y
+            end_longitude: end.x
         };
 
         return common.get(Url.format(url)).then(function(response) {
-            return prices.map(function(price) {
+            return response.prices.map(function(price) {
                 if (price.low_estimate === null || price.high_estimate === null)
                     return null;
                 return [filters[0], filters[1],

@@ -36,7 +36,7 @@ module.exports = new Tp.ChannelClass({
         };
 
         return common.get(Url.format(url)).then(function(response) {
-            return times.map(function(time) {
+            return response.times.map(function(time) {
                 return [filters[0],
                     time.display_name,
                     time.estimate * 1000]; // convert to milliseconds
