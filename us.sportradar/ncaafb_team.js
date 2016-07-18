@@ -162,6 +162,30 @@ module.exports = new Tp.ChannelClass({
         }).done();
     },
 
+    formatEvent(event) {
+        var watchedAlias = event[0];
+        var otherAlias = event[1];
+        var watchedIsHome = event[2];
+        var awayName = event[3];
+        var homeName = event[4];
+        var gameStatus = event[5];
+        var scheduledTime = event[6];
+        var awayPoints = event[7];
+        var homePoints = event[8];
+
+        switch(gameStatus) {
+        case 'scheduled':
+            return "Next game %s @ %s at %s".format(awayName, homeName, scheduledTime.toLocaleString());
+        case 'inprogress':
+            return "Game update for %s @ %s: %d - %d".format(awayName, homeName, awayPoints, homePoints);
+        case 'halftime':
+            return "Half-time for %s @ %s: %d - %d".format(awayName, homeName, awayPoints, homePoints);
+        case 'closed':
+            return "Final score for %s @ %s: %d - %d".format(awayName, homeName, awayPoints, homePoints);
+        }
+        return [];
+    },
+
     // emit a game update
     _emit: function(status, awayPoints, homePoints) {
         var currentEvent = [this._currentGame.away, this._currentGame.home, false,

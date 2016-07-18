@@ -45,6 +45,29 @@ module.exports = new Tp.ChannelClass({
         this.url = SCHEDULE_URL.format(now.getFullYear(), now.getMonth() + 1, now.getDate());
     },
 
+    formatEvent(event) {
+        var watchedAlias = event[0];
+        var otherAlias = event[1];
+        var watchedIsHome = event[2];
+        var awayName = event[3];
+        var homeName = event[4];
+        var gameStatus = event[5];
+        var scheduledTime = event[6];
+        var inning = event[7];
+        var awayRuns = event[8];
+        var homeRuns = event[9];
+
+        switch(gameStatus) {
+        case 'scheduled':
+            return "Next game %s @ %s at %s".format(awayName, homeName, scheduledTime.toLocaleString());
+        case 'inprogress':
+            return "Game update for %s @ %s: %d - %d".format(awayName, homeName, awayRuns, homeRuns);
+        case 'closed':
+            return "Final score for %s @ %s: %d - %d".format(awayName, homeName, awayRuns, homeRuns);
+        }
+        return [];
+    },
+
     _emit: function(status, inning, awayRuns, homeRuns) {
         var currentEvent = [ this._awayAlias, this.homeAlias, false,
                              this._awayName, this._homeName, status,
