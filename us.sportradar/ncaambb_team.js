@@ -5,7 +5,6 @@
 //
 // See LICENSE for details
 
-const Q = require('q');
 const Tp = require('thingpedia');
 
 const NCAAMB_API_KEY = 'fuuzg9drg4ac9g9e57hynw5t';

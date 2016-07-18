@@ -4,7 +4,6 @@
 //
 // See LICENSE for details
 
-const Q = require('q');
 const Tp = require('thingpedia');
 
 const NBA_API_KEY = 'w4meerq84mmrwksr8yz3xvms';

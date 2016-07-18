@@ -1,242 +1,575 @@
 {
   "params": {},
+  "global-name": "sportradar",
+  "types": [
+    "data-source"
+  ],
+  "child_types": [],
   "auth": {
     "type": "none"
   },
-  "global-name": "sportradar",
   "triggers": {
-    "nfl": {
-      "args": [
-        "year",
-        "season",
-        "week",
-        "awayAlias",
-        "homeAlias",
-        "winnerAlias",
-        "winnerScore"
-      ],
-      "schema": [
-        "Number",
-        "String",
-        "Number",
-        "String",
-        "String",
-        "String",
-        "Number"
-      ],
-      "doc": "trigger at the end of a specific NFL game"
-    },
     "nba_team": {
       "args": [
-        "watchedTeamAlias",
-        "otherTeamAlias",
-        "watchedIsHome",
-        "awayName",
-        "homeName",
-        "gameStatus",
-        "scheduledTime",
-        "awayPoints",
-        "homePoints"
+        {
+          "name": "watched_team_alias",
+          "type": "String",
+          "question": "What team are you interested in? Use the 3 letter alias.",
+          "required": true
+        },
+        {
+          "name": "other_team_alias",
+          "type": "String",
+          "question": "What team are you interested in competitions against? Use the 3 letter alias.",
+          "required": false
+        },
+        {
+          "name": "watched_is_home",
+          "type": "Boolean",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "away_name",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "home_name",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "game_status",
+          "type": "String",
+          "question": "What point of the game are you interested in? Use scheduled, inprogress, halftime or closed.",
+          "required": false
+        },
+        {
+          "name": "scheduled_time",
+          "type": "Date",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "away_points",
+          "type": "Number",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "home_points",
+          "type": "Number",
+          "question": "",
+          "required": false
+        }
       ],
-      "schema": [
-        "String",
-        "String",
-        "Boolean",
-        "String",
-        "String",
-        "String",
-        "Date",
-        "Number",
-        "Number"
-      ],
-      "doc": "receive updates on all the NBA games of a given team; `gameStatus` can be scheduled, inprogress, halftime or closed"
+      "doc": "receive updates on all the NBA games of a given team; `gameStatus` can be scheduled, inprogress, halftime or closed",
+      "confirmation": "an NBA game starts, stops or the score changes",
+      "canonical": "nba game status",
+      "examples": [
+        "monitor nba games of $watched_team_alias",
+        "notify me when nba team $watched_team_alias plays",
+        "notify me when nba team $watched_team_alias plays against $other_team_alias",
+        "notify me when nba team $watched_team_alias plays the game is $game_status"
+      ]
     },
     "soccer_eu_team": {
       "args": [
-        "watchedTeamAlias",
-        "otherTeamAlias",
-        "watchedIsHome",
-        "awayName",
-        "homeName",
-        "gameStatus",
-        "scheduledTime",
-        "awayPoints",
-        "homePoints"
+        {
+          "name": "watched_team_alias",
+          "type": "String",
+          "question": "What team are you interested in? Use the 3 letter alias.",
+          "required": true
+        },
+        {
+          "name": "other_team_alias",
+          "type": "String",
+          "question": "What team are you interested in competitions against? Use the 3 letter alias.",
+          "required": false
+        },
+        {
+          "name": "watched_is_home",
+          "type": "Boolean",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "away_name",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "home_name",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "game_status",
+          "type": "String",
+          "question": "What point of the game are you interested in? Use scheduled, inprogress, halftime or closed.",
+          "required": false
+        },
+        {
+          "name": "scheduled_time",
+          "type": "Date",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "away_points",
+          "type": "Number",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "home_points",
+          "type": "Number",
+          "question": "",
+          "required": false
+        }
       ],
-      "schema": [
-        "String",
-        "String",
-        "Boolean",
-        "String",
-        "String",
-        "String",
-        "Date",
-        "Number",
-        "Number"
-      ],
-      "doc": "receive updates on all the soccer games (national league, national cup or Champions League) of a given European team; `gameStatus` can be scheduled, inprogress, halftime or closed"
+      "doc": "receive updates on all the soccer games (national league, national cup or Champions League) of a given European team; `gameStatus` can be scheduled, inprogress, halftime or closed",
+      "confirmation": "an European soccer game starts, stops or the score changes",
+      "canonical": "eu soccer game status",
+      "examples": [
+        "monitor soccer games of eu team $watched_team_alias",
+        "notify me when eu soccer team $watched_team_alias plays",
+        "notify me when eu soccer team $watched_team_alias plays against $other_team_alias",
+        "notify me when eu soccer team $watched_team_alias plays and the game is $game_status"
+      ]
     },
     "soccer_us_team": {
       "args": [
-        "watchedTeamAlias",
-        "otherTeamAlias",
-        "watchedIsHome",
-        "awayName",
-        "homeName",
-        "gameStatus",
-        "scheduledTime",
-        "awayPoints",
-        "homePoints"
+        {
+          "name": "watched_team_alias",
+          "type": "String",
+          "question": "What team are you interested in? Use the 3 letter alias.",
+          "required": true
+        },
+        {
+          "name": "other_team_alias",
+          "type": "String",
+          "question": "What team are you interested in competitions against? Use the 3 letter alias.",
+          "required": false
+        },
+        {
+          "name": "watched_is_home",
+          "type": "Boolean",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "away_name",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "home_name",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "game_status",
+          "type": "String",
+          "question": "What point of the game are you interested in? Use scheduled, inprogress, halftime or closed.",
+          "required": false
+        },
+        {
+          "name": "scheduled_time",
+          "type": "Date",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "away_points",
+          "type": "Number",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "home_points",
+          "type": "Number",
+          "question": "",
+          "required": false
+        }
       ],
-      "schema": [
-        "String",
-        "String",
-        "Boolean",
-        "String",
-        "String",
-        "String",
-        "Date",
-        "Number",
-        "Number"
-      ],
-      "doc": "receive updates on all the soccer games (CONCACAF, MSL, etc) of a given North American team; `gameStatus` can be scheduled, inprogress, halftime or closed"
+      "doc": "receive updates on all the soccer games (CONCACAF, MSL, etc) of a given North American team; `gameStatus` can be scheduled, inprogress, halftime or closed",
+      "confirmation": "an American soccer game starts, stops or the score changes",
+      "canonical": "us soccer game status",
+      "examples": [
+        "monitor us soccer games of $watched_team_alias",
+        "notify me when us soccer team $watched_team_alias plays",
+        "notify me when us soccer team $watched_team_alias plays against $other_team_alias",
+        "notify me when us soccer team $watched_team_alias plays and the game is $game_status"
+      ]
     },
     "soccer_eu_tourney": {
       "args": [
-        "tournamentSearchTerm",
-        "tournamentFullName",
-        "tournamentLeagueName",
-        "awayAlias",
-        "homeAlias",
-        "awayName",
-        "homeName",
-        "gameStatus",
-        "scheduledTime",
-        "awayPoints",
-        "homePoints"
+        {
+          "name": "tournament_search_term",
+          "type": "String",
+          "question": "What tournament are you interested in?",
+          "required": true
+        },
+        {
+          "name": "tournament_full_name",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "tournament_league_name",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "away_alias",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "home_alias",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "away_name",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "home_name",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "game_status",
+          "type": "String",
+          "question": "What point of the game are you interested in? Use scheduled, inprogress, halftime or closed.",
+          "required": false
+        },
+        {
+          "name": "scheduled_time",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "away_points",
+          "type": "Number",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "home_points",
+          "type": "Number",
+          "question": "",
+          "required": false
+        }
       ],
-      "schema": [
-        "String",
-        "String",
-        "String",
-        "String",
-        "String",
-        "String",
-        "String",
-        "String",
-        "String",
-        "Number",
-        "Number"
-      ],
-      "doc": "receive updates on soccer games as with soccer_eu_team, searching by tournament or league name (e.g., 'Champions League')"
+      "doc": "receive updates on soccer games as with soccer_eu_team, searching by tournament or league name (e.g., 'Champions League')",
+      "confirmation": "an European soccer game starts, stops or the score changes",
+      "canonical": "eu soccer tournament status",
+      "examples": [
+        "monitor eu soccer games part of $tournament_search_term"
+      ]
     },
     "soccer_us_tourney": {
       "args": [
-        "tournamentSearchTerm",
-        "tournamentFullName",
-        "tournamentLeagueName",
-        "awayAlias",
-        "homeAlias",
-        "awayName",
-        "homeName",
-        "gameStatus",
-        "scheduledTime",
-        "awayPoints",
-        "homePoints"
+        {
+          "name": "tournament_search_term",
+          "type": "String",
+          "question": "What tournament are you interested in?",
+          "required": true
+        },
+        {
+          "name": "tournament_full_name",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "tournament_league_name",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "away_alias",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "home_alias",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "away_name",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "home_name",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "game_status",
+          "type": "String",
+          "question": "What point of the game are you interested in? Use scheduled, inprogress, halftime or closed.",
+          "required": false
+        },
+        {
+          "name": "scheduled_time",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "away_points",
+          "type": "Number",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "home_points",
+          "type": "Number",
+          "question": "",
+          "required": false
+        }
       ],
-      "schema": [
-        "String",
-        "String",
-        "String",
-        "String",
-        "String",
-        "String",
-        "String",
-        "String",
-        "String",
-        "Number",
-        "Number"
-      ],
-      "doc": "receive updates on soccer games as with soccer_eu_team, searching by tournament or league name (e.g., 'Champions League')"
+      "doc": "receive updates on soccer games as with soccer_eu_team, searching by tournament or league name (e.g., 'Champions League')",
+      "confirmation": "an American soccer game starts, stops or the score changes",
+      "canonical": "us soccer tournament status",
+      "examples": [
+        "monitor us soccer games part of $tournament_search_term"
+      ]
     },
     "mlb_team": {
       "args": [
-        "watchedTeamAbbr",
-        "otherTeamAbbr",
-        "watchedIsHome",
-        "awayName",
-        "homeName",
-        "gameStatus",
-        "scheduledTime",
-        "gameInning",
-        "awayRuns",
-        "homeRuns"
+        {
+          "name": "watched_team_abbr",
+          "type": "String",
+          "question": "What team are you interested in? Use the 3 letter alias.",
+          "required": true
+        },
+        {
+          "name": "other_team_abbr",
+          "type": "String",
+          "question": "What team are you interested in competitions against? Use the 3 letter alias.",
+          "required": false
+        },
+        {
+          "name": "watched_is_home",
+          "type": "Boolean",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "away_name",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "home_name",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "game_status",
+          "type": "String",
+          "question": "What point of the game are you interested in? Use scheduled, inprogress, halftime or closed.",
+          "required": false
+        },
+        {
+          "name": "scheduled_time",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "game_inning",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "away_runs",
+          "type": "Number",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "home_runs",
+          "type": "Number",
+          "question": "",
+          "required": false
+        }
       ],
-      "schema": [
-        "String",
-        "String",
-        "Boolean",
-        "String",
-        "String",
-        "String",
-        "String",
-        "String",
-        "Number",
-        "Number"
-      ],
-      "doc": "receive game updates for your favorite MLB teams"
+      "doc": "receive game updates for your favorite MLB teams",
+      "confirmation": "an MLB game starts, stops or the score changes",
+      "canonical": "mlb game status",
+      "examples": [
+        "monitor mlb games of $watched_team_alias",
+        "notify me when mlb team $watched_team_alias plays",
+        "notify me when mlb team $watched_team_alias plays against $other_team_alias",
+        "notify me when mlb team $watched_team_alias plays the game is $game_status"
+      ]
     },
     "ncaambb_team": {
       "args": [
-        "watchedTeamAlias",
-        "otherTeamAlias",
-        "watchedIsHome",
-        "awayName",
-        "homeName",
-        "gameStatus",
-        "scheduledTime",
-        "awayPoints",
-        "homePoints"
+        {
+          "name": "watched_team_alias",
+          "type": "String",
+          "question": "What team are you interested in? Use the 3 letter alias.",
+          "required": true
+        },
+        {
+          "name": "other_team_alias",
+          "type": "String",
+          "question": "What team are you interested in competitions against? Use the 3 letter alias.",
+          "required": false
+        },
+        {
+          "name": "watched_is_home",
+          "type": "Boolean",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "away_name",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "home_name",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "game_status",
+          "type": "String",
+          "question": "What point of the game are you interested in? Use scheduled, inprogress, halftime or closed.",
+          "required": false
+        },
+        {
+          "name": "scheduled_time",
+          "type": "Date",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "away_points",
+          "type": "Number",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "home_points",
+          "type": "Number",
+          "question": "",
+          "required": false
+        }
       ],
-      "schema": [
-        "String",
-        "String",
-        "Boolean",
-        "String",
-        "String",
-        "String",
-        "Date",
-        "Number",
-        "Number"
-      ],
-      "doc": "get updates for your favorite NCAA Men's Basketball teams"
+      "doc": "get updates for your favorite NCAA Men's Basketball teams",
+      "confirmation": "an NCAA Men's Basketball game starts, stops or the score changes",
+      "canonical": "ncaa mbb game status",
+      "examples": [
+        "monitor ncaa mens basketball games of $watched_team_alias",
+        "notify me when ncaa mens basketball team $watched_team_alias plays",
+        "notify me when ncaa mens basketball team $watched_team_alias plays against $other_team_alias",
+        "notify me when ncaa mens basketball team $watched_team_alias plays the game is $game_status"
+      ]
     },
     "ncaafb_team": {
       "args": [
-        "watchedTeamAbbr",
-        "otherTeamAbbr",
-        "watchedIsHome",
-        "awayName",
-        "homeName",
-        "gameStatus",
-        "scheduledTime",
-        "awayPoints",
-        "homePoints"
+        {
+          "name": "watched_team_abbr",
+          "type": "String",
+          "question": "What team are you interested in? Use the 3 letter alias.",
+          "required": true
+        },
+        {
+          "name": "other_team_abbr",
+          "type": "String",
+          "question": "What team are you interested in competitions against? Use the 3 letter alias.",
+          "required": false
+        },
+        {
+          "name": "watched_is_home",
+          "type": "Boolean",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "away_name",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "home_name",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "game_status",
+          "type": "String",
+          "question": "What point of the game are you interested in? Use scheduled, inprogress, halftime or closed.",
+          "required": false
+        },
+        {
+          "name": "scheduled_time",
+          "type": "Date",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "away_points",
+          "type": "Number",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "home_points",
+          "type": "Number",
+          "question": "",
+          "required": false
+        }
       ],
-      "schema": [
-        "String",
-        "String",
-        "Boolean",
-        "String",
-        "String",
-        "String",
-        "Date",
-        "Number",
-        "Number"
-      ],
-      "doc": "follow your favorite NCAA Football team all season long"
+      "doc": "follow your favorite NCAA Football team all season long",
+      "confirmation": "an NCAA Football game starts, stops or the score changes",
+      "canonical": "ncaafb game status",
+      "examples": [
+        "monitor ncaafb games of $watched_team_alias",
+        "notify me when ncaafb team $watched_team_alias plays",
+        "notify me when ncaafb team $watched_team_alias plays against $other_team_alias",
+        "notify me when ncaafb team $watched_team_alias plays the game is $game_status"
+      ]
     }
   },
-  "types": ["data-source"],
-  "actions": {}
+  "actions": {},
+  "queries": {}
 }

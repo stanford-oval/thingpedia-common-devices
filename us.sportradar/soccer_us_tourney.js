@@ -5,15 +5,13 @@
 //
 // See LICENSE for details
 
-const Q = require('q');
 const Tp = require('thingpedia');
-const xml2js = require('xml2js');
 const deepEqual = require('deep-equal');
 
 const API_KEY = '66m6g836ezfad66s6g7edg79';
 const SCHEDULE_URL = 'https://api.sportradar.us/soccer-t2/na/matches/schedule.xml?api_key=' + API_KEY;
 const BOXSCORE_URL = 'https://api.sportradar.us/soccer-t2/na/matches/%s/boxscore.xml?api_key=' + API_KEY;
-const POLL_INTERVAL = 7 * 24 * 3600 * 1000; // 1week
+const POLL_INTERVAL = 24 * 3600 * 1000; // 1day
 
 module.exports = new Tp.ChannelClass({
     Name: 'SportRadarNATourneySoccerChannel',
@@ -54,7 +52,7 @@ module.exports = new Tp.ChannelClass({
 
     _onNextGameEvent: function() {
         Tp.Helpers.Http.get(BOXSCORE_URL.format(this._gameId)).then(function(response) {
-            return Q.nfcall(xml2js.parseString, response);
+            return Tp.Helpers.Xml.parseString(response);
         }).then(function(parsed) {
             var match = parsed.boxscore.matches[0].match[0];
             var away = match.away[0];
@@ -77,13 +75,7 @@ module.exports = new Tp.ChannelClass({
     _onResponse: function(response) {
         if (!response)
             return;
-        xml2js.parseString(response, function(error, parsed) {
-            if (error) {
-                console.error('Failed to process NA tourney soccer game updates: ' + error.message);
-                console.error(error.stack);
-                return;
-            }
-
+        Tp.Helpers.Xml.parseString(response).then((parsed) => {
             var matches = parsed.schedule.matches[0].match;
             var match = null;
             for (var i = 0; i < matches.length; i++) {
@@ -139,6 +131,9 @@ module.exports = new Tp.ChannelClass({
 
             clearTimeout(this._nextGameTimer);
             this._nextGameTimer = setTimeout(this._onNextGameEvent.bind(this), timeout);
-        }.bind(this));
+        }).catch((error) => {
+            console.error('Failed to process NA tourney soccer game updates: ' + error.message);
+            console.error(error.stack);
+        });
     },
 });

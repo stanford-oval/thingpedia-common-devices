@@ -14,8 +14,6 @@ module.exports = new Tp.DeviceClass({
         this.parent(engine, state);
 
         this.uniqueId = 'us.sportradar';
-        this.isTransient = true;
-
         this.name = "SportRadar";
         this.description = "SportRadar is a quick source of Sport Results and info and stuff. Supports NFL, NBA, European and USA Soccer, MLB, NCAAFB, and NCAAMBB.";
     }

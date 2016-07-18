@@ -5,7 +5,6 @@
 //
 // See LICENSE for details
 
-const Q = require('q');
 const Tp = require('thingpedia');
 
 const API_KEY = 'qgzkq4q83c3uxxdz4mzhjw5p';
@@ -196,7 +195,7 @@ module.exports = new Tp.ChannelClass({
 
     // open: kick off the schedule retrieval
     _doOpen: function() {
-        return Q(this._getSchedule());
+        this._getSchedule();
     },
 
     // clear all timeouts

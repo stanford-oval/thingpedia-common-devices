@@ -6,9 +6,7 @@
 //
 // See LICENSE for details
 
-const Q = require('q');
 const Tp = require('thingpedia');
-const xml2js = require('xml2js');
 
 const API_KEY = 'tn5sx574v9yk995cc29ccftz';
 const SCHEDULE_URL = 'https://api.sportradar.us/mlb-t5/games/%d/%d/%d/schedule.xml?api_key=' + API_KEY;
@@ -62,8 +60,8 @@ module.exports = new Tp.ChannelClass({
     },
 
     _onNextGameEvent: function() {
-        Tp.Helperes.Http.get(BOXSCORE_URL.format(this._gameId)).then(function(response) {
-            return Q.nfcall(xml2js.parseString, response);
+        Tp.Helpers.Http.get(BOXSCORE_URL.format(this._gameId)).then(function(response) {
+            return Tp.Helpers.Xml.parseString(response);
         }).then(function(parsed) {
             var inning = null;
             if (parsed.game.$.status === 'closed' || parsed.game.$.status === 'complete') {
@@ -102,13 +100,7 @@ module.exports = new Tp.ChannelClass({
             return;
         }
 
-        xml2js.parseString(response, function(error, parsed) {
-            if (error) {
-                console.error('Failed to process MLB game schedule: ' + error.message);
-                console.error(error.stack);
-                return;
-            }
-
+        Tp.Helpers.Xml.parseString(response).then((parsed) => {
             var games = parsed.league['daily-schedule'][0].games[0].game;
             var game = null;
             for (var i = 0; i < games.length; i++) {
@@ -165,7 +157,9 @@ module.exports = new Tp.ChannelClass({
 
             clearTimeout(this._nextGameTimer);
             this._nextGameTimer = setTimeout(this._onNextGameEvent.bind(this), timeout);
-
-        }.bind(this));
+        }).catch((error) => {
+            console.error('Failed to process MLB game schedule: ' + error.message);
+            console.error(error.stack);
+        });
     },
 });
