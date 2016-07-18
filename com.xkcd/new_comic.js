@@ -44,20 +44,22 @@ module.exports = new Tp.ChannelClass({
         if (hour > 0 || minutes > 5)
             polltime.setUTCDate(polltime.getUTCDate()+1);
         polltime.setUTCHours(0, 5, 0);
+        console.log('Next XKCD coming on ' + polltime.toLocaleString());
 
         var now = new Date();
         // always wait at least 5 seconds
         var diff = Math.max(polltime.getTime() - now.getTime(), 5000);
+        console.log('Polling again in ' + diff + 'ms');
         return diff;
     },
 
     _onTimeout() {
         this._pollNow().done();
-        this._timeout = setTimeout(this._onTimeout.bind(this), this._nextPollingTime);
+        this._timeout = setTimeout(this._onTimeout.bind(this), this._nextPollingTime());
     },
 
     _doOpen() {
-        this._timeout = setTimeout(this._onTimeout.bind(this), this._nextPollingTime);
+        this._timeout = setTimeout(this._onTimeout.bind(this), this._nextPollingTime());
         return this._pollNow();
     },
 
