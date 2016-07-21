@@ -1,0 +1,133 @@
+{
+  "params": {},
+  "global-name": "onedrive",
+  "types": [
+    "online-account"
+  ],
+  "child_types": [],
+  "auth": {
+    "type": "oauth2"
+  },
+  "triggers": {
+    "file_created": {
+      "args": [
+        {
+          "name": "filename",
+          "type": "String",
+          "question": "",
+          "required": false
+        }
+      ],
+      "doc": "trigger on a file created in your onedrive",
+      "confirmation": "a file is created in your OneDrive",
+      "canonical": "file created",
+      "examples": [
+        "monitor new files on onedrive",
+        "notify me if a new file is created on onedrive"
+      ]
+    },
+    "file_modified": {
+      "args": [
+        {
+          "name": "filename",
+          "type": "String",
+          "question": "What file do you want to monitor?",
+          "required": false
+        }
+      ],
+      "doc": "trigger when a file is modified in your onedrive",
+      "confirmation": "a file is modified in your OneDrive",
+      "canonical": "file modified",
+      "examples": [
+        "monitor onedrive for changes",
+        "notify me if any files changes on onedrive",
+        "notify me if $filename changes on onedrive"
+      ]
+    }
+  },
+  "actions": {
+    "create_file": {
+      "args": [
+        {
+          "name": "filename",
+          "type": "String",
+          "question": "What should be the name of the file?",
+          "required": false
+        },
+        {
+          "name": "contents",
+          "type": "String",
+          "question": "What do you want to write in the file?",
+          "required": false
+        }
+      ],
+      "doc": "create a new file in your onedrive",
+      "confirmation": "create a new file on OneDrive named $filename containing $contents",
+      "canonical": "create file",
+      "examples": [
+        "create a new file on onedrive named $filaname containing $contents"
+      ]
+    },
+    "upload_picture": {
+      "args": [
+        {
+          "name": "filename",
+          "type": "String",
+          "question": "What should be the file name of the picture?",
+          "required": false
+        },
+        {
+          "name": "picture",
+          "type": "Picture",
+          "question": "Upload the picture now.",
+          "required": false
+        }
+      ],
+      "doc": "upload a picture in your onedrive",
+      "confirmation": "upload a picture on OneDrive as $filename",
+      "canonical": "upload picture",
+      "examples": [
+        "upload a picture to onedrive with name $filename"
+      ]
+    },
+    "delete_file": {
+      "args": [
+        {
+          "name": "filename",
+          "type": "String",
+          "question": "What file do you want to delete?",
+          "required": false
+        }
+      ],
+      "doc": "delete a file in your onedrive",
+      "confirmation": "delete the file $filename from OneDrive",
+      "canonical": "delete file",
+      "examples": [
+        "delete $filename from my onedrive"
+      ]
+    },
+    "rename_file": {
+      "args": [
+        {
+          "name": "filename",
+          "type": "String",
+          "question": "What file do you want to rename?",
+          "required": false
+        },
+        {
+          "name": "new_filename",
+          "type": "String",
+          "question": "What should be the new name?",
+          "required": false
+        }
+      ],
+      "doc": "rename a file in your onedrive",
+      "confirmation": "rename $filename to $new_filename on OneDrive",
+      "canonical": "rename file",
+      "examples": [
+        "rename $filename to $new_filename on my onedrive"
+      ]
+    }
+  },
+  "queries": {}
+}

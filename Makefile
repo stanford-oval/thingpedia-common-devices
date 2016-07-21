@@ -28,7 +28,8 @@ zipfiles = \
 	com.yahoo.finance.zip \
 	org.thingpedia.rss.zip \
 	com.youtube.zip \
-	com.instagram.zip
+	com.instagram.zip \
+	com.live.onedrive.zip
 
 all: $(zipfiles)
 
