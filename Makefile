@@ -5,7 +5,7 @@ zipfiles = \
 	com.bodytrace.scale.zip \
 	com.parklonamerica.heatpad.zip \
 	us.sportradar.zip \
-	yr.no.weather.zip \
+	org.thingpedia.weather.zip \
 	org.thingpedia.test.zip \
 	com.facebook.zip \
 	com.google.zip \
@@ -27,7 +27,8 @@ zipfiles = \
 	com.yandex.translate.zip \
 	com.yahoo.finance.zip \
 	org.thingpedia.rss.zip \
-	com.youtube.zip
+	com.youtube.zip \
+	com.instagram.zip
 
 all: $(zipfiles)
 

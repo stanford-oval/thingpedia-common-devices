@@ -12,7 +12,7 @@ const Tp = require('thingpedia');
 const HUB_URL = "https://pubsubhubbub.appspot.com/subscribe";
 
 module.exports = new Tp.ChannelClass({
-    RequiredCapabilities: ['webhook-api', 'channel-state'],
+    RequiredCapabilities: ['webhook-api'],
     Name: 'YouTubeSourceChannel',
 
     _init: function(engine, device, params) {

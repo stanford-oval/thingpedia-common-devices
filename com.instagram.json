@@ -1,0 +1,215 @@
+{
+  "params": {},
+  "global-name": "instagram",
+  "types": [
+    "online-account"
+  ],
+  "child_types": [],
+  "auth": {
+    "type": "oauth2"
+  },
+  "triggers": {
+    "poll_new_pic": {
+      "args": [
+        {
+          "name": "user_name",
+          "type": "String",
+          "question": "What user do you want to monitor?",
+          "required": true
+        },
+        {
+          "name": "media_id",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "picture_url",
+          "type": "Picture",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "caption",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "link",
+          "type": "String",
+          "question": "",
+          "required": false
+        }
+      ],
+      "doc": "receive new picture from `user_name` and save the url and the caption of the picture",
+      "confirmation": "someone uploads a new picture on Instagram",
+      "canonical": "new picture",
+      "examples": [
+        "monitor $user_name on instagram",
+        "notify me if $user_name uploads something on instagram"
+      ]
+    }
+  },
+  "actions": {
+    "like_most_recent": {
+      "args": [
+        {
+          "name": "user_name",
+          "type": "String",
+          "question": "What user do you want to like?",
+          "required": false
+        }
+      ],
+      "doc": "like the most recent media by userName",
+      "confirmation": "like the most recent picture by $user_name",
+      "canonical": "like most recent",
+      "examples": [
+        "like the latest picture of $user_name on instagram",
+        "like $user_name's most recent picture on instagram"
+      ]
+    },
+    "follow": {
+      "args": [
+        {
+          "name": "user_name",
+          "type": "String",
+          "question": "What user do you want to follow?",
+          "required": false
+        }
+      ],
+      "doc": "follow user_name",
+      "confirmation": "follow $user_name on Instagram",
+      "canonical": "follow",
+      "examples": [
+        "follow $user_name on instagram"
+      ]
+    },
+    "unfollow": {
+      "args": [
+        {
+          "name": "user_name",
+          "type": "String",
+          "question": "What user do you want to unfollow?",
+          "required": false
+        }
+      ],
+      "doc": "unfollow user_name",
+      "confirmation": "unfollow $user_name on Instagram",
+      "canonical": "unfollow",
+      "examples": [
+        "unfollow $user_name on instagram"
+      ]
+    }
+  },
+  "queries": {
+    "by_tag": {
+      "args": [
+        {
+          "name": "tag",
+          "type": "String",
+          "question": "What tag do you want to search?",
+          "required": true
+        },
+        {
+          "name": "count",
+          "type": "Number",
+          "question": "How many pictures do you want?",
+          "required": false
+        },
+        {
+          "name": "user_name",
+          "type": "String",
+          "question": "What user do you want to filter on?",
+          "required": false
+        },
+        {
+          "name": "media_id",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "picture_url",
+          "type": "Picture",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "caption",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "link",
+          "type": "String",
+          "question": "",
+          "required": false
+        }
+      ],
+      "doc": "search pictures by tag name and optionally user",
+      "confirmation": "retrieve Instagram pictures",
+      "canonical": "get by tag",
+      "examples": [
+        "get instagram pictures with tag $tag_name",
+        "get $count many instagram pictures with tag $tag_name",
+        "get pictures with tag $tag_name uploaded by $user_name on instagram"
+      ]
+    },
+    "by_location": {
+      "args": [
+        {
+          "name": "location",
+          "type": "Location",
+          "question": "What location do you want to search?",
+          "required": true
+        },
+        {
+          "name": "count",
+          "type": "Number",
+          "question": "How many pictures do you want?",
+          "required": false
+        },
+        {
+          "name": "user_name",
+          "type": "String",
+          "question": "What user do you want to filter on?",
+          "required": false
+        },
+        {
+          "name": "media_id",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "picture_url",
+          "type": "Picture",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "caption",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "link",
+          "type": "String",
+          "question": "",
+          "required": false
+        }
+      ],
+      "doc": "search pictures by location and optionally user",
+      "confirmation": "retrieve Instagram pictures",
+      "canonical": "get by location",
+      "examples": [
+        "get instagram pictures with location $location",
+        "get $count many instagram pictures with location $location",
+        "get pictures with location $location uploaded by $user_name on instagram"
+      ]
+    }
+  }
+}
