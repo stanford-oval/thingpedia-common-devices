@@ -7,7 +7,7 @@ const Tp = require('thingpedia');
 module.exports = new Tp.DeviceClass({
     Name: 'Slack',
     UseOAuth2: Tp.Helpers.OAuth2({
-      kind: 'edu.stanford.lwhsiao_setter.slack',
+      kind: 'com.slack',
       client_id: '22042110064.23640095249',
       client_secret: '798970r70r13r1q10qq1ro2qqnr9o2qr', // must be encrypted with ROT13
       scope: ['chat:write:user', 'chat:write:bot', 'files:write:user',
