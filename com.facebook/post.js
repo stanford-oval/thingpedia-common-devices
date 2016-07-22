@@ -15,6 +15,7 @@ module.exports = new Tp.ChannelClass({
 
     _init: function(engine, device) {
         this.parent();
+        this.auth = 'Bearer ' + device.accessToken;
     },
 
     _doInvoke: function(text) {

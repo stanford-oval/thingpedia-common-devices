@@ -24,6 +24,11 @@ module.exports = function(makeMail) {
     return new Tp.ChannelClass({
         Name: 'SendEmailWithAttachmentChannel',
 
+        _init(engine, device) {
+            this.parent();
+            this.engine = engine;
+        },
+
         sendEvent: function(event) {
             // Create mailing service
             var transporter = nodemailer.createTransport({
@@ -35,17 +40,21 @@ module.exports = function(makeMail) {
             });
 
             // Get input parameters and send the email
-            var mail = makeMail(event);
-            mail.from = '"Sabrina App" <sabrina@thingengine.stanford.edu>';
-            transporter.sendMail(mail, function(error) {
-                if (error) {
-                    console.error('Failed to send email: ' + error.message);
-                    console.error(error.stack);
-                } else {
+            Promise.resolve(makeMail(this.engine.platform, event)).then(function(mail) {
+                mail.from = '"Sabrina App" <sabrina@thingengine.stanford.edu>';
+                transporter.sendMail(mail, function(error) {
+                    if (error) {
+                        console.error('Failed to send email: ' + error.message);
+                        console.error(error.stack);
+                    } else {
                         console.log('Message sent successfully!');
-                }
+                    }
 
-                transporter.close(); // close the connection pool
+                    transporter.close(); // close the connection pool
+                });
+            }).catch((error) => {
+                console.error('Failed to send email: ' + error.message);
+                console.error(error.stack);
             });
         }
     });
