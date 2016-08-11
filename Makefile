@@ -29,7 +29,8 @@ zipfiles = \
 	org.thingpedia.rss.zip \
 	com.youtube.zip \
 	com.instagram.zip \
-	com.live.onedrive.zip
+	com.live.onedrive.zip \
+	com.hue.zip
 
 all: $(zipfiles)
 
