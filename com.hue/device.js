@@ -43,6 +43,10 @@ const HueLightBulbDevice = new Tp.DeviceClass({
         this.description = "Your Hue " + state.type;
     },
 
+    get kind() {
+        return 'com.hue';
+    },
+
     getActionClass: function(id) {
         switch(id) {
         case 'set_power':
@@ -56,8 +60,17 @@ HueLightBulbDevice.metadata = {
     types: ['light-bulb']
 };
 
-module.exports = new Tp.DeviceClass({
-    Name: 'PhilipsHue',
+const PhilipsHueDevice = new Tp.DeviceClass({
+    Name: 'PhilipsHueDevice',
+    UseDiscovery(engine, publicData, privateData) {
+        return new PhilipsHueDevice(engine,
+                                    { kind: 'com.hue',
+                                      discoveredBy: engine.ownTier,
+                                      uuid: privateData.uuid,
+                                      host: privateData.host,
+                                      port: privateData.port
+                                     });
+    },
 
     _init: function(engine, state) {
         this.parent(engine, state);
@@ -67,7 +80,7 @@ module.exports = new Tp.DeviceClass({
         this.description = "This is a Philips Hue Bridge. It holds your light bulbs toghether.";
 
         this._initialized = false;
-        this._deviceCollection = new Tp.ObjectSet();
+        this._deviceCollection = new Tp.ObjectSet.Simple(false);
     },
 
     get uuid() {
@@ -94,14 +107,14 @@ module.exports = new Tp.DeviceClass({
         }
 
         var hue = new HueApi(this.host);
-        return this._hue.registerUser(this.host, "Sabrina HUE User").then((token) => {
-                this.state.userToken = token;
-                this.engine.devices.addDevice(this);
-                this._initialize().done();
-                delegate.configDone();
-         }).catch((e) => {
-             delegate.configFailed(e);
-         });
+        return hue.registerUser(this.host, "Sabrina HUE User").then((token) => {
+            this.state.userToken = token;
+            this.engine.devices.addDevice(this);
+            this._initialize().done();
+            delegate.configDone();
+        }).catch((e) => {
+            delegate.configFailed(e);
+        });
     },
 
     start() {
@@ -118,7 +131,7 @@ module.exports = new Tp.DeviceClass({
         this._ensureHue();
         return this._hue.lights().then((result) => {
             return this._deviceCollection.addMany(result.lights.map((l) => {
-                    return new HueLightBulbDevice(this.engine, this, l);
+                return new HueLightBulbDevice(this.engine, this, l);
             }));
         });
     },
@@ -138,4 +151,4 @@ module.exports = new Tp.DeviceClass({
         }
     },
 });
-
+module.exports = PhilipsHueDevice;
