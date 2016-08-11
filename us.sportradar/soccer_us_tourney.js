@@ -131,8 +131,8 @@ module.exports = new Tp.ChannelClass({
             this._gameId = match.$.id;
             this._tourneyName = match.tournament[0].$.name;
             this._tourneyGroup = match.tournament_group[0].$.name;
-            this._awayAlias = match.away[0].$.alias;
-            this._homeAlias = match.home[0].$.alias;
+            this._awayAlias = match.away[0].$.alias.toLowerCase();
+            this._homeAlias = match.home[0].$.alias.toLowerCase();
             this._awayName = match.away[0].$.name;
             this._homeName = match.home[0].$.name;
 

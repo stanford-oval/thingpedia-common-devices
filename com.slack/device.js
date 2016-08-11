@@ -8,8 +8,8 @@ module.exports = new Tp.DeviceClass({
     Name: 'Slack',
     UseOAuth2: Tp.Helpers.OAuth2({
       kind: 'com.slack',
-      client_id: '22042110064.23640095249',
-      client_secret: '798970r70r13r1q10qq1ro2qqnr9o2qr', // must be encrypted with ROT13
+      client_id: '48257630786.66509414198',
+      client_secret: 's6s5626q15pq72p4pqrro89q5o560o1n',
       scope: ['chat:write:user', 'chat:write:bot', 'files:write:user',
         'channels:read', 'channels:history', 'users:read', 'users:write',
         'channels:write'

@@ -65,7 +65,7 @@ module.exports = new Tp.ChannelClass({
         var currentEvent = [this._awayAlias, this._homeAlias, false,
                             this._awayName, this._homeName, status,
                             this._scheduledTime, awayPoints, homePoints];
-        if (this._observedTeam === this._homeAlias) {
+        if (this._observedTeam.toLowerCase() === this._homeAlias) {
             currentEvent[0] = this._homeAlias;
             currentEvent[1] = this._awayAlias;
             currentEvent[2] = true;
@@ -108,8 +108,8 @@ module.exports = new Tp.ChannelClass({
                 if (matches[i].$.status === 'closed')
                     continue;
                 //console.log('Candidate match ' + matches[i].home[0].$.alias + ' - ' + matches[i].away[0].$.alias);
-                if (matches[i].home[0].$.alias === this._observedTeam ||
-                    matches[i].away[0].$.alias === this._observedTeam) {
+                if (matches[i].home[0].$.alias.toLowerCase() === this._observedTeam.toLowerCase() ||
+                    matches[i].away[0].$.alias.toLowerCase() === this._observedTeam.toLowerCase()) {
                     match = matches[i];
                     break;
                 }
@@ -129,8 +129,8 @@ module.exports = new Tp.ChannelClass({
 
             console.log('Found match ' + match.$.id + ': ' + match.home[0].$.alias + ' - ' + match.away[0].$.alias);
             this._gameId = match.$.id;
-            this._awayAlias = match.away[0].$.alias;
-            this._homeAlias = match.home[0].$.alias;
+            this._awayAlias = match.away[0].$.alias.toLowerCase();
+            this._homeAlias = match.home[0].$.alias.toLowerCase();
             this._awayName = match.away[0].$.name;
             this._homeName = match.home[0].$.name;
 
