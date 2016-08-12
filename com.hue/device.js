@@ -30,6 +30,38 @@ const SetPowerAction = new Tp.ChannelClass({
     }
 })
 
+const ColorLoopAction = new Tp.ChannelClass({
+    Name: 'PhilipsHueColorLoopAction',
+
+    _init: function(engine, device, params) {
+        this.parent();
+        this.engine = engine;
+        this.device = device;
+        this._hue = this.device.master.queryInterface('hue');
+    },
+
+    sendEvent: function(event) {
+        var lightState = LightState.create();
+        return this._hue.setLightState(this.device.id, lightState.colorLoop());
+    }
+})
+
+const AlertLongAction = new Tp.ChannelClass({
+    Name: 'PhilipsHueAlertLongAction',
+
+    _init: function(engine, device, params) {
+        this.parent();
+        this.engine = engine;
+        this.device = device;
+        this._hue = this.device.master.queryInterface('hue');
+    },
+
+    sendEvent: function(event) {
+        var lightState = LightState.create();
+        return this._hue.setLightState(this.device.id, lightState.alertLong());
+    }
+})
+
 const HueLightBulbDevice = new Tp.DeviceClass({
     Name: 'PhilipsHueDevice',
 
@@ -51,6 +83,10 @@ const HueLightBulbDevice = new Tp.DeviceClass({
         switch(id) {
         case 'set_power':
             return SetPowerAction;
+        case 'color_loop':
+            return ColorLoopAction;
+        case 'alert_long':
+            return AlertLongAction;
         default:
             throw new Error('Invalid action ' + id);
         }
