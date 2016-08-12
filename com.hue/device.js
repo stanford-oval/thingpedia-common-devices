@@ -142,8 +142,13 @@ const PhilipsHueDevice = new Tp.DeviceClass({
             return;
         }
 
-        var hue = new HueApi(this.host);
-        return hue.registerUser(this.host, "Sabrina HUE User").then((token) => {
+        return delegate.confirm("Press the Hue bridge button now. Say yes when done, or no to cancel.").then((confirmed) => {
+            if (!confirmed)
+                return;
+
+            var hue = new HueApi(this.host);
+            return hue.registerUser(this.host, "Sabrina HUE User");
+        }).then((token) => {
             this.state.userToken = token;
             this.engine.devices.addDevice(this);
             this._initialize().done();

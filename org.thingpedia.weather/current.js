@@ -31,6 +31,7 @@ module.exports = new Tp.ChannelClass({
             throw new TypeError('Missing required parameter');
 
         var url = URL.format(location.y, location.x);
+        console.log('Loading weather from ' + url);
 
         return Tp.Helpers.Http.get(url).then((response) => {
             return Tp.Helpers.Xml.parseString(response);
