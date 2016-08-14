@@ -114,6 +114,7 @@ const PhilipsHueDevice = new Tp.DeviceClass({
         this.uniqueId = 'com.hue-' + state.uuid;
         this.name = "Philips Hue Bridge (%s)".format(state.host);
         this.description = "This is a Philips Hue Bridge. It holds your light bulbs toghether.";
+        this.descriptors = ['upnp/' + state.uuid];
 
         this._initialized = false;
         this._deviceCollection = new Tp.ObjectSet.Simple(false);
