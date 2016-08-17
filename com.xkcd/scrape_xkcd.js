@@ -9,7 +9,7 @@ const Tp = require('thingpedia');
 const xml2js = require('xml2js');
 
 const PREV_REGEXP = /<a\s+rel="prev"\s+href="(?:#|\/([0-9]+)\/)?"/;
-const IMG_REGEXP = /<img\s+src="((?:https?:)?\/\/imgs\.xkcd\.com\/comics\/[A-Za-z0-9_]+\.png)"\s+title="([^"]+)"\s+alt="([^"]+)"/;
+const IMG_REGEXP = /<img\s+src="((?:https?:)?\/\/imgs\.xkcd\.com\/comics\/[A-Za-z0-9_]+\.(?:png|jpg|jpeg))"\s+title="([^"]+)"\s+alt="([^"]+)"/;
 
 function parseXml(data) {
     return new Promise(function(callback, errback) {
