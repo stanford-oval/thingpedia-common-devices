@@ -20,6 +20,7 @@ module.exports = new Tp.ChannelClass({
 
     _init: function(engine, device, params) {
         this.parent();
+        this.engine = engine;
 
         this._params = params.slice(0, 1);
         this._observedTeam = params[0];
@@ -57,9 +58,10 @@ module.exports = new Tp.ChannelClass({
         var awayRuns = event[8];
         var homeRuns = event[9];
 
+        var platform = this.engine.platform;
         switch(gameStatus) {
         case 'scheduled':
-            return "Next game %s @ %s at %s".format(awayName, homeName, scheduledTime.toLocaleString());
+            return "Next game %s @ %s at %s".format(awayName, homeName, scheduledTime.toLocaleString(platform.locale, { timeZone: platform.timezone }));
         case 'inprogress':
             return "Game update for %s @ %s: %d - %d".format(awayName, homeName, awayRuns, homeRuns);
         case 'closed':
