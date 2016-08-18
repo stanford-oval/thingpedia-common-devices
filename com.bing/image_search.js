@@ -42,7 +42,7 @@ module.exports = new Tp.ChannelClass({
             var results = JSON.parse(response);
 
             return results.value.map(function(result) {
-                return [query, result.name, result.contentUrl, result.hostPageDisplayUrl];
+                return [query, result.name, result.contentUrl, result.hostPageUrl];
             });
         });
     }
