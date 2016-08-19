@@ -7,7 +7,7 @@
 
 const Tp = require('thingpedia');
 
-module.exports = function(name, invokeQuery) {
+module.exports = function(name, invokeQuery, formatEvent) {
     return new Tp.ChannelClass({
         Name: 'Nest' + name + 'Channel',
 
@@ -25,6 +25,8 @@ module.exports = function(name, invokeQuery) {
             this.master.unrefFirebaseClient();
             this._firebase = null;
         },
+
+        formatEvent: formatEvent,
 
         invokeQuery: function(event) {
             return invokeQuery.call(this, this.device.state, event);

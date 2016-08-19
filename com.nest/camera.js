@@ -13,6 +13,14 @@ const Sink = require('./sink');
 
 const CameraWebUrlQuery = Query('CameraWebUrl', function(firebase, event) {
     return [[firebase.web_url]];
+}, function(event, filters) {
+    var url = event[0];
+    return [{
+        type: 'rdl',
+        displayTitle: "Security Camera Live Feed",
+        callback: url,
+        webCallback: url
+        }];
 });
 
 const CameraDevice = new Tp.DeviceClass({

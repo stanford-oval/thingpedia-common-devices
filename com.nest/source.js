@@ -7,7 +7,7 @@
 
 const Tp = require('thingpedia');
 
-module.exports = function(name, makeEvent) {
+module.exports = function(name, makeEvent, formatEvent) {
     return new Tp.ChannelClass({
         Name: 'Nest' + name + 'Channel',
 
@@ -19,6 +19,8 @@ module.exports = function(name, makeEvent) {
 
             this._valueListener = this._onValue.bind(this);
         },
+
+        formatEvent: formatEvent,
 
         _doOpen: function() {
             this._firebase = this.master.refFirebaseClient().child(this.device.url);
