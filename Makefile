@@ -32,7 +32,8 @@ zipfiles = \
 	com.live.onedrive.zip \
 	com.hue.zip \
 	org.thingpedia.icalendar.zip \
-	org.thingpedia.holidays.zip
+	org.thingpedia.holidays.zip \
+	com.dropbox.zip
 
 all: $(zipfiles)
 

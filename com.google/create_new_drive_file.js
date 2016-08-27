@@ -1,7 +1,5 @@
 // -*- mode: js; indent-tabs-mode: nil; js-basic-offset: 4 -*-
 //
-// This file is part of ThingPedia
-//
 // Copyright 2016 Linyu He <linyu90@stanford.edu>
 //                Lingbin Li <lingbin@stanford.edu>
 //

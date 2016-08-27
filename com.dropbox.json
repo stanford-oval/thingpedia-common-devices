@@ -1,0 +1,144 @@
+{
+  "params": {},
+  "global-name": "dropbox",
+  "types": [
+    "online-account"
+  ],
+  "child_types": [],
+  "auth": {
+    "type": "oauth2"
+  },
+  "triggers": {},
+  "actions": {
+    "move": {
+      "args": [{
+        "name": "old_name",
+        "type": "String",
+        "question": "What file do you want to move?",
+        "required": false
+      }, {
+        "name": "new_name",
+        "type": "String",
+        "question": "What should be the new name?",
+        "required": false
+      }],
+      "doc": "moves/renames a file",
+      "confirmation": "rename $old_name to $new_name in your Dropbox",
+      "canonical": "move",
+      "examples": [
+        "move $old_name to $new_name in Dropbox",
+        "rename $old_name to $new_name in Dropbox",
+        "rename $old_name in Dropbox"
+      ]
+    },
+    "create_new_folder": {
+      "args": [
+        {
+          "name": "folder_name",
+          "type": "String",
+          "question": "How do you want to call the folder?",
+          "required": false
+        }
+      ],
+      "doc": "creates new folder in user's root directory",
+      "confirmation": "create a new folder called $folder_name in your Dropbox",
+      "canonical": "create folder",
+      "examples": [
+        "create a folder $folder_name in my Dropbox"
+      ]
+    }
+  },
+  "queries": {
+    "get_space_usage": {
+      "args": [
+        {
+          "name": "used",
+          "type": "Measure(byte)",
+          "question": "",
+          "required": false
+        }
+      ],
+      "doc": "retrieves the used and allocated space",
+      "confirmation": "retrieve your Dropbox quota info",
+      "canonical": "get space usage",
+      "examples": [
+        "how much space do I have on dropbox?",
+        "what's my dropbox quota?",
+        "get dropbox quota"
+      ]
+    },
+    "list_folder": {
+      "args": [
+        {
+          "name": "folder_name",
+          "type": "String",
+          "question": "What folder do you want to list?",
+          "required": true
+        },
+        {
+          "name": "file_name",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "is_folder",
+          "type": "Boolean",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "last_modified",
+          "type": "Date",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "file_size",
+          "type": "Measure(byte)",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "full_path",
+          "type": "String",
+          "question": "",
+          "required": false
+        }
+      ],
+      "doc": "list the content of a folder",
+      "confirmation": "list the content of $folder_name in your Dropbox",
+      "canonical": "list folder",
+      "examples": [
+        "ls $folder_name on dropbox",
+        "list folder $folder_name on dropbox",
+        "dropbox ls $folder_name",
+        "what files do i have in $folder_name on dropbox"
+      ]
+    },
+    "open": {
+      "args": [
+        {
+          "name": "file_name",
+          "type": "String",
+          "question": "What file do you want to open? Use the full path name.",
+          "required": true
+        },
+        {
+          "name": "url",
+          "type": "String",
+          "question": "",
+          "required": false
+        }
+      ],
+      "doc": "open (retrieve a temporary link to) a file",
+      "confirmation": "open $file_name in your Dropbox",
+      "canonical": "open",
+      "examples": [
+        "open $file_name on dropbox",
+        "get temporary link to $file_name on dropbox",
+        "download $file_name on dropbox"
+      ]
+    }
+  }
+}
