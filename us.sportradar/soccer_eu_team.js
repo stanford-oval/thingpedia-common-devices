@@ -40,8 +40,8 @@ module.exports = new Tp.ChannelClass({
         var homeName = event[4];
         var gameStatus = event[5];
         var scheduledTime = event[6];
-        var awayPoints = event[7];
-        var homePoints = event[8];
+        var awayScore = event[7];
+        var homeScore = event[8];
 
         var platform = this.engine.platform;
         switch(gameStatus) {
