@@ -1,8 +1,7 @@
 // -*- mode: js; indent-tabs-mode: nil; js-basic-offset: 4 -*-
 //
-// This file is part of ThingEngine
-//
-// Copyright 2015 Giovanni Campagna <gcampagn@cs.stanford.edu>
+// Copyright 2016 Giovanni Campagna <gcampagn@cs.stanford.edu>
+//                Daniel Melendez <dmelende@stanford.edu>
 //
 // See COPYING for details
 "use strict";
@@ -72,6 +71,10 @@ module.exports = new Tp.ChannelClass({
 
                 events.push(icalEvent);
             }
+
+            events.sort(function(a, b) {
+                return a.startDate.getTime() - b.startDate.getTime();
+            });
 
             return events.map((event) => {
                 return [event.startDate.toJSDate(),

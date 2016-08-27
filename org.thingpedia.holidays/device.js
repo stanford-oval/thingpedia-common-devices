@@ -8,17 +8,13 @@
 const Tp = require('thingpedia');
 
 module.exports = new Tp.DeviceClass({
-    Name: 'iCalendarDevice',
+    Name: 'iCalendarHolidaysDevice',
 
     _init: function(engine, state) {
         this.parent(engine, state);
 
-        this.uniqueId = 'org.thingpedia.icalendar-' + this.url;
-        this.name = "iCalendar at " + this.url;
-        this.description = "Checks for events";
-    },
-
-    get url() {
-        return this.state.url;
+        this.name = "Holidays";
+        this.description = "Checks for holiday events of a region.";
+        this.uniqueId = 'org.thingpedia.holidays';
     }
 });
