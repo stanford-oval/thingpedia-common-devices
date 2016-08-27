@@ -30,7 +30,8 @@ zipfiles = \
 	com.youtube.zip \
 	com.instagram.zip \
 	com.live.onedrive.zip \
-	com.hue.zip
+	com.hue.zip \
+	org.thingpedia.icalendar.zip
 
 all: $(zipfiles)
 
