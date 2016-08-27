@@ -14,6 +14,11 @@ const URL = 'https://api.met.no/weatherapi/sunrise/1.0/?lat=%f;lon=%f;date=%04d-
 module.exports = new Tp.ChannelClass({
     Name: 'WeatherAPIMoon',
 
+    _init(engine, device) {
+        this.parent(engine, device);
+        this.engine = engine;
+    },
+
     formatEvent(event, filters) {
         var location = event[0];
         var date = event[1];
@@ -22,12 +27,37 @@ module.exports = new Tp.ChannelClass({
         var phase = event[4];
         var dateWasSet = filters[1] !== undefined;
 
-        if (dateWasSet)
+        var locale = this.engine.platform.locale;
+        var timezone = this.engine.platform.timezone;
+
+        var riseString = rise.toLocaleTimeString(locale, {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            timeZoneName: 'short',
+            timeZone: timezone
+        });
+        var setString = set.toLocaleTimeString(locale, {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            timeZoneName: 'short',
+            timeZone: timezone
+        });
+
+        if (dateWasSet) {
             return "Moon phase on %s for [Location %.2f, %.2f]: %s. Rises at %s, sets at %s".
-                format(date, location.y, location.x, phase, rise, set);
-        else
+                format(date.toLocaleDateString(locale, {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric',
+                    timeZone: timezone
+                }, location.y, location.x, phase, riseString, setString));
+        } else {
             return "Current moon phase for [Location %.2f, %.2f]: %s. Rises at %s, sets at %s".
-                format(location.y, location.x, phase, rise, set);
+                format(location.y, location.x, phase, riseString, setString);
+        }
     },
 
     invokeQuery(filters) {
