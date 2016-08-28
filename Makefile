@@ -33,7 +33,8 @@ zipfiles = \
 	com.hue.zip \
 	org.thingpedia.icalendar.zip \
 	org.thingpedia.holidays.zip \
-	com.dropbox.zip
+	com.dropbox.zip \
+	com.imgflip.zip
 
 all: $(zipfiles)
 
