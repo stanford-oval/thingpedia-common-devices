@@ -12,12 +12,7 @@ module.exports = new Tp.DeviceClass({
 		kind: 'com.google',
 		client_id: '739906609557-o52ck15e1ge7deb8l0e80q92mpua1p55.apps.googleusercontent.com',
 		client_secret: 'drAqNZnVS_9jHl6KBENOPVXR',
-		scope: ['openid','profile','email',
-                'https://mail.google.com/',
-                'https://www.googleapis.com/auth/plus.me',
-                'https://www.googleapis.com/auth/drive',
-                'https://www.googleapis.com/auth/drive.appdata',
-                'https://www.googleapis.com/auth/drive.file'],
+		scope: ['openid','profile','email'],
 		authorize: 'https://accounts.google.com/o/oauth2/auth',
 		get_access_token: 'https://www.googleapis.com/oauth2/v3/token',
 		callback: function(engine, accessToken, refreshToken) {
