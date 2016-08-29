@@ -33,7 +33,6 @@ module.exports = function (name, query, format, emit) {
             this.state = state;
             this.device = device;
             this.params = params;
-            this.auth = 'Bearer ' + this.device.accessToken;
             this.url = httpGetUrl(this.device.userId, params, query);
             this.filterString = this.params.join('-');
         },
@@ -50,7 +49,7 @@ module.exports = function (name, query, format, emit) {
             if (!this.state.get(threadId)) {
                 this.state.set(threadId, true);
                 var getUrl = URL_BASE + this.device.userId + '/messages/' + threadId;
-                Tp.Helpers.Http.get(getUrl, {auth: this.auth, accept: 'application/json'})
+                Tp.Helpers.Http.get(getUrl, { useOAuth2: this.device, accept: 'application/json'})
                     .then(function (response) {
                         var parsed = JSON.parse(response);
                         var snippet = parsed.snippet;

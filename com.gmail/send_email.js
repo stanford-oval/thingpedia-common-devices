@@ -15,7 +15,6 @@ module.exports = new Tp.ChannelClass({
     _init: function(engine, device) {
         this.parent();
         this.device = device;
-        this.auth = 'Bearer ' + this.device.accessToken;
         this.url = URL_BASE + this.device.userId + '/messages/send';
     },
 
@@ -29,7 +28,7 @@ module.exports = new Tp.ChannelClass({
             "\n\n" + message;
         var encoded = new Buffer(raw).toString('base64').replace(/\+/g, '-').replace(/\//g, '_');
         return Tp.Helpers.Http.post(this.url, JSON.stringify({raw: encoded}), {
-            auth: this.auth,
+            useOAuth2: this.device,
             dataContentType: 'application/json'
         });
     }

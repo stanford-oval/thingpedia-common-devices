@@ -10,9 +10,6 @@ module.exports = new Tp.DeviceClass({
     Name: "GMailAccount",
 
     UseOAuth2: Tp.Helpers.OAuth2({
-        kind: "com.gmail",
-        client_id: "731616092876-aqmmucgrgc3ce8mcs065mmovflavi1d3.apps.googleusercontent.com",
-        client_secret: "I_S1_cZaGbWqj5J4Motqy-HF",
         scope: ['openid', 'profile', 'email', 'https://mail.google.com/'],
         authorize: 'https://accounts.google.com/o/oauth2/auth',
         get_access_token: 'https://www.googleapis.com/oauth2/v3/token',
@@ -45,22 +42,5 @@ module.exports = new Tp.DeviceClass({
 
     get userName() {
         return this.state.userName;
-    },
-
-    get accessToken() {
-        return this.state.accessToken;
-    },
-
-    queryInterface: function(iface) {
-      switch(iface) {
-        case 'oauth2':
-            return this;
-        default:
-            return null;
-      }
-    },
-
-    refreshCredentials: function() {
-
     }
 });
