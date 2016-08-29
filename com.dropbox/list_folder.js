@@ -32,11 +32,10 @@ module.exports = new Tp.ChannelClass({
             name = '/' + name;
         if (name === '/')
             name = '';
-        var auth = 'Bearer ' + this.device.accessToken;
 
         return Tp.Helpers.Http.post('https://api.dropboxapi.com/2/files/list_folder',
                                     JSON.stringify({ path: name, recursive: false }),
-                                    { auth: auth,
+                                    { useOAuth2: this.device,
                                       dataContentType: 'application/json',
                                       accept: 'application/json' }).then((data) => {
             var parsed = JSON.parse(data);

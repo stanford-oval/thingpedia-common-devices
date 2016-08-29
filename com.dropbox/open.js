@@ -26,10 +26,9 @@ module.exports = new Tp.ChannelClass({
         var name = filters[0];
         if (!name.startsWith('/'))
             name = '/' + name;
-        var auth = 'Bearer ' + this.device.accessToken;
         return Tp.Helpers.Http.post('https://api.dropboxapi.com/2/files/get_temporary_link',
                                     JSON.stringify({ path: name }),
-                                    { auth: auth,
+                                    { useOAuth2: this.device,
                                       dataContentType: 'application/json',
                                       accept: 'application/json' })
             .then(function(response){

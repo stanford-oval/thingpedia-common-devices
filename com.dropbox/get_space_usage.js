@@ -18,10 +18,9 @@ module.exports = new Tp.ChannelClass({
     },
 
     invokeQuery(filters) {
-        var auth = 'Bearer ' + this.device.accessToken;
         return Tp.Helpers.Http.post('https://api.dropboxapi.com/2/users/get_space_usage',
                                     '',
-                                    { auth: auth,
+                                    { useOAuth2: this.device,
                                       accept: 'application/json' })
             .then(function(response){
                 var parsed = JSON.parse(response);

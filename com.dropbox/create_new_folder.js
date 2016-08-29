@@ -14,11 +14,10 @@ module.exports = new Tp.ChannelClass({
         var filename = event[0];
         if (!filename.startsWith('/'))
             filename = '/' + filename;
-        var auth = 'Bearer ' + this.device.accessToken;
 
         return Tp.Helpers.Http.post('https://api.dropboxapi.com/2/files/create_folder',
                                     JSON.stringify({ path: filename }),
-                                    { auth: auth,
+                                    { useOAuth2: this.device,
                                       dataContentType: 'application/json',
                                       accept: 'application/json' });
     },

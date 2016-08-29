@@ -11,8 +11,6 @@ module.exports = new Tp.DeviceClass({
     Name: 'DropboxDevice',
     UseOAuth2: Tp.Helpers.OAuth2({
         kind: 'com.dropbox',
-        client_id: 'qykawedfxr7hq7h',
-        client_secret: 'rgmw5p54sxw973c',
         authorize: 'https://www.dropbox.com/1/oauth2/authorize',
         get_access_token: 'https://api.dropboxapi.com/1/oauth2/token',
         callback: function(engine, accessToken, refreshToken) {
@@ -53,29 +51,7 @@ module.exports = new Tp.DeviceClass({
         return this.state.email;
     },
 
-    get accessToken() {
-        return this.state.accessToken;
-    },
-
-    get refreshToken() {
-        return this.state.refreshToken;
-    },
-
-    queryInterface: function(iface) {
-        switch (iface) {
-        case 'oauth2':
-            return this;
-        default:
-            return null;
-        }
-    },
-
     checkAvailable: function() {
         return Tp.Availability.AVAILABLE;
-    },
-
-    refreshCredentials: function() {
-        // TODO refresh the access token using the refresh token
-    },
-
+    }
 });

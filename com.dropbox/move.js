@@ -21,11 +21,10 @@ module.exports = new Tp.ChannelClass({
             newname = path.dirname(filename) + '/' + newname;
         if (!newname.startsWith('/'))
             newname = '/' + newname;
-        var auth = 'Bearer ' + this.device.accessToken;
 
         return Tp.Helpers.Http.post('https://api.dropboxapi.com/2/files/move',
                                     JSON.stringify({ from_path: filename, to_path: newname }),
-                                    { auth: auth,
+                                    { useOAuth2: this.device,
                                       dataContentType: 'application/json',
                                       accept: 'application/json' });
     },
