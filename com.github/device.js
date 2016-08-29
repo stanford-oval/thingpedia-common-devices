@@ -11,8 +11,6 @@ module.exports = new Tp.DeviceClass({
     Name: 'GithubDevice',
     UseOAuth2: Tp.Helpers.OAuth2({
         kind: 'com.github',
-        client_id: '1396f80c995154c2dbda',
-        client_secret: 'q72358so60p57o635404279813ssrq6pp10q3ns0',
         scope: ["user", "public_repo", "repo", "repo:status",
                 "gist", "notifications"],
         authorize: 'https://github.com/login/oauth/authorize',
@@ -58,29 +56,8 @@ module.exports = new Tp.DeviceClass({
         return this.state.userName;
     },
 
-    get accessToken() {
-        return this.state.accessToken;
-    },
-
-    get refreshToken() {
-        return this.state.refreshToken;
-    },
-
     checkAvailable: function() {
         return Tp.Availability.AVAILABLE;
-    },
-
-    queryInterface: function(iface) {
-        switch (iface) {
-        case 'oauth2':
-            return this;
-        default:
-            return null;
-        }
-    },
-
-    refreshCredentials: function() {
-        // TODO: refresh the access token using the refresh token
-    },
+    }
 });
 
