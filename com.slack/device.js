@@ -8,8 +8,6 @@ module.exports = new Tp.DeviceClass({
     Name: 'Slack',
     UseOAuth2: Tp.Helpers.OAuth2({
       kind: 'com.slack',
-      client_id: '48257630786.66509414198',
-      client_secret: 's6s5626q15pq72p4pqrro89q5o560o1n',
       scope: ['chat:write:user', 'chat:write:bot', 'files:write:user',
         'channels:read', 'channels:history', 'users:read', 'users:write',
         'channels:write'
@@ -27,6 +25,7 @@ module.exports = new Tp.DeviceClass({
                 return engine.devices.loadOneDevice({
                     kind: 'com.slack',
                     accessToken: accessToken,
+                    refreshToken: refreshToken,
                     team: parsed.team,
                     user: parsed.user,
                     user_id: parsed.user_id,
@@ -54,26 +53,8 @@ module.exports = new Tp.DeviceClass({
         return this.state.user;
     },
 
-    get accessToken() {
-        return this.state.accessToken;
-    },
-
     // it's cloud backed so always available
     checkAvailable: function() {
         return Tp.Availability.AVAILABLE;
-    },
-
-    queryInterface: function(iface) {
-        switch (iface) {
-        case 'oauth2':
-            return this;
-            // fallthrough
-        default:
-            return null;
-        }
-    },
-
-    refreshCredentials: function() {
-        // FINISHME refresh the access token using the refresh token
-    },
+    }
 });

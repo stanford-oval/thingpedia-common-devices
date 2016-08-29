@@ -51,8 +51,6 @@ module.exports = new Tp.DeviceClass({
     Name: 'NestDevice',
     UseOAuth2: Tp.Helpers.OAuth2({
         kind: 'com.nest',
-        client_id: '730cd4c5-04f4-481e-8574-0ccc80827d99',
-        client_secret: 'bAFYaXHpZF0sXP2qhsuvZ3jQj',
         scope: null,
         set_state: true,
         authorize: 'https://home.nest.com/login/oauth2',
@@ -93,14 +91,6 @@ module.exports = new Tp.DeviceClass({
         this._deviceCollection.stop();
     },
 
-    get accessToken() {
-        return this.state.accessToken;
-    },
-
-    get refreshToken() {
-        return this.state.refreshToken;
-    },
-
     refFirebaseClient: function() {
         if (this._firebaseClient === null) {
             this._firebaseClient = new Firebase('wss://developer-api.nest.com/');
@@ -128,15 +118,9 @@ module.exports = new Tp.DeviceClass({
         switch (iface) {
         case 'subdevices':
             return this._deviceCollection;
-        case 'oauth2':
-            return this;
         default:
             return null;
         }
-    },
-
-    refreshCredentials: function() {
-        // FINISHME refresh the access token using the refresh token
     }
 });
 

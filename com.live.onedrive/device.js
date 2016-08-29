@@ -11,8 +11,6 @@ module.exports = new Tp.DeviceClass({
     Name: 'OneDriveDevice',
     UseOAuth2: Tp.Helpers.OAuth2({
         kind: 'com.live.onedrive',
-        client_id: "05d74496-7109-4b1d-9265-1584830901ea",
-        client_secret: "Dvshgtgg2YEBQsrcajfvmZz",
         authorize: "https://login.live.com/oauth20_authorize.srf",
         scope: ['offline_access', 'onedrive.readonly', 'onedrive.readwrite'],
         get_access_token: "https://login.live.com/oauth20_token.srf",
@@ -42,14 +40,6 @@ module.exports = new Tp.DeviceClass({
         this.description = "This is your OneDrive Account.";
     },
 
-    get accessToken() {
-        return this.state.accessToken;
-    },
-
-    get refreshToken() {
-        return this.state.refreshToken;
-    },
-
     get driveId() {
         return this.state.driveId;
     },
@@ -65,14 +55,5 @@ module.exports = new Tp.DeviceClass({
     // it's cloud backed so always available
     checkAvailable: function() {
         return Tp.Availability.AVAILABLE;
-    },
-
-    queryInterface: function(iface) {
-        switch (iface) {
-        case 'oauth2':
-            return this;
-        default:
-            return null;
-        }
     }
 });

@@ -15,16 +15,12 @@ module.exports = new Tp.ChannelClass({
     interval: Interval,
 
     _init: function(engine, state, device) {
-        this.parent();
-        this.device = device;
+        this.parent(engine, device);
         this._state = state;
 
         this._baseurl = 'https://api.onedrive.com/v1.0/drive/root/view.delta';
         this.url = this._baseurl + "?token=latest";
-    },
-
-    get auth() {
-        return "Bearer " + this.device.accessToken;
+        this.useOAuth2 = this.device;
     },
 
     formatEvent(event) {

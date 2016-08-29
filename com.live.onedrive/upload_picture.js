@@ -14,13 +14,8 @@ module.exports = new Tp.ChannelClass({
     Extends: Tp.SimpleAction,
 
     _init: function(engine, device) {
-        this.parent();
-        this.device = device;
+        this.parent(engine, device);
         this._baseurl = 'https://api.onedrive.com/v1.0/drive/items/';
-    },
-
-    get auth() {
-        return "Bearer " + this.device.accessToken;
     },
 
     _doInvoke: function(fileName, url) {
@@ -29,7 +24,7 @@ module.exports = new Tp.ChannelClass({
             dirname = 'root';
         var basename = path.basename(fileName);
         var url = this._baseurl + dirname + "/children";
-        Tp.Helpers.Http.request(url, 'POST', JSON.stringify({
+        return Tp.Helpers.Http.request(url, 'POST', JSON.stringify({
             '@content.sourceUrl': url,
             name: basename,
             file: {}
@@ -38,7 +33,7 @@ module.exports = new Tp.ChannelClass({
             extraHeaders: {
                 'Prefer': 'respond-async'
             },
-            auth: this.auth
-        }).done();
+            useOAuth2: this.device,
+        });
     }
 });
