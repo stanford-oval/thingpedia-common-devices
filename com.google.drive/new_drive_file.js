@@ -19,14 +19,10 @@ module.exports = new Tp.ChannelClass({
     interval: INTERVAL,
 
     _init: function(engine, state, device) {
-        this.parent();
-        this.device = device;
+        this.parent(engine, device);
         this.url = 'https://www.googleapis.com/drive/v3/files?orderBy=createdTime desc&pageSize=' + PAGE_SIZE;
         this.state = state;
-    },
-
-    get auth() {
-        return 'Bearer ' + this.device.accessToken;
+        this.useOAuth2 = device;
     },
 
     _onResponse: function(response) {

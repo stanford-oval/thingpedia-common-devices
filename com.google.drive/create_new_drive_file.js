@@ -12,24 +12,14 @@ const Tp = require('thingpedia');
 module.exports = new Tp.ChannelClass({
     Name: 'GoogleDocsCreateFileAction',
 
-    _init: function(engine, device) {
-        this.parent();
-        this.device = device;
-    },
-
-    get auth() {
-        return 'Bearer ' + this.device.accessToken;
-    },
-
     sendEvent: function(event) {
     	var url = 'https://www.googleapis.com/drive/v3/files';
-    	var auth = 'Bearer ' + this.accessToken;
     	var fileName = event[0];
         var data = JSON.stringify({ name: fileName });
 
-        Tp.Helpers.Http.post(url, data, { auth: auth, dataContentType: 'application/json' })
+        return Tp.Helpers.Http.post(url, data, { useOAuth2: this.device, dataContentType: 'application/json' })
             .catch(function(e) {
                 console.error('Failed to create new file in Google Drive: ' + e.message);
-            }).done();
+            });
     }
 });
