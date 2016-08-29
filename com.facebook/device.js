@@ -10,8 +10,6 @@ module.exports = new Tp.DeviceClass({
     Name: 'FacebookDevice',
     UseOAuth2: Tp.Helpers.OAuth2({
         kind: 'com.facebook',
-        client_id: '979879085397010',
-        client_secret: '770o8qs05o487po44261r7701n46p549',
         scope: ['email', 'public_profile', 'user_friends', 'user_photos', 'publish_actions'],
         authorize: 'https://www.facebook.com/dialog/oauth',
         get_access_token: 'https://graph.facebook.com/oauth/access_token',
@@ -38,22 +36,5 @@ module.exports = new Tp.DeviceClass({
 
     get profileId() {
         return this.state.profileId;
-    },
-
-    get accessToken() {
-        return this.state.accessToken;
-    },
-
-    queryInterface: function(iface) {
-        switch (iface) {
-        case 'oauth2':
-            return this;
-        default:
-            return null;
-        }
-    },
-
-    refreshCredentials: function() {
-        // FINISHME refresh the access token using the refresh token
-    },
+    }
 });

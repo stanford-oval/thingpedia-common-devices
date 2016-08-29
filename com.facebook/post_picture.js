@@ -13,15 +13,10 @@ module.exports = new Tp.ChannelClass({
     Name: 'FacebookPostPictureChannel',
     Extends: Tp.SimpleAction,
 
-    _init: function(engine, device) {
-        this.parent();
-        this.auth = 'Bearer ' + device.accessToken;
-    },
-
     _doInvoke: function(photoURL) {
         var fbURL = 'https://graph.facebook.com/v2.5/me/photos?url=%s'.format(encodeURIComponent(photoURL));
 
-        Tp.Helpers.Http.post(fbURL, '', { auth: this.auth }).catch(function(error) {
+        return Tp.Helpers.Http.post(fbURL, '', { useOAuth2: this.device }).catch(function(error) {
             console.error('Error posting Facebook picture: ' + error.message);
         });
     }

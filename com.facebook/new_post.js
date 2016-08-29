@@ -22,10 +22,7 @@ module.exports = new Tp.ChannelClass({
 
         this._base_url = "https://graph.facebook.com/v2.5/me/feed?fields=message,story,from{name,id}";
         this.url = this._base_url;
-    },
-
-    get auth() {
-        return 'Bearer ' + this.device.accessToken;
+        this.useOAuth2 = device;
     },
 
     _doOpen: function() {

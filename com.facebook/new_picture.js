@@ -21,10 +21,7 @@ module.exports = new Tp.ChannelClass({
         this.base_url = 'https://graph.facebook.com/me?fields=albums.limit(5){name, photos.since(%s).order(reverse_chronological).limit(5){images}}';
         this.timestamp = Math.floor(Date.now() / 1000);
         this.url = this.base_url.format(this.timestamp);
-    },
-
-    get auth() {
-        return 'Bearer ' + this.device.accessToken;
+        this.useOAuth2 = device;
     },
 
     _onResponse: function(response) {
