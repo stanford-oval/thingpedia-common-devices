@@ -1,0 +1,126 @@
+{
+  "params": {},
+  "global-name": "gmail",
+  "types": [
+    "online-account"
+  ],
+  "child_types": [],
+  "auth": {
+    "type": "oauth2"
+  },
+  "triggers": {
+    "receive_email": {
+      "args": [
+        {
+          "name": "from",
+          "type": "EmailAddress",
+          "question": "what email address do you want to monitor?",
+          "required": false
+        },
+        {
+          "name": "subject",
+          "type": "String",
+          "question": "what email subject do you want to monitor?",
+          "required": false
+        },
+        {
+          "name": "label",
+          "type": "String",
+          "question": "email with what label do you want to monitor?",
+          "required": false
+        }
+      ],
+      "doc": "receive an email from others",
+      "confirmation": "receive an email on GMail",
+      "canonical": "receive email",
+      "examples": [
+        "notify me if receive an email",
+        "notify me if receive an email from $from",
+        "notify me if receive an email with subject $subject"
+      ]
+    },
+    "receive_important_email": {
+      "args": [],
+      "doc": "receive an email from others which is marked as important",
+      "confirmation": "receive an email which is marked as important on GMail",
+      "canonical": "receive important email",
+      "examples": [
+        "notify me if receive an email marked as important"
+      ]
+    },
+    "receive_primary_email": {
+      "args": [],
+      "doc": "receive an email in category primary from others",
+      "confirmation": "receive an email in category primary",
+      "canonical": "receive primary emails ",
+      "examples": [
+        "notify me if receive an email in category primary"
+      ]
+    }
+  },
+  "actions": {
+    "send_email": {
+      "args": [
+        {
+          "name": "to",
+          "type": "EmailAddress",
+          "question": "Who do you want to send to?",
+          "required": false
+        },
+        {
+          "name": "subject",
+          "type": "String",
+          "question": "With what subject?",
+          "required": false
+        },
+        {
+          "name": "message",
+          "type": "String",
+          "question": "What message do you want to send?",
+          "required": false
+        }
+      ],
+      "doc": "send an email",
+      "confirmation": "send an email on GMail",
+      "canonical": "send email",
+      "examples": [
+        "send an email to $to with subject $subject with message $message"
+      ],
+      "url": "",
+      "webhook": false
+    }
+  },
+  "queries": {
+    "get_latest": {
+      "args": [
+        {
+          "name": "from",
+          "type": "EmailAddress",
+          "question": "From which email address?",
+          "required": false
+        },
+        {
+          "name": "subject",
+          "type": "String",
+          "question": "With what subject?",
+          "required": false
+        },
+        {
+          "name": "label",
+          "type": "String",
+          "question": "With what label?",
+          "required": false
+        }
+      ],
+      "doc": "get the latest email",
+      "confirmation": "get the latest email on GMail",
+      "canonical": "get latest email",
+      "examples": [
+        "get the latest email",
+        "get the latest email with label $label",
+        "get the latest email from $from",
+        "get the latest email with subject $subject"
+      ]
+    }
+  }
+}
