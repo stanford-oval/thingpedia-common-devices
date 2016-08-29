@@ -9,9 +9,6 @@ const Tp = require('thingpedia');
 module.exports = new Tp.DeviceClass({
     Name: 'LinkedinDevice',
     UseOAuth2: Tp.Helpers.OAuth2({
-        kind: 'com.linkedin',
-        client_id: '75j2y6wjan5rt2',
-        client_secret: 'RuNnl6Yro69G78lX',
         authorize: 'https://www.linkedin.com/uas/oauth2/authorization',
         get_access_token: 'https://www.linkedin.com/uas/oauth2/accessToken',
         set_state: true,
@@ -49,29 +46,8 @@ module.exports = new Tp.DeviceClass({
         return this.state.userName;
     },
 
-    get accessToken() {
-        return this.state.accessToken;
-    },
-
-    get refreshToken() {
-        return this.state.refreshToken;
-    },
-
     checkAvailable: function() {
         return Tp.Availability.AVAILABLE;
-    },
-
-    queryInterface: function(iface) {
-        switch (iface) {
-        case 'oauth2':
-            return this;
-        default:
-            return null;
-        }
-    },
-
-    refreshCredentials: function() {
-        // TODO: refresh the access token using the refresh token
-    },
+    }
 });
 

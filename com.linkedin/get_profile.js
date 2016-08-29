@@ -32,7 +32,7 @@ module.exports = new Tp.ChannelClass({
 
     invokeQuery(filters) {
         return Tp.Helpers.Http.get(URL, {
-            auth: 'Bearer ' + this.device.accessToken,
+            useOAuth2: this.device,
             accept: 'application/json' }).then((response) => {
             var parsed = JSON.parse(response);
             console.log('parsed', parsed);

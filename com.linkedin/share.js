@@ -26,7 +26,7 @@ module.exports = new Tp.ChannelClass({
                 code: 'anyone'
             }
         }), {
-            auth: 'Bearer ' + this.device.accessToken,
+            useOAuth2: this.device,
             accept: 'application/json'
         });
     }
