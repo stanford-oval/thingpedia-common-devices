@@ -35,9 +35,14 @@ module.exports = new Tp.ChannelClass({
         var xml = entry[2];
         var updated = entry[4];
 	
-	var regex = /&lt;img.*src=&quot;([0-9a-zA-Z:\/\.]+)&quot;/g;
-	var img = regex.exec(xml)[0];
+        var regex = /<img.+src="([^"]+)"/g;
+        var match = regex.exec(xml);
+        if (match === null) {
+            console.error('Failed to scrape PhdComics');
+            return;
+        }
 
+        var img = match[0];
         this.emitEvent([title, link, img]);
     }
 });
