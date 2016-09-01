@@ -35,7 +35,8 @@ zipfiles = \
 	org.thingpedia.holidays.zip \
 	com.dropbox.zip \
 	com.imgflip.zip \
-	com.gmail.zip
+	com.gmail.zip \
+	com.phdcomics.zip
 
 all: $(zipfiles)
 
