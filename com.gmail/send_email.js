@@ -5,31 +5,28 @@
 // See LICENSE for details
 
 const Tp = require('thingpedia');
+const mailcomposer = require('mailcomposer');
 
-URL_BASE = "https://www.googleapis.com/gmail/v1/users/";
-
+URL_BASE = "https://www.googleapis.com/upload/gmail/v1/users/me/messages/send";
 
 module.exports = new Tp.ChannelClass({
     Name: 'SendGMail',
 
     _init: function(engine, device) {
-        this.parent();
-        this.device = device;
-        this.url = URL_BASE + this.device.userId + '/messages/send';
+        this.parent(engine, device);
+        this.url = URL_BASE;
     },
 
     sendEvent: function(event) {
-        var to = event[0];
-        var subject = event[1];
-        var message = event[2];
-        var raw = "Content-Type:  text/plain; charset=\"UTF-8\"\n" +
-            "to: " + to +
-            "\nsubject: " + subject +
-            "\n\n" + message;
-        var encoded = new Buffer(raw).toString('base64').replace(/\+/g, '-').replace(/\//g, '_');
-        return Tp.Helpers.Http.post(this.url, JSON.stringify({raw: encoded}), {
+        var stream = mailcomposer({
+            to: event[0],
+            subject: event[1],
+            text: event[2]
+        }).createReadStream();
+
+        return Tp.Helpers.Http.postStream(this.url, stream, {
             useOAuth2: this.device,
-            dataContentType: 'application/json'
+            dataContentType: 'message/rfc822'
         });
     }
 });
