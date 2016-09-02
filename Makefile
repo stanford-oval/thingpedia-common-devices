@@ -36,7 +36,9 @@ zipfiles = \
 	com.dropbox.zip \
 	com.imgflip.zip \
 	com.gmail.zip \
-	com.phdcomics.zip
+	com.phdcomics.zip \
+	gov.nasa.zip \
+	com.tumblr.zip
 
 all: $(zipfiles)
 
