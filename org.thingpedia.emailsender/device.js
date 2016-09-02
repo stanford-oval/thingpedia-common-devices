@@ -6,6 +6,7 @@
 // See LICENSE for details
 
 const Tp = require('thingpedia');
+const Url = require('url');
 
 const SendBase = require('./send_base');
 const Send = SendBase(function(platform, event) {
@@ -17,7 +18,8 @@ const Send = SendBase(function(platform, event) {
 });
 
 function getAttachment(platform, url) {
-    var filename = url.substring(url.lastIndexOf('/')+1);
+    var parsed = Url.parse(url);
+    var filename = parsed.pathname.substring(parsed.pathname.lastIndexOf('/')+1);
 
     // if we're running on an old thingpedia, assume all urls are http
     if (!Tp.Helpers.Content)
@@ -28,7 +30,7 @@ function getAttachment(platform, url) {
         return Promise.resolve({ path: url, filename: filename });
 
     return Tp.Helpers.Content.getStream(platform, url).then(function(stream) {
-        return ({ content: stream, filename: filename });
+        return ({ content: stream, filename: filename, contentType: stream.contentType });
     });
 }
 
