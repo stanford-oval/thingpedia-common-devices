@@ -6,22 +6,10 @@
 
 const Tp = require('thingpedia');
 
-const URL_BASE = 'https://www.googleapis.com/gmail/v1/users/';
+const URL_BASE = 'https://www.googleapis.com/gmail/v1/users';
+const POLL_URL = URL_BASE + '/me/messages?maxResults=1';
 
-function httpGetUrl(userId, filters, query) {
-    var url = URL_BASE + userId + '/messages?maxResults=1';
-    var filter_names = ['from', 'subject', 'label'];
-    var search_query = 'in:inbox ';
-    for (var i = 0; i < filters.length; i++)
-        if (filters[i] !== undefined)
-            search_query += '%s:%s '.format(filter_names[i], filters[i]);
-    if (query.length > 0)
-        search_query += query;
-    url = url + '&q=%s'.format(search_query.trim());
-    return url;
-}
-
-module.exports = function (name, query, format, emit) {
+module.exports = function (name, query) {
     return new Tp.ChannelClass({
         Name: name,
         Extends: Tp.HttpPollingTrigger,
@@ -29,50 +17,86 @@ module.exports = function (name, query, format, emit) {
         interval: 60000,
 
         _init: function (engine, state, device, params) {
-            this.parent();
+            this.parent(engine, state, device);
             this.state = state;
-            this.device = device;
             this.params = params;
-            this.url = httpGetUrl(this.device.userId, params, query);
-            this.filterString = this.params.join('-');
+
+            this.url = POLL_URL + '&q=' + encodeURIComponent('in:inbox ' + query);
+
+            this.useOAuth2 = device;
         },
 
-        formatEvent: format,
+        formatEvent: function (event, filters) {
+            var sendername = event[0];
+            var senderaddress = event[1];
+            var subject = event[2];
+            var date = event[3];
+            var labels = event[4];
+            var snippet = event[5];
+
+            if (sendername) {
+                return ["New email from %s <%s>: %s".format(sendername, senderaddress, subject), snippet];
+            } else {
+                return ["New email from %s: %s".format(senderaddress, subject), snippet];
+            }
+        },
 
         _onResponse: function (data) {
             var parsed_package = JSON.parse(data);
             var msgs = parsed_package.messages;
+            if (!msgs)
+                return;
+
             var newest_msg = msgs[0];
             var threadId = newest_msg.threadId;
-            var params = this.params;
 
-            if (!this.state.get(threadId)) {
-                this.state.set(threadId, true);
-                var getUrl = URL_BASE + this.device.userId + '/messages/' + threadId;
-                Tp.Helpers.Http.get(getUrl, { useOAuth2: this.device, accept: 'application/json'})
-                    .then(function (response) {
-                        var parsed = JSON.parse(response);
-                        var snippet = parsed.snippet;
-                        var headers = parsed.payload.headers;
-                        var sender, subject, date;
+            if (this.state.get(threadId))
+                return;
 
-                        for (var i = 0; i < headers.length; i++) {
-                            var header = headers[i];
-                            if (header.name === 'From') {
-                                sender = header.value;
-                            } else if (header.name === 'Subject')
-                                subject = header.value;
-                            else if (header.name === 'Date')
-                                date = header.value;
+            this.state.set(threadId, true);
+            var getUrl = URL_BASE + '/' + this.device.userId + '/messages/' + threadId;
+            return Tp.Helpers.Http.get(getUrl, { useOAuth2: this.device, accept: 'application/json'})
+                .then((response) => {
+                    var parsed = JSON.parse(response);
+                    var snippet = parsed.snippet;
+                    var headers = parsed.payload.headers;
+                    var sender, subject, date;
+
+                    for (var i = 0; i < headers.length; i++) {
+                        var header = headers[i];
+                        if (header.name === 'From') {
+                            sender = header.value;
+                        } else if (header.name === 'Subject')
+                            subject = header.value;
+                        else if (header.name === 'Date')
+                            date = new Date(header.value);
+                    }
+
+                    var sendername, senderaddress;
+                    var match = /^"([^"]+)"\s+<([^>]+)>$/.exec(sender);
+                    if (match !== null) {
+                        sendername = match[0];
+                        senderaddress = match[1];
+                    } else {
+                        var match = /^([^\s]+)\s+<([^>]+)>$/.exec(sender);
+                        if (match !== null) {
+                            sendername = match[0];
+                            senderaddress = match[1];
+                        } else {
+                            sendername = null;
+                            senderaddress = sender;
                         }
+                    }
 
-                        var message = '%s\n%s\n%s\n%s'.format(sender, subject, date, snippet);
-                        params.push(message);
-                        emit.call(this, params);
-                    }.bind(this)).catch(function (e) {
+                    snippet = snippet.replace(/&#([0-9]+);/g, function(str, code) { return String.fromCharCode(parseInt(code, 10)); });
+
+                    return this.device.resolveLabels(parsed.labelIds).then((resolved) => {
+                        var labels = parsed.labelIds.map((id) => resolved.get(id));
+                        this.emitEvent([sendername, senderaddress, subject, date, labels, snippet]);
+                    });
+                }).catch(function (e) {
                     console.error('Error while retrieving new email from Google: ' + e.message);
-                }).done();
-            }
+                });
         }
     });
 };

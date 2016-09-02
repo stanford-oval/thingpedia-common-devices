@@ -35,6 +35,33 @@ module.exports = new Tp.DeviceClass({
         this.uniqueId = 'com.gmail.' + this.userId;
         this.name = "Gmail Account %s".format(this.userName);
         this.description = "This is your Gmail Account. You can use it access and manage your emails.";
+
+        this._labelCache = new Map;
+    },
+
+    resolveLabels(ids) {
+        var resolved = new Map;
+
+        var toResolve = false;
+        for (var id of ids) {
+            if (this._labelCache.has(id))
+                resolved.set(id, this._labelCache.get(id));
+            else
+                toResolve = true;
+        }
+
+        if (toResolve) {
+            return Tp.Helpers.Http.get('https://www.googleapis.com/gmail/v1/users/me/labels', { useOAuth2: this }).then((data) => {
+                var parsed = JSON.parse(data);
+                parsed.labels.forEach((label) => {
+                    this._labelCache.set(id, label.name.toLowerCase());
+                    resolved.set(id, label.name.toLowerCase());
+                });
+                return resolved;
+            });
+        } else {
+            return resolved;
+        }
     },
 
     get userId() {
