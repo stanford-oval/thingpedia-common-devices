@@ -17,16 +17,18 @@ const Send = SendBase(function(platform, event) {
 });
 
 function getAttachment(platform, url) {
+    var filename = url.substring(url.lastIndexOf('/')+1);
+
     // if we're running on an old thingpedia, assume all urls are http
     if (!Tp.Helpers.Content)
-        return Promise.resolve({ path: url });
+        return Promise.resolve({ path: url, filename: filename });
 
     // if the url is accessible, let nodemailer deal with it
     if (Tp.Helpers.Content.isPubliclyAccessible(url))
-        return Promise.resolve({ path: url });
+        return Promise.resolve({ path: url, filename: filename });
 
     return Tp.Helpers.Content.getStream(platform, url).then(function(stream) {
-        return ({ content: stream });
+        return ({ content: stream, filename: filename });
     });
 }
 
