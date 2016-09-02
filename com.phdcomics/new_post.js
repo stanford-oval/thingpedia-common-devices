@@ -21,11 +21,11 @@ module.exports = new Tp.ChannelClass({
     formatEvent(event) {
         var title = event[0];
         var link = event[1];
-	var img = event[2];
+        var img = event[2];
 
         return [title, {
             type: 'picture',
-	    url: img	
+            url: img
         }];
     },
 
@@ -34,15 +34,15 @@ module.exports = new Tp.ChannelClass({
         var link = entry[1];
         var xml = entry[2];
         var updated = entry[4];
-	
+
         var regex = /<img.+src="([^"]+)"/g;
-        var match = regex.exec(xml);
+        var match = regex.exec(xml.description[0]);
         if (match === null) {
             console.error('Failed to scrape PhdComics');
             return;
         }
 
-        var img = match[0];
+        var img = match[1];
         this.emitEvent([title, link, img]);
     }
 });
