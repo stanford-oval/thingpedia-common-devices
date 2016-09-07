@@ -1,12 +1,20 @@
+// -*- mode: js; indent-tabs-mode: nil; js-basic-offset: 4 -*-
+//
+// Copyright 2016 Andrew Lim <alim16@stanford.edu>
+//                Xiangyu Yue <xyyue@stanford.edu>
+//
+// See LICENSE for details
+
 const Source = require('./source');
 const Url = require('url');
 
 const POLL_INTERVAL = 60 * 1000; // 1m
 
-module.exports = Source('issues/comments', POLL_INTERVAL, function(event, params) {
-    var parsed = Url.parse(event.html_url);
-    var issue_number = parseInt(parsed.pathname.substr(parsed.pathname.lastIndexOf('/') + 1));
-    return [params[0], event.user.login, issue_number, event.body, new Date(event.created_at)];
+module.exports = Source('issue_comment', 'IssueCommentEvent', POLL_INTERVAL, function(payload, params) {
+    if (payload.action !== 'created')
+        return;
+
+    this.emitEvent([this._params[0], payload.comment.user.login, payload.issue.number, payload.comment.body, new Date(payload.comment.created_at)]);
 }, function(event) {
     var repoName = event[0];
     var from = event[1];
