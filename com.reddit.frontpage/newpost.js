@@ -16,10 +16,40 @@ module.exports = new Tp.ChannelClass({
     _init(engine, state, device, params) {
         this.parent(engine, state, device);
 
-        this.url = 'https://www.reddit.com/.rss';
+        if (params[2] !== null && params[2] !== undefined) {
+            // filter by user
+            this.url = 'https://www.reddit.com' + params[2] + '/.rss';
+            this.filterString = 'user-' + params[2];
+        } else if (params[3] !== null && params[3] !== undefined) {
+            // filter by category
+            this.url = 'https://www.reddit.com' + params[3] + '/.rss';
+            this.filterString = 'category-' + params[3];
+        } else {
+            // #nofilter
+            this.url = 'https://www.reddit.com/.rss';
+        }
     },
 
-    _emit(title, link, entry) {
-        this.emitEvent([title, link, entry.author[0].name[0], entry.category[0].$.label]);
+    formatEvent(event) {
+        var title = event[0];
+        var link = event[1];
+        var author = event[2];
+        var category = event[3];
+
+        return [{
+            type: 'rdl',
+            displayTitle: title,
+            displayText: "By %s. In %s.".format(author, category),
+            callback: link,
+            webCallback: link
+        }];
+    },
+
+    _emit(entry) {
+        var title = entry[0];
+        var link = entry[1];
+        var xml = entry[2];
+        var updated = entry[3];
+        this.emitEvent([title, link, xml.author[0].name[0], xml.category[0].$.label]);
     }
 });
