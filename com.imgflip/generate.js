@@ -36,7 +36,7 @@ module.exports = new Tp.ChannelClass({
     },
 
     invokeQuery(filters) {
-        var search = filters[0].toLowerCase();
+        var search = filters[0].toLowerCase().trim();
         var textTop = filters[1];
         var textBottom = filters[2];
 
@@ -86,7 +86,7 @@ module.exports = new Tp.ChannelClass({
                 .then((data) => {
                     var result = JSON.parse(data);
                     console.log('result', result);
-                    return [search, textTop, textBottom, meme.name, result.data.url];
+                    return [filters[0], textTop, textBottom, meme.name, result.data.url];
                 });
             }));
         });

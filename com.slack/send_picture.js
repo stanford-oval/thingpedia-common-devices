@@ -12,13 +12,17 @@ const Tp = require('thingpedia');
  * @param  {String} channel_id Tje internal channel id to send to
  * @param  {String} user       What to name the BOT
  */
-function chatPostMessage(token, message, channel_id, user) {
+function chatPostMessage(token, caption, url, channel_id) {
   // Construct the proper JSON message and send to channel
   Tp.Helpers.Http.post('https://slack.com/api/chat.postMessage',
       'token=' + token +
       '&as_user=true' +
       '&channel=' + encodeURIComponent(channel_id) +
-      '&text=' + encodeURIComponent(message), {
+      '&attachments=' + encodeURIComponent(JSON.stringify([{
+        fallback: caption,
+        pretext: caption,
+        image_url: url
+      }])), {
         dataContentType: 'application/x-www-form-urlencoded'
       }
     )
@@ -87,7 +91,7 @@ module.exports = new Tp.ChannelClass({
         }
 
         // Now that we have the internal channel id, post the message.
-        chatPostMessage(token, event[1], channel_id, user);
+        chatPostMessage(token, event[1], event[2], channel_id, user);
 
       }, function(reason) {
         console.log('[info] Reason: ', String(reason));

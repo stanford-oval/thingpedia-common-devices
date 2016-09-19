@@ -18,6 +18,7 @@ module.exports = new Tp.ChannelClass({
         var title = event[4];
         var description = event[5];
         var thumbnail = event[6];
+        var count = event[7];
 
         var link = 'http://www.youtube.com/watch?v=' + encodeURIComponent(videoId);
 
@@ -32,19 +33,22 @@ module.exports = new Tp.ChannelClass({
 
     invokeQuery(filters) {
         var searchTerm = filters[0];
+        var count = filters[7];
+        if (count === null || count === undefined)
+            count = 1;
 
         var url = Url.parse('https://www.googleapis.com/youtube/v3/search', true);
         url.query.part = 'id,snippet';
         url.query.safeSearch = 'none';
         url.query.type = 'video';
         url.query.q = searchTerm;
-        url.query.maxResults = 5;
+        url.query.maxResults = count;
         return Tp.Helpers.Http.get(Url.format(url),
             { useOAuth2: this.device }).then((data) => {
             var parsed = JSON.parse(data);
             return parsed.items.map((item) => {
                 return [searchTerm, item.id.videoId, item.snippet.channelId, item.snippet.channelTitle,
-                        item.snippet.title, item.snippet.description, item.snippet.thumbnails.high.url];
+                        item.snippet.title, item.snippet.description, item.snippet.thumbnails.high.url, count];
             });
         });
     },
