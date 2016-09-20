@@ -21,9 +21,9 @@ module.exports = new Tp.ChannelClass({
         var path = event[5];
 
         if (isFolder)
-            return "%s (dir)".format(name);
+            return ["%s (dir)".format(name)];
         else
-            return "%s (reg, %d bytes)".format(name, size);
+            return ["%s (reg, %d bytes)".format(name, size)];
     },
 
     invokeQuery(filters) {

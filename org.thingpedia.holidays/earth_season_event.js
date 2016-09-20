@@ -19,5 +19,5 @@ module.exports = Source('EarthSeasonsPoll',
         if (description)
             return ["Today's the %s".format(summary), description];
         else
-            return "Today's the %s".format(summary);
+            return ["Today's the %s".format(summary)];
     });

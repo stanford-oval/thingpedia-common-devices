@@ -14,11 +14,18 @@ module.exports = Source('push', 'PushEvent', POLL_INTERVAL, function(payload, pa
         this.emitEvent([this._params[0], commit.author.username || commit.author.email, commit.message,
             new Date(commit.timestamp)]);
     }
-}, function(event) {
+}, function(event, hint, formatter) {
     var repoName = event[0];
     var from = event[1];
     var message = event[2];
     var date = event[3];
 
-    return "New commit in %s by %s: %s".format(repoName, from, message);
+    switch (hint) {
+    case 'string-title':
+        return "New commit in %s".format(repoName);
+    case 'string-body':
+        return "%s.\nAuthor: %s".format(message, from);
+    default:
+        return "New commit in %s by %s: %s".format(repoName, from, message);
+    }
 });

@@ -26,7 +26,7 @@ module.exports = new Tp.ChannelClass({
     formatEvent(event) {
         var fileName = event[0];
 
-        return "New file created: %s".format(fileName);
+        return ["New file created: %s".format(fileName)];
     },
 
     _onResponse(response) {

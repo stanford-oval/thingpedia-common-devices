@@ -33,8 +33,12 @@ module.exports = new Tp.ChannelClass({
         var ask = event[2];
         var bid = event[3];
 
-        return "Quote for %s: ask %f, bid %f"
-            .format(name, ask, bid);
+        if (hint === 'string-title')
+            return "Quote for %s".format(name);
+        else if (hint === 'string-body')
+            return "Ask %f, bid %f".format(ask, bid);
+        else
+            return "Quote for %s: ask %f, bid %f".format(name, ask, bid);
     },
 
     _onResponse(response) {

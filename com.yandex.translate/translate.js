@@ -23,7 +23,7 @@ module.exports = new Tp.ChannelClass({
         var text = event[2];
         var translated = event[3];
 
-        return translated;
+        return [translated];
     },
 
     invokeQuery(filters) {

@@ -24,9 +24,9 @@ module.exports = new Tp.ChannelClass({
         var lang = event[1];
 
         if (lang in languages)
-            return "Detected as %s".format(languages[lang]);
+            return ["Detected as %s".format(languages[lang])];
         else
-            return "Detected as %s".format(lang);
+            return ["Detected as %s".format(lang)];
     },
 
     invokeQuery: function(filters) {

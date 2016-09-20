@@ -28,5 +28,5 @@ module.exports = Query('USHolidayCalendar',
         if (description)
             return ["Next US holiday: %s on %s".format(summary, dateStr), description];
         else
-            return "Next US holiday: %s on %s".format(summary, dateStr);
+            return ["Next US holiday: %s on %s".format(summary, dateStr)];
     });

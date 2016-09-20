@@ -15,12 +15,19 @@ module.exports = Source('issue_comment', 'IssueCommentEvent', POLL_INTERVAL, fun
         return;
 
     this.emitEvent([this._params[0], payload.comment.user.login, payload.issue.number, payload.comment.body, new Date(payload.comment.created_at)]);
-}, function(event) {
+}, function(event, hint, formatter) {
     var repoName = event[0];
     var from = event[1];
     var number = event[2];
     var body = event[3];
     var date = event[4];
 
-    return "%s commented on issue @%d in %s: %s".format(from, number, repoName, body);
+    switch (hint) {
+    case 'string-title':
+        return "New comment on issue @%d in %s".format(number, repoName);
+    case 'string-body':
+        return "%s says:\n%s".format(from, body);
+    default:
+        return "%s commented on issue @%d in %s: %s".format(from, number, repoName, body);
+    }
 });

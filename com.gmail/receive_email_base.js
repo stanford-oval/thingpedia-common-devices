@@ -26,7 +26,7 @@ module.exports = function (name, query) {
             this.useOAuth2 = device;
         },
 
-        formatEvent: function (event, filters) {
+        formatEvent: function (event, hint, formatter) {
             var sendername = event[0];
             var senderaddress = event[1];
             var subject = event[2];
@@ -34,10 +34,19 @@ module.exports = function (name, query) {
             var labels = event[4];
             var snippet = event[5];
 
-            if (sendername) {
-                return ["New email from %s <%s>: %s".format(sendername, senderaddress, subject), snippet];
-            } else {
-                return ["New email from %s: %s".format(senderaddress, subject), snippet];
+            var title;
+            if (sendername)
+                title = "New email from %s <%s>: %s".format(sendername, senderaddress, subject);
+            else
+                title = "New email from %s: %s".format(senderaddress, subject);
+
+            switch (hint) {
+            case 'string-title':
+                return title;
+            case 'string-body':
+                return snippet;
+            default:
+                return title + ': ' + snippet;
             }
         },
 

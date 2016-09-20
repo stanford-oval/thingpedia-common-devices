@@ -19,5 +19,5 @@ module.exports = Source('UKHolidayCalendar',
         if (description)
             return ["Today's %s".format(summary), description];
         else
-            return "Today's %s".format(summary);
+            return ["Today's %s".format(summary)];
     });

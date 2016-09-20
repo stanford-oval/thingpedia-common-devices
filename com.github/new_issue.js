@@ -15,7 +15,7 @@ module.exports = Source('issues', 'IssuesEvent', POLL_INTERVAL, function(payload
 
     this.emitEvent([this._params[0], payload.issue.user.login, payload.issue.number, payload.issue.title,
                     payload.issue.body, new Date(payload.issue.created_at)]);
-}, function(event) {
+}, function(event, hint, formatter) {
     var repoName = event[0];
     var from = event[1];
     var number = event[2];
@@ -23,5 +23,12 @@ module.exports = Source('issues', 'IssuesEvent', POLL_INTERVAL, function(payload
     var body = event[4];
     var date = event[5];
 
-    return "Issue @%d opened in %s by %s: %s".format(number, repoName, from, title);
+    switch (hint) {
+    case 'string-title':
+        return "Issue @%d opened in %s".format(number, repoName);
+    case 'string-body':
+        return "%s.\n%s\n.Author: %s".format(title, body, from);
+    default:
+        return "Issue @%d opened in %s by %s: %s".format(number, repoName, from, title);
+    }
 });

@@ -28,5 +28,5 @@ module.exports = Query('UKHolidayCalendar',
         if (description)
             return ["Next UK holiday: %s on %s".format(summary, dateStr), description];
         else
-            return "Next UK holiday: %s on %s".format(summary, dateStr);
+            return ["Next UK holiday: %s on %s".format(summary, dateStr)];
     });

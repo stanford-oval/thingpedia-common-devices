@@ -13,8 +13,15 @@ const Sink = require('./sink');
 
 const CameraWebUrlQuery = Query('CameraWebUrl', function(firebase, event) {
     return [[firebase.web_url]];
-}, function(event, filters) {
+}, function(event, filters, hint, formatter) {
     var url = event[0];
+
+    if (hint === 'string-title')
+        return "Security Camera Live Feed";
+    else if (hint === 'string-body')
+        return url;
+    // else fall through
+
     return [{
         type: 'rdl',
         displayTitle: "Security Camera Live Feed",

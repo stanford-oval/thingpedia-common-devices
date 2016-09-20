@@ -28,6 +28,6 @@ module.exports = Query('NextCatholicLiturgicalCalendarEvent',
         if (description)
             return ["Next Catholic liturgy event: %s on %s".format(summary, dateStr), description];
         else
-            return "Next Catholic liturgy event: %s on %s".format(summary, dateStr);
+            return ["Next Catholic liturgy event: %s on %s".format(summary, dateStr)];
     });
 

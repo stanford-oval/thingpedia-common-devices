@@ -14,7 +14,7 @@ module.exports = new Tp.ChannelClass({
         var used = event[0];
         var allocated = event[1];
 
-        return "You have used %.1f MBs out of %.1f available.".format(used/(1000*1000), allocated/(1000*1000));
+        return ["You have used %.1f MBs out of %.1f available.".format(used/(1000*1000), allocated/(1000*1000))];
     },
 
     invokeQuery(filters) {

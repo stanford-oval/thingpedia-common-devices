@@ -16,13 +16,19 @@ var ACTION_GET_TIME_EST = "estimates/time";
 module.exports = new Tp.ChannelClass({
     Name: "UberTimeEstimateChannel",
 
-    formatEvent(event) {
+    formatEvent(event, filters, hint) {
         var start = event[0];
         var name = event[1];
         var time = event[2];
 
-        return "Estimate for %s: %.0f min".
-            format(name, time / 60000);
+        if (hint === 'string-title')
+            return "Estimate for %s".format(name);
+        else if (hint === 'string-body')
+            return "%.0f min"
+                .format(time / 60000);
+        else
+            return "Estimate for %s: %.0f min"
+                .format(name, time / 60000);
     },
 
     invokeQuery(filters) {

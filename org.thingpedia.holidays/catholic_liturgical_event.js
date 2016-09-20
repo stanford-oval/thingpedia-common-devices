@@ -19,6 +19,6 @@ module.exports = Source('CatholicLiturgicalCalendarEvent',
         if (description)
             return ["Today's Catholic liturgy: %s".format(summary), description];
         else
-            return "Today's Catholic liturgy: %s".format(summary);
+            return ["Today's Catholic liturgy: %s".format(summary)];
     });
 

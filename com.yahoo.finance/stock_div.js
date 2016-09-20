@@ -26,7 +26,7 @@ module.exports = new Tp.ChannelClass({
         this.url = YAHOO_URL + "?s=" + encodeURIComponent(this._myCompanyID) + "&f=nydr1q";
     },
 
-    formatEvent(event) {
+    formatEvent(event, hint, formatter) {
         var id = event[0];
         var name = event[1];
         var _yield = event[2];
@@ -37,8 +37,14 @@ module.exports = new Tp.ChannelClass({
         // I have very little clue of what this means
         // so I'll just format like this
         //   -- gcampax
-        return "Dividend for %s: yield %f, per share %f, pay date %s, ex-dividend date"
-            .format(name, _yield, div, payDate, exDivDate);
+        if (hint === 'string-title')
+            return "Dividend for %s".format(name);
+        else if (hint === 'string-body')
+            return "Yield %f, per share %f, pay date %s, ex-dividend date %s"
+                .format(_yield, div, formatter.dateToString(payDate), formatter.dateToString(exDivDate));
+        else
+            return "Dividend for %s: yield %f, per share %f, pay date %s, ex-dividend date"
+                .format(name, _yield, div, formatter.dateToString(payDate), formatter.dateToString(exDivDate));
     },
 
     _onResponse(response) {

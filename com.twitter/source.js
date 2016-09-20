@@ -16,7 +16,12 @@ module.exports = SourceBase(false, function(event) {
     var from = event[3];
     var inReplyTo = event[4];
 
-    return '@' + from + ' tweeted: ' + text;
+    if (hint === 'string-title')
+        return "@%s tweeted.".format(from);
+    else if (hint === 'string-body')
+        return text;
+    else
+        return '@%s tweeted: %s'.format(from, text);
 }, function(tweet, hashtags, urls) {
     var event = [tweet.text,
                  hashtags,

@@ -48,7 +48,14 @@ module.exports = new Tp.ChannelClass({
         var title = event[2];
         var date = event[3];
 
-        return "New milestone created by %s in %s: %s".format(user, repoName, title);
+        switch (hint) {
+        case 'string-title':
+            return "New milestone created in %s".format(repoName);
+        case 'string-body':
+            return "Title: %s.\nAuthor: %s".format(title, user);
+        default:
+            return "New milestone created by %s in %s: %s".format(user, repoName, title);
+        }
     },
 
     _onResponse: function(response) {

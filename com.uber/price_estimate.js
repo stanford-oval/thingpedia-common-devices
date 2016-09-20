@@ -18,7 +18,7 @@ var ACTION_GET_PRICE_EST = "estimates/price";
 module.exports = new Tp.ChannelClass({
     Name: "UberPriceInformationChannel",
 
-    formatEvent(event) {
+    formatEvent(event, filters, hint) {
         var start = event[0];
         var end = event[1];
         var name = event[2];
@@ -29,8 +29,14 @@ module.exports = new Tp.ChannelClass({
         var duration = event[7];
         var distance = event[8];
 
-        return "Estimate for %s: between %s%f and %s%f (%.1fx surge). Distance: %.1f km, Time: %.0f min".
-            format(name, currency, low, currency, high, surge, distance / 1000, duration / 60000);
+        if (hint === 'string-title')
+            return "Estimate for %s".format(name);
+        else if (hint === 'string-body')
+            return "Between %s%f and %s%f (%.1fx surge). Distance: %.1f km, Time: %.0f min"
+                .format(currency, low, currency, high, surge, distance / 1000, duration / 60000);
+        else
+            return "Estimate for %s: between %s%f and %s%f (%.1fx surge). Distance: %.1f km, Time: %.0f min"
+                .format(name, currency, low, currency, high, surge, distance / 1000, duration / 60000);
     },
 
     invokeQuery(filters) {

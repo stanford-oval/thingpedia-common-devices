@@ -28,5 +28,5 @@ module.exports = Query('EarthSeasonsPoll',
         if (description)
             return ["Next Earth seasonal event: %s on %s".format(summary, dateStr), description];
         else
-            return "Next Earth seasonal event: %s on %s".format(summary, dateStr);
+            return ["Next Earth seasonal event: %s on %s".format(summary, dateStr)];
     });

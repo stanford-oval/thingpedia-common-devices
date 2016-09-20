@@ -15,7 +15,7 @@ const TemperatureChannel = Source('Temperature', function(blob) {
 }, function(event, filters) {
     var date = event[0];
     var temperature = event[1];
-    return "Ambient temperature: %.1f C".format(temperature);
+    return ["Ambient temperature: %.1f C".format(temperature)];
 });
 
 const HumidityChannel = Source('Humidity', function(blob) {
@@ -23,7 +23,7 @@ const HumidityChannel = Source('Humidity', function(blob) {
 }, function(event, filters) {
     var date = event[0];
     var humidity = event[1];
-    return "Humidity: %f%%".format(Math.round(humidity));
+    return ["Humidity: %f%%".format(Math.round(humidity))];
 });
 
 const SetHvacStateChannel = Sink('SetHvacState', function(firebase, event) {

@@ -10,10 +10,17 @@ const Tp = require('thingpedia');
 
 const URL = 'https://api.met.no/weatherapi/locationforecast/1.9/?lat=%f;lon=%f';
 
+// for compatibility with older ThingTalk
+const DEFAULT_FORMATTER = {
+    locationToString(o) {
+        return '[Latitude: ' + Number(o.y).toFixed(3) + ' deg, Longitude: ' + Number(o.x).toFixed(3) + ' deg]';
+    }
+}
+
 module.exports = new Tp.ChannelClass({
     Name: 'WeatherAPICurrentWeather',
 
-    formatEvent(event) {
+    formatEvent(event, filters, hint, formatter) {
         var location = event[0];
         var temperature = event[1];
         var windSpeed = event[2];
@@ -21,8 +28,17 @@ module.exports = new Tp.ChannelClass({
         var cloudiness = event[4];
         var fog = event[5];
 
-        return "Current weather for [Location %.2f, %.2f]: temperature %.1f C, wind speed %.1f m/s, humidity %.0f%%, cloudiness %.0f%%, fog %.0f%%"
-            .format(location.y, location.x, temperature, windSpeed, humidity, cloudiness, fog);
+        if (!formatter)
+            formatter = DEFAULT_FORMATTER;
+
+        if (hint === 'string-title')
+            return "Current weather for %s".format(formatter.locationToString(event[0]));
+        else if (hint === 'string-body')
+            return "Temperature %.1f C, wind speed %.1f m/s, humidity %.0f%%, cloudiness %.0f%%, fog %.0f%%"
+                .format(temperature, windSpeed, humidity, cloudiness, fog);
+        else
+            return "Current weather for %s: temperature %.1f C, wind speed %.1f m/s, humidity %.0f%%, cloudiness %.0f%%, fog %.0f%%"
+                .format(formatter.locationToString(event[0]), temperature, windSpeed, humidity, cloudiness, fog);
     },
 
     invokeQuery(filters) {
