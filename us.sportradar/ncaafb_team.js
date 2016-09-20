@@ -67,7 +67,7 @@ module.exports = new Tp.ChannelClass({
                 var number = new Number(weeks[i].number);
                 var games = weeks[i].games;
                 for (var j = 0; j < games.length; j++) {
-                    if (games[j].home === this._observedTeam || games[j].away === this._observedTeam ) {
+                    if (games[j].home.toLowerCase() === this._observedTeam.toLowerCase() || games[j].away.toLowerCase() === this._observedTeam.toLowerCase() ) {
                         if (games[j].status !== 'closed') {
                             found = games[j];
                         }
@@ -125,7 +125,23 @@ module.exports = new Tp.ChannelClass({
         if (timeout < 5000) {
             timeout = 5000;
         } else {
-            this._emit('scheduled', 0, 0);
+            var weekNumbers = this._weekNumbers;
+            var gameNumber = this._gameNumber;
+            var URL = BOXSCORE_URL.format(this._year, weekNumbers[gameNumber], this._currentGame.away + '/' + this._currentGame.home);
+
+            Tp.Helpers.Http.get(URL).then((response) => {
+                var parsed = JSON.parse(response);
+
+                // unpack team names from the game data
+                this._awayName = parsed.away_team.market + ' ' + parsed.away_team.name;
+                this._homeName = parsed.home_team.market + ' ' + parsed.home_team.name;
+                this._emit('scheduled', 0, 0);
+            }).catch((e) => {
+                console.error('Failed to get game details for ' + this._currentGame.away + ' @ ' + this._currentGame.home + ': ' + e.message);
+                this._awayName = this._currentGame.away;
+                this._homeName = this._currentGame.home;
+                this._emit('scheduled', 0, 0);
+            }).done();
         }
 
         this._setGameTimer(timeout);
@@ -190,12 +206,12 @@ module.exports = new Tp.ChannelClass({
 
     // emit a game update
     _emit: function(status, awayPoints, homePoints) {
-        var currentEvent = [this._currentGame.away, this._currentGame.home, false,
+        var currentEvent = [this._currentGame.away.toLowerCase(), this._currentGame.home.toLowerCase(), false,
                             this._awayName, this._homeName, status,
                             this._scheduledTime, awayPoints, homePoints];
-        if (this._observedTeam === this._currentGame.home) {
+        if (this._observedTeam === this._currentGame.home.toLowerCase()) {
             currentEvent[0] = currentEvent[1];
-            currentEvent[1] = this._currentGame.away;
+            currentEvent[1] = this._currentGame.away.toLowerCase();
             currentEvent[2] = true;
         }
 
