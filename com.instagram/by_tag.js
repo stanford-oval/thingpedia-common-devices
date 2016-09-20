@@ -18,7 +18,7 @@ module.exports = new Tp.ChannelClass({
         this.device = device;
     },
 
-    formatEvent(event) {
+    formatEvent(event, filters, hint, formatter) {
         var tagName = event[0];
         var count = event[1];
         var username = event[2];
@@ -26,6 +26,14 @@ module.exports = new Tp.ChannelClass({
         var picture = event[4];
         var caption = event[5];
         var link = event[6];
+
+        if (hint === 'string-title')
+            return "Picture by %s".format(username);
+        else if (hint === 'string-body')
+            return caption + '\nURL: ' + picture;
+        else if (hint.startsWith('string'))
+            return "Picture by %s\n%s\nURL: %s".format(username, caption, picture);
+        // else fall through
 
         return [{
             type: 'rdl',

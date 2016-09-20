@@ -58,12 +58,20 @@ module.exports = new Tp.ChannelClass({
         });
     },
 
-    formatEvent(event) {
+    formatEvent(event, hint, formatter) {
         var username = event[0];
         var mediaId = event[1];
         var picture = event[2];
         var caption = event[3];
         var link = event[4];
+
+        if (hint === 'string-title')
+            return "Picture by %s".format(username);
+        else if (hint === 'string-body')
+            return caption + '\nURL: ' + picture;
+        else if (hint.startsWith('string'))
+            return "Picture by %s\n%s\nURL: %s".format(username, caption, picture);
+        // else fall through
 
         return [{
             type: 'rdl',
