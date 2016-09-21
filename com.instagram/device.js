@@ -13,9 +13,7 @@ module.exports = new Tp.DeviceClass({
         kind: 'com.instagram',
         client_id: 'fbd0f2d229ff4db38e58c2c3a193a710',
         client_secret: '4q41qr80n1544q2po63q91461p7r2226',
-        scope: ['basic', 'public_content', 'comments',
-            'relationships', 'likes', 'follower_list'
-        ],
+        scope: ['basic'],
         authorize: 'https://api.instagram.com/oauth/authorize/',
         get_access_token: 'https://api.instagram.com/oauth/access_token',
         callback: function(engine, accessToken, refreshToken) {
