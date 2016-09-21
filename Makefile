@@ -67,4 +67,5 @@ build/%: % node_modules
 	touch $@
 
 clean:
+	rm -fr build/
 	rm -f *.zip

@@ -1,54 +1,96 @@
 {
+  "params": {},
+  "types": [
+    "online-account",
+    "social-network"
+  ],
+  "child_types": [],
   "auth": {
     "type": "oauth2"
   },
-  "types": [
-    "online-account"
-  ],
-  "global-name": "facebook",
-  "params": {},
   "triggers": {
     "new_post": {
       "args": [
-        "message",
-        "from",
-        "yours"
+        {
+          "name": "message",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "from",
+          "type": "String",
+          "question": "What friend are you interested in?",
+          "required": false
+        },
+        {
+          "name": "yours",
+          "type": "Boolean",
+          "question": "",
+          "required": false
+        }
       ],
-      "schema": [
-        "String",
-        "String",
-        "Boolean"
-      ],
-      "doc": "get new posts from your timeline"
+      "doc": "get new posts from your timeline",
+      "confirmation": "a friend posts on Facebook",
+      "canonical": "new post",
+      "examples": [
+        "monitor my facebook feed",
+        "notify me if $from posts on facebook",
+        "monitor facebook posts from $from"
+      ]
     },
     "new_picture": {
       "args": [
-        "url"
+        {
+          "name": "url",
+          "type": "Picture",
+          "question": "",
+          "required": false
+        }
       ],
-      "schema": [
-        "String"
-      ],
-      "doc": "trigger when a new picture is uploaded"
+      "doc": "trigger when a new picture is uploaded",
+      "confirmation": "a picture is posted on Facebook",
+      "canonical": "new picture",
+      "examples": [
+        "monitor my pictures on facebook",
+        "notify me if a picture is uploaded on facebook"
+      ]
     }
   },
   "actions": {
     "post": {
       "args": [
-        "text"
+        {
+          "name": "text",
+          "type": "String",
+          "question": "What do you want to post?",
+          "required": false
+        }
       ],
-      "schema": [
-        "String"
-      ],
-      "doc": "post a status update to Facebook"
+      "doc": "post a status update to Facebook",
+      "confirmation": "post a status update on Facebook",
+      "canonical": "post",
+      "examples": [
+        "post on Facebook saying $text"
+      ]
     },
     "post_picture": {
       "args": [
-        "url"
+        {
+          "name": "url",
+          "type": "Picture",
+          "question": "Upload the picture now.",
+          "required": false
+        }
       ],
-      "schema": [
-        "String"
-      ],
-      "doc": "upload a photo to your Facebook"
+      "doc": "upload a photo to your Facebook",
+      "confirmation": "upload a picture on Facebook",
+      "canonical": "post picture",
+      "examples": [
+        "post a picture on facebook"
+      ]
     }
-  }
+  },
+  "queries": {},
+  "global-name": "facebook"
 }
