@@ -18,8 +18,8 @@ module.exports = new Tp.ChannelClass({
         console.log('Posting Twitter event', event);
 
         var status = event[0];
-        this._twitter.postTweet({ status: status }, function(err) {
-            console.log('Tweeting failed: ' + err);
-        }, function() { });
+        return new Promise((callback, errback) => {
+            return this._twitter.postTweet({ status: status }, errback, callback);
+        });
     },
 });
