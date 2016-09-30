@@ -13,10 +13,11 @@ const BOXSCORE_URL = 'https://api.sportradar.us/ncaafb-t1/%d/REG/%d/%s/boxscore.
 
 module.exports = new Tp.ChannelClass({
     Name: 'SportRadarNCAAFBChannel',
+    RequiredCapabilities: ['channel-state'],
 
-    _init: function(engine, device, params) {
-        this.parent();
-        this.engine = engine;
+    _init: function(engine, state, device, params) {
+        this.parent(engine, device);
+        this.state = state;
 
         this._params = params.slice(0, 1);
         this._observedTeam = params[0];
@@ -127,6 +128,12 @@ module.exports = new Tp.ChannelClass({
         } else {
             var weekNumbers = this._weekNumbers;
             var gameNumber = this._gameNumber;
+
+            var lastNotified = this.state.get('game-number');
+            if (lastNotified === gameNumber)
+                return;
+            this.state.set('game-number', this._gameNumber);
+
             var URL = BOXSCORE_URL.format(this._year, weekNumbers[gameNumber], this._currentGame.away + '/' + this._currentGame.home);
 
             Tp.Helpers.Http.get(URL).then((response) => {

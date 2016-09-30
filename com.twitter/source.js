@@ -9,7 +9,7 @@ const Q = require('q');
 
 const SourceBase = require('./source_base');
 
-module.exports = SourceBase(false, function(event) {
+module.exports = SourceBase(false, function(event, hint) {
     var text = event[0];
     var hashtags = event[1];
     var urls = event[2];

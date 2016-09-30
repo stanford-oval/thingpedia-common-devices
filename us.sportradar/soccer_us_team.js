@@ -16,11 +16,12 @@ const POLL_INTERVAL = 24 * 3600 * 1000; // 1day
 module.exports = new Tp.ChannelClass({
     Name: 'SportRadarNASoccerChannel',
     Extends: Tp.HttpPollingTrigger,
+    RequiredCapabilities: ['channel-state'],
     interval: POLL_INTERVAL,
 
-    _init: function(engine, device, params) {
-        this.parent();
-        this.engine = engine;
+    _init: function(engine, state, device, params) {
+        this.parent(engine, state, device);
+        this.state = state;
 
         this._params = params.slice(0, 1);
         this._observedTeam = params[0];
@@ -142,13 +143,14 @@ module.exports = new Tp.ChannelClass({
                 this._scheduledTime = scheduled;
                 var now = new Date();
                 timeout = scheduled.getTime() - now.getTime() + 5000;
-                if (timeout >= 5000)
-                    this._emit('scheduled', 0, 0);
-                else
+                if (timeout >= 5000) {
+                    var lastNotified = this.state.get('game-id');
+                    if (lastNotified !== this._gameId) {
+                        this.state.set('game-id', this._gameId);
+                        this._emit('scheduled', 0, 0);
+                    }
+                } else {
                     timeout = 5000;
-                if (timeout > POLL_INTERVAL) {
-                    clearTimeout(this._nextGameTimer);
-                    return;
                 }
             } else {
                 this._scheduledTime = new Date();
