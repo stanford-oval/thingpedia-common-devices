@@ -129,10 +129,10 @@ module.exports = new Tp.ChannelClass({
             var weekNumbers = this._weekNumbers;
             var gameNumber = this._gameNumber;
 
-            var lastNotified = this.state.get('game-number');
-            if (lastNotified === gameNumber)
+            var lastNotified = this.state.get('game-id');
+            if (lastNotified === this._currentGame.id)
                 return;
-            this.state.set('game-number', this._gameNumber);
+            this.state.set('game-id', this._currentGame.id);
 
             var URL = BOXSCORE_URL.format(this._year, weekNumbers[gameNumber], this._currentGame.away + '/' + this._currentGame.home);
 

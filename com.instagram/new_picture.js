@@ -12,7 +12,7 @@ const MEDIA_URL = "https://api.instagram.com/v1/users/self/media/recent/?access_
 
 module.exports = new Tp.ChannelClass({
     Name: 'InstagramNewPicChannel',
-    Extends: HttpPollingTrigger,
+    Extends: Tp.HttpPollingTrigger,
     RequiredCapabilities: ['channel-state'],
 
     _init: function(engine, state, device, params) {

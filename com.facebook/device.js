@@ -11,7 +11,7 @@ module.exports = new Tp.DeviceClass({
     UseOAuth2: Tp.Helpers.OAuth2({
         kind: 'com.facebook',
         scope: ['email', 'public_profile', 'user_friends', 'publish_actions'],
-        authorize: 'https://www.facebook.com/dialog/oauth',
+        authorize: 'https://www.facebook.com/v2.7/dialog/oauth',
         get_access_token: 'https://graph.facebook.com/oauth/access_token',
         callback: function(engine, accessToken, refreshToken) {
             return Tp.Helpers.Http.get('https://graph.facebook.com/me',
