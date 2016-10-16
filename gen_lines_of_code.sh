@@ -1,0 +1,1 @@
+for i in */ ; do test $i = "schemas/" && continue ; test $i = "build/" && continue; test $i = "node_modules/" && continue ; echo -n `basename $i`"," ; cloc $i 2>&1 | grep JavaScript | sed 's/ \+/ /g' | cut -d' ' -f5 ; done > lines_of_code.csv
