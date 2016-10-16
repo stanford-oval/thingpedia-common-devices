@@ -7,14 +7,22 @@
 
 const Tp = require('thingpedia');
 
+const Query = require('./query');
 const Source = require('./source');
 const Sink = require('./sink');
 
 const TemperatureChannel = Source('Temperature', function(blob) {
     this.emitEvent([new Date, blob.ambient_temperature_c]);
-}, function(event, filters) {
+}, function(event, hint, formatter) {
     var date = event[0];
     var temperature = event[1];
+    return ["Ambient temperature: %.1f C".format(temperature)];
+});
+
+const GetTemperatureChannel = Query('GetTemperature', function(firebase, event) {
+    return [[firebase.ambient_temperature_c]];
+}, function(event, filters, hint, formatter) {
+    var temperature = event[0];
     return ["Ambient temperature: %.1f C".format(temperature)];
 });
 
@@ -26,8 +34,30 @@ const HumidityChannel = Source('Humidity', function(blob) {
     return ["Humidity: %f%%".format(Math.round(humidity))];
 });
 
-const SetHvacStateChannel = Sink('SetHvacState', function(firebase, event) {
-    firebase.update({ hvac_state: event[0] });
+const GetHumidityChannel = Query('GetHumidity', function(firebase, event) {
+    return [[firebase.humidity]];
+}, function(event, filters, hint, formatter) {
+    var humidity = event[0];
+    return ["Humidity: %f%%".format(Math.round(humidity))];
+});
+
+const SetHvacMode = Sink('SetHvacMode', function(firebase, event) {
+    firebase.update({ hvac_state: event[0].replace('_', '-') });
+});
+
+const GetHvacStateChannel = Query('GetHvacStateChannel', function(firebase, event) {
+    return [[firebase.hvac_mode, firebase.hvac_state]];
+}, function(event, filters, hint, formatter) {
+    var mode = event[0];
+    var state = event[1];
+    switch (state) {
+    case 'heating':
+        return ["HVAC is heating"];
+    case 'cooling':
+        return ["HVAC is cooling"];
+    default:
+        return ["HVAC is off"];
+    }
 });
 
 function clampTemperature(temp) {
@@ -72,6 +102,19 @@ const ThermostatDevice = new Tp.DeviceClass({
             Tp.Availability.UNAVAILABLE;
     },
 
+    getQueryClass: function(id) {
+        switch(id) {
+        case 'get_temperature':
+            return GetTemperatureChannel;
+        case 'get_humidity':
+            return GetHumidityChannel;
+        case 'get_hvac_state':
+            return GetHvacStateChannel;
+        default:
+            throw new Error('Invalid channel ' + id);
+        }
+    },
+
     getTriggerClass: function(id) {
         switch(id) {
         case 'temperature':
@@ -85,8 +128,8 @@ const ThermostatDevice = new Tp.DeviceClass({
 
     getActionClass: function(id) {
         switch(id) {
-        case 'set_hvac_state':
-            return SetHvacStateChannel;
+        case 'set_hvac_mode':
+            return SetHvacModeChannel;
         case 'set_target_temperature':
             return SetTargetTemperatureChannel;
         case 'set_minmax_temperature':

@@ -171,11 +171,15 @@ const PhilipsHueDevice = new Tp.DeviceClass({
         this._initialized = true;
 
         this._ensureHue();
-        return this._hue.lights().then((result) => {
+        // harvest devices asynchronously, to speed up start up
+        this._hue.lights().then((result) => {
             return this._deviceCollection.addMany(result.lights.map((l) => {
                 return new HueLightBulbDevice(this.engine, this, l);
             }));
-        });
+        }).catch((e) => {
+            // likely a network error
+            console.error('Failed to read the list of lights from the hue bridge: ' + e.message);
+        }).done();
     },
 
     stop() {

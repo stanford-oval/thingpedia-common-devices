@@ -66,7 +66,7 @@ module.exports = function (mustBeYours, format, emit) {
 
         var hashtags = [];
         for (var i = 0; i < tweet.entities.hashtags.length; i++) {
-            hashtags.push(tweet.entities.hashtags[i].text);
+            hashtags.push(tweet.entities.hashtags[i].text.toLowerCase());
         }
 
         var urls = [];

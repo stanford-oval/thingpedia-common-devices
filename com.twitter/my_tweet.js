@@ -25,6 +25,6 @@ module.exports = SourceBase(true, function(event, hint) {
     var event = [tweet.text,
                  hashtags,
                  urls,
-                 tweet.in_reply_to_screen_name];
+                 tweet.in_reply_to_screen_name ? tweet.in_reply_to_screen_name.toLowerCase() : null];
     this.emitEvent(event);
 });

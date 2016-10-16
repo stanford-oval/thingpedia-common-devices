@@ -35,7 +35,6 @@ const CameraWebUrlQuery = Query('CameraWebUrl', function(firebase, event) {
 });
 
 const CameraGetSnapshotQuery = Query('CameraSnapshotQuery', function(firebase, event) {
-    console.log('firebase', firebase);
     return [[firebase.snapshot_url]];
 }, function(event, filters, hint, formatter) {
     var url = event[0];
@@ -68,11 +67,12 @@ const CameraNewEventTrigger = new Tp.ChannelClass({
         var time = event[0];
         var hasSound = event[1];
         var hasMotion = event[2];
-        var gifUrl = event[3];
+        var hasPerson = event[3];
+        var gifUrl = event[4];
 
         var locale = this.engine.platform.locale;
         var timezone = this.engine.platform.timezone;
-        var timeString = format(time.toLocaleString(locale, { timeZone: timezone }));
+        var timeString = time.toLocaleString(locale, { timeZone: timezone });
 
         var title;
         if (hasSound && hasMotion)
@@ -99,12 +99,16 @@ const CameraNewEventTrigger = new Tp.ChannelClass({
     },
 
     _onValue: function(snapshot) {
+        var data = snapshot.val();
+        console.log('last_event', data);
+        if (!data.end_time)
+            return;
         var lastEvent = this.state.get('last-event-end-time');
-        if (lastEvent === snapshot.end_time)
+        if (lastEvent === data.end_time)
             return;
 
-        this.state.set('last-event-end-time', snapshot.end_time);
-        this.emitEvent([new Date(snapshot.start_time), snapshot.has_sound, snapshot.has_motion, snapshot.animated_image_url]);
+        this.state.set('last-event-end-time', data.end_time);
+        this.emitEvent([new Date(data.start_time), !!data.has_sound, !!data.has_motion, !!data.has_person, data.animated_image_url]);
     }
 });
 
