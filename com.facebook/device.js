@@ -13,6 +13,11 @@ module.exports = new Tp.DeviceClass({
         scope: ['email', 'public_profile', 'user_friends', 'publish_actions'],
         authorize: 'https://www.facebook.com/v2.7/dialog/oauth',
         get_access_token: 'https://graph.facebook.com/oauth/access_token',
+
+        // we need to force thingengine.stanford.edu as redirect uri
+        // because we're half-lying to facebook and claiming we're a website instead
+        // of a mobile app
+        redirect_uri: 'https://thingengine.stanford.edu/devices/oauth2/callback/com.facebook',
         callback: function(engine, accessToken, refreshToken) {
             return Tp.Helpers.Http.get('https://graph.facebook.com/me',
                                        { auth: "Bearer " + accessToken, accept: 'application/json' })
