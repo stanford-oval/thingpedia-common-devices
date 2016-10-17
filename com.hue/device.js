@@ -24,6 +24,10 @@ const SetPowerAction = new Tp.ChannelClass({
 
     sendEvent: function(event) {
         var power = event[0];
+        if (power === 'on')
+            power = true;
+        else if (power === 'off')
+            power = false;
 
         var lightState = LightState.create();
         return this._hue.setLightState(this.device.id, power ? lightState.on() : lightState.off());
@@ -42,6 +46,7 @@ const ColorLoopAction = new Tp.ChannelClass({
 
     sendEvent: function(event) {
         var lightState = LightState.create();
+        lightState.on();
         return this._hue.setLightState(this.device.id, lightState.colorLoop());
     }
 })
@@ -58,6 +63,7 @@ const AlertLongAction = new Tp.ChannelClass({
 
     sendEvent: function(event) {
         var lightState = LightState.create();
+        lightState.on();
         return this._hue.setLightState(this.device.id, lightState.alertLong());
     }
 })
@@ -152,7 +158,7 @@ const PhilipsHueDevice = new Tp.DeviceClass({
         }).then((token) => {
             this.state.userToken = token;
             this.engine.devices.addDevice(this);
-            this._initialize().done();
+            this._initialize();
             delegate.configDone();
         }).catch((e) => {
             delegate.configFailed(e);

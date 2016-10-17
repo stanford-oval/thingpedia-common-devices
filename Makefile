@@ -40,7 +40,8 @@ zipfiles = \
 	gov.nasa.zip \
 	com.tumblr.zip \
 	com.reddit.frontpage.zip \
-	com.lg.tv.webos2.zip
+	com.lg.tv.webos2.zip \
+	com.washingtonpost.zip
 
 all: $(zipfiles)
 

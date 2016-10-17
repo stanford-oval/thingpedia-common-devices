@@ -18,8 +18,8 @@ function httpGetUrl(url, device, filters) {
     return Tp.Helpers.Http.get(url, { useOAuth2: device, accept: 'application/json'}).then(function(data) {
         var parsed_package = JSON.parse(data);
         var msgs = parsed_package.messages;
-        if (msgs === undefined || msgs.length === 0)
-            return null;
+        if (!msgs || msgs.length === 0)
+            throw new Error('No message matches your search');
         var newest_msg = msgs[0];
         var threadId = newest_msg.threadId;
         var getUrl = URL_BASE + device.userId + '/messages/' + threadId;
