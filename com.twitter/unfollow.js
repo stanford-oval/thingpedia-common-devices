@@ -5,6 +5,14 @@
 
 const Tp = require('thingpedia');
 
+// a fixed version of postCustomApiCall that does not append
+// the parameters to the url (which would break OAuth)
+function postCustomApiCall (url, params, error, success) {
+    var path =  url;
+    var url = this.baseUrl + path;
+    this.doPost(url, params, error, success);
+};
+
 module.exports = new Tp.ChannelClass({
     Name: 'TwitterFollowChannel',
 
@@ -15,11 +23,11 @@ module.exports = new Tp.ChannelClass({
     },
 
     sendEvent: function(event) {
-        console.log('Following Twitter user', event);
+        console.log('Unfollowing Twitter user', event);
 
         var username = event[0];
         return new Promise((callback, errback) => {
-            return this._twitter.postCreateFriendship({ screen_name: username, follow: 'true' }, errback, callback);
+            return postCustomApiCall.call(this._twitter, '/friendships/destroy.json', { screen_name: username }, errback, callback);
         }).catch((e) => {
             if (e.statusCode && e.data) {
                 // OAuth.js style error
