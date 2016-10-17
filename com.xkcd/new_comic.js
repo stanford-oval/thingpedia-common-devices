@@ -23,57 +23,14 @@ function parseXml(data) {
 
 module.exports = new Tp.ChannelClass({
     Name: 'NewComicTrigger',
+    Extends: Tp.HttpPollingTrigger,
     RequiredCapabilities: ['channel-state'],
 
     _init: function(engine, state, device) {
-        this.parent();
+        this.parent(engine, state, device);
         this._state = state;
-        this._timeout = null;
-    },
-
-    _nextPollingTime() {
-        // figure out the next polling time
-        // we poll 5 minutes after midnight UTC
-        // on monday, wednesday, friday
-        // (that's when xkcd comes out)
-
-        var polltime = new Date();
-        // round to the next 5 minutes after midnight
-        var hour = polltime.getUTCHours();
-        var minutes = polltime.getUTCMinutes();
-        if (hour > 0 || minutes > 5)
-            polltime.setUTCDate(polltime.getUTCDate()+1);
-        polltime.setUTCHours(0, 5, 0);
-        console.log('Next XKCD coming on ' + polltime.toLocaleString());
-
-        var now = new Date();
-        // always wait at least 5 seconds
-        var diff = Math.max(polltime.getTime() - now.getTime(), 5000);
-        console.log('Polling again in ' + diff + 'ms');
-        return diff;
-    },
-
-    _onTimeout() {
-        this._pollNow().done();
-        this._timeout = setTimeout(this._onTimeout.bind(this), this._nextPollingTime());
-    },
-
-    _doOpen() {
-        this._timeout = setTimeout(this._onTimeout.bind(this), this._nextPollingTime());
-        return this._pollNow();
-    },
-
-    _doClose() {
-        clearTimeout(this._timeout);
-        this._timeout = null;
-    },
-
-    _pollNow() {
-        return Tp.Helpers.Http.get(XKCD_RSS_URL).then((data) => {
-            return this._onResponse(data);
-        }).catch((e) => {
-            console.error('Failed to poll XKCD: ' + e.message);
-        });
+        this.interval = 24 * 3600 * 1000;
+        this.url = XKCD_RSS_URL;
     },
 
     formatEvent(event) {
@@ -83,7 +40,11 @@ module.exports = new Tp.ChannelClass({
         var picture = event[2];
         var alt = event[3];
 
-        return [title, { type: 'picture', url: picture }, alt, link];
+        return [{ type: 'rdl',
+            displayTitle: title,
+            callback: link,
+            webCallback: link
+        }, { type: 'picture', url: picture }, alt];
     },
 
     _onResponse(data) {
