@@ -5,11 +5,11 @@
 // See LICENSE for details
 
 const Tp = require('thingpedia');
-
-URL_BASE = 'https://www.googleapis.com/gmail/v1/users/';
+const URL_BASE = 'https://www.googleapis.com/gmail/v1/users/';
+const filter_names = ['from', 'subject', 'label'];
+const filter_descriptions = [' from ', ' with subject ', ' with label '];
 
 function httpGetUrl(url, device, filters) {
-    var filter_names = ['from', 'subject', 'label'];
     var search_query = 'in:inbox ';
     for (var i = 0; i < filters.length; i++)
         if (filters[i] !== undefined)
@@ -18,6 +18,8 @@ function httpGetUrl(url, device, filters) {
     return Tp.Helpers.Http.get(url, { useOAuth2: device, accept: 'application/json'}).then(function(data) {
         var parsed_package = JSON.parse(data);
         var msgs = parsed_package.messages;
+        if (msgs === undefined || msgs.length === 0)
+            return null;
         var newest_msg = msgs[0];
         var threadId = newest_msg.threadId;
         var getUrl = URL_BASE + device.userId + '/messages/' + threadId;
@@ -41,24 +43,35 @@ module.exports = new Tp.ChannelClass({
 
     invokeQuery: function(filters) {
         return httpGetUrl(this.url, this.device, filters).then(function(getUrl) {
+            if (getUrl === null)
+                return null;
             return Tp.Helpers.Http.get(getUrl, { useOAuth2: this.device, accept: 'application/json'});
         }.bind(this)).then(function (response) {
-            var parsed = JSON.parse(response);
-            var snippet = parsed.snippet;
-            var headers = parsed.payload.headers;
-            var sender, subject, date;
-
-            for (var i = 0; i < headers.length; i++) {
-                var header = headers[i];
-                if (header.name === 'From') {
-                    sender = header.value;
+            if (response === null) {
+                var message = "Sorry, I can't find any email";
+                for (var i = 0; i < filters.length; i++) {
+                    if (filters[i] !== undefined)
+                        message += filter_descriptions[i] + filters[i];
                 }
-                else if (header.name === 'Subject')
-                    subject = header.value;
-                else if (header.name === 'Date')
-                    date = header.value;
+                message += " from your Gmail inbox.";
+            } else {
+                var parsed = JSON.parse(response);
+                var snippet = parsed.snippet;
+                var headers = parsed.payload.headers;
+                var sender, subject, date;
+
+                for (var i = 0; i < headers.length; i++) {
+                    var header = headers[i];
+                    if (header.name === 'From') {
+                        sender = header.value;
+                    }
+                    else if (header.name === 'Subject')
+                        subject = header.value;
+                    else if (header.name === 'Date')
+                        date = header.value;
+                }
+                var message = '%s\n%s\n%s\n%s'.format(sender, subject, date, snippet);
             }
-            var message = '%s\n%s\n%s\n%s'.format(sender, subject, date, snippet);
             return [[filters[0], filters[1], filters[2], message]];
         }.bind(this));
     }
