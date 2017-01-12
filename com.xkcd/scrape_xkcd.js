@@ -33,7 +33,11 @@ module.exports = function(name, url) {
             var picture = event[2];
             var alt = event[3];
 
-            return [title, { type: 'picture', url: picture }, alt, link];
+            return [{ type: 'rdl',
+                displayTitle: title,
+                callback: link,
+                webCallback: link
+            }, { type: 'picture', url: picture }, alt];
         },
 
         invokeQuery(filters) {

@@ -83,7 +83,7 @@ module.exports = new Tp.ChannelClass({
                 loc = { x: obj.location.longitude, y: obj.location.latitude };
             else
                 loc = { x: 0, y: 0 };
-            var event = [obj.id, obj.images.standard_resolution.url, obj.caption.text, obj.link, (obj.filter || '').toLowerCase(), obj.tags, loc];
+            var event = [obj.id, obj.images.standard_resolution.url, obj.caption ? obj.caption.text : '', obj.link, (obj.filter || '').toLowerCase(), obj.tags, loc];
             this.emitEvent(event);
         }
     }

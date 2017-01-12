@@ -19,8 +19,7 @@ module.exports = new Tp.ChannelClass({
         var description = event[5];
         var thumbnail = event[6];
         var count = event[7];
-
-        var link = 'http://www.youtube.com/watch?v=' + encodeURIComponent(videoId);
+        var link = event[8];
 
         return [{
             type: 'rdl',
@@ -47,8 +46,9 @@ module.exports = new Tp.ChannelClass({
             { useOAuth2: this.device }).then((data) => {
             var parsed = JSON.parse(data);
             return parsed.items.map((item) => {
+                var link = 'https://www.youtube.com/watch?v=' + encodeURIComponent(item.id.videoId);
                 return [searchTerm, item.id.videoId, item.snippet.channelId, item.snippet.channelTitle,
-                        item.snippet.title, item.snippet.description, item.snippet.thumbnails.high.url, count];
+                        item.snippet.title, item.snippet.description, item.snippet.thumbnails.high.url, count, link];
             });
         });
     },

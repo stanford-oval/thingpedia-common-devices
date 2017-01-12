@@ -70,7 +70,7 @@ const SingleChannelSubscription = new Tp.ChannelClass({
             var title = entry.title[0];
             var videoId = entry['yt:videoId'][0];
             var link = entry.link[0].$.href;
-            this.emitEvent([this._param, channelTitle, title, videoId]);
+            this.emitEvent([this._param, channelTitle, title, videoId, link]);
         }
 
         return { code: 200, response: query["hub.challenge"], contentType: 'text/plain' };
@@ -159,8 +159,8 @@ module.exports = new Tp.ChannelClass({
         var channelTitle = event[1];
         var title = event[2];
         var videoId = event[3];
+        var link = event[4];
 
-        var link = 'http://www.youtube.com/watch?v=' + encodeURIComponent(videoId);
         return [{
             type: 'rdl',
             displayTitle: "New video uploaded by %s".format(channelTitle),

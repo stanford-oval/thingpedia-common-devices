@@ -42,7 +42,7 @@ const GetHumidityChannel = Query('GetHumidity', function(firebase, event) {
 });
 
 const SetHvacMode = Sink('SetHvacMode', function(firebase, event) {
-    firebase.update({ hvac_state: event[0].replace('_', '-') });
+    return firebase.update({ hvac_state: event[0].replace('_', '-') });
 });
 
 const GetHvacStateChannel = Query('GetHvacStateChannel', function(firebase, event) {
@@ -65,12 +65,12 @@ function clampTemperature(temp) {
 }
 
 const SetTargetTemperatureChannel = Sink('SetTargetTemperature', function(firebase, event) {
-    firebase.update({ target_temperature_c: clampTemperature(event[0]) });
+    return firebase.update({ target_temperature_c: clampTemperature(event[0]) });
 });
 
 const SetTemperatureBoundsChannel = Sink('SetTemperatureBounds', function(firebase, event) {
-    firebase.update({ target_temperature_high_c: clampTemperature(event[0]),
-                      target_temperature_low_c: clampTemperature(event[1]) });
+    return firebase.update({ target_temperature_high_c: clampTemperature(event[0]),
+                             target_temperature_low_c: clampTemperature(event[1]) });
 });
 
 const ThermostatDevice = new Tp.DeviceClass({

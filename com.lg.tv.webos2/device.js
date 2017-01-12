@@ -10,6 +10,7 @@
 const tls = require('tls');
 const Q = require('q');
 const WebSocket = require('ws');
+const Url = require('url');
 
 const Tp = require('thingpedia');
 
@@ -203,6 +204,44 @@ class LgWebsocket {
     }
 }
 
+const PlayUrlAction = new Tp.ChannelClass({
+    Name: 'PlayUrlAction',
+
+    _doOpen() {
+        return this.device.refWebsocket();
+    },
+
+    _doClose() {
+        return this.device.unrefWebsocket();
+    },
+
+    sendEvent(event) {
+        var url = event[0];
+
+        var ssapUrl, appId, contentId, target;
+        ssapUrl = 'ssap://system.launcher/launch';
+        if (url.startsWith('https://www.youtube.com/watch?v=')) {
+            appId = 'youtube.leanback.v4';
+            contentId = url.substr('https://www.youtube.com/watch?v='.length);
+        } else if (url.startsWith('http://www.youtube.com/watch?v=')) {
+            appId = 'youtube.leanback.v4';
+            contentId = url.substr('http://www.youtube.com/watch?v='.length);
+        } else if (url.startsWith('https://www.netflix.com')) {
+            appId = 'netflix';
+            contentId = url;
+        } else if (url.startsWith('https://www.amazon.com') || url.startsWith('https://smile.amazon.com')) {
+            var parsed = Url.parse(url);
+            appId = 'amazon.html';
+            contentId = parsed.pathname.substr(parsed.pathname.lastIndexOf('/'));
+        } else {
+            ssapUrl = 'ssap://system.launcher/open';
+            target = url;
+        }
+
+        return this.device.queryInterface('lg-websocket').sendRequest(ssapUrl, { id: appId, contentId: contentId, target: target });
+    }
+})
+
 function makeAction(url, payload) {
     return new Tp.ChannelClass({
         Name: 'SetPowerAction',
@@ -216,30 +255,10 @@ function makeAction(url, payload) {
         },
 
         sendEvent(event) {
-            var power = event[0];
-
-            if (event === true) // the tv is already on if we get here
-                return Q();
-            else
-                return this.device.queryInterface('lg-websocket').sendRequest(url, payload ? payload(event) : undefined);
+            return this.device.queryInterface('lg-websocket').sendRequest(url, payload ? payload(event) : undefined);
         }
     });
 }
-const PlayAnything = makeAction('ssap://media.viewer/open', function(event) {
-    return { target: event[0] };
-});
-const PlayYoutube = makeAction('ssap://system.launcher/launch', function(event) {
-    return { id: 'youtube.leanback.v4',
-             contentId: event[0] };
-});
-const PlayNetflix = makeAction('ssap://system.launcher/launch', function(event) {
-    return { id: 'netflix',
-             contentId: event[0] };
-});
-const PlayAmazon = makeAction('ssap://system.launcher/launch', function(event) {
-    return { id: 'amazon.html',
-             contentId: event[0] };
-});
 const RaiseVolume = makeAction('ssap://audio/volumeUp');
 const LowerVolume = makeAction('ssap://audio/volumeDown');
 const SetVolume = makeAction('ssap://audio/setVolume', function(event) {
@@ -365,14 +384,8 @@ const LgTvDevice = new Tp.DeviceClass({
 
     getActionClass(id) {
         switch(id) {
-        case 'sink':
-            return PlayAnything;
-        case 'play_amazon':
-            return PlayAmazon;
-        case 'play_youtube':
-            return PlayYoutube;
-        case 'play_netflix':
-            return PlayNetflix;
+        case 'play_url':
+            return PlayUrlAction;
         case 'raise_volume':
             return RaiseVolume;
         case 'lower_volume':

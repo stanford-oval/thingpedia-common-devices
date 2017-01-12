@@ -12,7 +12,7 @@ const Source = require('./source');
 const Sink = require('./sink');
 
 const CameraSetPowerAction = Sink('CameraSetPower', function(firebase, event) {
-    firebase.update({ is_streaming: !!event[0] });
+    return firebase.update({ is_streaming: !!event[0] });
 });
 
 const CameraWebUrlQuery = Query('CameraWebUrl', function(firebase, event) {
