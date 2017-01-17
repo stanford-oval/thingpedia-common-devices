@@ -27,7 +27,7 @@ module.exports = new Tp.ChannelClass({
         this.url = YAHOO_URL + "?s=" + encodeURIComponent(this._myCompanyID) + "&f=nab";
     },
 
-    formatEvent(event) {
+    formatEvent(event, hint, formatter) {
         var id = event[0];
         var name = event[1];
         var ask = event[2];
