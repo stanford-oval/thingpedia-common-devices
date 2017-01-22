@@ -5,6 +5,7 @@
 // See LICENSE for details
 
 const Tp = require('thingpedia');
+const csv = require('csv');
 
 //http://finance.yahoo.com/d/quotes.csv?s=<NAME>&f=nab
 const YAHOO_URL = 'http://download.finance.yahoo.com/d/quotes.csv';
@@ -41,30 +42,29 @@ module.exports = new Tp.ChannelClass({
             return "Dividend for %s".format(name);
         else if (hint === 'string-body')
             return "Yield %f, per share %f, pay date %s, ex-dividend date %s"
-                .format(_yield, div, payDate, exDivDate);
+                .format(_yield, div, 
+                        formatter.dateToString(payDate), 
+                        formatter.dateToString(exDivDate));
         else
-            return "Dividend for %s: yield %f, per share %f, pay date %s, ex-dividend date"
-                .format(name, _yield, div, payDate, exDivDate);
+            return "Dividend for %s: yield %f, per share %f, pay date %s, ex-dividend date %s"
+                .format(name, _yield, div, 
+                        formatter.dateToString(payDate), 
+                        formatter.dateToString(exDivDate));
     },
 
     _onResponse(response) {
         if (!response)
             return;
-        var csvAry = response.split(",");
-        console.log(response);
-        console.log(csvAry);
-        console.log(csvAry[3], csvAry[4]);
+        self = this;
+        csv.parse(response, function(err, data){
+            var name = data[0][0];
+            var _yield = parseFloat(data[0][1]);
+            var div = parseFloat(data[0][2]);
+            var payDate = new Date(data[0][3]);
+            var exDivDate = new Date(data[0][4]);
+            self.emitEvent([self._myCompanyID, name, _yield, div, payDate, exDivDate]);
+        });
 
-        // yield is a reserved word in JS
-        var name = csvAry[0];
-        var _yield = parseFloat(csvAry[1]);
-        var div = parseFloat(csvAry[2]);
-        var payDate = Date.parse(csvAry[3]);
-        var exDivDate = Date.parse(csvAry[4]);
-
-        console.log(payDate, exDivDate);
-
-        this.emitEvent([this._myCompanyID, name, _yield, div, payDate, exDivDate]);
     },
 });
 
