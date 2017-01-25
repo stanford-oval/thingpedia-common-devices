@@ -11,6 +11,7 @@ const Tp = require('thingpedia');
 const GetWeather = require('./weather_names');
 
 const URL = 'https://api.met.no/weatherapi/locationforecast/1.9/?lat=%f;lon=%f';
+const POLL_INTERVAL = 10 * 60 * 1000; // 10min
 
 // for compatibility with older ThingTalk
 const DEFAULT_FORMATTER = {
@@ -21,8 +22,21 @@ const DEFAULT_FORMATTER = {
 
 module.exports = new Tp.ChannelClass({
     Name: 'WeatherAPICurrentWeather',
+    Extends: Tp.HttpPollingTrigger,
 
-    formatEvent(event, filters, hint, formatter) {
+    _init: function(engine, device, params) {
+        this.parent();
+        this._params = params;
+        this._location = params[0];
+        this._status = params[1];
+
+        if (!this._location || !this._status)
+            throw new TypeError('Missing required parameter');
+        this.interval = POLL_INTERVAL;
+        this.url = URL.format(this._location.y, this._location.x);
+    },
+
+    formatEvent(event, hint, formatter) {
         var location = event[0];
         var temperature = event[1];
         var windSpeed = event[2];
@@ -44,17 +58,11 @@ module.exports = new Tp.ChannelClass({
                 .format(formatter.locationToString(event[0]), weather, temperature, windSpeed, humidity, cloudiness, fog);
     },
 
-    invokeQuery(filters) {
-        var location = filters[0];
-        if (!location)
-            throw new TypeError('Missing required parameter');
+    _onResponse(response) {
+        if (!response)
+            return;
 
-        var url = URL.format(location.y, location.x);
-        console.log('Loading weather from ' + url);
-
-        return Tp.Helpers.Http.get(url).then((response) => {
-            return Tp.Helpers.Xml.parseString(response);
-        }).then((parsed) => {
+        return Tp.Helpers.Xml.parseString(response).then((parsed) => {
             var entry = parsed.weatherdata.product[0].time[0].location[0];
             var temperature = parseFloat(entry.temperature[0].$.value);
             var windSpeed = parseFloat(entry.windSpeed[0].$.mps);
@@ -63,8 +71,24 @@ module.exports = new Tp.ChannelClass({
             var fog = parseFloat(entry.fog[0].$.percent);
             var weather_id = parseInt(parsed.weatherdata.product[0].time[1].location[0].symbol[0].$.number);
             var weather = GetWeather(weather_id);
+            
+            var status;
+            if (weather_id = 1) 
+                status = 'sunny'
+            else if (weather_id = 15)
+                status = 'foggy'
+            else if (weather_id in [2, 3, 4])
+                status = 'cloudy'
+            else if (weather_id in [5, 6, 9, 10, 11, 22, 41]) 
+                status = 'raining';
+            else if (weather_id in [24, 30, 40, 46])
+                status = 'drizzling';
+            else if (weather_id in [8, 13, 14, 21, 28, 29, 33, 34, 44, 45, 49, 50])
+                status = 'snowy'
+            else if (weather_id in [7, 12, 20, 23, 26, 27, 31, 32, 42, 43, 47, 48])
+                status = 'sleety'
+
             if (isNaN(temperature)) {
-                // Didn't get rise or set info.
                 return;
             }
             // Set some defaults
@@ -73,8 +97,9 @@ module.exports = new Tp.ChannelClass({
             if (isNaN(cloudiness)) cloudiness = 0;
             if (isNaN(fog)) fog = 0;
 
-            return [[location, temperature, windSpeed, humidity, cloudiness, fog, weather]];
+            return [[this._location, temperature, windSpeed, humidity, cloudiness, fog, weather, status]];
         });
     },
+
 });
 

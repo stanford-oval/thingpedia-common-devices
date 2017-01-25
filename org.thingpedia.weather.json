@@ -1,14 +1,74 @@
 {
   "params": {},
-  "global-name": "weatherapi",
   "types": [
-    "data-source"
+    "data-source",
+    "service"
   ],
   "child_types": [],
   "auth": {
     "type": "none"
   },
-  "triggers": {},
+  "triggers": {
+    "monitor": {
+      "args": [
+        {
+          "name": "location",
+          "type": "Location",
+          "question": "What location do you want to monitor weather for?",
+          "required": true
+        },
+        {
+          "name": "temperature",
+          "type": "Measure(C)",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "wind_speed",
+          "type": "Measure(mps)",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "humidity",
+          "type": "Number",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "cloudiness",
+          "type": "Number",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "fog",
+          "type": "Number",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "weather",
+          "type": "String",
+          "question": "",
+          "required": false
+        },
+        {
+          "name": "status",
+          "type": "Enum(raining,cloudy,sunny,snowy,sleety,drizzling)",
+          "question": "What weather would you like to monitor?",
+          "required": true
+        }
+            
+      ],
+      "doc": "Monitor weather changes",
+      "confirmation": "it's $status for $location",
+      "canonical": "weather changes",
+      "examples": [
+        "notify me if it's $status in $location"
+      ]
+    }
+  },
   "actions": {},
   "queries": {
     "sunrise": {
@@ -93,7 +153,7 @@
           "name": "location",
           "type": "Location",
           "question": "What location do you want the current weather for?",
-          "required": false
+          "required": true
         },
         {
           "name": "temperature",
@@ -102,7 +162,7 @@
           "required": false
         },
         {
-          "name": "windspeed",
+          "name": "wind_speed",
           "type": "Measure(mps)",
           "question": "",
           "required": false
@@ -124,6 +184,12 @@
           "type": "Number",
           "question": "",
           "required": false
+        },
+        {
+          "name": "weather",
+          "type": "String",
+          "question": "",
+          "required": false
         }
       ],
       "doc": "Information about current weather",
@@ -134,5 +200,6 @@
         "show the weather in $location"
       ]
     }
-  }
+  },
+  "global-name": "weatherapi"
 }

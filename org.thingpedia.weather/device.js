@@ -1,6 +1,7 @@
 // -*- mode: js; indent-tabs-mode: nil; js-basic-offset: 4 -*-
 //
 // Copyright 2016 Giovanni Campagna <gcampagn@cs.stanford.edu>
+//                Silei Xu <silei@cs.stanford.edu>
 //                Andrei Bajenov <abajenov@stanford.edu>
 //                Darshan Kapashi <darshank@stanford.edu>
 //
