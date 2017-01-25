@@ -27,6 +27,7 @@ module.exports = new Tp.ChannelClass({
         var humidity = event[3];
         var cloudiness = event[4];
         var fog = event[5];
+        var weather = event[6];
 
         if (!formatter)
             formatter = DEFAULT_FORMATTER;
@@ -34,11 +35,11 @@ module.exports = new Tp.ChannelClass({
         if (hint === 'string-title')
             return "Current weather for %s".format(formatter.locationToString(event[0]));
         else if (hint === 'string-body')
-            return "Temperature %.1f C, wind speed %.1f m/s, humidity %.0f%%, cloudiness %.0f%%, fog %.0f%%"
-                .format(temperature, windSpeed, humidity, cloudiness, fog);
+            return "%s, temperature %.1f C, wind speed %.1f m/s, humidity %.0f%%, cloudiness %.0f%%, fog %.0f%%"
+                .format(weather, temperature, windSpeed, humidity, cloudiness, fog);
         else
-            return "Current weather for %s: temperature %.1f C, wind speed %.1f m/s, humidity %.0f%%, cloudiness %.0f%%, fog %.0f%%"
-                .format(formatter.locationToString(event[0]), temperature, windSpeed, humidity, cloudiness, fog);
+            return "Current weather for %s: %s, temperature %.1f C, wind speed %.1f m/s, humidity %.0f%%, cloudiness %.0f%%, fog %.0f%%"
+                .format(formatter.locationToString(event[0]), weather, temperature, windSpeed, humidity, cloudiness, fog);
     },
 
     invokeQuery(filters) {
@@ -58,6 +59,8 @@ module.exports = new Tp.ChannelClass({
             var humidity = parseFloat(entry.humidity[0].$.value);
             var cloudiness = parseFloat(entry.cloudiness[0].$.percent);
             var fog = parseFloat(entry.fog[0].$.percent);
+            var weather_id = parseInt(parsed.weatherdata.product[0].time[1].location[0].symbol[0].$.number);
+            var weather = this._getWeather(weather_id);
             if (isNaN(temperature)) {
                 // Didn't get rise or set info.
                 return;
@@ -68,9 +71,60 @@ module.exports = new Tp.ChannelClass({
             if (isNaN(cloudiness)) cloudiness = 0;
             if (isNaN(fog)) fog = 0;
 
-            return [[location, temperature, windSpeed, humidity, cloudiness, fog]];
+            return [[location, temperature, windSpeed, humidity, cloudiness, fog, weather]];
         });
     },
+
+    _getWeather(weather_id) {
+        switch(weather_id) {
+            case 1: return "Sun";
+            case 2: return "Light cloud";
+            case 3: return "Partly cloud";
+            case 4: return "Cloud";
+            case 5: return "Light sunshower";
+            case 6: return "Light sunshower with thunder";
+            case 7: return "Sleet and sun";
+            case 8: return "Snow and sun";
+            case 9: return "Light rain";
+            case 10: return "Rain";
+            case 11: return "Rain with thunder";
+            case 12: return "Sleet";
+            case 13: return "Snow";
+            case 14: return "Snow with thunder";
+            case 15: return "Fog";
+
+            case 20: return "Sleet with thunder and sun";
+            case 21: return "Snow with thunder and sun";
+            case 22: return "Light rain with thunder";
+            case 23: return "Sleet with thunder";
+            case 24: return "Drizzle with thunder and sun";
+            case 25: return "Sunshower with thunder";
+            case 26: return "Light sleet with thunder and sun";
+            case 27: return "Heavy sleet with thunder and sun";
+            case 28: return "Light snow with thunder and sun";
+            case 29: return "Heavy snow with thunder and sun";
+            case 30: return "Drizzle with thunder";
+            case 31: return "Light sleet with thunder";
+            case 32: return "Heavy sleet with thunder";
+            case 33: return "Light snow with thunder";
+            case 34: return "Heavy snow with thunder";
+
+            case 40: return "Drizzle and sun";
+            case 41: return "Rain and sun";
+            case 42: return "Light sleet and sun";
+            case 43: return "Heavy sleet and sun";
+            case 44: return "Light snow and sun";
+            case 45: return "Heavy snow and sun";
+            case 46: return "Drizzle";
+            case 47: return "Light sleet";
+            case 48: return "Heavy sleet";
+            case 49: return "Light snow";
+            case 50: return "Heavy snow";
+
+            default: return "Unknown";
+        }
+
+    }
 
 });
 
