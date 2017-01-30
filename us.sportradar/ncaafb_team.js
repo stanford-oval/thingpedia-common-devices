@@ -196,6 +196,7 @@ module.exports = new Tp.ChannelClass({
         var scheduledTime = event[6];
         var awayPoints = event[7];
         var homePoints = event[8];
+        var result = event[9];
 
         var platform = this.engine.platform;
         switch(gameStatus) {
@@ -215,11 +216,19 @@ module.exports = new Tp.ChannelClass({
     _emit: function(status, awayPoints, homePoints) {
         var currentEvent = [this._currentGame.away.toLowerCase(), this._currentGame.home.toLowerCase(), false,
                             this._awayName, this._homeName, status,
-                            this._scheduledTime, awayPoints, homePoints];
+                            this._scheduledTime, awayPoints, homePoints, 'unclosed'];
         if (this._observedTeam === this._currentGame.home.toLowerCase()) {
             currentEvent[0] = currentEvent[1];
             currentEvent[1] = this._currentGame.away.toLowerCase();
             currentEvent[2] = true;
+        }
+        if (status === 'closed') {
+            if (this._observedTeam === this._homeAlias && homePoints > awayPoints)
+                currentEvent[9] = 'win';
+            else if (this._observedTeam === this._awayAlias && homePoints < awayPoints)
+                currentEvent[9] = 'win';
+            else
+                currentEvent[9] = 'lose';
         }
 
         this.emitEvent(currentEvent);
