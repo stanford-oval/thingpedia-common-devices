@@ -9,7 +9,7 @@
 
 const Tp = require('thingpedia');
 
-const URL = 'https://api.met.no/weatherapi/sunrise/1.0/?lat=%f;lon=%f;date=%04d-%02d-%02d';
+const URL = 'https://api.met.no/weatherapi/sunrise/1.1/?lat=%f;lon=%f;date=%04d-%02d-%02d';
 
 module.exports = new Tp.ChannelClass({
     Name: 'WeatherAPISunrise',
