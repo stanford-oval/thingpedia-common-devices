@@ -18,7 +18,7 @@ const DEFAULT_FORMATTER = {
     locationToString(o) {
         return '[Latitude: ' + Number(o.y).toFixed(3) + ' deg, Longitude: ' + Number(o.x).toFixed(3) + ' deg]';
     }
-}
+};
 
 module.exports = new Tp.ChannelClass({
     Name: 'WeatherAPICurrentWeather',
@@ -28,9 +28,9 @@ module.exports = new Tp.ChannelClass({
         this.parent();
         this._params = params;
         this._location = params[0];
-        this._status = params[1];
+        this.filterString = this._params.join('-');
 
-        if (!this._location || !this._status)
+        if (!this._location)
             throw new TypeError('Missing required parameter');
         this.interval = POLL_INTERVAL;
         this.url = URL.format(this._location.y, this._location.x);
@@ -62,6 +62,7 @@ module.exports = new Tp.ChannelClass({
         if (!response)
             return;
 
+        self = this;
         return Tp.Helpers.Xml.parseString(response).then((parsed) => {
             var entry = parsed.weatherdata.product[0].time[0].location[0];
             var temperature = parseFloat(entry.temperature[0].$.value);
@@ -74,19 +75,19 @@ module.exports = new Tp.ChannelClass({
             
             var status;
             if (weather_id = 1) 
-                status = 'sunny'
+                status = 'sunny';
             else if (weather_id = 15)
-                status = 'foggy'
+                status = 'foggy';
             else if (weather_id in [2, 3, 4])
-                status = 'cloudy'
+                status = 'cloudy';
             else if (weather_id in [5, 6, 9, 10, 11, 22, 41]) 
                 status = 'raining';
             else if (weather_id in [24, 30, 40, 46])
                 status = 'drizzling';
             else if (weather_id in [8, 13, 14, 21, 28, 29, 33, 34, 44, 45, 49, 50])
-                status = 'snowy'
+                status = 'snowy';
             else if (weather_id in [7, 12, 20, 23, 26, 27, 31, 32, 42, 43, 47, 48])
-                status = 'sleety'
+                status = 'sleety';
 
             if (isNaN(temperature)) {
                 return;
@@ -97,7 +98,7 @@ module.exports = new Tp.ChannelClass({
             if (isNaN(cloudiness)) cloudiness = 0;
             if (isNaN(fog)) fog = 0;
 
-            return [[this._location, temperature, windSpeed, humidity, cloudiness, fog, weather, status]];
+            self.emitEvent([this._location, temperature, windSpeed, humidity, cloudiness, fog, weather, status]);
         });
     },
 
