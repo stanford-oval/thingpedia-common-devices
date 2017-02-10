@@ -41,7 +41,7 @@ module.exports = new Tp.ChannelClass({
                      parsed.headline,
                      parsed.industry,
                      parsed.specialties,
-                     parsed.positions.values.map((p) => p.summary),
+                     ('values' in parsed) ? parsed.positions.values.map((p) => p.summary) : [],
                      parsed.pictureUrl]];
         });
     }
