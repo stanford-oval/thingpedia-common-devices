@@ -10,7 +10,6 @@ module.exports = new Tp.ChannelClass({
     Name: "PostBike",
 
     sendEvent: function(event) {
-        console.log(event);
         var data = JSON.stringify({
             brand: event[0],
             model: event[1],
@@ -20,10 +19,12 @@ module.exports = new Tp.ChannelClass({
             poster: event[5],
             phone: event[6]
         });
-        console.log(data);
         return Tp.Helpers.Http.post(
-            'https://colby.stanford.edu/api/bikes/', data,
-            { dataContentType: 'application/json', accept: 'application/json' }
+            'https://colby.stanford.edu/api/bikes/', data, {
+                dataContentType: 'application/json',
+                accept: 'application/json',
+                extraHeaders: { 'Content-Length': Buffer.byteLength(data) }
+            }
         ).catch(function(error) {
             console.error('Error posting on Almond Bike Market: ' + error.message);
         });
