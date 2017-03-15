@@ -42,7 +42,8 @@ zipfiles = \
 	com.reddit.frontpage.zip \
 	com.lg.tv.webos2.zip \
 	com.washingtonpost.zip \
-	com.almondmarket.bikes.zip
+	com.almondmarket.bikes.zip \
+	com.almondmarket.dates.zip
 
 all: $(zipfiles)
 
