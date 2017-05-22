@@ -5,7 +5,7 @@
 // See LICENSE for details
 
 const Tp = require('thingpedia');
-const URL = 'https://colby.stanford.edu/api/dates/';
+const URL = 'https://colby.stanford.edu/main/api/dates/';
 
 module.exports = new Tp.ChannelClass({
     Name: 'SearchDatePosts',

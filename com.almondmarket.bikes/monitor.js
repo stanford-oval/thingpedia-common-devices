@@ -5,7 +5,7 @@
 // See LICENSE for details
 
 const Tp = require('thingpedia');
-const URL = 'https://colby.stanford.edu/api/bikes/';
+const URL = 'https://colby.stanford.edu/main/api/bikes/';
 
 module.exports = new Tp.ChannelClass({
     Name: 'MonitorNewBikePosts',

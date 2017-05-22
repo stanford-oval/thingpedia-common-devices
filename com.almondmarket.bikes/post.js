@@ -20,7 +20,7 @@ module.exports = new Tp.ChannelClass({
             phone: event[6]
         });
         return Tp.Helpers.Http.post(
-            'https://colby.stanford.edu/api/bikes/', data, {
+            'https://colby.stanford.edu/main/api/bikes/', data, {
                 dataContentType: 'application/json',
                 accept: 'application/json',
                 extraHeaders: { 'Content-Length': Buffer.byteLength(data) }
