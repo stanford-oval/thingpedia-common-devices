@@ -5,7 +5,6 @@
 // See LICENSE for details
 
 var Tp = require('thingpedia');
-var TT = require('thingtalk');
 var URL = 'https://colby.stanford.edu/main/api/bikes/';
 
 module.exports = new Tp.ChannelClass({
@@ -18,35 +17,44 @@ module.exports = new Tp.ChannelClass({
     },
 
     formatEvent: function formatEvent(event, filters) {
-        return '%s %s %s bike for $%f, contact %s (%s) for details'.format(event[0], event[1], event[2], event[4], event[5], event[6]);
+        // event[0]: filters except price, event[1]: price, event[2]: post_id, event[3]: title
+        console.log(event);
+        console.log(event[2]);
+        console.log(typeof event[2]);
+        return [
+            '%s for $%s'.format(event[3], event[1]),
+            {
+                type: 'button',
+                text: 'Get details',
+                json: '{"query":{"name":{"id":"tt:almond_bike_market.detail"},' +
+                '"args":[{"name":{"id":"tt:param.id"},"type":"String","value":{"value":"%s"},"operator":"is"}],'.format(event[2]) +
+                '"slots":[]}}'
+            },
+            {
+                type: 'button',
+                text: 'Ask a question',
+                json: '{"query":{"name":{"id":"tt:almond_bike_market.ask"},' +
+                      '"args":[{"name":{"id":"tt:param.id"},"type":"String","value":{"value":"%s"},"operator":"is"}],'.format(event[2]) +
+                      '"slots":[]}}'
+            }
+        ];
     },
 
     invokeQuery: function invokeQuery(filters, env) {
+        // filters[0]: filters except price, filter[1]: price
         var url = this.url;
-
-        var answers = {};
-
-        return env.askQuestion(TT.Type.Enum(['male', 'female']), "Do you want a female or a male bike?").then((gender) => {
-            answers.gender = gender;
-            return env.askQuestion(TT.Type.Enum(['cruise', 'road_bike']), "What kind of bike do you want?");
-        }).then((kind) => {
-            answers.kind = kind;
-            if (kind === 'cruise')
-                return env.askQuestion(TT.Type.Boolean, "Do you want one with a basket?").then((basket) => answers.basket = basket);
-            else if (kind === 'road_bike')
-                return env.askQuestion(TT.Type.Boolean, "Do you want one with a disk brake?").then((disk_brake) => answers.disk_brake = disk_brake);
-        }).then(() => {
-            return Tp.Helpers.Http.get(url);
-        }).then((data) => {
+        if (filters[0])
+            url += '?info=' + filters[0];
+        return Tp.Helpers.Http.get(url).then((data) => {
             var response = JSON.parse(data);
-
             var posts = response.objects;
-            return posts.filter((post) => {
-                // apply all the filters here...
-                return post.gender === answers.gender;
-            }).map(function (post) {
-                return [post.brand, post.model, post.gender, post.size, post.price, post.poster, post.phone];
+            var res = [];
+            Object.keys(posts[0]).forEach((key) => {
+                var post = posts[0][key];
+                res.push([filters[0], post.price, post.id, post.title]);
             });
+            console.log(res);
+            return res;
         });
     }
 });

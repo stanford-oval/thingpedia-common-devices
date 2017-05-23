@@ -17,22 +17,42 @@ module.exports = new Tp.ChannelClass({
         this.state = state;
         this._device = device;
 
+        this._params = params;
         this.interval = 10000;
         this.url = URL;
+        if (this._params[0])
+            this.url += '?info=' + this._params[0];
+        //params[1]: price
+
         this.postsViewed = null;
     },
 
     formatEvent: function(event) {
-        return 'New post found: %s %s %s bike for $%f, contact %s (%s) for details'.format(
-            event[0], event[1], event[2], event[4], event[5], event[6]
-        );
+        return [
+            '%s for $%s'.format(event[3], event[1]),
+            {
+                type: 'button',
+                text: 'Get details',
+                json: '{"query":{"name":{"id":"tt:almond_bike_market.detail"},' +
+                '"args":[{"name":{"id":"tt:param.id"},"type":"String","value":{"value":"%s"},"operator":"is"}],'.format(event[2]) +
+                '"slots":[]}}'
+            },
+            {
+                type: 'button',
+                text: 'Ask a question',
+                json: '{"query":{"name":{"id":"tt:almond_bike_market.ask"},' +
+                '"args":[{"name":{"id":"tt:param.id"},"type":"String","value":{"value":"%s"},"operator":"is"}],'.format(event[2]) +
+                '"slots":[]}}'
+            }
+        ];
     },
 
     _onResponse: function(data) {
         var response = JSON.parse(data);
         var posts = response.objects;
         this.postsViewed = this.state.get('posts-viewed');
-        posts.map((post) => {
+        Object.keys(posts[0]).forEach((key) => {
+            var post = posts[0][key];
             if(this.postsViewed === undefined || this.postsViewed.indexOf(post.id) < 0) {
                 if (this.postsViewed === undefined)
                     this.state.set('posts-viewed', [post.id]);
@@ -41,15 +61,7 @@ module.exports = new Tp.ChannelClass({
                     viewed.push(post.id);
                     this.state.set('posts-viewed', viewed);
                 }
-                this.emitEvent([
-                    post.brand,
-                    post.model,
-                    post.gender,
-                    post.size,
-                    post.price,
-                    post.poster,
-                    post.phone
-                ]);
+                this.emitEvent([this._params[0], post.price, post.id, post.title]);
             }
         });
     }
