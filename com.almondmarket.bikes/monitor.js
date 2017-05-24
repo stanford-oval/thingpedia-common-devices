@@ -61,7 +61,7 @@ module.exports = new Tp.ChannelClass({
                     viewed.push(post.id);
                     this.state.set('posts-viewed', viewed);
                 }
-                this.emitEvent([this._params[0], post.price, post.id, post.title]);
+                this.emitEvent([this._params[0], parseInt(post.price), post.id, post.title]);
             }
         });
     }

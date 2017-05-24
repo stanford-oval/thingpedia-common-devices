@@ -51,7 +51,7 @@ module.exports = new Tp.ChannelClass({
             var res = [];
             Object.keys(posts[0]).forEach((key) => {
                 var post = posts[0][key];
-                res.push([filters[0], post.price, post.id, post.title]);
+                res.push([filters[0], parseInt(post.price), post.id, post.title]);
             });
             console.log(res);
             return res;
