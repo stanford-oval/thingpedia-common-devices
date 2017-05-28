@@ -32,7 +32,14 @@ module.exports = new Tp.ChannelClass({
         else
             return [
                 'Can\'t find information about %s.'.format(filters[1]),
-                {type: 'button', text: 'Ask seller', json: '{"special":{"id":"tt:root.special.no"}}'},
+                {
+                    type: 'button',
+                    text: 'Ask seller',
+                    json: '{"action":{"name":{"id":"tt:almond_bike_market.answer"}, "args":[' +
+                    '{"name":{"id":"tt:param.id"},"type":"String","value":{"value":"%s"},"operator":"is"},' .format(filters[0]) +
+                    '{"name":{"id":"tt:param.property"},"type":"String","value":{"value":"%s"},"operator":"is"}' .format(filters[1]) +
+                    '], "slots":["__person"], "remoteSlots":["value"], "person":"%s"}}'.format(event[3][0])
+                },
                 {
                     type: 'button',
                     text: 'Ask another question',
@@ -45,10 +52,12 @@ module.exports = new Tp.ChannelClass({
 
     invokeQuery: function invokeQuery(filters, env) {
         // filters[0]: poster_id, filter[1]: property name
-        var url = this.url + filters[0] + '/?property=' + filters[1];
+        var url = this.url + filters[0] + '/?property=';
         console.log(url);
-        return Tp.Helpers.Http.get(url).then((data) => {
-            return [[filters[0], filters[1], JSON.parse(data)]];
+        return Tp.Helpers.Http.get(url + filters[1]).then((data) => {
+            return Tp.Helpers.Http.get(url + 'poster').then((poster) => {
+                return [[filters[0], filters[1], JSON.parse(data), JSON.parse(poster)]];
+            })
         });
     }
 });
