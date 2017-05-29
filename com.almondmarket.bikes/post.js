@@ -11,7 +11,6 @@ module.exports = new Tp.ChannelClass({
 
     sendEvent: function(event) {
         var data = JSON.stringify({ title: event[0], price: event[1], info: event[2], poster: event[3] });
-        console.log(data);
         return Tp.Helpers.Http.post(
             'https://colby.stanford.edu/main/api/bikes/', data, {
                 dataContentType: 'application/json',

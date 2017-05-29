@@ -4,8 +4,8 @@
 //
 // See LICENSE for details
 
-var Tp = require('thingpedia');
-var URL = 'https://colby.stanford.edu/main/api/bikes/';
+const Tp = require('thingpedia');
+const URL = 'https://colby.stanford.edu/main/api/bikes/';
 
 module.exports = new Tp.ChannelClass({
     Name: 'SearchBikePosts',
@@ -18,9 +18,6 @@ module.exports = new Tp.ChannelClass({
 
     formatEvent: function formatEvent(event, filters) {
         // event[0]: filters except price, event[1]: price, event[2]: post_id, event[3]: title
-        console.log(event);
-        console.log(event[2]);
-        console.log(typeof event[2]);
         return [
             '%s for $%s'.format(event[3], event[1]),
             {
@@ -53,7 +50,6 @@ module.exports = new Tp.ChannelClass({
                 var post = posts[0][key];
                 res.push([filters[0], parseInt(post.price), post.id, post.title]);
             });
-            console.log(res);
             return res;
         });
     }

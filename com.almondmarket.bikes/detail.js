@@ -4,8 +4,8 @@
 //
 // See LICENSE for details
 
-var Tp = require('thingpedia');
-var URL = 'https://colby.stanford.edu/main/api/bikes/';
+const Tp = require('thingpedia');
+const URL = 'https://colby.stanford.edu/main/api/bikes/';
 
 module.exports = new Tp.ChannelClass({
     Name: 'GetDetails',
@@ -38,7 +38,6 @@ module.exports = new Tp.ChannelClass({
     invokeQuery: function invokeQuery(filters, env) {
         // filters[0]: post id
         var url = this.url + '/' + filters[0] + '/';
-        console.log(url);
         return Tp.Helpers.Http.get(url).then((data) => {
             var response = JSON.parse(data);
             console.log(response);
