@@ -53,20 +53,9 @@ all: $(zipfiles)
 	npm dedupe ; \
 	zip -r $(abspath $@) *
 
-node_modules:
-	test -d ./node_modules || mkdir ./node_modules
-	npm install babel-cli babel-preset-es2015
-
-empty =
-space = $(empty) $(empty)
-comma = ,
-
-BABEL_IGNORE = \
-	jsapp/node_modules/*/test/* \
-	$(NULL)
-
 build/%: % node_modules
-	./node_modules/.bin/babel --preset es2015 --ignore $(subst $(space),$(comma),$(BABEL_IGNORE)) -D -d $@ $<
+	mkdir -p build/
+	cp -r $< $@
 	touch $@
 
 clean:

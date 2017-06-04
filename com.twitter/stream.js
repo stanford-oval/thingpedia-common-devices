@@ -6,7 +6,6 @@
 // See LICENSE for details
 "use strict";
 
-const lang = require('lang');
 const Q = require('q');
 const events = require('events');
 
