@@ -113,6 +113,6 @@ module.exports = class TwitterStream extends RefCounted {
         if (!this._connection)
             return Q();
 
-        return this._connection.then(function(sock) { sock.close() });
+        return this._connection.then(function(sock) { sock.end() });
     }
 }
