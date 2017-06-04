@@ -25,9 +25,13 @@ module.exports = new Tp.ChannelClass({
         var positions = event[4];
         var pictureUrl = event[5];
 
-        return [name, { type: 'picture', url: pictureUrl },
-                headline,
-                "Works in %s".format(industry)];
+        if (pictureUrl) {
+            return [name, { type: 'picture', url: pictureUrl },
+                    headline,
+                    "Works in %s".format(industry)];
+        } else {
+            return [name, headline, "Works in %s".format(industry)];
+        }
     },
 
     invokeQuery(filters) {
@@ -38,11 +42,11 @@ module.exports = new Tp.ChannelClass({
             console.log('parsed', parsed);
 
             return [[parsed.formattedName,
-                     parsed.headline,
-                     parsed.industry,
-                     parsed.specialties,
+                     parsed.headline || '',
+                     parsed.industry || '',
+                     parsed.specialties || '',
                      ('values' in parsed) ? parsed.positions.values.map((p) => p.summary) : [],
-                     parsed.pictureUrl]];
+                     parsed.pictureUrl || '']];
         });
     }
 })

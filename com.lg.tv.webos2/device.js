@@ -49,14 +49,17 @@ class LgWebsocket {
 
         this._registerId = null;
         this._registerPromise = null;
+        this._socket = null;
+        this._wasRegistered = false;
     }
 
     open() {
         return Q.Promise((callback, errback) => {
-            this._socket = new WebSocket('wss://' + this.host + ':3001', {
+            var socket = new WebSocket('wss://' + this.host + ':3001', {
                 agent: false,
                 rejectUnauthorized: false
             });
+            this._socket = socket;
             this._socket.on('message', this._handleMessage.bind(this));
             this._socket.on('open', () => {
                 var tlsSocket = this._socket._socket;
@@ -89,6 +92,10 @@ class LgWebsocket {
                     }
                 });
                 callback();
+            });
+            this._socket.on('close', () => {
+                if (socket === this._socket)
+                    this._socket = null;
             });
             this._socket.on('error', errback);
         });
@@ -135,6 +142,7 @@ class LgWebsocket {
             case 'registered':
                 this.clientKey = parsed.payload['client-key'];
                 this._registerPromise.resolve();
+                this._wasRegistered = true;
                 return;
 
             default:
@@ -143,6 +151,8 @@ class LgWebsocket {
     }
 
     close() {
+        if (!this._socket)
+            return;
         this._socket.close();
     }
 
@@ -190,7 +200,7 @@ class LgWebsocket {
         });
     }
 
-    sendRequest(uri, payload) {
+    _doSendRequest(uri, payload) {
         var id = this._requestId++;
         this._requests[id] = Q.defer();
 
@@ -201,6 +211,14 @@ class LgWebsocket {
             payload: payload
         });
         return this._requests[id].promise;
+    }
+
+    sendRequest(uri, payload) {
+        if (!this._socket && this._wasRegistered) {
+            return this.open().then(() => this.sendRegister()).then(() => this._doSendRequest(uri, payload));
+        } else {
+            return this._doSendRequest(uri, payload);
+        }
     }
 }
 

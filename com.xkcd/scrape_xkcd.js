@@ -28,10 +28,10 @@ module.exports = function(name, url) {
 
         formatEvent(event) {
             var number = event[0];
-            var link = 'http://xkcd.com/' + number;
             var title = event[1];
             var picture = event[2];
-            var alt = event[3];
+            var link = event[3];
+            var alt = event[4];
 
             return [{ type: 'rdl',
                 displayTitle: title,
@@ -69,7 +69,7 @@ module.exports = function(name, url) {
                 var altText = result[2].foo;
                 var title = result[3].foo;
 
-                return [[number, title, url, altText]];
+                return [[number, title, url, 'http://xkcd.com/' + number, altText]];
             });
         }
     });

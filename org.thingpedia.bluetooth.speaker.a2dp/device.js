@@ -42,12 +42,12 @@ const BluetoothA2dpSinkDevice = new Tp.DeviceClass({
         if (this.state.paired) {
             this.engine.devices.addDevice(this);
             delegate.configDone();
-            return Q();
+            return Promise.resolve();
         }
 
         if (!this.engine.platform.hasCapability('bluetooth')) {
             delegate.configFailed(new Error("Platform has no bluetooth capability"));
-            return Q();
+            return Promise.resolve();
         }
 
         var btApi = this.engine.platform.getCapability('bluetooth');
