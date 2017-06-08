@@ -39,9 +39,9 @@ module.exports = new Tp.ChannelClass({
                     '"query":{"name":{"id":"tt:almond_bike_market.ask_seller"}, "args":[' +
                     '{"name":{"id":"tt:param.id"},"type":"String","value":{"value":"%s"},"operator":"is"},'.format(filters[0]) +
                     '{"name":{"id":"tt:param.property"},"type":"String","value":{"value":"%s"},"operator":"is"}'.format(filters[1]) +
-                    '], "slots":["__person"], "remoteSlots":["value", "public"], "person":"%s"}, '.format(event[3][0]) +
+                    '], "remoteSlots":["value", "public"], "person":"%s"}, '.format(event[3][0]) +
                     '"action":{"name":{"id":"tt:builtin.notify"}, "args":[' +
-                    '{"name":{"id":"tt:param.message"},"type":"VarRef","value":{"id":"tt:param.value"},"operator":"is"}' +
+                    '{"name":{"id":"tt:param.message"},"type":"VarRef","value":{"id":"tt:param.answer"},"operator":"is"}' +
                     ']}}}'
                 },
                 {

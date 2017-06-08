@@ -23,7 +23,7 @@ module.exports = new Tp.ChannelClass({
     },
 
     invokeQuery: function invokeQuery(filters, env) {
-        // filters[0]: id, filters[1]: property, filter[2]: value, filter[3]: public
+        // filters[0]: id, filters[1]: property, filters[2]: value, filters[3]: public
         var url = this.url;
         if (filters[3] === true) {
             var data = JSON.stringify({ id: filters[0], info: filters[1] + '=' + filters[2]});
@@ -36,6 +36,7 @@ module.exports = new Tp.ChannelClass({
             });
         }
         return Tp.Helpers.Http.get(url).then((data) => {
+            filters[filters.length - 1] = filters[2];
             return [filters];
         });
     }
