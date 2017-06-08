@@ -18,15 +18,20 @@ module.exports = new Tp.ChannelClass({
     },
 
     sendEvent: function(event) {
-        var stream = mailcomposer({
-            to: event[0],
-            subject: event[1],
-            text: event[2]
-        }).createReadStream();
+        // make a dummy request to refresh the OAuth token, as we won't be able to
+        // do so with the stream
+        return Tp.Helpers.Http.get('https://www.googleapis.com/oauth2/v2/userinfo', { useOAuth2: this.device, accept: 'application/json'})
+            .then(() => {
+            var stream = mailcomposer({
+                to: event[0],
+                subject: event[1],
+                text: event[2]
+            }).createReadStream();
 
-        return Tp.Helpers.Http.postStream(this.url, stream, {
-            useOAuth2: this.device,
-            dataContentType: 'message/rfc822'
+            return Tp.Helpers.Http.postStream(this.url, stream, {
+                useOAuth2: this.device,
+                dataContentType: 'message/rfc822'
+            });
         });
     }
 });

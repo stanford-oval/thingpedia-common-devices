@@ -34,7 +34,12 @@ module.exports = new Tp.ChannelClass({
     },
 
     sendEvent(event) {
-        return this.getAttachment(event[3]).then((attachment) => {
+        // make a dummy request to refresh the OAuth token, as we won't be able to
+        // do so with the stream
+        return Tp.Helpers.Http.get('https://www.googleapis.com/oauth2/v2/userinfo', { useOAuth2: this.device, accept: 'application/json'})
+            .then(() => {
+            return this.getAttachment(event[3]);
+        }).then((attachment) => {
             var stream = mailcomposer({
                 to: event[0],
                 subject: event[1],

@@ -8,7 +8,7 @@
 const Tp = require('thingpedia');
 const xml2js = require('xml2js');
 
-const XKCD_RSS_URL = 'http://www.xkcd.com/atom.xml';
+const XKCD_RSS_URL = 'https://www.xkcd.com/atom.xml';
 
 function parseXml(data) {
     return new Promise(function(callback, errback) {
@@ -35,7 +35,7 @@ module.exports = new Tp.ChannelClass({
 
     formatEvent(event) {
         var number = event[0];
-        var link = 'http://xkcd.com/' + number;
+        var link = 'https://xkcd.com/' + number;
         var title = event[1];
         var picture = event[2];
         var alt = event[3];
@@ -67,13 +67,14 @@ module.exports = new Tp.ChannelClass({
             if (top === undefined)
                 return;
 
-            state.set('updated', updated);
             var title = top.title[0];
             var link = top.link[0].$.href;
 
-            var match = /http:\/\/xkcd\.com\/([0-9]+)\/?/.exec(link);
+            var match = /https?:\/\/xkcd\.com\/([0-9]+)\/?/.exec(link);
             var number = parseInt(match[1]);
             var summary = top.summary[0]._;
+
+            state.set('updated', updated);
             return parseXml(summary).then((parsedSummary) => {
                 var picture = parsedSummary.img.$.src;
                 var alt = parsedSummary.img.$.alt;

@@ -6,7 +6,6 @@
 // See LICENSE for details
 "use strict";
 
-const lang = require('lang');
 const Q = require('q');
 const events = require('events');
 
@@ -114,6 +113,6 @@ module.exports = class TwitterStream extends RefCounted {
         if (!this._connection)
             return Q();
 
-        return this._connection.then(function(sock) { sock.close() });
+        return this._connection.then(function(sock) { sock.end() });
     }
 }

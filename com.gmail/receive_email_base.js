@@ -84,15 +84,15 @@ module.exports = function (name, query) {
                     var sendername, senderaddress;
                     var match = /^"([^"]+)"\s+<([^>]+)>$/.exec(sender);
                     if (match !== null) {
-                        sendername = match[0];
-                        senderaddress = match[1];
+                        sendername = match[1];
+                        senderaddress = match[2];
                     } else {
-                        var match = /^([^\s]+)\s+<([^>]+)>$/.exec(sender);
+                        var match = /^([^<]+)\s+<([^>]+)>$/.exec(sender);
                         if (match !== null) {
-                            sendername = match[0];
-                            senderaddress = match[1];
+                            sendername = match[1];
+                            senderaddress = match[2];
                         } else {
-                            sendername = null;
+                            sendername = '';
                             senderaddress = sender;
                         }
                     }
@@ -100,7 +100,7 @@ module.exports = function (name, query) {
                     snippet = snippet.replace(/&#([0-9]+);/g, function(str, code) { return String.fromCharCode(parseInt(code, 10)); });
 
                     return this.device.resolveLabels(parsed.labelIds).then((resolved) => {
-                        var labels = parsed.labelIds.map((id) => resolved.get(id));
+                        var labels = parsed.labelIds.map((id) => resolved.get(id)).filter((label) => !!label);
                         this.emitEvent([sendername, senderaddress, subject, date, labels, snippet]);
                     });
                 }).catch(function (e) {
