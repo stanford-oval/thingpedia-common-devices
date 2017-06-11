@@ -17,9 +17,20 @@ module.exports = new Tp.ChannelClass({
     },
 
     formatEvent: function formatEvent(event, filters) {
+        if (event[1] === null)
+            return [
+                'Sorry, I don\'t understand.',
+                {
+                    type: 'button',
+                    text: 'Ask another question',
+                    json: '{"query":{"name":{"id":"tt:almond_bike_market.ask"},' +
+                    '"args":[{"name":{"id":"tt:param.id"},"type":"String","value":{"value":"%s"},"operator":"is"}],'.format(filters[0]) +
+                    '"slots":[]}}'
+                }
+            ];
         if (event[2].length > 0)
             return [
-                event[2].join(' '),
+                'The %s of the bike is: '.format(event[1]) + event[2].join(' '),
                 {
                     type: 'button',
                     text: 'Ask another question',
@@ -55,12 +66,26 @@ module.exports = new Tp.ChannelClass({
     },
 
     invokeQuery: function invokeQuery(filters, env) {
-        // filters[0]: poster_id, filter[1]: property name
-        var url = this.url + filters[0] + '/?property=';
-        return Tp.Helpers.Http.get(url + filters[1]).then((data) => {
-            return Tp.Helpers.Http.get(url + 'poster').then((poster) => {
-                return [[filters[0], filters[1], JSON.parse(data), JSON.parse(poster)]];
-            })
-        });
+        // filters[0]: poster_id, filter[1]: property name / natural language query
+        var url = this.url + filters[0];
+        if (filters[1].indexOf(' ') === -1) {
+            return Tp.Helpers.Http.get(url + '/?property=' + filters[1]).then((data) => {
+                return Tp.Helpers.Http.get(url + '/?property=poster').then((poster) => {
+                    return [[filters[0], filters[1], JSON.parse(data), JSON.parse(poster)]];
+                });
+            });
+        } else {
+            var q = filters[1].split(' ').join('+');
+            return Tp.Helpers.Http.get(url + '/?query=' + q).then((data) => {
+                data = JSON.parse(data);
+                if (data.length === 0)
+                    return [[filters[0], null, null, null]];
+                return Tp.Helpers.Http.get(url + '/?property=poster').then((poster) => {
+                    var property = data[0];
+                    var value = data[1];
+                    return [[filters[0], property, [value], JSON.parse(poster)]];
+                });
+            });
+        }
     }
 });

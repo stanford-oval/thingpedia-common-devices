@@ -18,6 +18,10 @@ module.exports = new Tp.ChannelClass({
 
     formatEvent: function formatEvent(event, filters) {
         // event[0]: filters except price, event[1]: price, event[2]: post_id, event[3]: title
+        if (event[0] === 400)
+            return ['Sorry, I don\'t understand.'];
+        if (event[0] === 404)
+            return ['Sorry, I couldn\'t find any bike meets your requirements'];
         return [
             '%s for $%s'.format(event[3], event[1]),
             {
@@ -40,10 +44,20 @@ module.exports = new Tp.ChannelClass({
     invokeQuery: function invokeQuery(filters, env) {
         // filters[0]: filters except price, filter[1]: price
         var url = this.url;
-        if (filters[0])
-            url += '?info=' + filters[0];
+        if (filters[0]) {
+            if (filters[0].indexOf('=') === -1)
+                url += '?query=' + filters[0].split(' ').join('+');
+            else
+                url += '?info=' + filters[0].split(' ').join('+');
+        }
         return Tp.Helpers.Http.get(url).then((data) => {
             var response = JSON.parse(data);
+            // sempre score too low
+            if (response.objects[0] === 400)
+                return [[400]];
+            // found no match
+            if (Object.keys(response.objects[0]).length === 0)
+                return [[404]];
             var posts = response.objects;
             var res = [];
             Object.keys(posts[0]).forEach((key) => {
