@@ -82,6 +82,8 @@ module.exports = new Tp.ChannelClass({
                     return [[filters[0], null, null, null]];
                 return Tp.Helpers.Http.get(url + '/?property=poster').then((poster) => {
                     var property = data[0];
+                    if (data.length === 1)
+                        return [[filters[0], property, [], JSON.parse(poster)]];
                     var value = data[1];
                     return [[filters[0], property, [value], JSON.parse(poster)]];
                 });
