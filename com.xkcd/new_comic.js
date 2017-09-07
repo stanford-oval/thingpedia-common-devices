@@ -35,10 +35,10 @@ module.exports = new Tp.ChannelClass({
 
     formatEvent(event) {
         var number = event[0];
-        var link = 'https://xkcd.com/' + number;
         var title = event[1];
         var picture = event[2];
-        var alt = event[3];
+        var link = event[3];
+        var alt = event[4];
 
         return [{ type: 'rdl',
             displayTitle: title,
@@ -79,7 +79,7 @@ module.exports = new Tp.ChannelClass({
                 var picture = parsedSummary.img.$.src;
                 var alt = parsedSummary.img.$.alt;
 
-                return this.emitEvent([number, title, picture, alt]);
+                return this.emitEvent([number, title, picture, link, alt]);
             });
         });
     },

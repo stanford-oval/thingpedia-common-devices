@@ -24,13 +24,10 @@ function makeAction(id) {
         },
 
         sendEvent: function() {
-            Tp.Helpers.Http.post(this.device.baseUrl + '/command/' + id, '',
+            return Tp.Helpers.Http.post(this.device.baseUrl + '/command/' + id, '',
                                  { auth: 'Bearer ' + this.device.master.accessToken })
                 .then(function() {
                     console.log('Honked horn successfully');
-                })
-                .catch(function(e) {
-                    console.error('Failed to honk horn: ' + e.message);
                 });
         }
     });

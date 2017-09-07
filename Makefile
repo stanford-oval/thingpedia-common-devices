@@ -1,6 +1,8 @@
 NULL =
 
 zipfiles = \
+	uk.co.thedogapi.zip \
+	com.tesla.zip \
 	com.twitter.zip \
 	com.bodytrace.scale.zip \
 	com.parklonamerica.heatpad.zip \
@@ -53,8 +55,9 @@ all: $(zipfiles)
 	npm dedupe ; \
 	zip -r $(abspath $@) *
 
-build/%: % node_modules
+build/%: %
 	mkdir -p build/
+	-test -d $@ && rm -fr $@
 	cp -r $< $@
 	touch $@
 

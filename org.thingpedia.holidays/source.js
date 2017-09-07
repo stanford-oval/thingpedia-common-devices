@@ -14,11 +14,13 @@ module.exports = function(name, url, format) {
     return new Tp.ChannelClass({
         Name: name,
         Extends: Tp.HttpPollingTrigger,
+        RequiredCapabilities: ['channel-state'],
         interval: POLL_INTERVAL,
 
-        _init(engine, device, params) {
-            this.parent(engine, device);
+        _init(engine, state, device, params) {
+            this.parent(engine, state, device);
             this.url = url;
+            this.precise = true;
         },
 
         formatEvent: format,

@@ -29,7 +29,7 @@ const CONSUMER_KEY = process.env['TWITTER_CONSUMER_KEY'] || 'VZRViA2T4qy7CBZjU5j
 const CONSUMER_SECRET = process.env['TWITTER_CONSUMER_SECRET'] || rot13('hsTCqM6neIt3hqum6zvnDCIqQkUuyWtSjKBoqZFONvzVXfb7OJ');
 
 function makeTwitterApi(engine, accessToken, accessTokenSecret) {
-    var origin = platform.getOrigin();
+    var origin = engine.platform.getOrigin();
     return new Twitter({
         consumerKey: CONSUMER_KEY,
         consumerSecret: CONSUMER_SECRET,

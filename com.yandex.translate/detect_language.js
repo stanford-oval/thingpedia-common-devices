@@ -7,6 +7,7 @@
 // See LICENSE for details
 
 const Tp = require('thingpedia');
+const TT = require('thingtalk');
 
 const languages = require('./languages.json');
 
@@ -23,10 +24,7 @@ module.exports = new Tp.ChannelClass({
         var text = event[0];
         var lang = event[1];
 
-        if (lang in languages)
-            return ["Detected as %s".format(languages[lang])];
-        else
-            return ["Detected as %s".format(lang)];
+        return ["Detected as %s".format(lang.display || lang)];
     },
 
     invokeQuery: function(filters) {
@@ -41,7 +39,7 @@ module.exports = new Tp.ChannelClass({
             if (parsed.code != 200)
                 throw new Error('Failed to translate');
 
-            return [[text, parsed.lang]];
+            return [[text, new TT.Entity(parsed.lang, languages[parsed.lang])]];
         });
     },
 });

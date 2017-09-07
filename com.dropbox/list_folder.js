@@ -23,7 +23,7 @@ module.exports = new Tp.ChannelClass({
         if (isFolder)
             return ["%s (dir)".format(name)];
         else
-            return ["%s (reg, %d bytes)".format(name, size)];
+            return ["   ".format(name, size)];
     },
 
     invokeQuery(filters) {

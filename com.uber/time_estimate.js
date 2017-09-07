@@ -1,4 +1,4 @@
-// -*- mode: js; indent-tabs-mode: nil; js-basic-offset: 4 -*-
+    // -*- mode: js; indent-tabs-mode: nil; js-basic-offset: 4 -*-
 //
 // Copyright 2016 Juan Vimberg <jvimberg@stanford.edu>
 //                Tucker L. Ward <tlward@stanford.edu>
