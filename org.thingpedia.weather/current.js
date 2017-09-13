@@ -63,17 +63,31 @@ module.exports = new Tp.ChannelClass({
             var fog = parseFloat(entry.fog[0].$.percent);
             var weather_id = parseInt(parsed.weatherdata.product[0].time[1].location[0].symbol[0].$.number);
             var weather = GetWeather(weather_id);
-            if (isNaN(temperature)) {
-                // Didn't get rise or set info.
-                return;
-            }
+
+            var status;
+            if (weather_id == 1)
+                status = 'sunny';
+            else if (weather_id == 15)
+                status = 'foggy';
+            else if ([2, 3, 4].indexOf(weather_id) >= 0)
+                status = 'cloudy';
+            else if ([5, 6, 9, 10, 11, 22, 41].indexOf(weather_id) >= 0)
+                status = 'raining';
+            else if ([24, 30, 40, 46].indexOf(weather_id) >= 0)
+                status = 'drizzling';
+            else if ([8, 13, 14, 21, 28, 29, 33, 34, 44, 45, 49, 50].indexOf(weather_id) >= 0)
+                status = 'snowy';
+            else if ([7, 12, 20, 23, 26, 27, 31, 32, 42, 43, 47, 48].indexOf(weather_id) >= 0)
+                status = 'sleety';
+
             // Set some defaults
             if (isNaN(windSpeed)) windSpeed = 0;
             if (isNaN(humidity)) humidity = 0;
             if (isNaN(cloudiness)) cloudiness = 0;
             if (isNaN(fog)) fog = 0;
 
-            return [[location, temperature, windSpeed, humidity, cloudiness, fog, weather]];
+            return [[location, temperature, windSpeed, humidity, cloudiness, fog, weather, status,
+                     `http://api.met.no/weatherapi/weathericon/1.1/?symbol=${weather_id};content_type=image/png`]];
         });
     },
 });
