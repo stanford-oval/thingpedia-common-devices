@@ -31,6 +31,36 @@ module.exports = new Tp.ChannelClass({
         var organizer = event[5];
         var location = event[6];
 
+    // FIXME: Convert the string to a location and return it
+
+    // @JsonIgnoreProperties({ "boundingbox", "licence" })
+    //     private static class NominatimEntry {
+    //         @JsonProperty
+    //         public String category;
+    //         @JsonProperty
+    //         public String display_name;
+    //         @JsonProperty
+    //         public String icon;
+    //         @JsonProperty
+    //         public double importance;
+    //         @JsonProperty
+    //         public double lat;
+    //         @JsonProperty
+    //         public double lon;
+    //         @JsonProperty
+    //         public String osm_id;
+    //         @JsonProperty
+    //         public String osm_type;
+    //         @JsonProperty
+    //         public String place_id;
+    //         @JsonProperty
+    //         public String place_rank;
+    //         @JsonProperty
+    //         public String type;
+    //     }
+    //
+    //     private static final String URL_TEMPLATE = "http://nominatim.openstreetmap.org/search/?format=jsonv2&accept-language=%s&limit=5&q=%s";
+
         var message;
         if (location && organizer)
             message = "Event starting: %s (%s, organized by %s)".format(summary, location, organizer);
