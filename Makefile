@@ -3,6 +3,7 @@ NULL =
 zipfiles = \
 	uk.co.thedogapi.zip \
 	com.tesla.zip \
+	com.fitbit.zip \
 	com.twitter.zip \
 	com.bodytrace.scale.zip \
 	com.parklonamerica.heatpad.zip \
