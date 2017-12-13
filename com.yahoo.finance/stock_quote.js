@@ -23,6 +23,7 @@ module.exports = new Tp.ChannelClass({
         if (!this._myCompanyID)
             throw new TypeError("Missing required parameters");
 
+        this.filterString = String(this._myCompanyID)
         this.interval = POLL_INTERVAL;
         this.url = YAHOO_URL + "?s=" + encodeURIComponent(this._myCompanyID) + "&f=nab";
     },

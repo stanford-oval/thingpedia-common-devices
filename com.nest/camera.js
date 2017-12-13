@@ -101,13 +101,13 @@ const CameraNewEventTrigger = new Tp.ChannelClass({
     _onValue: function(snapshot) {
         var data = snapshot.val();
         console.log('last_event', data);
-        if (!data.end_time)
+        if (!data.start_time)
             return;
         var lastEvent = this.state.get('last-event-end-time');
-        if (lastEvent === data.end_time)
+        if (lastEvent === data.start_time)
             return;
 
-        this.state.set('last-event-end-time', data.end_time);
+        this.state.set('last-event-end-time', data.start_time);
         this.emitEvent([new Date(data.start_time), !!data.has_sound, !!data.has_motion, !!data.has_person, data.animated_image_url]);
     }
 });

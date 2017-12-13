@@ -6,7 +6,7 @@
 
 const Tp = require('thingpedia');
 
-const NBA_API_KEY = 'w4meerq84mmrwksr8yz3xvms';
+const NBA_API_KEY = '8metdtkt3fxsjuw2tyrh38de';
 const NBA_SCHEDULE_URL = 'https://api.sportradar.us/nba-t3/games/%d/%d/%d/schedule.json?api_key=' + NBA_API_KEY;
 const NBA_BOXSCORE_URL = 'https://api.sportradar.us/nba-t3/games/%s/boxscore.json?api_key=' + NBA_API_KEY;
 const POLL_INTERVAL = 24 * 3600 * 1000; // 1day

@@ -7,7 +7,7 @@
 
 const Tp = require('thingpedia');
 
-const URL = 'http://thedogapi.co.uk/api/v1/dog?limit=';
+const URL = 'https://api.thedogapi.co.uk/v2/dog.php?limit=';
 
 module.exports = class DogApiGetChannel extends Tp.BaseChannel {
     formatEvent(event, filters) {

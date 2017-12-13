@@ -88,26 +88,23 @@ function runOAuthStep2(engine, req) {
     });
 }
 
-function runOAuth2(engine, req) {
-    return Q.try(function() {
-        if (req === null) {
-            return runOAuthStep1(engine);
-        } else {
-            return runOAuthStep2(engine, req);
-        }
-    }).catch(function(e) {
-        console.log(e);
-        console.log(e.stack);
-        throw e;
-    });
-}
+module.exports = class TwitterAccountDevice extends Tp.BaseDevice {
+    static runOAuth2() {
+        return Q.try(function() {
+            if (req === null) {
+                return runOAuthStep1(engine);
+            } else {
+                return runOAuthStep2(engine, req);
+            }
+        }).catch(function(e) {
+            console.log(e);
+            console.log(e.stack);
+            throw e;
+        });
+    }
 
-module.exports = new Tp.DeviceClass({
-    Name: 'TwitterAccountDevice',
-    UseOAuth2: runOAuth2,
-
-    _init: function(engine, state) {
-        this.parent(engine, state);
+    constructor(engine, state) {
+        super(engine, state);
 
         // NOTE: for legacy reasons, this is twitter-account-*, not com.twitter-* as one would
         // hope
@@ -117,25 +114,25 @@ module.exports = new Tp.DeviceClass({
         this.description = "This is your Twitter Account. You can use it to be updated on the status of your friends, and update them with your thoughts.";
 
         this._stream = null;
-    },
+    }
 
     get screenName() {
         return this.state.screenName;
-    },
+    }
 
     get userId() {
         return this.state.userId;
-    },
+    }
 
     get accessToken() {
         return this.state.accessToken;
-    },
+    }
 
     get accessTokenSecret() {
         return this.state.accessTokenSecret;
-    },
+    }
 
-    queryInterface: function(iface) {
+    queryInterface(iface) {
         switch (iface) {
         case 'twitter':
             return makeTwitterApi(this.engine, this.accessToken, this.accessTokenSecret);
@@ -146,6 +143,46 @@ module.exports = new Tp.DeviceClass({
         default:
             return null;
         }
-    },
-});
+    }
+
+    get_home_timeline(params, count, filters) {
+        return Tp.Helpers.Http.get('/...').then((result) => {
+            // ...
+            return [];
+        });
+    }
+
+    subscribe_home_timeline(params, state, filters) {
+        let last_seen_tweet = state.get('tweet_id');
+
+        let ret = new stream.Readable({ objectMode: true });
+
+        let twitterStream = new TwitterStream(makeTwitterApi(this.engine, this.accessToken, this.accessTokenSecret));
+        twitterStream.on('tweet', (tw) => {
+            // do magic
+            state.set('tweet_id', tw.tweet_id);
+            ret.push(tw);
+        });
+        ret.filters = null;
+        ret.destroy = () => twitterStream.close();
+
+        return ret;
+    }
+
+    history_home_timeline(params, base, delta, filters) {
+        return null;
+    }
+
+    sequence_home_timeline(params, base, limit, filters) {
+        let from = base-1;
+        let to = base+limit-1;
+        if (to >= 200)
+            return null;
+
+        return Tp.Helpers.Http.get('/...').then((result) => {
+            // ...
+            return [].slice(from, to);
+        });
+    }
+}
 

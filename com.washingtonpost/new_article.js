@@ -80,7 +80,8 @@ module.exports = new Tp.ChannelClass({
 
             state.set('already-read', newReadSet);
             for (var entry of toEmit)
-                this.emitEvent([this.section, entry.title[0], entry.link[0], entry.description ? entry.description[0] : '']);
+                this.emitEvent([this.section, entry.title[0], entry.link[0], entry.description ? entry.description[0] : '',
+                                entry['media:group'] && entry['media:group'][0]['media:content'] ? entry['media:group'][0]['media:content'][2].$.url : '']);
         });
     },
 
