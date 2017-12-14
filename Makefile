@@ -12,6 +12,7 @@ zipfiles = \
 	org.thingpedia.test.zip \
 	com.facebook.zip \
 	com.google.zip \
+	com.google.drive.zip \
 	com.jawbone.up.zip \
 	com.twilio.zip \
 	com.foaas.zip \

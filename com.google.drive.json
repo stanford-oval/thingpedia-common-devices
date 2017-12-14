@@ -1,48 +1,154 @@
 {
+  "module_type": "org.thingpedia.v2",
   "params": {},
-  "global-name": "google_drive",
-  "types": [
-    "online-account"
-  ],
+  "category": "online",
+  "subcategory": "data-management",
+  "types": [],
   "child_types": [],
   "auth": {
     "type": "oauth2"
   },
-  "triggers": {
-    "new_drive_file": {
-      "args": [
-        {
-          "name": "name",
-          "type": "String",
-          "question": "",
-          "required": false
-        }
-      ],
-      "doc": "check if there is a new file/folder created on google drive",
-      "confirmation": "check if there is a new file or folder created on google drive",
-      "canonical": "new file created on google drive",
-      "examples": [
-        "check if there is a new file or folder created on google drive"
-      ]
-    }
-  },
+  "triggers": {},
   "actions": {
     "create_new_drive_file": {
       "args": [
         {
-          "name": "name",
+          "name": "file_name",
           "type": "String",
           "question": "what's the name of the file?",
-          "required": false
+          "is_input": true,
+          "required": true
         }
       ],
       "doc": "create a new file with the specified name on google drive",
-      "confirmation": "create a file with name $filename on google drive",
+      "confirmation": "create a file with name $file_name on google drive",
+      "confirmation_remote": "",
       "canonical": "create a new file on google drive",
-      "examples": [
-        "create a new file with name $name on google drive"
-      ]
+      "formatted": [],
+      "poll_interval": 0
     }
   },
-  "queries": {}
+  "queries": {
+    "list_drive_files": {
+      "args": [
+        {
+          "name": "file_id",
+          "type": "Entity(com.google.drive:file_id)",
+          "question": "",
+          "is_input": false,
+          "required": false
+        },
+        {
+          "name": "file_name",
+          "type": "String",
+          "question": "",
+          "is_input": false,
+          "required": false
+        },
+        {
+          "name": "mime_type",
+          "type": "Entity(tt:mime_type)",
+          "question": "",
+          "is_input": false,
+          "required": false
+        },
+        {
+          "name": "description",
+          "type": "String",
+          "question": "",
+          "is_input": false,
+          "required": false
+        },
+        {
+          "name": "starred",
+          "type": "Boolean",
+          "question": "",
+          "is_input": false,
+          "required": false
+        },
+        {
+          "name": "created_time",
+          "type": "Date",
+          "question": "",
+          "is_input": false,
+          "required": false
+        },
+        {
+          "name": "modified_time",
+          "type": "Date",
+          "question": "",
+          "is_input": false,
+          "required": false
+        },
+        {
+          "name": "size",
+          "type": "Measure(byte)",
+          "question": "",
+          "is_input": false,
+          "required": false
+        }
+      ],
+      "doc": "list files in Google Drive, sort by modification date",
+      "confirmation": "list files in your Google Drive",
+      "confirmation_remote": "list files in $__person's Google Drive",
+      "canonical": "google drive file list",
+      "formatted": [
+        {
+          "type": "text",
+          "text": "${file_name} (${size:kB} kB, created on ${created_time}, modified on ${modified_time})"
+        }
+      ],
+      "poll_interval": 60000
+    }
+  },
+  "examples": [
+    {
+      "utterance": "when a file is modified on google drive",
+      "program": "let stream x := \\() -> monitor @com.google.drive.list_drive_files();"
+    },
+    {
+      "utterance": "when a file changes in my google drive",
+      "program": "let stream x := \\() -> monitor @com.google.drive.list_drive_files();"
+    },
+    {
+      "utterance": "create a new file with name ${p_file_name} on google drive",
+      "program": "let action x := \\(p_file_name :String) -> @com.google.drive.create_new_drive_file(file_name=p_file_name);"
+    },
+    {
+      "utterance": "when a file is created in google drive",
+      "program": "let stream x := \\() -> monitor ([file_name] of @com.google.drive.list_drive_files());"
+    },
+    {
+      "utterance": "my google drive files",
+      "program": "let table x := @com.google.drive.list_drive_files()"
+    },
+    {
+      "utterance": "my google drive files of type ${p_mime_type}",
+      "program": "let table x := \\(p_mime_type : Entity(tt:mime_type)) -> @com.google.drive.list_drive_files(), mime_type == p_mime_type"
+    },
+    {
+      "utterance": "my starred google drive files",
+      "program": "let table x := @com.google.drive.list_drive_files(), starred == true"
+    },
+    {
+      "utterance": "my google drive files created this week",
+      "program": "let table x := @com.google.drive.list_drive_files(), created_time >= start_of(week)"
+    },
+    {
+      "utterance": "my google drive files modified this week",
+      "program": "let table x := @com.google.drive.list_drive_files(), modified_time >= start_of(week)"
+    },
+    {
+      "utterance": "my google drive files modified today",
+      "program": "let table x := @com.google.drive.list_drive_files(), modified_time >= start_of(day)"
+    },
+    {
+      "utterance": "my google drive files smaller than ${p_size}",
+      "program": "let table x := \\(p_size : Measure(byte)) -> @com.google.drive.list_drive_files(), size < p_size"
+    },
+    {
+      "utterance": "my google drive files larger than ${p_size}",
+      "program": "let table x := \\(p_size : Measure(byte)) -> @com.google.drive.list_drive_files(), size > p_size"
+    }
+  ]
 }
