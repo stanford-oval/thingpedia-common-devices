@@ -1,9 +1,10 @@
 {
+  "module_type": "org.thingpedia.v1",
   "params": {},
+  "category": "physical",
+  "subcategory": "home",
   "types": [
-    "upnp-lge-com-service-webos-second-screen-1",
-    "home",
-    "tv"
+    "upnp-lge-com-service-webos-second-screen-1"
   ],
   "child_types": [],
   "auth": {
@@ -12,141 +13,131 @@
   },
   "triggers": {},
   "actions": {
-    "sink": {
-      "args": [
-        {
-          "name": "url",
-          "type": "String",
-          "question": "What video do you want to play? Use the full URL.",
-          "required": false
-        }
-      ],
-      "doc": "start playing a video by URL",
-      "confirmation": "play $url on your LG WebOS TV",
-      "canonical": "play url",
-      "examples": [
-        "play $url on my lg tv"
-      ]
-    },
     "set_power": {
       "args": [
         {
           "name": "power",
-          "type": "Boolean",
+          "type": "Enum(on,off)",
           "question": "Do you want to turn the tv on or off?",
-          "required": false
+          "is_input": true,
+          "required": true
         }
       ],
       "doc": "turn off the TV (turning on is not supported)",
       "confirmation": "turn $power your LG WebOS TV",
-      "canonical": "set power",
-      "examples": [
-        "turn $power my lg tv",
-        "set the power on my lg tv to $power"
-      ]
-    },
-    "play_youtube": {
-      "args": [
-        {
-          "name": "video_id",
-          "type": "String",
-          "question": "What video do you want to play? Use the ID from the last part of the URL.",
-          "required": false
-        }
-      ],
-      "doc": "open the YouTube app on the tv and start playing a video",
-      "confirmation": "play $video_id from YouTube on your LG WebOS TV",
-      "canonical": "play youtube",
-      "examples": [
-        "play the youtube video $video_id on my lg tv"
-      ]
-    },
-    "play_netflix": {
-      "args": [
-        {
-          "name": "video_id",
-          "type": "String",
-          "question": "What video do you want to play? Use the ID from the last part of the URL.",
-          "required": false
-        }
-      ],
-      "doc": "open the Netflix app on the tv and start playing a video",
-      "confirmation": "play $video_id from Netflix on your LG WebOS TV",
-      "canonical": "play netflix",
-      "examples": [
-        "play the netflix video $video_id on my lg tv"
-      ]
-    },
-    "play_amazon": {
-      "args": [
-        {
-          "name": "video_id",
-          "type": "String",
-          "question": "What video do you want to play? Use the ID from the last part of the URL.",
-          "required": false
-        }
-      ],
-      "doc": "open the Amazon app on the tv and start playing a video",
-      "confirmation": "play $video_id from Amazon on your LG WebOS TV",
-      "canonical": "play amazon",
-      "examples": [
-        "play the amazon video $video_id on my lg tv"
-      ]
+      "confirmation_remote": "turn $power $__person's LG WebOS TV",
+      "canonical": "set power on lg webos tv",
+      "formatted": [],
+      "poll_interval": 0
     },
     "raise_volume": {
       "args": [],
       "doc": "increase the volume of the tv",
       "confirmation": "increase the volume on your LG WebOS TV",
-      "canonical": "raise volume",
-      "examples": [
-        "raise the volume of my lg tv"
-      ]
+      "confirmation_remote": "increase the volume on $__person's LG WebOS TV",
+      "canonical": "raise volume on lg webos tv",
+      "formatted": [],
+      "poll_interval": 0
     },
     "lower_volume": {
       "args": [],
       "doc": "lower the audio volume on the tv",
       "confirmation": "decrease the volume on your LG WebOS TV",
-      "canonical": "lower volume",
-      "examples": [
-        "lower the volume of my lg tv"
-      ]
+      "confirmation_remote": "decrease the volume on $__person's LG WebOS TV",
+      "canonical": "lower volume on lg webos tv",
+      "formatted": [],
+      "poll_interval": 0
     },
     "set_volume": {
       "args": [
-        {"name": "percent",
-         "type": "Number",
-         "question": "What volume do you want to set (in percent)?"
+        {
+          "name": "percent",
+          "type": "Number",
+          "question": "What volume do you want to set (in percent)?",
+          "is_input": true,
+          "required": true
         }
       ],
       "doc": "set the volume on this device to the given percent value",
-      "confirmation": "set the volume on your LG WebOS TV to $percent %",
-      "canonical": "set volume",
-      "examples": [
-        "set the volume of my lg tv to $percent"
-      ]
+      "confirmation": "set the volume on your LG WebOS TV to $percent%",
+      "confirmation_remote": "set the volume on $__person's LG WebOS TV to $percent%",
+      "canonical": "set volume on lg webos tv",
+      "formatted": [],
+      "poll_interval": 0
     },
     "mute": {
-      "args": [
-      ],
+      "args": [],
       "doc": "change the mute status on the tv",
-      "confirmation": "mute your LG WebOS Tv",
-      "canonical": "mute",
-      "examples": [
-        "mute my lg tv"
-      ]
+      "confirmation": "mute your LG WebOS TV",
+      "confirmation_remote": "mute $__person's LG WebOS TV",
+      "canonical": "mute on lg webos tv",
+      "formatted": [],
+      "poll_interval": 0
     },
     "unmute": {
-      "args": [
-      ],
+      "args": [],
       "doc": "change the mute status on the tv",
       "confirmation": "unmute your LG WebOS Tv",
-      "canonical": "unmute",
-      "examples": [
-        "unmute my lg tv",
-        "give voice to my lg tv"
-      ]
+      "confirmation_remote": "unmute $__person's LG WebOS Tv",
+      "canonical": "unmute on lg webos tv",
+      "formatted": [],
+      "poll_interval": 0
+    },
+    "play_url": {
+      "args": [
+        {
+          "name": "url",
+          "type": "URL",
+          "question": "What video do you want to play? Use the full URL.",
+          "is_input": true,
+          "required": true
+        }
+      ],
+      "doc": "start playing a video by URL",
+      "confirmation": "play $url on your LG WebOS TV",
+      "confirmation_remote": "play $url on $__person's LG WebOS TV",
+      "canonical": "play url on lg webos tv",
+      "formatted": [],
+      "poll_interval": 0
     }
   },
   "queries": {},
-  "global-name": "lg_webos_tv"
+  "examples": [
+    {
+      "utterance": "turn ${p_power} my lg tv",
+      "program": "let action x := \\(p_power :Enum(on,off)) -> @com.lg.tv.webos2.set_power(power=p_power);"
+    },
+    {
+      "utterance": "set the power on my lg tv to ${p_power}",
+      "program": "let action x := \\(p_power :Enum(on,off)) -> @com.lg.tv.webos2.set_power(power=p_power);"
+    },
+    {
+      "utterance": "raise the volume of my lg tv",
+      "program": "let action x := \\() -> @com.lg.tv.webos2.raise_volume();"
+    },
+    {
+      "utterance": "lower the volume of my lg tv",
+      "program": "let action x := \\() -> @com.lg.tv.webos2.lower_volume();"
+    },
+    {
+      "utterance": "set the volume of my lg tv to ${p_percent}",
+      "program": "let action x := \\(p_percent :Number) -> @com.lg.tv.webos2.set_volume(percent=p_percent);"
+    },
+    {
+      "utterance": "mute my lg tv",
+      "program": "let action x := \\() -> @com.lg.tv.webos2.mute();"
+    },
+    {
+      "utterance": "unmute my lg tv",
+      "program": "let action x := \\() -> @com.lg.tv.webos2.unmute();"
+    },
+    {
+      "utterance": "play link ${p_url:const} on my lg tv",
+      "program": "let action x := \\(p_url :URL) -> @com.lg.tv.webos2.play_url(url=p_url);"
+    },
+    {
+      "utterance": "play ${p_url} on my lg tv",
+      "program": "let action x := \\(p_url :URL) -> @com.lg.tv.webos2.play_url(url=p_url);"
+    }
+  ]
 }
