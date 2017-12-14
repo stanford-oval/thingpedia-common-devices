@@ -1,9 +1,9 @@
 {
+  "module_type": "org.thingpedia.v2",
   "params": {},
-  "global-name": "giphy",
-  "types": [
-    "data-source"
-  ],
+  "category": "data",
+  "subcategory": "media",
+  "types": [],
   "child_types": [],
   "auth": {
     "type": "none"
@@ -12,29 +12,47 @@
   "actions": {},
   "queries": {
     "get": {
-      "args": [],
-      "doc": "get a random gif from Giphy",
-      "confirmation": "get a random gif from giphy",
-      "canonical": "get a random gif",
-      "examples": [
-        "get a random gif from giphy"
-      ]
-    },
-    "get_tag": {
       "args": [
         {
           "name": "tag",
-          "type": "String",
+          "type": "Hashtag",
           "question": "With what tag?",
-          "required": true
+          "is_input": true,
+          "required": false
+        },
+        {
+          "name": "picture_url",
+          "type": "Picture",
+          "question": "",
+          "is_input": false,
+          "required": false
         }
       ],
-      "doc": "get a gif with tag from Giphy",
-      "confirmation": "get a gif with tag $tag from giphy",
-      "canonical": "get a gif with tag",
-      "examples": [
-        "get a gif with tag $tag from giphy"
-      ]
+      "doc": "get a gif from Giphy, optionally with the given tag",
+      "confirmation": "get a gif from giphy",
+      "confirmation_remote": "",
+      "canonical": "random giphy gif",
+      "formatted": [
+        {
+          "type": "picture",
+          "url": "${picture_url}"
+        }
+      ],
+      "poll_interval": -1
     }
-  }
+  },
+  "examples": [
+    {
+      "utterance": "a random gif from giphy",
+      "program": "let table x := \\() -> @com.giphy.get();"
+    },
+    {
+      "utterance": "a gif with tag ${p_tag} from giphy",
+      "program": "let table x := \\(p_tag :Hashtag) -> @com.giphy.get(tag=p_tag);"
+    },
+    {
+      "utterance": "a ${p_tag:const} gif",
+      "program": "let table x := \\(p_tag :Hashtag) -> @com.giphy.get(tag=p_tag);"
+    }
+  ]
 }

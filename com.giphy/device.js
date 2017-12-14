@@ -5,16 +5,27 @@
 // Copyright 2016 Silei Xu <silei@stanford.edu>
 //
 // See COPYING for details
+"use strict";
 
 const Tp = require('thingpedia');
 
-module.exports = new Tp.DeviceClass({
-    Name: 'Giphy',
+const BASE_URL = 'http://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC';
 
-    _init: function(engine, state) {
-        this.parent(engine, state);
+module.exports = class Giphy extends Tp.BaseDevice {
+    constructor(engine, state) {
+        super(engine, state);
         this.uniqueId = 'com.giphy';
         this.name = "Giphy";
         this.description = "A GIF a day keeps the doctor away.";
     }
-});
+
+    get_get({ tag }) {
+        let url = BASE_URL;
+        if (tag)
+            url += '&tag=' + encodeURIComponent(tag);
+        return Tp.Helpers.Http.get(url).then((response) => {
+            var parsed = JSON.parse(response);
+            return [{ tag, picture_url: parsed["data"]["image_url"] }];
+        });
+    }
+};
