@@ -1,70 +1,14 @@
 {
+  "module_type": "org.thingpedia.v2",
   "params": {},
-  "types": [
-    "data-source"
-  ],
+  "category": "data",
+  "subcategory": "media",
+  "types": [],
   "child_types": [],
-  "auth": { "type": "none" },
-  "triggers": {
-    "new_comic": {
-      "args": [
-        {
-          "name": "number",
-          "type": "Number",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "title",
-          "type": "String",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "picture",
-          "type": "Picture",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "link",
-          "type": "String",
-          "question": "",
-          "required": false
-        }
-      ],
-      "doc": "triggers when a new comic is published",
-      "confirmation": "a new Xkcd comic is out",
-      "canonical": "new comic",
-      "examples": [
-        "monitor new xkcd comics",
-        "notify me if a new xkcd is out"
-      ]
-    },
-    "new_whatif": {
-      "args": [
-        {
-          "name": "title",
-          "type": "String",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "link",
-          "type": "String",
-          "question": "",
-          "required": false
-        }
-      ],
-      "doc": "triggers when a new What If post is published",
-      "confirmation": "a new What If is published",
-      "canonical": "new what if",
-      "examples": [
-        "monitor what ifs from xkcd",
-        "notify me if a new what if from xkcd is out"
-      ]
-    }
+  "auth": {
+    "type": "none"
   },
+  "triggers": {},
   "actions": {},
   "queries": {
     "get_comic": {
@@ -72,35 +16,59 @@
         {
           "name": "number",
           "type": "Number",
-          "question": "",
+          "question": "What Xkcd comic do you want?",
+          "is_input": true,
           "required": false
         },
         {
           "name": "title",
           "type": "String",
           "question": "",
+          "is_input": false,
           "required": false
         },
         {
-          "name": "picture",
+          "name": "picture_url",
           "type": "Picture",
           "question": "",
+          "is_input": false,
           "required": false
         },
         {
           "name": "link",
+          "type": "URL",
+          "question": "",
+          "is_input": false,
+          "required": false
+        },
+        {
+          "name": "alt_text",
           "type": "String",
           "question": "",
+          "is_input": false,
           "required": false
         }
       ],
       "doc": "retrieve the comic with a given number, or the latest comit",
       "confirmation": "get an Xkcd comic",
-      "canonical": "get comic",
-      "examples": [
-        "give me the latest xkcd",
-        "give me xkcd number $number"
-      ]
+      "confirmation_remote": "get an Xkcd comic using Almond of $__person",
+      "canonical": "xkcd comic",
+      "formatted": [
+        {
+          "type": "rdl",
+          "webCallback": "${link}",
+          "displayTitle": "${title}"
+        },
+        {
+          "type": "picture",
+          "url": "${picture_url}"
+        },
+        {
+          "type": "text",
+          "text": "${alt_text}"
+        }
+      ],
+      "poll_interval": 86400000
     },
     "random_comic": {
       "args": [
@@ -108,33 +76,110 @@
           "name": "number",
           "type": "Number",
           "question": "",
+          "is_input": false,
           "required": false
         },
         {
           "name": "title",
           "type": "String",
           "question": "",
+          "is_input": false,
           "required": false
         },
         {
-          "name": "picture",
+          "name": "picture_url",
           "type": "Picture",
           "question": "",
+          "is_input": false,
           "required": false
         },
         {
           "name": "link",
+          "type": "URL",
+          "question": "",
+          "is_input": false,
+          "required": false
+        },
+        {
+          "name": "alt_text",
           "type": "String",
           "question": "",
+          "is_input": false,
           "required": false
         }
       ],
       "doc": "retrieve a random xkcd",
       "confirmation": "get a random Xkcd comic",
-      "canonical": "get random comic",
-      "examples": [
-        "give me a random xkcd"
-      ]
+      "confirmation_remote": "get a random Xkcd comic using Almond of $__person",
+      "canonical": "random xkcd comic",
+      "formatted": [
+        {
+          "type": "rdl",
+          "webCallback": "${link}",
+          "displayTitle": "${title}"
+        },
+        {
+          "type": "picture",
+          "url": "${picture_url}"
+        },
+        {
+          "type": "text",
+          "text": "${alt_text}"
+        }
+      ],
+      "poll_interval": -1
+    },
+    "what_if": {
+      "args": [
+        {
+          "name": "title",
+          "type": "String",
+          "question": "",
+          "is_input": false,
+          "required": false
+        },
+        {
+          "name": "link",
+          "type": "URL",
+          "question": "",
+          "is_input": false,
+          "required": false
+        }
+      ],
+      "doc": "retrieve the latest posts on Xkcd's What If blog",
+      "confirmation": "get Xkcd's What If blog posts",
+      "confirmation_remote": "",
+      "canonical": "xkcd what if blog posts",
+      "formatted": [
+        {
+          "type": "rdl",
+          "webCallback": "${link}",
+          "displayTitle": "${title}"
+        }
+      ],
+      "poll_interval": 86400000
     }
-  }
+  },
+  "examples": [
+    {
+      "utterance": "when a new xkcd is out",
+      "program": "let stream x := \\() -> monitor @com.xkcd.new_comic();"
+    },
+    {
+      "utterance": "when a new xkcd is out in the what-if section",
+      "program": "let stream x := \\() -> monitor @com.xkcd.new_whatif();"
+    },
+    {
+      "utterance": "the latest xkcd",
+      "program": "let table x := \\() -> @com.xkcd.get_comic();"
+    },
+    {
+      "utterance": "the xkcd number ${p_number}",
+      "program": "let table x := \\(p_number :Number) -> @com.xkcd.get_comic(number=p_number);"
+    },
+    {
+      "utterance": "a random xkcd",
+      "program": "let table x := \\() -> @com.xkcd.random_comic();"
+    }
+  ]
 }
