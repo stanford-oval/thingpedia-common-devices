@@ -6,13 +6,11 @@
 // See LICENSE for details
 "use strict";
 
-const Q = require('q');
 const events = require('events');
 
-const RefCounted = require('thingpedia/lib/ref_counted');
 const OAuthUtils = require('./oauth_utils');
 
-module.exports = class TwitterStream extends RefCounted {
+module.exports = class TwitterStream extends events.EventEmitter {
     constructor(twitter) {
         super();
         this._twitter = twitter;
@@ -20,27 +18,47 @@ module.exports = class TwitterStream extends RefCounted {
         this._connection = null;
         this._dataBuffer = '';
         this._bytesRead = 0;
+
+        this._refCount = 0;
+    }
+
+    _processTweet(tweet) {
+        const hashtags = tweet.entities.hashtags.map((h) => h.text.toLowerCase());
+        const urls = tweet.urls.map((u) => u.expanded_url);
+
+        return {
+            text: tweet.text,
+            from: tweet.user.screen_name.toLowerCase(),
+            hashtags, urls,
+            in_reply_to: tweet.in_reply_to_screen_name ? tweet.in_reply_to_screen_name.toLowerCase() : null,
+            tweet_id: tweet.id_str,
+        };
     }
 
     _processOneItem(payload) {
-        if (payload.delete)
+        if (payload.delete) {
             this.emit('delete-tweet', payload.delete);
-        else if (payload.scrub_geo || payload.limit || payload.friends ||
-                 payload.status_withheld || payload.user_withheld) // ignored
-             return;
-         else if (payload.disconnect)
+        } else if (payload.scrub_geo || payload.limit || payload.friends ||
+                 payload.status_withheld || payload.user_withheld) {
+             // ignored
+        } else if (payload.disconnect) {
              this.close();
-         else if (payload.warning)
-             console.log('Received warning on Twitter Stream: ' + payload.warning.message);
-        else if (payload.event === 'user_update')
+        } else if (payload.warning) {
+             console.error('Received warning on Twitter Stream: ' + payload.warning.message);
+        } else if (payload.event === 'user_update') {
             // FIXME update the device with new info
-            return;
-        else if (payload.event) // ignored
-            return;
-        else if (payload.direct_message)
-            this.emit('dm', payload)
-        else // tweet!
-            this.emit('tweet', payload);
+        } else if (payload.event) {
+            // ignored
+        } else if (payload.direct_message) {
+            this.emit('dm', {
+                from: payload.sender_screen_name,
+                message: payload.text,
+                tweet_id: payload.id_str
+            });
+        } else {
+            // tweet!
+            this.emit('tweet', this._processTweet(payload));
+        }
     }
 
     _maybeParseOneItem() {
@@ -78,41 +96,63 @@ module.exports = class TwitterStream extends RefCounted {
             this._maybeParseOneItem(); // tail call
     }
 
+    ref() {
+        this._refCount++;
+
+        if (!this._connection)
+            this._doOpen();
+    }
+    unref() {
+        this._refCount--;
+
+        if (this._refCount === 0)
+            this.close();
+    }
+
     _doOpen() {
         if (this._connection)
-            return this._connection;
+            return;
 
-        this._connection = Q.Promise(function(callback, errback) {
+        this._connection = new Promise((callback, errback) => {
             OAuthUtils.performSecureStreamRequest.call(this._twitter.oauth,
                                                        this._twitter.accessToken,
                                                        this._twitter.accessTokenSecret,
                                                        'GET', 'https://userstream.twitter.com/1.1/user.json?delimited=length',
-                                                       null, '', null, function(error, data, response) {
+                                                       null, '', null, (error, data, response) => {
                                                            if (error)
                                                                errback(error);
                                                            else
                                                                callback(response);
                                                        });
-        }.bind(this)).then(function(response) {
-            response.on('data', function(data) {
+        }).then((response) => {
+            response.on('data', (data) => {
                 this._bytesRead += data.length;
                 this._dataBuffer += data.toString('utf8');
                 this._maybeParseOneItem();
-            }.bind(this));
-            response.on('end', function() {
+            });
+            response.on('end', () => {
                 this._connection = null;
-            }.bind(this));
+            });
+            response.on('error', (e) => {
+                this.emit('error', e);
+            });
 
             return response.socket;
-        }.bind(this));
-
-        return this._connection;
+        }).catch((e) => {
+            this.emit('error', e);
+            return null;
+        });
     }
 
-    _doClose() {
+    close() {
         if (!this._connection)
-            return Q();
+            return;
 
-        return this._connection.then(function(sock) { sock.end() });
+        let connection = this._connection;
+        this._connection = null;
+        connection.then((sock) => {
+            if (sock !== null)
+                sock.end();
+        });
     }
-}
+};
