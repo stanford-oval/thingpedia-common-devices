@@ -86,9 +86,16 @@
           "question": "",
           "is_input": false,
           "required": false
+        },
+        {
+          "name": "order_by",
+          "type": "Enum(created_time_increasing,created_time_decreasing,modified_time_increasing,modified_time_decreasing,name_increasing,name_decreasing)",
+          "question": "",
+          "is_input": true,
+          "required": false
         }
       ],
-      "doc": "list files in Google Drive, sort by modification date",
+      "doc": "list files in Google Drive, sort by the given order, or modification date by default",
       "confirmation": "list files in your Google Drive",
       "confirmation_remote": "list files in $__person's Google Drive",
       "canonical": "google drive file list",
@@ -116,39 +123,63 @@
     },
     {
       "utterance": "when a file is created in google drive",
-      "program": "let stream x := \\() -> monitor ([file_name] of @com.google.drive.list_drive_files());"
+      "program": "let stream x := \\() -> monitor ([file_id, file_name, created_time] of @com.google.drive.list_drive_files(order_by=enum(created_time_decreasing)));"
     },
     {
       "utterance": "my google drive files",
-      "program": "let table x := @com.google.drive.list_drive_files()"
+      "program": "let table x := @com.google.drive.list_drive_files();"
     },
     {
       "utterance": "my google drive files of type ${p_mime_type}",
-      "program": "let table x := \\(p_mime_type : Entity(tt:mime_type)) -> @com.google.drive.list_drive_files(), mime_type == p_mime_type"
+      "program": "let table x := \\(p_mime_type : Entity(tt:mime_type)) -> @com.google.drive.list_drive_files(), mime_type == p_mime_type;"
     },
     {
       "utterance": "my starred google drive files",
-      "program": "let table x := @com.google.drive.list_drive_files(), starred == true"
+      "program": "let table x := @com.google.drive.list_drive_files(), starred == true;"
     },
     {
       "utterance": "my google drive files created this week",
-      "program": "let table x := @com.google.drive.list_drive_files(), created_time >= start_of(week)"
+      "program": "let table x := @com.google.drive.list_drive_files(order_by=enum(created_time_decreasing)), created_time >= start_of(week);"
     },
     {
       "utterance": "my google drive files modified this week",
-      "program": "let table x := @com.google.drive.list_drive_files(), modified_time >= start_of(week)"
+      "program": "let table x := @com.google.drive.list_drive_files(), modified_time >= start_of(week);"
     },
     {
       "utterance": "my google drive files modified today",
-      "program": "let table x := @com.google.drive.list_drive_files(), modified_time >= start_of(day)"
+      "program": "let table x := @com.google.drive.list_drive_files(), modified_time >= start_of(day);"
     },
     {
       "utterance": "my google drive files smaller than ${p_size}",
-      "program": "let table x := \\(p_size : Measure(byte)) -> @com.google.drive.list_drive_files(), size < p_size"
+      "program": "let table x := \\(p_size : Measure(byte)) -> @com.google.drive.list_drive_files(), size < p_size;"
     },
     {
       "utterance": "my google drive files larger than ${p_size}",
-      "program": "let table x := \\(p_size : Measure(byte)) -> @com.google.drive.list_drive_files(), size > p_size"
+      "program": "let table x := \\(p_size : Measure(byte)) -> @com.google.drive.list_drive_files(), size > p_size;"
+    },
+    {
+      "utterance": "my oldest google drive files",
+      "program": "let table x := @com.google.drive.list_drive_files(order_by=enum(created_time_increasing));"
+    },
+    {
+      "utterance": "my newest google drive files",
+      "program": "let table x := @com.google.drive.list_drive_files(order_by=enum(created_time_decreasing));"
+    },
+    {
+      "utterance": "my google drive files that changed most recently",
+      "program": "let table x := @com.google.drive.list_drive_files(order_by=enum(modified_time_decreasing));"
+    },
+    {
+      "utterance": "my google drive files that were created most recently",
+      "program": "let table x := @com.google.drive.list_drive_files(order_by=enum(created_time_decreasing));"
+    },
+    {
+      "utterance": "my google drive files in alphabetical order",
+      "program": "let table x := @com.google.drive.list_drive_files(order_by=enum(name_increasing));"
+    },
+    {
+      "utterance": "my google drive files in reverse alphabetical order",
+      "program": "let table x := @com.google.drive.list_drive_files(order_by=enum(name_decreasing));"
     }
   ]
 }

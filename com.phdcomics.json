@@ -1,46 +1,77 @@
 {
-  "global-name": "phdcomics",
-  "params": {
-  },
-  "types": [
-    "data-source",
-    "media"
-  ],
+  "module_type": "org.thingpedia.v2",
+  "params": {},
+  "category": "data",
+  "subcategory": "media",
+  "types": [],
   "child_types": [],
   "auth": {
     "type": "none"
   },
-  "triggers": {
-    "new_post": {
+  "triggers": {},
+  "actions": {},
+  "queries": {
+    "get_post": {
       "args": [
         {
           "name": "title",
           "type": "String",
           "question": "",
+          "is_input": false,
           "required": false
         },
         {
           "name": "link",
-          "type": "String",
+          "type": "URL",
           "question": "",
+          "is_input": false,
           "required": false
         },
         {
-          "name": "img",
+          "name": "picture_url",
           "type": "Picture",
           "question": "",
+          "is_input": false,
+          "required": false
+        },
+        {
+          "name": "updated_time",
+          "type": "Date",
+          "question": "",
+          "is_input": false,
           "required": false
         }
       ],
-      "doc": "Poll for new posts (every 3 hours)",
-      "confirmation": "something is posted on PhD comics",
-      "canonical": "new post",
-      "examples": [
-        "monitor phd comics",
-        "notify me for new posts on phd comics"
-      ]
+      "doc": "get the latest phd comics posts",
+      "confirmation": "get PhD comics",
+      "confirmation_remote": "",
+      "canonical": "phdcomics posts",
+      "formatted": [
+        {
+          "type": "rdl",
+          "displayTitle": "${title}",
+          "webCallback": "${link}"
+        },
+        {
+          "type": "picture",
+          "text": "${picture_url}"
+        }
+      ],
+      "poll_interval": 10800000
     }
   },
-  "actions": {},
-  "queries": {}
+  "examples": [
+    {
+      "utterance": "when there is a new post on phd comics",
+      "program": "let stream x := \\() -> monitor @com.phdcomics.get_post();"
+    },
+    {
+      "utterance": "posts on phd comics",
+      "program": "let table x := \\() -> @com.phdcomics.get_post();"
+    },
+    {
+      "utterance": "piled higher and deeper comics",
+      "program": "let table x := \\() -> @com.phdcomics.get_post();"
+    }
+  ]
 }

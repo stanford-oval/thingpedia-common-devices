@@ -7,6 +7,7 @@
 //                Lingbin Li <lingbin@stanford.edu>
 //
 // See COPYING for details
+"use strict";
 
 const Tp = require('thingpedia');
 
@@ -23,10 +24,10 @@ module.exports = class GoogleDriveDevice extends Tp.BaseDevice {
             authorize: 'https://accounts.google.com/o/oauth2/auth',
             get_access_token: 'https://www.googleapis.com/oauth2/v3/token',
             set_access_type: true,
-            callback: function(engine, accessToken, refreshToken) {
+            callback(engine, accessToken, refreshToken) {
                 var auth = 'Bearer ' + accessToken;
                 return Tp.Helpers.Http.get('https://www.googleapis.com/oauth2/v2/userinfo', { auth: auth, accept: 'application/json' })
-                .then(function(response) {
+                .then((response) => {
                     var parsed = JSON.parse(response);
                     return engine.devices.loadOneDevice({ kind: 'com.google',
                                                           accessToken: accessToken,
@@ -59,20 +60,31 @@ module.exports = class GoogleDriveDevice extends Tp.BaseDevice {
         return Tp.Helpers.Http.post(url, data, { useOAuth2: this, dataContentType: 'application/json' });
     }
 
-    get_drive_file_list() {
-        const url = 'https://www.googleapis.com/drive/v3/files?orderBy=modifiedDate desc&pageSize=' + PAGE_SIZE;
+    get_drive_file_list({ order_by }) {
+        const ORDER_CLAUSES = {
+            'modified_time_decreasing': 'modifiedDate desc',
+            'modified_time_increasing': 'modifiedDate asc',
+            'created_time_decreasing': 'createdDate desc',
+            'created_time_increasing': 'createdDate asc',
+            'name_decreasing': 'name desc',
+            'name_increasing': 'name asc',
+        };
+
+        const url = 'https://www.googleapis.com/drive/v3/files?orderBy=' + ORDER_CLAUSES[order_by || 'modified_time_decreasing'] + '&pageSize=' + PAGE_SIZE;
         return Tp.Helpers.Http.get(url, { useOAuth2: this, dataContentType: 'application/json' }).then((response) => {
             const parsedResponse = JSON.parse(response);
-            return parsedResponse.files.map((file) => ({
-                file_id: file.id,
-                file_name: file.name,
-                mime_type: file.mimeType,
-                description: file.description,
-                starred: file.starred,
-                created_time: new Date(file.createdTime),
-                modified_time: new Date(file.modifiedTime),
-                size: file.size||0
-            }));
+            return parsedResponse.files.map((file) => {
+                return ({
+                    file_id: file.id,
+                    file_name: file.name,
+                    mime_type: file.mimeType,
+                    description: file.description,
+                    starred: file.starred,
+                    created_time: new Date(file.createdTime),
+                    modified_time: new Date(file.modifiedTime),
+                    size: file.size||0
+                });
+            });
         });
     }
 };
