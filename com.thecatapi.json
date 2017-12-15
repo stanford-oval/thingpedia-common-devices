@@ -1,48 +1,89 @@
 {
+  "module_type": "org.thingpedia.v2",
   "params": {},
-  "global-name": "thecatapi",
-  "types": [
-    "data-source"
-  ],
+  "category": "data",
+  "subcategory": "media",
+  "types": [],
   "child_types": [],
   "auth": {
     "type": "none"
   },
   "triggers": {},
+  "actions": {},
   "queries": {
     "get": {
       "args": [
         {
           "name": "image_id",
-          "type": "String",
-          "question": ""
+          "type": "Entity(com.thecatapi:image_id)",
+          "question": "",
+          "is_input": false,
+          "required": false
         },
         {
           "name": "count",
           "type": "Number",
-          "question": "How many cats do you want?"
+          "question": "How many cats do you want?",
+          "is_input": true,
+          "required": false
         },
         {
-          "name": "image_url",
+          "name": "picture_url",
           "type": "Picture",
-          "question": ""
+          "question": "",
+          "is_input": false,
+          "required": false
         },
-        { "name": "link_url",
-          "type": "String",
-          "question": ""
+        {
+          "name": "link",
+          "type": "URL",
+          "question": "",
+          "is_input": false,
+          "required": false
         }
       ],
       "doc": "get `count` many cat pictures",
       "confirmation": "get cat pictures",
-      "canonical": "get cats",
-      "examples": [
-        "cat pictures now",
-        "not enough cat pictures",
-        "need moar cats",
-        "need $count moar cats",
-        "can i haz cats"
-      ]
+      "confirmation_remote": "",
+      "canonical": "get cat on thecatapi",
+      "formatted": [
+        {
+          "type": "rdl",
+          "webCallback": "${link}",
+          "displayTitle": "${link}"
+        },
+        {
+          "type": "picture",
+          "url": "${picture_url}"
+        }
+      ],
+      "poll_interval": -1
     }
   },
-  "actions": {}
+  "examples": [
+    {
+      "utterance": "a cat picture",
+      "program": "let table x := \\() -> @com.thecatapi.get();"
+    },
+    {
+      "utterance": "not enough cat pictures",
+      "program": "now => @com.thecatapi.get() => notify;"
+    },
+    {
+      "utterance": "need moar cats",
+      "program": "now => @com.thecatapi.get() => notify;"
+    },
+    {
+      "utterance": "${p_count:const} cat pictures",
+      "program": "let table x := \\(p_count :Number) -> @com.thecatapi.get(count=p_count);"
+    },
+    {
+      "utterance": "can i haz cats",
+      "program": "now => @com.thecatapi.get() => notify;"
+    },
+    {
+      "utterance": "cat pictures now",
+      "program": "now => @com.thecatapi.get() => notify;"
+    }
+  ]
 }
