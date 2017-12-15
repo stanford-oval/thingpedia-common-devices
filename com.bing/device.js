@@ -6,14 +6,56 @@
 "use strict";
 
 const Tp = require('thingpedia');
+const API_KEY = '09c6cd0bfeef4179bbdfaa9b68755b8b';
 
-module.exports = new Tp.DeviceClass({
-    Name: 'BingDevice',
-
-    _init: function(engine, state) {
-        this.parent(engine, state);
+module.exports = class BingClass extends Tp.BaseDevice {
+    constructor(engine, state) {
+        super(engine, state);
         this.uniqueId = 'com.bing';
         this.name = "Bing Search";
         this.description = "Search the web, using Bing";
-    },
-});
+    }
+
+    get_search({query}, count) {
+        let baseUrl = 'https://api.cognitive.microsoft.com/bing/v5.0/search?count=%d&mkt=en-US&setLang=en&q=%s&responseFilter=Webpages';
+        let url = baseUrl.format(count ? count : 5, encodeURIComponent(query));
+        return Tp.Helpers.Http.get(url, {
+            extraHeaders: { 'Ocp-Apim-Subscription-Key': API_KEY }
+        }).then((response) => {
+            let parsedResponse = JSON.parse(response);
+            return parsedResponse.webPages.value.map((result) => {
+                return ({
+                    query: query,
+                    title: result.name,
+                    description: result.snippet,
+                    link: result.url
+                });
+            });
+        });
+    }
+
+    get_image_search({query}, count, filters) {
+        let baseUrl = 'https://api.cognitive.microsoft.com/bing/v5.0/images/search?count=%d&mkt=en-US&setLang=en&q=%s';
+        let url = baseUrl.format(count ? count : 5, encodeURIComponent(query));
+        let width = filters[5];
+        let height = filters[6];
+        if (width)
+            url += '&width=' + width;
+        if (height)
+            url += '&height=' + height;
+        return Tp.Helpers.Http.get(url, {
+            extraHeaders: { 'Ocp-Apim-Subscription-Key': API_KEY }
+        }).then((response) => {
+            let parsedResponse = JSON.parse(response);
+            return parsedResponse.value.map((result) => {
+                return ({
+                    query: query,
+                    title: result.name,
+                    picture_url: result.contentUrl,
+                    link: result.hostPageUrl
+                });
+            });
+        });
+
+    }
+};
