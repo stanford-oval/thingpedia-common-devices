@@ -11,23 +11,23 @@ module.exports = new Tp.DeviceClass({
     Name: 'OneDriveDevice',
     UseOAuth2: Tp.Helpers.OAuth2({
         kind: 'com.live.onedrive',
-        authorize: "https://login.live.com/oauth20_authorize.srf",
-        scope: ['offline_access', 'onedrive.readonly', 'onedrive.readwrite'],
-        get_access_token: "https://login.live.com/oauth20_token.srf",
+        authorize: "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
+        scope: ['offline_access', 'files.readwrite.all', 'files.read.all'],
+        get_access_token: "https://login.microsoftonline.com/common/oauth2/v2.0/token",
         redirect_uri: 'https://thingengine.stanford.edu/devices/oauth2/callback/com.live.onedrive',
         callback: function(engine, accessToken, refreshToken) {
             var auth = 'Bearer ' + accessToken;
-            return Tp.Helpers.Http.get('https://api.onedrive.com/v1.0/drive',
+            return Tp.Helpers.Http.get('https://graph.microsoft.com/v1.0/drive',
                                        { auth: auth,
                                          accept: 'application/json' })
-            .then(function (response) {
+            .then((response) => {
                 var parsed = JSON.parse(response);
                 return engine.devices.loadOneDevice({ kind: 'com.live.onedrive',
                                                       accessToken: accessToken,
                                                       refreshToken: refreshToken,
                                                       driveId: parsed.id,
                                                       userId: parsed.owner.user.id,
-                                                      userName: parsed.owner.user.displayName });
+                                                      userName: parsed.owner.user.displayName }, true);
             });
         }
     }),

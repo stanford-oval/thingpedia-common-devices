@@ -258,7 +258,7 @@ const PlayUrlAction = new Tp.ChannelClass({
 
         return this.device.queryInterface('lg-websocket').sendRequest(ssapUrl, { id: appId, contentId: contentId, target: target });
     }
-})
+});
 
 function makeAction(url, payload) {
     return new Tp.ChannelClass({
