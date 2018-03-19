@@ -14,8 +14,6 @@ module.exports = new Tp.ChannelClass({
     Extends: Tp.SimpleAction,
 
     _doInvoke: function(text) {
-        return Tp.Helpers.Http.post('https://graph.facebook.com/v2.5/me/feed', 'message=' + encodeURIComponent(text), { useOAuth2: this.device }).catch(function(error) {
-            console.error('Error posting on Facebook: ' + error.message);
-        });
+
     }
 });
