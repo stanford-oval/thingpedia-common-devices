@@ -6,6 +6,7 @@
 "use strict";
 
 const Tp = require('thingpedia');
+const FormData = require('form-data');
 
 module.exports = class FacebokDevice extends Tp.BaseDevice {
     constructor(engine, state) {
@@ -15,7 +16,7 @@ module.exports = class FacebokDevice extends Tp.BaseDevice {
         this.name = "Facebook Account %s".format(this.userName);
         this.description = "This is your Facebook Account. You can use it to access your wall, follow your friends and more.";
     }
-    
+
     get userName() {
         return this.state.userName || this.state.profileId;
     }
@@ -32,48 +33,18 @@ module.exports = class FacebokDevice extends Tp.BaseDevice {
     do_post_picture({ caption, picture_url }) {
         const fbURL = 'https://graph.facebook.com/v2.12/me/photos';
 
-        console.log(picture_url);
+        picture_url = String(picture_url);
         if (Tp.Helpers.Content.isPubliclyAccessible(picture_url)) {
-            console.log('publicly accessible');
             return Tp.Helpers.Http.post(fbURL, 'url=%s&caption=%s'.format(encodeURIComponent(picture_url), encodeURIComponent(caption)),
                 { useOAuth2: this, dataContentType: 'application/x-www-form-urlencoded' });
         } else {
             return Tp.Helpers.Content.getStream(this.engine.platform, picture_url).then((stream) => {
-                return new Promise((callback, errback) => {
-                    const buffers = [];
-                    let length = 0;
+                const formData = new FormData();
+                formData.append('caption', caption);
+                formData.append('source', stream, {contentType: stream.contentType});
 
-                    stream.on('data', (buffer) => {
-                        buffers.push(buffer);
-                        length += buffer.length;
-                    });
-                    stream.on('end', () => {
-                        callback([Buffer.concat(buffers, length), stream.contentType]);
-                    });
-                    stream.on('error', errback);
-                });
-            }).then(([buffer, contentType]) => {
-                console.log('contentType', contentType);
-                console.log('buffer', buffer.length);
-                const boundary = 'formboundary';
-                const before = new Buffer('--' + boundary + '\r\n' +
-                    'Content-Disposition: form-data; name="caption"\r\n' +
-                    'Content-Type: text/plain; charset="UTF-8"\r\n' +
-                    '\r\n' +
-                    caption + '\r\n' +
-                    '--' + boundary + '\r\n' +
-                    'Content-Type: ' + contentType + '\r\n' +
-                    'Content-Transfer-Encoding: binary\r\n' +
-                    'Content-Disposition: form-data; name="source"\r\n' +
-                    '\r\n', 'utf8');
-                console.log('Before:', before.toString().replace(/\r\n/g, '\\r\\n'));
-                const after = new Buffer('\r\n--' + boundary + '--\r\n', 'utf8');
-                console.log('After:', after.toString().replace(/\r\n/g, '\\r\\n'));
-                const body = Buffer.concat([before, buffer, after], before.length + buffer.length + after.length);
-                console.log('Body', body);
-
-                return Tp.Helpers.Http.post(fbURL, body,
-                    { useOAuth2: this, dataContentType: 'multipart/form-data; boundary=' + boundary });
+                return Tp.Helpers.Http.postStream(fbURL, formData,
+                    { useOAuth2: this, dataContentType: 'multipart/form-data; boundary=' + formData.getBoundary() });
             });
         }
     }
