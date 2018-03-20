@@ -1,6 +1,6 @@
 // -*- mode: js; indent-tabs-mode: nil; js-basic-offset: 4 -*-
 //
-// Copyright 2016 Giovanni Campagna <gcampagn@cs.stanford.edu>
+// Copyright 2016-2018 Giovanni Campagna <gcampagn@cs.stanford.edu>
 //
 // See LICENSE for details
 "use strict";
@@ -73,7 +73,7 @@ class UnionObjectSet extends ObjectSet.Base {
         this._children.forEach((c) => {
             c.on('object-added', this._objectAddedListener);
             c.on('object-removed', this._objectRemovedListener);
-            c.start()
+            c.start();
         });
     }
 
@@ -81,7 +81,7 @@ class UnionObjectSet extends ObjectSet.Base {
         this._children.forEach((c) => {
             c.removeListener('object-added', this._objectAddedListener);
             c.removeListener('object-removed', this._objectRemovedListener);
-            c.start()
+            c.start();
         });
     }
 }
@@ -89,4 +89,4 @@ class UnionObjectSet extends ObjectSet.Base {
 module.exports = {
     UnionObjectSet: UnionObjectSet,
     NestDeviceCollection: NestDeviceCollection
-}
+};

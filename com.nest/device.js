@@ -1,6 +1,6 @@
 // -*- mode: js; indent-tabs-mode: nil; js-basic-offset: 4 -*-
 //
-// Copyright 2016 Giovanni Campagna <gcampagn@cs.stanford.edu>
+// Copyright 2016-2018 Giovanni Campagna <gcampagn@cs.stanford.edu>
 //
 // See LICENSE for details
 "use strict";
@@ -15,55 +15,56 @@ const UnionObjectSet = Collections.UnionObjectSet;
 const ThermostatDevice = require('./thermostat');
 const CameraDevice = require('./camera');
 
-const SmokeAlarmDevice = new Tp.DeviceClass({
-    Name: 'NestSmokeAlarmDevice',
-
-    _init: function(engine, state, url) {
-        this.parent(engine, state);
+const SmokeAlarmDevice = class NestSmokeAlarmDevice extends Tp.BaseDevice {
+    constructor(engine, state, url) {
+        super(engine, state);
 
         this.url = url;
         this.uniqueId = 'com.nest-' + state.device_id;
         this.isTransient = true;
-    },
+    }
 
     get kind() {
         return 'com.nest';
-    },
+    }
 
     get name() {
         return 'Nest Smoke Alarm ' + this.state.name;
-    },
+    }
 
     get description() {
         return 'This is your ' + this.state.name_long;
-    },
+    }
 
-    checkAvailable: function() {
+    checkAvailable() {
         return this.state.is_online ? Tp.Availability.AVAILABLE :
             Tp.Availability.UNAVAILABLE;
     }
-});
+};
 SmokeAlarmDevice.metadata = {
     types: ['smoke-alarm']
 };
 
-module.exports = new Tp.DeviceClass({
-    Name: 'NestDevice',
-    UseOAuth2: Tp.Helpers.OAuth2({
-        kind: 'com.nest',
-        scope: null,
-        set_state: true,
-        authorize: 'https://home.nest.com/login/oauth2',
-        get_access_token: 'https://api.home.nest.com/oauth2/access_token',
-        callback: function(engine, accessToken, refreshToken) {
-            var auth = 'Bearer ' + accessToken;
-            return engine.devices.loadOneDevice({ kind: 'com.nest',
-                                                  accessToken: accessToken,
-                                                  refreshToken: refreshToken }, true);
-        }
-    }),
+module.exports = class NestDevice extends Tp.BaseDevice {
+    static get runOAuth2() {
+        return Tp.Helpers.OAuth2({
+            kind: 'com.nest',
+            scope: null,
+            set_state: true,
+            authorize: 'https://home.nest.com/login/oauth2',
+            get_access_token: 'https://api.home.nest.com/oauth2/access_token',
+            redirect_uri: 'https://thingengine.stanford.edu/devices/oauth2/callback/com.nest',
 
-    _init: function(engine, state) {
+            callback(engine, accessToken, refreshToken) {
+                var auth = 'Bearer ' + accessToken;
+                return engine.devices.loadOneDevice({ kind: 'com.nest',
+                                                      accessToken: accessToken,
+                                                      refreshToken: refreshToken }, true);
+            }
+        });
+    }
+
+    _init(engine, state) {
         this.parent(engine, state);
 
         // unfortunately, the user can only have one nest account configured
@@ -77,21 +78,21 @@ module.exports = new Tp.DeviceClass({
         this._firebaseClient = null;
         this._firebaseClientCount = 0;
 
-        var thermostats = new NestDeviceCollection(this, "devices/thermostats", ThermostatDevice);
-        var smokeAlarms = new NestDeviceCollection(this, "devices/smoke_co_alarms", SmokeAlarmDevice);
-        var cameras = new NestDeviceCollection(this, "devices/cameras", CameraDevice);
+        const thermostats = new NestDeviceCollection(this, "devices/thermostats", ThermostatDevice);
+        const smokeAlarms = new NestDeviceCollection(this, "devices/smoke_co_alarms", SmokeAlarmDevice);
+        const cameras = new NestDeviceCollection(this, "devices/cameras", CameraDevice);
         this._deviceCollection = new UnionObjectSet([thermostats, smokeAlarms, cameras]);
-    },
+    }
 
-    start: function() {
+    start() {
         this._deviceCollection.start();
-    },
+    }
 
-    stop: function() {
+    stop() {
         this._deviceCollection.stop();
-    },
+    }
 
-    refFirebaseClient: function() {
+    refFirebaseClient() {
         if (this._firebaseClient === null) {
             this._firebaseClient = new Firebase('wss://developer-api.nest.com/');
             this._firebaseClient.authWithCustomToken(this.accessToken);
@@ -99,22 +100,22 @@ module.exports = new Tp.DeviceClass({
 
         this._firebaseClientCount ++;
         return this._firebaseClient;
-    },
+    }
 
-    unrefFirebaseClient: function() {
+    unrefFirebaseClient() {
         this._firebaseClientCount--;
         if (this._firebaseClientCount === 0) {
             this._firebaseClient.goOffline();
             this._firebaseClient = null;
         }
-    },
+    }
 
     // it's cloud backed so always available
-    checkAvailable: function() {
+    checkAvailable() {
         return Tp.Availability.AVAILABLE;
-    },
+    }
 
-    queryInterface: function(iface) {
+    queryInterface(iface) {
         switch (iface) {
         case 'subdevices':
             return this._deviceCollection;
@@ -122,5 +123,5 @@ module.exports = new Tp.DeviceClass({
             return null;
         }
     }
-});
+};
 
