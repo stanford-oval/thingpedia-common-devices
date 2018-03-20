@@ -9,7 +9,7 @@ all: $(zipfiles)
 	cd $< ; \
 	npm install --only=prod --no-optional ; \
 	npm dedupe ; \
-	zip $(abspath $@) *
+	zip -r $(abspath $@) *
 
 build/%: %
 	mkdir -p build/

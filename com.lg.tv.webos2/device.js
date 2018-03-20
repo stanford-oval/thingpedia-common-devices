@@ -7,14 +7,10 @@
 // See COPYING for details
 "use strict";
 
-const tls = require('tls');
-const Q = require('q');
 const WebSocket = require('ws');
 const Url = require('url');
 
 const Tp = require('thingpedia');
-
-const SetPowerAction = require('./set_power');
 
 const PERMISSIONS = [
     'LAUNCH',
@@ -54,7 +50,7 @@ class LgWebsocket {
     }
 
     open() {
-        return Q.Promise((callback, errback) => {
+        return new Promise((callback, errback) => {
             var socket = new WebSocket('wss://' + this.host + ':3001', {
                 agent: false,
                 rejectUnauthorized: false
@@ -103,7 +99,7 @@ class LgWebsocket {
 
     _handleMessage(data) {
         console.log('websocket message', data);
-        var parsed;
+        let parsed;
         try {
             parsed = JSON.parse(data);
         } catch(e) {
@@ -117,15 +113,16 @@ class LgWebsocket {
                 // and metadata but we don't care too much
                 return;
 
-            case 'response':
+            case 'response': {
                 if (!this._requests[parsed.id])
                     return;
-                var req = this._requests[parsed.id];
+                const req = this._requests[parsed.id];
                 delete this._requests[parsed.id];
                 req.resolve(parsed.payload);
                 return;
+            }
 
-            case 'error':
+            case 'error': {
                 if (parsed.id === this._registerId) {
                     this._registerPromise.reject(new Error(parsed.error));
                     this._registerPromise = null;
@@ -134,10 +131,11 @@ class LgWebsocket {
                 }
                 if (!this._requests[parsed.id])
                     return;
-                var req = this._requests[parsed.id];
+                const req = this._requests[parsed.id];
                 delete this._requests[parsed.id];
                 req.reject(new Error(parsed.error));
                 return;
+            }
 
             case 'registered':
                 this.clientKey = parsed.payload['client-key'];
@@ -162,31 +160,31 @@ class LgWebsocket {
 
     sendRegister(pin) {
         this._registerId = this._requestId++;
-        this._registerPromise = Q.defer();
+        return new Promise((resolve, reject) => {
+            this._registerPromise = { resolve, reject };
 
-        if (this.clientKey !== null) {
-            this.sendRaw({
-                id: this._registerId,
-                type: 'register',
-                payload: {
-                    'client-key': this.clientKey
-                }
-            });
-        } else {
-            this.sendRaw({
-                id: this._registerId,
-                type: 'register',
-                payload: {
-                    pairingType: 'PIN',
-                    manifest: {
-                        manifestVersion: 1,
-                        permissions: PERMISSIONS
+            if (this.clientKey !== null) {
+                this.sendRaw({
+                    id: this._registerId,
+                    type: 'register',
+                    payload: {
+                        'client-key': this.clientKey
                     }
-                }
-            });
-        }
-
-        return this._registerPromise.promise;
+                });
+            } else {
+                this.sendRaw({
+                    id: this._registerId,
+                    type: 'register',
+                    payload: {
+                        pairingType: 'PIN',
+                        manifest: {
+                            manifestVersion: 1,
+                            permissions: PERMISSIONS
+                        }
+                    }
+                });
+            }
+        });
     }
 
     sendPin(pin) {
@@ -202,41 +200,175 @@ class LgWebsocket {
 
     _doSendRequest(uri, payload) {
         var id = this._requestId++;
-        this._requests[id] = Q.defer();
+        return new Promise((resolve, reject) => {
+            this._requests[id] = { resolve, reject };
 
-        this.sendRaw({
-            id: id,
-            type: 'request',
-            uri: uri,
-            payload: payload
+            this.sendRaw({
+                id: id,
+                type: 'request',
+                uri: uri,
+                payload: payload
+            });
         });
-        return this._requests[id].promise;
     }
 
     sendRequest(uri, payload) {
-        if (!this._socket && this._wasRegistered) {
+        if (!this._socket && this._wasRegistered)
             return this.open().then(() => this.sendRegister()).then(() => this._doSendRequest(uri, payload));
-        } else {
+        else
             return this._doSendRequest(uri, payload);
-        }
     }
 }
 
-const PlayUrlAction = new Tp.ChannelClass({
-    Name: 'PlayUrlAction',
+module.exports = class LgTvDevice extends Tp.BaseDevice {
+    static loadFromDiscovery(engine, publicData, privateData) {
+        return new LgTvDevice(engine,
+                              { kind: 'com.lg.tv.webos2',
+                                discoveredBy: engine.ownTier,
+                                uuid: privateData.uuid,
+                                host: privateData.host,
+                                port: privateData.port
+                               });
+    }
 
-    _doOpen() {
-        return this.device.refWebsocket();
-    },
+    constructor(engine, state) {
+        super(engine, state);
 
-    _doClose() {
-        return this.device.unrefWebsocket();
-    },
+        this.uniqueId = 'com.lg.tv.webos2-' + state.uuid;
+        this.name = "LG Smart TV (%s)".format(state.host);
+        this.description = "This is a LG Smart TV.";
+        this.descriptors = ['upnp/' + state.uuid];
 
-    sendEvent(event) {
-        var url = event[0];
+        this._initialized = false;
+        this._websocket = null;
+        this._websocketRefCount = 0;
+    }
 
-        var ssapUrl, appId, contentId, target;
+    get uuid() {
+        return this.state.uuid;
+    }
+
+    get host() {
+        return this.state.host;
+    }
+
+    get port() {
+        return this.state.port;
+    }
+
+    get clientKey() {
+        return this.state.clientKey;
+    }
+
+    refWebsocket() {
+        this._websocketRefCount++;
+
+        if (this._websocketRefCount === 1) {
+            var ws = new LgWebsocket(this.host, this.clientKey, this.cert);
+            this._websocket = ws;
+            return ws.open().then(() => {
+                return ws.sendRegister();
+            }).then(() => {
+                return ws;
+            });
+        } else {
+            return Promise.resolve(this._websocket);
+        }
+    }
+
+    unrefWebsocket() {
+        // wait 30 seconds before closing the connection on last use
+        setTimeout(() => {
+            this._websocketRefCount--;
+            if (this._websocketRefCount === 0) {
+                this._websocket.close();
+                this._websocket = null;
+            }
+        }, 30000);
+    }
+
+    completeDiscovery(delegate) {
+        if (this.clientKey) {
+            delegate.configDone();
+            return Promise.resolve();
+        }
+
+        if (this._websocket)
+            this._websocket.close();
+        this._websocket = new LgWebsocket(this.host, null, null);
+        this._websocketRefCount = 1;
+
+        return this._websocket.open().then(() => {
+            // registration and PIN request from the user need to happen in parallel
+            // (ideally, requesting the PIN would be nested in the sendRegister, but
+            // that confuses the code in the case we have the client key already)
+
+            var code = delegate.requestCode("Please enter the PIN shown on your TV.").then((pin) => {
+                return this._websocket.sendPin(pin.trim());
+            });
+            var register = this._websocket.sendRegister();
+            return Promise.all([code, register]);
+        }).then(() => {
+            this.state.clientKey = this._websocket.clientKey;
+            this.state.cert = this._websocket.cert;
+            this.engine.devices.addDevice(this);
+
+            this.unrefWebsocket();
+            delegate.configDone();
+        }).catch((e) => {
+            delegate.configFailed(e);
+        });
+    }
+
+    queryInterface(iface) {
+        switch(iface) {
+        case 'lg-websocket':
+            return this._websocket;
+
+        default:
+            return super.queryInterface(iface);
+        }
+    }
+
+    _invoke(url, payload) {
+        return this.refWebsocket().then(() => {
+            return this._websocket.sendRequest(url, payload);
+        }).then((result) => {
+            this.unrefWebsocket();
+            return result;
+        }, (error) => {
+            this.unrefWebsocket();
+            throw error;
+        });
+    }
+
+    do_set_power({ power }) {
+        if (power === 'on') // the tv is already on if we get here
+            return Promise.resolve();
+        else
+            return this._invoke('ssap://system/turnOff');
+    }
+
+    do_raise_volume() {
+        return this._invoke('ssap://audio/volumeUp');
+    }
+    do_lower_volume() {
+        return this._invoke('ssap://audio/volumeDown');
+    }
+    do_set_volume({ volume }) {
+        return this._invoke('ssap://audio/setVolume', { volume: Math.round(volume) });
+    }
+    do_mute() {
+        return this._invoke('ssap://audio/setMute', { mute: true });
+    }
+    do_unmute() {
+        return this._invoke('ssap://audio/setMute', { mute: false });
+    }
+
+    do_play_url({ url }) {
+        url = String(url);
+
+        let ssapUrl, appId, contentId, target;
         ssapUrl = 'ssap://system.launcher/launch';
         if (url.startsWith('https://www.youtube.com/watch?v=')) {
             appId = 'youtube.leanback.v4';
@@ -256,167 +388,6 @@ const PlayUrlAction = new Tp.ChannelClass({
             target = url;
         }
 
-        return this.device.queryInterface('lg-websocket').sendRequest(ssapUrl, { id: appId, contentId: contentId, target: target });
+        return this._invoke(ssapUrl, { id: appId, contentId: contentId, target: target });
     }
-});
-
-function makeAction(url, payload) {
-    return new Tp.ChannelClass({
-        Name: 'SetPowerAction',
-
-        _doOpen() {
-            return this.device.refWebsocket();
-        },
-
-        _doClose() {
-            return this.device.unrefWebsocket();
-        },
-
-        sendEvent(event) {
-            return this.device.queryInterface('lg-websocket').sendRequest(url, payload ? payload(event) : undefined);
-        }
-    });
-}
-const RaiseVolume = makeAction('ssap://audio/volumeUp');
-const LowerVolume = makeAction('ssap://audio/volumeDown');
-const SetVolume = makeAction('ssap://audio/setVolume', function(event) {
-    return { volume: Math.round(event[0]) };
-});
-const Mute = makeAction('ssap://audio/setMute', function(event) {
-    return { mute: true };
-});
-const Unmute = makeAction('ssap://audio/setMute', function(event) {
-    return { mute: false };
-});
-
-const LgTvDevice = new Tp.DeviceClass({
-    Name: 'LgTvDevice',
-    UseDiscovery(engine, publicData, privateData) {
-        return new LgTvDevice(engine,
-                              { kind: 'com.lg.tv.webos2',
-                                discoveredBy: engine.ownTier,
-                                uuid: privateData.uuid,
-                                host: privateData.host,
-                                port: privateData.port
-                               });
-    },
-
-    _init: function(engine, state) {
-        this.parent(engine, state);
-
-        this.uniqueId = 'com.lg.tv.webos2-' + state.uuid;
-        this.name = "LG Smart TV (%s)".format(state.host);
-        this.description = "This is a LG Smart TV.";
-        this.descriptors = ['upnp/' + state.uuid];
-
-        this._initialized = false;
-        this._websocket = null;
-        this._websocketRefCount = 0;
-    },
-
-    get uuid() {
-        return this.state.uuid;
-    },
-
-    get host() {
-        return this.state.host;
-    },
-
-    get port() {
-        return this.state.port;
-    },
-
-    get clientKey() {
-        return this.state.clientKey;
-    },
-
-    refWebsocket() {
-        this._websocketRefCount++;
-
-        if (this._websocketRefCount === 1) {
-            var ws = new LgWebsocket(this.host, this.clientKey, this.cert);
-            this._websocket = ws;
-            return ws.open().then(() => {
-                return ws.sendRegister();
-            }).then(() => {
-                return ws;
-            });
-        } else {
-            return Q(this._websocket);
-        }
-    },
-
-    unrefWebsocket() {
-        // wait 30 seconds before closing the connection on last use
-        setTimeout(() => {
-            this._websocketRefCount--;
-            if (this._websocketRefCount === 0) {
-                this._websocket.close();
-                this._websocket = null;
-            }
-        }, 30000);
-    },
-
-    completeDiscovery(delegate) {
-        if (this.clientKey) {
-            delegate.configDone();
-            return;
-        }
-
-        if (this._websocket)
-            this._websocket.close();
-        this._websocket = new LgWebsocket(this.host, null, null);
-        this._websocketRefCount = 1;
-
-        return this._websocket.open().then(() => {
-            // registration and PIN request from the user need to happen in parallel
-            // (ideally, requesting the PIN would be nested in the sendRegister, but
-            // that confuses the code in the case we have the client key already)
-
-            var code = delegate.requestCode("Please enter the PIN shown on your TV.").then((pin) => {
-                return this._websocket.sendPin(pin.trim());
-            });
-            var register = this._websocket.sendRegister();
-            return Q.all([code, register]);
-        }).then(() => {
-            this.state.clientKey = this._websocket.clientKey;
-            this.state.cert = this._websocket.cert;
-            this.engine.devices.addDevice(this);
-
-            this.unrefWebsocket();
-            delegate.configDone();
-        }).catch((e) => {
-            delegate.configFailed(e);
-        });
-    },
-
-    queryInterface(iface) {
-        switch(iface) {
-        case 'lg-websocket':
-            return this._websocket;
-
-        default:
-            return this.parent(iface);
-        }
-    },
-
-    getActionClass(id) {
-        switch(id) {
-        case 'play_url':
-            return PlayUrlAction;
-        case 'raise_volume':
-            return RaiseVolume;
-        case 'lower_volume':
-            return LowerVolume;
-        case 'set_volume':
-            return SetVolume;
-        case 'mute':
-            return Mute;
-        case 'unmute':
-            return Unmute;
-        default:
-            return this.parent(id);
-        }
-    }
-});
-module.exports = LgTvDevice;
+};
