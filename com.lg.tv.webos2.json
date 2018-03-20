@@ -1,143 +1,195 @@
 {
-  "module_type": "org.thingpedia.v1",
-  "params": {},
-  "category": "physical",
-  "subcategory": "home",
-  "types": [
-    "upnp-lge-com-service-webos-second-screen-1"
-  ],
-  "child_types": [],
-  "auth": {
-    "type": "discovery",
-    "discoveryType": "upnp"
-  },
-  "triggers": {},
-  "actions": {
-    "set_power": {
-      "args": [
-        {
-          "name": "power",
-          "type": "Enum(on,off)",
-          "question": "Do you want to turn the tv on or off?",
-          "is_input": true,
-          "required": true
+    "module_type": "org.thingpedia.v1",
+    "params": {},
+    "category": "physical",
+    "subcategory": "home",
+    "types": [
+        "upnp-lge-com-service-webos-second-screen-1"
+    ],
+    "child_types": [],
+    "auth": {
+        "type": "discovery",
+        "discoveryType": "upnp"
+    },
+    "triggers": {},
+    "actions": {
+        "set_power": {
+            "args": [
+                {
+                    "name": "power",
+                    "type": "Enum(on,off)",
+                    "question": "Do you want to turn the tv on or off?",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "turn off the TV (turning on is not supported)",
+            "confirmation": "turn $power your LG WebOS TV",
+            "confirmation_remote": "turn $power $__person's LG WebOS TV",
+            "canonical": "set power on lg webos tv",
+            "formatted": [],
+            "poll_interval": 0
+        },
+        "raise_volume": {
+            "args": [],
+            "doc": "increase the volume of the tv",
+            "confirmation": "increase the volume on your LG WebOS TV",
+            "confirmation_remote": "increase the volume on $__person's LG WebOS TV",
+            "canonical": "raise volume on lg webos tv",
+            "formatted": [],
+            "poll_interval": 0
+        },
+        "lower_volume": {
+            "args": [],
+            "doc": "lower the audio volume on the tv",
+            "confirmation": "decrease the volume on your LG WebOS TV",
+            "confirmation_remote": "decrease the volume on $__person's LG WebOS TV",
+            "canonical": "lower volume on lg webos tv",
+            "formatted": [],
+            "poll_interval": 0
+        },
+        "set_volume": {
+            "args": [
+                {
+                    "name": "percent",
+                    "type": "Number",
+                    "question": "What volume do you want to set (in percent)?",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "set the volume on this device to the given percent value",
+            "confirmation": "set the volume on your LG WebOS TV to $percent%",
+            "confirmation_remote": "set the volume on $__person's LG WebOS TV to $percent%",
+            "canonical": "set volume on lg webos tv",
+            "formatted": [],
+            "poll_interval": 0
+        },
+        "mute": {
+            "args": [],
+            "doc": "change the mute status on the tv",
+            "confirmation": "mute your LG WebOS TV",
+            "confirmation_remote": "mute $__person's LG WebOS TV",
+            "canonical": "mute on lg webos tv",
+            "formatted": [],
+            "poll_interval": 0
+        },
+        "unmute": {
+            "args": [],
+            "doc": "change the mute status on the tv",
+            "confirmation": "unmute your LG WebOS Tv",
+            "confirmation_remote": "unmute $__person's LG WebOS Tv",
+            "canonical": "unmute on lg webos tv",
+            "formatted": [],
+            "poll_interval": 0
+        },
+        "play_url": {
+            "args": [
+                {
+                    "name": "url",
+                    "type": "URL",
+                    "question": "What video do you want to play? Use the full URL.",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "start playing a video by URL",
+            "confirmation": "play $url on your LG WebOS TV",
+            "confirmation_remote": "play $url on $__person's LG WebOS TV",
+            "canonical": "play url on lg webos tv",
+            "formatted": [],
+            "poll_interval": 0
         }
-      ],
-      "doc": "turn off the TV (turning on is not supported)",
-      "confirmation": "turn $power your LG WebOS TV",
-      "confirmation_remote": "turn $power $__person's LG WebOS TV",
-      "canonical": "set power on lg webos tv",
-      "formatted": [],
-      "poll_interval": 0
     },
-    "raise_volume": {
-      "args": [],
-      "doc": "increase the volume of the tv",
-      "confirmation": "increase the volume on your LG WebOS TV",
-      "confirmation_remote": "increase the volume on $__person's LG WebOS TV",
-      "canonical": "raise volume on lg webos tv",
-      "formatted": [],
-      "poll_interval": 0
-    },
-    "lower_volume": {
-      "args": [],
-      "doc": "lower the audio volume on the tv",
-      "confirmation": "decrease the volume on your LG WebOS TV",
-      "confirmation_remote": "decrease the volume on $__person's LG WebOS TV",
-      "canonical": "lower volume on lg webos tv",
-      "formatted": [],
-      "poll_interval": 0
-    },
-    "set_volume": {
-      "args": [
+    "queries": {},
+    "examples": [
         {
-          "name": "percent",
-          "type": "Number",
-          "question": "What volume do you want to set (in percent)?",
-          "is_input": true,
-          "required": true
-        }
-      ],
-      "doc": "set the volume on this device to the given percent value",
-      "confirmation": "set the volume on your LG WebOS TV to $percent%",
-      "confirmation_remote": "set the volume on $__person's LG WebOS TV to $percent%",
-      "canonical": "set volume on lg webos tv",
-      "formatted": [],
-      "poll_interval": 0
-    },
-    "mute": {
-      "args": [],
-      "doc": "change the mute status on the tv",
-      "confirmation": "mute your LG WebOS TV",
-      "confirmation_remote": "mute $__person's LG WebOS TV",
-      "canonical": "mute on lg webos tv",
-      "formatted": [],
-      "poll_interval": 0
-    },
-    "unmute": {
-      "args": [],
-      "doc": "change the mute status on the tv",
-      "confirmation": "unmute your LG WebOS Tv",
-      "confirmation_remote": "unmute $__person's LG WebOS Tv",
-      "canonical": "unmute on lg webos tv",
-      "formatted": [],
-      "poll_interval": 0
-    },
-    "play_url": {
-      "args": [
+            "utterance": "turn ${p_power} my lg tv",
+            "program": "let action x := \\(p_power :Enum(on,off)) -> @com.lg.tv.webos2.set_power(power=p_power);"
+        },
         {
-          "name": "url",
-          "type": "URL",
-          "question": "What video do you want to play? Use the full URL.",
-          "is_input": true,
-          "required": true
+            "utterance": "set the power on my lg tv to ${p_power}",
+            "program": "let action x := \\(p_power :Enum(on,off)) -> @com.lg.tv.webos2.set_power(power=p_power);"
+        },
+        {
+            "utterance": "raise the volume of my lg tv",
+            "program": "let action x := @com.lg.tv.webos2.raise_volume();"
+        },
+        {
+            "utterance": "lower the volume of my lg tv",
+            "program": "let action x := @com.lg.tv.webos2.lower_volume();"
+        },
+        {
+            "utterance": "set the volume of my lg tv to ${p_percent}",
+            "program": "let action x := \\(p_percent :Number) -> @com.lg.tv.webos2.set_volume(percent=p_percent);"
+        },
+        {
+            "utterance": "mute my lg tv",
+            "program": "let action x := @com.lg.tv.webos2.mute();"
+        },
+        {
+            "utterance": "unmute my lg tv",
+            "program": "let action x := @com.lg.tv.webos2.unmute();"
+        },
+        {
+            "utterance": "play link ${p_url:const} on my lg tv",
+            "program": "let action x := \\(p_url :Entity(tt:url)) -> @com.lg.tv.webos2.play_url(url=p_url);"
+        },
+        {
+            "utterance": "play ${p_url} on my lg tv",
+            "program": "let action x := \\(p_url :Entity(tt:url)) -> @com.lg.tv.webos2.play_url(url=p_url);"
+        },
+        {
+            "utterance": "shut off my lg tv",
+            "program": "let action x := @com.lg.tv.webos2.set_power(power=enum(off));"
+        },
+        {
+            "utterance": "make my lg tv louder",
+            "program": "let action x := @com.lg.tv.webos2.raise_volume();"
+        },
+        {
+            "utterance": "increase the volume of my lg tv",
+            "program": "let action x := @com.lg.tv.webos2.raise_volume();"
+        },
+        {
+            "utterance": "reduce the volume of my lg tv",
+            "program": "let action x := @com.lg.tv.webos2.lower_volume();"
+        },
+        {
+            "utterance": "decrease the volume of my lg tv",
+            "program": "let action x := @com.lg.tv.webos2.lower_volume();"
+        },
+        {
+            "utterance": "make my lg tv quieter",
+            "program": "let action x := @com.lg.tv.webos2.lower_volume();"
+        },
+        {
+            "utterance": "shut up my lg tv",
+            "program": "let action x := @com.lg.tv.webos2.mute();"
+        },
+        {
+            "utterance": "restore the volume on my lg tv",
+            "program": "let action x := @com.lg.tv.webos2.unmute();"
+        },
+        {
+            "utterance": "change the volume of my lg tv",
+            "program": "let action x := @com.lg.tv.webos2.set_volume();"
+        },
+        {
+            "utterance": "turn ${p_power} my lg webos tv",
+            "program": "let action x := \\(p_power :Enum(on,off)) -> @com.lg.tv.webos2.set_power(power=p_power);"
+        },
+        {
+            "utterance": "mute my lg webos tv",
+            "program": "let action x := @com.lg.tv.webos2.mute();"
+        },
+        {
+            "utterance": "unmute my lg webos tv",
+            "program": "let action x := @com.lg.tv.webos2.unmute();"
+        },
+        {
+            "utterance": "change the volume of my lg tv to ${p_percent}",
+            "program": "let action x := \\(p_percent :Number) -> @com.lg.tv.webos2.set_volume(percent=p_percent);"
         }
-      ],
-      "doc": "start playing a video by URL",
-      "confirmation": "play $url on your LG WebOS TV",
-      "confirmation_remote": "play $url on $__person's LG WebOS TV",
-      "canonical": "play url on lg webos tv",
-      "formatted": [],
-      "poll_interval": 0
-    }
-  },
-  "queries": {},
-  "examples": [
-    {
-      "utterance": "turn ${p_power} my lg tv",
-      "program": "let action x := \\(p_power :Enum(on,off)) -> @com.lg.tv.webos2.set_power(power=p_power);"
-    },
-    {
-      "utterance": "set the power on my lg tv to ${p_power}",
-      "program": "let action x := \\(p_power :Enum(on,off)) -> @com.lg.tv.webos2.set_power(power=p_power);"
-    },
-    {
-      "utterance": "raise the volume of my lg tv",
-      "program": "let action x := \\() -> @com.lg.tv.webos2.raise_volume();"
-    },
-    {
-      "utterance": "lower the volume of my lg tv",
-      "program": "let action x := \\() -> @com.lg.tv.webos2.lower_volume();"
-    },
-    {
-      "utterance": "set the volume of my lg tv to ${p_percent}",
-      "program": "let action x := \\(p_percent :Number) -> @com.lg.tv.webos2.set_volume(percent=p_percent);"
-    },
-    {
-      "utterance": "mute my lg tv",
-      "program": "let action x := \\() -> @com.lg.tv.webos2.mute();"
-    },
-    {
-      "utterance": "unmute my lg tv",
-      "program": "let action x := \\() -> @com.lg.tv.webos2.unmute();"
-    },
-    {
-      "utterance": "play link ${p_url:const} on my lg tv",
-      "program": "let action x := \\(p_url :URL) -> @com.lg.tv.webos2.play_url(url=p_url);"
-    },
-    {
-      "utterance": "play ${p_url} on my lg tv",
-      "program": "let action x := \\(p_url :URL) -> @com.lg.tv.webos2.play_url(url=p_url);"
-    }
-  ]
+    ]
 }

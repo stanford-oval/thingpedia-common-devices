@@ -1,221 +1,393 @@
 {
-  "params": {},
-  "global-name": "github",
-  "types": [
-    "online-account"
-  ],
-  "child_types": [],
-  "auth": {
-    "type": "oauth2"
-  },
-  "triggers": {
-    "new_issue": {
-      "args": [
-        {
-          "name": "repo_name",
-          "type": "String",
-          "question": "What repository do you want to watch?",
-          "required": true
-        },
-        {
-          "name": "user",
-          "type": "String",
-          "question": "What user are you interested in?",
-          "required": false
-        },
-        {
-          "name": "number",
-          "type": "Number",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "title",
-          "type": "String",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "body",
-          "type": "String",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "time",
-          "type": "Date",
-          "question": "",
-          "required": false
-        }
-      ],
-      "doc": "trigger on new issues on a particular repository",
-      "confirmation": "a new issue is opened on Github",
-      "canonical": "new issue",
-      "examples": [
-        "monitor issues on Github for $repo_name",
-        "notify me if someone opens an issue on Github for $repo_name",
-        "notify me if $user opens an issue on Github"
-      ]
+    "module_type": "org.thingpedia.v1",
+    "params": {},
+    "category": "online",
+    "subcategory": "data-management",
+    "types": [],
+    "child_types": [],
+    "auth": {
+        "type": "oauth2",
+        "client_id": "1396f80c995154c2dbda",
+        "client_secret": "d72358fb60c57b635404279813ffed6cc10d3af0"
     },
-    "new_commit": {
-      "args": [
-        {
-          "name": "repo_name",
-          "type": "String",
-          "question": "What repository do you want to watch?",
-          "required": true
+    "triggers": {},
+    "actions": {
+        "add_email": {
+            "args": [
+                {
+                    "name": "email",
+                    "type": "EmailAddress",
+                    "question": "What email do you want to add?",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "Add a new email to account",
+            "confirmation": "add $email to your Github account",
+            "confirmation_remote": "add $email to $__person's Github account",
+            "canonical": "add email on github",
+            "formatted": [],
+            "poll_interval": 0
         },
-        {
-          "name": "user",
-          "type": "String",
-          "question": "What user are you interested in?",
-          "required": false
-        },
-        {
-          "name": "message",
-          "type": "String",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "time",
-          "type": "Date",
-          "question": "",
-          "required": false
+        "comment_issue": {
+            "args": [
+                {
+                    "name": "repo_name",
+                    "type": "Entity(tt:path_name)",
+                    "question": "What repository do you want to comment on?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "issue_number",
+                    "type": "Number",
+                    "question": "What issue do you want to comment on?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "body",
+                    "type": "String",
+                    "question": "What do you want to comment?",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "post a new comment on a given issue",
+            "confirmation": "comment on issue $issue_number in $repo_name on Github",
+            "confirmation_remote": "comment on issue $issue_number in $repo_name on $__person's Github",
+            "canonical": "comment on issue on github",
+            "formatted": [],
+            "poll_interval": 0
         }
-      ],
-      "doc": "trigger on new commits to a particular repository",
-      "confirmation": "there is a new commit on Github",
-      "canonical": "new commit",
-      "examples": [
-        "monitor commits in $repo_name",
-        "notify me if someone commits in $repo_name",
-        "notify me if $user commits in $repo_name"
-      ]
     },
-    "new_milestone": {
-      "args": [
-        {
-          "name": "repo_name",
-          "type": "String",
-          "question": "What repository do you want to watch?",
-          "required": true
+    "queries": {
+        "get_issue": {
+            "args": [
+                {
+                    "name": "repo_name",
+                    "type": "Entity(tt:path_name)",
+                    "question": "What repository do you want to watch?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "user",
+                    "type": "Username",
+                    "question": "What user are you interested in?",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "number",
+                    "type": "Number",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "title",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "body",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "time",
+                    "type": "Date",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "issues on a particular repository",
+            "confirmation": "get opened issues of repository $repo_name on Github",
+            "confirmation_remote": "get opened issues of repository $repo_name on $__person's Github",
+            "canonical": "issues on github",
+            "formatted": [
+                {
+                    "type": "text",
+                    "text": "Issue @${number} opened in ${repo_name} by @${user}"
+                },
+                {
+                    "type": "text",
+                    "text": "${title}"
+                },
+                {
+                    "type": "text",
+                    "text": "${body}"
+                }
+            ],
+            "poll_interval": 3600000
         },
-        {
-          "name": "user",
-          "type": "String",
-          "question": "What user are you interested in?",
-          "required": false
+        "get_commit": {
+            "args": [
+                {
+                    "name": "repo_name",
+                    "type": "Entity(tt:path_name)",
+                    "question": "What repository do you want to watch?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "user",
+                    "type": "Username",
+                    "question": "What user are you interested in?",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "message",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "time",
+                    "type": "Date",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "commits to a particular repository",
+            "confirmation": "get commits of repository $repo_name on Github",
+            "confirmation_remote": "get commits of repository $repo_name on $__person's Github",
+            "canonical": "commits on github",
+            "formatted": [
+                {
+                    "type": "text",
+                    "text": "New commit in ${repo_name} by @${user}"
+                },
+                {
+                    "type": "text",
+                    "text": "${message}"
+                }
+            ],
+            "poll_interval": 3600000
         },
-        {
-          "name": "description",
-          "type": "String",
-          "question": "",
-          "required": false
+        "get_milestone": {
+            "args": [
+                {
+                    "name": "repo_name",
+                    "type": "Entity(tt:path_name)",
+                    "question": "What repository do you want to watch?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "user",
+                    "type": "Username",
+                    "question": "What user are you interested in?",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "description",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "time",
+                    "type": "Date",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "milestones from a particular repository",
+            "confirmation": "get the milestones created on Github repository $repo_name",
+            "confirmation_remote": "get the milestones created on $__person's Github repository",
+            "canonical": "milestones on github",
+            "formatted": [
+                {
+                    "type": "text",
+                    "text": "New milestone created in ${repo_name} by ${user}: ${description}"
+                }
+            ],
+            "poll_interval": 3600000
         },
-        {
-          "name": "time",
-          "type": "Date",
-          "question": "",
-          "required": false
+        "get_issue_comment": {
+            "args": [
+                {
+                    "name": "repo_name",
+                    "type": "Entity(tt:path_name)",
+                    "question": "What repository do you want to watch?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "user",
+                    "type": "Username",
+                    "question": "What user are you interested in?",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "issue_number",
+                    "type": "Number",
+                    "question": "What issue number to want to watch?",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "body",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "time",
+                    "type": "Date",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "comments on issues",
+            "confirmation": "get comments on issues on Github repository $repo_name",
+            "confirmation_remote": "get comments on issues on $__person's Github repository $repo_name ",
+            "canonical": "get issue comments on github",
+            "formatted": [
+                {
+                    "type": "text",
+                    "text": "@${from} commented on issue @${issue_number} in ${repo_name}"
+                },
+                {
+                    "type": "text",
+                    "text": "${body}"
+                }
+            ],
+            "poll_interval": 3600000
         }
-      ],
-      "doc": "trigger on new milestones from a particular repository",
-      "confirmation": "a new milestone is created on github",
-      "canonical": "new milestone",
-      "examples": [
-        "monitor milestones in $repo_name on Github",
-        "monitor milestones created by $user in $repo_name on github"
-      ]
     },
-    "new_issue_comment": {
-      "args": [
+    "examples": [
         {
-          "name": "repo_name",
-          "type": "String",
-          "question": "What repository do you want to watch?",
-          "required": true
+            "utterance": "when a new issue opened in Github repository $p_repo_name ",
+            "program": "let stream x := \\(p_repo_name :Entity(tt:path_name)) -> monitor (@com.github.get_issue(repo_name=p_repo_name));"
         },
         {
-          "name": "user",
-          "type": "String",
-          "question": "What user are you interested in?",
-          "required": false
+            "utterance": "when there are new issues on Github for $p_repo_name",
+            "program": "let stream x := \\(p_repo_name :Entity(tt:path_name)) -> monitor (@com.github.get_issue(repo_name=p_repo_name));"
         },
         {
-          "name": "issue_number",
-          "type": "Number",
-          "question": "What issue number to want to watch?",
-          "required": false
+            "utterance": "when $p_user opens an issue on Github",
+            "program": "let stream x := \\(p_user :Entity(tt:username)) -> monitor ((@com.github.get_issue()), user == p_user);"
         },
         {
-          "name": "body",
-          "type": "String",
-          "question": "",
-          "required": false
+            "utterance": "if someone opens an issue on Github for $p_repo_name",
+            "program": "let stream x := \\(p_repo_name :Entity(tt:path_name)) -> monitor (@com.github.get_issue(repo_name=p_repo_name));"
         },
         {
-          "name": "time",
-          "type": "Date",
-          "question": "",
-          "required": false
+            "utterance": "if $p_user opens an issue on Github",
+            "program": "let stream x := \\(p_user :Entity(tt:username)) -> monitor ((@com.github.get_issue()), user == p_user);"
+        },
+        {
+            "utterance": "when user $p_user opens an issue in Github repository $p_repo_name",
+            "program": "let stream x := \\(p_user :Entity(tt:username), p_repo_name :Entity(tt:path_name)) -> monitor ((@com.github.get_issue(repo_name=p_repo_name)), user == p_user);"
+        },
+        {
+            "utterance": "when there is a new commit for github repository $p_repo_name",
+            "program": "let stream x := \\(p_repo_name :Entity(tt:path_name)) -> monitor (@com.github.get_commit(repo_name=p_repo_name));"
+        },
+        {
+            "utterance": "if someone commits in $p_repo_name",
+            "program": "let stream x := \\(p_repo_name :Entity(tt:path_name)) -> monitor (@com.github.get_commit(repo_name=p_repo_name));"
+        },
+        {
+            "utterance": "when user $p_user commits in github repository $p_repo_name",
+            "program": "let stream x := \\(p_user :Entity(tt:username), p_repo_name :Entity(tt:path_name)) -> monitor ((@com.github.get_commit(repo_name=p_repo_name)), user == p_user);"
+        },
+        {
+            "utterance": "if $p_user commits in $p_repo_name",
+            "program": "let stream x := \\(p_user :Entity(tt:username), p_repo_name :Entity(tt:path_name)) -> monitor ((@com.github.get_commit(repo_name=p_repo_name)), user == p_user);"
+        },
+        {
+            "utterance": "when a new milestone is created in github repository $p_repo_name",
+            "program": "let stream x := \\(p_repo_name :Entity(tt:path_name)) -> monitor (@com.github.get_milestone(repo_name=p_repo_name));"
+        },
+        {
+            "utterance": "when user $p_user create a new milestone in github repository $p_repo_name",
+            "program": "let stream x := \\(p_user :Entity(tt:username), p_repo_name :Entity(tt:path_name)) -> monitor ((@com.github.get_milestone(repo_name=p_repo_name)), user == p_user);"
+        },
+        {
+            "utterance": "when there is a new comment in github repository $p_repo_name",
+            "program": "let stream x := \\(p_repo_name :Entity(tt:path_name)) -> monitor (@com.github.get_issue_comment(repo_name=p_repo_name));"
+        },
+        {
+            "utterance": "when user $p_user comments on some issue in repository $p_repo_name",
+            "program": "let stream x := \\(p_user :Entity(tt:username), p_repo_name :Entity(tt:path_name)) -> monitor ((@com.github.get_issue_comment(repo_name=p_repo_name)), user == p_user);"
+        },
+        {
+            "utterance": "when there is a new comment on issue $p_issue_number in repository $p_repo_name",
+            "program": "let stream x := \\(p_issue_number :Number, p_repo_name :Entity(tt:path_name)) -> monitor ((@com.github.get_issue_comment(repo_name=p_repo_name)), issue_number == p_issue_number);"
+        },
+        {
+            "utterance": "if $p_user comments on some issue in $p_repo_name on github",
+            "program": "let stream x := \\(p_user :Entity(tt:username), p_repo_name :Entity(tt:path_name)) -> monitor ((@com.github.get_issue_comment(repo_name=p_repo_name)), user == p_user);"
+        },
+        {
+            "utterance": "if someone comments on issue $p_issue_number in $p_repo_name on github",
+            "program": "let stream x := \\(p_issue_number :Number, p_repo_name :Entity(tt:path_name)) -> monitor ((@com.github.get_issue_comment(repo_name=p_repo_name)), issue_number == p_issue_number);"
+        },
+        {
+            "utterance": "add email $p_email to my github account",
+            "program": "let action x := \\(p_email :Entity(tt:email_address)) -> @com.github.add_email(email=p_email);"
+        },
+        {
+            "utterance": "comment on issue $p_issue_number in github repository $p_repo_name",
+            "program": "let action x := \\(p_issue_number :Number, p_repo_name :Entity(tt:path_name)) -> @com.github.comment_issue(issue_number=p_issue_number, repo_name=p_repo_name);"
+        },
+        {
+            "utterance": "issues opened in github repository $p_repo_name",
+            "program": "let table x := \\(p_repo_name :Entity(tt:path_name)) -> @com.github.get_issue(repo_name=p_repo_name);"
+        },
+        {
+            "utterance": "milestones of github repository $p_repo_name",
+            "program": "let table x := \\(p_repo_name :Entity(tt:path_name)) -> @com.github.get_milestone(repo_name=p_repo_name);"
+        },
+        {
+            "utterance": "commits on Github repository $p_repo_name",
+            "program": "let table x := \\(p_repo_name :Entity(tt:path_name)) -> @com.github.get_commit(repo_name=p_repo_name);"
+        },
+        {
+            "utterance": "issue comments of Github repository $p_repo_name",
+            "program": "let table x := \\(p_repo_name :Entity(tt:path_name)) -> @com.github.get_issue_comment(repo_name=p_repo_name);"
+        },
+        {
+            "utterance": "leave a comment in issue $p_issue_number in repository $p_repo_name on github ",
+            "program": "let action x := \\(p_issue_number :Number, p_repo_name :Entity(tt:path_name)) -> @com.github.comment_issue(issue_number=p_issue_number, repo_name=p_repo_name);"
+        },
+        {
+            "utterance": "comment on $p_issue_number on github repository $p_repo_name saying ${p_body:const}",
+            "program": "let action x := \\(p_issue_number :Number, p_repo_name :Entity(tt:path_name), p_body :String) -> @com.github.comment_issue(issue_number=p_issue_number, repo_name=p_repo_name, body=p_body);"
+        },
+        {
+            "utterance": "comment ${p_body:const} on $p_issue_number on github repository $p_repo_name",
+            "program": "let action x := \\(p_issue_number :Number, p_repo_name :Entity(tt:path_name), p_body :String) -> @com.github.comment_issue(issue_number=p_issue_number, repo_name=p_repo_name, body=p_body);"
+        },
+        {
+            "utterance": "when someone commits to github",
+            "program": "let stream x := monitor (@com.github.get_commit());"
+        },
+        {
+            "utterance": "when someone comments on a github issue",
+            "program": "let stream x := monitor (@com.github.get_issue_comment());"
+        },
+        {
+            "utterance": "if $p_user pushes to $p_repo_name on github",
+            "program": "let stream x := \\(p_user :Entity(tt:username), p_repo_name :Entity(tt:path_name)) -> monitor ((@com.github.get_commit(repo_name=p_repo_name)), user == p_user);"
         }
-      ],
-      "doc": "trigger on new comments on issues",
-      "confirmation": "a new comment is posted on an issue on Github",
-      "canonical": "new issue comment",
-      "examples": [
-        "monitor all issue comments in $repo_name on github",
-        "notify me if $user comments on some issue in $repo_name on github",
-        "notify me if someone comments on issue $issue_number in $repo_name on github"
-      ]
-    }
-  },
-  "actions": {
-    "add_email": {
-      "args": [
-        {
-          "name": "email",
-          "type": "String",
-          "question": "What email do you want to add?",
-          "required": false
-        }
-      ],
-      "doc": "Add a new email to account",
-      "confirmation": "add $email to your Github account",
-      "canonical": "add email",
-      "examples": [
-        "add e-mail $email to my github"
-      ]
-    },
-    "comment_issue": {
-      "args": [
-        {
-          "name": "repo_name",
-          "type": "String",
-          "question": "What repository do you want to comment on?",
-          "required": false
-        },
-        {
-          "name": "issue_number",
-          "type": "Number",
-          "question": "What issue do you want to comment on?",
-          "required": false
-        },
-        {
-          "name": "body",
-          "type": "String",
-          "question": "What do you want to comment?",
-          "required": false
-        }
-      ],
-      "doc": "post a new comment on a given issue",
-      "confirmation": "comment on issue $issue_number in $repo_name on Github",
-      "canonical": "comment on issue",
-      "examples": [
-        "comment on issue $issue_number in $repo_name on Github"
-      ]
-    }
-  },
-  "queries": {}
+    ]
 }

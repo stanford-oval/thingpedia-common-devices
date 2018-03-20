@@ -1,251 +1,76 @@
 {
-  "params": {},
-  "global-name": "holidays",
-  "types": [
-    "data-source"
-  ],
-  "child_types": [],
-  "auth": {
-    "type": "none"
-  },
-  "triggers": {
-    "catholic_liturgical_event": {
-      "args": [
-        {
-          "name": "date",
-          "type": "Date",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "summary",
-          "type": "String",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "description",
-          "type": "String",
-          "question": "",
-          "required": false
-        }
-      ],
-      "doc": "Polls for Catholic Lithurgical Events at the start of each day. Emits an event for each holiday for the day.",
-      "confirmation": "a catholic liturgical event occurs",
-      "canonical": "catholic liturgical event",
-      "examples": [
-        "notify me when a catholic liturgical event occurs",
-        "notify me when it's a catholic holiday"
-      ]
+    "module_type": "org.thingpedia.v1",
+    "params": {},
+    "category": "data",
+    "subcategory": "service",
+    "types": [],
+    "child_types": [],
+    "auth": {
+        "type": "none"
     },
-    "earth_season_event": {
-      "args": [
-        {
-          "name": "date",
-          "type": "Date",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "summary",
-          "type": "String",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "description",
-          "type": "String",
-          "question": "",
-          "required": false
+    "triggers": {},
+    "actions": {},
+    "queries": {
+        "get_holidays": {
+            "args": [
+                {
+                    "name": "country",
+                    "type": "Entity(tt:country)",
+                    "question": "",
+                    "is_input": true,
+                    "required": false
+                },
+                {
+                    "name": "date",
+                    "type": "Date",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "summary",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "description",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "Retrieve the Holidays.",
+            "confirmation": "retrieve the holidays",
+            "confirmation_remote": "",
+            "canonical": "get holidays",
+            "formatted": [
+                {
+                    "type": "text",
+                    "text": "${summary} on ${date:date}"
+                }
+            ],
+            "poll_interval": 86400000
         }
-      ],
-      "doc": "Polls for Earth Seasonal events at the start of each day. Emits an event for each holiday for the day.",
-      "confirmation": "it's an Earth seasonal special day",
-      "canonical": "earth season event",
-      "examples": [
-        "notify me when it's the equinox or the solstice",
-        "notify me for earth season events"
-      ]
     },
-    "uk_holiday_event": {
-      "args": [
+    "examples": [
         {
-          "name": "date",
-          "type": "Date",
-          "question": "",
-          "required": false
+            "utterance": "when it 's a holiday in $p_country",
+            "program": "let stream x := \\(p_country :Entity(tt:country)) -> monitor ((@org.thingpedia.holidays.get_holidays(country=p_country)), (date >= start_of(day) && date <= end_of(day)));"
         },
         {
-          "name": "summary",
-          "type": "String",
-          "question": "",
-          "required": false
+            "utterance": "the holidays in $p_country",
+            "program": "let table x := \\(p_country :Entity(tt:country)) -> @org.thingpedia.holidays.get_holidays(country=p_country);"
         },
         {
-          "name": "description",
-          "type": "String",
-          "question": "",
-          "required": false
+            "utterance": "when it 's a holiday",
+            "program": "let stream x := monitor ((@org.thingpedia.holidays.get_holidays()), (date >= start_of(day) && date <= end_of(day)));"
+        },
+        {
+            "utterance": "the holidays",
+            "program": "let table x := @org.thingpedia.holidays.get_holidays();"
         }
-      ],
-      "doc": "Polls for UK Holiday Events at the start of each day. Emits an event for each holiday for the day.",
-      "confirmation": "it's an holiday in the UK",
-      "canonical": "uk holiday event",
-      "examples": [
-        "notify me when it's an holiday in the UK",
-        "notify me for uk holidays"
-      ]
-    },
-    "us_holiday_event": {
-      "args": [
-        {
-          "name": "date",
-          "type": "Date",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "summary",
-          "type": "String",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "description",
-          "type": "String",
-          "question": "",
-          "required": false
-        }
-      ],
-      "doc": "Polls for US Holiday Events at the start of each day. Emits an event for each holiday for the day.",
-      "confirmation": "it's an holiday in the US",
-      "canonical": "us holiday event",
-      "examples": [
-        "notify me when it's an holiday in the US",
-        "notify me for us holidays"
-      ]
-    }
-  },
-  "actions": {},
-  "queries": {
-    "next_catholic_liturgical_event": {
-      "args": [
-        {
-          "name": "date",
-          "type": "Date",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "summary",
-          "type": "String",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "description",
-          "type": "String",
-          "question": "",
-          "required": false
-        }
-      ],
-      "doc": "Retrieve the next Catholic liturgical event.",
-      "confirmation": "find out what is the next catholic liturgical event",
-      "canonical": "get next catholic liturgical event",
-      "examples": [
-        "what is the next catholic liturgical event",
-        "what is the next catholic holiday",
-        "get the next catholic holiday"
-      ]
-    },
-    "next_earth_season_event": {
-      "args": [
-        {
-          "name": "date",
-          "type": "Date",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "summary",
-          "type": "String",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "description",
-          "type": "String",
-          "question": "",
-          "required": false
-        }
-      ],
-      "doc": "Retrieve the next Earth seasonal event",
-      "confirmation": "find out what is the next Earth season event",
-      "canonical": "get next earth season event",
-      "examples": [
-        "what is the next earth season event",
-        "when is the next solstice",
-        "when is the next equinox",
-        "get the date of the next earth season event"
-      ]
-    },
-    "next_uk_holiday_event": {
-      "args": [
-        {
-          "name": "date",
-          "type": "Date",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "summary",
-          "type": "String",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "description",
-          "type": "String",
-          "question": "",
-          "required": false
-        }
-      ],
-      "doc": "Retrieve the next UK Holiday event.",
-      "confirmation": "retrieve the next UK holiday",
-      "canonical": "get next uk holiday event",
-      "examples": [
-        "show the next UK holiday",
-        "what is the next holiday in the UK"
-      ]
-    },
-    "next_us_holiday_event": {
-      "args": [
-        {
-          "name": "date",
-          "type": "Date",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "summary",
-          "type": "String",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "description",
-          "type": "String",
-          "question": "",
-          "required": false
-        }
-      ],
-      "doc": "Retrieve the next US Holiday event.",
-      "confirmation": "retrieve the next US holiday",
-      "canonical": "get next us holiday event",
-      "examples": [
-        "show the next US holiday",
-        "when is the next US holiday"
-      ]
-    }
-  }
+    ]
 }

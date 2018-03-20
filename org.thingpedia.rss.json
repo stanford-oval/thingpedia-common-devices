@@ -1,41 +1,68 @@
 {
-  "params": {
-    "url": ["Feed URL", "text"]
-  },
-  "types": [
-    "data-source",
-    "rss"
-  ],
-  "child_types": [],
-  "auth": {
-    "type": "none"
-  },
-  "triggers": {
-    "new_post": {
-      "args": [
+    "module_type": "org.thingpedia.v1",
+    "params": {
+        "url": [
+            "Feed URL",
+            "text"
+        ]
+    },
+    "category": "online",
+    "subcategory": "media",
+    "types": [],
+    "child_types": [],
+    "auth": {
+        "type": "none"
+    },
+    "triggers": {},
+    "actions": {},
+    "queries": {
+        "get_post": {
+            "args": [
+                {
+                    "name": "title",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "link",
+                    "type": "URL",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "Poll for new posts (every 3 hours)",
+            "confirmation": "something is posted on the RSS feed",
+            "confirmation_remote": "",
+            "canonical": "new post on rss",
+            "formatted": [
+                {
+                    "type": "rdl",
+                    "webCallback": "${link}",
+                    "displayTitle": "${title}"
+                }
+            ],
+            "poll_interval": 10800000
+        }
+    },
+    "examples": [
         {
-          "name": "title",
-          "type": "String",
-          "question": "",
-          "required": false
+            "utterance": "when there is a new post on rss feed",
+            "program": "let stream x := monitor (@org.thingpedia.rss.get_post());"
         },
         {
-          "name": "link",
-          "type": "String",
-          "question": "",
-          "required": false
+            "utterance": "latest posts on an atom feed",
+            "program": "let table x := @org.thingpedia.rss.get_post();"
+        },
+        {
+            "utterance": "latest posts on an rss feed",
+            "program": "let table x := @org.thingpedia.rss.get_post();"
+        },
+        {
+            "utterance": "when they publish something on the rss feed",
+            "program": "let stream x := monitor (@org.thingpedia.rss.get_post());"
         }
-      ],
-      "doc": "Poll for new posts (every 3 hours)",
-      "confirmation": "something is posted on the RSS feed",
-      "canonical": "new post",
-      "examples": [
-        "monitor some rss feed",
-        "notify me for new posts on an rss feed",
-        "notify me for new posts on an atom feed"
-      ]
-    }
-  },
-  "actions": {},
-  "queries": {}
+    ]
 }

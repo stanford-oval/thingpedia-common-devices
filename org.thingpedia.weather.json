@@ -1,205 +1,247 @@
 {
-  "params": {},
-  "types": [
-    "data-source",
-    "service"
-  ],
-  "child_types": [],
-  "auth": {
-    "type": "none"
-  },
-  "triggers": {
-    "monitor": {
-      "args": [
-        {
-          "name": "location",
-          "type": "Location",
-          "question": "What location do you want to monitor weather for?",
-          "required": true
-        },
-        {
-          "name": "temperature",
-          "type": "Measure(C)",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "wind_speed",
-          "type": "Measure(mps)",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "humidity",
-          "type": "Number",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "cloudiness",
-          "type": "Number",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "fog",
-          "type": "Number",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "weather",
-          "type": "String",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "status",
-          "type": "Enum(raining,cloudy,sunny,snowy,sleety,drizzling)",
-          "question": "What weather would you like to monitor?",
-          "required": true
-        }
-            
-      ],
-      "doc": "Monitor weather changes",
-      "confirmation": "it's $status for $location",
-      "canonical": "weather changes",
-      "examples": [
-        "notify me if it's $status in $location"
-      ]
-    }
-  },
-  "actions": {},
-  "queries": {
-    "sunrise": {
-      "args": [
-        {
-          "name": "location",
-          "type": "Location",
-          "question": "What location do you want sun time info for?",
-          "required": true
-        },
-        {
-          "name": "date",
-          "type": "Date",
-          "question": "What day are you interested in?",
-          "required": false
-        },
-        {
-          "name": "rise",
-          "type": "Date",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "set",
-          "type": "Date",
-          "question": "",
-          "required": false
-        }
-      ],
-      "doc": "Information about sunrise and sunset",
-      "confirmation": "get the sun time info for $location",
-      "canonical": "get sunrise",
-      "examples": [
-        "show sunrise and sunset for $location",
-        "show sunrise and sunset for $location on $date"
-      ]
+    "module_type": "org.thingpedia.v1",
+    "params": {},
+    "category": "data",
+    "subcategory": "service",
+    "types": [],
+    "child_types": [],
+    "auth": {
+        "type": "none"
     },
-    "moon": {
-      "args": [
-        {
-          "name": "location",
-          "type": "Location",
-          "question": "What location do you want moon time info for?",
-          "required": true
+    "triggers": {},
+    "actions": {},
+    "queries": {
+        "sunrise": {
+            "args": [
+                {
+                    "name": "location",
+                    "type": "Location",
+                    "question": "What location do you want sun time info for?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "date",
+                    "type": "Date",
+                    "question": "What day are you interested in?",
+                    "is_input": true,
+                    "required": false
+                },
+                {
+                    "name": "sunrise_time",
+                    "type": "Time",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "sunset_time",
+                    "type": "Time",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "Information about sunrise and sunset",
+            "confirmation": "get the sunrise and sunset time for location $location",
+            "confirmation_remote": "",
+            "canonical": "get sunrise on weatherapi",
+            "formatted": [
+                {
+                    "type": "text",
+                    "text": "Sun times on ${date:date} for ${location}: rises at ${sunrise}, sets at ${sunset}"
+                }
+            ],
+            "poll_interval": 86400000
         },
-        {
-          "name": "date",
-          "type": "Date",
-          "question": "What day are you interested in?",
-          "required": false
+        "moon": {
+            "args": [
+                {
+                    "name": "location",
+                    "type": "Location",
+                    "question": "What location do you want moon time info for?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "date",
+                    "type": "Date",
+                    "question": "What day are you interested in?",
+                    "is_input": true,
+                    "required": false
+                },
+                {
+                    "name": "phase",
+                    "type": "Enum(new_moon,waxing_crescent,first_quarter,waxing_gibbous,full_moon,waning_gibbous,third_quarter,waning_crescent)",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "Information about moon times and moon phase",
+            "confirmation": "get the moon phase for $location",
+            "confirmation_remote": "",
+            "canonical": "get moon phase on weatherapi",
+            "formatted": [
+                {
+                    "type": "text",
+                    "text": "Moon phase on ${date:date} for ${location}: ${phase}."
+                }
+            ],
+            "poll_interval": 86400000
         },
-        {
-          "name": "rise",
-          "type": "Date",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "set",
-          "type": "Date",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "phase",
-          "type": "String",
-          "question": "",
-          "required": false
+        "current": {
+            "args": [
+                {
+                    "name": "location",
+                    "type": "Location",
+                    "question": "What location do you want the current weather for?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "temperature",
+                    "type": "Measure(C)",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "wind_speed",
+                    "type": "Measure(mps)",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "humidity",
+                    "type": "Number",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "cloudiness",
+                    "type": "Number",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "fog",
+                    "type": "Number",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "status",
+                    "type": "Enum(raining,cloudy,sunny,snowy,sleety,drizzling,windy)",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "icon",
+                    "type": "Picture",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "Information about current weather",
+            "confirmation": "show the current weather for $location",
+            "confirmation_remote": "",
+            "canonical": "get current weather on weatherapi",
+            "formatted": [
+                {
+                    "type": "text",
+                    "text": "Current weather for ${location}: ${status}, temperature ${temperature:C} C, wind speed ${wind_speed:mps} m/s, humidity ${humidity}%, cloudiness ${cloudiness}%, fog ${fog}%."
+                }
+            ],
+            "poll_interval": 3600000
         }
-      ],
-      "doc": "Information about moon times and moon phase",
-      "confirmation": "get the moon phase for $location",
-      "canonical": "get moon phase",
-      "examples": [
-        "show moon phase for $location",
-        "show moon phase for $location on $date"
-      ]
     },
-    "current": {
-      "args": [
+    "examples": [
         {
-          "name": "location",
-          "type": "Location",
-          "question": "What location do you want the current weather for?",
-          "required": true
+            "utterance": "when it's $p_status at location $p_location",
+            "program": "let stream x := \\(p_status :Enum(raining,cloudy,sunny,snowy,sleety,drizzling,windy), p_location :Location) -> monitor ((@org.thingpedia.weather.current(location=p_location)), status == p_status);"
         },
         {
-          "name": "temperature",
-          "type": "Measure(C)",
-          "question": "",
-          "required": false
+            "utterance": "sunrise and sunset for location $p_location",
+            "program": "let table x := \\(p_location :Location) -> @org.thingpedia.weather.sunrise(location=p_location);"
         },
         {
-          "name": "wind_speed",
-          "type": "Measure(mps)",
-          "question": "",
-          "required": false
+            "utterance": "sunrise and sunset for location $p_location on date $p_date",
+            "program": "let table x := \\(p_location :Location, p_date :Date) -> @org.thingpedia.weather.sunrise(location=p_location, date=p_date);"
         },
         {
-          "name": "humidity",
-          "type": "Number",
-          "question": "",
-          "required": false
+            "utterance": "moon phase for location $p_location",
+            "program": "let table x := \\(p_location :Location) -> @org.thingpedia.weather.moon(location=p_location);"
         },
         {
-          "name": "cloudiness",
-          "type": "Number",
-          "question": "",
-          "required": false
+            "utterance": "moon phase for location $p_location on date $p_date",
+            "program": "let table x := \\(p_location :Location, p_date :Date) -> @org.thingpedia.weather.moon(location=p_location, date=p_date);"
         },
         {
-          "name": "fog",
-          "type": "Number",
-          "question": "",
-          "required": false
+            "utterance": "the weather in $p_location",
+            "program": "let table x := \\(p_location :Location) -> @org.thingpedia.weather.current(location=p_location);"
         },
         {
-          "name": "weather",
-          "type": "String",
-          "question": "",
-          "required": false
+            "utterance": "when the temperature in $p_location is above $p_temperature",
+            "program": "let stream x := \\(p_temperature :Measure(C), p_location :Location) -> monitor ((@org.thingpedia.weather.current(location=p_location)), temperature > p_temperature);"
+        },
+        {
+            "utterance": "when the temperature in $p_location is below $p_temperature",
+            "program": "let stream x := \\(p_temperature :Measure(C), p_location :Location) -> monitor ((@org.thingpedia.weather.current(location=p_location)), temperature < p_temperature);"
+        },
+        {
+            "utterance": "when the temperature in $p_location is below freezing",
+            "program": "let stream x := \\(p_location :Location) -> monitor ((@org.thingpedia.weather.current(location=p_location)), temperature < 0C);"
+        },
+        {
+            "utterance": "when the humidity in $p_location is above $p_humidity",
+            "program": "let stream x := \\(p_humidity :Number, p_location :Location) -> monitor ((@org.thingpedia.weather.current(location=p_location)), humidity > p_humidity);"
+        },
+        {
+            "utterance": "when the humidity in $p_location is below $p_humidity",
+            "program": "let stream x := \\(p_humidity :Number, p_location :Location) -> monitor ((@org.thingpedia.weather.current(location=p_location)), humidity < p_humidity);"
+        },
+        {
+            "utterance": "when it starts raining in $p_location",
+            "program": "let stream x := \\(p_location :Location) -> edge (monitor (@org.thingpedia.weather.current(location=p_location))) on status == enum(raining);"
+        },
+        {
+            "utterance": "when it starts snowing in $p_location",
+            "program": "let stream x := \\(p_location :Location) -> edge (monitor (@org.thingpedia.weather.current(location=p_location))) on status == enum(snowy);"
+        },
+        {
+            "utterance": "when it stops raining in $p_location",
+            "program": "let stream x := \\(p_location :Location) -> edge (monitor (@org.thingpedia.weather.current(location=p_location))) on !(status == enum(raining));"
+        },
+        {
+            "utterance": "when it stops snowing in $p_location",
+            "program": "let stream x := \\(p_location :Location) -> edge (monitor (@org.thingpedia.weather.current(location=p_location))) on !(status == enum(snowy));"
+        },
+        {
+            "utterance": "when the wind speed in $p_location is above $p_wind_speed",
+            "program": "let stream x := \\(p_wind_speed :Measure(mps), p_location :Location) -> monitor ((@org.thingpedia.weather.current(location=p_location)), wind_speed > p_wind_speed);"
+        },
+        {
+            "utterance": "when it is more humid than $p_humidity in $p_location",
+            "program": "let stream x := \\(p_humidity :Number, p_location :Location) -> monitor ((@org.thingpedia.weather.current(location=p_location)), humidity > p_humidity);"
+        },
+        {
+            "utterance": "when it 's hotter than $p_temperature in $p_location",
+            "program": "let stream x := \\(p_temperature :Measure(C), p_location :Location) -> monitor ((@org.thingpedia.weather.current(location=p_location)), temperature > p_temperature);"
+        },
+        {
+            "utterance": "when it 's colder than $p_temperature in $p_location",
+            "program": "let stream x := \\(p_temperature :Measure(C), p_location :Location) -> monitor ((@org.thingpedia.weather.current(location=p_location)), temperature < p_temperature);"
+        },
+        {
+            "utterance": "the weather",
+            "program": "let table x := @org.thingpedia.weather.current();"
         }
-      ],
-      "doc": "Information about current weather",
-      "confirmation": "show the current weather for $location",
-      "canonical": "get current weather",
-      "examples": [
-        "what is the weather in $location ?",
-        "show the weather in $location"
-      ]
-    }
-  },
-  "global-name": "weatherapi"
+    ]
 }

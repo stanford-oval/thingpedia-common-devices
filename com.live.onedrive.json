@@ -1,133 +1,338 @@
 {
-  "params": {},
-  "global-name": "onedrive",
-  "types": [
-    "online-account"
-  ],
-  "child_types": [],
-  "auth": {
-    "type": "oauth2"
-  },
-  "triggers": {
-    "file_created": {
-      "args": [
-        {
-          "name": "filename",
-          "type": "String",
-          "question": "",
-          "required": false
-        }
-      ],
-      "doc": "trigger on a file created in your onedrive",
-      "confirmation": "a file is created in your OneDrive",
-      "canonical": "file created",
-      "examples": [
-        "monitor new files on onedrive",
-        "notify me if a new file is created on onedrive"
-      ]
+    "module_type": "org.thingpedia.v1",
+    "params": {},
+    "category": "online",
+    "subcategory": "data-management",
+    "types": [],
+    "child_types": [],
+    "auth": {
+        "type": "oauth2",
+        "client_id": "05d74496-7109-4b1d-9265-1584830901ea",
+        "client_secret": "Qifutgtt2LRODfepnwsizMm"
     },
-    "file_modified": {
-      "args": [
-        {
-          "name": "filename",
-          "type": "String",
-          "question": "What file do you want to monitor?",
-          "required": false
+    "triggers": {},
+    "actions": {
+        "create_file": {
+            "args": [
+                {
+                    "name": "file_name",
+                    "type": "Entity(tt:path_name)",
+                    "question": "What should be the name of the file?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "contents",
+                    "type": "String",
+                    "question": "What do you want to write in the file?",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "create a new file in your onedrive",
+            "confirmation": "create a new file on OneDrive named $file_name containing $contents",
+            "confirmation_remote": "",
+            "canonical": "create file on onedrive",
+            "formatted": [],
+            "poll_interval": 0
+        },
+        "delete_file": {
+            "args": [
+                {
+                    "name": "file_name",
+                    "type": "Entity(tt:path_name)",
+                    "question": "What file do you want to delete?",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "delete a file in your onedrive",
+            "confirmation": "delete the file $file_name from OneDrive",
+            "confirmation_remote": "",
+            "canonical": "delete file on onedrive",
+            "formatted": [],
+            "poll_interval": 0
+        },
+        "rename_file": {
+            "args": [
+                {
+                    "name": "old_name",
+                    "type": "Entity(tt:path_name)",
+                    "question": "What file do you want to rename?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "new_name",
+                    "type": "Entity(tt:path_name)",
+                    "question": "What should be the new name?",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "rename a file in your onedrive",
+            "confirmation": "rename $old_name to $new_name on OneDrive",
+            "confirmation_remote": "",
+            "canonical": "rename file on onedrive",
+            "formatted": [],
+            "poll_interval": 0
+        },
+        "upload_picture": {
+            "args": [
+                {
+                    "name": "file_name",
+                    "type": "Entity(tt:path_name)",
+                    "question": "What should be the file name of the picture?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "picture_url",
+                    "type": "Picture",
+                    "question": "Upload the picture now.",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "upload a picture in your onedrive",
+            "confirmation": "upload a picture on OneDrive as $file_name",
+            "confirmation_remote": "",
+            "canonical": "upload picture on onedrive",
+            "formatted": [],
+            "poll_interval": 0
         }
-      ],
-      "doc": "trigger when a file is modified in your onedrive",
-      "confirmation": "a file is modified in your OneDrive",
-      "canonical": "file modified",
-      "examples": [
-        "monitor onedrive for changes",
-        "notify me if any files changes on onedrive",
-        "notify me if $filename changes on onedrive"
-      ]
-    }
-  },
-  "actions": {
-    "create_file": {
-      "args": [
+    },
+    "queries": {
+        "list_files": {
+            "args": [
+                {
+                    "name": "file_id",
+                    "type": "Entity(com.live.onedrive:file_id)",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "file_name",
+                    "type": "Entity(tt:path_name)",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "description",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "created_time",
+                    "type": "Date",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "modified_time",
+                    "type": "Date",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "modified_by",
+                    "type": "Entity(com.live.onedrive:user_id)",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "link",
+                    "type": "URL",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "order_by",
+                    "type": "Enum(created_time_increasing,created_time_decreasing,modified_time_increasing,modified_time_decreasing,name_increasing,name_decreasing)",
+                    "question": "",
+                    "is_input": true,
+                    "required": false
+                }
+            ],
+            "doc": "list files in your onedrive",
+            "confirmation": "list files your OneDrive",
+            "confirmation_remote": "",
+            "canonical": "file created on onedrive",
+            "formatted": [
+                {
+                    "type": "text",
+                    "text": "New file created: ${file_name}"
+                }
+            ],
+            "poll_interval": 3600000
+        },
+        "open": {
+            "args": [
+                {
+                    "name": "file_name",
+                    "type": "Entity(tt:path_name)",
+                    "question": "What file do you want to open? Use the full path name.",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "url",
+                    "type": "URL",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "open (retrieve a temporary link to) a file",
+            "confirmation": "open $file_name in your Onedrive",
+            "confirmation_remote": "open $file_name in $__person's Onedrive",
+            "canonical": "open on onedrive",
+            "formatted": [
+                {
+                    "type": "rdl",
+                    "webCallback": "${url}",
+                    "displayTitle": "${file_name}"
+                }
+            ],
+            "poll_interval": -1
+        }
+    },
+    "examples": [
         {
-          "name": "filename",
-          "type": "String",
-          "question": "What should be the name of the file?",
-          "required": false
+            "utterance": "when a new file is created on onedrive",
+            "program": "let stream x := monitor (@com.live.onedrive.list_files()) on new [file_id];"
         },
         {
-          "name": "contents",
-          "type": "String",
-          "question": "What do you want to write in the file?",
-          "required": false
-        }
-      ],
-      "doc": "create a new file in your onedrive",
-      "confirmation": "create a new file on OneDrive named $filename containing $contents",
-      "canonical": "create file",
-      "examples": [
-        "create a new file on onedrive named $filaname containing $contents"
-      ]
-    },
-    "upload_picture": {
-      "args": [
-        {
-          "name": "filename",
-          "type": "String",
-          "question": "What should be the file name of the picture?",
-          "required": false
+            "utterance": "when something changes on onedrive",
+            "program": "let stream x := monitor (@com.live.onedrive.list_files());"
         },
         {
-          "name": "picture",
-          "type": "Picture",
-          "question": "Upload the picture now.",
-          "required": false
-        }
-      ],
-      "doc": "upload a picture in your onedrive",
-      "confirmation": "upload a picture on OneDrive as $filename",
-      "canonical": "upload picture",
-      "examples": [
-        "upload a picture to onedrive with name $filename"
-      ]
-    },
-    "delete_file": {
-      "args": [
-        {
-          "name": "filename",
-          "type": "String",
-          "question": "What file do you want to delete?",
-          "required": false
-        }
-      ],
-      "doc": "delete a file in your onedrive",
-      "confirmation": "delete the file $filename from OneDrive",
-      "canonical": "delete file",
-      "examples": [
-        "delete $filename from my onedrive"
-      ]
-    },
-    "rename_file": {
-      "args": [
-        {
-          "name": "filename",
-          "type": "String",
-          "question": "What file do you want to rename?",
-          "required": false
+            "utterance": "when a file is modified on onedrive",
+            "program": "let stream x := monitor (@com.live.onedrive.list_files());"
         },
         {
-          "name": "new_filename",
-          "type": "String",
-          "question": "What should be the new name?",
-          "required": false
+            "utterance": "when file $p_file_name on onedrive is modified ",
+            "program": "let stream x := \\(p_file_name :Entity(tt:path_name)) -> monitor ((@com.live.onedrive.list_files()), file_name == p_file_name) on new [modified_time];"
+        },
+        {
+            "utterance": "create a new file on onedrive named $p_file_name containing $p_contents",
+            "program": "let action x := \\(p_file_name :Entity(tt:path_name), p_contents :String) -> @com.live.onedrive.create_file(file_name=p_file_name, contents=p_contents);"
+        },
+        {
+            "utterance": "delete $p_file_name from my onedrive",
+            "program": "let action x := \\(p_file_name :Entity(tt:path_name)) -> @com.live.onedrive.delete_file(file_name=p_file_name);"
+        },
+        {
+            "utterance": "rename $p_old_name to $p_new_name on my onedrive",
+            "program": "let action x := \\(p_old_name :Entity(tt:path_name), p_new_name :Entity(tt:path_name)) -> @com.live.onedrive.rename_file(old_name=p_old_name, new_name=p_new_name);"
+        },
+        {
+            "utterance": "upload a picture to onedrive with name $p_file_name",
+            "program": "let action x := \\(p_file_name :Entity(tt:path_name)) -> @com.live.onedrive.upload_picture(file_name=p_file_name);"
+        },
+        {
+            "utterance": "my onedrive files",
+            "program": "let table x := @com.live.onedrive.list_files();"
+        },
+        {
+            "utterance": "my onedrive files created this week",
+            "program": "let table x := (@com.live.onedrive.list_files(order_by=enum(created_time_decreasing))), created_time >= start_of(week);"
+        },
+        {
+            "utterance": "my onedrive files modified this week",
+            "program": "let table x := (@com.live.onedrive.list_files()), modified_time >= start_of(week);"
+        },
+        {
+            "utterance": "my onedrive files modified today",
+            "program": "let table x := (@com.live.onedrive.list_files()), modified_time >= start_of(day);"
+        },
+        {
+            "utterance": "my oldest onedrive files",
+            "program": "let table x := @com.live.onedrive.list_files(order_by=enum(created_time_increasing));"
+        },
+        {
+            "utterance": "new newest onedrive files",
+            "program": "let table x := @com.live.onedrive.list_files(order_by=enum(created_time_decreasing));"
+        },
+        {
+            "utterance": "my onedrive files that changed most recently",
+            "program": "let table x := @com.live.onedrive.list_files(order_by=enum(modified_time_decreasing));"
+        },
+        {
+            "utterance": "my onedrive files that were created most recently",
+            "program": "let table x := @com.live.onedrive.list_files(order_by=enum(created_time_decreasing));"
+        },
+        {
+            "utterance": "my onedrive files in alphabetical order",
+            "program": "let table x := @com.live.onedrive.list_files(order_by=enum(name_decreasing));"
+        },
+        {
+            "utterance": "my onedrive files in reverse alphabetical order",
+            "program": "let table x := @com.live.onedrive.list_files(order_by=enum(name_increasing));"
+        },
+        {
+            "utterance": "rename $p_old_name on onedrive",
+            "program": "let action x := \\(p_old_name :Entity(tt:path_name)) -> @com.live.onedrive.rename_file(old_name=p_old_name);"
+        },
+        {
+            "utterance": "rename my onedrive file called ${p_old_name:const}",
+            "program": "let action x := \\(p_old_name :Entity(tt:path_name)) -> @com.live.onedrive.rename_file(old_name=p_old_name);"
+        },
+        {
+            "utterance": "delete my onedrive file called ${p_file_name:const}",
+            "program": "let action x := \\(p_file_name :Entity(tt:path_name)) -> @com.live.onedrive.delete_file(file_name=p_file_name);"
+        },
+        {
+            "utterance": "delete the onedrive file with name ${p_file_name:const}",
+            "program": "let action x := \\(p_file_name :Entity(tt:path_name)) -> @com.live.onedrive.delete_file(file_name=p_file_name);"
+        },
+        {
+            "utterance": "create a new file on onedrive named $p_file_name",
+            "program": "let action x := \\(p_file_name :Entity(tt:path_name)) -> @com.live.onedrive.create_file(file_name=p_file_name);"
+        },
+        {
+            "utterance": "create a new file in onedrive and name it $p_file_name",
+            "program": "let action x := \\(p_file_name :Entity(tt:path_name)) -> @com.live.onedrive.create_file(file_name=p_file_name);"
+        },
+        {
+            "utterance": "create a new empty file in onedrive",
+            "program": "let action x := @com.live.onedrive.create_file();"
+        },
+        {
+            "utterance": "upload $p_picture_url to onedrive and name it $p_file_name",
+            "program": "let action x := \\(p_picture_url :Entity(tt:picture), p_file_name :Entity(tt:path_name)) -> @com.live.onedrive.upload_picture(picture_url=p_picture_url, file_name=p_file_name);"
+        },
+        {
+            "utterance": "save $p_contents in a onedrive file named $p_file_name",
+            "program": "let action x := \\(p_file_name :Entity(tt:path_name), p_contents :String) -> @com.live.onedrive.create_file(file_name=p_file_name, contents=p_contents);"
+        },
+        {
+            "utterance": "upload $p_picture_url to onedrive",
+            "program": "let action x := \\(p_picture_url :Entity(tt:picture)) -> @com.live.onedrive.upload_picture(picture_url=p_picture_url);"
+        },
+        {
+            "utterance": "my file named ${p_file_name} on onedrive",
+            "program": "let table x := \\(p_file_name :Entity(tt:path_name)) -> @com.live.onedrive.open(file_name=p_file_name);"
+        },
+        {
+            "utterance": "the temporary link to ${p_file_name:const} on onedrive",
+            "program": "let table x := \\(p_file_name :Entity(tt:path_name)) -> @com.live.onedrive.open(file_name=p_file_name);"
+        },
+        {
+            "utterance": ", open ${p_file_name} from onedrive",
+            "program": "let table x := \\(p_file_name :Entity(tt:path_name)) -> @com.live.onedrive.open(file_name=p_file_name);"
+        },
+        {
+            "utterance": ", download ${p_file_name} from onedrive",
+            "program": "let table x := \\(p_file_name :Entity(tt:path_name)) -> @com.live.onedrive.open(file_name=p_file_name);"
         }
-      ],
-      "doc": "rename a file in your onedrive",
-      "confirmation": "rename $filename to $new_filename on OneDrive",
-      "canonical": "rename file",
-      "examples": [
-        "rename $filename to $new_filename on my onedrive"
-      ]
-    }
-  },
-  "queries": {}
+    ]
 }

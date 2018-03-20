@@ -1,109 +1,209 @@
 {
-  "params": {},
-  "global-name": "uber",
-  "types": [
-    "data-source"
-  ],
-  "child_types": [],
-  "auth": {
-    "type": "none"
-  },
-  "triggers": {},
-  "actions": {},
-  "queries": {
-    "time_estimate": {
-      "args": [
-        {
-          "name": "start",
-          "type": "Location",
-          "question": "Where do you want to call Uber?",
-          "required": true
-        },
-        {
-          "name": "name",
-          "type": "String",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "estimate",
-          "type": "Measure(ms)",
-          "question": "",
-          "required": false
-        }
-      ],
-      "doc": "returns ETAs for all Uber products (pool, uberX, select, etc.) offered at a given location",
-      "confirmation": "get ETAs for uber services at $start",
-      "canonical": "get time estimate",
-      "examples": [
-        "how far is uber",
-        "get time estimate for uber"
-      ]
+    "module_type": "org.thingpedia.v2",
+    "params": {},
+    "category": "online",
+    "subcategory": "service",
+    "types": [],
+    "child_types": [],
+    "auth": {
+        "type": "oauth2",
+        "client_id": "uOVKVToJeXaGEd-JdpkGnkkc4jmXpFMc",
+        "client_secret": "N-gqjkqibmmY6ULfLsJ1YdM2GoqTMxcQ56Rne8Wm"
     },
-    "price_estimate": {
-      "args": [
-        {
-          "name": "start",
-          "type": "Location",
-          "question": "Where do you want to be picked up?",
-          "required": true
-        },
-        {
-          "name": "end",
-          "type": "Location",
-          "question": "Where do you want to go?",
-          "required": true
-        },
-        {
-          "name": "name",
-          "type": "String",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "low_estimate",
-          "type": "Number",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "high_estimate",
-          "type": "Number",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "currency_code",
-          "type": "String",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "surge",
-          "type": "Number",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "duration",
-          "type": "Measure(ms)",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "distance",
-          "type": "Measure(m)",
-          "question": "",
-          "required": false
+    "triggers": {},
+    "actions": {
+        "request": {
+            "args": [
+                {
+                    "name": "start",
+                    "type": "Location",
+                    "question": "Where do you want to call Uber?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "end",
+                    "type": "Location",
+                    "question": "Where to you want to go? ",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "uber_type",
+                    "type": "Enum(pool,uber_x,uber_xl,uber_black,select,suv,assist)",
+                    "question": "What type of uber do you want to call? ",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "seat_count",
+                    "type": "Number",
+                    "question": "How many seats? ",
+                    "is_input": true,
+                    "required": false
+                }
+            ],
+            "doc": "Request an uber ride ",
+            "confirmation": "request an Uber ride from $start to $end",
+            "confirmation_remote": "",
+            "canonical": "request an uber ride",
+            "formatted": [],
+            "poll_interval": 0
         }
-      ],
-      "doc": "returns estimated prices for a given trip on all available products",
-      "confirmation": "get estimated prices for Uber from $start to $end",
-      "canonical": "get price estimate",
-      "examples": [
-        "how much is an uber from $start to $end?",
-        "give me a price estimate for uber from $start to $end"
-      ]
-    }
-  }
+    },
+    "queries": {
+        "time_estimate": {
+            "args": [
+                {
+                    "name": "start",
+                    "type": "Location",
+                    "question": "Where do you want to call Uber?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "uber_type",
+                    "type": "Enum(pool,uber_x,uber_xl,uber_black,select,suv,assist)",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "estimate",
+                    "type": "Measure(ms)",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "returns ETAs for all Uber products (pool, uberX, select, etc.) offered at a given location",
+            "confirmation": "get ETAs for uber services at $start",
+            "confirmation_remote": "",
+            "canonical": "get time estimate on uber",
+            "formatted": [
+                {
+                    "type": "text",
+                    "text": "Estimate for ${uber_type}: ${estimate:min} min"
+                }
+            ],
+            "poll_interval": 60000
+        },
+        "price_estimate": {
+            "args": [
+                {
+                    "name": "start",
+                    "type": "Location",
+                    "question": "Where do you want to be picked up?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "end",
+                    "type": "Location",
+                    "question": "Where do you want to go?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "uber_type",
+                    "type": "Enum(pool,uber_x,uber_xl,uber_black,select,suv,assist)",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "low_estimate",
+                    "type": "Currency",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "high_estimate",
+                    "type": "Currency",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "surge",
+                    "type": "Number",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "duration",
+                    "type": "Measure(ms)",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "distance",
+                    "type": "Measure(m)",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "returns estimated prices for a given trip on all available products",
+            "confirmation": "get estimated prices for Uber from $start to $end",
+            "confirmation_remote": "",
+            "canonical": "get price estimate on uber",
+            "formatted": [
+                {
+                    "type": "text",
+                    "text": "Estimate for ${uber_type}: between ${low_estimate} and ${high_estimate} (${surge}x surge). Distance: ${distance:km} km, Time: ${duration:min} min"
+                }
+            ],
+            "poll_interval": 60000
+        }
+    },
+    "examples": [
+        {
+            "utterance": "time estimate for uber",
+            "program": "let table x := @com.uber.time_estimate();"
+        },
+        {
+            "utterance": "a price estimate for uber from $p_start to $p_end",
+            "program": "let table x := \\(p_start :Location, p_end :Location) -> @com.uber.price_estimate(start=p_start, end=p_end);"
+        },
+        {
+            "utterance": "the price of an uber from $p_start to $p_end",
+            "program": "let table x := \\(p_start :Location, p_end :Location) -> @com.uber.price_estimate(start=p_start, end=p_end);"
+        },
+        {
+            "utterance": "a price estimate for uber $p_uber_type from $p_start to $p_end",
+            "program": "let table x := \\(p_start :Location, p_end :Location, p_uber_type :Enum(pool,uber_x,uber_xl,uber_black,select,suv,assist)) -> (@com.uber.price_estimate(start=p_start, end=p_end)), uber_type == p_uber_type;"
+        },
+        {
+            "utterance": "time estimate for uber around $p_start",
+            "program": "let table x := \\(p_start :Location) -> @com.uber.time_estimate(start=p_start);"
+        },
+        {
+            "utterance": "eta for uber at $p_start",
+            "program": "let table x := \\(p_start :Location) -> @com.uber.time_estimate(start=p_start);"
+        },
+        {
+            "utterance": "eta for uber of type $p_uber_type at $p_start",
+            "program": "let table x := \\(p_start :Location, p_uber_type :Enum(pool,uber_x,uber_xl,uber_black,select,suv,assist)) -> (@com.uber.time_estimate(start=p_start)), uber_type == p_uber_type;"
+        },
+        {
+            "utterance": "the distance of uber at $p_start",
+            "program": "let table x := \\(p_start :Location) -> @com.uber.time_estimate(start=p_start);"
+        },
+        {
+            "utterance": "the distance of the closest uber at $p_start",
+            "program": "let table x := \\(p_start :Location) -> @com.uber.time_estimate(start=p_start);"
+        },
+        {
+            "utterance": "the cost of an uber from $p_start to $p_end",
+            "program": "let table x := \\(p_start :Location, p_end :Location) -> @com.uber.price_estimate(start=p_start, end=p_end);"
+        },
+        {
+            "utterance": "request an $p_uber_type from $p_start to $p_end",
+            "program": "let action x := \\(p_uber_type :Enum(pool,uber_x,uber_xl,uber_black,select,suv,assist), p_start :Location, p_end :Location) -> @com.uber.request(start=p_start, end=p_end, uber_type=p_uber_type);"
+        }
+    ]
 }

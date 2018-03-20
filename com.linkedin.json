@@ -1,121 +1,131 @@
 {
-  "module_type": "org.thingpedia.v1",
-  "params": {},
-  "category": "online",
-  "subcategory": "social-network",
-  "types": [],
-  "child_types": [],
-  "auth": {
-    "type": "oauth2"
-  },
-  "triggers": {},
-  "actions": {
-    "share": {
-      "args": [
-        {
-          "name": "status",
-          "type": "String",
-          "question": "What do you want to post? Include a link to a page.",
-          "is_input": true,
-          "required": true
-        }
-      ],
-      "doc": "share a comment and a link ",
-      "confirmation": "share $status on your LinkedIn",
-      "confirmation_remote": "share $status on $__person's LinkedIn",
-      "canonical": "post on linkedin",
-      "formatted": [],
-      "poll_interval": 0,
-      "default": null
-    }
-  },
-  "queries": {
-    "get_profile": {
-      "args": [
-        {
-          "name": "formatted_name",
-          "type": "String",
-          "question": "",
-          "is_input": false,
-          "required": false
-        },
-        {
-          "name": "headline",
-          "type": "String",
-          "question": "",
-          "is_input": false,
-          "required": false
-        },
-        {
-          "name": "industry",
-          "type": "String",
-          "question": "",
-          "is_input": false,
-          "required": false
-        },
-        {
-          "name": "specialties",
-          "type": "String",
-          "question": "",
-          "is_input": false,
-          "required": false
-        },
-        {
-          "name": "positions",
-          "type": "Array(String)",
-          "question": "",
-          "is_input": false,
-          "required": false
-        },
-        {
-          "name": "picture_url",
-          "type": "Picture",
-          "question": "",
-          "is_input": false,
-          "required": false
-        }
-      ],
-      "doc": "retrieve your LinkedIn profile",
-      "confirmation": "retrieve your LinkedIn profile",
-      "confirmation_remote": "retrieve $__person's LinkedIn profile",
-      "canonical": "get profile on linkedin",
-      "formatted": [
-        {
-          "type": "text",
-          "text": "${formatted_name}"
-        },
-        {
-          "type": "text",
-          "text": "${headline}"
-        },
-        {
-          "type": "picture",
-          "text": "${picture_url}"
-        },
-        {
-          "type": "text",
-          "text": "Works in ${industry}"
-        }
-      ],
-      "poll_interval": 86400000
-    }
-  },
-  "examples": [
-    {
-      "utterance": "my LinkedIn profile",
-      "program": "let table x := \\() -> @com.linkedin.get_profile();"
+    "module_type": "org.thingpedia.v2",
+    "params": {},
+    "category": "online",
+    "subcategory": "social-network",
+    "types": [],
+    "child_types": [],
+    "auth": {
+        "type": "oauth2",
+        "client_id": "75j2y6wjan5rt2",
+        "client_secret": "EhAay6Leb69T78yK"
     },
-    {
-      "utterance": "share $p_status on LinkedIn",
-      "program": "let action x := \\(p_status :String) -> @com.linkedin.share(status=p_status);"
+    "triggers": {},
+    "actions": {
+        "share": {
+            "args": [
+                {
+                    "name": "status",
+                    "type": "String",
+                    "question": "What do you want to post? Include a link to a page.",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "share a comment and a link ",
+            "confirmation": "share $status on your LinkedIn",
+            "confirmation_remote": "share $status on $__person's LinkedIn",
+            "canonical": "post on linkedin",
+            "formatted": [],
+            "poll_interval": 0,
+            "default": null
+        }
     },
-    {
-      "utterance": "post $p_status on LinkedIn",
-      "program": "let action x := \\(p_status :String) -> @com.linkedin.share(status=p_status);"
+    "queries": {
+        "get_profile": {
+            "args": [
+                {
+                    "name": "formatted_name",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "headline",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "industry",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "specialties",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "positions",
+                    "type": "Array(String)",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "profile_picture",
+                    "type": "Picture",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "retrieve your LinkedIn profile",
+            "confirmation": "retrieve your LinkedIn profile",
+            "confirmation_remote": "retrieve $__person's LinkedIn profile",
+            "canonical": "get profile on linkedin",
+            "formatted": [
+                {
+                    "type": "text",
+                    "text": "${formatted_name}"
+                },
+                {
+                    "type": "text",
+                    "text": "${headline}"
+                },
+                {
+                    "type": "picture",
+                    "text": "${picture_url}"
+                },
+                {
+                    "type": "text",
+                    "text": "Works in ${industry}"
+                }
+            ],
+            "poll_interval": 86400000
+        }
     },
-    {
-      "utterance": "update my linkedin",
-      "program": "let action x := @com.linkedin.share(status=$undefined);"
-    }
-  ]
+    "examples": [
+        {
+            "utterance": "my linkedin profile",
+            "program": "let table x := @com.linkedin.get_profile();"
+        },
+        {
+            "utterance": "share $p_status on linkedin",
+            "program": "let action x := \\(p_status :String) -> @com.linkedin.share(status=p_status);"
+        },
+        {
+            "utterance": "post $p_status on linkedin",
+            "program": "let action x := \\(p_status :String) -> @com.linkedin.share(status=p_status);"
+        },
+        {
+            "utterance": "update my linkedin",
+            "program": "let action x := @com.linkedin.share();"
+        },
+        {
+            "utterance": "my profile on linkedin",
+            "program": "let table x := @com.linkedin.get_profile();"
+        },
+        {
+            "utterance": "post something on my linkedin",
+            "program": "let action x := @com.linkedin.share();"
+        }
+    ]
 }

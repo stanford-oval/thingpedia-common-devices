@@ -1,96 +1,173 @@
 {
-  "params": {},
-  "global-name": "yahoofinance",
-  "types": [
-    "data-source"
-  ],
-  "child_types": [],
-  "auth": {
-    "type": "none"
-  },
-  "triggers": {
-    "stock_quote": {
-      "args": [
-        {
-          "name": "stock",
-          "type": "String",
-          "question": "What company's stock do you want to watch? Use the 4 letter ID, like GOOG, AAPL or MSFT",
-          "required": true
-        },
-        {
-          "name": "company_name",
-          "type": "String",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "ask_price",
-          "type": "Number",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "bid_price",
-          "type": "Number",
-          "question": "",
-          "required": false
-        }
-      ],
-      "doc": "Poll stock information for specified stock ID. One stock tracked at a time.",
-      "confirmation": "stock price changes",
-      "canonical": "stock quote change",
-      "examples": [
-        "monitor stock price of $stock",
-        "notify me if the stock price of $stock changes"
-      ]
+    "module_type": "org.thingpedia.v1",
+    "params": {},
+    "category": "data",
+    "subcategory": "media",
+    "types": [],
+    "child_types": [],
+    "auth": {
+        "type": "none"
     },
-    "stock_div": {
-      "args": [
-        {
-          "name": "stock_id",
-          "type": "String",
-          "question": "What company's stock do you want to watch? Use the 4 letter ID, like GOOG, AAPL or MSFT",
-          "required": true
+    "triggers": {},
+    "actions": {},
+    "queries": {
+        "get_stock_quote": {
+            "args": [
+                {
+                    "name": "stock_id",
+                    "type": "Entity(tt:stock_id)",
+                    "question": "What company's stock do you want to watch? Use the 4 letter ID, like GOOG, AAPL or MSFT",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "company_name",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "ask_price",
+                    "type": "Currency",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "bid_price",
+                    "type": "Currency",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "Poll stock information for specified stock ID.",
+            "confirmation": "get stock price of $stock_id",
+            "confirmation_remote": "get stock price of $stock_id for $__person's",
+            "canonical": "get stock price",
+            "formatted": [
+                {
+                    "type": "text",
+                    "text": "Quote for ${company_name}: ask ${ask_price}, bid ${bid_price}"
+                }
+            ],
+            "poll_interval": 30000
         },
-        {
-          "name": "company_name",
-          "type": "String",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "yield",
-          "type": "Number",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "div",
-          "type": "Number",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "payDate",
-          "type": "Date",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "exDivDate",
-          "type": "Date",
-          "question": "",
-          "required": false
+        "get_stock_div": {
+            "args": [
+                {
+                    "name": "stock_id",
+                    "type": "Entity(tt:stock_id)",
+                    "question": "What company's stock do you want to watch? Use the 4 letter ID, like GOOG, AAPL or MSFT",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "company_name",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "yield",
+                    "type": "Number",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "value",
+                    "type": "Currency",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "pay_date",
+                    "type": "Date",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "ex_dividend_date",
+                    "type": "Date",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "Poll dividend info on stock",
+            "confirmation": "dividend info of $stock_id changes",
+            "confirmation_remote": "",
+            "canonical": "stock dividend change on yahoofinance",
+            "formatted": [
+                {
+                    "type": "text",
+                    "text": "Dividend for ${stock_id}: yield ${yield}, per share ${value}, pay date ${pay_date:date}, ex-dividend date ${ex_dividend_date:date}"
+                }
+            ],
+            "poll_interval": 30000
         }
-      ],
-      "doc": "Poll dividend info on stock",
-      "confirmation": "dividend info changes",
-      "canonical": "stock dividend change",
-      "examples": [
-        "monitor stock dividends for $stock_id"
-      ]
-    }
-  },
-  "actions": {},
-  "queries": {}
+    },
+    "examples": [
+        {
+            "utterance": "when the stock price of $p_stock_id changes",
+            "program": "let stream x := \\(p_stock_id :Entity(tt:stock_id)) -> monitor (@com.yahoo.finance.get_stock_quote(stock_id=p_stock_id));"
+        },
+        {
+            "utterance": "when stock dividends for $p_stock_id changes",
+            "program": "let stream x := \\(p_stock_id :Entity(tt:stock_id)) -> monitor (@com.yahoo.finance.get_stock_div(stock_id=p_stock_id));"
+        },
+        {
+            "utterance": "stock price of $p_stock_id",
+            "program": "let table x := \\(p_stock_id :Entity(tt:stock_id)) -> @com.yahoo.finance.get_stock_quote(stock_id=p_stock_id);"
+        },
+        {
+            "utterance": "when the ask stock price of $p_stock_id goes above $p_ask_price",
+            "program": "let stream x := \\(p_stock_id :Entity(tt:stock_id), p_ask_price :Currency) -> edge (monitor (@com.yahoo.finance.get_stock_quote(stock_id=p_stock_id))) on ask_price >= p_ask_price;"
+        },
+        {
+            "utterance": "when the ask stock price of $p_stock_id goes below $p_ask_price",
+            "program": "let stream x := \\(p_stock_id :Entity(tt:stock_id), p_ask_price :Currency) -> edge (monitor (@com.yahoo.finance.get_stock_quote(stock_id=p_stock_id))) on ask_price <= p_ask_price;"
+        },
+        {
+            "utterance": "when the bid stock price of $p_stock_id goes above $p_bid_price",
+            "program": "let stream x := \\(p_stock_id :Entity(tt:stock_id), p_bid_price :Currency) -> edge (monitor (@com.yahoo.finance.get_stock_quote(stock_id=p_stock_id))) on bid_price >= p_bid_price;"
+        },
+        {
+            "utterance": "when the bid stock price of $p_stock_id goes below $p_bid_price",
+            "program": "let stream x := \\(p_stock_id :Entity(tt:stock_id), p_bid_price :Currency) -> edge (monitor (@com.yahoo.finance.get_stock_quote(stock_id=p_stock_id))) on bid_price <= p_bid_price;"
+        },
+        {
+            "utterance": "when the ask stock price of $p_stock_id becomes higher than $p_ask_price",
+            "program": "let stream x := \\(p_stock_id :Entity(tt:stock_id), p_ask_price :Currency) -> edge (monitor (@com.yahoo.finance.get_stock_quote(stock_id=p_stock_id))) on ask_price >= p_ask_price;"
+        },
+        {
+            "utterance": "when the bid stock price of $p_stock_id becomes higher than $p_bid_price",
+            "program": "let stream x := \\(p_stock_id :Entity(tt:stock_id), p_bid_price :Currency) -> edge (monitor (@com.yahoo.finance.get_stock_quote(stock_id=p_stock_id))) on bid_price >= p_bid_price;"
+        },
+        {
+            "utterance": "dividend per share of $p_stock_id",
+            "program": "let table x := \\(p_stock_id :Entity(tt:stock_id)) -> @com.yahoo.finance.get_stock_div(stock_id=p_stock_id);"
+        },
+        {
+            "utterance": "dividend quotes for $p_stock_id",
+            "program": "let table x := \\(p_stock_id :Entity(tt:stock_id)) -> @com.yahoo.finance.get_stock_div(stock_id=p_stock_id);"
+        },
+        {
+            "utterance": "when the dividend of $p_stock_id goes above $p_value",
+            "program": "let stream x := \\(p_stock_id :Entity(tt:stock_id), p_value :Currency) -> edge (monitor (@com.yahoo.finance.get_stock_div(stock_id=p_stock_id))) on value >= p_value;"
+        },
+        {
+            "utterance": "when the dividend of $p_stock_id goes below $p_value",
+            "program": "let stream x := \\(p_stock_id :Entity(tt:stock_id), p_value :Currency) -> edge (monitor (@com.yahoo.finance.get_stock_div(stock_id=p_stock_id))) on value <= p_value;"
+        },
+        {
+            "utterance": "$p_stock_id stocks",
+            "program": "let table x := \\(p_stock_id :Entity(tt:stock_id)) -> @com.yahoo.finance.get_stock_quote(stock_id=p_stock_id);"
+        }
+    ]
 }

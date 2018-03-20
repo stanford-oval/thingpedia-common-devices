@@ -1,232 +1,389 @@
 {
-  "params": {},
-  "global-name": "youtube",
-  "types": [
-    "online-account"
-  ],
-  "child_types": [],
-  "auth": {
-    "type": "oauth2"
-  },
-  "triggers": {
-    "source": {
-      "args": [
-        {
-          "name": "channel_id",
-          "type": "String",
-          "question": "What channel do you want to be notified about? Use the full channel URL, like https://www.youtube.com/channels/xxxxxxx.",
-          "required": false
-        },
-        {
-          "name": "channel_title",
-          "type": "String",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "title",
-          "type": "String",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "video_id",
-          "type": "String",
-          "question": "",
-          "required": false
-        }
-      ],
-      "doc": "trigger on new videos uploaded on the given channel",
-      "confirmation": "a new video is uploaded on YouTube",
-      "canonical": "new video",
-      "examples": [
-        "monitor new youtube videos in my subscriptions",
-        "monitor new youtube videos from the channels I follow",
-        "monitor new youtube videos on $channel_id",
-        "notify me if $channel_id uploads a video on youtube"
-      ]
-    }
-  },
-  "actions": {},
-  "queries": {
-    "channels_by_category": {
-      "args": [
-        {
-          "name": "category_id",
-          "type": "Enum(best_of_youtube,recommended,paid,music,comedy,film_and_entertainment,gaming,beauty_and_fashion,from_tv,automotive,animation,sports,diy,tech,science,cooking,causes,news_and_politics,lifestyle)",
-          "question": "What category do you want to list?",
-          "required": true
-        },
-        {
-          "name": "channel_id",
-          "type": "String",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "title",
-          "type": "String",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "description",
-          "type": "String",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "thumbnail",
-          "type": "Picture",
-          "question": "",
-          "required": false
-        }
-      ],
-      "doc": "list channel in a given YouTube Guide Category",
-      "confirmation": "list channels in YouTube Category $category_id",
-      "canonical": "list channel by category",
-      "examples": [
-        "list channels in category $category_id on youtube",
-        "list youtube channels with category $category_id"
-      ]
+    "module_type": "org.thingpedia.v1",
+    "params": {},
+    "category": "online",
+    "subcategory": "social-network",
+    "types": [],
+    "child_types": [],
+    "auth": {
+        "type": "oauth2",
+        "client_id": "739906609557-o52ck15e1ge7deb8l0e80q92mpua1p55.apps.googleusercontent.com",
+        "client_secret": "qeNdAMaIF_9wUy6XORABCIKE"
     },
-    "list_subscriptions": {
-      "args": [
-        {
-          "name": "channel_id",
-          "type": "String",
-          "question": "",
-          "required": false
+    "triggers": {},
+    "actions": {},
+    "queries": {
+        "channels_by_category": {
+            "args": [
+                {
+                    "name": "category_id",
+                    "type": "Enum(best_of_youtube,recommended,paid,music,comedy,film_and_entertainment,gaming,beauty_and_fashion,from_tv,automotive,animation,sports,diy,tech,science,cooking,causes,news_and_politics,lifestyle)",
+                    "question": "What category do you want to list?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "channel_id",
+                    "type": "Entity(com.youtube:channel_id)",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "title",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "description",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "thumbnail",
+                    "type": "Picture",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "list channel in a given YouTube Guide Category",
+            "confirmation": "list channels in YouTube Category $category_id",
+            "confirmation_remote": "",
+            "canonical": "list channel by category on youtube",
+            "formatted": [
+                {
+                    "type": "rdl",
+                    "webCallback": "http://www.youtube.com/channel/${channel_id}",
+                    "displayTitle": "${title}",
+                    "displayText": "${description}"
+                },
+                {
+                    "type": "picture",
+                    "url": "${thumbnail}"
+                }
+            ],
+            "poll_interval": 86400000
         },
-        {
-          "name": "title",
-          "type": "String",
-          "question": "",
-          "required": false
+        "list_subscriptions": {
+            "args": [
+                {
+                    "name": "channel_id",
+                    "type": "Entity(com.youtube:channel_id)",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "title",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "description",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "thumbnail",
+                    "type": "Picture",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "list channel you're subscribed to",
+            "confirmation": "list your subscribed channels on YouTube",
+            "confirmation_remote": "",
+            "canonical": "list subscriptions on youtube",
+            "formatted": [
+                {
+                    "type": "rdl",
+                    "webCallback": "http://www.youtube.com/channel/${channel_id}",
+                    "displayTitle": "${title}",
+                    "displayText": "${description}"
+                },
+                {
+                    "type": "picture",
+                    "url": "${thumbnail}"
+                }
+            ],
+            "poll_interval": 86400000
         },
-        {
-          "name": "description",
-          "type": "String",
-          "question": "",
-          "required": false
+        "search_channel": {
+            "args": [
+                {
+                    "name": "query",
+                    "type": "String",
+                    "question": "What do you want to search?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "channel_id",
+                    "type": "Entity(com.youtube:channel_id)",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "title",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "description",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "thumbnail",
+                    "type": "Picture",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "search channels",
+            "confirmation": "search YouTube channels matching $query",
+            "confirmation_remote": "",
+            "canonical": "search channel on youtube",
+            "formatted": [
+                {
+                    "type": "rdl",
+                    "webCallback": "http://www.youtube.com/channel/${channel_id}",
+                    "displayTitle": "${title}",
+                    "displayText": "${description}"
+                },
+                {
+                    "type": "picture",
+                    "url": "${thumbnail}"
+                }
+            ],
+            "poll_interval": 86400000
         },
-        {
-          "name": "thumbnail",
-          "type": "Picture",
-          "question": "",
-          "required": false
+        "search_videos": {
+            "args": [
+                {
+                    "name": "query",
+                    "type": "String",
+                    "question": "What do you want to search?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "video_id",
+                    "type": "Entity(com.youtube:video_id)",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "channel_id",
+                    "type": "Entity(com.youtube:channel_id)",
+                    "question": "What channel do you want to limit the search to?",
+                    "is_input": true,
+                    "required": false
+                },
+                {
+                    "name": "title",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "description",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "thumbnail",
+                    "type": "Picture",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "count",
+                    "type": "Number",
+                    "question": "How many search results do you want?",
+                    "is_input": true,
+                    "required": false
+                },
+                {
+                    "name": "video_url",
+                    "type": "URL",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "search videos",
+            "confirmation": "search YouTube videos matching $query",
+            "confirmation_remote": "",
+            "canonical": "search video on youtube",
+            "formatted": [
+                {
+                    "type": "rdl",
+                    "webCallback": "${video_url}",
+                    "displayTitle": "${title}",
+                    "displayText": "${description}. Published by ${channel_title}."
+                },
+                {
+                    "type": "picture",
+                    "url": "${thumbnail}"
+                }
+            ],
+            "poll_interval": 3600000
+        },
+        "list_videos": {
+            "args": [
+                {
+                    "name": "channel_id",
+                    "type": "Entity(com.youtube:channel_id)",
+                    "question": "What channel do you want to be notified about? Use the full channel URL, like https://www.youtube.com/channels/xxxxxxx.",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "channel_title",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "title",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "video_id",
+                    "type": "Entity(com.youtube:video_id)",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "video_url",
+                    "type": "URL",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "trigger on new videos uploaded on the given channel",
+            "confirmation": "a new video is uploaded on YouTube",
+            "confirmation_remote": "",
+            "canonical": "new video on youtube",
+            "formatted": [
+                {
+                    "type": "rdl",
+                    "displayTitle": "New video uploaded by ${channel_title}",
+                    "displayText": "${title}",
+                    "webCallback": "${video_url}"
+                }
+            ],
+            "poll_interval": 0
         }
-      ],
-      "doc": "list channel you're subscribed to",
-      "confirmation": "list your subscribed channels on YouTube",
-      "canonical": "list subscriptions",
-      "examples": [
-        "list channels I am subscribed to on YouTube",
-        "list channels I follow on YouTube"
-      ]
     },
-    "search_channel": {
-      "args": [
+    "examples": [
         {
-          "name": "query",
-          "type": "String",
-          "question": "What do you want to search?",
-          "required": true
+            "utterance": "when there is a new video from youtube channels I follow",
+            "program": "let stream x := monitor (@com.youtube.list_videos());"
         },
         {
-          "name": "channel_id",
-          "type": "String",
-          "question": "",
-          "required": false
+            "utterance": "when there is a new video from youtube channel ${p_channel_id:const}",
+            "program": "let stream x := \\(p_channel_id :Entity(com.youtube:channel_id)) -> monitor (@com.youtube.list_videos(channel_id=p_channel_id));"
         },
         {
-          "name": "title",
-          "type": "String",
-          "question": "",
-          "required": false
+            "utterance": "youtube videos in $p_channel_id",
+            "program": "let table x := \\(p_channel_id :Entity(com.youtube:channel_id)) -> @com.youtube.list_videos(channel_id=p_channel_id);"
         },
         {
-          "name": "description",
-          "type": "String",
-          "question": "",
-          "required": false
+            "utterance": "when $channel_id uploads a video on youtube",
+            "program": "let stream x := \\(p_channel_id :Entity(com.youtube:channel_id)) -> monitor (@com.youtube.list_videos(channel_id=p_channel_id));"
         },
         {
-          "name": "thumbnail",
-          "type": "Picture",
-          "question": "",
-          "required": false
+            "utterance": "channels in category $p_category_id on youtube",
+            "program": "let table x := \\(p_category_id :Enum(best_of_youtube,recommended,paid,music,comedy,film_and_entertainment,gaming,beauty_and_fashion,from_tv,automotive,animation,sports,diy,tech,science,cooking,causes,news_and_politics,lifestyle)) -> @com.youtube.channels_by_category(category_id=p_category_id);"
+        },
+        {
+            "utterance": "youtube channels with category $p_category_id",
+            "program": "let table x := \\(p_category_id :Enum(best_of_youtube,recommended,paid,music,comedy,film_and_entertainment,gaming,beauty_and_fashion,from_tv,automotive,animation,sports,diy,tech,science,cooking,causes,news_and_politics,lifestyle)) -> @com.youtube.channels_by_category(category_id=p_category_id);"
+        },
+        {
+            "utterance": "channels I am subscribed to on youtube",
+            "program": "let table x := @com.youtube.list_subscriptions();"
+        },
+        {
+            "utterance": "channels I follow on youtube",
+            "program": "let table x := @com.youtube.list_subscriptions();"
+        },
+        {
+            "utterance": "${p_query:const} channels on youtube",
+            "program": "let table x := \\(p_query :String) -> @com.youtube.search_channel(query=p_query);"
+        },
+        {
+            "utterance": "channels matching ${p_query} on youtube",
+            "program": "let table x := \\(p_query :String) -> @com.youtube.search_channel(query=p_query);"
+        },
+        {
+            "utterance": "a ${p_query:const} video on youtube",
+            "program": "let table x := \\(p_query :String) -> @com.youtube.search_videos(query=p_query);"
+        },
+        {
+            "utterance": "a video matching $p_query on youtube",
+            "program": "let table x := \\(p_query :String) -> @com.youtube.search_videos(query=p_query);"
+        },
+        {
+            "utterance": "a video from ${p_channel_id:const} matching $p_query on youtube",
+            "program": "let table x := \\(p_channel_id :Entity(com.youtube:channel_id), p_query :String) -> @com.youtube.search_videos(query=p_query, channel_id=p_channel_id);"
+        },
+        {
+            "utterance": "a video published by ${p_channel_title:const} matching $p_query on youtube",
+            "program": "let table x := \\(p_channel_id :Entity(com.youtube:channel_id), p_query :String) -> @com.youtube.search_videos(query=p_query, channel_id=p_channel_id);"
+        },
+        {
+            "utterance": "${p_count:const} many videos matching $p_query on youtube",
+            "program": "let table x := \\(p_count :Number, p_query :String) -> @com.youtube.search_videos(count=p_count, query=p_query);"
+        },
+        {
+            "utterance": "$p_category_id youtube channels",
+            "program": "let table x := \\(p_category_id :Enum(best_of_youtube,recommended,paid,music,comedy,film_and_entertainment,gaming,beauty_and_fashion,from_tv,automotive,animation,sports,diy,tech,science,cooking,causes,news_and_politics,lifestyle)) -> @com.youtube.channels_by_category(category_id=p_category_id);"
+        },
+        {
+            "utterance": "$p_category_id channels in youtube",
+            "program": "let table x := \\(p_category_id :Enum(best_of_youtube,recommended,paid,music,comedy,film_and_entertainment,gaming,beauty_and_fashion,from_tv,automotive,animation,sports,diy,tech,science,cooking,causes,news_and_politics,lifestyle)) -> @com.youtube.channels_by_category(category_id=p_category_id);"
+        },
+        {
+            "utterance": "${p_query:const} from youtube",
+            "program": "let table x := \\(p_query :String) -> @com.youtube.search_videos(query=p_query);"
+        },
+        {
+            "utterance": "${p_query:const} videos from youtube",
+            "program": "let table x := \\(p_query :String) -> @com.youtube.search_videos(query=p_query);"
+        },
+        {
+            "utterance": "youtube 's $p_category_id channels",
+            "program": "let table x := \\(p_category_id :Enum(best_of_youtube,recommended,paid,music,comedy,film_and_entertainment,gaming,beauty_and_fashion,from_tv,automotive,animation,sports,diy,tech,science,cooking,causes,news_and_politics,lifestyle)) -> @com.youtube.channels_by_category(category_id=p_category_id);"
         }
-      ],
-      "doc": "search channels",
-      "confirmation": "search YouTube channels matching $query",
-      "canonical": "search channel",
-      "examples": [
-        "search $query channels on YouTube",
-        "search channels matching $query on YouTube"
-      ]
-    },
-    "search_videos": {
-      "args": [
-        {
-          "name": "query",
-          "type": "String",
-          "question": "What do you want to search?",
-          "required": true
-        },
-        {
-          "name": "video_id",
-          "type": "String",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "channel_id",
-          "type": "String",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "channel_title",
-          "type": "String",
-          "question": "What channel do you want to limit the search to?",
-          "required": false
-        },
-        {
-          "name": "title",
-          "type": "String",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "description",
-          "type": "String",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "thumbnail",
-          "type": "Picture",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "count",
-          "type": "Number",
-          "question": "How many search results do you want?",
-          "required": false
-        }
-      ],
-      "doc": "search videos",
-      "confirmation": "search YouTube videos matching $query",
-      "canonical": "search video",
-      "examples": [
-        "search a $query video on YouTube",
-        "search a video matching $query on YouTube",
-        "search a video from $channel_title matching $query on YouTube",
-        "search a video published by $channel_title matching $query on YouTube",
-        "search $count many videos matching $query on YouTube"
-      ]
-    }
-  }
+    ]
 }

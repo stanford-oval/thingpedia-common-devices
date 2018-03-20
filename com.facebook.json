@@ -1,78 +1,96 @@
 {
-  "module_type": "org.thingpedia.v1",
-  "params": {},
-  "category": "online",
-  "subcategory": "social-network",
-  "types": [],
-  "child_types": [],
-  "auth": {
-    "type": "oauth2"
-  },
-  "triggers": {},
-  "actions": {
-    "post": {
-      "args": [
-        {
-          "name": "status",
-          "type": "String",
-          "question": "What do you want to post?",
-          "is_input": true,
-          "required": true
-        }
-      ],
-      "doc": "post a status update to Facebook",
-      "confirmation": "post $status on Facebook",
-      "confirmation_remote": "post $status on $__person's Facebook",
-      "canonical": "post on facebook",
-      "formatted": [],
-      "poll_interval": 0
+    "module_type": "org.thingpedia.v2",
+    "params": {},
+    "category": "online",
+    "subcategory": "social-network",
+    "types": [],
+    "child_types": [],
+    "auth": {
+        "type": "oauth2",
+        "client_id": "979879085397010",
+        "client_secret": "770b8df05b487cb44261e7701a46c549"
     },
-    "post_picture": {
-      "args": [
+    "triggers": {},
+    "actions": {
+        "post": {
+            "args": [
+                {
+                    "name": "status",
+                    "type": "String",
+                    "question": "What do you want to post?",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "post a status update to Facebook",
+            "confirmation": "post $status on Facebook",
+            "confirmation_remote": "post $status on $__person's Facebook",
+            "canonical": "post on facebook",
+            "formatted": [],
+            "poll_interval": 0
+        },
+        "post_picture": {
+            "args": [
+                {
+                    "name": "picture_url",
+                    "type": "Picture",
+                    "question": "Upload the picture now.",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "caption",
+                    "type": "String",
+                    "question": "What should be the caption of the picture?",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "upload a photo to your Facebook",
+            "confirmation": "upload a picture on Facebook with caption $caption",
+            "confirmation_remote": "upload a picture on $__person's Facebook with caption $caption",
+            "canonical": "post picture on facebook",
+            "formatted": [],
+            "poll_interval": 0
+        }
+    },
+    "queries": {},
+    "examples": [
         {
-          "name": "picture_url",
-          "type": "Picture",
-          "question": "Upload the picture now.",
-          "is_input": true,
-          "required": true
+            "utterance": "post ${p_status} on facebook",
+            "program": "let action x := \\(p_status :String) -> @com.facebook.post(status=p_status);"
         },
         {
-          "name": "caption",
-          "type": "String",
-          "question": "What should be the caption of the picture?",
-          "is_input": true,
-          "required": true
+            "utterance": "post on facebook saying ${p_status:const}",
+            "program": "let action x := \\(p_status :String) -> @com.facebook.post(status=p_status);"
+        },
+        {
+            "utterance": "post a picture on facebook",
+            "program": "let action x := @com.facebook.post_picture();"
+        },
+        {
+            "utterance": "post a picture with caption ${p_caption:const} on facebook",
+            "program": "let action x := \\(p_caption :String) -> @com.facebook.post_picture(caption=p_caption);"
+        },
+        {
+            "utterance": "post a picture on facebook with caption ${p_caption}",
+            "program": "let action x := \\(p_caption :String) -> @com.facebook.post_picture(caption=p_caption);"
+        },
+        {
+            "utterance": "post ${p_picture_url} on facebook",
+            "program": "let action x := \\(p_picture_url :Entity(tt:picture)) -> @com.facebook.post_picture(picture_url=p_picture_url);"
+        },
+        {
+            "utterance": "post ${p_picture_url} on facebook with caption ${p_caption}",
+            "program": "let action x := \\(p_picture_url :Entity(tt:picture), p_caption :String) -> @com.facebook.post_picture(picture_url=p_picture_url, caption=p_caption);"
+        },
+        {
+            "utterance": "post something on facebook",
+            "program": "let action x := @com.facebook.post();"
+        },
+        {
+            "utterance": "caption ${p_picture_url} as ${p_caption:const} and post it on facebook",
+            "program": "let action x := \\(p_picture_url :Entity(tt:picture), p_caption :String) -> @com.facebook.post_picture(picture_url=p_picture_url, caption=p_caption);"
         }
-      ],
-      "doc": "upload a photo to your Facebook",
-      "confirmation": "upload a picture on Facebook with caption $caption",
-      "confirmation_remote": "upload a picture on $__person's Facebook with caption $caption",
-      "canonical": "post picture on facebook",
-      "formatted": [],
-      "poll_interval": 0
-    }
-  },
-  "queries": {},
-  "examples": [
-    {
-      "utterance": "post ${p_status} on facebook",
-      "program": "let action x := \\(p_status :String) -> @com.facebook.post(status=p_status);"
-    },
-    {
-      "utterance": "post on facebook saying ${p_status:const}",
-      "program": "let action x := \\(p_status :String) -> @com.facebook.post(status=p_status);"
-    },
-    {
-      "utterance": "post a picture on facebook",
-      "program": "let action x := \\() -> @com.facebook.post_picture();"
-    },
-    {
-      "utterance": "post a picture with caption ${p_caption:const} on facebook",
-      "program": "let action x := \\(p_caption :String) -> @com.facebook.post_picture(caption=p_caption);"
-    },
-    {
-      "utterance": "post a picture on facebook with caption ${p_caption}",
-      "program": "let action x := \\(p_caption :String) -> @com.facebook.post_picture(caption=p_caption);"
-    }
-  ]
+    ]
 }

@@ -1,111 +1,175 @@
 {
-  "params": {},
-  "types": [],
-  "child_types": [
-    "tumblr-blog"
-  ],
-  "auth": {
-    "type": "none"
-  },
-  "triggers": {
-    "new_text": {
-      "args": [
-        {
-          "name": "blog_name",
-          "type": "String",
-          "question": "What blog name do you want to follow?",
-          "required": true
-        },
-        {
-          "name": "date",
-          "type": "Date",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "title",
-          "type": "String",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "url",
-          "type": "String",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "tags",
-          "type": "Array(String)",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "body",
-          "type": "String",
-          "question": "",
-          "required": false
-        }
-      ],
-      "doc": "Trigger when there is a new text post.",
-      "confirmation": "something new is posted on Tumblr blog $blog_name",
-      "canonical": "new text post",
-      "examples": [
-        "monitor blog $blog_name on tumblr",
-        "notify me for new text posts in $blog_name on tumblr",
-        "monitor text posts in $blog_name on tumblr"
-      ]
+    "module_type": "org.thingpedia.v1",
+    "params": {},
+    "category": "online",
+    "subcategory": "social-network",
+    "types": [],
+    "child_types": [
+        "tumblr-blog"
+    ],
+    "auth": {
+        "type": "oauth2",
+        "client_id": "4PIDVipuiNlG4AXehBJOOgaWw12gqYJ4qZ4AueUgZaSQErEVfe",
+        "client_secret": "1jTyF3JYleulh34E8XXqqFZj949tLOsu9gEBB2os8mufxHx1K3"
     },
-    "new_photo": {
-      "args": [
-        {
-          "name": "blog_name",
-          "type": "String",
-          "question": "What blog name do you want to follow?",
-          "required": true
+    "triggers": {},
+    "actions": {},
+    "queries": {
+        "new_text": {
+            "args": [
+                {
+                    "name": "blog_name",
+                    "type": "Username",
+                    "question": "What blog name do you want to follow?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "date",
+                    "type": "Date",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "title",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "link",
+                    "type": "URL",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "tags",
+                    "type": "Array(Hashtag)",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "body",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "Trigger when there is a new text post.",
+            "confirmation": "something new is posted on Tumblr blog $blog_name",
+            "confirmation_remote": "",
+            "canonical": "new text post on tumblr",
+            "formatted": [
+                {
+                    "type": "rdl",
+                    "displayTitle": "Post in ${blog_name}.tumblr.com: ${title}",
+                    "displayText": "${body}",
+                    "webCallback": "${link}"
+                }
+            ],
+            "poll_interval": 1800000
         },
-        {
-          "name": "date",
-          "type": "Date",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "caption",
-          "type": "String",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "url",
-          "type": "String",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "tags",
-          "type": "Array(String)",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "photo_urls",
-          "type": "Array(String)",
-          "question": "",
-          "required": false
+        "new_photo": {
+            "args": [
+                {
+                    "name": "blog_name",
+                    "type": "Username",
+                    "question": "What blog name do you want to follow?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "date",
+                    "type": "Date",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "caption",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "link",
+                    "type": "URL",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "tags",
+                    "type": "Array(Hashtag)",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "picture_urls",
+                    "type": "Array(Picture)",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "Trigger when there is a new photo post. `photo_urls` is an array of all image source urls in the post",
+            "confirmation": "new photos are posted in $blog_name on Tumblr",
+            "confirmation_remote": "",
+            "canonical": "new photo post on tumblr",
+            "formatted": [
+                {
+                    "type": "rdl",
+                    "displayTitle": "Post in ${blog_name}.tumblr.com: ${title}",
+                    "displayText": "${body}",
+                    "webCallback": "${link}"
+                }
+            ],
+            "poll_interval": 1800000
         }
-      ],
-      "doc": "Trigger when there is a new photo post. `photo_urls` is an array of all image source urls in the post",
-      "confirmation": "new photos are posted in $blog_name on Tumblr",
-      "canonical": "new photo post",
-      "examples": [
-        "monitor photo posts in $blog_name on tumblr",
-        "monitor picture posts in $blog_name on tumblr",
-        "notify me if someone posts a new picture in $blog_name on tumblr"
-      ]
-    }
-  },
-  "actions": {},
-  "queries": {},
-  "global-name": "tumblr"
+    },
+    "examples": [
+        {
+            "utterance": "when there is a new post in blog ${p_blog_name:const} on tumblr ",
+            "program": "let stream x := \\(p_blog_name :Entity(tt:username)) -> monitor (@com.tumblr.new_text(blog_name=p_blog_name));"
+        },
+        {
+            "utterance": "blog ${p_blog_name:const} on tumblr",
+            "program": "let table x := \\(p_blog_name :String) -> @com.tumblr.new_text(blog_name=p_blog_name);"
+        },
+        {
+            "utterance": "when there is a new picture uploaded in blog ${p_blog_name:const} on tumblr",
+            "program": "let stream x := \\(p_blog_name :String) -> monitor (@com.tumblr.new_photo(blog_name=p_blog_name));"
+        },
+        {
+            "utterance": "picture posts in ${p_blog_name:const} on tumblr",
+            "program": "let table x := \\(p_blog_name :String) -> @com.tumblr.new_photo(blog_name=p_blog_name);"
+        },
+        {
+            "utterance": "when someone posts a new picture in ${p_blog_name:const} on tumblr",
+            "program": "let stream x := \\(p_blog_name :String) -> monitor (@com.tumblr.new_photo(blog_name=p_blog_name));"
+        },
+        {
+            "utterance": "posts in the ${p_blog_name:const} tumblr blog",
+            "program": "let table x := \\(p_blog_name :String) -> @com.tumblr.new_text(blog_name=p_blog_name);"
+        },
+        {
+            "utterance": "picture posts in the ${p_blog_name:const} tumblr blog",
+            "program": "let table x := \\(p_blog_name :String) -> @com.tumblr.new_photo(blog_name=p_blog_name);"
+        },
+        {
+            "utterance": "when ${p_blog_name} uploads a new picture on tumblr",
+            "program": "let stream x := \\(p_blog_name :String) -> monitor (@com.tumblr.new_photo(blog_name=p_blog_name));"
+        },
+        {
+            "utterance": "when ${p_blog_name} posts on tumblr",
+            "program": "let stream x := \\(p_blog_name :String) -> monitor (@com.tumblr.new_photo(blog_name=p_blog_name));"
+        }
+    ]
 }

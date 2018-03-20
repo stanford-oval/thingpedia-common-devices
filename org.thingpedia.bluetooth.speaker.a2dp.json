@@ -1,51 +1,137 @@
 {
-  "params": {},
-  "auth": { "type": "discovery" },
-  "types": [ "speaker", "bluetooth-uuid-0000110b-0000-1000-8000-00805f9b34fb" ],
-  "child_types": [],
-
-  "triggers": {},
-  "actions": {
-    "set_sink": {
-      "args": [],
-      "doc": "set this speaker as the default audio output device",
-      "confirmation": "set your speaker to be the default audio output",
-      "canonical": "set audio sink",
-      "examples": []
+    "module_type": "org.thingpedia.v1",
+    "params": {},
+    "category": "physical",
+    "subcategory": "home",
+    "types": [
+        "bluetooth-uuid-0000110b-0000-1000-8000-00805f9b34fb"
+    ],
+    "child_types": [],
+    "auth": {
+        "type": "discovery",
+        "discoveryType": "bluetooth"
     },
-    "play_music": {
-      "args": [],
-      "doc": "play music on this device; the result is platform dependent (eg might open the default music player app)",
-      "confirmation": "play some music on your speaker",
-      "canonical": "play music",
-      "examples": []
-    },
-    "raise_volume": {
-      "args": [],
-      "doc": "increase the audio volume on this speaker (by some platform specific amount)",
-      "confirmation": "increase the volume on your speaker",
-      "canonical": "raise volume",
-      "examples": []
-    },
-    "lower_volume": {
-      "args": [],
-      "doc": "increase the audio volume on this speaker (by some platform specific amount)",
-      "confirmation": "decrease the volume on your speaker",
-      "canonical": "lower volume",
-      "examples": []
-    },
-    "set_volume": {
-      "args": [
-        {"name": "percent",
-         "type": "Number",
-         "question": "What volume do you want to set (in percent)?"
+    "triggers": {},
+    "actions": {
+        "set_sink": {
+            "args": [],
+            "doc": "set this speaker as the default audio output device",
+            "confirmation": "set your bluetooth speaker to be the default audio output",
+            "confirmation_remote": "set $__person's bluetooth speaker to be his default audio output",
+            "canonical": "set audio sink on bluetooth speaker",
+            "formatted": [],
+            "poll_interval": 0
+        },
+        "play_music": {
+            "args": [],
+            "doc": "play music on this device; the result is platform dependent (eg might open the default music player app)",
+            "confirmation": "play some music on your bluetooth speaker",
+            "confirmation_remote": "play some music on $__person's bluetooth speaker",
+            "canonical": "play music on bluetooth speaker",
+            "formatted": [],
+            "poll_interval": 0
+        },
+        "raise_volume": {
+            "args": [],
+            "doc": "increase the audio volume on this speaker (by some platform specific amount)",
+            "confirmation": "increase the volume on your bluetooth speaker",
+            "confirmation_remote": "increase the volume on $__person's bluetooth speaker",
+            "canonical": "raise volume on bluetooth speaker",
+            "formatted": [],
+            "poll_interval": 0
+        },
+        "lower_volume": {
+            "args": [],
+            "doc": "increase the audio volume on this speaker (by some platform specific amount)",
+            "confirmation": "decrease the volume on your bluetooth speaker",
+            "confirmation_remote": "decrease the volume on $__person's bluetooth speaker",
+            "canonical": "lower volume on bluetooth speaker",
+            "formatted": [],
+            "poll_interval": 0
+        },
+        "set_volume": {
+            "args": [
+                {
+                    "name": "percent",
+                    "type": "Number",
+                    "question": "What volume do you want to set (in percent)?",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "set the volume on this device to the given percent value",
+            "confirmation": "set the volume on your bluetooth speaker to $percent %",
+            "confirmation_remote": "set the volume on $__person's bluetooth speaker to $percent%",
+            "canonical": "set volume on bluetooth speaker",
+            "formatted": [],
+            "poll_interval": 0
         }
-      ],
-      "doc": "set the volume on this device to the given percent value",
-      "confirmation": "set the volume on your speaker to $percent %",
-      "canonical": "set volume",
-      "examples": []
-    }
-  },
-  "queries": {}
+    },
+    "queries": {},
+    "examples": [
+        {
+            "utterance": "set my bluetooth speaker as default",
+            "program": "let action x := @org.thingpedia.bluetooth.speaker.a2dp.set_sink();"
+        },
+        {
+            "utterance": "set my speaker as default",
+            "program": "let action x := @org.thingpedia.bluetooth.speaker.a2dp.set_sink();"
+        },
+        {
+            "utterance": "set my speaker as sink",
+            "program": "let action x := @org.thingpedia.bluetooth.speaker.a2dp.set_sink();"
+        },
+        {
+            "utterance": "play something on my bluetooth speaker",
+            "program": "let action x := @org.thingpedia.bluetooth.speaker.a2dp.play_music();"
+        },
+        {
+            "utterance": "play music on my speaker",
+            "program": "let action x := @org.thingpedia.bluetooth.speaker.a2dp.play_music();"
+        },
+        {
+            "utterance": "play something on my speaker",
+            "program": "let action x := @org.thingpedia.bluetooth.speaker.a2dp.play_music();"
+        },
+        {
+            "utterance": "increase the volume on my bluetooth speaker",
+            "program": "let action x := @org.thingpedia.bluetooth.speaker.a2dp.raise_volume();"
+        },
+        {
+            "utterance": "increase volume on my speaker",
+            "program": "let action x := @org.thingpedia.bluetooth.speaker.a2dp.raise_volume();"
+        },
+        {
+            "utterance": "set my speaker louder",
+            "program": "let action x := @org.thingpedia.bluetooth.speaker.a2dp.raise_volume();"
+        },
+        {
+            "utterance": "lower the volume of my bluetooth speaker",
+            "program": "let action x := @org.thingpedia.bluetooth.speaker.a2dp.lower_volume();"
+        },
+        {
+            "utterance": "decrease volume on my speaker",
+            "program": "let action x := @org.thingpedia.bluetooth.speaker.a2dp.lower_volume();"
+        },
+        {
+            "utterance": "set my speaker softer",
+            "program": "let action x := @org.thingpedia.bluetooth.speaker.a2dp.lower_volume();"
+        },
+        {
+            "utterance": "set the volume of my bluetooth speaker to $p_percent",
+            "program": "let action x := \\(p_percent :Number) -> @org.thingpedia.bluetooth.speaker.a2dp.set_volume(percent=p_percent);"
+        },
+        {
+            "utterance": "set volume on my speaker to ${p_percent:const} %",
+            "program": "let action x := \\(p_percent :Number) -> @org.thingpedia.bluetooth.speaker.a2dp.set_volume(percent=p_percent);"
+        },
+        {
+            "utterance": "raise volume on my bluetooth speaker",
+            "program": "let action x := @org.thingpedia.bluetooth.speaker.a2dp.lower_volume();"
+        },
+        {
+            "utterance": "set my bluetooth speaker to ${p_percent:const} %",
+            "program": "let action x := \\(p_percent :Number) -> @org.thingpedia.bluetooth.speaker.a2dp.set_volume(percent=p_percent);"
+        }
+    ]
 }

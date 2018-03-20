@@ -1,112 +1,132 @@
 {
-  "module_type": "org.thingpedia.v1",
-  "params": {},
-  "category": "online",
-  "subcategory": "social-network",
-  "types": [],
-  "child_types": [],
-  "auth": {
-    "type": "oauth2"
-  },
-  "triggers": {},
-  "actions": {},
-  "queries": {
-    "get_pictures": {
-      "args": [
-        {
-          "name": "count",
-          "type": "Number",
-          "question": "How many pictures do you want?",
-          "is_input": true,
-          "required": false
-        },
-        {
-          "name": "media_id",
-          "type": "Entity(instagram:media_id)",
-          "question": "",
-          "is_input": false,
-          "required": false
-        },
-        {
-          "name": "picture_url",
-          "type": "Entity(tt:picture)",
-          "question": "",
-          "is_input": false,
-          "required": false
-        },
-        {
-          "name": "caption",
-          "type": "String",
-          "question": "",
-          "is_input": false,
-          "required": false
-        },
-        {
-          "name": "link",
-          "type": "Entity(tt:url)",
-          "question": "",
-          "is_input": false,
-          "required": false
-        },
-        {
-          "name": "filter",
-          "type": "String",
-          "question": "With what filters do you want pictures?",
-          "is_input": false,
-          "required": false
-        },
-        {
-          "name": "hashtags",
-          "type": "Array(Entity(tt:hashtag))",
-          "question": "",
-          "is_input": false,
-          "required": false
-        },
-        {
-          "name": "location",
-          "type": "Location",
-          "question": "",
-          "is_input": false,
-          "required": false
+    "module_type": "org.thingpedia.v1",
+    "params": {},
+    "category": "online",
+    "subcategory": "social-network",
+    "types": [],
+    "child_types": [],
+    "auth": {
+        "type": "oauth2"
+    },
+    "triggers": {},
+    "actions": {},
+    "queries": {
+        "get_pictures": {
+            "args": [
+                {
+                    "name": "count",
+                    "type": "Number",
+                    "question": "How many pictures do you want?",
+                    "is_input": true,
+                    "required": false
+                },
+                {
+                    "name": "media_id",
+                    "type": "Entity(instagram:media_id)",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "picture_url",
+                    "type": "Entity(tt:picture)",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "caption",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "link",
+                    "type": "Entity(tt:url)",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "filter",
+                    "type": "Entity(com.instagram:filter)",
+                    "question": "With what filters do you want pictures?",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "hashtags",
+                    "type": "Array(Entity(tt:hashtag))",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "location",
+                    "type": "Location",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "get pictures recently uploaded by the user",
+            "confirmation": "retrieve your recent Instagram pictures",
+            "confirmation_remote": "",
+            "canonical": "get pictures on instagram",
+            "formatted": [
+                {
+                    "type": "text",
+                    "text": "${caption}"
+                },
+                {
+                    "type": "picture",
+                    "url": "${picture_url}"
+                }
+            ],
+            "poll_interval": 600000
         }
-      ],
-      "doc": "get pictures recently uploaded by the user",
-      "confirmation": "retrieve your recent Instagram pictures",
-      "confirmation_remote": "",
-      "canonical": "get pictures on instagram",
-      "formatted": [
+    },
+    "examples": [
         {
-          "type": "text",
-          "text": "${caption}"
+            "utterance": "when I upload a picture on instagram",
+            "program": "let stream x := monitor (@com.instagram.get_pictures());"
         },
         {
-          "type": "picture",
-          "url": "${picture_url}"
+            "utterance": "when I upload a picture with filter $p_filter on instagram",
+            "program": "let stream x := \\(p_filter :Entity(com.instagram:filter)) -> monitor ((@com.instagram.get_pictures()), filter == p_filter);"
+        },
+        {
+            "utterance": "my recent instagram pictures",
+            "program": "let table x := @com.instagram.get_pictures();"
+        },
+        {
+            "utterance": "my ${p_count:const} recent instagram pictures",
+            "program": "let table x := \\(p_count :Number) -> @com.instagram.get_pictures(count=p_count);"
+        },
+        {
+            "utterance": "my instagram pictures with filter $p_filter",
+            "program": "let table x := \\(p_filter :Entity(com.instagram:filter)) -> (@com.instagram.get_pictures()), filter == p_filter;"
+        },
+        {
+            "utterance": "my ${p_count:const} latest instagram pictures",
+            "program": "let table x := \\(p_count :Number) -> @com.instagram.get_pictures(count=p_count);"
+        },
+        {
+            "utterance": "the instagram pictures i took at ${p_location}",
+            "program": "let table x := \\(p_location :Location) -> (@com.instagram.get_pictures()), location == p_location;"
+        },
+        {
+            "utterance": "my instagram pictures tagged ${p_hashtag}",
+            "program": "let table x := \\(p_hashtag :Entity(tt:hashtag)) -> (@com.instagram.get_pictures()), contains(hashtags, p_hashtag);"
+        },
+        {
+            "utterance": "when I upload a new picture on instagram",
+            "program": "let stream x := monitor (@com.instagram.get_pictures());"
+        },
+        {
+            "utterance": "my instagram pictures",
+            "program": "let table x := @com.instagram.get_pictures();"
         }
-      ],
-      "poll_interval": 600000
-    }
-  },
-  "examples": [
-    {
-      "utterance": "when I upload a picture on instagram",
-      "program": "let stream x := monitor (@com.instagram.get_pictures());"
-    },
-    {
-      "utterance": "when I upload a picture with filter $p_filter on instagram",
-      "program": "let stream x := \\(p_filter :String) -> monitor (@com.instagram.get_pictures()), filter == p_filter;"
-    },
-    {
-      "utterance": "my recent instagram pictures",
-      "program": "let table x := @com.instagram.get_pictures();"
-    },
-    {
-      "utterance": "my $p_count many recent instagram pictures",
-      "program": "let table x := \\(p_count :Number) -> @com.instagram.get_pictures(count=p_count);"
-    },
-    {
-      "utterance": "my instagram pictures with filter $p_filter",
-      "program": "let table x := \\(p_filter :String) -> (@com.instagram.get_pictures()), filter == p_filter;"
-    }
-  ]
+    ]
 }

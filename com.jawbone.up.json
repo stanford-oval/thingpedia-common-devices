@@ -1,91 +1,219 @@
 {
-  "auth": {
-    "type": "oauth2"
-  },
-  "types": [
-    "activity-tracker",
-    "fitness-tracker",
-    "heartrate-monitor",
-    "sleep-tracker"
-  ],
-  "triggers": {
-    "getbody": {
-      "args": [
-        "time",
-        "place",
-        "weight",
-        "leanMass",
-        "bodyFat",
-        "bmi"
-      ],
-      "schema": [
-        "Date",
-        "Location",
-        "Measure(kg)",
-        "Number",
-        "Number",
-        "Number"
-      ],
-      "doc": "retrieve your latest body shape measurement, as known by the UP app; `leanMass` and `bodyFat` are percentages, `bmi` is the body mass index"
+    "params": {},
+    "types": [
+        "activity-tracker",
+        "fitness-tracker",
+        "heartrate-monitor",
+        "sleep-tracker",
+        "health"
+    ],
+    "child_types": [],
+    "auth": {
+        "type": "oauth2"
     },
-    "getheartrate": {
-      "args": [
-        "time",
-        "place",
-        "heartrate"
-      ],
-      "schema": [
-        "Date",
-        "Location",
-        "Number"
-      ],
-      "doc": "retrieve your resting heart rate, in beats per minute"
+    "triggers": {
+        "getbody": {
+            "args": [
+                {
+                    "type": "Date",
+                    "name": "time",
+                    "question": "",
+                    "required": false,
+                    "is_input": false
+                },
+                {
+                    "type": "Location",
+                    "name": "place",
+                    "question": "",
+                    "required": false,
+                    "is_input": false
+                },
+                {
+                    "type": "Measure(kg)",
+                    "name": "weight",
+                    "question": "What is your target weight value?",
+                    "required": false,
+                    "is_input": false
+                },
+                {
+                    "type": "Number",
+                    "name": "leanMass",
+                    "question": "What is your target lean mass percentage?",
+                    "required": false,
+                    "is_input": false
+                },
+                {
+                    "type": "Number",
+                    "name": "bodyFat",
+                    "question": "What is your target body fat percentage?",
+                    "required": false,
+                    "is_input": false
+                },
+                {
+                    "type": "Number",
+                    "name": "bmi",
+                    "question": "What is your target bmi?",
+                    "required": false,
+                    "is_input": false
+                }
+            ],
+            "doc": "retrieve your latest body shape measurement, as known by the UP app; `leanMass` and `bodyFat` are percentages, `bmi` is the body mass index",
+            "confirmation": "body measurement changes",
+            "canonical": "get measurements on jawbone up",
+            "examples": []
+        },
+        "getheartrate": {
+            "args": [
+                {
+                    "type": "Date",
+                    "name": "time",
+                    "question": "",
+                    "required": false,
+                    "is_input": false
+                },
+                {
+                    "type": "Location",
+                    "name": "place",
+                    "question": "",
+                    "required": false,
+                    "is_input": false
+                },
+                {
+                    "type": "Number",
+                    "name": "heartrate",
+                    "question": "What is your target heart rate?",
+                    "required": false,
+                    "is_input": false
+                }
+            ],
+            "doc": "retrieve your resting heart rate, in beats per minute; updates every 5 minutes",
+            "confirmation": "heart rate changes",
+            "canonical": "get heart rate on jawbone up",
+            "examples": []
+        },
+        "getmove": {
+            "args": [
+                {
+                    "type": "Date",
+                    "name": "updateTime",
+                    "question": "",
+                    "required": false,
+                    "is_input": false
+                },
+                {
+                    "type": "String",
+                    "name": "day",
+                    "question": "",
+                    "required": false,
+                    "is_input": false
+                },
+                {
+                    "type": "Measure(m)",
+                    "name": "distance",
+                    "question": "What is the target distance?",
+                    "required": false,
+                    "is_input": false
+                },
+                {
+                    "type": "Number",
+                    "name": "steps",
+                    "question": "What is the target number of steps?",
+                    "required": false,
+                    "is_input": false
+                },
+                {
+                    "type": "Measure(ms)",
+                    "name": "activeTime",
+                    "question": "",
+                    "required": false,
+                    "is_input": false
+                },
+                {
+                    "type": "Measure(ms)",
+                    "name": "inactiveTime",
+                    "question": "",
+                    "required": false,
+                    "is_input": false
+                },
+                {
+                    "type": "Measure(kcal)",
+                    "name": "calories",
+                    "question": "What is the desired calorie count to be burnt?",
+                    "required": false,
+                    "is_input": false
+                }
+            ],
+            "doc": "retrieve your daily movement statistics; updates frequently when connected",
+            "confirmation": "movement statistics update",
+            "canonical": "get step count on jawbone up",
+            "examples": []
+        },
+        "getsleep": {
+            "args": [
+                {
+                    "type": "Date",
+                    "name": "time",
+                    "question": "",
+                    "required": false,
+                    "is_input": false
+                },
+                {
+                    "type": "Location",
+                    "name": "place",
+                    "question": "",
+                    "required": false,
+                    "is_input": false
+                },
+                {
+                    "type": "Date",
+                    "name": "awakeTime",
+                    "question": "",
+                    "required": false,
+                    "is_input": false
+                },
+                {
+                    "type": "Date",
+                    "name": "asleepTime",
+                    "question": "",
+                    "required": false,
+                    "is_input": false
+                },
+                {
+                    "type": "Measure(ms)",
+                    "name": "duration",
+                    "question": "How many hours is the desired sleep duration?",
+                    "required": false,
+                    "is_input": false
+                },
+                {
+                    "type": "Measure(ms)",
+                    "name": "rem",
+                    "question": "",
+                    "required": false,
+                    "is_input": false
+                },
+                {
+                    "type": "Measure(ms)",
+                    "name": "light",
+                    "question": "",
+                    "required": false,
+                    "is_input": false
+                },
+                {
+                    "type": "Measure(ms)",
+                    "name": "deep",
+                    "question": "",
+                    "required": false,
+                    "is_input": false
+                }
+            ],
+            "doc": "retrieve your latest sleep record; `rem`, `light` and `deep` are the durations of the respective sleep phases",
+            "confirmation": "sleep record updates",
+            "canonical": "get sleep time on jawbone up",
+            "examples": []
+        }
     },
-    "getmove": {
-      "args": [
-        "updateTime",
-        "day",
-        "distance",
-        "steps",
-        "activeTime",
-        "inactiveTime",
-        "calories"
-      ],
-      "schema": [
-        "Date",
-        "String",
-        "Measure(m)",
-        "Number",
-        "Measure(ms)",
-        "Measure(ms)",
-        "Measure(kcal)"
-      ],
-      "doc": "retrieve your daily movement statistics"
-    },
-    "getsleep": {
-      "args": [
-        "time",
-        "place",
-        "awakeTime",
-        "asleepTime",
-        "duration",
-        "rem",
-        "light",
-        "deep"
-      ],
-      "schema": [
-        "Date",
-        "Location",
-        "Date",
-        "Date",
-        "Measure(ms)",
-        "Measure(ms)",
-        "Measure(ms)",
-        "Measure(ms)"
-      ],
-      "doc": "retrieve your latest sleep record; `rem`, `light` and `deep` are the durations of the respective sleep phases"
-    }
-  },
-  "actions": {},
-  "params": {}
+    "actions": {},
+    "queries": {},
+    "module_type": "org.thingpedia.v1"
 }

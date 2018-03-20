@@ -1,44 +1,73 @@
 {
-  "params": {},
-  "types": [
-    "data-source",
-    "media"
-  ],
-  "child_types": [],
-  "auth": {
-    "type": "none"
-  },
-  "triggers": {},
-  "queries": {
-    "get": {
-      "args": [
+    "module_type": "org.thingpedia.v1",
+    "params": {},
+    "category": "data",
+    "subcategory": "media",
+    "types": [],
+    "child_types": [],
+    "auth": {
+        "type": "none"
+    },
+    "triggers": {},
+    "actions": {},
+    "queries": {
+        "get": {
+            "args": [
+                {
+                    "name": "count",
+                    "type": "Number",
+                    "question": "How many dogs do you want?",
+                    "is_input": true,
+                    "required": false
+                },
+                {
+                    "name": "image_id",
+                    "type": "Entity(dogapi:image_id)",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "picture_url",
+                    "type": "Picture",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "get `count` many dog pictures",
+            "confirmation": "get dog pictures",
+            "confirmation_remote": "",
+            "canonical": "get dogs",
+            "formatted": [
+                {
+                    "type": "picture",
+                    "url": "${picture_url}"
+                }
+            ],
+            "poll_interval": -1
+        }
+    },
+    "examples": [
         {
-          "name": "count",
-          "type": "Number",
-          "question": "How many dogs do you want?"
+            "utterance": "dog pictures",
+            "program": "let table x := @uk.co.thedogapi.get();"
         },
         {
-          "name": "image_id",
-          "type": "Entity(dogapi:image_id)",
-          "question": "",
+            "utterance": "puppy pictures",
+            "program": "let table x := @uk.co.thedogapi.get();"
         },
         {
-          "name": "picture_url",
-          "type": "Picture",
-          "question": ""
+            "utterance": "a random picture of a dog",
+            "program": "let table x := @uk.co.thedogapi.get();"
         },
-      ],
-      "doc": "get `count` many dog pictures",
-      "confirmation": "get dog pictures",
-      "canonical": "get dogs",
-      "examples": [
-        "get dog pictures",
-        "dog pictures now",
-        "not enough dog pictures",
-        "need moar dogs",
-        "puppies!"
-      ]
-    }
-  },
-  "actions": {}
+        {
+            "utterance": "a picture of a random dog",
+            "program": "let table x := @uk.co.thedogapi.get();"
+        },
+        {
+            "utterance": "${p_count:const} dog pictures",
+            "program": "let table x := \\(p_count :Number) -> @uk.co.thedogapi.get(count=p_count);"
+        }
+    ]
 }

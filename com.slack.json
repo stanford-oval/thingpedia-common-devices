@@ -1,140 +1,291 @@
 {
-  "params": {},
-  "global-name": "slack",
-  "types": [
-    "online-account"
-  ],
-  "child_types": [],
-  "auth": {
-    "type": "oauth2"
-  },
-  "triggers": {
-    "receive": {
-      "args": [
-        {
-          "name": "from_channel",
-          "type": "String",
-          "question": ""
-        },
-        {
-          "name": "timestamp",
-          "type": "String",
-          "question": ""
-        },
-        {
-          "name": "from_user",
-          "type": "String",
-          "question": ""
-        },
-        {
-          "name": "message",
-          "type": "String",
-          "question": ""
-        }
-      ],
-      "doc": "Polls Slack and sends you any new messages that appear in public channels of your Slack team.",
-      "confirmation": "you receive a message on slack",
-      "canonical": "receive message",
-      "examples": []
-    }
-  },
-  "actions": {
-    "send": {
-      "args": [
-        {
-          "name": "channel",
-          "type": "String",
-          "question": "What channel do you want to send the message to?"
-        },
-        {
-          "name": "message",
-          "type": "String",
-          "question": "What message do you want me to send?"
-        }
-      ],
-      "doc": "Send a message to the specified Slack channel. Omit the hashtag from the channel name.",
-      "confirmation": "send a message on slack to $channel saying $message",
-      "canonical": "send message",
-      "examples": [
-        "send a message on slack to $channel saying $message",
-        "message $channel on slack saying $message"
-      ]
+    "module_type": "org.thingpedia.v1",
+    "params": {},
+    "category": "online",
+    "subcategory": "communication",
+    "types": [],
+    "child_types": [],
+    "auth": {
+        "type": "oauth2",
+        "client_id": "48257630786.66509414198",
+        "client_secret": "f6f5626d15cd72c4cdeeb89d5b560b1a"
     },
-    "send_picture": {
-      "args": [
-        {
-          "name": "channel",
-          "type": "String",
-          "question": "What channel do you want to send the message to?"
+    "triggers": {},
+    "actions": {
+        "send": {
+            "args": [
+                {
+                    "name": "channel",
+                    "type": "Hashtag",
+                    "question": "What channel do you want to send the message to?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "message",
+                    "type": "String",
+                    "question": "What message do you want me to send?",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "Send a message to the specified Slack channel as a bot named after you. Omit the hashtag from the channel name.",
+            "confirmation": "send a message on slack to channel $channel saying $message",
+            "confirmation_remote": "send a message on $__person's slack to channel $channel saying $message",
+            "canonical": "send message on slack",
+            "formatted": [],
+            "poll_interval": 0,
+            "label": "send a message"
         },
-        {
-          "name": "caption",
-          "type": "String",
-          "question": "What is the caption of the picture?"
+        "updateChannelPurpose": {
+            "args": [
+                {
+                    "name": "channel",
+                    "type": "Hashtag",
+                    "question": "What channel do you want to change?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "purpose",
+                    "type": "String",
+                    "question": "What purpose do you want to set?",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "Update the specified channel's purpose. Omit the hashtag from the channel name.",
+            "confirmation": "update the purpose of slack channel $channel to $purpose",
+            "confirmation_remote": "update the purpose of $__person's slack channel $channel to $purpose",
+            "canonical": "update channel purpose on slack",
+            "formatted": [],
+            "poll_interval": 0,
+            "label": "update the channel's purpose"
         },
-        {
-          "name": "url",
-          "type": "Picture",
-          "question": "Upload the picture now."
+        "updateChannelTopic": {
+            "args": [
+                {
+                    "name": "channel",
+                    "type": "Hashtag",
+                    "question": "What channel do you want to change?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "topic",
+                    "type": "String",
+                    "question": "What should be the new topic?",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "Update the specified channel's topic. Omit the hashtag from the channel name.",
+            "confirmation": "update the topic of slack channel $channel to $topic",
+            "confirmation_remote": "update the topic of $__person's slack channel $channel to $topic",
+            "canonical": "update channel topic on slack",
+            "formatted": [],
+            "poll_interval": 0,
+            "label": "update the channel's topic"
+        },
+        "setPresence": {
+            "args": [
+                {
+                    "name": "presence",
+                    "type": "Enum(away,auto)",
+                    "question": "What should be your new presence?",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "Update your displayed presence. Presence must be 'away' or 'auto'.",
+            "confirmation": "set your presence status on slack to $presence",
+            "confirmation_remote": "set $__person's presence status on slack to $presence",
+            "canonical": "set presence on slack",
+            "formatted": [],
+            "poll_interval": 0,
+            "label": "set your presence"
+        },
+        "send_picture": {
+            "args": [
+                {
+                    "name": "channel",
+                    "type": "Hashtag",
+                    "question": "What channel do you want to send the message to?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "caption",
+                    "type": "String",
+                    "question": "What is the caption of the picture?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "picture_url",
+                    "type": "Picture",
+                    "question": "Upload the picture now.",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "Send a message with a picture attachment to the specified Slack channel. Omit the hashtag from the channel name.",
+            "confirmation": "send a picture on slack to channel $channel with caption $caption",
+            "confirmation_remote": "send a picture on $__person's slack to channel $channel with caption $caption",
+            "canonical": "send picture on slack",
+            "formatted": [],
+            "poll_interval": 0
         }
-      ],
-      "doc": "Send a message with a picture attachment to the specified Slack channel. Omit the hashtag from the channel name.",
-      "confirmation": "send a picture on slack to $channel with caption $caption",
-      "canonical": "send picture",
-      "examples": [
-        "send a picture on slack to $channel saying $message"
-      ]
     },
-    "updateChannelPurpose": {
-      "args": [
+    "queries": {
+        "channel_history": {
+            "args": [
+                {
+                    "name": "channel",
+                    "type": "Hashtag",
+                    "question": "What channel are you interested in?",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "date",
+                    "type": "Date",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "sender",
+                    "type": "Username",
+                    "question": "What user are you interested in?",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "message",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "Polls Slack and sends you any new messages that appear in public channels of your Slack team.",
+            "confirmation": "you receive a message on slack",
+            "confirmation_remote": "$__person receives a message on slack",
+            "canonical": "receive message on slack",
+            "formatted": [
+                {
+                    "type": "text",
+                    "text": "New message on #${channel} from @${from}: ${message}"
+                }
+            ],
+            "poll_interval": 60000
+        }
+    },
+    "examples": [
         {
-          "name": "channel",
-          "type": "String",
-          "question": "What channel do you want to change?"
+            "utterance": "when i receive a message on slack",
+            "program": "let stream x := monitor (@com.slack.channel_history());"
         },
         {
-          "name": "purpose",
-          "type": "String",
-          "question": "What purpose do you want to set?"
-        }
-      ],
-      "doc": "Update the specified channel's purpose. Omit the hashtag from the channel name.",
-      "confirmation": "update the purpose of slack channel $channel to $purpose",
-      "canonical": "update channel purpose",
-      "examples": ["set the channel purpose for $channel to $purpose on slack"]
-    },
-    "updateChannelTopic": {
-      "args": [
-        {
-          "name": "channel",
-          "type": "String",
-          "question": "What channel do you want to change?"
+            "utterance": "when i receive a message from $p_sender on slack",
+            "program": "let stream x := \\(p_sender :Entity(tt:username)) -> monitor ((@com.slack.channel_history()), sender == p_sender);"
         },
         {
-          "name": "topic",
-          "type": "String",
-          "question": "What should be the new topic?"
-        }
-      ],
-      "doc": "Update the specified channel's topic. Omit the hashtag from the channel name.",
-      "confirmation": "update the topic of slack channel $channel to $topic",
-      "canonical": "update channel topic",
-      "examples": ["set the channel topic for $channel to $topic on slack"]
-    },
-    "setPresence": {
-      "args": [
+            "utterance": "when i receive a message in channel ${p_channel:const} on slack",
+            "program": "let stream x := \\(p_channel :Entity(tt:hashtag)) -> monitor ((@com.slack.channel_history()), channel == p_channel);"
+        },
         {
-          "name": "presence",
-          "type": "String",
-          "question": "What should be your new presence?"
+            "utterance": "last slack messages",
+            "program": "let table x := @com.slack.channel_history();"
+        },
+        {
+            "utterance": "recent messages from $p_sender in slack",
+            "program": "let table x := \\(p_sender :Entity(tt:username)) -> (@com.slack.channel_history()), sender == p_sender;"
+        },
+        {
+            "utterance": "recent slack messages in ${p_channel:const}",
+            "program": "let table x := \\(p_channel :Entity(tt:hashtag)) -> (@com.slack.channel_history()), channel == p_channel;"
+        },
+        {
+            "utterance": "slack messages i received in the last hour",
+            "program": "let table x := (@com.slack.channel_history()), date >= start_of(h);"
+        },
+        {
+            "utterance": "slack messages in ${p_channel:const} i received in the last hour",
+            "program": "let table x := \\(p_channel :Entity(tt:hashtag)) -> (@com.slack.channel_history()), (channel == p_channel && date >= start_of(h));"
+        },
+        {
+            "utterance": "send a message on slack to $p_channel saying $p_message",
+            "program": "let action x := \\(p_channel :Entity(tt:hashtag), p_message :String) -> @com.slack.send(channel=p_channel, message=p_message);"
+        },
+        {
+            "utterance": "message ${p_channel:const} on slack saying $p_message",
+            "program": "let action x := \\(p_channel :Entity(tt:hashtag), p_message :String) -> @com.slack.send(channel=p_channel, message=p_message);"
+        },
+        {
+            "utterance": "set the purpose for channel ${p_channel:const} to $p_purpose on slack",
+            "program": "let action x := \\(p_channel :Entity(tt:hashtag), p_purpose :String) -> @com.slack.updateChannelPurpose(channel=p_channel, purpose=p_purpose);"
+        },
+        {
+            "utterance": "set the purpose for slack channel $p_channel to $purpose",
+            "program": "let action x := \\(p_channel :Entity(tt:hashtag), p_purpose :String) -> @com.slack.updateChannelPurpose(channel=p_channel, purpose=p_purpose);"
+        },
+        {
+            "utterance": "set the topic for channel $channel to $topic on slack",
+            "program": "let action x := \\(p_channel :Entity(tt:hashtag), p_topic :String) -> @com.slack.updateChannelTopic(channel=p_channel, topic=p_topic);"
+        },
+        {
+            "utterance": "set me as away on slack",
+            "program": "let action x := @com.slack.setPresence(presence=enum(away));"
+        },
+        {
+            "utterance": "set me as not away on slack",
+            "program": "let action x := @com.slack.setPresence(presence=enum(auto));"
+        },
+        {
+            "utterance": "change my slack presence",
+            "program": "let action x := @com.slack.setPresence();"
+        },
+        {
+            "utterance": "send a picture on slack to $p_channel with caption $p_caption",
+            "program": "let action x := \\(p_channel :Entity(tt:hashtag), p_caption :String) -> @com.slack.send_picture(channel=p_channel, caption=p_caption);"
+        },
+        {
+            "utterance": "send a picture on slack to $p_channel",
+            "program": "let action x := \\(p_channel :Entity(tt:hashtag)) -> @com.slack.send_picture(channel=p_channel);"
+        },
+        {
+            "utterance": "send a message on slack to ${p_channel}",
+            "program": "let action x := \\(p_channel :Entity(tt:hashtag)) -> @com.slack.send(channel=p_channel);"
+        },
+        {
+            "utterance": "send a message on slack",
+            "program": "let action x := @com.slack.send();"
+        },
+        {
+            "utterance": "mark me as away on slack",
+            "program": "let action x := @com.slack.setPresence(presence=enum(away));"
+        },
+        {
+            "utterance": "send $p_message to $p_channel on slack",
+            "program": "let action x := \\(p_channel :Entity(tt:hashtag), p_message :String) -> @com.slack.send(channel=p_channel, message=p_message);"
+        },
+        {
+            "utterance": "send $p_picture_url to $p_channel on slack",
+            "program": "let action x := \\(p_channel :Entity(tt:hashtag), p_picture_url :Entity(tt:picture)) -> @com.slack.send_picture(channel=p_channel, picture_url=p_picture_url);"
+        },
+        {
+            "utterance": "set the topic of slack channel ${p_channel:const} to $p_topic",
+            "program": "let action x := \\(p_channel :Entity(tt:hashtag), p_topic :String) -> @com.slack.updateChannelTopic(channel=p_channel, topic=p_topic);"
+        },
+        {
+            "utterance": "change the topic of slack channel ${p_channel:const}",
+            "program": "let action x := \\(p_channel :Entity(tt:hashtag)) -> @com.slack.updateChannelTopic(channel=p_channel);"
+        },
+        {
+            "utterance": "change the purpose of slack channel ${p_channel:const}",
+            "program": "let action x := \\(p_channel :Entity(tt:hashtag)) -> @com.slack.updateChannelPurpose(channel=p_channel);"
         }
-      ],
-      "doc": "Update your displayed presence. Presence must be 'away' or 'auto'.",
-      "confirmation": "set your presence on slack to $presence",
-      "canonical": "set presence",
-      "examples": ["set me as $presence on slack", "set my presence as $presence on slack"]
-    }
-  },
-  "queries": {},
-  "name": "Slack"
+    ]
 }
