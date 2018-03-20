@@ -14,7 +14,7 @@ module.exports = new Tp.ChannelClass({
     Name: 'TumblrNewPosts',
     Extends: Tp.HttpPollingTrigger,
     RequiredCapabilities: ['channel-state'],
-	interval: POLL_INTERVAL,
+    interval: POLL_INTERVAL,
 
     _init: function(engine, state, device, params) {
         this.parent(engine, state, device);
@@ -29,7 +29,7 @@ module.exports = new Tp.ChannelClass({
         if (this._observedBlog.indexOf('.') < 0)
             this._observedBlog = this._observedBlog + '.tumblr.com';
 
-		this.url = TUMBLR_POSTS_URL.format(this._observedBlog, this.device.constructor.metadata.auth.client_id);
+        this.url = TUMBLR_POSTS_URL.format(this._observedBlog, this.device.constructor.metadata.auth.client_id);
     },
 
     formatEvent(event, filters) {

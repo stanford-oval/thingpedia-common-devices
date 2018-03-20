@@ -40,7 +40,7 @@ const SendAttach = SendBase(function(platform, event) {
             subject: event[0],
             text: event[1],
             to: event[2],
-		    attachments : [attachment]
+            attachments : [attachment]
         };
     });
 });

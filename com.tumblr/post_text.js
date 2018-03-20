@@ -15,8 +15,8 @@ module.exports = new Tp.ChannelClass({
     _init: function(engine, device) {
         this.parent(engine, device);
 
-		this.url = TUMBLR_POSTS_URL.format(this.device.blogId);
-		this._oauth = device.queryInterface('tumblr-oauth');
+        this.url = TUMBLR_POSTS_URL.format(this.device.blogId);
+        this._oauth = device.queryInterface('tumblr-oauth');
     },
 
     sendEvent(event) {

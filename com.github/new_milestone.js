@@ -87,14 +87,14 @@ module.exports = new Tp.ChannelClass({
             // this is ok because the ISO format uses fixed width numbers
             // and puts the numbers most significant first
             if (parsed[i].created_at > lastRead) {
-	            console.log("Item: " + i + ", Last read: " + lastRead +
-		            ", ts: " + parsed[i].created_at);
+                console.log("Item: " + i + ", Last read: " + lastRead +
+                    ", ts: " + parsed[i].created_at);
                 this.emitEvent([this._params[0], parsed[i].creator.login, parsed[i].description, new Date(parsed[i].created_at)]);
             }
         }
 
         lastRead = parsed[parsed.length - 1].created_at;
-	    console.log("Setting last read: " + lastRead);
+        console.log("Setting last read: " + lastRead);
         state.set('last-read', lastRead);
     }
 });

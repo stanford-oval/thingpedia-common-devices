@@ -19,31 +19,31 @@ var client = LookupsClient(accountSid, authToken);
 var messagingClient = require('twilio')(accountSid, authToken);
 
 module.exports = new Tp.ChannelClass({
-	Name: "Lookup",
+    Name: "Lookup",
 
-	sendEvent: function(event) {
-		var recipientNumber = event[0];
-		var queryNumber = event[1];
-		console.log('Looking up query number: '+queryNumber);
+    sendEvent: function(event) {
+        var recipientNumber = event[0];
+        var queryNumber = event[1];
+        console.log('Looking up query number: '+queryNumber);
 
-		client.phoneNumbers(queryNumber).get( {
-			type: 'carrier'
-		}, function(error, number) {
-		    messagingClient.sendMessage({
-			    to:String(recipientNumber),
-			    from:'+16506668936',
-			    body:'Carrier type is '+number.carrier.type+', carrier name is '+number.carrier.name
-			}, function(error, responseData) {
-			    if (!error) {
-				    console.log('Success! The SID for this message is:');
-				    console.log(responseData.sid);
-				    console.log('Message sent on:');
-				    console.log(responseData.dateCreated);
-			    } else {
-				    console.log('Oops! There was an error.');
+        client.phoneNumbers(queryNumber).get( {
+            type: 'carrier'
+        }, function(error, number) {
+            messagingClient.sendMessage({
+                to:String(recipientNumber),
+                from:'+16506668936',
+                body:'Carrier type is '+number.carrier.type+', carrier name is '+number.carrier.name
+            }, function(error, responseData) {
+                if (!error) {
+                    console.log('Success! The SID for this message is:');
+                    console.log(responseData.sid);
+                    console.log('Message sent on:');
+                    console.log(responseData.dateCreated);
+                } else {
+                    console.log('Oops! There was an error.');
                     console.log(error);
-			    }
-			});
-		});
-	},
+                }
+            });
+        });
+    },
 });

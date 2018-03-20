@@ -169,9 +169,9 @@ module.exports = new Tp.DeviceClass({
         return this.state.accessTokenSecret;
     },
 
-	start() {
-	    this._ensureOAuth();
-	    return Q.ninvoke(this._oauth, 'get', 'https://api.tumblr.com/v2/user/info', this.accessToken, this.accessTokenSecret).then(([data, response]) => {
+    start() {
+        this._ensureOAuth();
+        return Q.ninvoke(this._oauth, 'get', 'https://api.tumblr.com/v2/user/info', this.accessToken, this.accessTokenSecret).then(([data, response]) => {
             var userResult = JSON.parse(data);
 
             userResult.response.user.blogs.forEach((blog) => {
@@ -185,7 +185,7 @@ module.exports = new Tp.DeviceClass({
                 }));
             });
         });
-	},
+    },
 
     checkAvailable() {
         return Tp.Availability.AVAILABLE;

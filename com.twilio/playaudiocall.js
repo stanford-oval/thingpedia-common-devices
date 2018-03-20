@@ -17,51 +17,51 @@ var authToken = 'e93833ab8bd579edb0dafb4ca95056c3';
 var client = require('twilio')(accountSid, authToken);
 
 module.exports = new Tp.ChannelClass({
-	Name: "PlayAudioCall",
-	RequiredCapabilities: ['webhook-api'],
+    Name: "PlayAudioCall",
+    RequiredCapabilities: ['webhook-api'],
 
-	_init: function(engine, device, params) {
-		// we want a ToD param
-		this.parent();
-	},
+    _init: function(engine, device, params) {
+        // we want a ToD param
+        this.parent();
+    },
 
-	sendEvent: function(event) {
-		this.recipientNumber = event[0];
-		this.audioUrl = event[1];
-		console.log('Playing audio url '+this.audioUrl+' for phone number '+this.recipientNumber);
+    sendEvent: function(event) {
+        this.recipientNumber = event[0];
+        this.audioUrl = event[1];
+        console.log('Playing audio url '+this.audioUrl+' for phone number '+this.recipientNumber);
 
-		client.makeCall({
-		    to:String(this.recipientNumber),
-		    from:'+16506668936',
-		    url:this.url
-		}, function(error, responseData) {
-		    if (!error) {
-			    console.log('Success! The SID for this message is:');
-			    console.log(responseData.sid);
-			    console.log('Message sent on:');
-			    console.log(responseData.dateCreated);
-		    } else {
-			    console.log('Oops! There was an error.');
-			    console.log(error);
-		    }
-		});
-	},
+        client.makeCall({
+            to:String(this.recipientNumber),
+            from:'+16506668936',
+            url:this.url
+        }, function(error, responseData) {
+            if (!error) {
+                console.log('Success! The SID for this message is:');
+                console.log(responseData.sid);
+                console.log('Message sent on:');
+                console.log(responseData.dateCreated);
+            } else {
+                console.log('Oops! There was an error.');
+                console.log(error);
+            }
+        });
+    },
 
-  	_doOpen: function() {
-		var webhookApi = this.engine.platform.getCapability('webhook-api');
-		this._id = this.uniqueId;
-		this.url = webhookApi.getWebhookBase() + '/' + this._id;
-		this._listener = this._onCallback.bind(this);
-		webhookApi.registerWebhook(this._id, this._listener);
-	},
+      _doOpen: function() {
+        var webhookApi = this.engine.platform.getCapability('webhook-api');
+        this._id = this.uniqueId;
+        this.url = webhookApi.getWebhookBase() + '/' + this._id;
+        this._listener = this._onCallback.bind(this);
+        webhookApi.registerWebhook(this._id, this._listener);
+    },
 
-	_doClose: function() {
-		var webhookApi = this.engine.platform.getCapability('webhook-api');
-		webhookApi.unregisterWebhook(this._id, this._listener);
-	},
+    _doClose: function() {
+        var webhookApi = this.engine.platform.getCapability('webhook-api');
+        webhookApi.unregisterWebhook(this._id, this._listener);
+    },
 
     _onCallback: function(method, query, headers, payload) {
-		resp = '<Response><Play>'+this.audioUrl+'</Play></Response>';
-		return { code: 200, response: resp, contentType: 'application/xml' };
-   	 }
+        resp = '<Response><Play>'+this.audioUrl+'</Play></Response>';
+        return { code: 200, response: resp, contentType: 'application/xml' };
+        }
 });
