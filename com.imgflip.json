@@ -1,0 +1,173 @@
+{
+    "module_type": "org.thingpedia.v1",
+    "params": {},
+    "category": "data",
+    "subcategory": "media",
+    "types": [],
+    "child_types": [],
+    "auth": {
+        "type": "none"
+    },
+    "triggers": {},
+    "actions": {},
+    "queries": {
+        "list": {
+            "args": [
+                {
+                    "name": "name",
+                    "type": "String",
+                    "question": "What meme do you want?",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "picture_url",
+                    "type": "Picture",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "list available meme templates",
+            "confirmation": "list available meme templates on Imgflip",
+            "confirmation_remote": "",
+            "canonical": "list meme templates on imgflip",
+            "formatted": [
+                {
+                    "type": "text",
+                    "text": "${name}"
+                },
+                {
+                    "type": "picture",
+                    "url": "${picture_url}"
+                }
+            ],
+            "poll_interval": -1
+        },
+        "generate": {
+            "args": [
+                {
+                    "name": "template",
+                    "type": "Entity(imgflip:meme_id)",
+                    "question": "What meme do you want to generate?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "text_top",
+                    "type": "String",
+                    "question": "What do you want to write at the top? Leave blank for the default (if recognized)",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "text_bottom",
+                    "type": "String",
+                    "question": "What do you want to write at the bottom? Leave blank for the default (if recognized)",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "picture_url",
+                    "type": "Picture",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "generate a meme by name",
+            "confirmation": "generate the meme $template with $text_top at the top and $text_bottom at the bottom using Imgflip",
+            "confirmation_remote": "",
+            "canonical": "generate meme on imgflip",
+            "formatted": [
+                {
+                    "type": "picture",
+                    "url": "${picture_url}"
+                }
+            ],
+            "poll_interval": -1
+        }
+    },
+    "examples": [
+        {
+            "utterance": "all meme templates",
+            "program": "let table x := @com.imgflip.list();"
+        },
+        {
+            "utterance": "meme template named ${p_name:const}",
+            "program": "let table x := \\(p_name :String) -> (@com.imgflip.list()), name == p_name;"
+        },
+        {
+            "utterance": "a meme on template $p_template with $p_text_top at the top and $p_text_bottom at the bottom",
+            "program": "let table x := \\(p_template :Entity(imgflip:meme_id), p_text_top :String, p_text_bottom :String) -> @com.imgflip.generate(template=p_template, text_top=p_text_top, text_bottom=p_text_bottom);"
+        },
+        {
+            "utterance": "meme template with name ${p_name}",
+            "program": "let table x := \\(p_name :String) -> (@com.imgflip.list()), name == p_name;"
+        },
+        {
+            "utterance": "a meme on template $p_template",
+            "program": "let table x := \\(p_template :Entity(imgflip:meme_id)) -> @com.imgflip.generate(template=p_template);"
+        },
+        {
+            "utterance": "a meme on template $p_template with $p_text_top at the top and no text at the bottom",
+            "program": "let table x := \\(p_template :Entity(imgflip:meme_id), p_text_top :String) -> @com.imgflip.generate(template=p_template, text_top=p_text_top, text_bottom=\"\");"
+        },
+        {
+            "utterance": "a ${p_template:const} meme",
+            "program": "let table x := \\(p_template :Entity(imgflip:meme_id)) -> @com.imgflip.generate(template=p_template);"
+        },
+        {
+            "utterance": "a meme on template $p_template with no text at the top and $p_text_bottom at the bottom",
+            "program": "let table x := \\(p_template :Entity(imgflip:meme_id), p_text_bottom :String) -> @com.imgflip.generate(template=p_template, text_bottom=p_text_bottom, text_top=\"\");"
+        },
+        {
+            "utterance": "meme templates about ${p_name:const}",
+            "program": "let table x := \\(p_name :String) -> (@com.imgflip.list()), name =~ p_name;"
+        },
+        {
+            "utterance": "all imgflip meme templates",
+            "program": "let table x := @com.imgflip.list();"
+        },
+        {
+            "utterance": "meme templates in imgflip about ${p_name:const}",
+            "program": "let table x := \\(p_name :String) -> (@com.imgflip.list()), name =~ p_name;"
+        },
+        {
+            "utterance": "meme templates in imgflip whose name contains ${p_name}",
+            "program": "let table x := \\(p_name :String) -> (@com.imgflip.list()), name =~ p_name;"
+        },
+        {
+            "utterance": "a ${p_template:const} meme from imgflip",
+            "program": "let table x := \\(p_template :Entity(imgflip:meme_id)) -> @com.imgflip.generate(template=p_template);"
+        },
+        {
+            "utterance": "the list of all memes",
+            "program": "let table x := @com.imgflip.list();"
+        },
+        {
+            "utterance": ", generate a meme on template $p_template with $p_text_top at the top and $p_text_bottom at the bottom",
+            "program": "let table x := \\(p_template :Entity(imgflip:meme_id), p_text_top :String, p_text_bottom :String) -> @com.imgflip.generate(template=p_template, text_top=p_text_top, text_bottom=p_text_bottom);"
+        },
+        {
+            "utterance": ", generate a meme on template ${p_template:const}",
+            "program": "let table x := \\(p_template :Entity(imgflip:meme_id)) -> @com.imgflip.generate(template=p_template);"
+        },
+        {
+            "utterance": ", generate a ${p_template:const} meme",
+            "program": "let table x := \\(p_template :Entity(imgflip:meme_id)) -> @com.imgflip.generate(template=p_template);"
+        },
+        {
+            "utterance": ", generate a meme",
+            "program": "let table x := @com.imgflip.generate();"
+        },
+        {
+            "utterance": ", make a meme",
+            "program": "let table x := @com.imgflip.generate();"
+        },
+        {
+            "utterance": ", put the text ${p_text_top:const} at the top and ${p_text_bottom:const} at the bottom of a ${p_template:const} meme",
+            "program": "let table x := \\(p_template :Entity(imgflip:meme_id), p_text_top :String, p_text_bottom :String) -> @com.imgflip.generate(template=p_template, text_bottom=p_text_bottom, text_top=p_text_top);"
+        }
+    ]
+}

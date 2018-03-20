@@ -1,0 +1,185 @@
+{
+    "module_type": "org.thingpedia.v1",
+    "params": {
+        "url": [
+            "Calendar URL",
+            "text"
+        ]
+    },
+    "category": "data",
+    "subcategory": "service",
+    "types": [],
+    "child_types": [],
+    "auth": {
+        "type": "none"
+    },
+    "triggers": {},
+    "actions": {},
+    "queries": {
+        "list_events": {
+            "args": [
+                {
+                    "name": "start_date",
+                    "type": "Date",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "end_date",
+                    "type": "Date",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "summary",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "description",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "sequence",
+                    "type": "Number",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "organizer",
+                    "type": "String",
+                    "question": "Who should be the organizer of the events?",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "location",
+                    "type": "String",
+                    "question": "What should be the location of the events?",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "status",
+                    "type": "Enum(scheduled,upcoming,started,ended)",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "list events in the calendar matching the provided arguments",
+            "confirmation": "list the event in your calendar",
+            "confirmation_remote": "list the event in $__person's calendar",
+            "canonical": "list event on icalendar",
+            "formatted": [
+                {
+                    "type": "code",
+                    "code": "(function({location, organizer, summary}, hint, formatter) {\nif (location && organizer)\n   return `${summary} (${location}, organized by ${organizer})`;\nelse if (location)\n   return `${summary} (${location})`;\nelse if (organizer)\n   return `${summary} (organized by ${organizer})`;\nelse\n   return summary;\n})"
+                },
+                {
+                    "type": "code",
+                    "code": "(function({start_date, end_date}, hint, formatter) {\nif (end_date)\nreturn `Runs from ${formatter.dateAndTimeToString(start_date)} to ${formatter.dateAndTimeToString(end_date)}`;\nelse\nreturn `Starts at ${formatter.dateAndTimeToString(start_date)}`;\n}"
+                }
+            ],
+            "poll_interval": 3600000
+        }
+    },
+    "examples": [
+        {
+            "utterance": "when an event on my calendar begins",
+            "program": "let stream x := edge (monitor (@org.thingpedia.icalendar.list_events())) on status == enum(started);"
+        },
+        {
+            "utterance": "when an event on my calendar at location $p_location begins",
+            "program": "let stream x := \\(p_location :String) -> edge (monitor ((@org.thingpedia.icalendar.list_events()), location == p_location)) on status == enum(started);"
+        },
+        {
+            "utterance": "when an event on my calendar organized by $p_organizer begins",
+            "program": "let stream x := \\(p_organizer :String) -> edge (monitor ((@org.thingpedia.icalendar.list_events()), organizer == p_organizer)) on status == enum(started);"
+        },
+        {
+            "utterance": "my icalendar events",
+            "program": "let table x := @org.thingpedia.icalendar.list_events();"
+        },
+        {
+            "utterance": "my schedule on icalendar",
+            "program": "let table x := @org.thingpedia.icalendar.list_events();"
+        },
+        {
+            "utterance": "my icalendar events organized by $p_organizer",
+            "program": "let table x := \\(p_organizer :String) -> (@org.thingpedia.icalendar.list_events()), organizer == p_organizer;"
+        },
+        {
+            "utterance": "my icalendar events at $p_location",
+            "program": "let table x := \\(p_location :String) -> (@org.thingpedia.icalendar.list_events()), location == p_location;"
+        },
+        {
+            "utterance": "when something changes on my icalendar",
+            "program": "let stream x := monitor (@org.thingpedia.icalendar.list_events());"
+        },
+        {
+            "utterance": "when events organized by $p_organizer changes",
+            "program": "let stream x := \\(p_organizer :String) -> monitor ((@org.thingpedia.icalendar.list_events()), organizer == p_organizer);"
+        },
+        {
+            "utterance": "when the location of some event changes on my icalendar",
+            "program": "let stream x := monitor (@org.thingpedia.icalendar.list_events()) on new [location];"
+        },
+        {
+            "utterance": "when the time of some event changes on my icalendar",
+            "program": "let stream x := monitor (@org.thingpedia.icalendar.list_events()) on new [start_date, end_date];"
+        },
+        {
+            "utterance": "when an event is about to start on my icalendar",
+            "program": "let stream x := edge (monitor (@org.thingpedia.icalendar.list_events())) on status == enum(upcoming);"
+        },
+        {
+            "utterance": "when an event on my calendar at location $p_location is about to begin",
+            "program": "let stream x := \\(p_location :String) -> edge (monitor ((@org.thingpedia.icalendar.list_events()), location == p_location)) on status == enum(upcoming);"
+        },
+        {
+            "utterance": "when an event on my calendar organized by $p_organizer is about to begin",
+            "program": "let stream x := \\(p_organizer :String) -> edge (monitor ((@org.thingpedia.icalendar.list_events()), organizer == p_organizer)) on status == enum(upcoming);"
+        },
+        {
+            "utterance": "when an event on my icalendar ends",
+            "program": "let stream x := edge (monitor (@org.thingpedia.icalendar.list_events())) on status == enum(ended);"
+        },
+        {
+            "utterance": "when an event on my calendar at location $p_location ends",
+            "program": "let stream x := \\(p_location :String) -> edge (monitor ((@org.thingpedia.icalendar.list_events()), location == p_location)) on status == enum(ended);"
+        },
+        {
+            "utterance": "when an event on my calendar organized by $p_organizer ends",
+            "program": "let stream x := \\(p_organizer :String) -> edge (monitor ((@org.thingpedia.icalendar.list_events()), organizer == p_organizer)) on status == enum(ended);"
+        },
+        {
+            "utterance": "my calendar events at $p_location",
+            "program": "let table x := \\(p_location :String) -> (@org.thingpedia.icalendar.list_events()), location == p_location;"
+        },
+        {
+            "utterance": "my calendar events organized by $p_organizer",
+            "program": "let table x := \\(p_organizer :String) -> (@org.thingpedia.icalendar.list_events()), organizer == p_organizer;"
+        },
+        {
+            "utterance": "my calendar events",
+            "program": "let table x := @org.thingpedia.icalendar.list_events();"
+        },
+        {
+            "utterance": "my schedule",
+            "program": "let table x := @org.thingpedia.icalendar.list_events();"
+        },
+        {
+            "utterance": "my calendar schedule",
+            "program": "let table x := @org.thingpedia.icalendar.list_events();"
+        }
+    ]
+}
