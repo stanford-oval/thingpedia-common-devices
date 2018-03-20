@@ -1,5 +1,5 @@
 {
-    "module_type": "org.thingpedia.v1",
+    "module_type": "org.thingpedia.rss",
     "params": {
         "url": [
             "Feed URL",
@@ -34,7 +34,7 @@
                 }
             ],
             "doc": "Poll for new posts (every 3 hours)",
-            "confirmation": "something is posted on the RSS feed",
+            "confirmation": "posts on the RSS feed",
             "confirmation_remote": "",
             "canonical": "new post on rss",
             "formatted": [
@@ -44,7 +44,8 @@
                     "displayTitle": "${title}"
                 }
             ],
-            "poll_interval": 10800000
+            "poll_interval": 10800000,
+            "url": "${url}"
         }
     },
     "examples": [
@@ -64,5 +65,7 @@
             "utterance": "when they publish something on the rss feed",
             "program": "let stream x := monitor (@org.thingpedia.rss.get_post());"
         }
-    ]
+    ],
+    "name": "RSS Feed",
+    "description": "Monitor an RSS feed for new posts"
 }
