@@ -6,7 +6,6 @@
 "use strict";
 
 const Tp = require('thingpedia');
-const API_KEY = '09c6cd0bfeef4179bbdfaa9b68755b8b';
 
 module.exports = class BingClass extends Tp.BaseDevice {
     constructor(engine, state) {
@@ -16,11 +15,11 @@ module.exports = class BingClass extends Tp.BaseDevice {
         this.description = "Search the web, using Bing";
     }
 
-    get_search({query}, count) {
-        let baseUrl = 'https://api.cognitive.microsoft.com/bing/v5.0/search?count=%d&mkt=en-US&setLang=en&q=%s&responseFilter=Webpages';
-        let url = baseUrl.format(count ? count : 5, encodeURIComponent(query));
+    get_web_search({query}) {
+        let baseUrl = 'https://api.cognitive.microsoft.com/bing/v5.0/search?count=5&mkt=en-US&setLang=en&q=%s&responseFilter=Webpages';
+        let url = baseUrl.format(encodeURIComponent(query));
         return Tp.Helpers.Http.get(url, {
-            extraHeaders: { 'Ocp-Apim-Subscription-Key': API_KEY }
+            extraHeaders: { 'Ocp-Apim-Subscription-Key': this.constructor.metadata.auth.subscription_key }
         }).then((response) => {
             let parsedResponse = JSON.parse(response);
             return parsedResponse.webPages.value.map((result) => {
@@ -34,9 +33,9 @@ module.exports = class BingClass extends Tp.BaseDevice {
         });
     }
 
-    get_image_search({query}, count, filters) {
-        let baseUrl = 'https://api.cognitive.microsoft.com/bing/v5.0/images/search?count=%d&mkt=en-US&setLang=en&q=%s';
-        let url = baseUrl.format(count ? count : 5, encodeURIComponent(query));
+    get_image_search({query}, filters) {
+        let baseUrl = 'https://api.cognitive.microsoft.com/bing/v5.0/images/search?count=5&mkt=en-US&setLang=en&q=%s';
+        let url = baseUrl.format(encodeURIComponent(query));
         let width = filters[5];
         let height = filters[6];
         if (width)
@@ -44,7 +43,7 @@ module.exports = class BingClass extends Tp.BaseDevice {
         if (height)
             url += '&height=' + height;
         return Tp.Helpers.Http.get(url, {
-            extraHeaders: { 'Ocp-Apim-Subscription-Key': API_KEY }
+            extraHeaders: { 'Ocp-Apim-Subscription-Key': this.constructor.metadata.auth.subscription_key }
         }).then((response) => {
             let parsedResponse = JSON.parse(response);
             return parsedResponse.value.map((result) => {

@@ -25,7 +25,7 @@ module.exports = class GoogleAccountDevice extends Tp.BaseDevice {
                                                           profileId: parsed.id }, true);
                 });
             }
-        })
+        });
     }
 
     constructor(engine, state) {
@@ -46,5 +46,4 @@ module.exports = class GoogleAccountDevice extends Tp.BaseDevice {
     get accessToken() {
         return this.state.accessToken;
     }
-}
-
+};
