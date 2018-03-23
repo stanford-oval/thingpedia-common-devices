@@ -8,7 +8,7 @@
 const Tp = require('thingpedia');
 
 module.exports = class InstagramClass extends Tp.BaseDevice {
-    static get runeOAuth() {
+    static get runOAuth2() {
         return Tp.Helpers.OAuth2({
             kind: 'com.instagram',
             client_id: 'fbd0f2d229ff4db38e58c2c3a193a710',
@@ -16,20 +16,19 @@ module.exports = class InstagramClass extends Tp.BaseDevice {
             scope: ['basic'],
             authorize: 'https://api.instagram.com/oauth/authorize/',
             get_access_token: 'https://api.instagram.com/oauth/access_token',
-            callback: function(engine, accessToken, refreshToken) {
+            callback(engine, accessToken, refreshToken) {
                 return Tp.Helpers.Http.get('https://api.instagram.com/v1/users/self/?access_token=' + accessToken, {
                     accept: 'application/json'
-                })
-                    .then(function(response) {
-                        var parsed = JSON.parse(response);
-                        return engine.devices.loadOneDevice({
-                            kind: 'com.instagram',
-                            accessToken: accessToken,
-                            userId: parsed.data.id,
-                            userName: parsed.data.username,
-                            fullName: parsed.data.full_name
-                        }, true);
-                    });
+                }).then((response) => {
+                    const parsed = JSON.parse(response);
+                    return engine.devices.loadOneDevice({
+                        kind: 'com.instagram',
+                        accessToken: accessToken,
+                        userId: parsed.data.id,
+                        userName: parsed.data.username,
+                        fullName: parsed.data.full_name
+                    }, true);
+                });
             }
         });
     }
@@ -58,7 +57,8 @@ module.exports = class InstagramClass extends Tp.BaseDevice {
     }
 
     get_get_pictures({count}) {
-        const count = count || 3;
+        if (count === undefined || count === null)
+            count = 3;
         const url = "https://api.instagram.com/v1/users/self/media/recent/?access_token=%s&count=%d".format(this.accessToken, count);
         return Tp.Helpers.Http.get(url).then((response) => {
             const parsedResponse = JSON.parse(response);
