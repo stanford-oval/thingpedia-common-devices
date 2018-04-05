@@ -11,6 +11,7 @@ const stream = require('stream');
 
 const Twitter = require('twitter-node-client').Twitter;
 const TwitterStream = require('./stream');
+const FormData = require('form-data');
 
 // encryption ;)
 function rot13(x) {
@@ -163,16 +164,16 @@ module.exports = class TwitterAccountDevice extends Tp.BaseDevice {
     _pollHomeTimeline(since_id) {
         return new Promise((callback, errback) => {
             if (since_id !== undefined)
-                this._twitter.getHomeTimeline({ since_id, count: 200, include_entities: 'true' }, errback, callback);
+                this._twitter.getHomeTimeline({ since_id, count: 20, include_entities: 'true' }, errback, callback);
             else
-                this._twitter.getHomeTimeline({ count: 200, include_entities: 'true' }, errback, callback);
+                this._twitter.getHomeTimeline({ count: 20, include_entities: 'true' }, errback, callback);
         }).then((results) => JSON.parse(results).map((tweet) => {
             const hashtags = tweet.entities.hashtags.map((h) => h.text.toLowerCase());
-            const urls = tweet.urls.map((u) => u.expanded_url);
+            const urls = tweet.entities.urls.map((u) => u.expanded_url);
 
             return {
                 text: tweet.text,
-                from: tweet.user.screen_name.toLowerCase(),
+                author: tweet.user.screen_name.toLowerCase(),
                 hashtags, urls,
                 in_reply_to: tweet.in_reply_to_screen_name ? tweet.in_reply_to_screen_name.toLowerCase() : null,
                 tweet_id: tweet.id_str,
@@ -182,22 +183,22 @@ module.exports = class TwitterAccountDevice extends Tp.BaseDevice {
     _pollDirectMessages(since_id) {
         return new Promise((callback, errback) => {
             if (since_id !== undefined)
-                this._twitter.getCustomApiCall('direct_messages', { since_id: since_id, count: 200 }, errback, callback);
+                this._twitter.getCustomApiCall('/direct_messages.json', { since_id: since_id, count: 20 }, errback, callback);
             else
-                this._twitter.getCustomApiCall('direct_messages', { count: 200 }, errback, callback);
-        }).then((results) => results.map((dm) => {
+                this._twitter.getCustomApiCall('/direct_messages.json', { count: 20 }, errback, callback);
+        }).then((results) => JSON.parse(results).map((dm) => {
             return {
-                from: dm.sender_screen_name,
+                sender: dm.sender_screen_name,
                 message: dm.text,
                 tweet_id: dm.id_str
             };
-        }));
+        })).then((results) => results.filter((dm) => dm.sender.toLowerCase() !== this.screenName.toLowerCase()));
     }
 
-    get_home_timeline(params, count, filters) {
+    get_home_timeline(params, filters) {
         return this._pollHomeTimeline(undefined).then((results) => results.filter((tweet) => tweet.from !== this.screenName));
     }
-    get_my_tweets(params, count, filters) {
+    get_my_tweets(params, filters) {
         return this._pollHomeTimeline(undefined).then((results) => results.filter((tweet) => tweet.from === this.screenName));
     }
 
@@ -241,7 +242,7 @@ module.exports = class TwitterAccountDevice extends Tp.BaseDevice {
         return this._doSubscribeHomeTimeline(state, (tweet) => tweet.from === this.screenName);
     }
 
-    get_direct_messages(params, count, filters) {
+    get_direct_messages(params, filters) {
         return this._pollDirectMessages(undefined);
     }
     subscribe_direct_messages(params, state, filter) {
@@ -279,47 +280,42 @@ module.exports = class TwitterAccountDevice extends Tp.BaseDevice {
         count = count || 5;
 
         return new Promise((callback, errback) => {
-            this._twitter.getSearch({ q: query, count: count, include_entities: 'true' }, errback, callback);
-        }).then((response) => JSON.parse(response).statuses.map((tweet) => {
-            const hashtags = tweet.entities.hashtags.map((h) => h.text.toLowerCase());
-            const urls = tweet.urls.map((u) => u.expanded_url);
+            if (query)
+                this._twitter.getSearch({ q: query, count: count, include_entities: 'true' }, errback, callback);
+            else
+                this._twitter.getHomeTimeline({ count: count, include_entities: 'true' }, errback, callback);
+        }).then((response) => {
+            let tweets = JSON.parse(response);
+            if (tweets.statuses)
+                tweets = tweets.statuses;
+            return tweets.map((tweet) => {
+                const hashtags = tweet.entities.hashtags.map((h) => h.text.toLowerCase());
+                const urls = tweet.entities.urls.map((u) => u.expanded_url);
 
-            return {
-                query, count,
-                text: tweet.text,
-                from: tweet.user.screen_name.toLowerCase(),
-                hashtags, urls,
-                in_reply_to: tweet.in_reply_to_screen_name ? tweet.in_reply_to_screen_name.toLowerCase() : null,
-                tweet_id: tweet.id_str,
-            };
-        }));
+                return {
+                    query, count,
+                    text: tweet.text,
+                    author: tweet.user.screen_name.toLowerCase(),
+                    hashtags, urls,
+                    in_reply_to: tweet.in_reply_to_screen_name ? tweet.in_reply_to_screen_name.toLowerCase() : null,
+                    tweet_id: tweet.id_str,
+                 };
+            });
+        });
     }
 
-    get_search({ query }, count, filters) {
-        // FIXME filter on username or in_reply_to
-        let from = filters[5];
-        if (from !== undefined && from !== null)
-            query += ' from:' + from;
-        let inReplyTo = filters[6];
-        if (inReplyTo !== undefined && inReplyTo !== null)
-            query += ' to:' + inReplyTo;
-        if (query.trim().length === 0)
-            throw new Error('Must specify a search query or a username to search');
-
-        return this._doSearch(query, count);
-    }
-    get_search_by_hashtag({ query_hashtag }, count, filters) {
-        let query = String(query_hashtag);
-        if (!query.startsWith('#'))
-            query = '#' + String(query_hashtag);
-
-        // FIXME filter on username or in_reply_to
-        let from = filters[5];
-        if (from !== undefined && from !== null)
-            query += ' from:' + from;
-        let inReplyTo = filters[6];
-        if (inReplyTo !== undefined && inReplyTo !== null)
-            query += ' to:' + inReplyTo;
+    get_search(params, filters, count) {
+        let query = '';
+        if (false) {
+            // FIXME filter on username or in_reply_to
+            let from = filters[5];
+            if (from !== undefined && from !== null)
+                query += ' from:' + from;
+            let inReplyTo = filters[6];
+            if (inReplyTo !== undefined && inReplyTo !== null)
+                query += ' to:' + inReplyTo;
+        }
+        query = query.trim();
 
         return this._doSearch(query, count);
     }
@@ -348,45 +344,44 @@ module.exports = class TwitterAccountDevice extends Tp.BaseDevice {
             caption = caption.substr(0, 139) + '…';
 
         return Tp.Helpers.Content.getStream(this.engine.platform, String(picture_url)).then((stream) => new Promise((callback, errback) => {
-            let buffers = [];
-            let length = 0;
-
-            stream.on('data', (buffer) => {
-                buffers.push(buffer);
-                length += buffer.length;
-            });
-            stream.on('end', () => {
-                callback([Buffer.concat(buffers, length), stream.contentType]);
-            });
-            stream.on('error', errback);
-        })).then(([buffer, contentType]) => new Promise((callback, errback) => {
             const url = 'https://upload.twitter.com/1.1/media/upload.json';
 
-            const boundary = 'formboundary';
-            const before = new Buffer('--' + boundary + '\r\n' +
-                'Content-Type: ' + contentType + '\r\n' +
-                'Content-Transfer-Encoding: binary\r\n' +
-                'Content-Disposition: form-data; name="media"\r\n' +
-                '\r\n', 'utf8');
-            //console.log('Before:', before.toString().replace(/\r\n/g, '\\r\\n'));
-            const after = new Buffer('\r\n--' + boundary + '--\r\n', 'utf8');
-            //console.log('After:', after.toString().replace(/\r\n/g, '\\r\\n'));
-            const body = Buffer.concat([before, buffer, after], before.length + buffer.length + after.length);
-            //console.log('Body', body);
-
-            this._twitter.oauth.post(url, this.accessToken, this.accessTokenSecret,
-                body, 'multipart/form-data; boundary=' + boundary, (err, body, response) => {
-                console.log('URL [%s]', url);
-                if (!err && response.statusCode === 200) {
-                    callback(body);
-                } else {
-                    console.error('Failed to upload media to Twitter: ', err);
-                    if (err)
-                        errback(err);
-                    else
-                        errback(new Error('Unexpected HTTP error ' + response.statusCode));
-                }
+            const formData = new FormData();
+            formData.append('media', stream, {
+                contentType: stream.contentType
             });
+
+            let buffers = [];
+            let len = 0;
+            formData.on('data', (buf) => {
+                if (typeof buf === 'string')
+                    buf = new Buffer(buf);
+                buffers.push(buf);
+                len += buf.length;
+            });
+            formData.on('error', errback);
+            formData.on('end', () => {
+                let body = Buffer.concat(buffers, len);
+                let dataContentType = 'multipart/form-data; boundary=' + formData.getBoundary();
+                this._twitter.oauth.post(url,
+                                         this.accessToken,
+                                         this.accessTokenSecret,
+                                         body,
+                                         dataContentType,
+                                         (err, body, response) => {
+                    console.log('URL [%s]', url);
+                    if (!err && response.statusCode === 200) {
+                        callback(body);
+                    } else {
+                        console.error('Failed to upload media to Twitter: ', err);
+                        if (err)
+                            errback(err);
+                        else
+                            errback(new Error('Unexpected HTTP error ' + response.statusCode));
+                    }
+                });
+            });
+            formData.resume();
         })).then((response) => {
             const upload = JSON.parse(response);
             //console.log('upload', upload);
@@ -464,7 +459,7 @@ module.exports = class TwitterAccountDevice extends Tp.BaseDevice {
 
     do_send_direct_message({ to, message }) {
         return new Promise((callback, errback) => {
-            this._twitter.sendDirectMessage({ screen_name: String(to), text: message }, errback, callback);
+            postCustomApiCall.call(this._twitter, '/direct_messages/new.json', { screen_name: String(to), text: message }, errback, callback);
         }).catch((e) => {
             if (e.message && (!e.data && !e.errors))
                 throw e;
