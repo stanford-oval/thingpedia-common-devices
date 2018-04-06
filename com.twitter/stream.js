@@ -24,11 +24,11 @@ module.exports = class TwitterStream extends events.EventEmitter {
 
     _processTweet(tweet) {
         const hashtags = tweet.entities.hashtags.map((h) => h.text.toLowerCase());
-        const urls = tweet.urls.map((u) => u.expanded_url);
+        const urls = tweet.entities.urls.map((u) => u.expanded_url);
 
         return {
             text: tweet.text,
-            from: tweet.user.screen_name.toLowerCase(),
+            author: tweet.user.screen_name.toLowerCase(),
             hashtags, urls,
             in_reply_to: tweet.in_reply_to_screen_name ? tweet.in_reply_to_screen_name.toLowerCase() : null,
             tweet_id: tweet.id_str,
@@ -51,7 +51,7 @@ module.exports = class TwitterStream extends events.EventEmitter {
             // ignored
         } else if (payload.direct_message) {
             this.emit('dm', {
-                from: payload.sender_screen_name,
+                sender: payload.sender_screen_name,
                 message: payload.text,
                 tweet_id: payload.id_str
             });

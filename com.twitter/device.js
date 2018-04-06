@@ -204,12 +204,12 @@ module.exports = class TwitterAccountDevice extends Tp.BaseDevice {
 
     _doSubscribeHomeTimeline(state, filter) {
         const last_seen_tweet = state.get('tweet_id');
-        const ret = new stream.Readable({ objectMode: true });
+        const ret = new stream.Readable({ objectMode: true, read() {} });
 
         const userStream = this._twitterStream;
         userStream.ref();
         const listener = (tweet) => {
-            if (!filter(tweet.from))
+            if (!filter(tweet))
                 return;
             state.set('tweet_id', tweet.tweet_id);
             ret.push(tweet);
@@ -236,10 +236,10 @@ module.exports = class TwitterAccountDevice extends Tp.BaseDevice {
         return ret;
     }
     subscribe_home_timeline(params, state, filters) {
-        return this._doSubscribeHomeTimeline(state, (tweet) => tweet.from !== this.screenName);
+        return this._doSubscribeHomeTimeline(state, (tweet) => tweet.author !== this.screenName.toLowerCase());
     }
     subscribe_my_tweets(params, state, filters) {
-        return this._doSubscribeHomeTimeline(state, (tweet) => tweet.from === this.screenName);
+        return this._doSubscribeHomeTimeline(state, (tweet) => tweet.author === this.screenName.toLowerCase());
     }
 
     get_direct_messages(params, filters) {
@@ -247,7 +247,7 @@ module.exports = class TwitterAccountDevice extends Tp.BaseDevice {
     }
     subscribe_direct_messages(params, state, filter) {
         const last_seen_tweet = state.get('tweet_id');
-        const ret = new stream.Readable({ objectMode: true });
+        const ret = new stream.Readable({ objectMode: true, read() {} });
 
         const userStream = this._twitterStream;
         userStream.ref();

@@ -56,7 +56,6 @@ module.exports = class NestDevice extends Tp.BaseDevice {
             redirect_uri: 'https://thingengine.stanford.edu/devices/oauth2/callback/com.nest',
 
             callback(engine, accessToken, refreshToken) {
-                var auth = 'Bearer ' + accessToken;
                 return engine.devices.loadOneDevice({ kind: 'com.nest',
                                                       accessToken: accessToken,
                                                       refreshToken: refreshToken }, true);
@@ -64,8 +63,8 @@ module.exports = class NestDevice extends Tp.BaseDevice {
         });
     }
 
-    _init(engine, state) {
-        this.parent(engine, state);
+    constructor(engine, state) {
+        super(engine, state);
 
         // unfortunately, the user can only have one nest account configured
         this.uniqueId = 'com.nest';
