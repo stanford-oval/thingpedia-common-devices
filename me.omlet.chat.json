@@ -1,0 +1,183 @@
+{
+  "module_type": "org.thingpedia.v1",
+  "params": {},
+  "category": "online",
+  "subcategory": "social-network",
+  "types": [],
+  "child_types": [],
+  "auth": {
+    "type": "oauth2"
+  },
+  "queries": {
+    "messages": {
+      "args": [
+        {
+          "name": "feed",
+          "type": "Entity(omlet:feed_id)",
+          "question": "What feed do you want to monitor?",
+          "is_input": false,
+          "required": false
+        },
+        {
+          "name": "message",
+          "type": "String",
+          "question": "",
+          "is_input": false,
+          "required": false
+        },
+        {
+          "name": "from_me",
+          "type": "Boolean",
+          "question": "",
+          "is_input": true,
+          "required": false
+        }
+      ],
+      "doc": "list omlet messages in a feed (or in all feeds)",
+      "confirmation": "Omlet messages",
+      "confirmation_remote": "$__person's Omlet messages",
+      "canonical": "list messages on omlet",
+      "formatted": [
+        {
+          "type": "text",
+          "text": "Message in ${feed}: ${message}"
+        }
+      ],
+      "poll_interval": 0,
+      "is_list": true
+    }
+  },
+  "actions": {
+    "send_to": {
+      "args": [
+        {
+          "name": "to",
+          "type": "Entity(tt:username)",
+          "question": "Who do you want to send the message to? Use the Omlet ID, phone number or email address.",
+          "is_input": true,
+          "required": true
+        },
+        {
+          "name": "message",
+          "type": "String",
+          "question": "What do you want to say?",
+          "is_input": true,
+          "required": true
+        }
+      ],
+      "doc": "send a message to a specific identity",
+      "confirmation": "send a message on Omlet to $to saying $message",
+      "confirmation_remote": "",
+      "canonical": "send message on omlet",
+      "formatted": [],
+      "poll_interval": 0,
+      "is_list": false
+    },
+    "send_picture": {
+      "args": [
+        {
+          "name": "to",
+          "type": "Entity(tt:username)",
+          "question": "Who do you want to send the message to? Use the Omlet ID, phone number or email address.",
+          "is_input": true,
+          "required": true
+        },
+        {
+          "name": "picture_url",
+          "type": "Entity(tt:picture)",
+          "question": "Upload the picture you want to send now.",
+          "is_input": true,
+          "required": true
+        },
+        {
+          "name": "caption",
+          "type": "String",
+          "question": "What caption should the picture have?",
+          "is_input": true,
+          "required": true
+        }
+      ],
+      "doc": "send a picture to a specific identity",
+      "confirmation": "send a picture on Omlet to $to with caption $caption",
+      "confirmation_remote": "",
+      "canonical": "send picture on omlet",
+      "formatted": [],
+      "poll_interval": 0,
+      "is_list": false
+    }
+  },
+  "examples": [
+    {
+      "utterance": "when i send or receive an omlet message",
+      "program": "let stream x := monitor (@me.omlet.chat.messages());"
+    },
+    {
+      "utterance": "when i receive a message on omlet",
+      "program": "let stream x := monitor (@me.omlet.chat.messages(from_me=false));"
+    },
+    {
+      "utterance": "when i receive a message on omlet in feed $p_feed",
+      "program": "let stream x := \\(p_feed :Entity(omlet:feed_id)) -> monitor ((@me.omlet.chat.messages(from_me=false)), feed == p_feed);"
+    },
+    {
+      "utterance": "when i send a message on omlet",
+      "program": "let stream x := monitor (@me.omlet.chat.messages(from_me=true));"
+    },
+    {
+      "utterance": "omlet messages",
+      "program": "let table x := @me.omlet.chat.messages();"
+    },
+    {
+      "utterance": "omlet feed $p_feed",
+      "program": "let stream x := \\(p_feed :Entity(omlet:feed_id)) -> monitor ((@me.omlet.chat.messages()), feed == p_feed);"
+    },
+    {
+      "utterance": "send an omlet to $p_to saying $p_message",
+      "program": "let action x := \\(p_to :Entity(tt:username), p_message :String) -> @me.omlet.chat.send_to(to=p_to, message=p_message);"
+    },
+    {
+      "utterance": "send a message on omlet to $p_to containing $p_message",
+      "program": "let action x := \\(p_to :Entity(tt:username), p_message :String) -> @me.omlet.chat.send_to(to=p_to, message=p_message);"
+    },
+    {
+      "utterance": "send a picture on omlet to $p_to with caption $p_caption",
+      "program": "let action x := \\(p_to :Entity(tt:username), p_caption :String) -> @me.omlet.chat.send_picture(to=p_to, caption=p_caption);"
+    },
+    {
+      "utterance": "send a picture on omlet to $p_to",
+      "program": "let action x := \\(p_to :Entity(tt:username)) -> @me.omlet.chat.send_picture(to=p_to);"
+    },
+    {
+      "utterance": "send an omlet to $p_to",
+      "program": "let action x := \\(p_to :Entity(tt:username)) -> @me.omlet.chat.send_to(to=p_to);"
+    },
+    {
+      "utterance": "omlet messages in feed $p_feed",
+      "program": "let table x := \\(p_feed :Entity(omlet:feed_id)) -> (@me.omlet.chat.messages()), feed == p_feed;"
+    },
+    {
+      "utterance": "omlet messages from me",
+      "program": "let table x := @me.omlet.chat.messages(from_me=true);"
+    },
+    {
+      "utterance": "omlet messages i received",
+      "program": "let table x := @me.omlet.chat.messages(from_me=false);"
+    },
+    {
+      "utterance": "send $p_message to $p_to on omlet",
+      "program": "let action x := \\(p_to :Entity(tt:username), p_message :String) -> @me.omlet.chat.send_to(to=p_to, message=p_message);"
+    },
+    {
+      "utterance": "send $p_message on omlet",
+      "program": "let action x := \\(p_message :String) -> @me.omlet.chat.send_to(message=p_message);"
+    },
+    {
+      "utterance": "send $p_picture_url to $p_to on omlet",
+      "program": "let action x := \\(p_to :Entity(tt:username), p_picture_url :Entity(tt:picture)) -> @me.omlet.chat.send_picture(to=p_to, picture_url=p_picture_url);"
+    },
+    {
+      "utterance": "send $p_picture_url on omlet",
+      "program": "let action x := \\(p_picture_url :Entity(tt:picture)) -> @me.omlet.chat.send_picture(picture_url=p_picture_url);"
+    }
+  ]
+}
