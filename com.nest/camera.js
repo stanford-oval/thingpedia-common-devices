@@ -19,7 +19,7 @@ const CameraDevice = class NestCameraDevice extends Tp.BaseDevice {
     }
 
     get kind() {
-        return 'com.nest';
+        return 'com.nest.security_camera';
     }
 
     get name() {
