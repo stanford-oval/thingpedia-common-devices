@@ -36,7 +36,7 @@ const CameraDevice = class NestCameraDevice extends Tp.BaseDevice {
     }
 
     subscribe_current_event(params, state) {
-        const stream = new Stream.Readable({ read() {} });
+        const stream = new Stream.Readable({ objectMode: true, read() {} });
         const firebase = this.master.refFirebaseClient().child(this.url).child('last_event');
         const listener = (snapshot) => {
             const data = snapshot.val();

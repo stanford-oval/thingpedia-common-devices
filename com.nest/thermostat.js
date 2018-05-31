@@ -14,7 +14,7 @@ function clampTemperature(temp) {
 
 class FirebaseStream extends stream.Readable {
     constructor(master, url, callback) {
-        super();
+        super({ objectMode: true });
         this._master = master;
         this._url = url;
 
