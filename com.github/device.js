@@ -6,6 +6,8 @@
 // See LICENSE for details
 
 const Tp = require('thingpedia');
+const fs = require('fs');
+const FormData = require('form-data');
 
 module.exports = class GithubDevice extends Tp.BaseDevice {
     constructor(engine, state) {
@@ -149,6 +151,37 @@ module.exports = class GithubDevice extends Tp.BaseDevice {
                     time: new Date(milestone.created_at)
                 };
             }));
+        });
+    }
+
+    get_get_file({ repo_name, file_name }) {
+        const baseUrl = 'https://api.github.com/repos/' + repo_name;
+        return Tp.Helpers.Http.get(baseUrl + '/contents/' + file_name, this.options).then((response) => {
+            const sha = JSON.parse(response).sha;
+            return Tp.Helpers.Http.get(baseUrl + '/git/blobs/' + sha, this.options).then((response) => {
+                const content = JSON.parse(response).content;
+                const name = file_name.replace(/^.*[\\\/]/, '');
+                const path = this.engine.platform.getCacheDir() + '/' + name;
+                try {
+                    fs.writeFileSync(path, content, 'base64');
+                    const formData = new FormData();
+                    const stream = fs.createReadStream(path);
+                    formData.append('file', stream, { contentType: stream.contentType });
+                    return Tp.Helpers.Http.postStream(
+                        'https://file.io?expires=1d',
+                        formData,
+                        { dataContentType: 'multipart/form-data; boundary=' + formData.getBoundary() }
+                    ).then((response) => {
+                        return [{ url: JSON.parse(response).link }];
+                    }).catch((e) => {
+                        console.log('Failed to generate the temporary link', e);
+                        throw e;
+                    });
+                } catch (e) {
+                    console.log(e);
+                    throw e;
+                }
+            });
         });
     }
 
