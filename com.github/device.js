@@ -75,20 +75,20 @@ module.exports = class GithubDevice extends Tp.BaseDevice {
         return Tp.Helpers.Http.get(url, this.options).then((response) => {
             const parsed = JSON.parse(response);
             return Promise.all(parsed.map((commit) => {
-                return Tp.Helpers.Http.get(url + '/' + commit.sha).then((response) => {
+                return Tp.Helpers.Http.get(url + '/' + commit.sha, this.options).then((response) => {
                     const parsed = JSON.parse(response);
                     let modified_files = [];
                     let added_files = [];
                     let deleted_files = [];
                     for (let file of parsed.files) {
                         if (file.status === 'modified')
-                            modified_files.push(file.filename);
+                            modified_files.push(file.filename.toLowerCase());
                         if (file.status === 'added')
-                            added_files.push(file.filename);
+                            added_files.push(file.filename.toLowerCase());
                         if (file.status === 'deleted')
-                            deleted_files.push(file.filename);
+                            deleted_files.push(file.filename.toLowerCase());
                     }
-                    console.log(parsed);
+                    console.log(modified_files);
                     return {
                         user: parsed.author.login,
                         message: parsed.commit.message,
