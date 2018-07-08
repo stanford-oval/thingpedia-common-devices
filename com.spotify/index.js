@@ -137,11 +137,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             }
         }
         console.log('setting active device');
-
-        return this.http_put(USER_PLAYER_URL,
-            JSON.stringify({"device_ids": [devices[0].id]}),
-            {useOAuth2: this, dataContentType: 'application/json', accept: 'application/json'}
-        );
+        return devices[0].id;
     }
 
     // returns an array of devices available for playback
@@ -243,16 +239,12 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         accept: 'application/json'
     }) {
         let devices = await this.get_get_available_devices();
-        let canPlay = this.set_active_device(devices);
+        let canPlay = await this.set_active_device(devices);
         console.log("CAN PLAY: " + canPlay);
         if (typeof canPlay === 'boolean' && canPlay) {
             return this.http_put(PLAY_URL, data, options);
         } else {
-            return canPlay.then((res) => {
-                console.log('res is ' + res);
-                console.log('data to play is ' + JSON.stringify(data));
-                return this.http_put(PLAY_URL, data, options);
-            })
+            return this.http_put(PLAY_URL + `?device_id=${canPlay}`, data, options);
         }
     }
 
