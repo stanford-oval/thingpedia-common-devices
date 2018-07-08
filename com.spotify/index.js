@@ -79,18 +79,18 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                     }
                 } ).then(response => {
                     const parsed = JSON.parse(response);
-                console.log(parsed);
-                return engine.devices.loadOneDevice(
-                    {
-                        kind: 'com.spotify',
-                        accessToken: accessToken,
-                        refreshToken: refreshToken,
-                        userId: parsed.id,
-                        userName: parsed.display_name
-                    },
-                    true
-                );
-            });
+                    console.log(parsed);
+                    return engine.devices.loadOneDevice(
+                        {
+                            kind: 'com.spotify',
+                            accessToken: accessToken,
+                            refreshToken: refreshToken,
+                            userId: parsed.id,
+                            userName: parsed.display_name
+                        },
+                        true
+                    );
+                });
             }
         });
     }
@@ -177,6 +177,34 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         });
     }
 
+    get_get_user_playlist() {
+        return this.http_get(`https://api.spotify.com/v1/users/${this.userId}/playlists`).then((response) => {
+            return JSON.parse(response).items.map((item) => {
+                return {playlist: item.name};
+            });
+        });
+    }
+
+    get_get_user_playlist_track({ playlist }) {
+        return this.http_get(`https://api.spotify.com/v1/users/${this.userId}/playlists`).then((response) => {
+            let playlist_id;
+            JSON.parse(response).items.some((item) => {
+                if (item.name.toLowerCase() === playlist) {
+                    playlist_id = item.id;
+                    return true;
+                }
+                return false;
+            });
+            if (playlist_id)
+                return this.http_get(`https://api.spotify.com/v1/users/${this.userId}/playlists/${playlist_id}/tracks`).then((response) => {
+                    return JSON.parse(response).items.map((item) => {
+                        return {song: item.track.name};
+                    })
+                });
+            throw Error(`No playlist called ${playlist}`);
+        });
+    }
+
     http_put(url, data, options) {
         return Tp.Helpers.Http.request(url, 'PUT', data, options);
     }
@@ -209,7 +237,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             console.log("CAN PLAY: " +  canPlay);
             if (typeof canPlay === 'boolean' && canPlay) {
                 return this.http_put(PLAY_URL, data, options);
-            }else{
+            } else{
                 canPlay.then((res) => {
                     console.log('res is ' + res);
                     console.log('data to play is ' + JSON.stringify(data));
@@ -255,10 +283,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         console.log("searching for  " + searchURL);
         return Tp.Helpers.Http.get(searchURL, {
             accept: 'application/json',
-            extraHeaders: {
-                Authorization: 'Bearer ' + this.state.accessToken,
-                useOAuth2: this
-            }
+            useOAuth2: this
         } ).then(response => {
             const parsed = JSON.parse(response);
             console.log("search results are" + parsed);
@@ -315,8 +340,8 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         return uris;
     }
 
-// plays multiple songs, separated by the phrase "comma"
-    async do_play_songs( {toPlay} ) {      // rename this later to "play songs"
+    // plays multiple songs, separated by the phrase "comma"
+    async do_play_songs( {toPlay} ) {
         let songs = this.splitMultiString(toPlay);
         console.log('songs to play are ' + JSON.stringify(songs));
         let uris = await this.songNamesToURIs(songs);
@@ -506,10 +531,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         console.log('user playlist search url is ' + set);
         return Tp.Helpers.Http.get(set, {
             accept: 'application/json',
-            extraHeaders: {
-                'Authorization': 'Bearer ' + this.state.accessToken,
-                useOAuth2: this
-            }
+            useOAuth2: this
         } ).then(response => {
             return JSON.parse(response);
         });
@@ -564,10 +586,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         console.log("url is" + url);
         return Tp.Helpers.Http.get(url, {
             accept: 'application/json',
-            extraHeaders: {
-                'Authorization': 'Bearer ' + this.state.accessToken,
-                useOAuth2: this
-            }
+            useOAuth2: this
         }).then(response => {
                 response = JSON.parse(response);
             console.log("album list results are " + JSON.stringify(response));
