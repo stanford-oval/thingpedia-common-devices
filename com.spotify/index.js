@@ -107,6 +107,8 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         return Tp.Helpers.Http.get(url, {
             accept: 'application/json',
             useOAuth2: this
+        }).catch((e) => {
+            throw new Error(JSON.parse(e.detail).error.message);
         });
     }
 
@@ -135,6 +137,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             }
         }
         console.log('setting active device');
+
         return this.http_put(USER_PLAYER_URL,
             JSON.stringify({"device_ids": [devices[0].id]}),
             {useOAuth2: this, dataContentType: 'application/json', accept: 'application/json'}
@@ -153,6 +156,8 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         return Tp.Helpers.Http.get(CURRENTLY_PLAYING_URL, {
             accept: 'application/json',
             useOAuth2: this
+        }).catch((e) => {
+            throw new Error(JSON.parse(e.detail).error.message);
         });
     }
 
@@ -179,6 +184,8 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             return JSON.parse(response).items.map((item) => {
                 return {playlist: item.name};
             });
+        }).catch((e) => {
+            throw new Error(JSON.parse(e.detail).error.message);
         });
     }
 
@@ -199,11 +206,15 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                     })
                 });
             throw Error(`No playlist called ${playlist}`);
+        }).catch((e) => {
+            throw new Error(JSON.parse(e.detail).error.message);
         });
     }
 
     http_put(url, data, options) {
-        return Tp.Helpers.Http.request(url, 'PUT', data, options);
+        return Tp.Helpers.Http.request(url, 'PUT', data, options).catch((e) => {
+            throw new Error(JSON.parse(e.detail).error.message);
+        });
     }
 
     http_put_default_options(url, data) {
@@ -221,6 +232,8 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             useOAuth2: this,
             dataContentType: 'application/json',
             accept: 'application/json'
+        }).catch((e) => {
+            throw new Error(JSON.parse(e.detail).error.message);
         });
     }
 
@@ -235,7 +248,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (typeof canPlay === 'boolean' && canPlay) {
             return this.http_put(PLAY_URL, data, options);
         } else {
-            canPlay.then((res) => {
+            return canPlay.then((res) => {
                 console.log('res is ' + res);
                 console.log('data to play is ' + JSON.stringify(data));
                 return this.http_put(PLAY_URL, data, options);
@@ -290,6 +303,8 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             const parsed = JSON.parse(response);
             console.log("search results are" + parsed);
             return parsed;
+        }).catch((e) => {
+            throw new Error(JSON.parse(e.detail).error.message);
         });
     }
 
@@ -378,6 +393,8 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         return Tp.Helpers.Http.get(AUDIO_FEATURES_URL + id, {
             accept: 'application/json',
             useOAuth2: this
+        }).catch((e) => {
+            throw new Error(JSON.parse(e.detail).error.message);
         });
     }
 
@@ -536,6 +553,8 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             useOAuth2: this
         }).then(response => {
             return JSON.parse(response);
+        }).catch((e) => {
+            throw new Error(JSON.parse(e.detail).error.message);
         });
     }
 
@@ -596,6 +615,8 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 tracks.push(response.items[i].uri);
             }
             return tracks;
+        }).catch((e) => {
+            throw new Error(JSON.parse(e.detail).error.message);
         });
     }
 
