@@ -300,8 +300,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
     do_play_album({toPlay}) {
         return this.search(toPlay, 'album').then(searchResults => {
-            if (!searchResults.hasOwnProperty('albums')) return;
-            if (searchResults.albums.total === 0) return;
+            if (!searchResults.hasOwnProperty('albums') || searchResults.albums.total === 0) throw new Error(`Album ${toPlay} not found`);
             let data = {'context_uri': searchResults.albums.items[0].uri};
             console.log('data is ' + JSON.stringify(data));
             return this.player_play_helper(JSON.stringify(data));
@@ -310,8 +309,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
     do_play_artist({toPlay}) {
         return this.search(toPlay, 'artist').then(searchResults => {
-            if (!searchResults.hasOwnProperty('artists')) return;
-            if (searchResults.artists.total === 0) return;
+            if (!searchResults.hasOwnProperty('artists') || searchResults.artists.total === 0) throw new Error(`Artist ${toPlay} not found`);
             let data = {'context_uri': searchResults.artists.items[0].uri};
             console.log('data is ' + JSON.stringify(data));
             return this.player_play_helper(JSON.stringify(data));
@@ -320,8 +318,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
     do_play_playlist({toPlay}) {
         return this.search(toPlay, 'playlist').then(searchResults => {
-            if (!searchResults.hasOwnProperty('playlists')) return;
-            if (searchResults.playlists.total === 0) return;
+            if (!searchResults.hasOwnProperty('playlists') || searchResults.playlists.total === 0) throw new Error(`Playlist ${toPlay} not found`);
             let data = {'context_uri': searchResults.playlists.items[0].uri};
             console.log('data is ' + JSON.stringify(data));
             return this.player_play_helper(JSON.stringify(data));
@@ -341,7 +338,8 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         let uris = [];
         for (let i = 0; i < songs.length; i++) {
             let searchResults = await this.search(songs[i].trim(), 'track');
-            if (!searchResults.hasOwnProperty('tracks') || searchResults.tracks.total === 0) continue;
+            if (!searchResults.hasOwnProperty('tracks') || searchResults.tracks.total === 0)
+                throw new Error(`Song ${songs[i].trim()} not found`);
             uris.push(searchResults.tracks.items[0].uri);
         }
         return uris;
@@ -520,17 +518,22 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     //TODO: make algorithm better, doesn't do too well with longer names
     //TODO: possibly return '' if best match is  > certain score
     findBestPlaylistMatch(query, allPlaylists) {
-        let bestMatch = {uri: '', score: ''};
+        let bestMatch = {uri: '', score: '', name: ''};
         bestMatch.uri = allPlaylists[0].uri;
-        bestMatch.score = getEditDistance(query.toLowerCase(), allPlaylists[0].name.toLowerCase());
+        bestMatch.name = allPlaylists[0].name.toLowerCase();
+        bestMatch.score = getEditDistance(query.toLowerCase(), bestMatch.name);
         for (let i = 1; i < allPlaylists.length; i++) {
-            let score = getEditDistance(query.toLowerCase(), allPlaylists[i].name.toLowerCase());
+            let name = allPlaylists[i].name.toLowerCase();
+            let score = getEditDistance(query.toLowerCase(), name);
             if (score < bestMatch.score) {
                 bestMatch.score = score;
                 bestMatch.uri = allPlaylists[i].uri;
+                bestMatch.name = name;
             }
             if (bestMatch.score === 0) break;
         }
+        if (bestMatch.uri === '' || bestMatch.score / Math.max(query.length, bestMatch.name.length) > 0.34)
+            throw new Error(`Playlist ${query} not found`);
         return bestMatch.uri;
     }
 
@@ -564,7 +567,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     async find_my_playlist(playlist) {
         let playlists = await this.getUserPlaylists();
         //TODO: change to return error.
-        if (playlists.length === 0) return '';
+        if (playlists.length === 0) throw new Error(`You don't have any playlist`);
         console.log("size is " + playlists.length);
         return this.findBestPlaylistMatch(playlist, playlists);
     }
@@ -580,8 +583,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
 
     add_uris_to_playlist(playlistURL, uris) {
-        let addingURL = USER_PLAYLISTS + "/" + playlistURL + "/tracks";
-        addingURL = addingURL.replace('{username}', this.state.userId);
+        let addingURL = `https://api.spotify.com/v1/users/${this.state.userId}/playlists/${playlistURL}/tracks`;
         console.log("url is " + addingURL);
         console.log(typeof addingURL);
         console.log(JSON.stringify(uris));
@@ -613,8 +615,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     async do_add_album_to_playlist({toAdd, playlist}) {
         let albumResult = await this.search(toAdd, 'album');
         console.log("album is " + JSON.stringify(albumResult));
-        if (!albumResult.hasOwnProperty('albums')) return;
-        if (albumResult.albums.total === 0) return;
+        if (!albumResult.hasOwnProperty('albums') || albumResult.albums.total === 0) throw new Error(`Album ${toAdd} not found`);
         albumResult = albumResult.albums.items[0].uri;
         console.log(albumResult);
         let playlistResult = await this.find_my_playlist(playlist);
