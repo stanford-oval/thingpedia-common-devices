@@ -202,8 +202,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                     })
                 });
             throw Error(`No playlist called ${playlist}`);
-        }).catch((e) => {
-            throw new Error(JSON.parse(e.detail).error.message);
         });
     }
 
