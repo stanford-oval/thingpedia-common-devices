@@ -159,16 +159,12 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
     get_get_currently_playing() {
         return this.currently_playing_helper().then(response => {
-            let NONE_RESULT = [{
-                name: '', is_song_playing: false,
-                human_output: "No song is currently playing."
-            }];
             if (response === '' || response.length === 0) {
-                return NONE_RESULT;
+                throw new Error(`No song is currently playing`);
             }
             const parsed = JSON.parse(response);
             if (parsed.is_playing === false) {
-                return NONE_RESULT;
+                throw new Error(`No song is currently playing`);
             }
             let message = "The currently playing song is '" + parsed.item.name + "'.";
             return [{name: parsed.item.name, is_song_playing: true, human_output: message}];
@@ -364,7 +360,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     do_save_current_track() {
         return this.currently_playing_helper().then(response => {
             if (response === '' || response.length === 0) {
-                return;
+                throw new Error(`No song is playing`);
             }
             const parsed = JSON.parse(response);
             if (parsed.is_playing === false) {
@@ -390,13 +386,12 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         console.log("Audio features helper received songname: " + songName);
         if (typeof(songName) === 'undefined' || songName === "") {
             return this.currently_playing_helper().then(response => {
-                let NONE_RESULT = [{human_output: "No song is currently playing."}];
                 if (response === '' || response.length === 0) {
-                    return NONE_RESULT;
+                    throw new Error(`No song is currently playing`);
                 }
                 const parsed = JSON.parse(response);
                 if (parsed.is_playing === false) {
-                    return NONE_RESULT;
+                    throw new Error(`No song is currently playing`);
                 }
                 let id = parsed.item.id;
                 return this.audio_features_get_by_id(id).then(response => transformation(JSON.parse(response)));
@@ -638,6 +633,8 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
     async do_add_this_song_to_playlist({playlist}) {
         let song = await this.currently_playing_helper();
+        if (song === '' || song.length === 0)
+            throw new Error(`No song is playing`);
         song = JSON.parse(song);
         let data = {"uris": [song.item.uri]};
         let playListURI = await this.find_my_playlist(playlist);
