@@ -1,0 +1,95 @@
+{
+  "module_type": "org.thingpedia.v2",
+  "params": {},
+  "category": "data",
+  "subcategory": "service",
+  "types": [],
+  "child_types": [],
+  "auth": {
+    "type": "none"
+  },
+  "queries": {
+    "query": {
+      "args": [
+        {
+          "name": "query",
+          "type": "String",
+          "question": "what do you want to search?",
+          "is_input": true,
+          "required": false
+        },
+        {
+          "name": "category",
+          "type": "String",
+          "question": "what field do you want to search?",
+          "is_input": true,
+          "required": false
+        },
+        {
+          "name": "title",
+          "type": "String",
+          "question": "",
+          "is_input": false,
+          "required": false
+        },
+        {
+          "name": "author",
+          "type": "String",
+          "question": "",
+          "is_input": true,
+          "required": false
+        },
+        {
+          "name": "pubDate",
+          "type": "Date",
+          "question": "",
+          "is_input": false,
+          "required": false
+        },
+        {
+          "name": "link",
+          "type": "Entity(tt:url)",
+          "question": "",
+          "is_input": false,
+          "required": false
+        },
+        {
+          "name": "summary",
+          "type": "String",
+          "question": "",
+          "is_input": false,
+          "required": false
+        }
+      ],
+      "doc": "Search papers on ArXiv",
+      "confirmation": "search ${query} in field ${category} on ArXiv",
+      "confirmation_remote": "",
+      "canonical": "Search papers on ArXiv",
+      "formatted": [
+        {
+          "type": "rdl",
+          "webCallback": "$link",
+          "displayTitle": "$title by $author ($pubDate)",
+          "displayText": "$summary"
+        }
+      ],
+      "poll_interval": 3600000,
+      "is_list": true
+    }
+  },
+  "actions": {},
+  "examples": [
+    {
+      "utterance": "${p_query} on arxiv",
+      "program": "let table x := \\(p_query :String) -> @org.arxiv.query(query=p_query);"
+    },
+    {
+      "utterance": "latest papers in category ${p_category} on arxiv",
+      "program": "let table x := \\(p_category :String) -> @org.arxiv.query(category=p_category);"
+    },
+    {
+      "utterance": "latest work about ${p_query} in category ${p_category} on arxiv",
+      "program": "let table x := \\(p_query :String, p_category :String) -> @org.arxiv.query(query=p_query, category=p_category);"
+    }
+  ]
+}
