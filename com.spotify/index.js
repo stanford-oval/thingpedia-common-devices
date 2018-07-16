@@ -166,8 +166,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             if (parsed.is_playing === false) {
                 throw new Error(`No song is currently playing`);
             }
-            let message = "The currently playing song is '" + parsed.item.name + "'.";
-            return [{name: parsed.item.name, is_song_playing: true, human_output: message}];
+            return [{ song: parsed.item.name }];
         });
     }
 
@@ -410,9 +409,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             console.log('response from features when looking up tempo...');
             console.log(response);
             let tempo = response.tempo.toFixed(2);
-
-            let message = 'The tempo of this track is ' + tempo + ' beats per minute.';
-            return [{human_output: message}];
+            return [{ tempo }];
         };
         return this.audio_features_helper(song, transformation);
     }
@@ -420,8 +417,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     get_get_danceability({song}) {
         let transformation = function (response) {
             let danceability = response.danceability.toFixed(2);
-            let message = 'On a scale from 0 to 1, the danceability of this track is ' + danceability + '.';
-            return [{human_output: message}];
+            return [{ danceability }];
         };
         return this.audio_features_helper(song, transformation);
     }
@@ -429,8 +425,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     get_get_acousticness({song}) {
         let transformation = function (response) {
             let acousticness = response.acousticness.toFixed(2);
-            let message = 'On a scale from 0 to 1, the acousticness of this track is ' + acousticness + '.';
-            return [{human_output: message}];
+            return [{ acousticness }];
         };
         return this.audio_features_helper(song, transformation);
     }
@@ -438,8 +433,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     get_get_energy({song}) {
         let transformation = function (response) {
             let energy = response.energy.toFixed(2);
-            let message = 'On a scale from 0 to 1, the energy of this track is ' + energy + '.';
-            return [{human_output: message}];
+            return [{ energy }];
         };
         return this.audio_features_helper(song, transformation);
     }
@@ -447,8 +441,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     get_get_speechiness({song}) {
         let transformation = function (response) {
             let speechiness = response.speechiness.toFixed(2);
-            let message = 'On a scale from 0 to 1, the speechiness of this track is ' + speechiness + '.';
-            return [{human_output: message}];
+            return [{ speechiness }];
         };
         return this.audio_features_helper(song, transformation);
     }
@@ -456,8 +449,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     get_get_valence({song}) {
         let transformation = function (response) {
             let valence = response.valence.toFixed(2);
-            let message = 'On a scale from 0 to 1, the valence of this track is ' + valence + '.';
-            return [{human_output: message}];
+            return [{ valence }];
         };
         return this.audio_features_helper(song, transformation);
     }
@@ -465,8 +457,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     get_get_liveness({song}) {
         let transformation = function (response) {
             let liveness = response.liveness.toFixed(2);
-            let message = 'On a scale from 0 to 1, the liveness of this track is ' + liveness + '.';
-            return [{human_output: message}];
+            return [{ liveness }];
         };
         return this.audio_features_helper(song, transformation);
     }
@@ -474,8 +465,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     get_get_instrumentalness({song}) {
         let transformation = function (response) {
             let instrumentalness = response.instrumentalness.toFixed(2);
-            let message = 'On a scale from 0 to 1, the instrumentalness of this track is ' + instrumentalness + '.';
-            return [{human_output: message}];
+            return [{ instrumentalness }];
         };
         return this.audio_features_helper(song, transformation);
     }
@@ -483,8 +473,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     get_get_loudness({song}) {
         let transformation = function (response) {
             let loudness = response.loudness.toFixed(2);
-            let message = 'On a scale from -60 to 0 dB, the loudness of this track is ' + loudness + ' dB.';
-            return [{human_output: message}];
+            return [{ loudness }];
         };
         return this.audio_features_helper(song, transformation);
     }
@@ -493,17 +482,15 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         let transformation = function (response) {
             let key = KEY_MAPPINGS[response.key];
             let modality = response.mode === 1 ? 'Major' : 'minor';
-            let message = 'The key of this track is ' + key + ' ' + modality + '.';
-            return [{human_output: message}];
+            return [{ key, modality }];
         };
         return this.audio_features_helper(song, transformation);
     }
 
     get_get_time_signature({song}) {
         let transformation = function (response) {
-            let num_beats = response.time_signature;
-            let message = 'This track has ' + num_beats.toString() + ' beats per measure.';
-            return [{human_output: message}];
+            let beats = response.time_signature;
+            return [{ beats }];
         };
         return this.audio_features_helper(song, transformation);
     }
