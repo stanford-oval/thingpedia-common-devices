@@ -160,11 +160,11 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     get_get_currently_playing() {
         return this.currently_playing_helper().then(response => {
             if (response === '' || response.length === 0) {
-                throw new Error(`No song is currently playing`);
+                return [];
             }
             const parsed = JSON.parse(response);
             if (parsed.is_playing === false) {
-                throw new Error(`No song is currently playing`);
+                return [];
             }
             return [{ song: parsed.item.name }];
         });
@@ -386,18 +386,18 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (typeof(songName) === 'undefined' || songName === "") {
             return this.currently_playing_helper().then(response => {
                 if (response === '' || response.length === 0) {
-                    throw new Error(`No song is currently playing`);
+                    return [];
                 }
                 const parsed = JSON.parse(response);
                 if (parsed.is_playing === false) {
-                    throw new Error(`No song is currently playing`);
+                    return [];
                 }
                 let id = parsed.item.id;
                 return this.audio_features_get_by_id(id).then(response => transformation(JSON.parse(response)));
             });
         } else {
             return this.search(songName, 'track').then(searchResults => {
-                if (!searchResults.hasOwnProperty('tracks')) return [{human_output: "No song found for that query."}];
+                if (!searchResults.hasOwnProperty('tracks')) throw new Error("No song found for that query.");
                 let id = searchResults.tracks.items[0].id;
                 return this.audio_features_get_by_id(id).then(response => transformation(JSON.parse(response)));
             });
