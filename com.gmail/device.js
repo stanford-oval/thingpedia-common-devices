@@ -14,7 +14,10 @@ const { simpleParser } = require('mailparser');
 module.exports = class GMailAccount extends Tp.BaseDevice {
     static get runOAuth2() {
         return Tp.Helpers.OAuth2({
-            scope: ['openid', 'profile', 'email', 'https://mail.google.com/'],
+            scope: ['openid', 'profile', 'email',
+                'https://www.googleapis.com/auth/gmail.readonly',
+                'https://www.googleapis.com/auth/gmail.send'
+            ],
             authorize: 'https://accounts.google.com/o/oauth2/auth',
             get_access_token: 'https://www.googleapis.com/oauth2/v3/token',
             set_access_type: true,
