@@ -26,11 +26,14 @@ module.exports = class FacebokDevice extends Tp.BaseDevice {
     }
 
     do_post({status}) {
+        throw new Error("Unfortunately, Facebook discontinues posting api starting from August 1st, 2018. We will reimplement this feature once there is an alternative way to do so");
         return Tp.Helpers.Http.post('https://graph.facebook.com/v2.12/me/feed', 'message=' + encodeURIComponent(status),
             {useOAuth2: this, dataContentType: 'application/x-www-form-urlencoded'});
     }
 
     do_post_picture({caption, picture_url}) {
+        throw new Error("Unfortunately, Facebook discontinues posting api starting from August 1st, 2018. We will reimplement this feature once there is an alternative way to do so");
+
         const fbURL = 'https://graph.facebook.com/v2.12/me/photos';
 
         picture_url = String(picture_url);
@@ -95,8 +98,8 @@ module.exports = class FacebokDevice extends Tp.BaseDevice {
 
 module.exports.runOAuth2 = Tp.Helpers.OAuth2({
     kind: 'com.facebook',
-    scope: ['email', 'public_profile', 'user_friends', 'user_photos', 'user_posts'],
-    authorize: 'https://www.facebook.com/v2.7/dialog/oauth',
+    scope: ['email', 'public_profile', 'user_photos', 'user_posts'],
+    authorize: 'https://www.facebook.com/v3.0/dialog/oauth',
     get_access_token: 'https://graph.facebook.com/oauth/access_token',
 
     // we need to force thingengine.stanford.edu as redirect uri
