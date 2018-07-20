@@ -8,7 +8,110 @@
     "auth": {
         "type": "oauth2"
     },
-    "triggers": {},
+    "queries": {
+        "list_posts": {
+            "args": [
+                {
+                    "name": "id",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "date",
+                    "type": "Date",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "message",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "picture_url",
+                    "type": "Entity(tt:picture)",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "type",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "link",
+                    "type": "Entity(tt:url)",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "link_title",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "List my facebook posts",
+            "confirmation": "my posts on facebook",
+            "confirmation_remote": "$__person's posts on facebook",
+            "canonical": "facebook posts",
+            "formatted": [
+                {
+                    "type": "code",
+                    "code": "(function(params, hint, formatter) {\n    let formatted = [];\n    if (params.type === 'status') {\n        formatted.push({\n            type: 'rdl',\n            displayTitle: params.message ? params.message : 'Link',\n            webCallback: params.link,\n            callback: params.link,\n        });\n    } else if (params.type === 'photo') {\n        if (params.message)\n            formatted.push({\n                type: 'rdl',\n                displayTitle: params.message,\n                webCallback: params.link,\n                callback: params.link,\n            });\n        formatted.push({ type: 'picture', url: params.picture_url });\n    } else if (params.type === 'link' || params.type === 'video') {\n        if (params.message)\n            formatted.push({\n                type: 'rdl',\n                displayTitle: params.link_title ? params.link_title : 'Link',\n                displayText: params.message,\n                webCallback: params.link,\n                callback: params.link,\n            });\n        else\n            formatted.push({\n                type: 'rdl',\n                displayTitle: params.link_title ? params.link_title: 'Link',\n                webCallback: params.link,\n                callback: params.link,\n            });\n    }\n    formatted.push(`Posted on ${params.date}.`);\n    return formatted;\n})"
+                }
+            ],
+            "poll_interval": 3600000,
+            "is_list": true
+        },
+        "list_photos": {
+            "args": [
+                {
+                    "name": "album",
+                    "type": "String",
+                    "question": "Which album? ",
+                    "is_input": true,
+                    "required": false
+                },
+                {
+                    "name": "date",
+                    "type": "Date",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "picture_url",
+                    "type": "Entity(tt:picture)",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "list photos in an album on facebook",
+            "confirmation": "my facebook photos",
+            "confirmation_remote": "$__person's facebook photos",
+            "canonical": "facebook photos",
+            "formatted": [
+                {
+                    "type": "picture",
+                    "url": "$picture_url"
+                }
+            ],
+            "poll_interval": 3600000,
+            "is_list": true
+        }
+    },
     "actions": {
         "post": {
             "args": [
@@ -25,13 +128,14 @@
             "confirmation_remote": "post $status on $__person's Facebook",
             "canonical": "post on facebook",
             "formatted": [],
-            "poll_interval": 0
+            "poll_interval": -1,
+            "is_list": false
         },
         "post_picture": {
             "args": [
                 {
                     "name": "picture_url",
-                    "type": "Picture",
+                    "type": "Entity(tt:picture)",
                     "question": "Upload the picture now.",
                     "is_input": true,
                     "required": true
@@ -49,10 +153,10 @@
             "confirmation_remote": "upload a picture on $__person's Facebook with caption $caption",
             "canonical": "post picture on facebook",
             "formatted": [],
-            "poll_interval": 0
+            "poll_interval": -1,
+            "is_list": false
         }
     },
-    "queries": {},
     "examples": [
         {
             "utterance": "post ${p_status} on facebook",
@@ -89,6 +193,30 @@
         {
             "utterance": "caption ${p_picture_url} as ${p_caption:const} and post it on facebook",
             "program": "let action x := \\(p_picture_url :Entity(tt:picture), p_caption :String) -> @com.facebook.post_picture(picture_url=p_picture_url, caption=p_caption);"
+        },
+        {
+            "utterance": "photos on facebook",
+            "program": "let table x := @com.facebook.list_photos();"
+        },
+        {
+            "utterance": "photos in album ${p_album} on facebook",
+            "program": "let table x := \\(p_album :String) -> @com.facebook.list_photos(album=p_album);"
+        },
+        {
+            "utterance": "when I upload a photo to my timeline on facebook",
+            "program": "let stream x := monitor (@com.facebook.list_photos());"
+        },
+        {
+            "utterance": "when I upload a photo to album ${p_album} on facebook",
+            "program": "let stream x := \\(p_album :String) -> monitor (@com.facebook.list_photos(album=p_album));"
+        },
+        {
+            "utterance": "posts on facebook",
+            "program": "let table x := @com.facebook.list_posts();"
+        },
+        {
+            "utterance": "when I post on facebook",
+            "program": "let stream x := monitor (@com.facebook.list_posts());"
         }
     ]
 }
