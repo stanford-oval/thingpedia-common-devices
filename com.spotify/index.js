@@ -200,6 +200,15 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         });
     }
 
+    get_get_user_top_tracks() {
+        return this.http_get(`https://api.spotify.com/v1/me/top/tracks?limit=20&time_range=short_term`).then((response) => {
+            let parsed = JSON.parse(response);
+            return parsed.items.map((track) => {
+               return { song: track.name };
+            });
+        })
+    }
+
     http_put(url, data, options) {
         return Tp.Helpers.Http.request(url, 'PUT', data, options).catch((e) => {
             throw new Error(JSON.parse(e.detail).error.message);

@@ -6,11 +6,32 @@
   "types": [],
   "child_types": [],
   "auth": {
-    "type": "oauth2",
-    "client_id": "******",
-    "client_secret": "******"
+    "type": "oauth2"
   },
   "queries": {
+    "get_user_top_tracks": {
+      "args": [
+        {
+          "name": "song",
+          "type": "String",
+          "question": "",
+          "is_input": false,
+          "required": false
+        }
+      ],
+      "doc": "get user's top tracks in the last 4 weeks",
+      "confirmation": "my top tracks in Spotify",
+      "confirmation_remote": "$_person's top tracks in Spotify",
+      "canonical": "sportify top tracks",
+      "formatted": [
+        {
+          "type": "text",
+          "text": "${song}"
+        }
+      ],
+      "poll_interval": 3600000,
+      "is_list": true
+    },
     "get_currently_playing": {
       "args": [
         {
@@ -1328,6 +1349,22 @@
     {
       "utterance": "play $artist",
       "program": "let action x := \\(artist :String) -> @com.spotify.play_artist(toPlay=artist);"
+    },
+    {
+      "utterance": "my favorite songs",
+      "program": "let table x := @com.spotify.get_user_top_tracks();"
+    },
+    {
+      "utterance": "my top tracks",
+      "program": "let table x := @com.spotify.get_user_top_tracks();"
+    },
+    {
+      "utterance": "when my top tracks changes",
+      "program": "let stream x := monitor(@com.spotify.get_user_top_tracks());"
+    },
+    {
+      "utterance": "when I have new favorite songs",
+      "program": "let stream x := monitor(@com.spotify.get_user_top_tracks());"
     }
   ]
 }
