@@ -9,29 +9,6 @@
     "type": "oauth2"
   },
   "queries": {
-    "get_user_top_tracks": {
-      "args": [
-        {
-          "name": "song",
-          "type": "String",
-          "question": "",
-          "is_input": false,
-          "required": false
-        }
-      ],
-      "doc": "get user's top tracks in the last 4 weeks",
-      "confirmation": "my top tracks in Spotify",
-      "confirmation_remote": "$_person's top tracks in Spotify",
-      "canonical": "sportify top tracks",
-      "formatted": [
-        {
-          "type": "text",
-          "text": "${song}"
-        }
-      ],
-      "poll_interval": 3600000,
-      "is_list": true
-    },
     "get_currently_playing": {
       "args": [
         {
@@ -199,7 +176,7 @@
       "formatted": [
         {
           "type": "text",
-          "text": "On a scale from 0 to 1, the speechiness of this track is ${speechness}."
+          "text": "On a scale from 0 to 1, the speechiness of this track is ${speechiness}."
         }
       ],
       "poll_interval": 60000,
@@ -438,6 +415,29 @@
         }
       ],
       "poll_interval": 86400000,
+      "is_list": true
+    },
+    "get_user_top_tracks": {
+      "args": [
+        {
+          "name": "song",
+          "type": "String",
+          "question": "",
+          "is_input": false,
+          "required": false
+        }
+      ],
+      "doc": "get user's top tracks in the last 4 weeks",
+      "confirmation": "my top tracks in Spotify",
+      "confirmation_remote": "$_person's top tracks in Spotify",
+      "canonical": "sportify top tracks",
+      "formatted": [
+        {
+          "type": "text",
+          "text": "${song}"
+        }
+      ],
+      "poll_interval": 3600000,
       "is_list": true
     }
   },
@@ -698,7 +698,7 @@
         {
           "name": "toPlay",
           "type": "String",
-          "question": "List the songs you want to play, separated by the word \"comma\" or the comma symbol.",
+          "question": "List the songs you want to play, separated by comma.",
           "is_input": true,
           "required": true
         }
@@ -716,7 +716,7 @@
         {
           "name": "toAdd",
           "type": "String",
-          "question": "What songs would you like to add? List them separated by the word 'comma'.",
+          "question": "What songs would you like to add? List them separated by comma.",
           "is_input": true,
           "required": true
         },
@@ -740,6 +740,14 @@
   "examples": [
     {
       "utterance": "play ${song} on Spotify",
+      "program": "let action x := \\(song :String) -> @com.spotify.play_songs(toPlay=song);"
+    },
+    {
+      "utterance": "play the song ${song} on Spotify",
+      "program": "let action x := \\(song :String) -> @com.spotify.play_songs(toPlay=song);"
+    },
+    {
+      "utterance": "play the songs ${song} on Spotify",
       "program": "let action x := \\(song :String) -> @com.spotify.play_songs(toPlay=song);"
     },
     {
@@ -783,10 +791,6 @@
       "program": "let action x := @com.spotify.player_previous();"
     },
     {
-      "utterance": "go back on spotify",
-      "program": "let action x := @com.spotify.player_previous();"
-    },
-    {
       "utterance": "play the last song on spotify",
       "program": "let action x := @com.spotify.player_previous();"
     },
@@ -799,339 +803,347 @@
       "program": "let action x := \\(song :String, playlistName :String) -> @com.spotify.add_songs_to_playlist(toAdd=song, playlist=playlistName);"
     },
     {
+      "utterance": "add song ${song} to ${playlistName}",
+      "program": "let action x := \\(song :String, playlistName :String) -> @com.spotify.add_songs_to_playlist(toAdd=song, playlist=playlistName);"
+    },
+    {
+      "utterance": "add song ${song} to my playlist ${playlistName}",
+      "program": "let action x := \\(song :String, playlistName :String) -> @com.spotify.add_songs_to_playlist(toAdd=song, playlist=playlistName);"
+    },
+    {
       "utterance": "add ${song} to ${playlistName} on Spotify",
       "program": "let action x := \\(song :String, playlistName :String) -> @com.spotify.add_songs_to_playlist(toAdd=song, playlist=playlistName);"
     },
     {
-      "utterance": "how danceable is the current track",
+      "utterance": ", how danceable is the current track",
       "program": "let table x := @com.spotify.get_danceability();"
     },
     {
-      "utterance": "get the danceability of the current track",
+      "utterance": "the danceability of the current track",
       "program": "let table x := @com.spotify.get_danceability();"
     },
     {
-      "utterance": "get the danceability of the current song",
+      "utterance": "the danceability of the current song",
       "program": "let table x := @com.spotify.get_danceability();"
     },
     {
-      "utterance": "how dancey is this song",
+      "utterance": ", how dancey is this song",
       "program": "let table x := @com.spotify.get_danceability();"
     },
     {
-      "utterance": "how danceable is this song",
+      "utterance": ", how danceable is this song",
       "program": "let table x := @com.spotify.get_danceability();"
     },
     {
-      "utterance": "is this song dancey",
+      "utterance": ", is this song dancey",
       "program": "let table x := @com.spotify.get_danceability();"
     },
     {
-      "utterance": "how dancey is the song ${song}",
+      "utterance": ", how dancey is the song ${song}",
       "program": "let table x := \\(song :String) -> @com.spotify.get_danceability(song=song);"
     },
     {
-      "utterance": "get the danceability of the song ${song}",
+      "utterance": "the danceability of the song ${song}",
       "program": "let table x := \\(song :String) -> @com.spotify.get_danceability(song=song);"
     },
     {
-      "utterance": "how dancey is ${song}",
+      "utterance": ", how dancey is ${song}",
       "program": "let table x := \\(song :String) -> @com.spotify.get_danceability(song=song);"
     },
     {
-      "utterance": "get the danceability of ${song}",
+      "utterance": "the danceability of ${song}",
       "program": "let table x := \\(song :String) -> @com.spotify.get_danceability(song=song);"
     },
     {
-      "utterance": "how loud is this song",
+      "utterance": ", how loud is this song",
       "program": "let table x := @com.spotify.get_loudness();"
     },
     {
-      "utterance": "get the loudness of ${song}",
+      "utterance": "the loudness of ${song}",
       "program": "let table x := \\(song :String) -> @com.spotify.get_loudness(song=song);"
     },
     {
-      "utterance": "how loud is ${song}",
+      "utterance": ", how loud is ${song}",
       "program": "let table x := \\(song :String) -> @com.spotify.get_loudness(song=song);"
     },
     {
-      "utterance": "get the loudness of the current song",
+      "utterance": "the loudness of the current song",
       "program": "let table x := @com.spotify.get_loudness();"
     },
     {
-      "utterance": "get the loudness of the current track",
+      "utterance": "the loudness of the current track",
       "program": "let table x := @com.spotify.get_loudness();"
     },
     {
-      "utterance": "is this song live",
+      "utterance": ", is this song live",
       "program": "let table x := @com.spotify.get_liveness();"
     },
     {
-      "utterance": "what's the liveness of this song",
+      "utterance": "the liveness of this song",
       "program": "let table x := @com.spotify.get_liveness();"
     },
     {
-      "utterance": "get the liveness of the current song",
+      "utterance": "the liveness of the current song",
       "program": "let table x := @com.spotify.get_liveness();"
     },
     {
-      "utterance": "is ${song} live",
+      "utterance": ", is ${song} live",
       "program": "let table x := \\(song :String) -> @com.spotify.get_liveness(song=song);"
     },
     {
-      "utterance": "what's the liveness of ${song}",
+      "utterance": "the liveness of ${song}",
       "program": "let table x := \\(song :String) -> @com.spotify.get_liveness(song=song);"
     },
     {
-      "utterance": "get the liveness of the current track",
+      "utterance": "the liveness of the current track",
       "program": "let table x := @com.spotify.get_liveness();"
     },
     {
-      "utterance": "get the liveness of ${song}",
+      "utterance": "the liveness of ${song}",
       "program": "let table x := \\(song :String) -> @com.spotify.get_liveness(song=song);"
     },
     {
-      "utterance": "is this song acoustic",
+      "utterance": ", is this song acoustic",
       "program": "let table x := @com.spotify.get_acousticness();"
     },
     {
-      "utterance": "get the acousticness of the current track",
+      "utterance": "the acousticness of the current track",
       "program": "let table x := @com.spotify.get_acousticness();"
     },
     {
-      "utterance": "get the acousticness of the current song",
+      "utterance": "the acousticness of the current song",
       "program": "let table x := @com.spotify.get_acousticness();"
     },
     {
-      "utterance": "get the acousticness of ${song}",
+      "utterance": "the acousticness of ${song}",
       "program": "let table x := \\(song :String) -> @com.spotify.get_acousticness(song=song);"
     },
     {
-      "utterance": "what's the acousticness of the current song",
+      "utterance": "the acousticness of the current song",
       "program": "let table x := @com.spotify.get_acousticness();"
     },
     {
-      "utterance": "what's the acousticness of ${song}",
+      "utterance": "the acousticness of ${song}",
       "program": "let table x := \\(song :String) -> @com.spotify.get_acousticness(song=song);"
     },
     {
-      "utterance": "what's the key of the current song",
+      "utterance": "the key of the current song",
       "program": "let table x := @com.spotify.get_key();"
     },
     {
-      "utterance": "get the key of the current track",
+      "utterance": "the key of the current track",
       "program": "let table x := @com.spotify.get_key();"
     },
     {
-      "utterance": "get the key of this song",
+      "utterance": "the key of this song",
       "program": "let table x := @com.spotify.get_key();"
     },
     {
-      "utterance": "get the key of ${song}",
+      "utterance": "the key of ${song}",
       "program": "let table x := \\(song :String) -> @com.spotify.get_key(song=song);"
     },
     {
-      "utterance": "what's the key of ${song}",
+      "utterance": "the key of song ${song}",
       "program": "let table x := \\(song :String) -> @com.spotify.get_key(song=song);"
     },
     {
-      "utterance": "what is the energy of this song",
+      "utterance": "the energy of this song",
       "program": "let table x := @com.spotify.get_energy();"
     },
     {
-      "utterance": "get the energy of the current track",
+      "utterance": "the energy of level the current track",
       "program": "let table x := @com.spotify.get_energy();"
     },
     {
-      "utterance": "get the energy of the current song",
+      "utterance": "the energy of the current song",
       "program": "let table x := @com.spotify.get_energy();"
     },
     {
-      "utterance": "get the energy of ${song}",
+      "utterance": "the energy of ${song}",
       "program": "let table x := \\(song :String) -> @com.spotify.get_energy(song=song);"
     },
     {
-      "utterance": "what's the energy of the current song",
+      "utterance": "the energy of the current song",
       "program": "let table x := @com.spotify.get_energy();"
     },
     {
-      "utterance": "what's the energy of ${song}",
+      "utterance": "the energy of song ${song}",
       "program": "let table x := \\(song :String) -> @com.spotify.get_energy(song=song);"
     },
     {
-      "utterance": "how energetic is ${song}",
+      "utterance": ", how energetic is ${song}",
       "program": "let table x := \\(song :String) -> @com.spotify.get_energy(song=song);"
     },
     {
-      "utterance": "how energetic is the current song",
+      "utterance": ", how energetic is the current song",
       "program": "let table x := @com.spotify.get_energy();"
     },
     {
-      "utterance": "what is the speechiness of this song",
+      "utterance": "the speechiness of this song",
       "program": "let table x := @com.spotify.get_speechiness();"
     },
     {
-      "utterance": "get the speechiness of the current track",
+      "utterance": "the speechiness of the current track",
       "program": "let table x := @com.spotify.get_speechiness();"
     },
     {
-      "utterance": "get the speechiness of the current song",
+      "utterance": "the speechiness of the current song",
       "program": "let table x := @com.spotify.get_speechiness();"
     },
     {
-      "utterance": "get the speechiness of ${song}",
+      "utterance": "the speechiness of ${song}",
       "program": "let table x := \\(song :String) -> @com.spotify.get_speechiness(song=song);"
     },
     {
-      "utterance": "what's the speechiness of the current song",
+      "utterance": "the speechiness of the current song",
       "program": "let table x := @com.spotify.get_speechiness();"
     },
     {
-      "utterance": "what's the speechiness of ${song}",
+      "utterance": "the speechiness of song ${song}",
       "program": "let table x := \\(song :String) -> @com.spotify.get_speechiness(song=song);"
     },
     {
-      "utterance": "how speechlike is the current song",
+      "utterance": ", how speechlike is the current song",
       "program": "let table x := @com.spotify.get_speechiness();"
     },
     {
-      "utterance": "how speechlike is ${song}",
+      "utterance": ", how speechlike is ${song}",
       "program": "let table x := \\(song :String) -> @com.spotify.get_speechiness(song=song);"
     },
     {
-      "utterance": "what is the instrumentalness of this song",
+      "utterance": "the instrumentalness of this song",
       "program": "let table x := @com.spotify.get_instrumentalness();"
     },
     {
-      "utterance": "get the instrumentalness of the current track",
+      "utterance": "the instrumentalness of the current track",
       "program": "let table x := @com.spotify.get_instrumentalness();"
     },
     {
-      "utterance": "get the instrumentalness of the current song",
+      "utterance": "the instrumentalness of the current song",
       "program": "let table x := @com.spotify.get_instrumentalness();"
     },
     {
-      "utterance": "get the instrumentalness of ${song}",
+      "utterance": "the instrumentalness of ${song}",
       "program": "let table x := \\(song :String) -> @com.spotify.get_instrumentalness(song=song);"
     },
     {
-      "utterance": "what's the instrumentalness of the current song",
+      "utterance": "the instrumentalness of the current song",
       "program": "let table x := @com.spotify.get_instrumentalness();"
     },
     {
-      "utterance": "what's the instrumentalness of ${song}",
+      "utterance": "the instrumentalness of song ${song}",
       "program": "let table x := \\(song :String) -> @com.spotify.get_instrumentalness(song=song);"
     },
     {
-      "utterance": "is the current song an instrumental",
+      "utterance": ", is the current song an instrumental",
       "program": "let table x := @com.spotify.get_instrumentalness();"
     },
     {
-      "utterance": "is ${song} instrumental",
+      "utterance": ", is ${song} instrumental",
       "program": "let table x := \\(song :String) -> @com.spotify.get_instrumentalness(song=song);"
     },
     {
-      "utterance": "get the time signature of the current song",
+      "utterance": "the time signature of the current song",
       "program": "let table x := @com.spotify.get_time_signature();"
     },
     {
-      "utterance": "what's the time signature of the current track",
+      "utterance": "the time signature of the current track",
       "program": "let table x := @com.spotify.get_time_signature();"
     },
     {
-      "utterance": "get the time signature",
+      "utterance": "the time signature",
       "program": "let table x := @com.spotify.get_time_signature();"
     },
     {
-      "utterance": "get the time signature of ${song}",
+      "utterance": "the time signature of ${song}",
       "program": "let table x := \\(song :String) -> @com.spotify.get_time_signature(song=song);"
     },
     {
-      "utterance": "what's the time signature of ${song}",
+      "utterance": "the time signature of song ${song}",
       "program": "let table x := \\(song :String) -> @com.spotify.get_time_signature(song=song);"
     },
     {
-      "utterance": "how upbeat is this song",
+      "utterance": ", how upbeat is this song",
       "program": "let table x := @com.spotify.get_valence();"
     },
     {
-      "utterance": "how positive is this song",
+      "utterance": ", how positive is this song",
       "program": "let table x := @com.spotify.get_valence();"
     },
     {
-      "utterance": "what's the valence of this song",
+      "utterance": "the valence of this song",
       "program": "let table x := @com.spotify.get_valence();"
     },
     {
-      "utterance": "get the upbeatness of this track",
+      "utterance": "the upbeatness of this track",
       "program": "let table x := @com.spotify.get_valence();"
     },
     {
-      "utterance": "get the positivity of this song",
+      "utterance": "the positivity of this song",
       "program": "let table x := @com.spotify.get_valence();"
     },
     {
-      "utterance": "get the upbeatness",
+      "utterance": "the upbeatness",
       "program": "let table x := @com.spotify.get_valence();"
     },
     {
-      "utterance": "get the valence of this track",
+      "utterance": "the valence of this track",
       "program": "let table x := @com.spotify.get_valence();"
     },
     {
-      "utterance": "get the valence of ${song}",
+      "utterance": "the valence of ${song}",
       "program": "let table x := \\(song :String) -> @com.spotify.get_valence(song=song);"
     },
     {
-      "utterance": "how positive is ${song}",
+      "utterance": ", how positive is ${song}",
       "program": "let table x := \\(song :String) -> @com.spotify.get_valence(song=song);"
     },
     {
-      "utterance": "how upbeat is ${song}",
+      "utterance": ", how upbeat is ${song}",
       "program": "let table x := \\(song :String) -> @com.spotify.get_valence(song=song);"
     },
     {
-      "utterance": "what's the tempo of the current song",
+      "utterance": "the tempo of the current song",
       "program": "let table x := @com.spotify.get_tempo();"
     },
     {
-      "utterance": "what's the bpm of the current song",
+      "utterance": "the bpm of the current song",
       "program": "let table x := @com.spotify.get_tempo();"
     },
     {
-      "utterance": "what's the BPM of the current track",
+      "utterance": "the BPM of the current track",
       "program": "let table x := @com.spotify.get_tempo();"
     },
     {
-      "utterance": "what's the tempo",
+      "utterance": "the tempo",
       "program": "let table x := @com.spotify.get_tempo();"
     },
     {
-      "utterance": "get the tempo of the current song",
+      "utterance": "the tempo of the current song",
       "program": "let table x := @com.spotify.get_tempo();"
     },
     {
-      "utterance": "get the bpm of the current track",
+      "utterance": "the bpm of the current track",
       "program": "let table x := @com.spotify.get_tempo();"
     },
     {
-      "utterance": "what's the tempo of ${song}",
+      "utterance": "the tempo of ${song}",
       "program": "let table x := \\(song :String) -> @com.spotify.get_tempo(song=song);"
     },
     {
-      "utterance": "get the tempo of ${song}",
+      "utterance": "the tempo of song ${song}",
       "program": "let table x := \\(song :String) -> @com.spotify.get_tempo(song=song);"
     },
     {
-      "utterance": "what's the bpm of ${song}",
+      "utterance": "the bpm of ${song}",
       "program": "let table x := \\(song :String) -> @com.spotify.get_tempo(song=song);"
     },
     {
-      "utterance": "get the bpm of ${song}",
+      "utterance": "the bpm of song ${song}",
       "program": "let table x := \\(song :String) -> @com.spotify.get_tempo(song=song);"
     },
     {
-      "utterance": "what song is currently playing",
+      "utterance": ", what song is currently playing",
       "program": "let table x := @com.spotify.get_currently_playing();"
     },
     {
@@ -1139,7 +1151,7 @@
       "program": "let table x := @com.spotify.get_currently_playing();"
     },
     {
-      "utterance": "what song is currently playing",
+      "utterance": ", what song is currently playing",
       "program": "let table x := @com.spotify.get_currently_playing();"
     },
     {
@@ -1147,55 +1159,51 @@
       "program": "let table x := @com.spotify.get_currently_playing();"
     },
     {
-      "utterance": ", save the current track",
+      "utterance": "save the current track",
       "program": "let action x := @com.spotify.save_current_track();"
     },
     {
-      "utterance": ", save whatever's playing to my library",
+      "utterance": "save whatever's playing to my library",
       "program": "let action x := @com.spotify.save_current_track();"
     },
     {
-      "utterance": ", save this song",
+      "utterance": "save this song",
       "program": "let action x := @com.spotify.save_current_track();"
     },
     {
-      "utterance": ", seek to ${time} seconds in",
+      "utterance": "seek to ${time} seconds in",
       "program": "let action x := \\(time :Measure(ms)) -> @com.spotify.play_seek_seconds(seconds=time);"
     },
     {
-      "utterance": ", skip to ${time} seconds",
+      "utterance": "skip to ${time} seconds",
       "program": "let action x := \\(time :Measure(ms)) -> @com.spotify.play_seek_seconds(seconds=time);"
     },
     {
-      "utterance": ", go to ${time} seconds",
+      "utterance": "go to ${time} seconds",
       "program": "let action x := \\(time :Measure(ms)) -> @com.spotify.play_seek_seconds(seconds=time);"
     },
     {
-      "utterance": ", turn shuffle ${state}",
+      "utterance": "turn shuffle ${state}",
       "program": "let action x := \\(state :Enum(on,off)) -> @com.spotify.player_shuffle(shuffle=state);"
     },
     {
-      "utterance": ", turn ${state} shuffle",
+      "utterance": "turn ${state} shuffle",
       "program": "let action x := \\(state :Enum(on,off)) -> @com.spotify.player_shuffle(shuffle=state);"
     },
     {
-      "utterance": ", turn ${state} shuffle",
-      "program": "let action x := \\(state :Enum(on,off)) -> @com.spotify.player_shuffle(shuffle=state);"
-    },
-    {
-      "utterance": ", shuffle my spotify",
+      "utterance": "shuffle my spotify",
       "program": "let action x := @com.spotify.player_shuffle(shuffle=enum(on));"
     },
     {
-      "utterance": ", repeat this song",
+      "utterance": "repeat this song",
       "program": "let action x := @com.spotify.player_repeat(repeat=enum(track));"
     },
     {
-      "utterance": ", turn on repeat",
+      "utterance": "turn on repeat",
       "program": "let action x := @com.spotify.player_repeat(repeat=enum(track));"
     },
     {
-      "utterance": ", turn off repeat",
+      "utterance": "turn off repeat",
       "program": "let action x := @com.spotify.player_repeat(repeat=enum(off));"
     },
     {
@@ -1360,11 +1368,47 @@
     },
     {
       "utterance": "when my top tracks changes",
-      "program": "let stream x := monitor(@com.spotify.get_user_top_tracks());"
+      "program": "let stream x := monitor (@com.spotify.get_user_top_tracks());"
     },
     {
       "utterance": "when I have new favorite songs",
-      "program": "let stream x := monitor(@com.spotify.get_user_top_tracks());"
+      "program": "let stream x := monitor (@com.spotify.get_user_top_tracks());"
+    },
+    {
+      "utterance": "when a song is playing",
+      "program": "let stream x := monitor (@com.spotify.get_currently_playing());"
+    },
+    {
+      "utterance": "when a song with tempo greater than ${p_tempo} is playing",
+      "program": "let stream x := \\(p_tempo: Number) -> edge (monitor (@com.spotify.get_tempo())) on tempo >= p_tempo;"
+    },
+    {
+      "utterance": "when a song with tempo less than ${p_tempo} is playing",
+      "program": "let stream x := \\(p_tempo: Number) -> edge (monitor (@com.spotify.get_tempo())) on tempo <= p_tempo;"
+    },
+    {
+      "utterance": "when a song with danceability greater than ${p_d} is playing",
+      "program": "let stream x := \\(p_d: Number) -> edge (monitor (@com.spotify.get_danceability())) on danceability >= p_d;"
+    },
+    {
+      "utterance": "when a song with danceability less than ${p_d} is playing",
+      "program": "let stream x := \\(p_d: Number) -> edge (monitor (@com.spotify.get_danceability())) on danceability <= p_d;"
+    },
+    {
+      "utterance": "when a song with liveness greater than ${p_l} is playing",
+      "program": "let stream x := \\(p_l: Number) -> edge (monitor (@com.spotify.get_liveness())) on liveness >= p_l;"
+    },
+    {
+      "utterance": "when a song with liveness less than ${p_l} is playing",
+      "program": "let stream x := \\(p_l: Number) -> edge (monitor (@com.spotify.get_liveness())) on liveness <= p_l;"
+    },
+    {
+      "utterance": "when a song with energy greater than ${p_e} is playing",
+      "program": "let stream x := \\(p_e: Number) -> edge (monitor (@com.spotify.get_energy())) on energy >= p_e;"
+    },
+    {
+      "utterance": "when a song with energy less than ${p_e} is playing",
+      "program": "let stream x := \\(p_e: Number) -> edge (monitor (@com.spotify.get_energy())) on energy <= p_e;"
     }
   ]
 }
