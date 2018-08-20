@@ -1,16 +1,16 @@
-# ThingPedia Common Devices
+# Various Thingpedia Devices
 
-## Help the World Connect the Dots
+## Knowledge for your Virtual Assistant
 
-ThingPedia is the distributed open source platform for IoT rules.
-
+Thingpedia is the open, crowdsourced knowledge base for virtual assistants.
 Anyone can contribute the interface code to access any device or
-web service to ThingPedia.
+web service to Thingpedia.
 
 This repository contains a small subset of the interfaces hosted
-on ThingPedia, that are maintained by the ThingPedia authors.
+on Thingpedia, that are maintained by the Thingpedia authors.
 
-ThingPedia is a research project led by prof. Monica Lam, from Stanford University.
-You can find more information at http://www.thingpedia.org
+Thingpedia is part of Almond, a research project led by
+prof. Monica Lam, from Stanford University.  You can find more
+information at <https://almond.stanford.edu>.
 
 
