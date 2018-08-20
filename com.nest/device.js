@@ -45,7 +45,7 @@ SmokeAlarmDevice.metadata = {
     types: ['smoke-alarm']
 };
 
-module.exports = class NestDevice extends Tp.BaseDevice {
+class NestDevice extends Tp.BaseDevice {
     static get runOAuth2() {
         return Tp.Helpers.OAuth2({
             kind: 'com.nest',
@@ -122,5 +122,11 @@ module.exports = class NestDevice extends Tp.BaseDevice {
             return null;
         }
     }
+}
+NestDevice.subdevices = {
+    'com.nest.security_camera': CameraDevice,
+    'com.nest.thermostat': ThermostatDevice,
+    'com.nest.smoke_alarm': SmokeAlarmDevice
 };
 
+module.exports = NestDevice;
