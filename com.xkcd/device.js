@@ -8,7 +8,7 @@
 
 const Tp = require('thingpedia');
 
-const XKCD_RANDOM_URL = 'http://dynamic.xkcd.com/comic/random/';
+const XKCD_RANDOM_URL = 'https://dynamic.xkcd.com/comic/random/';
 
 const PREV_REGEXP = /<a\s+rel="prev"\s+href="(?:#|\/([0-9]+)\/)?"/;
 const IMG_REGEXP = /<img\s+src="((?:https?:)?\/\/imgs\.xkcd\.com\/comics\/[A-Za-z0-9_()]+\.(?:png|jpg|jpeg))"\s+title="([^"]+)"\s+alt="([^"]+)"/;
@@ -45,7 +45,7 @@ module.exports = class XkcdDevice extends Tp.BaseDevice {
             let number = result[0];
             let picture_url = result[1];
             if (!picture_url.startsWith('http'))
-                picture_url = 'http:' + picture_url;
+                picture_url = 'https:' + picture_url;
             let link = 'https://xkcd.com/' + number;
             // note: here alt_text has the xkcd meaning (ie,
             // the popover text), but the HTML attributes are swapped!
@@ -59,7 +59,7 @@ module.exports = class XkcdDevice extends Tp.BaseDevice {
     get_get_comic({ number }, count, filter) {
         // ignore count and filter
 
-        return this._scrapeXkcd('http://xkcd.com/' + (number === undefined ? '' : number));
+        return this._scrapeXkcd('https://xkcd.com/' + (number === undefined ? '' : number));
     }
 
     get_random_comic() {
@@ -67,6 +67,6 @@ module.exports = class XkcdDevice extends Tp.BaseDevice {
     }
 
     get_what_if() {
-        return Tp.Helpers.Rss.get('http://what-if.xkcd.com/feed.atom');
+        return Tp.Helpers.Rss.get('https://what-if.xkcd.com/feed.atom');
     }
 };
