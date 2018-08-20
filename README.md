@@ -1,5 +1,7 @@
 # Various Thingpedia Devices
 
+[![Build Status](https://travis-ci.org/Stanford-Mobisocial-IoT-Lab/thingpedia-common-devices.svg?branch=master)](https://travis-ci.org/Stanford-Mobisocial-IoT-Lab/thingpedia-common-devices) [![Coverage Status](https://coveralls.io/repos/github/Stanford-Mobisocial-IoT-Lab/thingpedia-common-devices/badge.svg?branch=master)](https://coveralls.io/github/Stanford-Mobisocial-IoT-Lab/thingpedia-common-devices?branch=master)
+
 ## Knowledge for your Virtual Assistant
 
 Thingpedia is the open, crowdsourced knowledge base for virtual assistants.
