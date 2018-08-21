@@ -27,7 +27,8 @@ module.exports = class CatAPIDevice extends Tp.BaseDevice {
         .then((parsed) => {
             const array = parsed.response.data[0].images[0].image;
             return array.map((image) => {
-                return { image_id: image.id[0], count: array.length, picture_url: image.url[0], link: image.source_url[0] };
+                return { image_id: image.id[0], count: array.length, picture_url: image.url[0],
+                    link: 'http://thecatapi.com/?id=' + image.id[0] };
             });
         });
     }
