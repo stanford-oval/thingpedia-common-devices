@@ -164,13 +164,18 @@ async function testOne(deviceKind) {
 }
 
 async function main() {
-    for (let name of await util.promisify(fs.readdir)(path.resolve(path.dirname(module.filename), '..'))) {
-        if (name.startsWith('.') || name === 'package.json' ||
-            !name.endsWith('.json'))
-            continue;
+    if (process.argv.length > 2) {
+        for (let toTest of process.argv.slice(2))
+             await testOne(toTest);
+    } else {
+        for (let name of await util.promisify(fs.readdir)(path.resolve(path.dirname(module.filename), '..'))) {
+            if (name.startsWith('.') || name === 'package.json' ||
+               !name.endsWith('.json'))
+               continue;
 
-        const deviceKind = name.substring(0, name.length - '.json'.length);
-        await testOne(deviceKind);
+            const deviceKind = name.substring(0, name.length - '.json'.length);
+            await testOne(deviceKind);
+        }
     }
 
     if (_anyFailed)
