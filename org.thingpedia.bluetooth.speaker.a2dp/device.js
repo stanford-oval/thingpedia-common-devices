@@ -1,20 +1,14 @@
 // -*- mode: js; indent-tabs-mode: nil; js-basic-offset: 4 -*-
 //
-// Copyright 2015 Giovanni Campagna <gcampagn@cs.stanford.edu>
+// Copyright 2015-2018 Giovanni Campagna <gcampagn@cs.stanford.edu>
 //
 // See LICENSE for details
+"use strict";
 
 const Tp = require('thingpedia');
 
-const VolumeBase = require('./volume_adjust_base');
-const RaiseVolume = VolumeBase('RaiseVolume', true, +1);
-const LowerVolume = VolumeBase('LowerVolume', true, -1);
-const SetVolume = VolumeBase('SetVolume', false);
-
-const BluetoothA2dpSinkDevice = new Tp.DeviceClass({
-    Name: 'BluetoothA2dpSinkDevice',
-
-    UseDiscovery(engine, publicData, privateData) {
+module.exports = class BluetoothA2dpSinkDevice extends Tp.BaseDevice {
+    static loadFromDiscovery(engine, publicData, privateData) {
         return new BluetoothA2dpSinkDevice(engine,
                                            { kind: 'org.thingpedia.bluetooth.speaker.a2dp',
                                              discoveredBy: engine.ownTier,
@@ -23,10 +17,10 @@ const BluetoothA2dpSinkDevice = new Tp.DeviceClass({
                                              class: publicData.class,
                                              hwAddress: privateData.address,
                                              alias: privateData.alias }, true);
-    },
+    }
 
-    _init(engine, state) {
-        this.parent(engine, state);
+    constructor(engine, state) {
+        super(engine, state);
 
         this.alias = state.alias;
         this.hwAddress = state.hwAddress;
@@ -36,7 +30,7 @@ const BluetoothA2dpSinkDevice = new Tp.DeviceClass({
 
         this.name = "A2DP Bluetooth Speaker %s".format(this.alias);
         this.description = "This is a Bluetooth speaker capabable of playing high-fidelity music";
-    },
+    }
 
     completeDiscovery(delegate) {
         if (this.state.paired) {
@@ -58,7 +52,7 @@ const BluetoothA2dpSinkDevice = new Tp.DeviceClass({
         }).catch((e) => {
             delegate.configFailed(e);
         });
-    },
+    }
 
     checkAvailable() {
         if (!this.engine.platform.hasCapability('bluetooth'))
@@ -71,19 +65,40 @@ const BluetoothA2dpSinkDevice = new Tp.DeviceClass({
             else
                 return Tp.Availability.UNAVAILABLE;
         });
-    },
-
-    getActionClass(id) {
-        switch(id) {
-        case 'raise_volume':
-            return RaiseVolume;
-        case 'lower_volume':
-            return LowerVolume;
-        case 'set_volume':
-            return SetVolume;
-        default:
-            return this.parent(id);
-        }
     }
-});
-module.exports = BluetoothA2dpSinkDevice;
+
+    async _doSetVolume(relative, value) {
+        const audioRouter = this.engine.platform.getCapability('audio-router');
+        const audioManager = this.engine.platform.getCapability('audio-manager');
+        const isBluetooth = await audioRouter.isAudioRouteBluetooth(this.hwAddress);
+        if (!isBluetooth) {
+            console.log(this.device.uniqueId + ' is not the current audio sink, ignoring volume change request');
+            return;
+        }
+
+        if (relative)
+            await audioManager.adjustMediaVolume(value, false);
+        else
+            await audioManager.setMediaVolume(value, false);
+    }
+
+    do_raise_volume() {
+        return this._doSetVolume(true, +1);
+    }
+    do_lower_volume() {
+        return this._doSetVolume(true, -1);
+    }
+    do_set_volume({ percent }) {
+        return this._doSetVolume(false, percent);
+    }
+    async do_play_music() {
+        const audioRouter = this.engine.platform.getCapability('audio-router');
+        const systemApps = this.engine.platform.getCapability('system-apps');
+        await audioRouter.setAudioRouteBluetooth(this.hwAddress);
+        return systemApps.startMusic();
+    }
+    async do_set_sink() {
+        const audioRouter = this.engine.platform.getCapability('audio-router');
+        return audioRouter.setAudioRouteBluetooth(this.hwAddress);
+    }
+};
