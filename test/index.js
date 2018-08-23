@@ -43,8 +43,8 @@ async function loadDeviceFactory(deviceKind) {
     const officialMetadata = await _tpClient.getDeviceCode(deviceKind);
 
     for (let name in officialMetadata.auth) {
-        if (!ourMetadata[name])
-            ourMetadata[name] = officialMetadata[name];
+        if (!ourMetadata.auth[name])
+            ourMetadata.auth[name] = officialMetadata.auth[name];
     }
 
     const module = new (TpClient.Modules[ourMetadata.module_type])(deviceKind, ourMetadata, _tpDownloader);

@@ -16,8 +16,10 @@ module.exports = class BingClass extends Tp.BaseDevice {
     }
 
     get_web_search({query}) {
-        let baseUrl = 'https://api.cognitive.microsoft.com/bing/v5.0/search?count=5&mkt=en-US&setLang=en&q=%s&responseFilter=Webpages';
-        let url = baseUrl.format(encodeURIComponent(query));
+        const locale = this.engine.platform.locale;
+        const language = locale.split('-')[0];
+
+        const url = `https://api.cognitive.microsoft.com/bing/v5.0/search?count=5&mkt=${locale}&setLang=${language}&q=${encodeURIComponent(query)}&responseFilter=Webpages`;
         return Tp.Helpers.Http.get(url, {
             extraHeaders: { 'Ocp-Apim-Subscription-Key': this.constructor.metadata.auth.subscription_key }
         }).then((response) => {
@@ -34,14 +36,10 @@ module.exports = class BingClass extends Tp.BaseDevice {
     }
 
     get_image_search({query}, filters) {
-        let baseUrl = 'https://api.cognitive.microsoft.com/bing/v5.0/images/search?count=5&mkt=en-US&setLang=en&q=%s';
-        let url = baseUrl.format(encodeURIComponent(query));
-        let width = filters[5];
-        let height = filters[6];
-        if (width)
-            url += '&width=' + width;
-        if (height)
-            url += '&height=' + height;
+        const locale = this.engine.platform.locale;
+        const language = locale.split('-')[0];
+
+        let url = `https://api.cognitive.microsoft.com/bing/v5.0/images/search?count=5&mkt=${locale}&setLang=${language}&q=${encodeURIComponent(query)}`;
         return Tp.Helpers.Http.get(url, {
             extraHeaders: { 'Ocp-Apim-Subscription-Key': this.constructor.metadata.auth.subscription_key }
         }).then((response) => {
@@ -51,7 +49,9 @@ module.exports = class BingClass extends Tp.BaseDevice {
                     query: query,
                     title: result.name,
                     picture_url: result.contentUrl,
-                    link: result.hostPageUrl
+                    link: result.hostPageUrl,
+                    width: result.width,
+                    height: result.height
                 });
             });
         });
