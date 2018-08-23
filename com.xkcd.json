@@ -8,8 +8,6 @@
     "auth": {
         "type": "none"
     },
-    "triggers": {},
-    "actions": {},
     "queries": {
         "get_comic": {
             "args": [
@@ -29,14 +27,14 @@
                 },
                 {
                     "name": "picture_url",
-                    "type": "Picture",
+                    "type": "Entity(tt:picture)",
                     "question": "",
                     "is_input": false,
                     "required": false
                 },
                 {
                     "name": "link",
-                    "type": "URL",
+                    "type": "Entity(tt:url)",
                     "question": "",
                     "is_input": false,
                     "required": false
@@ -50,8 +48,8 @@
                 }
             ],
             "doc": "retrieve the comic with a given number, or the latest comit",
-            "confirmation": "get an Xkcd comic",
-            "confirmation_remote": "get an Xkcd comic using Almond of $__person",
+            "confirmation": "an Xkcd comic",
+            "confirmation_remote": "",
             "canonical": "xkcd comic",
             "formatted": [
                 {
@@ -68,7 +66,8 @@
                     "text": "${alt_text}"
                 }
             ],
-            "poll_interval": 86400000
+            "poll_interval": 86400000,
+            "is_list": false
         },
         "random_comic": {
             "args": [
@@ -88,14 +87,14 @@
                 },
                 {
                     "name": "picture_url",
-                    "type": "Picture",
+                    "type": "Entity(tt:picture)",
                     "question": "",
                     "is_input": false,
                     "required": false
                 },
                 {
                     "name": "link",
-                    "type": "URL",
+                    "type": "Entity(tt:url)",
                     "question": "",
                     "is_input": false,
                     "required": false
@@ -109,8 +108,8 @@
                 }
             ],
             "doc": "retrieve a random xkcd",
-            "confirmation": "get a random Xkcd comic",
-            "confirmation_remote": "get a random Xkcd comic using Almond of $__person",
+            "confirmation": "a random Xkcd comic",
+            "confirmation_remote": "",
             "canonical": "random xkcd comic",
             "formatted": [
                 {
@@ -127,7 +126,8 @@
                     "text": "${alt_text}"
                 }
             ],
-            "poll_interval": -1
+            "poll_interval": -1,
+            "is_list": false
         },
         "what_if": {
             "args": [
@@ -140,7 +140,7 @@
                 },
                 {
                     "name": "link",
-                    "type": "URL",
+                    "type": "Entity(tt:url)",
                     "question": "",
                     "is_input": false,
                     "required": false
@@ -154,7 +154,7 @@
                 }
             ],
             "doc": "retrieve the latest posts on Xkcd's What If blog",
-            "confirmation": "get Xkcd's What If blog posts",
+            "confirmation": "Xkcd's What If blog posts",
             "confirmation_remote": "",
             "canonical": "xkcd what if blog posts",
             "formatted": [
@@ -164,9 +164,11 @@
                     "displayTitle": "${title}"
                 }
             ],
-            "poll_interval": 86400000
+            "poll_interval": 86400000,
+            "is_list": true
         }
     },
+    "actions": {},
     "examples": [
         {
             "utterance": "when a new xkcd is out",

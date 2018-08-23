@@ -8,8 +8,6 @@
     "auth": {
         "type": "none"
     },
-    "triggers": {},
-    "actions": {},
     "queries": {
         "web_search": {
             "args": [
@@ -36,14 +34,14 @@
                 },
                 {
                     "name": "link",
-                    "type": "URL",
+                    "type": "Entity(tt:url)",
                     "question": "",
                     "is_input": false,
                     "required": false
                 }
             ],
             "doc": "search for `query` on Bing",
-            "confirmation": "search for $query on Bing",
+            "confirmation": "websites matching $query on Bing",
             "confirmation_remote": "",
             "canonical": "web search on bing",
             "formatted": [
@@ -54,7 +52,8 @@
                     "displayText": "${description}"
                 }
             ],
-            "poll_interval": 3600000
+            "poll_interval": 3600000,
+            "is_list": true
         },
         "image_search": {
             "args": [
@@ -74,14 +73,14 @@
                 },
                 {
                     "name": "picture_url",
-                    "type": "Picture",
+                    "type": "Entity(tt:picture)",
                     "question": "",
                     "is_input": false,
                     "required": false
                 },
                 {
                     "name": "link",
-                    "type": "URL",
+                    "type": "Entity(tt:url)",
                     "question": "",
                     "is_input": false,
                     "required": false
@@ -102,7 +101,7 @@
                 }
             ],
             "doc": "search for `query` on Bing Images",
-            "confirmation": "search for $query on Bing Images",
+            "confirmation": "images matching $query from Bing",
             "confirmation_remote": "",
             "canonical": "image search on bing",
             "formatted": [
@@ -116,9 +115,11 @@
                     "url": "${picture_url}"
                 }
             ],
-            "poll_interval": 3600000
+            "poll_interval": 3600000,
+            "is_list": true
         }
     },
+    "actions": {},
     "examples": [
         {
             "utterance": "${p_query:const} on bing",
@@ -142,11 +143,11 @@
         },
         {
             "utterance": "images from bing matching $p_query larger than $p_width x $p_height",
-            "program": "let table x := \\(p_query :String, p_width :Number, p_height :Number) -> (@com.bing.image_search(query=p_query)), (width > p_width && height > p_height);"
+            "program": "let table x := \\(p_query :String, p_width :Number, p_height :Number) -> (@com.bing.image_search(query=p_query)), (width >= p_width && height >= p_height);"
         },
         {
             "utterance": "images from bing matching $p_query wider than $p_width",
-            "program": "let table x := \\(p_query :String, p_width :Number) -> (@com.bing.image_search(query=p_query)), width > p_width;"
+            "program": "let table x := \\(p_query :String, p_width :Number) -> (@com.bing.image_search(query=p_query)), width >= p_width;"
         },
         {
             "utterance": "websites matching $p_query",
@@ -154,15 +155,15 @@
         },
         {
             "utterance": "images from bing matching $p_query larger than $p_width x $p_height in either dimension",
-            "program": "let table x := \\(p_query :String, p_width :Number, p_height :Number) -> (@com.bing.image_search(query=p_query)), (width > p_width || height > p_height);"
+            "program": "let table x := \\(p_query :String, p_width :Number, p_height :Number) -> (@com.bing.image_search(query=p_query)), (width >= p_width || height >= p_height);"
         },
         {
             "utterance": "images from bing matching $p_query taller than $p_height",
-            "program": "let table x := \\(p_query :String, p_height :Number) -> (@com.bing.image_search(query=p_query)), height > p_height;"
+            "program": "let table x := \\(p_query :String, p_height :Number) -> (@com.bing.image_search(query=p_query)), height >= p_height;"
         },
         {
             "utterance": "images from bing matching $p_query smaller than $p_width x $p_height",
-            "program": "let table x := \\(p_query :String, p_width :Number, p_height :Number) -> (@com.bing.image_search(query=p_query)), (width < p_width && height < p_height);"
+            "program": "let table x := \\(p_query :String, p_width :Number, p_height :Number) -> (@com.bing.image_search(query=p_query)), (width <= p_width && height <= p_height);"
         }
     ]
 }

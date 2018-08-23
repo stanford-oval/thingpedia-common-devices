@@ -39,5 +39,15 @@ module.exports = [
         assert(xkcd.link.startsWith('https://xkcd.com'));
         assert(xkcd.picture_url.startsWith('https://') &&
                xkcd.picture_url.indexOf('xkcd.com') >= 0);
+    }],
+
+    ['query', 'what_if', {}, (results) => {
+        for (let result of results) {
+            assertNonEmptyString(result.title);
+
+            // FIXME this is broken because the Thingpedia RSS
+            // library does not handle namespaces correctly
+            //assert(result.link.startsWith('https://what-if.xkcd.com'), `Expected a link, got ${result.link}`);
+        }
     }]
 ];

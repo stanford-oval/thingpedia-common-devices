@@ -1,5 +1,5 @@
 {
-    "module_type": "org.thingpedia.v1",
+    "module_type": "org.thingpedia.v2",
     "params": {},
     "category": "data",
     "subcategory": "service",
@@ -8,8 +8,6 @@
     "auth": {
         "type": "none"
     },
-    "triggers": {},
-    "actions": {},
     "queries": {
         "translate": {
             "args": [
@@ -43,8 +41,8 @@
                 }
             ],
             "doc": "Translate text from source to destination language",
-            "confirmation": "translate $text to $target_language",
-            "confirmation_remote": "translate $text to $target_language using $__person's Yandex",
+            "confirmation": "the translation of $text to $target_language",
+            "confirmation_remote": "",
             "canonical": "translate on ytranslate",
             "formatted": [
                 {
@@ -52,7 +50,8 @@
                     "text": "${translated_text}"
                 }
             ],
-            "poll_interval": -1
+            "poll_interval": -1,
+            "is_list": false
         },
         "detect_language": {
             "args": [
@@ -72,18 +71,20 @@
                 }
             ],
             "doc": "returns the ISO code of the guessed language of the given text",
-            "confirmation": "detect the language of $text ",
-            "confirmation_remote": "detect the language of $text using $__person's Yandex",
+            "confirmation": "the language of $text ",
+            "confirmation_remote": "",
             "canonical": "detect language on ytranslate",
             "formatted": [
                 {
                     "type": "text",
-                    "text": "Detected as ${detected_language}."
+                    "text": "Detected as ${value}."
                 }
             ],
-            "poll_interval": -1
+            "poll_interval": -1,
+            "is_list": false
         }
     },
+    "actions": {},
     "examples": [
         {
             "utterance": "the translation of $p_text to $p_target_language with yandex",

@@ -1,5 +1,5 @@
 {
-    "module_type": "org.thingpedia.v1",
+    "module_type": "org.thingpedia.v2",
     "params": {},
     "category": "data",
     "subcategory": "media",
@@ -8,8 +8,6 @@
     "auth": {
         "type": "none"
     },
-    "triggers": {},
-    "actions": {},
     "queries": {
         "get_article": {
             "args": [
@@ -29,7 +27,7 @@
                 },
                 {
                     "name": "link",
-                    "type": "URL",
+                    "type": "Entity(tt:url)",
                     "question": "",
                     "is_input": false,
                     "required": false
@@ -43,29 +41,30 @@
                 },
                 {
                     "name": "picture_url",
-                    "type": "Picture",
+                    "type": "Entity(tt:picture)",
                     "question": "",
                     "is_input": false,
                     "required": false
                 }
             ],
             "doc": "read washington post",
-            "confirmation": "get the latest articles in the Washington Post",
+            "confirmation": "the latest articles in the ${section} section of the Washington Post",
             "confirmation_remote": "",
-            "canonical": "get washington post",
+            "canonical": "articles on washington post",
             "formatted": [
                 {
                     "type": "rdl",
                     "webCallback": "${link}",
                     "displayTitle": "${title}",
-                    "displayText": "${text}"
+                    "displayText": "${description}"
                 },
                 {
                     "type": "picture",
                     "url": "${picture_url}"
                 }
             ],
-            "poll_interval": 10800000
+            "poll_interval": 10800000,
+            "is_list": true
         },
         "get_blog_post": {
             "args": [
@@ -85,7 +84,7 @@
                 },
                 {
                     "name": "link",
-                    "type": "URL",
+                    "type": "Entity(tt:url)",
                     "question": "",
                     "is_input": false,
                     "required": false
@@ -99,9 +98,9 @@
                 }
             ],
             "doc": "trigger on new blog posts",
-            "confirmation": "a new article is published in the $section blog of The Washington Post",
+            "confirmation": "the latest articles in the $section blog of the Washington Post",
             "confirmation_remote": "",
-            "canonical": "new blog post on washington post",
+            "canonical": "blog post on washington post",
             "formatted": [
                 {
                     "type": "rdl",
@@ -109,9 +108,11 @@
                     "displayTitle": "${title}"
                 }
             ],
-            "poll_interval": 10800000
+            "poll_interval": 10800000,
+            "is_list": true
         }
     },
+    "actions": {},
     "examples": [
         {
             "utterance": "when there is a new article in washington post $p_section section",
