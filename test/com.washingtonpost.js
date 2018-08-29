@@ -5,7 +5,6 @@
 // See LICENSE for details
 "use strict";
 
-const Tp = require('thingpedia');
 const assert = require('assert');
 
 function assertNonEmptyString(what) {
@@ -20,7 +19,7 @@ for (let section of `politics,opinions,local,sports,national,world,business,life
             assertNonEmptyString(result.title);
             assert.strictEqual(typeof result.description, 'string');
             assert(result.link.startsWith('http'), `Expected a link, got ${result.link}`);
-            assert(result.picture_url === '' || result.picture_url.startsWith('http'),
+            assert(result.picture_url === null || result.picture_url.startsWith('http'),
                    `Expected a picture or null, got ${result.picture_url}`);
         }
     }]);

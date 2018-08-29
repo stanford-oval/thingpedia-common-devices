@@ -35,29 +35,11 @@ module.exports = class WashingtonPostDevice extends Tp.BaseDevice {
 
     get_get_article({ section }) {
         const url = 'http://feeds.washingtonpost.com/rss/' + section;
-
-        // Unfortunately, the feeds above do not have pubDate set properly for the articles,
-        // so we cannot use the generic RSS code
-
-        return Tp.Helpers.Http.get(url).then(Tp.Helpers.Xml.parseString).then((parsed) => {
-            const result = [];
-            for (var entry of parsed.rss.channel[0].item) {
-                result.push({
-                    title: entry.title[0],
-                    link: entry.link[0],
-                    description: entry.description ? entry.description[0] : '',
-                    picture_url: entry['media:group'] && entry['media:group'][0]['media:content'] ? entry['media:group'][0]['media:content'][2].$.url : ''
-                });
-            }
-            return result;
-        });
+        return Tp.Helpers.Rss.get(url);
     }
 
     get_get_blog_post({ section }) {
         const url = BLOGS[section];
-
-        // Unlike newspaper sections, the blog use more or less standard wordpress and
-        // implement rss properly, so we can just leave it to the generic code
         return Tp.Helpers.Rss.get(url);
     }
 };
