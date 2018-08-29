@@ -8,127 +8,6 @@
     "auth": {
         "type": "oauth2"
     },
-    "triggers": {},
-    "actions": {
-        "send_direct_message": {
-            "args": [
-                {
-                    "name": "to",
-                    "type": "Username",
-                    "question": "Who do you want to send the message to?",
-                    "is_input": true,
-                    "required": true
-                },
-                {
-                    "name": "message",
-                    "type": "String",
-                    "question": "What message do you want to send?",
-                    "is_input": true,
-                    "required": true
-                }
-            ],
-            "doc": "send a direct message",
-            "confirmation": "send a direct message on Twitter to $to saying $message",
-            "confirmation_remote": "send a direct message on $__person's Twitter to $to saying $message",
-            "canonical": "send dm on twitter",
-            "formatted": [],
-            "poll_interval": 0,
-            "label": null
-        },
-        "post_picture": {
-            "args": [
-                {
-                    "name": "caption",
-                    "type": "String",
-                    "question": "What do you want to tweet?",
-                    "is_input": true,
-                    "required": true
-                },
-                {
-                    "name": "picture_url",
-                    "type": "Picture",
-                    "question": "Upload the picture now.",
-                    "is_input": true,
-                    "required": true
-                }
-            ],
-            "doc": "post a tweet with a picture",
-            "confirmation": "tweet $caption with an attached picture",
-            "confirmation_remote": "post $caption and a picture on $__person's Twitter",
-            "canonical": "post picture on twitter",
-            "formatted": [],
-            "poll_interval": 0
-        },
-        "follow": {
-            "args": [
-                {
-                    "name": "user_name",
-                    "type": "Username",
-                    "question": "What user do you want to follow?",
-                    "is_input": true,
-                    "required": true
-                }
-            ],
-            "doc": "follow the named user",
-            "confirmation": "follow $user_name on Twitter",
-            "confirmation_remote": "follow $user_name with $__person's Twitter",
-            "canonical": "follow on twitter",
-            "formatted": [],
-            "poll_interval": 0
-        },
-        "unfollow": {
-            "args": [
-                {
-                    "name": "user_name",
-                    "type": "Username",
-                    "question": "What user do you want to unfollow?",
-                    "is_input": true,
-                    "required": true
-                }
-            ],
-            "doc": "stop following the named user; this call succeeds even if the user was already followed before",
-            "confirmation": "unfollow $user_name on Twitter",
-            "confirmation_remote": "unfollow $user_name from $__person's Twitter",
-            "canonical": "unfollow on twitter",
-            "formatted": [],
-            "poll_interval": 0
-        },
-        "post": {
-            "args": [
-                {
-                    "name": "status",
-                    "type": "String",
-                    "question": "What do you want to tweet?",
-                    "is_input": true,
-                    "required": true
-                }
-            ],
-            "doc": "post a tweet; use # to include a hashtag and @ to reply",
-            "confirmation": "tweet $status",
-            "confirmation_remote": "post $status on $__person's Twitter",
-            "canonical": "post on twitter",
-            "formatted": [],
-            "poll_interval": 0,
-            "label": null
-        },
-        "retweet": {
-            "args": [
-                {
-                    "name": "tweet_id",
-                    "type": "Entity(com.twitter:id)",
-                    "question": "What tweet do you want to retweet?",
-                    "is_input": true,
-                    "required": true
-                }
-            ],
-            "doc": "retweet a given tweet, by id",
-            "confirmation": "retween $tweet_id",
-            "confirmation_remote": "retweet $tweet_id on $__person's Twitter Account",
-            "canonical": "retweet",
-            "formatted": [],
-            "poll_interval": 0
-        }
-    },
     "queries": {
         "search": {
             "args": [
@@ -148,28 +27,28 @@
                 },
                 {
                     "name": "hashtags",
-                    "type": "Array(Hashtag)",
+                    "type": "Array(Entity(tt:hashtag))",
                     "question": "",
                     "is_input": false,
                     "required": false
                 },
                 {
                     "name": "urls",
-                    "type": "Array(URL)",
+                    "type": "Array(Entity(tt:url))",
                     "question": "",
                     "is_input": false,
                     "required": false
                 },
                 {
                     "name": "author",
-                    "type": "Username",
+                    "type": "Entity(tt:username)",
                     "question": "From which user do you want tweets?",
                     "is_input": false,
                     "required": false
                 },
                 {
                     "name": "in_reply_to",
-                    "type": "Username",
+                    "type": "Entity(tt:username)",
                     "question": "In reply to which user do you want tweets?",
                     "is_input": false,
                     "required": false
@@ -192,7 +71,8 @@
                     "text": "@${author} tweeted: ${text}"
                 }
             ],
-            "poll_interval": 600000
+            "poll_interval": 600000,
+            "is_list": true
         },
         "home_timeline": {
             "args": [
@@ -205,14 +85,14 @@
                 },
                 {
                     "name": "hashtags",
-                    "type": "Array(Hashtag)",
+                    "type": "Array(Entity(tt:hashtag))",
                     "question": "",
                     "is_input": false,
                     "required": false
                 },
                 {
                     "name": "urls",
-                    "type": "Array(URL)",
+                    "type": "Array(Entity(tt:url))",
                     "question": "",
                     "is_input": false,
                     "required": false
@@ -249,7 +129,8 @@
                     "text": "@${author} tweeted: ${text}"
                 }
             ],
-            "poll_interval": 0
+            "poll_interval": 0,
+            "is_list": true
         },
         "my_tweets": {
             "args": [
@@ -262,21 +143,21 @@
                 },
                 {
                     "name": "hashtags",
-                    "type": "Array(Hashtag)",
+                    "type": "Array(Entity(tt:hashtag))",
                     "question": "",
                     "is_input": false,
                     "required": false
                 },
                 {
                     "name": "urls",
-                    "type": "Array(URL)",
+                    "type": "Array(Entity(tt:url))",
                     "question": "",
                     "is_input": false,
                     "required": false
                 },
                 {
                     "name": "in_reply_to",
-                    "type": "Username",
+                    "type": "Entity(tt:username)",
                     "question": "",
                     "is_input": false,
                     "required": false
@@ -299,13 +180,14 @@
                     "text": "You tweeted: ${text}"
                 }
             ],
-            "poll_interval": 0
+            "poll_interval": 600000,
+            "is_list": true
         },
         "direct_messages": {
             "args": [
                 {
                     "name": "sender",
-                    "type": "Username",
+                    "type": "Entity(tt:username)",
                     "question": "",
                     "is_input": false,
                     "required": false
@@ -325,10 +207,137 @@
             "formatted": [
                 {
                     "type": "text",
-                    "text": "@${author}: ${message}"
+                    "text": "@${sender}: ${message}"
                 }
             ],
-            "poll_interval": 0
+            "poll_interval": 600000,
+            "is_list": true
+        }
+    },
+    "actions": {
+        "send_direct_message": {
+            "args": [
+                {
+                    "name": "to",
+                    "type": "Entity(tt:username)",
+                    "question": "Who do you want to send the message to?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "message",
+                    "type": "String",
+                    "question": "What message do you want to send?",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "send a direct message",
+            "confirmation": "send a direct message on Twitter to $to saying $message",
+            "confirmation_remote": "send a direct message on $__person's Twitter to $to saying $message",
+            "canonical": "send dm on twitter",
+            "formatted": [],
+            "poll_interval": -1,
+            "is_list": false,
+            "label": null
+        },
+        "post_picture": {
+            "args": [
+                {
+                    "name": "caption",
+                    "type": "String",
+                    "question": "What caption do you want?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "picture_url",
+                    "type": "Entity(tt:picture)",
+                    "question": "Upload the picture now.",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "post a tweet with a picture",
+            "confirmation": "tweet $caption with an attached picture",
+            "confirmation_remote": "post $caption and a picture on $__person's Twitter",
+            "canonical": "post picture on twitter",
+            "formatted": [],
+            "poll_interval": -1,
+            "is_list": false
+        },
+        "follow": {
+            "args": [
+                {
+                    "name": "user_name",
+                    "type": "Entity(tt:username)",
+                    "question": "What user do you want to follow?",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "follow the named user",
+            "confirmation": "follow $user_name on Twitter",
+            "confirmation_remote": "follow $user_name with $__person's Twitter",
+            "canonical": "follow on twitter",
+            "formatted": [],
+            "poll_interval": -1,
+            "is_list": false
+        },
+        "unfollow": {
+            "args": [
+                {
+                    "name": "user_name",
+                    "type": "Entity(tt:username)",
+                    "question": "What user do you want to unfollow?",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "stop following the named user; this call succeeds even if the user was already followed before",
+            "confirmation": "unfollow $user_name on Twitter",
+            "confirmation_remote": "unfollow $user_name from $__person's Twitter",
+            "canonical": "unfollow on twitter",
+            "formatted": [],
+            "poll_interval": -1,
+            "is_list": false
+        },
+        "post": {
+            "args": [
+                {
+                    "name": "status",
+                    "type": "String",
+                    "question": "What do you want to tweet?",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "post a tweet; use # to include a hashtag and @ to reply",
+            "confirmation": "tweet $status",
+            "confirmation_remote": "post $status on $__person's Twitter",
+            "canonical": "post on twitter",
+            "formatted": [],
+            "poll_interval": -1,
+            "is_list": false,
+            "label": null
+        },
+        "retweet": {
+            "args": [
+                {
+                    "name": "tweet_id",
+                    "type": "Entity(com.twitter:id)",
+                    "question": "What tweet do you want to retweet?",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "retweet a given tweet, by id",
+            "confirmation": "retween $tweet_id",
+            "confirmation_remote": "retweet $tweet_id on $__person's Twitter Account",
+            "canonical": "retweet",
+            "formatted": [],
+            "poll_interval": -1,
+            "is_list": false
         }
     },
     "examples": [
@@ -397,7 +406,7 @@
             "program": "let table x := \\(p_hashtag :Entity(tt:hashtag)) -> (@com.twitter.search()), contains(hashtags, p_hashtag);"
         },
         {
-            "utterance": "${count:const} recent tweets with hashtag $p_hashtag",
+            "utterance": "${p_count:const} recent tweets with hashtag $p_hashtag",
             "program": "let table x := \\(p_count :Number, p_hashtag :Entity(tt:hashtag)) -> (@com.twitter.search(count=p_count)), contains(hashtags, p_hashtag);"
         },
         {
@@ -486,7 +495,7 @@
         },
         {
             "utterance": "tweets in my timeline",
-            "program": "let table x := @com.twitter.my_tweets();"
+            "program": "let table x := @com.twitter.home_timeline();"
         },
         {
             "utterance": "retweet ${p_tweet_id}",

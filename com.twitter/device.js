@@ -7,10 +7,8 @@
 
 const Tp = require('thingpedia');
 const Url = require('url');
-const stream = require('stream');
 
 const Twitter = require('twitter-node-client').Twitter;
-const TwitterStream = require('./stream');
 const FormData = require('form-data');
 
 // encryption ;)
@@ -120,8 +118,6 @@ module.exports = class TwitterAccountDevice extends Tp.BaseDevice {
         this.uniqueId = 'twitter-account-' + this.userId;
         this.name = "Twitter Account %s".format(this.screenName);
         this.description = "This is your Twitter Account. You can use it to be updated on the status of your friends, and update them with your thoughts.";
-
-        this._stream = null;
     }
 
     get screenName() {
@@ -140,12 +136,6 @@ module.exports = class TwitterAccountDevice extends Tp.BaseDevice {
         return this.state.accessTokenSecret;
     }
 
-    get _twitterStream() {
-        if (this._stream === null)
-            this._stream = new TwitterStream(makeTwitterApi(this.engine, this.accessToken, this.accessTokenSecret));
-        return this._stream;
-    }
-
     get _twitter() {
         return makeTwitterApi(this.engine, this.accessToken, this.accessTokenSecret);
     }
@@ -154,8 +144,6 @@ module.exports = class TwitterAccountDevice extends Tp.BaseDevice {
         switch (iface) {
         case 'twitter':
             return this._twitter;
-        case 'twitter-stream':
-            return this._stream;
         default:
             return null;
         }
@@ -202,76 +190,8 @@ module.exports = class TwitterAccountDevice extends Tp.BaseDevice {
         return this._pollHomeTimeline(undefined).then((results) => results.filter((tweet) => tweet.from === this.screenName));
     }
 
-    _doSubscribeHomeTimeline(state, filter) {
-        const last_seen_tweet = state.get('tweet_id');
-        const ret = new stream.Readable({ objectMode: true, read() {} });
-
-        const userStream = this._twitterStream;
-        userStream.ref();
-        const listener = (tweet) => {
-            if (!filter(tweet))
-                return;
-            state.set('tweet_id', tweet.tweet_id);
-            ret.push(tweet);
-        };
-        const errorListener = (e) => ret.emit('error', e);
-        userStream.on('error', errorListener);
-        this._pollHomeTimeline(last_seen_tweet).then((results) => {
-            for (let tweet of results) {
-                if (!filter(tweet))
-                    continue;
-                ret.push(tweet);
-                state.set('tweet_id', tweet.tweet_id);
-            }
-
-            userStream.on('tweet', listener);
-        });
-        ret.filters = null;
-        ret.destroy = () => {
-            userStream.removeListener('tweet', listener);
-            userStream.removeListener('error', errorListener);
-            userStream.unref();
-        };
-
-        return ret;
-    }
-    subscribe_home_timeline(params, state, filters) {
-        return this._doSubscribeHomeTimeline(state, (tweet) => tweet.author !== this.screenName.toLowerCase());
-    }
-    subscribe_my_tweets(params, state, filters) {
-        return this._doSubscribeHomeTimeline(state, (tweet) => tweet.author === this.screenName.toLowerCase());
-    }
-
     get_direct_messages(params, filters) {
         return this._pollDirectMessages(undefined);
-    }
-    subscribe_direct_messages(params, state, filter) {
-        const last_seen_tweet = state.get('tweet_id');
-        const ret = new stream.Readable({ objectMode: true, read() {} });
-
-        const userStream = this._twitterStream;
-        userStream.ref();
-        const listener = (dm) => {
-            state.set('tweet_id', dm.tweet_id);
-            ret.push(dm);
-        };
-        const errorListener = (e) => ret.emit('error', e);
-        userStream.on('error', errorListener);
-        this._pollDirectMessages(last_seen_tweet).then((results) => {
-            for (let dm of results) {
-                ret.push(dm);
-                state.set('tweet_id', dm.tweet_id);
-            }
-            userStream.on('dm', listener);
-        });
-        ret.filters = null;
-        ret.destroy = () => {
-            userStream.removeListener('dm', listener);
-            userStream.removeListener('error', errorListener);
-            userStream.unref();
-        };
-
-        return ret;
     }
 
     _doSearch(query, count) {
