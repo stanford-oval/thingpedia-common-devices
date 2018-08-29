@@ -184,10 +184,10 @@ module.exports = class TwitterAccountDevice extends Tp.BaseDevice {
     }
 
     get_home_timeline(params, filters) {
-        return this._pollHomeTimeline(undefined).then((results) => results.filter((tweet) => tweet.from !== this.screenName));
+        return this._pollHomeTimeline(undefined).then((results) => results.filter((tweet) => tweet.author !== this.screenName.toLowerCase()));
     }
     get_my_tweets(params, filters) {
-        return this._pollHomeTimeline(undefined).then((results) => results.filter((tweet) => tweet.from === this.screenName));
+        return this._pollHomeTimeline(undefined).then((results) => results.filter((tweet) => tweet.author === this.screenName.toLowerCase()));
     }
 
     get_direct_messages(params, filters) {
