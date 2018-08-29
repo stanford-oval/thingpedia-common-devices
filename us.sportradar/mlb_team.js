@@ -5,198 +5,110 @@
 // based on us.sportradar device by Giovannni Campagna <gcampagn@cs.stanford.edu>
 //
 // See LICENSE for details
+"use strict";
 
 const Tp = require('thingpedia');
+const { makeGetAndSubscribe } = require('./util');
 
 const API_KEY = 'tn5sx574v9yk995cc29ccftz';
-const SCHEDULE_URL = 'https://api.sportradar.us/mlb-t5/games/%d/%d/%d/schedule.xml?api_key=' + API_KEY;
-const BOXSCORE_URL = 'https://api.sportradar.us/mlb-t5/games/%s/boxscore.xml?api_key=' + API_KEY;
-const POLL_INTERVAL = 24 * 3600 * 1000; // 1 day
 
-module.exports = new Tp.ChannelClass({
-    Name: 'SportRadarMLBChannel',
-    Extends: Tp.HttpPollingTrigger,
-    interval: POLL_INTERVAL,
+async function getNextGame(apiKey, team) {
+    const now = new Date;
+    const scheduleUrl = `https://api.sportradar.us/mlb-t5/games/${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()}/schedule.xml?api_key=${apiKey}`;
 
-    _init: function(engine, device, params) {
-        this.parent();
-        this.engine = engine;
+    const response = await Tp.Helpers.Http.get(scheduleUrl);
+    const parsed = await Tp.Helpers.Xml.parseString(response);
+    const games = parsed.league['daily-schedule'][0].games[0].game;
 
-        this._params = params.slice(0, 1);
-        this._observedTeam = params[0];
-        if (!this._observedTeam)
-            throw new TypeError("Missing required parameter");
+    let game = null;
+    for (let i = 0; i < games.length; i++) {
+        if (games[i].$.status === 'closed')
+            continue;
 
-        this._updateUrl();
-        this.filterString = this._params.join('-');
-
-        this._gameId = null;
-        this._nextGameTimer = null;
-        this._lastStatus = null;
-    },
-
-    _doClose: function() {
-        clearTimeout(this._nextGameTimer);
-        this._nextGameTimer = null;
-        return this.parent();
-    },
-
-    _updateUrl: function() {
-        var now = new Date;
-        this.url = SCHEDULE_URL.format(now.getFullYear(), now.getMonth() + 1, now.getDate());
-    },
-
-    formatEvent(event) {
-        var watchedAlias = event[0];
-        var otherAlias = event[1];
-        var watchedIsHome = event[2];
-        var awayName = event[3];
-        var homeName = event[4];
-        var gameStatus = event[5];
-        var scheduledTime = event[6];
-        var inning = event[7];
-        var awayRuns = event[8];
-        var homeRuns = event[9];
-        var result = event[10];
-
-        var platform = this.engine.platform;
-        switch(gameStatus) {
-        case 'scheduled':
-            return "Next game %s @ %s at %s".format(awayName, homeName, scheduledTime.toLocaleString(platform.locale, { timeZone: platform.timezone }));
-        case 'inprogress':
-            return "Game update for %s @ %s: %d - %d".format(awayName, homeName, awayRuns, homeRuns);
-        case 'closed':
-            return "Final score for %s @ %s: %d - %d".format(awayName, homeName, awayRuns, homeRuns);
+        if (games[i].home[0].$.abbr.toLowerCase() === team ||
+            games[i].away[0].$.abbr.toLowerCase() === team) {
+            game = games[i];
+            break;
         }
-        return [];
-    },
+    }
+    if (game === null) {
+        console.log('No scheduled games found for ' + team);
+        return null;
+    }
 
-    _emit: function(status, inning, awayRuns, homeRuns) {
-        var currentEvent = [ this._awayAlias, this.homeAlias, false,
-                             this._awayName, this._homeName, status,
-                             this._scheduledTime, inning, awayRuns, homeRuns,
-                             'unclosed'];
+    console.log('Found game ' + game.$.id + ': ' + game.home[0].$.abbr + ' vs. ' + game.away[0].$.abbr);
+    return game;
+}
 
-        if (this._observedTeam === this._homeAlias) {
-            currentEvent[0] = this._homeAlias;
-            currentEvent[1] = this._awayAlias;
-            currentEvent[2] = true;
-        }
-        if (status === 'closed') {
-            if (awayRuns === homeRuns) 
-                currentEvent[10] = 'draw';
-            if (this._observedTeam === this._homeAlias && homeRuns > awayRuns)
-                currentEvent[10] = 'win';
-            else if (this._observedTeam === this._awayAlias && homeRuns < awayRuns)
-                currentEvent[10] = 'win';
-            else
-                currentEvent[10] = 'lose';
-        }
+async function getBoxScore(apiKey, gameId, is_home) {
+    const url = `https://api.sportradar.us/mlb-t5/games/${gameId}/boxscore.xml?api_key=${apiKey}`;
+    const response = await Tp.Helpers.Http.get(url);
+    const parsed = await Tp.Helpers.Xml.parseString(response);
+    let game_inning = null;
+    if (parsed.game.$.status === 'closed' || parsed.game.$.status === 'complete')
+        game_inning = String(parsed.game.final[0].$.inning_half) + String(parsed.game.final[0].$.inning);
+    else
+        game_inning = String(parsed.game.outcome[0].$.current_inning_half) + String(parsed.game.outcome[0].$.current_inning);
 
-        this.emitEvent(currentEvent);
-    },
+    const awayRuns = Number(parsed.game.away[0].$.runs);
+    const homeRuns = Number(parsed.game.home[0].$.runs);
 
-    _onNextGameEvent: function() {
-        Tp.Helpers.Http.get(BOXSCORE_URL.format(this._gameId)).then(function(response) {
-            return Tp.Helpers.Xml.parseString(response);
-        }).then(function(parsed) {
-            var inning = null;
-            if (parsed.game.$.status === 'closed' || parsed.game.$.status === 'complete') {
-                inning = String(parsed.game.final[0].$.inning_half) + String(parsed.game.final[0].$.inning);
-                this._nextGameTimer = null;
-                this._gameId = null;
-            } else {
-                inning = String(parsed.game.outcome[0].$.current_inning_half) + String(parsed.game.outcome[0].$.current_inning);
-                this._nextGameTimer = setTimeout(this._onNextGameEvent.bind(this), 5*60000); // poll in 5 minutes
-            }
+    if (is_home)
+        return { game_inning, opponent_runs: awayRuns, team_runs: homeRuns, status: parsed.game.$.status };
+    else
+        return { game_inning, opponent_runs: homeRuns, team_runs: awayRuns, status: parsed.game.$.status };
+}
 
-            // remember current status - only report each time the inning changes
-            if (inning === this._inning) {
-                return;
-            } else {
-                this._inning = inning;
-            }
+function getOpponent(game, team, is_home) {
+    if (is_home)
+        return new Tp.Value.Entity(game.away[0].$.abbr.toLowerCase(), game.away[0].$.market + ' ' + game.away[0].$.name);
+    else
+        return new Tp.Value.Entity(game.home[0].$.abbr.toLowerCase(), game.home[0].$.market + ' ' + game.home[0].$.name);
+}
 
-            var awayRuns = Number(parsed.game.away[0].$.runs);
-            var homeRuns = Number(parsed.game.home[0].$.runs);
+function computeResult(game_status, team_runs, opponent_runs) {
+    if (game_status !== 'closed' && game_status !== 'complete')
+        return 'unclosed';
 
-            this._emit(parsed.game.$.status, inning, awayRuns, homeRuns);
-        }.bind(this)).catch(function(e) {
-            console.error('Failed to process MLB game updates: ' + e.message);
-            console.error(e.stack);
-        }).done();
-    },
+    if (team_runs > opponent_runs)
+        return 'win';
+    if (opponent_runs > team_runs)
+        return 'lose';
+    return 'draw';
+}
 
-    _onTick: function() {
-        this._updateUrl();
-        return this.parent();
-    },
+async function getGameDetails(apiKey, game, team) {
+    const is_home = team === game.home[0].$.abbr.toLowerCase();
+    return getBoxScore(apiKey, game.$.id, is_home);
+}
 
-    _onResponse: function(response) {
-        if(!response) {
-            return;
-        }
+module.exports = makeGetAndSubscribe(getNextGame, getGameDetails, (team, game, gameDetails) => {
+    const is_home = String(team) === game.home[0].$.abbr.toLowerCase();
 
-        Tp.Helpers.Xml.parseString(response).then((parsed) => {
-            var games = parsed.league['daily-schedule'][0].games[0].game;
-            var game = null;
-            for (var i = 0; i < games.length; i++) {
-                if (games[i].$.status === 'closed') {
-                    continue;
-                }
-
-                if (games[i].home[0].$.abbr === this._observedTeam ||
-                    games[i].away[0].$.abbr === this._observedTeam ) {
-                    game = games[i];
-                    break;
-                }
-            }
-            if (game === null) {
-                console.log('No scheduled games found for ' + this._observedTeam);
-                clearTimeout(this._nextGameTimer);
-                this._nextGameTimer = null;
-                this._gameId = null;
-                return;
-            }
-
-            if (this._gameId === game.$.id) {
-                // we've already seen this game
-                return;
-            }
-
-            console.log('Found game ' + game.$.id + ': ' + game.home[0].$.abbr + ' vs. ' + game.away[0].$.abbr);
-            this._gameId = game.$.id;
-            this._awayAlias = game.away[0].abbr;
-            this._awayName = game.away[0].market + ' ' + game.away[0].name;
-            this._homeAlias = game.home[0].abbr;
-            this._homeName = game.home[0].market + ' ' + game.home[0].name;
-
-            var timeout;
-            if (game.$.status === 'scheduled') {
-                var scheduled = new Date(game.$.scheduled);
-                this._scheduledTime = scheduled;
-                var now = new Date();
-                timeout = scheduled.getTime - now.getTime() + 5000;
-                if (timeout >= 5000) {
-                    this._emit('scheduled', 'Pre', 0, 0);
-                } else {
-                    timeout = 5000;
-                }
-
-                if (timeout > POLL_INTERVAL) {
-                    clearTimeout(this._nextGameTimer);
-                    return;
-                }
-            } else {
-                this._scheduleTime = new Date();
-                timeout = 5000;
-            }
-
-            clearTimeout(this._nextGameTimer);
-            this._nextGameTimer = setTimeout(this._onNextGameEvent.bind(this), timeout);
-        }).catch((error) => {
-            console.error('Failed to process MLB game schedule: ' + error.message);
-            console.error(error.stack);
-        });
-    },
-});
+    if (game.$.status === 'scheduled') {
+        return {
+            team: team,
+            opponent: getOpponent(game, team, is_home),
+            is_home: is_home,
+            game_status: 'scheduled',
+            scheduled_time: new Date(game.$.scheduled),
+            game_inning: 'Pre',
+            opponent_runs: 0,
+            team_runs: 0,
+            result: 'unclosed'
+        };
+    } else {
+        const { game_inning, opponent_runs, team_runs, status } = gameDetails;
+        return {
+            team: team,
+            opponent: getOpponent(game, team, is_home),
+            is_home: is_home,
+            game_status: status,
+            scheduled_time: new Date(game.$.scheduled),
+            game_inning: game_inning,
+            opponent_runs: opponent_runs,
+            team_runs: team_runs,
+            result: computeResult(status, team_runs, opponent_runs)
+        };
+    }
+}, { defaultApiKey: API_KEY });

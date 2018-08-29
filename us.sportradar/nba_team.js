@@ -3,15 +3,46 @@
 // Copyright 2015 Giovanni Campagna <gcampagn@cs.stanford.edu>
 //
 // See LICENSE for details
+"use strict";
 
 const Tp = require('thingpedia');
+const { delay, makeGetAndSubscribe } = require('./util');
 
 const NBA_API_KEY = '8metdtkt3fxsjuw2tyrh38de';
 const NBA_SCHEDULE_URL = 'https://api.sportradar.us/nba-t3/games/%d/%d/%d/schedule.json?api_key=' + NBA_API_KEY;
 const NBA_BOXSCORE_URL = 'https://api.sportradar.us/nba-t3/games/%s/boxscore.json?api_key=' + NBA_API_KEY;
 const POLL_INTERVAL = 24 * 3600 * 1000; // 1day
 
-module.exports = new Tp.ChannelClass({
+async function getNextGame(apiKey) {
+    const now = new Date;
+    const scheduleUrl = `https://api.sportradar.us/nba-t3/games/${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()}/schedule.json?api_key=${apiKey}`;
+    const response = await Tp.Helpers.Http.get(scheduleUrl);
+    const parsed = JSON.parse(response);
+
+    var games = parsed.games;
+        var game = null;
+        for (var i = 0; i < games.length; i++) {
+            //console.log('Candidate game ' + games[i].away.alias + ' @ ' + games[i].home.alias);
+            if (games[i].home.alias.toLowerCase() === this._observedTeam.toLowerCase() ||
+                games[i].away.alias.toLowerCase() === this._observedTeam.toLowerCase()) {
+                game = games[i];
+                break;
+            }
+        }
+}
+
+module.exports = makeGetAndSubscribe(getNextGame, getGameDetails, (team, game, gameDetails) => {
+    async get(apiKey, team) {
+        if (!apiKey)
+            apiKey = NBA_API_KEY;
+
+
+    }
+
+};
+
+
+new Tp.ChannelClass({
     Name: 'SportRadarNbaChannel',
     Extends: Tp.HttpPollingTrigger,
     interval: POLL_INTERVAL,
