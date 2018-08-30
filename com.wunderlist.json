@@ -1,0 +1,169 @@
+{
+    "module_type": "org.thingpedia.v2",
+    "params": {},
+    "category": "online",
+    "subcategory": "service",
+    "types": [],
+    "child_types": [],
+    "auth": {
+        "type": "oauth2"
+    },
+    "queries": {
+        "get_lists": {
+            "args": [
+                {
+                    "name": "id",
+                    "type": "Number",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "title",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "created_at",
+                    "type": "Date",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "retrieve your Wunderlist lists",
+            "confirmation": "your Wunderlist lists",
+            "confirmation_remote": "$__person's  Wunderlist lists",
+            "canonical": "get lists on Wunderlist",
+            "formatted": [
+                {
+                    "type": "text",
+                    "text": "${title} created on ${created_at}"
+                }
+            ],
+            "poll_interval": -1,
+            "is_list": true
+        },
+        "get_tasks": {
+            "args": [
+                {
+                    "name": "list_title",
+                    "type": "String",
+                    "question": "",
+                    "is_input": true,
+                    "required": false
+                },
+                {
+                    "name": "id",
+                    "type": "Number",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "created_at",
+                    "type": "Date",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "due_date",
+                    "type": "Date",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "starred",
+                    "type": "Boolean",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "title",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "time_window",
+                    "type": "Number",
+                    "question": "",
+                    "is_input": true,
+                    "required": false
+                },
+                {
+                    "name": "completed",
+                    "type": "Boolean",
+                    "question": "",
+                    "is_input": true,
+                    "required": false
+                }
+            ],
+            "doc": "retrieve your tasks in a Wunderlist list",
+            "confirmation": "your tasks in Wunderlist from $list_title",
+            "confirmation_remote": "retrieve $_person's tasks in Wunderlist from $list_title",
+            "canonical": "wunderlist tasks",
+            "formatted": [
+                {
+                    "type": "text",
+                    "text": "Task: ${title}  Due on: ${due_date}"
+                }
+            ],
+            "poll_interval": 60000,
+            "is_list": true
+        }
+    },
+    "actions": {},
+    "examples": [
+        {
+            "utterance": "Wunderlist lists ",
+            "program": "let table x := @com.wunderlist.get_lists();"
+        },
+        {
+            "utterance": "my lists from Wunderlist ",
+            "program": "let table x := @com.wunderlist.get_lists();"
+        },
+        {
+            "utterance": "tasks from $p_list on Wunderlist",
+            "program": "let table x := \\(p_list :String) -> @com.wunderlist.get_tasks(list_title=p_list);"
+        },
+        {
+            "utterance": "my tasks on Wunderlist",
+            "program": "let table x := @com.wunderlist.get_tasks();"
+        },
+        {
+            "utterance": "tasks from $p_list on Wunderlist",
+            "program": "let table x := \\(p_list :String) -> @com.wunderlist.get_tasks(list_title=p_list);"
+        },
+        {
+            "utterance": "tasks from the last $p_days days from Wunderlist",
+            "program": "let table x := \\(p_days :Number) -> @com.wunderlist.get_tasks(time_window=p_days);"
+        },
+        {
+            "utterance": "completed tasks from Wunderlist",
+            "program": "let table x := @com.wunderlist.get_tasks(completed=true);"
+        },
+        {
+            "utterance": "completed tasks from the last $p_days on Wunderlist",
+            "program": "let table x := \\(p_days :Number) -> @com.wunderlist.get_tasks(time_window=p_days, completed=true);"
+        },
+        {
+            "utterance": "completed tasks from $p_list on Wunderlist",
+            "program": "let table x := \\(p_list :String) -> @com.wunderlist.get_tasks(list_title=p_list, completed=true);"
+        },
+        {
+            "utterance": "tasks from $p_list from the last $p_days days from Wunderlist",
+            "program": "let table x := \\(p_list :String, p_days :Number) -> @com.wunderlist.get_tasks(list_title=p_list, time_window=p_days);"
+        },
+        {
+            "utterance": "completed tasks from $p_list from the last $p_days days on Wunderlist",
+            "program": "let table x := \\(p_list :String, p_days :Number) -> @com.wunderlist.get_tasks(list_title=p_list, time_window=p_days, completed=true);"
+        }
+    ]
+}

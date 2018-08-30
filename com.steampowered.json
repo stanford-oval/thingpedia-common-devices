@@ -1,0 +1,84 @@
+{
+    "module_type": "org.thingpedia.v2",
+    "params": {},
+    "category": "online",
+    "subcategory": "service",
+    "types": [],
+    "child_types": [],
+    "auth": {
+        "type": "none"
+    },
+    "queries": {
+        "get_price": {
+            "args": [
+                {
+                    "name": "game_name",
+                    "type": "String",
+                    "question": "What is the name of the app you're looking for? (Case-insensitive)",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "price",
+                    "type": "Number",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "get price of ${game_name} from steam",
+            "confirmation": "get price of ${game_name} from steam",
+            "confirmation_remote": "",
+            "canonical": "get price from steam",
+            "formatted": [
+                {
+                    "type": "text",
+                    "text": "The current price of ${game_name} is $$${price}."
+                }
+            ],
+            "poll_interval": 3600000,
+            "is_list": false
+        },
+        "get_steam_id": {
+            "args": [
+                {
+                    "name": "name",
+                    "type": "String",
+                    "question": "What is the Steam name? (Go to a Steam profile and enter the NAME from the URL https://steamcommunity.com/id/NAME)",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "id",
+                    "type": "Entity(com.steampowered:user_id)",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "get steam ID of ${name}",
+            "confirmation": "get steam ID of ${name}",
+            "confirmation_remote": "",
+            "canonical": "get user's steam ID",
+            "formatted": [
+                {
+                    "type": "text",
+                    "text": "Your Steam ID is ${id}"
+                }
+            ],
+            "poll_interval": -1,
+            "is_list": false
+        }
+    },
+    "actions": {},
+    "examples": [
+        {
+            "utterance": "How much is $p_game_name on Steam?",
+            "program": "let table x := \\(p_game_name :String) -> @com.steampowered.get_price(game_name=p_game_name);"
+        },
+        {
+            "utterance": "the Steam ID of user $p_name",
+            "program": "let table x := \\(p_name :String) -> @com.steampowered.get_steam_id(name=p_name);"
+        }
+    ]
+}
