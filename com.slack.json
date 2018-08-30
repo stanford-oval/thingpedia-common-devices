@@ -1,5 +1,5 @@
 {
-    "module_type": "org.thingpedia.v1",
+    "module_type": "org.thingpedia.v2",
     "params": {},
     "category": "online",
     "subcategory": "communication",
@@ -8,13 +8,58 @@
     "auth": {
         "type": "oauth2"
     },
-    "triggers": {},
+    "queries": {
+        "channel_history": {
+            "args": [
+                {
+                    "name": "channel",
+                    "type": "Entity(tt:hashtag)",
+                    "question": "What channel are you interested in?",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "date",
+                    "type": "Date",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "sender",
+                    "type": "Entity(tt:username)",
+                    "question": "What user are you interested in?",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "message",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "Polls Slack and sends you any new messages that appear in public channels of your Slack team.",
+            "confirmation": "your messages on Slack",
+            "confirmation_remote": "$__person's messages on Slack",
+            "canonical": "get message on slack",
+            "formatted": [
+                {
+                    "type": "text",
+                    "text": "New message on #${channel} from @${sender}: ${message}"
+                }
+            ],
+            "poll_interval": 60000,
+            "is_list": true
+        }
+    },
     "actions": {
         "send": {
             "args": [
                 {
                     "name": "channel",
-                    "type": "Hashtag",
+                    "type": "Entity(tt:hashtag)",
                     "question": "What channel do you want to send the message to?",
                     "is_input": true,
                     "required": true
@@ -32,14 +77,15 @@
             "confirmation_remote": "send a message on $__person's slack to channel $channel saying $message",
             "canonical": "send message on slack",
             "formatted": [],
-            "poll_interval": 0,
+            "poll_interval": -1,
+            "is_list": false,
             "label": "send a message"
         },
         "updateChannelPurpose": {
             "args": [
                 {
                     "name": "channel",
-                    "type": "Hashtag",
+                    "type": "Entity(tt:hashtag)",
                     "question": "What channel do you want to change?",
                     "is_input": true,
                     "required": true
@@ -57,14 +103,15 @@
             "confirmation_remote": "update the purpose of $__person's slack channel $channel to $purpose",
             "canonical": "update channel purpose on slack",
             "formatted": [],
-            "poll_interval": 0,
+            "poll_interval": -1,
+            "is_list": false,
             "label": "update the channel's purpose"
         },
         "updateChannelTopic": {
             "args": [
                 {
                     "name": "channel",
-                    "type": "Hashtag",
+                    "type": "Entity(tt:hashtag)",
                     "question": "What channel do you want to change?",
                     "is_input": true,
                     "required": true
@@ -82,7 +129,8 @@
             "confirmation_remote": "update the topic of $__person's slack channel $channel to $topic",
             "canonical": "update channel topic on slack",
             "formatted": [],
-            "poll_interval": 0,
+            "poll_interval": -1,
+            "is_list": false,
             "label": "update the channel's topic"
         },
         "setPresence": {
@@ -100,14 +148,15 @@
             "confirmation_remote": "set $__person's presence status on slack to $presence",
             "canonical": "set presence on slack",
             "formatted": [],
-            "poll_interval": 0,
+            "poll_interval": -1,
+            "is_list": false,
             "label": "set your presence"
         },
         "send_picture": {
             "args": [
                 {
                     "name": "channel",
-                    "type": "Hashtag",
+                    "type": "Entity(tt:hashtag)",
                     "question": "What channel do you want to send the message to?",
                     "is_input": true,
                     "required": true
@@ -121,7 +170,7 @@
                 },
                 {
                     "name": "picture_url",
-                    "type": "Picture",
+                    "type": "Entity(tt:picture)",
                     "question": "Upload the picture now.",
                     "is_input": true,
                     "required": true
@@ -132,52 +181,8 @@
             "confirmation_remote": "send a picture on $__person's slack to channel $channel with caption $caption",
             "canonical": "send picture on slack",
             "formatted": [],
-            "poll_interval": 0
-        }
-    },
-    "queries": {
-        "channel_history": {
-            "args": [
-                {
-                    "name": "channel",
-                    "type": "Hashtag",
-                    "question": "What channel are you interested in?",
-                    "is_input": false,
-                    "required": false
-                },
-                {
-                    "name": "date",
-                    "type": "Date",
-                    "question": "",
-                    "is_input": false,
-                    "required": false
-                },
-                {
-                    "name": "sender",
-                    "type": "Username",
-                    "question": "What user are you interested in?",
-                    "is_input": false,
-                    "required": false
-                },
-                {
-                    "name": "message",
-                    "type": "String",
-                    "question": "",
-                    "is_input": false,
-                    "required": false
-                }
-            ],
-            "doc": "Polls Slack and sends you any new messages that appear in public channels of your Slack team.",
-            "confirmation": "you receive a message on slack",
-            "confirmation_remote": "$__person receives a message on slack",
-            "canonical": "receive message on slack",
-            "formatted": [
-                {
-                    "type": "text",
-                    "text": "New message on #${channel} from @${from}: ${message}"
-                }
-            ],
-            "poll_interval": 60000
+            "poll_interval": -1,
+            "is_list": false
         }
     },
     "examples": [
@@ -226,11 +231,11 @@
             "program": "let action x := \\(p_channel :Entity(tt:hashtag), p_purpose :String) -> @com.slack.updateChannelPurpose(channel=p_channel, purpose=p_purpose);"
         },
         {
-            "utterance": "set the purpose for slack channel $p_channel to $purpose",
+            "utterance": "set the purpose for slack channel $p_channel to $p_purpose",
             "program": "let action x := \\(p_channel :Entity(tt:hashtag), p_purpose :String) -> @com.slack.updateChannelPurpose(channel=p_channel, purpose=p_purpose);"
         },
         {
-            "utterance": "set the topic for channel $channel to $topic on slack",
+            "utterance": "set the topic for channel $p_channel to $p_topic on slack",
             "program": "let action x := \\(p_channel :Entity(tt:hashtag), p_topic :String) -> @com.slack.updateChannelTopic(channel=p_channel, topic=p_topic);"
         },
         {

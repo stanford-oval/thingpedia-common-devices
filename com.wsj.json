@@ -1,162 +1,95 @@
 {
-  "params": {},
-  "types": [
-    "data-source",
-    "media"
-  ],
-  "child_types": [],
-  "auth": {
-    "type": "none"
-  },
-  "triggers": {
-    "opinions": {
-      "args": [
-        {
-          "name": "title",
-          "type": "String",
-          "question": "",
-          "required": false
-        },
-        {
-          "name": "link",
-          "type": "String",
-          "question": "",
-          "required": false
-        }
-      ],
-      "doc": "trigger on new articles in the Opinions section",
-      "confirmation": "a new article is published in the Opinions section",
-      "canonical": "new post in opinions",
-      "examples": [
-        "monitor wsj opinion articles",
-        "monitor wall street journal opinion articles"
-      ],
-      "url": "http://www.wsj.com/xml/rss/3_7041.xml",
-      "rss": true
+    "module_type": "org.thingpedia.v2",
+    "params": {},
+    "category": "data",
+    "subcategory": "media",
+    "types": [],
+    "child_types": [],
+    "auth": {
+        "type": "none"
     },
-    "world_news": {
-      "args": [
-        {
-          "name": "title",
-          "type": "String",
-          "question": ""
-        },
-        {
-          "name": "link",
-          "type": "String",
-          "question": ""
+    "queries": {
+        "get": {
+            "args": [
+                {
+                    "name": "section",
+                    "type": "Enum(opinions,world_news,us_business,markets,technology,lifestyle)",
+                    "question": "What section of the Wall Street Journal do you want to read?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "title",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "link",
+                    "type": "Entity(tt:url)",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "updated",
+                    "type": "Date",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "trigger on new articles",
+            "confirmation": "articles published in the $section section of the Wall Street Journal",
+            "confirmation_remote": "",
+            "canonical": "get post on wall street journal",
+            "formatted": [
+                {
+                    "type": "rdl",
+                    "webCallback": "${link}",
+                    "displayTitle": "${title}"
+                }
+            ],
+            "poll_interval": 1080000,
+            "is_list": true
         }
-      ],
-      "doc": "trigger on new articles in the World News section",
-      "confirmation": "a new article is published in the World News section of The Wall Street Journal",
-      "canonical": "new post in world news",
-      "examples": [
-        "monitor wall street journal world news",
-        "follow wsj world news",
-        "notify me if a new article is posted in the world news section of wsj"
-      ],
-      "url": "http://www.wsj.com/xml/rss/3_7085.xml",
-      "rss": true
     },
-    "us_business": {
-      "args": [
+    "actions": {},
+    "examples": [
         {
-          "name": "title",
-          "type": "String",
-          "question": ""
+            "utterance": "when there is a new article in wsj $p_section section",
+            "program": "let stream x := \\(p_section :Enum(opinions,world_news,us_business,markets,technology,lifestyle)) -> monitor (@com.wsj.get(section=p_section));"
         },
         {
-          "name": "link",
-          "type": "String",
-          "question": ""
-        }
-      ],
-      "doc": "trigger on new articles in the US Business section",
-      "confirmation": "a new article is published in the US Business section of The Wall Street Journal",
-      "canonical": "new post in us business",
-      "examples": [
-        "monitor wall street journal us business",
-        "follow wsj us business",
-        "notify me if a new article is posted in the us business section of wsj"
-      ],
-      "url": "http://www.wsj.com/xml/rss/3_7014.xml",
-      "rss": true
-    },
-    "markets": {
-      "args": [
-        {
-          "name": "title",
-          "type": "String",
-          "question": ""
+            "utterance": "wsj $p_section articles",
+            "program": "let table x := \\(p_section :Enum(opinions,world_news,us_business,markets,technology,lifestyle)) -> @com.wsj.get(section=p_section);"
         },
         {
-          "name": "link",
-          "type": "String",
-          "question": ""
-        }
-      ],
-      "doc": "trigger on new articles in the Markets News section",
-      "confirmation": "a new article is published in the Markets News section of The Wall Street Journal",
-      "canonical": "new post in markets",
-      "examples": [
-        "monitor wall street journal markets news",
-        "follow wsj markets",
-        "notify me if a new article is posted in the markets section of wsj"
-      ],
-      "url": "http://www.wsj.com/xml/rss/3_7031.xml",
-      "rss": true
-    },
-    "technology": {
-      "args": [
-        {
-          "name": "title",
-          "type": "String",
-          "question": ""
+            "utterance": "wall street journal articles",
+            "program": "let table x := @com.wsj.get();"
         },
         {
-          "name": "link",
-          "type": "String",
-          "question": ""
-        }
-      ],
-      "doc": "trigger on new articles in the Technology section",
-      "confirmation": "a new article is published in the Technology section of The Wall Street Journal",
-      "canonical": "new post in technology",
-      "examples": [
-        "monitor wall street journal tech",
-        "follow wsj technology",
-        "notify me if a new article is posted in the technology section of wsj"
-      ],
-      "url": "http://www.wsj.com/xml/rss/3_7455.xml",
-      "rss": true
-    },
-    "lifestyle": {
-      "args": [
-        {
-          "name": "title",
-          "type": "String",
-          "question": ""
+            "utterance": "wall street journal articles in the $p_section section",
+            "program": "let table x := \\(p_section :Enum(opinions,world_news,us_business,markets,technology,lifestyle)) -> @com.wsj.get(section=p_section);"
         },
         {
-          "name": "link",
-          "type": "String",
-          "question": ""
+            "utterance": "wall street journal articles in the $p_section section published in the last hour",
+            "program": "let table x := \\(p_section :Enum(opinions,world_news,us_business,markets,technology,lifestyle)) -> (@com.wsj.get(section=p_section)), updated >= start_of(h);"
+        },
+        {
+            "utterance": "when there is a new article in the wall street journal $p_section section",
+            "program": "let stream x := \\(p_section :Enum(opinions,world_news,us_business,markets,technology,lifestyle)) -> monitor (@com.wsj.get(section=p_section));"
+        },
+        {
+            "utterance": "when the wall street journal publishes a new article in the $p_section section",
+            "program": "let stream x := \\(p_section :Enum(opinions,world_news,us_business,markets,technology,lifestyle)) -> monitor (@com.wsj.get(section=p_section));"
+        },
+        {
+            "utterance": "wall street journal $p_section",
+            "program": "let table x := \\(p_section :Enum(opinions,world_news,us_business,markets,technology,lifestyle)) -> @com.wsj.get(section=p_section);"
         }
-      ],
-      "doc": "trigger on new articles in the Lifestyle section",
-      "confirmation": "a new article is published in the Lifestyle section of The Wall Street Journal",
-      "canonical": "new post in lifestyle",
-      "examples": [
-        "monitor wall street journal lifestyle",
-        "follow wsj lifestyle",
-        "notify me if a new article is posted in the lifestyle section of wsj"
-      ],
-      "url": "http://www.wsj.com/xml/rss/3_7201.xml",
-      "rss": true
-    }
-  },
-  "actions": {},
-  "queries": {},
-  "name": "The Wall Street Journal",
-  "description": "Breaking News, Business, Financial and Economic News, World News and Video"
+    ],
+    "name": "The Wall Street Journal",
+    "description": "Breaking News, Business, Financial and Economic News, World News and Video"
 }

@@ -1,5 +1,5 @@
 {
-    "module_type": "org.thingpedia.v1",
+    "module_type": "org.thingpedia.v2",
     "params": {},
     "category": "data",
     "subcategory": "media",
@@ -8,8 +8,6 @@
     "auth": {
         "type": "none"
     },
-    "triggers": {},
-    "actions": {},
     "queries": {
         "get": {
             "args": [
@@ -22,7 +20,7 @@
                 },
                 {
                     "name": "link",
-                    "type": "URL",
+                    "type": "Entity(tt:url)",
                     "question": "",
                     "is_input": false,
                     "required": false
@@ -30,14 +28,14 @@
                 {
                     "name": "user",
                     "type": "Entity(tt:username)",
-                    "question": "What user do you want to monitor? Use the /u/ notation.",
+                    "question": "What user do you want to monitor?",
                     "is_input": false,
                     "required": false
                 },
                 {
                     "name": "category",
                     "type": "String",
-                    "question": "What sub-reddit do you want to monitor? Use the /r/ notation.",
+                    "question": "What sub-reddit do you want to monitor?",
                     "is_input": false,
                     "required": false
                 },
@@ -50,20 +48,22 @@
                 }
             ],
             "doc": "Url of link to Reddit comments whenever a post reaches the front page.",
-            "confirmation": "a post reaches the front page on Reddit",
+            "confirmation": "the posts on the front page of Reddit",
             "confirmation_remote": "",
-            "canonical": "new post on reddit front page",
+            "canonical": "get post on reddit front page",
             "formatted": [
                 {
                     "type": "rdl",
                     "webCallback": "${link}",
                     "displayTitle": "${title}",
-                    "displayText": "By /u/${author}. In /r/${category}."
+                    "displayText": "By /u/${user}. In /r/${category}."
                 }
             ],
-            "poll_interval": 300000
+            "poll_interval": 300000,
+            "is_list": true
         }
     },
+    "actions": {},
     "examples": [
         {
             "utterance": "when reddit front page updates",

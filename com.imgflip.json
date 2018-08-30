@@ -8,8 +8,6 @@
     "auth": {
         "type": "none"
     },
-    "triggers": {},
-    "actions": {},
     "queries": {
         "list": {
             "args": [
@@ -22,14 +20,14 @@
                 },
                 {
                     "name": "picture_url",
-                    "type": "Picture",
+                    "type": "Entity(tt:picture)",
                     "question": "",
                     "is_input": false,
                     "required": false
                 }
             ],
             "doc": "list available meme templates",
-            "confirmation": "list available meme templates on Imgflip",
+            "confirmation": "meme templates available on Imgflip",
             "confirmation_remote": "",
             "canonical": "list meme templates on imgflip",
             "formatted": [
@@ -42,7 +40,8 @@
                     "url": "${picture_url}"
                 }
             ],
-            "poll_interval": -1
+            "poll_interval": -1,
+            "is_list": true
         },
         "generate": {
             "args": [
@@ -69,14 +68,14 @@
                 },
                 {
                     "name": "picture_url",
-                    "type": "Picture",
+                    "type": "Entity(tt:picture)",
                     "question": "",
                     "is_input": false,
                     "required": false
                 }
             ],
             "doc": "generate a meme by name",
-            "confirmation": "generate the meme $template with $text_top at the top and $text_bottom at the bottom using Imgflip",
+            "confirmation": "the meme $template with $text_top at the top and $text_bottom at the bottom, generated using Imflip",
             "confirmation_remote": "",
             "canonical": "generate meme on imgflip",
             "formatted": [
@@ -85,9 +84,11 @@
                     "url": "${picture_url}"
                 }
             ],
-            "poll_interval": -1
+            "poll_interval": -1,
+            "is_list": false
         }
     },
+    "actions": {},
     "examples": [
         {
             "utterance": "all meme templates",

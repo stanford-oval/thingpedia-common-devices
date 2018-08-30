@@ -8,140 +8,6 @@
     "auth": {
         "type": "oauth2"
     },
-    "triggers": {},
-    "actions": {
-        "send_email": {
-            "args": [
-                {
-                    "name": "to",
-                    "type": "EmailAddress",
-                    "question": "Who do you want to send to?",
-                    "is_input": true,
-                    "required": true
-                },
-                {
-                    "name": "subject",
-                    "type": "String",
-                    "question": "With what subject?",
-                    "is_input": true,
-                    "required": true
-                },
-                {
-                    "name": "message",
-                    "type": "String",
-                    "question": "What message do you want to send?",
-                    "is_input": true,
-                    "required": true
-                }
-            ],
-            "doc": "send an email",
-            "confirmation": "send an email to $to with subject $subject on GMail",
-            "confirmation_remote": "send an email to $to with subject $subject using $__person's GMail",
-            "canonical": "send email on gmail",
-            "formatted": [],
-            "poll_interval": 0
-        },
-        "send_picture": {
-            "args": [
-                {
-                    "name": "to",
-                    "type": "EmailAddress",
-                    "question": "Who do you want to send to?",
-                    "is_input": true,
-                    "required": true
-                },
-                {
-                    "name": "subject",
-                    "type": "String",
-                    "question": "With what subject?",
-                    "is_input": true,
-                    "required": true
-                },
-                {
-                    "name": "message",
-                    "type": "String",
-                    "question": "What message do you want to send?",
-                    "is_input": true,
-                    "required": true
-                },
-                {
-                    "name": "picture_url",
-                    "type": "Picture",
-                    "question": "Upload the picture now.",
-                    "is_input": true,
-                    "required": true
-                }
-            ],
-            "doc": "send an email with a picture attached",
-            "confirmation": "send a picture to $to with subject $subject on GMail",
-            "confirmation_remote": "send a picture to $to with subject $subject using $__person's GMail",
-            "canonical": "send picture on gmail",
-            "formatted": [],
-            "poll_interval": 0
-        },
-        "reply": {
-            "args": [
-                {
-                    "name": "email_id",
-                    "type": "Entity(com.gmail:email_id)",
-                    "question": "What email do you want to reply to?",
-                    "is_input": true,
-                    "required": true
-                },
-                {
-                    "name": "subject",
-                    "type": "String",
-                    "question": "",
-                    "is_input": true,
-                    "required": false
-                },
-                {
-                    "name": "message",
-                    "type": "String",
-                    "question": "What do you want to say in your reply?",
-                    "is_input": true,
-                    "required": true
-                }
-            ],
-            "doc": "reply to emails",
-            "confirmation": "reply to $email_id saying $message",
-            "confirmation_remote": "reply to $email_id saying $message from $__person's GMail",
-            "canonical": "gmail reply email",
-            "formatted": [],
-            "poll_interval": 0
-        },
-        "forward": {
-            "args": [
-                {
-                    "name": "email_id",
-                    "type": "Entity(com.gmail:email_id)",
-                    "question": "What email do you want to forward?",
-                    "is_input": true,
-                    "required": true
-                },
-                {
-                    "name": "to",
-                    "type": "Entity(tt:email_address)",
-                    "question": "Who do you want to forward it to?",
-                    "is_input": true,
-                    "required": true
-                },
-                {
-                    "name": "message",
-                    "type": "String",
-                    "question": "What do you want to say in the email?",
-                    "is_input": true,
-                    "required": true
-                }
-            ],
-            "doc": "forward an email",
-            "confirmation": "forward $email_id to $to saying $message with your GMail",
-            "confirmation_remote": "forward $email_id to $to saying $message with $__person's GMail",
-            "canonical": "gmail forward email",
-            "formatted": [],
-            "poll_interval": 0
-        }
-    },
     "queries": {
         "inbox": {
             "args": [
@@ -154,7 +20,7 @@
                 },
                 {
                     "name": "sender_address",
-                    "type": "EmailAddress",
+                    "type": "Entity(tt:email_address)",
                     "question": "",
                     "is_input": false,
                     "required": false
@@ -217,8 +83,8 @@
                 }
             ],
             "doc": "retrieve your inbox",
-            "confirmation": "list the emails in your GMail inbox",
-            "confirmation_remote": "list the emails in $__person's GMail inbox",
+            "confirmation": "the emails in your GMail inbox",
+            "confirmation_remote": "the emails in $__person's GMail inbox",
             "canonical": "list email in inbox",
             "formatted": [
                 {
@@ -230,7 +96,145 @@
                     "text": "${snippet}"
                 }
             ],
-            "poll_interval": 3600000
+            "poll_interval": 3600000,
+            "is_list": true
+        }
+    },
+    "actions": {
+        "send_email": {
+            "args": [
+                {
+                    "name": "to",
+                    "type": "Entity(tt:email_address)",
+                    "question": "Who do you want to send to?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "subject",
+                    "type": "String",
+                    "question": "With what subject?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "message",
+                    "type": "String",
+                    "question": "What message do you want to send?",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "send an email",
+            "confirmation": "send an email to $to with subject $subject on GMail",
+            "confirmation_remote": "send an email to $to with subject $subject using $__person's GMail",
+            "canonical": "send email on gmail",
+            "formatted": [],
+            "poll_interval": -1,
+            "is_list": false
+        },
+        "send_picture": {
+            "args": [
+                {
+                    "name": "to",
+                    "type": "Entity(tt:email_address)",
+                    "question": "Who do you want to send to?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "subject",
+                    "type": "String",
+                    "question": "With what subject?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "message",
+                    "type": "String",
+                    "question": "What message do you want to send?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "picture_url",
+                    "type": "Entity(tt:picture)",
+                    "question": "Upload the picture now.",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "send an email with a picture attached",
+            "confirmation": "send a picture to $to with subject $subject on GMail",
+            "confirmation_remote": "send a picture to $to with subject $subject using $__person's GMail",
+            "canonical": "send picture on gmail",
+            "formatted": [],
+            "poll_interval": -1,
+            "is_list": false
+        },
+        "reply": {
+            "args": [
+                {
+                    "name": "email_id",
+                    "type": "Entity(com.gmail:email_id)",
+                    "question": "What email do you want to reply to?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "subject",
+                    "type": "String",
+                    "question": "",
+                    "is_input": true,
+                    "required": false
+                },
+                {
+                    "name": "message",
+                    "type": "String",
+                    "question": "What do you want to say in your reply?",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "reply to emails",
+            "confirmation": "reply to $email_id saying $message",
+            "confirmation_remote": "reply to $email_id saying $message from $__person's GMail",
+            "canonical": "gmail reply email",
+            "formatted": [],
+            "poll_interval": -1,
+            "is_list": false
+        },
+        "forward": {
+            "args": [
+                {
+                    "name": "email_id",
+                    "type": "Entity(com.gmail:email_id)",
+                    "question": "What email do you want to forward?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "to",
+                    "type": "Entity(tt:email_address)",
+                    "question": "Who do you want to forward it to?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "message",
+                    "type": "String",
+                    "question": "What do you want to say in the email?",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "forward an email",
+            "confirmation": "forward $email_id to $to saying $message with your GMail",
+            "confirmation_remote": "forward $email_id to $to saying $message with $__person's GMail",
+            "canonical": "gmail forward email",
+            "formatted": [],
+            "poll_interval": -1,
+            "is_list": false
         }
     },
     "examples": [
@@ -332,7 +336,7 @@
         },
         {
             "utterance": "reply to ${p_email_id}",
-            "program": "let action x := \\(p_email_id :Entity(com.gmail:email_id), p_message :String) -> @com.gmail.reply(email_id=p_email_id);"
+            "program": "let action x := \\(p_email_id :Entity(com.gmail:email_id)) -> @com.gmail.reply(email_id=p_email_id);"
         },
         {
             "utterance": "reply to ${p_to}",

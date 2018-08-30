@@ -5,19 +5,17 @@
     "subcategory": "social-network",
     "types": [],
     "child_types": [
-        "tumblr-blog"
+        "com.tumblr.blog"
     ],
     "auth": {
         "type": "oauth2"
     },
-    "triggers": {},
-    "actions": {},
     "queries": {
         "new_text": {
             "args": [
                 {
                     "name": "blog_name",
-                    "type": "Username",
+                    "type": "Entity(tt:username)",
                     "question": "What blog name do you want to follow?",
                     "is_input": true,
                     "required": true
@@ -38,14 +36,14 @@
                 },
                 {
                     "name": "link",
-                    "type": "URL",
+                    "type": "Entity(tt:url)",
                     "question": "",
                     "is_input": false,
                     "required": false
                 },
                 {
                     "name": "tags",
-                    "type": "Array(Hashtag)",
+                    "type": "Array(Entity(tt:hashtag))",
                     "question": "",
                     "is_input": false,
                     "required": false
@@ -59,9 +57,9 @@
                 }
             ],
             "doc": "Trigger when there is a new text post.",
-            "confirmation": "something new is posted on Tumblr blog $blog_name",
+            "confirmation": "recent posts in Tumblr blog $blog_name",
             "confirmation_remote": "",
-            "canonical": "new text post on tumblr",
+            "canonical": "get text post on tumblr",
             "formatted": [
                 {
                     "type": "rdl",
@@ -70,13 +68,14 @@
                     "webCallback": "${link}"
                 }
             ],
-            "poll_interval": 1800000
+            "poll_interval": 1800000,
+            "is_list": true
         },
         "new_photo": {
             "args": [
                 {
                     "name": "blog_name",
-                    "type": "Username",
+                    "type": "Entity(tt:username)",
                     "question": "What blog name do you want to follow?",
                     "is_input": true,
                     "required": true
@@ -97,30 +96,30 @@
                 },
                 {
                     "name": "link",
-                    "type": "URL",
+                    "type": "Entity(tt:url)",
                     "question": "",
                     "is_input": false,
                     "required": false
                 },
                 {
                     "name": "tags",
-                    "type": "Array(Hashtag)",
+                    "type": "Array(Entity(tt:hashtag))",
                     "question": "",
                     "is_input": false,
                     "required": false
                 },
                 {
                     "name": "picture_urls",
-                    "type": "Array(Picture)",
+                    "type": "Array(Entity(tt:picture))",
                     "question": "",
                     "is_input": false,
                     "required": false
                 }
             ],
             "doc": "Trigger when there is a new photo post. `photo_urls` is an array of all image source urls in the post",
-            "confirmation": "new photos are posted in $blog_name on Tumblr",
+            "confirmation": "recent pictures in $blog_name on Tumblr",
             "confirmation_remote": "",
-            "canonical": "new photo post on tumblr",
+            "canonical": "get photo post on tumblr",
             "formatted": [
                 {
                     "type": "rdl",
@@ -129,9 +128,11 @@
                     "webCallback": "${link}"
                 }
             ],
-            "poll_interval": 1800000
+            "poll_interval": 1800000,
+            "is_list": true
         }
     },
+    "actions": {},
     "examples": [
         {
             "utterance": "when there is a new post in blog ${p_blog_name:const} on tumblr ",

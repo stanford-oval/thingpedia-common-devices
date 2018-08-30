@@ -8,50 +8,6 @@
     "auth": {
         "type": "oauth2"
     },
-    "triggers": {},
-    "actions": {
-        "move": {
-            "args": [
-                {
-                    "name": "old_name",
-                    "type": "Entity(tt:path_name)",
-                    "question": "What file do you want to move?",
-                    "is_input": true,
-                    "required": true
-                },
-                {
-                    "name": "new_name",
-                    "type": "Entity(tt:path_name)",
-                    "question": "What should be the new name?",
-                    "is_input": true,
-                    "required": true
-                }
-            ],
-            "doc": "moves/renames a file",
-            "confirmation": "rename $old_name to $new_name in your Dropbox",
-            "confirmation_remote": "rename $old_name to $new_name in $__person's Dropbox",
-            "canonical": "move on dropbox",
-            "formatted": [],
-            "poll_interval": 0
-        },
-        "create_new_folder": {
-            "args": [
-                {
-                    "name": "folder_name",
-                    "type": "Entity(tt:path_name)",
-                    "question": "How do you want to call the folder?",
-                    "is_input": true,
-                    "required": true
-                }
-            ],
-            "doc": "creates new folder in user's root directory",
-            "confirmation": "create a new folder called $folder_name in your Dropbox",
-            "confirmation_remote": "create a new folder called $folder_name in $__person's Dropbox",
-            "canonical": "create folder on dropbox",
-            "formatted": [],
-            "poll_interval": 0
-        }
-    },
     "queries": {
         "get_space_usage": {
             "args": [
@@ -71,8 +27,8 @@
                 }
             ],
             "doc": "retrieves the used and allocated space",
-            "confirmation": "retrieve your Dropbox quota info",
-            "confirmation_remote": "retrieve $__person's Dropbox quota info",
+            "confirmation": "your Dropbox quota info",
+            "confirmation_remote": "$__person's Dropbox quota info",
             "canonical": "get space usage on dropbox",
             "formatted": [
                 {
@@ -80,7 +36,8 @@
                     "text": "You have used ${used_space:MB} MBs out of ${total_space:MB}."
                 }
             ],
-            "poll_interval": 3600000
+            "poll_interval": 3600000,
+            "is_list": false
         },
         "list_folder": {
             "args": [
@@ -135,8 +92,8 @@
                 }
             ],
             "doc": "list the content of a folder",
-            "confirmation": "list the content of $folder_name in your Dropbox",
-            "confirmation_remote": "list the content of $folder_name in $__person's Dropbox",
+            "confirmation": "the content of $folder_name in your Dropbox",
+            "confirmation_remote": "the content of $folder_name in $__person's Dropbox",
             "canonical": "list folder on dropbox",
             "formatted": [
                 {
@@ -144,7 +101,8 @@
                     "code": "(function(params, hint, formatter) {\nif (params.is_folder)\nreturn `${params.file_name} (dir)`;\nelse\nreturn `${params.file_name} (reg, ${formatter.measureToString(params.file_size, 1, 'KB')} KBs)`;\n})"
                 }
             ],
-            "poll_interval": 3600000
+            "poll_interval": 3600000,
+            "is_list": true
         },
         "open": {
             "args": [
@@ -157,15 +115,15 @@
                 },
                 {
                     "name": "url",
-                    "type": "URL",
+                    "type": "Entity(tt:url)",
                     "question": "",
                     "is_input": false,
                     "required": false
                 }
             ],
             "doc": "open (retrieve a temporary link to) a file",
-            "confirmation": "open $file_name in your Dropbox",
-            "confirmation_remote": "open $file_name in $__person's Dropbox",
+            "confirmation": "the link to $file_name in your Dropbox",
+            "confirmation_remote": "the link to $file_name in $__person's Dropbox",
             "canonical": "open on dropbox",
             "formatted": [
                 {
@@ -174,7 +132,53 @@
                     "displayTitle": "${file_name}"
                 }
             ],
-            "poll_interval": -1
+            "poll_interval": -1,
+            "is_list": false
+        }
+    },
+    "actions": {
+        "move": {
+            "args": [
+                {
+                    "name": "old_name",
+                    "type": "Entity(tt:path_name)",
+                    "question": "What file do you want to move?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "new_name",
+                    "type": "Entity(tt:path_name)",
+                    "question": "What should be the new name?",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "moves/renames a file",
+            "confirmation": "rename $old_name to $new_name in your Dropbox",
+            "confirmation_remote": "rename $old_name to $new_name in $__person's Dropbox",
+            "canonical": "move on dropbox",
+            "formatted": [],
+            "poll_interval": -1,
+            "is_list": false
+        },
+        "create_new_folder": {
+            "args": [
+                {
+                    "name": "folder_name",
+                    "type": "Entity(tt:path_name)",
+                    "question": "How do you want to call the folder?",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "creates new folder in user's root directory",
+            "confirmation": "create a new folder called $folder_name in your Dropbox",
+            "confirmation_remote": "create a new folder called $folder_name in $__person's Dropbox",
+            "canonical": "create folder on dropbox",
+            "formatted": [],
+            "poll_interval": -1,
+            "is_list": false
         }
     },
     "examples": [

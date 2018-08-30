@@ -1,5 +1,5 @@
 {
-    "module_type": "org.thingpedia.v1",
+    "module_type": "org.thingpedia.v2",
     "params": {},
     "category": "data",
     "subcategory": "service",
@@ -8,8 +8,6 @@
     "auth": {
         "type": "none"
     },
-    "triggers": {},
-    "actions": {},
     "queries": {
         "sunrise": {
             "args": [
@@ -43,16 +41,17 @@
                 }
             ],
             "doc": "Information about sunrise and sunset",
-            "confirmation": "get the sunrise and sunset time for location $location",
+            "confirmation": "the sunrise and sunset time for location $location",
             "confirmation_remote": "",
             "canonical": "get sunrise on weatherapi",
             "formatted": [
                 {
                     "type": "text",
-                    "text": "Sun times on ${date:date} for ${location}: rises at ${sunrise}, sets at ${sunset}"
+                    "text": "Sun times on ${date:date} for ${location}: rises at ${sunrise_time}, sets at ${sunset_time}"
                 }
             ],
-            "poll_interval": 86400000
+            "poll_interval": 86400000,
+            "is_list": false
         },
         "moon": {
             "args": [
@@ -79,7 +78,7 @@
                 }
             ],
             "doc": "Information about moon times and moon phase",
-            "confirmation": "get the moon phase for $location",
+            "confirmation": "the moon phase for $location",
             "confirmation_remote": "",
             "canonical": "get moon phase on weatherapi",
             "formatted": [
@@ -88,7 +87,8 @@
                     "text": "Moon phase on ${date:date} for ${location}: ${phase}."
                 }
             ],
-            "poll_interval": 86400000
+            "poll_interval": 86400000,
+            "is_list": false
         },
         "current": {
             "args": [
@@ -143,14 +143,14 @@
                 },
                 {
                     "name": "icon",
-                    "type": "Picture",
+                    "type": "Entity(tt:picture)",
                     "question": "",
                     "is_input": false,
                     "required": false
                 }
             ],
             "doc": "Information about current weather",
-            "confirmation": "show the current weather for $location",
+            "confirmation": "the current weather for $location",
             "confirmation_remote": "",
             "canonical": "get current weather on weatherapi",
             "formatted": [
@@ -159,9 +159,11 @@
                     "text": "Current weather for ${location}: ${status}, temperature ${temperature:C} C, wind speed ${wind_speed:mps} m/s, humidity ${humidity}%, cloudiness ${cloudiness}%, fog ${fog}%."
                 }
             ],
-            "poll_interval": 3600000
+            "poll_interval": 3600000,
+            "is_list": false
         }
     },
+    "actions": {},
     "examples": [
         {
             "utterance": "when it's $p_status at location $p_location",
@@ -189,23 +191,23 @@
         },
         {
             "utterance": "when the temperature in $p_location is above $p_temperature",
-            "program": "let stream x := \\(p_temperature :Measure(C), p_location :Location) -> monitor ((@org.thingpedia.weather.current(location=p_location)), temperature > p_temperature);"
+            "program": "let stream x := \\(p_temperature :Measure(C), p_location :Location) -> monitor ((@org.thingpedia.weather.current(location=p_location)), temperature >= p_temperature);"
         },
         {
             "utterance": "when the temperature in $p_location is below $p_temperature",
-            "program": "let stream x := \\(p_temperature :Measure(C), p_location :Location) -> monitor ((@org.thingpedia.weather.current(location=p_location)), temperature < p_temperature);"
+            "program": "let stream x := \\(p_temperature :Measure(C), p_location :Location) -> monitor ((@org.thingpedia.weather.current(location=p_location)), temperature <= p_temperature);"
         },
         {
             "utterance": "when the temperature in $p_location is below freezing",
-            "program": "let stream x := \\(p_location :Location) -> monitor ((@org.thingpedia.weather.current(location=p_location)), temperature < 0C);"
+            "program": "let stream x := \\(p_location :Location) -> monitor ((@org.thingpedia.weather.current(location=p_location)), temperature <= 0C);"
         },
         {
             "utterance": "when the humidity in $p_location is above $p_humidity",
-            "program": "let stream x := \\(p_humidity :Number, p_location :Location) -> monitor ((@org.thingpedia.weather.current(location=p_location)), humidity > p_humidity);"
+            "program": "let stream x := \\(p_humidity :Number, p_location :Location) -> monitor ((@org.thingpedia.weather.current(location=p_location)), humidity >= p_humidity);"
         },
         {
             "utterance": "when the humidity in $p_location is below $p_humidity",
-            "program": "let stream x := \\(p_humidity :Number, p_location :Location) -> monitor ((@org.thingpedia.weather.current(location=p_location)), humidity < p_humidity);"
+            "program": "let stream x := \\(p_humidity :Number, p_location :Location) -> monitor ((@org.thingpedia.weather.current(location=p_location)), humidity <= p_humidity);"
         },
         {
             "utterance": "when it starts raining in $p_location",
@@ -225,19 +227,19 @@
         },
         {
             "utterance": "when the wind speed in $p_location is above $p_wind_speed",
-            "program": "let stream x := \\(p_wind_speed :Measure(mps), p_location :Location) -> monitor ((@org.thingpedia.weather.current(location=p_location)), wind_speed > p_wind_speed);"
+            "program": "let stream x := \\(p_wind_speed :Measure(mps), p_location :Location) -> monitor ((@org.thingpedia.weather.current(location=p_location)), wind_speed >= p_wind_speed);"
         },
         {
             "utterance": "when it is more humid than $p_humidity in $p_location",
-            "program": "let stream x := \\(p_humidity :Number, p_location :Location) -> monitor ((@org.thingpedia.weather.current(location=p_location)), humidity > p_humidity);"
+            "program": "let stream x := \\(p_humidity :Number, p_location :Location) -> monitor ((@org.thingpedia.weather.current(location=p_location)), humidity >= p_humidity);"
         },
         {
             "utterance": "when it 's hotter than $p_temperature in $p_location",
-            "program": "let stream x := \\(p_temperature :Measure(C), p_location :Location) -> monitor ((@org.thingpedia.weather.current(location=p_location)), temperature > p_temperature);"
+            "program": "let stream x := \\(p_temperature :Measure(C), p_location :Location) -> monitor ((@org.thingpedia.weather.current(location=p_location)), temperature >= p_temperature);"
         },
         {
             "utterance": "when it 's colder than $p_temperature in $p_location",
-            "program": "let stream x := \\(p_temperature :Measure(C), p_location :Location) -> monitor ((@org.thingpedia.weather.current(location=p_location)), temperature < p_temperature);"
+            "program": "let stream x := \\(p_temperature :Measure(C), p_location :Location) -> monitor ((@org.thingpedia.weather.current(location=p_location)), temperature <= p_temperature);"
         },
         {
             "utterance": "the weather",

@@ -1,112 +1,142 @@
 {
-  "module_type": "org.thingpedia.v1",
-  "params": {},
-  "types": [],
-  "child_types": [],
-  "auth": {
-    "type": "oauth2"
-  },
-  "triggers": {},
-  "actions": {
-    "recordweight": {
-      "args": [
-        {
-          "name": "weight",
-          "type": "Measure(kg)",
-          "question": "What is your weight?",
-          "is_input": true,
-          "required": true
-        }
-      ],
-      "doc": "record weight on Fitbit",
-      "confirmation": "record weight",
-      "confirmation_remote": "record weight on $__person's fitbit",
-      "canonical": "record weight on fitbit",
-      "formatted": [],
-      "examples": [
-        "log my weight on fitbit",
-        "record my weight",
-        "make note of my weight",
-        "i weigh $weight"
-      ]
-    }
-  },
-  "queries": {
-    "getsteps": {
-      "args": [
-        {
-          "name": "date",
-          "type": "Date",
-          "question": "",
-          "is_input": true,
-          "required": false
-        },
-        {
-          "name": "steps",
-          "type": "Number",
-          "question": "",
-          "is_input": false,
-          "required": false
-        }
-      ],
-      "doc": "retrieves the step count for the date",
-      "confirmation": "retrieve step count",
-      "confirmation_remote": "retrieve step count on $__person's fitbit",
-      "canonical": "retrieve steps on fitbit",
-      "formatted": [
-        {
-          "type": "text",
-          "text": "Steps on ${date:date}: ${steps}"
-        }
-      ],
-      "examples": [
-        "get steps from fitbit",
-        "get my fitbit steps on $date",
-        "how much i walked on $date from fitbit"
-      ]
+    "module_type": "org.thingpedia.v2",
+    "params": {},
+    "category": "online",
+    "subcategory": "health",
+    "types": [],
+    "child_types": [],
+    "auth": {
+        "type": "oauth2"
     },
-    "getbody": {
-      "args": [
+    "queries": {
+        "getsteps": {
+            "args": [
+                {
+                    "name": "date",
+                    "type": "Date",
+                    "question": "",
+                    "is_input": true,
+                    "required": false
+                },
+                {
+                    "name": "steps",
+                    "type": "Number",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "retrieves the step count for the date",
+            "confirmation": "your step count from your FitBit",
+            "confirmation_remote": "$__person's step count from their FitBit",
+            "canonical": "retrieve steps on fitbit",
+            "formatted": [
+                {
+                    "type": "text",
+                    "text": "Steps on ${date:date}: ${steps}"
+                }
+            ],
+            "poll_interval": 3600000,
+            "is_list": false
+        },
+        "getbody": {
+            "args": [
+                {
+                    "name": "weight",
+                    "type": "Measure(kg)",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "bmi",
+                    "type": "Number",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "fat",
+                    "type": "Number",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "retrieve body measurements from Fitbit",
+            "confirmation": "your body measurements from FitBit",
+            "confirmation_remote": "$__person's body measurements from FitBit",
+            "canonical": "retrieve body measurements on fitbit",
+            "formatted": [
+                {
+                    "type": "text",
+                    "text": "Weight: ${weight} kg, BMI: ${bmi}, Fat: ${fat}%"
+                }
+            ],
+            "poll_interval": 3600000,
+            "is_list": false
+        }
+    },
+    "actions": {
+        "recordweight": {
+            "args": [
+                {
+                    "name": "weight",
+                    "type": "Measure(kg)",
+                    "question": "What is your weight?",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "record weight on Fitbit",
+            "confirmation": "record weight",
+            "confirmation_remote": "record weight on $__person's fitbit",
+            "canonical": "record weight on fitbit",
+            "formatted": [],
+            "poll_interval": -1,
+            "is_list": false
+        }
+    },
+    "examples": [
         {
-          "name": "weight",
-          "type": "Measure(kg)",
-          "question": "",
-          "is_input": false,
-          "required": false
+            "utterance": "my steps from fitbit",
+            "program": "let table x := @com.fitbit.getsteps();"
         },
         {
-          "name": "bmi",
-          "type": "Number",
-          "question": "",
-          "is_input": false,
-          "required": false
+            "utterance": "my fitbit steps on $p_date",
+            "program": "let table x := \\(p_date :Date) -> @com.fitbit.getsteps(date=p_date);"
         },
         {
-          "name": "fat",
-          "type": "Number",
-          "question": "",
-          "is_input": false,
-          "required": false
-        }
-      ],
-      "doc": "retrieve body measurements from Fitbit",
-      "confirmation": "retrieve body measurements",
-      "confirmation_remote": "retrieve body measurements on $__person's fitbit",
-      "canonical": "retrieve body measurements on fitbit",
-      "formatted": [
+            "utterance": "my body measurements from fitbit",
+            "program": "let table x := @com.fitbit.getbody();"
+        },
         {
-          "type": "text",
-          "text": "Weight: ${weight} kg, BMI: ${bmi}, Fat: ${fat}%"
+            "utterance": "if my weight goes over $p_weight",
+            "program": "let stream x := \\(p_weight :Measure(kg)) -> edge (monitor (@com.fitbit.getbody())) on weight >= p_weight;"
+        },
+        {
+            "utterance": "log my weight on fitbit",
+            "program": "let action x := @com.fitbit.recordweight();"
+        },
+        {
+            "utterance": "record my weight on fitbit",
+            "program": "let action x := @com.fitbit.recordweight();"
+        },
+        {
+            "utterance": "make note of my weight on fitbit",
+            "program": "let action x := @com.fitbit.recordweight();"
+        },
+        {
+            "utterance": "when my weight changes on fitbit",
+            "program": "let stream x := monitor (@com.fitbit.getbody()) on new [weight];"
+        },
+        {
+            "utterance": "when I walk more than ${p_steps:const} steps",
+            "program": "let stream x := \\(p_steps :Number) -> edge (monitor (@com.fitbit.getsteps())) on steps >= p_steps;"
+        },
+        {
+            "utterance": "when my fitbit steps update",
+            "program": "let stream x := monitor (@com.fitbit.getsteps());"
         }
-      ],
-      "examples": [
-        "get my weight from fitbit",
-        "get my bmi from fitbit",
-        "get my body fat from fitbit",
-        "how much do i weigh currently",
-        "tell me if my weight is $weight"
-      ]
-    }
-  },
-  "global-name": "fitbit"
+    ]
 }

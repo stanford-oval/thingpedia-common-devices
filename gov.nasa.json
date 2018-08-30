@@ -1,5 +1,5 @@
 {
-    "module_type": "org.thingpedia.v1",
+    "module_type": "org.thingpedia.v2",
     "params": {},
     "category": "data",
     "subcategory": "media",
@@ -8,8 +8,6 @@
     "auth": {
         "type": "none"
     },
-    "triggers": {},
-    "actions": {},
     "queries": {
         "apod": {
             "args": [
@@ -29,14 +27,14 @@
                 },
                 {
                     "name": "picture_url",
-                    "type": "Picture",
+                    "type": "Entity(tt:picture)",
                     "question": "",
                     "is_input": false,
                     "required": false
                 }
             ],
             "doc": "Title, description, and image URL of NASA's Astronomy Picture of the Day (APOD)",
-            "confirmation": "retrieve NASA's Astronomy Picture of the Day",
+            "confirmation": "NASA's Astronomy Picture of the Day",
             "confirmation_remote": "",
             "canonical": "get astronomy picture of the day on nasa",
             "formatted": [
@@ -53,7 +51,8 @@
                     "url": "${picture_url}"
                 }
             ],
-            "poll_interval": 86400000
+            "poll_interval": 86400000,
+            "is_list": false
         },
         "rover": {
             "args": [
@@ -73,7 +72,7 @@
                 },
                 {
                     "name": "picture_url",
-                    "type": "Picture",
+                    "type": "Entity(tt:picture)",
                     "question": "",
                     "is_input": false,
                     "required": false
@@ -87,7 +86,7 @@
                 }
             ],
             "doc": "photos from the Curiosity Rover on Mars",
-            "confirmation": "retrieve Curiosity Rover photos from NASA",
+            "confirmation": "Curiosity Rover photos from NASA",
             "confirmation_remote": "",
             "canonical": "get curiosity rover picture on nasa",
             "formatted": [
@@ -96,7 +95,8 @@
                     "url": "${picture_url}"
                 }
             ],
-            "poll_interval": 86400000
+            "poll_interval": 86400000,
+            "is_list": true
         },
         "asteroid": {
             "args": [
@@ -158,7 +158,7 @@
                 }
             ],
             "doc": "Daily-updated data on the closest asteroid to earth",
-            "confirmation": "an asteroid is passing close to Earth",
+            "confirmation": "the asteroid passing close to Earth today",
             "confirmation_remote": "",
             "canonical": "close asteroid on nasa",
             "formatted": [
@@ -176,12 +176,14 @@
                 },
                 {
                     "type": "text",
-                    "text": "Closest distance to Earth: ${closest_distance_to_earth:km} km"
+                    "text": "Closest distance to Earth: ${distance:km} km"
                 }
             ],
-            "poll_interval": 86400000
+            "poll_interval": 86400000,
+            "is_list": false
         }
     },
+    "actions": {},
     "examples": [
         {
             "utterance": "when an asteroid passes close to earth",
@@ -225,11 +227,11 @@
         },
         {
             "utterance": "when an asteroid is closer to earth than ${p_distance}",
-            "program": "let stream x := \\(p_distance :Measure(m)) -> monitor ((@gov.nasa.asteroid()), distance < p_distance);"
+            "program": "let stream x := \\(p_distance :Measure(m)) -> monitor ((@gov.nasa.asteroid()), distance <= p_distance);"
         },
         {
             "utterance": "when a close asteroid is faster than ${p_relative_velocity}",
-            "program": "let stream x := \\(p_relative_velocity :Measure(mps)) -> monitor ((@gov.nasa.asteroid()), relative_velocity > p_relative_velocity);"
+            "program": "let stream x := \\(p_relative_velocity :Measure(mps)) -> monitor ((@gov.nasa.asteroid()), relative_velocity >= p_relative_velocity);"
         }
     ]
 }

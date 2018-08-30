@@ -1,5 +1,5 @@
 {
-    "module_type": "org.thingpedia.v1",
+    "module_type": "org.thingpedia.v2",
     "params": {},
     "category": "data",
     "subcategory": "service",
@@ -8,8 +8,6 @@
     "auth": {
         "type": "none"
     },
-    "triggers": {},
-    "actions": {},
     "queries": {
         "get_holidays": {
             "args": [
@@ -43,18 +41,24 @@
                 }
             ],
             "doc": "Retrieve the Holidays.",
-            "confirmation": "retrieve the holidays",
+            "confirmation": "the holidays in ${country}",
             "confirmation_remote": "",
             "canonical": "get holidays",
             "formatted": [
                 {
                     "type": "text",
                     "text": "${summary} on ${date:date}"
+                },
+                {
+                    "type": "text",
+                    "text": "${description}"
                 }
             ],
-            "poll_interval": 86400000
+            "poll_interval": 86400000,
+            "is_list": true
         }
     },
+    "actions": {},
     "examples": [
         {
             "utterance": "when it 's a holiday in $p_country",

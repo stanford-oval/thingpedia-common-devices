@@ -8,26 +8,6 @@
     "auth": {
         "type": "oauth2"
     },
-    "triggers": {},
-    "actions": {
-        "create_new_drive_file": {
-            "args": [
-                {
-                    "name": "file_name",
-                    "type": "Entity(tt:path_name)",
-                    "question": "what's the name of the file?",
-                    "is_input": true,
-                    "required": true
-                }
-            ],
-            "doc": "create a new file with the specified name on google drive",
-            "confirmation": "create a file with name $file_name on google drive",
-            "confirmation_remote": "",
-            "canonical": "create a new file on google drive",
-            "formatted": [],
-            "poll_interval": 0
-        }
-    },
     "queries": {
         "list_drive_files": {
             "args": [
@@ -93,19 +73,55 @@
                     "question": "",
                     "is_input": true,
                     "required": false
+                },
+                {
+                    "name": "last_modified_by",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "link",
+                    "type": "Entity(tt:url)",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
                 }
             ],
             "doc": "list files in Google Drive, sort by the given order, or modification date by default",
-            "confirmation": "list files in your Google Drive",
-            "confirmation_remote": "list files in $__person's Google Drive",
+            "confirmation": "files in your Google Drive",
+            "confirmation_remote": "files in $__person's Google Drive",
             "canonical": "google drive file list",
             "formatted": [
                 {
-                    "type": "text",
-                    "text": "${file_name} (${file_size:kB} kB, created on ${created_time}, modified on ${modified_time})"
+                    "type": "rdl",
+                    "webCallback": "${link}",
+                    "displayTitle": "${file_name} (last modified by ${last_modified_by} on ${modified_time})"
                 }
             ],
-            "poll_interval": 60000
+            "poll_interval": 60000,
+            "is_list": true
+        }
+    },
+    "actions": {
+        "create_new_drive_file": {
+            "args": [
+                {
+                    "name": "file_name",
+                    "type": "Entity(tt:path_name)",
+                    "question": "what's the name of the file?",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "create a new file with the specified name on google drive",
+            "confirmation": "create a file with name $file_name on google drive",
+            "confirmation_remote": "",
+            "canonical": "create a new file on google drive",
+            "formatted": [],
+            "poll_interval": -1,
+            "is_list": false
         }
     },
     "examples": [
@@ -151,11 +167,11 @@
         },
         {
             "utterance": "my google drive files smaller than ${p_file_size}",
-            "program": "let table x := \\(p_file_size :Measure(byte)) -> (@com.google.drive.list_drive_files()), file_size < p_file_size;"
+            "program": "let table x := \\(p_file_size :Measure(byte)) -> (@com.google.drive.list_drive_files()), file_size <= p_file_size;"
         },
         {
             "utterance": "my google drive files larger than ${p_file_size}",
-            "program": "let table x := \\(p_file_size :Measure(byte)) -> (@com.google.drive.list_drive_files()), file_size > p_file_size;"
+            "program": "let table x := \\(p_file_size :Measure(byte)) -> (@com.google.drive.list_drive_files()), file_size >= p_file_size;"
         },
         {
             "utterance": "my oldest google drive files",

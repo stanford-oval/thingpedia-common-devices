@@ -1,20 +1,18 @@
 {
-    "module_type": "org.thingpedia.v1",
+    "module_type": "org.thingpedia.v2",
     "params": {
         "url": [
             "Calendar URL",
             "text"
         ]
     },
-    "category": "data",
+    "category": "online",
     "subcategory": "service",
     "types": [],
     "child_types": [],
     "auth": {
         "type": "none"
     },
-    "triggers": {},
-    "actions": {},
     "queries": {
         "list_events": {
             "args": [
@@ -76,8 +74,8 @@
                 }
             ],
             "doc": "list events in the calendar matching the provided arguments",
-            "confirmation": "list the event in your calendar",
-            "confirmation_remote": "list the event in $__person's calendar",
+            "confirmation": "the events in your calendar",
+            "confirmation_remote": "the events in $__person's calendar",
             "canonical": "list event on icalendar",
             "formatted": [
                 {
@@ -89,9 +87,11 @@
                     "code": "(function({start_date, end_date}, hint, formatter) {\nif (end_date)\nreturn `Runs from ${formatter.dateAndTimeToString(start_date)} to ${formatter.dateAndTimeToString(end_date)}`;\nelse\nreturn `Starts at ${formatter.dateAndTimeToString(start_date)}`;\n}"
                 }
             ],
-            "poll_interval": 3600000
+            "poll_interval": 3600000,
+            "is_list": true
         }
     },
+    "actions": {},
     "examples": [
         {
             "utterance": "when an event on my calendar begins",

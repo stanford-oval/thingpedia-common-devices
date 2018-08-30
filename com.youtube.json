@@ -1,5 +1,5 @@
 {
-    "module_type": "org.thingpedia.v1",
+    "module_type": "org.thingpedia.v2",
     "params": {},
     "category": "online",
     "subcategory": "social-network",
@@ -8,8 +8,6 @@
     "auth": {
         "type": "oauth2"
     },
-    "triggers": {},
-    "actions": {},
     "queries": {
         "channels_by_category": {
             "args": [
@@ -43,14 +41,14 @@
                 },
                 {
                     "name": "thumbnail",
-                    "type": "Picture",
+                    "type": "Entity(tt:picture)",
                     "question": "",
                     "is_input": false,
                     "required": false
                 }
             ],
             "doc": "list channel in a given YouTube Guide Category",
-            "confirmation": "list channels in YouTube Category $category_id",
+            "confirmation": "channels in YouTube Category $category_id",
             "confirmation_remote": "",
             "canonical": "list channel by category on youtube",
             "formatted": [
@@ -65,7 +63,8 @@
                     "url": "${thumbnail}"
                 }
             ],
-            "poll_interval": 86400000
+            "poll_interval": 86400000,
+            "is_list": true
         },
         "list_subscriptions": {
             "args": [
@@ -92,14 +91,14 @@
                 },
                 {
                     "name": "thumbnail",
-                    "type": "Picture",
+                    "type": "Entity(tt:picture)",
                     "question": "",
                     "is_input": false,
                     "required": false
                 }
             ],
             "doc": "list channel you're subscribed to",
-            "confirmation": "list your subscribed channels on YouTube",
+            "confirmation": "your subscribed channels on YouTube",
             "confirmation_remote": "",
             "canonical": "list subscriptions on youtube",
             "formatted": [
@@ -114,7 +113,8 @@
                     "url": "${thumbnail}"
                 }
             ],
-            "poll_interval": 86400000
+            "poll_interval": 86400000,
+            "is_list": true
         },
         "search_channel": {
             "args": [
@@ -148,14 +148,14 @@
                 },
                 {
                     "name": "thumbnail",
-                    "type": "Picture",
+                    "type": "Entity(tt:picture)",
                     "question": "",
                     "is_input": false,
                     "required": false
                 }
             ],
             "doc": "search channels",
-            "confirmation": "search YouTube channels matching $query",
+            "confirmation": "YouTube channels matching $query",
             "confirmation_remote": "",
             "canonical": "search channel on youtube",
             "formatted": [
@@ -170,7 +170,8 @@
                     "url": "${thumbnail}"
                 }
             ],
-            "poll_interval": 86400000
+            "poll_interval": 86400000,
+            "is_list": true
         },
         "search_videos": {
             "args": [
@@ -211,7 +212,7 @@
                 },
                 {
                     "name": "thumbnail",
-                    "type": "Picture",
+                    "type": "Entity(tt:picture)",
                     "question": "",
                     "is_input": false,
                     "required": false
@@ -225,14 +226,14 @@
                 },
                 {
                     "name": "video_url",
-                    "type": "URL",
+                    "type": "Entity(tt:url)",
                     "question": "",
                     "is_input": false,
                     "required": false
                 }
             ],
             "doc": "search videos",
-            "confirmation": "search YouTube videos matching $query",
+            "confirmation": "YouTube videos matching $query",
             "confirmation_remote": "",
             "canonical": "search video on youtube",
             "formatted": [
@@ -247,7 +248,8 @@
                     "url": "${thumbnail}"
                 }
             ],
-            "poll_interval": 3600000
+            "poll_interval": 3600000,
+            "is_list": true
         },
         "list_videos": {
             "args": [
@@ -281,27 +283,43 @@
                 },
                 {
                     "name": "video_url",
-                    "type": "URL",
+                    "type": "Entity(tt:url)",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "description",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "thumbnail",
+                    "type": "Entity(tt:picture)",
                     "question": "",
                     "is_input": false,
                     "required": false
                 }
             ],
             "doc": "trigger on new videos uploaded on the given channel",
-            "confirmation": "a new video is uploaded on YouTube",
+            "confirmation": "recent videos in YouTube channel ${channel_id}",
             "confirmation_remote": "",
-            "canonical": "new video on youtube",
+            "canonical": "list video on youtube",
             "formatted": [
                 {
                     "type": "rdl",
-                    "displayTitle": "New video uploaded by ${channel_title}",
-                    "displayText": "${title}",
+                    "displayTitle": "${title}",
+                    "displayText": "${description}. Published by ${channel_title}.",
                     "webCallback": "${video_url}"
                 }
             ],
-            "poll_interval": 0
+            "poll_interval": 3600000,
+            "is_list": true
         }
     },
+    "actions": {},
     "examples": [
         {
             "utterance": "when there is a new video from youtube channels I follow",
@@ -316,7 +334,7 @@
             "program": "let table x := \\(p_channel_id :Entity(com.youtube:channel_id)) -> @com.youtube.list_videos(channel_id=p_channel_id);"
         },
         {
-            "utterance": "when $channel_id uploads a video on youtube",
+            "utterance": "when $p_channel_id uploads a video on youtube",
             "program": "let stream x := \\(p_channel_id :Entity(com.youtube:channel_id)) -> monitor (@com.youtube.list_videos(channel_id=p_channel_id));"
         },
         {
@@ -356,7 +374,7 @@
             "program": "let table x := \\(p_channel_id :Entity(com.youtube:channel_id), p_query :String) -> @com.youtube.search_videos(query=p_query, channel_id=p_channel_id);"
         },
         {
-            "utterance": "a video published by ${p_channel_title:const} matching $p_query on youtube",
+            "utterance": "a video published by ${p_channel_id:const} matching $p_query on youtube",
             "program": "let table x := \\(p_channel_id :Entity(com.youtube:channel_id), p_query :String) -> @com.youtube.search_videos(query=p_query, channel_id=p_channel_id);"
         },
         {

@@ -1,5 +1,5 @@
 {
-    "module_type": "org.thingpedia.v1",
+    "module_type": "org.thingpedia.generic_rest.v1",
     "params": {},
     "category": "data",
     "subcategory": "media",
@@ -8,8 +8,6 @@
     "auth": {
         "type": "none"
     },
-    "triggers": {},
-    "actions": {},
     "queries": {
         "get": {
             "args": [
@@ -25,14 +23,16 @@
                     "type": "Entity(dogapi:image_id)",
                     "question": "",
                     "is_input": false,
-                    "required": false
+                    "required": false,
+                    "json_key": "id"
                 },
                 {
                     "name": "picture_url",
-                    "type": "Picture",
+                    "type": "Entity(tt:picture)",
                     "question": "",
                     "is_input": false,
-                    "required": false
+                    "required": false,
+                    "json_key": "url"
                 }
             ],
             "doc": "get `count` many dog pictures",
@@ -45,9 +45,13 @@
                     "url": "${picture_url}"
                 }
             ],
-            "poll_interval": -1
+            "poll_interval": -1,
+            "is_list": false,
+            "url": "https://api.thedogapi.co.uk/v2/dog.php?limit=${count}",
+            "json_key": "data"
         }
     },
+    "actions": {},
     "examples": [
         {
             "utterance": "dog pictures",
@@ -69,5 +73,7 @@
             "utterance": "${p_count:const} dog pictures",
             "program": "let table x := \\(p_count :Number) -> @uk.co.thedogapi.get(count=p_count);"
         }
-    ]
+    ],
+    "name": "The Dog API",
+    "description": "Random Doggo Pictures"
 }

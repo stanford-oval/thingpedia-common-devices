@@ -1,5 +1,5 @@
 {
-    "module_type": "org.thingpedia.v1",
+    "module_type": "org.thingpedia.v2",
     "params": {},
     "category": "online",
     "subcategory": "data-management",
@@ -7,57 +7,6 @@
     "child_types": [],
     "auth": {
         "type": "oauth2"
-    },
-    "triggers": {},
-    "actions": {
-        "add_email": {
-            "args": [
-                {
-                    "name": "email",
-                    "type": "EmailAddress",
-                    "question": "What email do you want to add?",
-                    "is_input": true,
-                    "required": true
-                }
-            ],
-            "doc": "Add a new email to account",
-            "confirmation": "add $email to your Github account",
-            "confirmation_remote": "add $email to $__person's Github account",
-            "canonical": "add email on github",
-            "formatted": [],
-            "poll_interval": 0
-        },
-        "comment_issue": {
-            "args": [
-                {
-                    "name": "repo_name",
-                    "type": "Entity(tt:path_name)",
-                    "question": "What repository do you want to comment on?",
-                    "is_input": true,
-                    "required": true
-                },
-                {
-                    "name": "issue_number",
-                    "type": "Number",
-                    "question": "What issue do you want to comment on?",
-                    "is_input": true,
-                    "required": true
-                },
-                {
-                    "name": "body",
-                    "type": "String",
-                    "question": "What do you want to comment?",
-                    "is_input": true,
-                    "required": true
-                }
-            ],
-            "doc": "post a new comment on a given issue",
-            "confirmation": "comment on issue $issue_number in $repo_name on Github",
-            "confirmation_remote": "comment on issue $issue_number in $repo_name on $__person's Github",
-            "canonical": "comment on issue on github",
-            "formatted": [],
-            "poll_interval": 0
-        }
     },
     "queries": {
         "get_issue": {
@@ -71,7 +20,7 @@
                 },
                 {
                     "name": "user",
-                    "type": "Username",
+                    "type": "Entity(tt:username)",
                     "question": "What user are you interested in?",
                     "is_input": false,
                     "required": false
@@ -106,8 +55,8 @@
                 }
             ],
             "doc": "issues on a particular repository",
-            "confirmation": "get opened issues of repository $repo_name on Github",
-            "confirmation_remote": "get opened issues of repository $repo_name on $__person's Github",
+            "confirmation": "opened issues of repository $repo_name on Github",
+            "confirmation_remote": "opened issues of repository $repo_name on $__person's Github",
             "canonical": "issues on github",
             "formatted": [
                 {
@@ -123,7 +72,8 @@
                     "text": "${body}"
                 }
             ],
-            "poll_interval": 3600000
+            "poll_interval": 60000,
+            "is_list": true
         },
         "get_commit": {
             "args": [
@@ -136,7 +86,7 @@
                 },
                 {
                     "name": "user",
-                    "type": "Username",
+                    "type": "Entity(tt:username)",
                     "question": "What user are you interested in?",
                     "is_input": false,
                     "required": false
@@ -154,23 +104,41 @@
                     "question": "",
                     "is_input": false,
                     "required": false
+                },
+                {
+                    "name": "modified_files",
+                    "type": "Array(Entity(tt:path_name))",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "added_files",
+                    "type": "Array(Entity(tt:path_name))",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                },
+                {
+                    "name": "deleted_files",
+                    "type": "Array(Entity(tt:path_name))",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
                 }
             ],
             "doc": "commits to a particular repository",
-            "confirmation": "get commits of repository $repo_name on Github",
-            "confirmation_remote": "get commits of repository $repo_name on $__person's Github",
+            "confirmation": "commits of repository $repo_name on Github",
+            "confirmation_remote": "commits of repository $repo_name on $__person's Github",
             "canonical": "commits on github",
             "formatted": [
                 {
                     "type": "text",
-                    "text": "New commit in ${repo_name} by @${user}"
-                },
-                {
-                    "type": "text",
-                    "text": "${message}"
+                    "text": "\"${message}\" by @${user}"
                 }
             ],
-            "poll_interval": 3600000
+            "poll_interval": 60000,
+            "is_list": true
         },
         "get_milestone": {
             "args": [
@@ -183,7 +151,7 @@
                 },
                 {
                     "name": "user",
-                    "type": "Username",
+                    "type": "Entity(tt:username)",
                     "question": "What user are you interested in?",
                     "is_input": false,
                     "required": false
@@ -201,19 +169,35 @@
                     "question": "",
                     "is_input": false,
                     "required": false
+                },
+                {
+                    "name": "title",
+                    "type": "String",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
                 }
             ],
             "doc": "milestones from a particular repository",
-            "confirmation": "get the milestones created on Github repository $repo_name",
-            "confirmation_remote": "get the milestones created on $__person's Github repository",
+            "confirmation": "the milestones created on Github repository $repo_name",
+            "confirmation_remote": "the milestones created on $__person's Github repository",
             "canonical": "milestones on github",
             "formatted": [
                 {
                     "type": "text",
-                    "text": "New milestone created in ${repo_name} by ${user}: ${description}"
+                    "text": "Milestone created in ${repo_name} by ${user}: "
+                },
+                {
+                    "type": "text",
+                    "text": "$title"
+                },
+                {
+                    "type": "text",
+                    "text": "${description}"
                 }
             ],
-            "poll_interval": 3600000
+            "poll_interval": 3600000,
+            "is_list": true
         },
         "get_issue_comment": {
             "args": [
@@ -226,7 +210,7 @@
                 },
                 {
                     "name": "user",
-                    "type": "Username",
+                    "type": "Entity(tt:username)",
                     "question": "What user are you interested in?",
                     "is_input": false,
                     "required": false
@@ -254,20 +238,115 @@
                 }
             ],
             "doc": "comments on issues",
-            "confirmation": "get comments on issues on Github repository $repo_name",
-            "confirmation_remote": "get comments on issues on $__person's Github repository $repo_name ",
+            "confirmation": "comments on issues on Github repository $repo_name",
+            "confirmation_remote": "comments on issues on $__person's Github repository $repo_name ",
             "canonical": "get issue comments on github",
             "formatted": [
                 {
                     "type": "text",
-                    "text": "@${from} commented on issue @${issue_number} in ${repo_name}"
+                    "text": "@${user} commented on issue ${issue_number} in ${repo_name}"
                 },
                 {
                     "type": "text",
                     "text": "${body}"
                 }
             ],
-            "poll_interval": 3600000
+            "poll_interval": 3600000,
+            "is_list": true
+        },
+        "get_file": {
+            "args": [
+                {
+                    "name": "repo_name",
+                    "type": "Entity(tt:path_name)",
+                    "question": "What repository is the file in?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "file_name",
+                    "type": "Entity(tt:path_name)",
+                    "question": "What file do you want to get?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "url",
+                    "type": "Entity(tt:url)",
+                    "question": "",
+                    "is_input": false,
+                    "required": false
+                }
+            ],
+            "doc": "generate a temporary link for the given file",
+            "confirmation": "link of ${file_name} in Github repository ${repo_name}",
+            "confirmation_remote": "link of ${file_name} in $__person's Github repository ${repo_name}",
+            "canonical": "link of file in github",
+            "formatted": [
+                {
+                    "type": "text",
+                    "text": "Here is the link:"
+                },
+                {
+                    "type": "rdl",
+                    "webCallback": "${url}",
+                    "displayTitle": "${url}"
+                }
+            ],
+            "poll_interval": -1,
+            "is_list": false
+        }
+    },
+    "actions": {
+        "add_email": {
+            "args": [
+                {
+                    "name": "email",
+                    "type": "Entity(tt:email_address)",
+                    "question": "What email do youli want to add?",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "Add a new email to account",
+            "confirmation": "add $email to your Github account",
+            "confirmation_remote": "add $email to $__person's Github account",
+            "canonical": "add email on github",
+            "formatted": [],
+            "poll_interval": -1,
+            "is_list": false
+        },
+        "comment_issue": {
+            "args": [
+                {
+                    "name": "repo_name",
+                    "type": "Entity(tt:path_name)",
+                    "question": "What repository do you want to comment on?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "issue_number",
+                    "type": "Number",
+                    "question": "What issue do you want to comment on?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "body",
+                    "type": "String",
+                    "question": "What do you want to comment?",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "post a new comment on a given issue",
+            "confirmation": "comment on issue $issue_number in $repo_name on Github",
+            "confirmation_remote": "comment on issue $issue_number in $repo_name on $__person's Github",
+            "canonical": "comment on issue on github",
+            "formatted": [],
+            "poll_interval": -1,
+            "is_list": false
         }
     },
     "examples": [
@@ -386,6 +465,42 @@
         {
             "utterance": "if $p_user pushes to $p_repo_name on github",
             "program": "let stream x := \\(p_user :Entity(tt:username), p_repo_name :Entity(tt:path_name)) -> monitor ((@com.github.get_commit(repo_name=p_repo_name)), user == p_user);"
+        },
+        {
+            "utterance": "link of file $p_file_name in repo $p_repo_name on github",
+            "program": "let table x := \\(p_repo_name :Entity(tt:path_name), p_file_name :Entity(tt:path_name)) -> @com.github.get_file(repo_name=p_repo_name, file_name=p_file_name);"
+        },
+        {
+            "utterance": "file $p_file_name in github repository $p_repo_name",
+            "program": "let table x := \\(p_repo_name :Entity(tt:path_name), p_file_name :Entity(tt:path_name)) -> @com.github.get_file(repo_name=p_repo_name, file_name=p_file_name);"
+        },
+        {
+            "utterance": "file on github",
+            "program": "let table x := @com.github.get_file();"
+        },
+        {
+            "utterance": "file on github repository $p_repo_name",
+            "program": "let table x := \\(p_repo_name :Entity(tt:path_name)) -> @com.github.get_file(repo_name=p_repo_name);"
+        },
+        {
+            "utterance": "link of file on github repository $p_repo_name",
+            "program": "let table x := \\(p_repo_name :Entity(tt:path_name)) -> @com.github.get_file(repo_name=p_repo_name);"
+        },
+        {
+            "utterance": "when a new commit in github repositoy $p_repo_name changes file $p_file_name",
+            "program": "let stream x := \\(p_repo_name :Entity(tt:path_name), p_file_name :Entity(tt:path_name)) -> monitor ((@com.github.get_commit(repo_name=p_repo_name)), contains(modified_files, p_file_name));"
+        },
+        {
+            "utterance": "when $p_user changes file $p_file_name in github repository $p_repo_name",
+            "program": "let stream x := \\(p_repo_name :Entity(tt:path_name), p_file_name :Entity(tt:path_name), p_user :Entity(tt:username)) -> monitor ((@com.github.get_commit(repo_name=p_repo_name)), (contains(modified_files, p_file_name) && user == p_user));"
+        },
+        {
+            "utterance": "when $p_file_name is modified in github repositoy $p_repo_name changes file ",
+            "program": "let stream x := \\(p_repo_name :Entity(tt:path_name), p_file_name :Entity(tt:path_name)) -> monitor ((@com.github.get_commit(repo_name=p_repo_name)), contains(modified_files, p_file_name));"
+        },
+        {
+            "utterance": "when $p_file_name is changed in github repositoy $p_repo_name changes file ",
+            "program": "let stream x := \\(p_repo_name :Entity(tt:path_name), p_file_name :Entity(tt:path_name)) -> monitor ((@com.github.get_commit(repo_name=p_repo_name)), contains(modified_files, p_file_name));"
         }
     ]
 }

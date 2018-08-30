@@ -8,98 +8,6 @@
     "auth": {
         "type": "oauth2"
     },
-    "triggers": {},
-    "actions": {
-        "create_file": {
-            "args": [
-                {
-                    "name": "file_name",
-                    "type": "Entity(tt:path_name)",
-                    "question": "What should be the name of the file?",
-                    "is_input": true,
-                    "required": true
-                },
-                {
-                    "name": "contents",
-                    "type": "String",
-                    "question": "What do you want to write in the file?",
-                    "is_input": true,
-                    "required": true
-                }
-            ],
-            "doc": "create a new file in your onedrive",
-            "confirmation": "create a new file on OneDrive named $file_name containing $contents",
-            "confirmation_remote": "",
-            "canonical": "create file on onedrive",
-            "formatted": [],
-            "poll_interval": 0
-        },
-        "delete_file": {
-            "args": [
-                {
-                    "name": "file_name",
-                    "type": "Entity(tt:path_name)",
-                    "question": "What file do you want to delete?",
-                    "is_input": true,
-                    "required": true
-                }
-            ],
-            "doc": "delete a file in your onedrive",
-            "confirmation": "delete the file $file_name from OneDrive",
-            "confirmation_remote": "",
-            "canonical": "delete file on onedrive",
-            "formatted": [],
-            "poll_interval": 0
-        },
-        "rename_file": {
-            "args": [
-                {
-                    "name": "old_name",
-                    "type": "Entity(tt:path_name)",
-                    "question": "What file do you want to rename?",
-                    "is_input": true,
-                    "required": true
-                },
-                {
-                    "name": "new_name",
-                    "type": "Entity(tt:path_name)",
-                    "question": "What should be the new name?",
-                    "is_input": true,
-                    "required": true
-                }
-            ],
-            "doc": "rename a file in your onedrive",
-            "confirmation": "rename $old_name to $new_name on OneDrive",
-            "confirmation_remote": "",
-            "canonical": "rename file on onedrive",
-            "formatted": [],
-            "poll_interval": 0
-        },
-        "upload_picture": {
-            "args": [
-                {
-                    "name": "file_name",
-                    "type": "Entity(tt:path_name)",
-                    "question": "What should be the file name of the picture?",
-                    "is_input": true,
-                    "required": true
-                },
-                {
-                    "name": "picture_url",
-                    "type": "Picture",
-                    "question": "Upload the picture now.",
-                    "is_input": true,
-                    "required": true
-                }
-            ],
-            "doc": "upload a picture in your onedrive",
-            "confirmation": "upload a picture on OneDrive as $file_name",
-            "confirmation_remote": "",
-            "canonical": "upload picture on onedrive",
-            "formatted": [],
-            "poll_interval": 0
-        }
-    },
     "queries": {
         "list_files": {
             "args": [
@@ -147,7 +55,7 @@
                 },
                 {
                     "name": "link",
-                    "type": "URL",
+                    "type": "Entity(tt:url)",
                     "question": "",
                     "is_input": false,
                     "required": false
@@ -161,8 +69,8 @@
                 }
             ],
             "doc": "list files in your onedrive",
-            "confirmation": "list files your OneDrive",
-            "confirmation_remote": "",
+            "confirmation": "files your OneDrive",
+            "confirmation_remote": "files on $__person's OneDrive",
             "canonical": "file created on onedrive",
             "formatted": [
                 {
@@ -170,7 +78,8 @@
                     "text": "New file created: ${file_name}"
                 }
             ],
-            "poll_interval": 3600000
+            "poll_interval": 3600000,
+            "is_list": true
         },
         "open": {
             "args": [
@@ -183,15 +92,15 @@
                 },
                 {
                     "name": "url",
-                    "type": "URL",
+                    "type": "Entity(tt:url)",
                     "question": "",
                     "is_input": false,
                     "required": false
                 }
             ],
             "doc": "open (retrieve a temporary link to) a file",
-            "confirmation": "open $file_name in your Onedrive",
-            "confirmation_remote": "open $file_name in $__person's Onedrive",
+            "confirmation": "the link to $file_name in your Onedrive",
+            "confirmation_remote": "the link to $file_name in $__person's Onedrive",
             "canonical": "open on onedrive",
             "formatted": [
                 {
@@ -200,7 +109,103 @@
                     "displayTitle": "${file_name}"
                 }
             ],
-            "poll_interval": -1
+            "poll_interval": -1,
+            "is_list": false
+        }
+    },
+    "actions": {
+        "create_file": {
+            "args": [
+                {
+                    "name": "file_name",
+                    "type": "Entity(tt:path_name)",
+                    "question": "What should be the name of the file?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "contents",
+                    "type": "String",
+                    "question": "What do you want to write in the file?",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "create a new file in your onedrive",
+            "confirmation": "create a new file on OneDrive named $file_name containing $contents",
+            "confirmation_remote": "",
+            "canonical": "create file on onedrive",
+            "formatted": [],
+            "poll_interval": -1,
+            "is_list": false
+        },
+        "delete_file": {
+            "args": [
+                {
+                    "name": "file_name",
+                    "type": "Entity(tt:path_name)",
+                    "question": "What file do you want to delete?",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "delete a file in your onedrive",
+            "confirmation": "delete the file $file_name from OneDrive",
+            "confirmation_remote": "",
+            "canonical": "delete file on onedrive",
+            "formatted": [],
+            "poll_interval": -1,
+            "is_list": false
+        },
+        "rename_file": {
+            "args": [
+                {
+                    "name": "old_name",
+                    "type": "Entity(tt:path_name)",
+                    "question": "What file do you want to rename?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "new_name",
+                    "type": "Entity(tt:path_name)",
+                    "question": "What should be the new name?",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "rename a file in your onedrive",
+            "confirmation": "rename $old_name to $new_name on OneDrive",
+            "confirmation_remote": "",
+            "canonical": "rename file on onedrive",
+            "formatted": [],
+            "poll_interval": -1,
+            "is_list": false
+        },
+        "upload_picture": {
+            "args": [
+                {
+                    "name": "file_name",
+                    "type": "Entity(tt:path_name)",
+                    "question": "What should be the file name of the picture?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "picture_url",
+                    "type": "Entity(tt:picture)",
+                    "question": "Upload the picture now.",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "upload a picture in your onedrive",
+            "confirmation": "upload a picture on OneDrive as $file_name",
+            "confirmation_remote": "",
+            "canonical": "upload picture on onedrive",
+            "formatted": [],
+            "poll_interval": -1,
+            "is_list": false
         }
     },
     "examples": [

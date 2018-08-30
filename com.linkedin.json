@@ -8,27 +8,6 @@
     "auth": {
         "type": "oauth2"
     },
-    "triggers": {},
-    "actions": {
-        "share": {
-            "args": [
-                {
-                    "name": "status",
-                    "type": "String",
-                    "question": "What do you want to post? Include a link to a page.",
-                    "is_input": true,
-                    "required": true
-                }
-            ],
-            "doc": "share a comment and a link ",
-            "confirmation": "share $status on your LinkedIn",
-            "confirmation_remote": "share $status on $__person's LinkedIn",
-            "canonical": "post on linkedin",
-            "formatted": [],
-            "poll_interval": 0,
-            "default": null
-        }
-    },
     "queries": {
         "get_profile": {
             "args": [
@@ -69,15 +48,15 @@
                 },
                 {
                     "name": "profile_picture",
-                    "type": "Picture",
+                    "type": "Entity(tt:picture)",
                     "question": "",
                     "is_input": false,
                     "required": false
                 }
             ],
             "doc": "retrieve your LinkedIn profile",
-            "confirmation": "retrieve your LinkedIn profile",
-            "confirmation_remote": "retrieve $__person's LinkedIn profile",
+            "confirmation": "your LinkedIn profile",
+            "confirmation_remote": "$__person's LinkedIn profile",
             "canonical": "get profile on linkedin",
             "formatted": [
                 {
@@ -90,14 +69,36 @@
                 },
                 {
                     "type": "picture",
-                    "text": "${picture_url}"
+                    "url": "${profile_picture}"
                 },
                 {
                     "type": "text",
                     "text": "Works in ${industry}"
                 }
             ],
-            "poll_interval": 86400000
+            "poll_interval": 86400000,
+            "is_list": false
+        }
+    },
+    "actions": {
+        "share": {
+            "args": [
+                {
+                    "name": "status",
+                    "type": "String",
+                    "question": "What do you want to post? Include a link to a page.",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "share a comment and a link ",
+            "confirmation": "share $status on your LinkedIn",
+            "confirmation_remote": "share $status on $__person's LinkedIn",
+            "canonical": "post on linkedin",
+            "formatted": [],
+            "poll_interval": -1,
+            "is_list": false,
+            "default": null
         }
     },
     "examples": [

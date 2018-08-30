@@ -8,28 +8,26 @@
     "auth": {
         "type": "none"
     },
-    "triggers": {},
-    "actions": {},
     "queries": {
         "get": {
             "args": [
                 {
                     "name": "tag",
-                    "type": "Hashtag",
+                    "type": "Entity(tt:hashtag)",
                     "question": "With what tag?",
                     "is_input": true,
                     "required": false
                 },
                 {
                     "name": "picture_url",
-                    "type": "Picture",
+                    "type": "Entity(tt:picture)",
                     "question": "",
                     "is_input": false,
                     "required": false
                 }
             ],
             "doc": "get a gif from Giphy, optionally with the given tag",
-            "confirmation": "get a gif from giphy",
+            "confirmation": "a gif from giphy",
             "confirmation_remote": "",
             "canonical": "random giphy gif",
             "formatted": [
@@ -38,9 +36,11 @@
                     "url": "${picture_url}"
                 }
             ],
-            "poll_interval": -1
+            "poll_interval": -1,
+            "is_list": false
         }
     },
+    "actions": {},
     "examples": [
         {
             "utterance": "a random gif from giphy",
@@ -57,6 +57,26 @@
         {
             "utterance": "a random gif",
             "program": "let table x := @com.giphy.get();"
+        },
+        {
+            "utterance": "a ${p_tag:const} picture",
+            "program": "let table x := \\(p_tag :Entity(tt:hashtag)) -> @com.giphy.get(tag=p_tag);"
+        },
+        {
+            "utterance": "a gif tagged ${p_tag}",
+            "program": "let table x := \\(p_tag :Entity(tt:hashtag)) -> @com.giphy.get(tag=p_tag);"
+        },
+        {
+            "utterance": "a ${p_tag:const} animated picture",
+            "program": "let table x := \\(p_tag :Entity(tt:hashtag)) -> @com.giphy.get(tag=p_tag);"
+        },
+        {
+            "utterance": "a gif about ${p_tag:const}",
+            "program": "let table x := \\(p_tag :Entity(tt:hashtag)) -> @com.giphy.get(tag=p_tag);"
+        },
+        {
+            "utterance": "a picture about ${p_tag:const}",
+            "program": "let table x := \\(p_tag :Entity(tt:hashtag)) -> @com.giphy.get(tag=p_tag);"
         }
     ]
 }
