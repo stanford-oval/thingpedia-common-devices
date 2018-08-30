@@ -1,0 +1,130 @@
+{
+    "module_type": "org.thingpedia.embedded",
+    "params": {},
+    "category": "online",
+    "subcategory": "media",
+    "types": [],
+    "child_types": [],
+    "auth": {
+        "type": "builtin"
+    },
+    "queries": {},
+    "actions": {
+        "post_picture": {
+            "args": [
+                {
+                    "name": "caption",
+                    "type": "String",
+                    "question": "What is the caption of the picture?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "picture_url",
+                    "type": "Entity(tt:picture)",
+                    "question": "Upload the picture now.",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "post a picture",
+            "confirmation": "post a picture with caption $caption in your Tumblr",
+            "confirmation_remote": "post a picture with caption $caption in your Tumblr",
+            "canonical": "post picture on tumblr blog",
+            "formatted": [],
+            "poll_interval": -1,
+            "is_list": false
+        },
+        "post_text": {
+            "args": [
+                {
+                    "name": "title",
+                    "type": "String",
+                    "question": "What is the title of the post?",
+                    "is_input": true,
+                    "required": true
+                },
+                {
+                    "name": "body",
+                    "type": "String",
+                    "question": "What is the body of the post? Markdown is allowed.",
+                    "is_input": true,
+                    "required": true
+                }
+            ],
+            "doc": "make a new post",
+            "confirmation": "post $title with body $body in your Tumblr",
+            "confirmation_remote": "post $title with body $body in your Tumblr",
+            "canonical": "post on tumblr blog",
+            "formatted": [],
+            "poll_interval": -1,
+            "is_list": false
+        }
+    },
+    "examples": [
+        {
+            "utterance": "post on tumblr with title $p_title and body $p_body",
+            "program": "let action x := \\(p_title :String, p_body :String) -> @com.tumblr.blog.post_text(title=p_title, body=p_body);"
+        },
+        {
+            "utterance": "post $p_body on tumblr",
+            "program": "let action x := \\(p_body :String) -> @com.tumblr.blog.post_text(body=p_body);"
+        },
+        {
+            "utterance": "post on tumblr saying $p_body",
+            "program": "let action x := \\(p_body :String) -> @com.tumblr.blog.post_text(title=p_body);"
+        },
+        {
+            "utterance": "post a picture with caption $p_caption on tumblr",
+            "program": "let action x := \\(p_caption :String) -> @com.tumblr.blog.post_picture(caption=p_caption);"
+        },
+        {
+            "utterance": "post a picture on tumblr saying $p_caption",
+            "program": "let action x := \\(p_caption :String) -> @com.tumblr.blog.post_picture(caption=p_caption);"
+        },
+        {
+            "utterance": "post a picture on tumblr",
+            "program": "let action x := @com.tumblr.blog.post_picture();"
+        },
+        {
+            "utterance": "post something on tumblr",
+            "program": "let action x := @com.tumblr.blog.post_text();"
+        },
+        {
+            "utterance": "post something on my tumblr blog",
+            "program": "let action x := @com.tumblr.blog.post_text();"
+        },
+        {
+            "utterance": "make a blog post on tumblr",
+            "program": "let action x := @com.tumblr.blog.post_text();"
+        },
+        {
+            "utterance": "make a blog post with title $p_title on tumblr",
+            "program": "let action x := \\(p_title :String) -> @com.tumblr.blog.post_text(title=p_title);"
+        },
+        {
+            "utterance": "make a tumblr blog post with title ${p_title:const} that says $p_body",
+            "program": "let action x := \\(p_title :String, p_body :String) -> @com.tumblr.blog.post_text(title=p_title, body=p_body);"
+        },
+        {
+            "utterance": "post $p_picture_url on tumblr",
+            "program": "let action x := \\(p_picture_url :Entity(tt:picture)) -> @com.tumblr.blog.post_picture(picture_url=p_picture_url);"
+        },
+        {
+            "utterance": "post $p_picture_url on tumblr with caption $p_caption",
+            "program": "let action x := \\(p_picture_url :Entity(tt:picture), p_caption :String) -> @com.tumblr.blog.post_picture(picture_url=p_picture_url, caption=p_caption);"
+        },
+        {
+            "utterance": "upload $p_picture_url on tumblr",
+            "program": "let action x := \\(p_picture_url :Entity(tt:picture)) -> @com.tumblr.blog.post_picture(picture_url=p_picture_url);"
+        },
+        {
+            "utterance": "make a blog post with $p_title as the title on tumblr",
+            "program": "let action x := \\(p_title :String) -> @com.tumblr.blog.post_text(title=p_title);"
+        },
+        {
+            "utterance": "publish a blog post with $p_title as the title on tumblr",
+            "program": "let action x := \\(p_title :String) -> @com.tumblr.blog.post_text(title=p_title);"
+        }
+    ]
+}
