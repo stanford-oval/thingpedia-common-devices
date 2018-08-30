@@ -22,13 +22,13 @@ module.exports = new Tp.ChannelClass({
         var time = event[2];
 
         if (hint === 'string-title')
-            return "Estimate for %s".format(name);
+            {return "Estimate for %s".format(name);}
         else if (hint === 'string-body')
-            return "%.0f min"
-                .format(time / 60000);
+            {return "%.0f min"
+                .format(time / 60000);}
         else
-            return "Estimate for %s: %.0f min"
-                .format(name, time / 60000);
+            {return "Estimate for %s: %.0f min"
+                .format(name, time / 60000);}
     },
 
     invokeQuery(filters) {
@@ -41,8 +41,8 @@ module.exports = new Tp.ChannelClass({
             start_longitude: start.x,
         };
 
-        return common.get(Url.format(url)).then(function(response) {
-            return response.times.map(function(time) {
+        return common.get(Url.format(url)).then((response) => {
+            return response.times.map((time) => {
                 return [filters[0],
                     time.display_name,
                     time.estimate * 1000]; // convert to milliseconds

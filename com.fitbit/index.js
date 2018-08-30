@@ -23,7 +23,7 @@ module.exports = class FitbitDevice extends Tp.BaseDevice {
                 console.log('accessToken', accessToken);
                 return Tp.Helpers.Http.get('https://api.fitbit.com/1/user/-/profile.json',
                     { auth: auth })
-                    .then(function(response) {
+                    .then((response) => {
                         let parsed = JSON.parse(response);
                         console.log('parsed', parsed);
                         return engine.devices.loadOneDevice({
@@ -69,7 +69,7 @@ module.exports = class FitbitDevice extends Tp.BaseDevice {
             accept: 'application/json'
         };
         const resourceURL = `https://api.fitbit.com/1/user/${this.userId}/body/${measurement}/date/today/1d.json`;
-        return Tp.Helpers.Http.get(resourceURL, options).then(function (response) {
+        return Tp.Helpers.Http.get(resourceURL, options).then((response) => {
             try {
                 const parsed = JSON.parse(response);
                 console.log(parsed);
@@ -98,12 +98,12 @@ module.exports = class FitbitDevice extends Tp.BaseDevice {
     }
 
     get_getsteps( { date }) {
-        if(date === undefined) {
+        if(date === undefined) 
             date = new Date(Date.now());
-        }
+        
 
         const getUrl = `https://api.fitbit.com/1/user/${this.userId}/activities/date/${getDateString(date)}.json`;
-        return Tp.Helpers.Http.get(getUrl, { useOAuth2: this, accept: 'application/json'}).then(function(response) {
+        return Tp.Helpers.Http.get(getUrl, { useOAuth2: this, accept: 'application/json'}).then((response) => {
             try {
                 let parsed = JSON.parse(response);
                 console.log(parsed);
@@ -125,7 +125,7 @@ module.exports = class FitbitDevice extends Tp.BaseDevice {
             accept: 'application/json'
         };
         const postUrl = `https://api.fitbit.com/1/user/${this.userId}/body/log/weight.json?weight=${weight}&date=${getDateString(new Date())}`;
-        return Tp.Helpers.Http.post(postUrl, '', headers).catch(function(error) {
+        return Tp.Helpers.Http.post(postUrl, '', headers).catch((error) => {
             throw new Error('Error posting on Fitbit: ' + error.message);
         });
     }

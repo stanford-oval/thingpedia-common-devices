@@ -95,7 +95,7 @@ module.exports = new Tp.ChannelClass({
     },
 
     _onNextGameEvent: function() {
-        Tp.Helpers.Http.get(NBA_BOXSCORE_URL.format(this._gameId)).then(function(response) {
+        Tp.Helpers.Http.get(NBA_BOXSCORE_URL.format(this._gameId)).then((response) => {
             var parsed = JSON.parse(response);
 
             if (parsed.status !== this._lastStatus) {
@@ -109,7 +109,7 @@ module.exports = new Tp.ChannelClass({
                 this._nextGameTimer = null;
                 this._gameId = null;
             }
-        }.bind(this)).catch(function(e) {
+        }).catch((e) => {
             console.error('Failed to process NBA game updates: ' + e.message);
             console.error(e.stack);
         }).done();

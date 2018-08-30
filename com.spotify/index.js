@@ -77,7 +77,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                         useOAuth2: this
 
                     }
-                }).then(response => {
+                }).then((response) => {
                     const parsed = JSON.parse(response);
                     console.log(parsed);
                     return engine.devices.loadOneDevice(
@@ -142,7 +142,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
     // returns an array of devices available for playback
     get_get_available_devices() {
-        return this.http_get(AVAILABLE_DEVICES_URL).then(response => {
+        return this.http_get(AVAILABLE_DEVICES_URL).then((response) => {
             console.log("available devices are " + response);
             return JSON.parse(response).devices;
         });
@@ -158,14 +158,14 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     }
 
     get_get_currently_playing() {
-        return this.currently_playing_helper().then(response => {
-            if (response === '' || response.length === 0) {
+        return this.currently_playing_helper().then((response) => {
+            if (response === '' || response.length === 0) 
                 return [];
-            }
+            
             const parsed = JSON.parse(response);
-            if (parsed.is_playing === false) {
+            if (parsed.is_playing === false) 
                 return [];
-            }
+            
             return [{ song: parsed.item.name }];
         });
     }
@@ -191,11 +191,11 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 return false;
             });
             if (playlist_id)
-                return this.http_get(`https://api.spotify.com/v1/users/${this.userId}/playlists/${playlist_id}/tracks`).then((response) => {
+                {return this.http_get(`https://api.spotify.com/v1/users/${this.userId}/playlists/${playlist_id}/tracks`).then((response) => {
                     return JSON.parse(response).items.map((item) => {
                         return {song: item.track.name};
-                    })
-                });
+                    });
+                });}
             throw Error(`No playlist called ${playlist}`);
         });
     }
@@ -206,7 +206,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             return parsed.items.map((track) => {
                return { song: track.name };
             });
-        })
+        });
     }
 
     http_put(url, data, options) {
@@ -243,11 +243,11 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         let devices = await this.get_get_available_devices();
         let canPlay = await this.set_active_device(devices);
         console.log("CAN PLAY: " + canPlay);
-        if (typeof canPlay === 'boolean' && canPlay) {
+        if (typeof canPlay === 'boolean' && canPlay) 
             return this.http_put(PLAY_URL, data, options);
-        } else {
+         else 
             return this.http_put(PLAY_URL + `?device_id=${canPlay}`, data, options);
-        }
+        
     }
 
     do_player_pause() {
@@ -293,7 +293,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         return Tp.Helpers.Http.get(searchURL, {
             accept: 'application/json',
             useOAuth2: this
-        }).then(response => {
+        }).then((response) => {
             const parsed = JSON.parse(response);
             console.log("search results are" + parsed);
             return parsed;
@@ -303,7 +303,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     }
 
     do_play_album({toPlay}) {
-        return this.search(toPlay, 'album').then(searchResults => {
+        return this.search(toPlay, 'album').then((searchResults) => {
             if (!searchResults.hasOwnProperty('albums') || searchResults.albums.total === 0) throw new Error(`Album ${toPlay} not found`);
             let data = {'context_uri': searchResults.albums.items[0].uri};
             console.log('data is ' + JSON.stringify(data));
@@ -312,7 +312,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     }
 
     do_play_artist({toPlay}) {
-        return this.search(toPlay, 'artist').then(searchResults => {
+        return this.search(toPlay, 'artist').then((searchResults) => {
             if (!searchResults.hasOwnProperty('artists') || searchResults.artists.total === 0) throw new Error(`Artist ${toPlay} not found`);
             let data = {'context_uri': searchResults.artists.items[0].uri};
             console.log('data is ' + JSON.stringify(data));
@@ -321,7 +321,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     }
 
     do_play_playlist({toPlay}) {
-        return this.search(toPlay, 'playlist').then(searchResults => {
+        return this.search(toPlay, 'playlist').then((searchResults) => {
             if (!searchResults.hasOwnProperty('playlists') || searchResults.playlists.total === 0) throw new Error(`Playlist ${toPlay} not found`);
             let data = {'context_uri': searchResults.playlists.items[0].uri};
             console.log('data is ' + JSON.stringify(data));
@@ -366,14 +366,14 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     }
 
     do_save_current_track() {
-        return this.currently_playing_helper().then(response => {
-            if (response === '' || response.length === 0) {
+        return this.currently_playing_helper().then((response) => {
+            if (response === '' || response.length === 0) 
                 throw new Error(`No song is playing`);
-            }
+            
             const parsed = JSON.parse(response);
-            if (parsed.is_playing === false) {
+            if (parsed.is_playing === false) 
                 return;
-            }
+            
             let id = parsed.item.id;
             let save_url = TRACKS_URL + querystring.stringify({ids: id});
             return this.http_put_default_options(save_url, '');
@@ -393,22 +393,22 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     audio_features_helper(songName, transformation) {
         console.log("Audio features helper received songname: " + songName);
         if (typeof(songName) === 'undefined' || songName === "") {
-            return this.currently_playing_helper().then(response => {
-                if (response === '' || response.length === 0) {
+            return this.currently_playing_helper().then((response) => {
+                if (response === '' || response.length === 0) 
                     return [];
-                }
+                
                 const parsed = JSON.parse(response);
-                if (parsed.is_playing === false) {
+                if (parsed.is_playing === false) 
                     return [];
-                }
+                
                 let id = parsed.item.id;
-                return this.audio_features_get_by_id(id).then(response => transformation(JSON.parse(response)));
+                return this.audio_features_get_by_id(id).then((response) => transformation(JSON.parse(response)));
             });
         } else {
-            return this.search(songName, 'track').then(searchResults => {
+            return this.search(songName, 'track').then((searchResults) => {
                 if (!searchResults.hasOwnProperty('tracks')) throw new Error("No song found for that query.");
                 let id = searchResults.tracks.items[0].id;
-                return this.audio_features_get_by_id(id).then(response => transformation(JSON.parse(response)));
+                return this.audio_features_get_by_id(id).then((response) => transformation(JSON.parse(response)));
             });
         }
     }
@@ -535,7 +535,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         return Tp.Helpers.Http.get(set, {
             accept: 'application/json',
             useOAuth2: this
-        }).then(response => {
+        }).then((response) => {
             return JSON.parse(response);
         }).catch((e) => {
             throw new Error(JSON.parse(e.detail).error.message);
@@ -591,12 +591,12 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         return Tp.Helpers.Http.get(url, {
             accept: 'application/json',
             useOAuth2: this
-        }).then(response => {
+        }).then((response) => {
             response = JSON.parse(response);
             console.log("album list results are " + JSON.stringify(response));
-            for (let i = 0; i < response.items.length; i++) {
+            for (let i = 0; i < response.items.length; i++) 
                 tracks.push(response.items[i].uri);
-            }
+            
             return tracks;
         }).catch((e) => {
             throw new Error(JSON.parse(e.detail).error.message);
@@ -670,14 +670,14 @@ function getEditDistance(a, b) {
     var matrix = [];
     // increment along the first column of each row
     var i;
-    for (i = 0; i <= b.length; i++) {
+    for (i = 0; i <= b.length; i++) 
         matrix[i] = [i];
-    }
+    
     // increment each column in the first row
     var j;
-    for (j = 0; j <= a.length; j++) {
+    for (j = 0; j <= a.length; j++) 
         matrix[0][j] = j;
-    }
+    
     // Fill in the rest of the matrix
     for (i = 1; i <= b.length; i++) {
         for (j = 1; j <= a.length; j++) {

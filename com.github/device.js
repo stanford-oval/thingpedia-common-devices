@@ -57,7 +57,7 @@ module.exports = class GithubDevice extends Tp.BaseDevice {
                                            { auth: auth,
                                              'user-agent': userAgent,
                                              accept: 'application/json' })
-                    .then(function(response) {
+                    .then((response) => {
                         const parsed = JSON.parse(response);
                         return engine.devices.loadOneDevice({ kind: 'com.github',
                             accessToken: accessToken,

@@ -68,7 +68,7 @@ module.exports = class UberDeviceClass extends Tp.BaseDevice {
                 eta: parsedResponse.pickup.eta,
                 from: { x: parsedResponse.pickup.longitude, y: parsedResponse.pickup.latitude, display: parsedResponse.pickup.address },
                 to: { x: parsedResponse.destination.longitude, y: parsedResponse.destination.latitude, display: parsedResponse.destination.address }
-            }]
+            }];
         });
     }
 

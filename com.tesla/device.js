@@ -26,7 +26,7 @@ function makeAction(id) {
         sendEvent: function() {
             return Tp.Helpers.Http.post(this.device.baseUrl + '/command/' + id, '',
                                  { auth: 'Bearer ' + this.device.master.accessToken })
-                .then(function() {
+                .then(() => {
                     console.log('Honked horn successfully');
                 });
         }

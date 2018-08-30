@@ -54,7 +54,7 @@ module.exports = new Tp.ChannelClass({
             if (this.event === null) {
                 this.emitEvent(makeEvent(utcMilliSeconds, weight));
             } else {
-                return;
+                
             }
         } else {
             state.set('last-read', utcMilliSeconds);

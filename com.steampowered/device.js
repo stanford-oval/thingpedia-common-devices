@@ -28,12 +28,12 @@ module.exports = class Steam extends Tp.BaseDevice {
         url = url.replace('VANITY_URL', name).replace('API_KEY', this.constructor.metadata.auth.api_key);
         return Tp.Helpers.Http.get(url).then((response) => {
             let parsed = JSON.parse(response);
-            if(parsed["response"]["success"] === 1){
+            if(parsed["response"]["success"] === 1)
                 return [{ id: parsed["response"]["steamid"]}];
-            }
-            else {
+            
+            else 
                 throw new Error("User not found");
-            }
+            
         });
     }
 
@@ -45,12 +45,12 @@ module.exports = class Steam extends Tp.BaseDevice {
         if (isNaN(game_name)) {
             // App name is entered
             let app_name = game_name.toLowerCase().replace(/[^a-zA-Z0-9]+/g, "");
-            if(app_name === 'halflife3'){
+            if(app_name === 'halflife3')
                 throw new Error("Can't make a bad game if you don't make the game. Half-Life 3 confirmed.");
-            }
-            if(!STEAM_IDS.hasOwnProperty(app_name)){
+            
+            if(!STEAM_IDS.hasOwnProperty(app_name))
                 throw new Error("I couldn't find a Steam app with that name. Check your spelling or try entering the ID instead.");
-            }
+            
             app_id = STEAM_IDS[app_name];
         } else {
             // App ID is entered
@@ -62,7 +62,7 @@ module.exports = class Steam extends Tp.BaseDevice {
             let parsed = JSON.parse(response);
             if ("price_overview" in parsed[app_id]["data"])
                 return [{ price: parsed[app_id]["data"]["price_overview"]["final"]/100 }];
-            return [{ price: 0 }]
+            return [{ price: 0 }];
         });
 
     }

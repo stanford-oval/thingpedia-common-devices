@@ -33,9 +33,9 @@ module.exports = class ArXivDevice extends Tp.BaseDevice {
             category = [tmp[0], tmp[1].toUpperCase()].join('.');
             params.push(`cat:${encodeURIComponent(category)}`);
         }
-        if (author) {
+        if (author) 
             params.push(`au:${encodeURIComponent(author)}`);
-        }
+        
         if (params.length === 0)
             throw new Error('Please at least provide one parameter: author, category, or keyword');
 
@@ -55,6 +55,6 @@ module.exports = class ArXivDevice extends Tp.BaseDevice {
                     };
                 });
             });
-        })
+        });
     }
 };

@@ -27,14 +27,14 @@ function makeOAuthApi(factory, engine) {
 function runOAuthStep1(factory, engine) {
     var oauth = makeOAuthApi(factory, engine);
 
-    return Q.Promise(function(callback, errback) {
-        return oauth.getOAuthRequestToken(function(error, oauth_token, oauth_token_secret, query) {
+    return Q.Promise((callback, errback) => {
+        return oauth.getOAuthRequestToken((error, oauth_token, oauth_token_secret, query) => {
             if (error)
                 errback(error);
             else
                 callback({ token: oauth_token, tokenSecret: oauth_token_secret, query: query });
         });
-    }).then(function(result) {
+    }).then((result) => {
         var url = Url.parse('https://www.tumblr.com/oauth/authorize');
         url.query = result.query;
         url.query['oauth_token'] = result.token;
@@ -47,19 +47,19 @@ function runOAuthStep1(factory, engine) {
 function runOAuthStep2(factory, engine, req) {
     var oauth = makeOAuthApi(factory, engine);
 
-    return Q.Promise(function(callback, errback) {
+    return Q.Promise((callback, errback) => {
         var token = req.session['tumblr-token'];
         var tokenSecret = req.session['tumblr-token-secret'];
         var verifier = req.query['oauth_verifier'];
 
-        return oauth.getOAuthAccessToken(token, tokenSecret, verifier, function(error, oauth_access_token, oauth_access_token_secret, results) {
+        return oauth.getOAuthAccessToken(token, tokenSecret, verifier, (error, oauth_access_token, oauth_access_token_secret, results) => {
             if (error)
                 errback(error);
             else
                 callback({ accessToken: oauth_access_token, accessTokenSecret: oauth_access_token_secret });
         });
-    }).then(function(tokenResult) {
-        return Q.ninvoke(oauth, 'get', 'https://api.tumblr.com/v2/user/info', tokenResult.accessToken, tokenResult.accessTokenSecret).then(function([data, response]) {
+    }).then((tokenResult) => {
+        return Q.ninvoke(oauth, 'get', 'https://api.tumblr.com/v2/user/info', tokenResult.accessToken, tokenResult.accessTokenSecret).then(([data, response]) => {
             var userResult = JSON.parse(data);
 
             return ({
@@ -68,7 +68,7 @@ function runOAuthStep2(factory, engine, req) {
                 username: userResult.response.user.name
             });
         });
-    }).then(function(result) {
+    }).then((result) => {
         return engine.devices.loadOneDevice({ kind: 'com.tumblr',
                                               accessToken: result.accessToken,
                                               accessTokenSecret: result.accessTokenSecret,
@@ -134,12 +134,12 @@ module.exports = new Tp.DeviceClass({
     Name: 'TumblrDevice',
     UseOAuth2: function runOAuth2(engine, req) {
         return Q.try(() => {
-            if (req === null) {
+            if (req === null) 
                 return runOAuthStep1(this, engine);
-            } else {
+             else 
                 return runOAuthStep2(this, engine, req);
-            }
-        }).catch(function(e) {
+            
+        }).catch((e) => {
             console.log(e);
             console.log(e.stack);
             throw e;

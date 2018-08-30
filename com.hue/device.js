@@ -32,7 +32,7 @@ const SetPowerAction = new Tp.ChannelClass({
         var lightState = LightState.create();
         return this._hue.setLightState(this.device.id, power ? lightState.on() : lightState.off());
     }
-})
+});
 
 const ColorLoopAction = new Tp.ChannelClass({
     Name: 'PhilipsHueColorLoopAction',
@@ -49,7 +49,7 @@ const ColorLoopAction = new Tp.ChannelClass({
         lightState.on();
         return this._hue.setLightState(this.device.id, lightState.colorLoop());
     }
-})
+});
 
 const AlertLongAction = new Tp.ChannelClass({
     Name: 'PhilipsHueAlertLongAction',
@@ -66,7 +66,7 @@ const AlertLongAction = new Tp.ChannelClass({
         lightState.on();
         return this._hue.setLightState(this.device.id, lightState.alertLong());
     }
-})
+});
 
 const HueLightBulbDevice = new Tp.DeviceClass({
     Name: 'PhilipsHueDevice',

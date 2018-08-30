@@ -92,13 +92,13 @@ module.exports = new Tp.ChannelClass({
     },
 
     _onNextGameEvent: function() {
-        Tp.Helpers.Http.get(BOXSCORE_URL.format(this._gameId)).then(function(response) {
+        Tp.Helpers.Http.get(BOXSCORE_URL.format(this._gameId)).then((response) => {
             return Tp.Helpers.Xml.parseString(response);
         }).then((parsed) => {
             var match = parsed.boxscore.matches[0].match[0];
             var away = match.away[0];
             var home = match.home[0];
-            var event = []
+            var event = [];
             this._emit(match.$.status, Number(away.$.score), Number(home.$.score));
 
             if (match.$.status !== 'closed') {
@@ -107,7 +107,7 @@ module.exports = new Tp.ChannelClass({
                 this._nextGameTimer = null;
                 this._gameId = null;
             }
-        }).catch(function(e) {
+        }).catch((e) => {
             console.error('Failed to process EU soccer game updates: ' + e.message);
             console.error(e.stack);
         }).done();

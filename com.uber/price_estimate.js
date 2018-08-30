@@ -30,13 +30,13 @@ module.exports = new Tp.ChannelClass({
         var distance = event[8];
 
         if (hint === 'string-title')
-            return "Estimate for %s".format(name);
+            {return "Estimate for %s".format(name);}
         else if (hint === 'string-body')
-            return "Between %s%f and %s%f (%.1fx surge). Distance: %.1f km, Time: %.0f min"
-                .format(currency, low, currency, high, surge, distance / 1000, duration / 60000);
+            {return "Between %s%f and %s%f (%.1fx surge). Distance: %.1f km, Time: %.0f min"
+                .format(currency, low, currency, high, surge, distance / 1000, duration / 60000);}
         else
-            return "Estimate for %s: between %s%f and %s%f (%.1fx surge). Distance: %.1f km, Time: %.0f min"
-                .format(name, currency, low, currency, high, surge, distance / 1000, duration / 60000);
+            {return "Estimate for %s: between %s%f and %s%f (%.1fx surge). Distance: %.1f km, Time: %.0f min"
+                .format(name, currency, low, currency, high, surge, distance / 1000, duration / 60000);}
     },
 
     invokeQuery(filters) {
@@ -52,8 +52,8 @@ module.exports = new Tp.ChannelClass({
             end_longitude: end.x
         };
 
-        return common.get(Url.format(url)).then(function(response) {
-            return response.prices.map(function(price) {
+        return common.get(Url.format(url)).then((response) => {
+            return response.prices.map((price) => {
                 if (price.low_estimate === null || price.high_estimate === null)
                     return null;
                 return [filters[0], filters[1],

@@ -50,7 +50,7 @@ module.exports = new Tp.ChannelClass({
         this._setScheduleTimer(7 * 24 * 3600 * 1000);
 
         // download the year's schedule and parse it
-        Tp.Helpers.Http.get(URL).then(function(response) {
+        Tp.Helpers.Http.get(URL).then((response) => {
             // query succeeded. Clear timer.
             this._clearTimeouts();
 
@@ -69,9 +69,9 @@ module.exports = new Tp.ChannelClass({
                 var games = weeks[i].games;
                 for (var j = 0; j < games.length; j++) {
                     if (games[j].home.toLowerCase() === this._observedTeam.toLowerCase() || games[j].away.toLowerCase() === this._observedTeam.toLowerCase() ) {
-                        if (games[j].status !== 'closed') {
+                        if (games[j].status !== 'closed') 
                             found = games[j];
-                        }
+                        
                         break;
                     }
                 }
@@ -89,7 +89,7 @@ module.exports = new Tp.ChannelClass({
 
             // set up timer for next game
             this._setupNextGame();
-        }.bind(this)).catch(function(e) {
+        }).catch((e) => {
             console.error('Failed to get NCAAFB schedule: ' + e.message);
             console.error("This probably means that this season's schedule is not available yet. Sleeping one week.");
         }).done();
@@ -97,16 +97,16 @@ module.exports = new Tp.ChannelClass({
 
     // figure out when the next game starts and set up callbacks
     _setupNextGame: function() {
-        if (this._weekNumbers === null || this._schedule === null || this._gameNumber === null) {
+        if (this._weekNumbers === null || this._schedule === null || this._gameNumber === null) 
             return;
-        }
+        
 
         var gameNumber = this._gameNumber;
         // we ran out of games for this year!
         // wait a week and try to get a new schedule
-        if (gameNumber >= this._weekNumbers.length) {
+        if (gameNumber >= this._weekNumbers.length) 
             return this._setScheduleTimer(7 * 24 * 3600 * 1000);
-        }
+        
 
         // game details
         var week = this._weekNumbers[gameNumber];
@@ -160,7 +160,7 @@ module.exports = new Tp.ChannelClass({
         var gameNumber = this._gameNumber;
         var URL = BOXSCORE_URL.format(this._year, weekNumbers[gameNumber], this._currentGame.away + '/' + this._currentGame.home);
 
-        Tp.Helpers.Http.get(URL).then(function(response) {
+        Tp.Helpers.Http.get(URL).then((response) => {
             var parsed = JSON.parse(response);
 
             // unpack team names from the game data
@@ -180,7 +180,7 @@ module.exports = new Tp.ChannelClass({
                 this._gameNumber++;
                 this._setupNextGame();
             }
-        }.bind(this)).catch(function(e) {
+        }).catch((e) => {
             console.error('Failed to process NCAAFB game update: ' + e.message);
             console.error(e.stack);
         }).done();
@@ -258,11 +258,11 @@ module.exports = new Tp.ChannelClass({
 
     // clear all timeouts
     _clearTimeouts: function() {
-        if (this._nextScheduleTimer !== null) {
+        if (this._nextScheduleTimer !== null) 
             clearTimeout(this._nextScheduleTimer);
-        }
-        if (this._nextGameTimer !== null) {
+        
+        if (this._nextGameTimer !== null) 
             clearTimeout(this._nextGameTimer);
-        }
+        
     },
 });

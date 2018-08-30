@@ -33,7 +33,7 @@ module.exports = class WunderlistDevice extends Tp.BaseDevice {
             'x-access-token': accessToken,
             'x-client-id': WunderlistDevice.metadata.auth.client_id
           }
-        }).then(response => {
+        }).then((response) => {
           const parsed = JSON.parse(response);
           return engine.devices.loadOneDevice(
             {
@@ -77,10 +77,10 @@ module.exports = class WunderlistDevice extends Tp.BaseDevice {
         'x-access-token': this.accessToken,
         'x-client-id': WunderlistDevice.metadata.auth.client_id
       }
-    }).then(response => {
+    }).then((response) => {
       const parsed = JSON.parse(response);
       let result = [];
-      parsed.forEach(elem => {
+      parsed.forEach((elem) => {
         result.push({
           id: elem.id,
           title: elem.title,
@@ -94,8 +94,8 @@ module.exports = class WunderlistDevice extends Tp.BaseDevice {
   get_get_tasks({ list_title, time_window, completed }) {
     let p = [];
     return this.get_get_lists()
-      .then(lists => {
-        lists.forEach(list => {
+      .then((lists) => {
+        lists.forEach((list) => {
           if (
             !list_title ||
             list_title.toLowerCase() === list.title.toLowerCase()
@@ -103,16 +103,16 @@ module.exports = class WunderlistDevice extends Tp.BaseDevice {
             p.push(
               new Promise((resolve, reject) => {
                 let url = TASK_URL + '?list_id=%d'.format(list.id);
-                if (completed) {
+                if (completed) 
                   url += '&completed=true';
-                }
+                
                 Tp.Helpers.Http.get(url, {
                   accept: 'application/json',
                   extraHeaders: {
                     'x-access-token': this.accessToken,
                     'x-client-id': WunderlistDevice.metadata.auth.client_id
                   }
-                }).then(tasks => {
+                }).then((tasks) => {
                   resolve(JSON.parse(tasks));
                 });
               })
@@ -121,7 +121,7 @@ module.exports = class WunderlistDevice extends Tp.BaseDevice {
         });
         return Promise.all(p);
       })
-      .then(r_list => {
+      .then((r_list) => {
         let results = [];
         for (let i = 0; i < r_list.length; i++) {
           const cur_list = r_list[i];

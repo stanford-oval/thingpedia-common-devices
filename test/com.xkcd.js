@@ -42,12 +42,12 @@ module.exports = [
     }],
 
     ['query', 'what_if', {}, (results) => {
-        for (let result of results) {
+        for (let result of results) 
             assertNonEmptyString(result.title);
 
             // FIXME this is broken because the Thingpedia RSS
             // library does not handle namespaces correctly
             //assert(result.link.startsWith('https://what-if.xkcd.com'), `Expected a link, got ${result.link}`);
-        }
+        
     }]
 ];

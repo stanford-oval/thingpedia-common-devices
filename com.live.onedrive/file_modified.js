@@ -52,12 +52,12 @@ module.exports = new Tp.ChannelClass({
             for (var i in value) {
                 if (value[i].file && !value[i].deleted) {
                     var date = new Date(value[i].lastModifiedDateTime);
-                    if (maxDate < date) {
+                    if (maxDate < date) 
                         maxDate = date;
-                    }
-                    if (previousResponseDate == undefined || previousResponseDate < date) {
+                    
+                    if (previousResponseDate == undefined || previousResponseDate < date) 
                         this.emitEvent([value[i].name]);
-                    }
+                    
                 }
             }
 

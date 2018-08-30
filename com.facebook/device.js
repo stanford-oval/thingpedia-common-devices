@@ -77,7 +77,7 @@ module.exports = class FacebokDevice extends Tp.BaseDevice {
             const parsed = JSON.parse(response);
             if (!album)
                 album = 'Timeline Photos';
-            const picked = parsed.data.find(item => item.name.toLowerCase() === album.toLowerCase());
+            const picked = parsed.data.find((item) => item.name.toLowerCase() === album.toLowerCase());
             if (!picked)
                 throw new Error(`No Album found with name ${album}`);
             return Tp.Helpers.Http.get(`https://graph.facebook.com/v3.0/${picked.id}/photos?fields=images`,
@@ -90,9 +90,9 @@ module.exports = class FacebokDevice extends Tp.BaseDevice {
                         date: item.created_time,
                         picture_url: item.images[0].source
                     } ;
-                })
-            })
-        })
+                });
+            });
+        });
     }
 };
 
@@ -131,29 +131,29 @@ let formattedOutput = (function(params, hint, formatter) {
         });
     } else if (params.type === 'photo') {
         if (params.message)
-            formatted.push({
+            {formatted.push({
                 type: 'rdl',
                 displayTitle: params.message,
                 webCallback: params.link,
                 callback: params.link,
-            });
+            });}
         formatted.push({ type: 'picture', url: params.picture_url });
     } else if (params.type === 'link' || params.type === 'video') {
         if (params.message)
-            formatted.push({
+            {formatted.push({
                 type: 'rdl',
                 displayTitle: params.link_title ? params.link_title : 'Link',
                 displayText: params.message,
                 webCallback: params.link,
                 callback: params.link,
-            });
+            });}
         else
-            formatted.push({
+            {formatted.push({
                 type: 'rdl',
                 displayTitle: params.link_title ? params.link_title: 'Link',
                 webCallback: params.link,
                 callback: params.link,
-            });
+            });}
     }
     formatted.push(`Posted on ${params.date}.`);
     return formatted;

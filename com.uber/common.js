@@ -12,7 +12,7 @@ const SERVER_TOKEN = "ZLM0ZjMxXT1KXzxugPc3DX5vBSFTwPRr7R2D0mK_";
 
 module.exports = {
     get: function(url) {
-        return Tp.Helpers.Http.get(url, { auth: 'Token ' + SERVER_TOKEN }).then(function(response) {
+        return Tp.Helpers.Http.get(url, { auth: 'Token ' + SERVER_TOKEN }).then((response) => {
             return JSON.parse(response);
         });
     },
@@ -20,8 +20,8 @@ module.exports = {
     post: function(url, data) {
         return Tp.Helpers.Http.post(url, JSON.stringify(data), {
             auth: 'Token ' + SERVER_TOKEN,
-            dataContentType: 'application/json' }).then(function(response) {
+            dataContentType: 'application/json' }).then((response) => {
             return JSON.parse(response);
         });
     }
-}
+};

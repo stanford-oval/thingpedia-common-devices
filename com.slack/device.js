@@ -18,7 +18,7 @@ module.exports = class InstagramClass extends Tp.BaseDevice {
                 let auth = 'Bearer ' + accessToken;
                 return Tp.Helpers.Http.post('https://slack.com/api/auth.test', 'token=' + accessToken,
                     {dataContentType: 'application/x-www-form-urlencoded'})
-                    .then(function (response) {
+                    .then((response) => {
                         let parsed = JSON.parse(response);
 
                         return engine.devices.loadOneDevice({
@@ -63,7 +63,7 @@ module.exports = class InstagramClass extends Tp.BaseDevice {
             'token=' + token +
             '&exclude_archived=' + encodeURIComponent(1), {
                 dataContentType: 'application/x-www-form-urlencoded'
-        }).then(function(response) {
+        }).then((response) => {
             let parsed = JSON.parse(response);
             if (!parsed.ok) {
                 console.log('[ERROR] invalid response from http POST for channel list');
@@ -114,14 +114,14 @@ module.exports = class InstagramClass extends Tp.BaseDevice {
                 '&channel=' + encodeURIComponent(channel_id) +
                 '&text=' + encodeURIComponent(message), {
                     dataContentType: 'application/x-www-form-urlencoded'
-            }).then(function (response) {
+            }).then((response) => {
                 console.log('[info] Got a valid response to our POST?');
                 console.log('[info] Response: ', String(response));
                 let parsed = JSON.parse(response);
-                if (!parsed.ok) {
+                if (!parsed.ok) 
                     console.log('[ERROR] invalid response from http POST');
-                }
-            }, function (reason) {
+                
+            }, (reason) => {
                 console.log('[info] Reason: ', String(reason));
                 console.log('[ERROR] Unable to send message to Slack.');
             });
@@ -141,14 +141,14 @@ module.exports = class InstagramClass extends Tp.BaseDevice {
                 }])), {
                     dataContentType: 'application/x-www-form-urlencoded'
                 }
-            ).then(function (response) {
+            ).then((response) => {
                 console.log('[info] Got a valid response to our POST?');
                 console.log('[info] Response: ', String(response));
                 let parsed = JSON.parse(response);
-                if (!parsed.ok) {
+                if (!parsed.ok) 
                     console.log('[ERROR] invalid response from http POST');
-                }
-            }, function (reason) {
+                
+            }, (reason) => {
                 console.log('[info] Reason: ', String(reason));
                 console.log('[ERROR] Unable to send message to Slack.');
             });
@@ -165,13 +165,13 @@ module.exports = class InstagramClass extends Tp.BaseDevice {
                 '&purpose=' + encodeURIComponent(purpose), {
                     dataContentType: 'application/x-www-form-urlencoded'
                 }
-            ).then(function (response) {
+            ).then((response) => {
                 console.log('[info] Response: ', String(response));
                 let parsed = JSON.parse(response);
-                if (!parsed.ok) {
+                if (!parsed.ok) 
                     console.log('[ERROR] invalid response from http POST');
-                }
-            }, function (reason) {
+                
+            }, (reason) => {
                 console.log('[info] Reason: ', String(reason));
                 console.log('[ERROR] Unable to send message to Slack.');
             });
@@ -188,13 +188,13 @@ module.exports = class InstagramClass extends Tp.BaseDevice {
                 '&topic=' + encodeURIComponent(topic), {
                     dataContentType: 'application/x-www-form-urlencoded'
                 }
-            ).then(function (response) {
+            ).then((response) => {
                 console.log('[info] Response: ', String(response));
                 let parsed = JSON.parse(response);
-                if (!parsed.ok) {
+                if (!parsed.ok) 
                     console.log('[ERROR] invalid response from http POST');
-                }
-            }, function (reason) {
+                
+            }, (reason) => {
                 console.log('[info] Reason: ', String(reason));
                 console.log('[ERROR] Unable to send message to Slack.');
             });
@@ -206,12 +206,12 @@ module.exports = class InstagramClass extends Tp.BaseDevice {
             'token=' + this.accessToken +
             '&presence=' + encodeURIComponent(presence), {
                 dataContentType: 'application/x-www-form-urlencoded'
-            }).then(function(response) {
+            }).then((response) => {
             let parsed = JSON.parse(response);
-            if (!parsed.ok) {
+            if (!parsed.ok) 
                 console.log('[ERROR] invalid response from http POST');
-            }
-        }, function(reason) {
+            
+        }, (reason) => {
             console.log('[info] Reason: ', String(reason));
             console.log('[ERROR] Unable to set presence');
         });
@@ -224,7 +224,7 @@ module.exports = class InstagramClass extends Tp.BaseDevice {
             '&user=' + encodeURIComponent(user_id), {
                 dataContentType: 'application/x-www-form-urlencoded'
             }
-        ).then(function(response) {
+        ).then((response) => {
             let parsed = JSON.parse(response);
             if (!parsed.ok) {
                 console.log('[ERROR] invalid response from http POST (users.info)');
@@ -232,7 +232,7 @@ module.exports = class InstagramClass extends Tp.BaseDevice {
             }
             // console.log('[info] Translated Username: ', parsed.user.name);
             return parsed.user.name;
-        }).catch(function(reason) {
+        }).catch((reason) => {
             console.log('[ERROR] Reason: ', String(reason));
             console.log('[ERROR] Unable to match the user_id:', user_id);
         });

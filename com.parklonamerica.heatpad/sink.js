@@ -8,9 +8,9 @@
 
 const Tp = require('thingpedia');
 const Q = require('q');
-const xmppClient = require('node-xmpp-client')
+const xmppClient = require('node-xmpp-client');
 
-var heatPadAccount = '00000c46@iunplug.co.kr'
+var heatPadAccount = '00000c46@iunplug.co.kr';
 
 module.exports = new Tp.ChannelClass({
     Name: 'HeatPadChannel',
@@ -32,10 +32,10 @@ module.exports = new Tp.ChannelClass({
         this._client.connection.socket.setTimeout(0);
         this._client.connection.socket.setKeepAlive(true, 10000);
 
-        return Q.Promise(function(callback, errback) {
+        return Q.Promise((callback, errback) => {
             this._client.on('error', errback);
             this._client.on('online', callback);
-        }.bind(this));
+        });
     },
 
     sendEvent: function(event) {
@@ -44,12 +44,12 @@ module.exports = new Tp.ChannelClass({
             console.log("Turning your heatpad on");
             stanza = new xmppClient.Stanza('message', {to:heatPadAccount, type:'chat'}).c('body').t(
                 'R9HAUTO_JSON{"type":"request","payload":{"indexes":[{"idx":2,"heaters":[{"power":true,"htidx":1}]}],"command":"setstate","devtype":"thermomat"},"msgid":"4F95D3PE1A","version":1}');
-            this._client.send(stanza)
+            this._client.send(stanza);
         } else {
             console.log("Turning your heatpad off");
             stanza = new xmppClient.Stanza('message', {to:heatPadAccount, type:'chat'}).c('body').t(
                 'R9HAUTO_JSON{"type":"request","payload":{"indexes":[{"idx":2,"heaters":[{"power":false,"htidx":1}]}],"command":"setstate","devtype":"thermomat"},"msgid":"F2ESTPFTG3","version":1}}');
-            this._client.send(stanza)
+            this._client.send(stanza);
         }
     }
 });

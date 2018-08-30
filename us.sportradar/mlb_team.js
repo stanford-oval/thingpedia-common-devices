@@ -97,9 +97,9 @@ module.exports = new Tp.ChannelClass({
     },
 
     _onNextGameEvent: function() {
-        Tp.Helpers.Http.get(BOXSCORE_URL.format(this._gameId)).then(function(response) {
+        Tp.Helpers.Http.get(BOXSCORE_URL.format(this._gameId)).then((response) => {
             return Tp.Helpers.Xml.parseString(response);
-        }).then(function(parsed) {
+        }).then((parsed) => {
             var inning = null;
             if (parsed.game.$.status === 'closed' || parsed.game.$.status === 'complete') {
                 inning = String(parsed.game.final[0].$.inning_half) + String(parsed.game.final[0].$.inning);
@@ -111,17 +111,17 @@ module.exports = new Tp.ChannelClass({
             }
 
             // remember current status - only report each time the inning changes
-            if (inning === this._inning) {
+            if (inning === this._inning) 
                 return;
-            } else {
+             else 
                 this._inning = inning;
-            }
+            
 
             var awayRuns = Number(parsed.game.away[0].$.runs);
             var homeRuns = Number(parsed.game.home[0].$.runs);
 
             this._emit(parsed.game.$.status, inning, awayRuns, homeRuns);
-        }.bind(this)).catch(function(e) {
+        }).catch((e) => {
             console.error('Failed to process MLB game updates: ' + e.message);
             console.error(e.stack);
         }).done();
@@ -133,17 +133,17 @@ module.exports = new Tp.ChannelClass({
     },
 
     _onResponse: function(response) {
-        if(!response) {
+        if(!response) 
             return;
-        }
+        
 
         Tp.Helpers.Xml.parseString(response).then((parsed) => {
             var games = parsed.league['daily-schedule'][0].games[0].game;
             var game = null;
             for (var i = 0; i < games.length; i++) {
-                if (games[i].$.status === 'closed') {
+                if (games[i].$.status === 'closed') 
                     continue;
-                }
+                
 
                 if (games[i].home[0].$.abbr === this._observedTeam ||
                     games[i].away[0].$.abbr === this._observedTeam ) {
@@ -177,11 +177,11 @@ module.exports = new Tp.ChannelClass({
                 this._scheduledTime = scheduled;
                 var now = new Date();
                 timeout = scheduled.getTime - now.getTime() + 5000;
-                if (timeout >= 5000) {
+                if (timeout >= 5000) 
                     this._emit('scheduled', 'Pre', 0, 0);
-                } else {
+                 else 
                     timeout = 5000;
-                }
+                
 
                 if (timeout > POLL_INTERVAL) {
                     clearTimeout(this._nextGameTimer);

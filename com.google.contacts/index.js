@@ -7,7 +7,7 @@
 
 const Tp = require('thingpedia');
 
-const URL = "https://people.googleapis.com/v1/"
+const URL = "https://people.googleapis.com/v1/";
 
 module.exports = class GoogleContactsDevice extends Tp.BaseDevice {
     static get runOAuth2() {
@@ -54,21 +54,21 @@ module.exports = class GoogleContactsDevice extends Tp.BaseDevice {
 
     contactInfo(entry) {
         var info = {};
-        if(entry.names !== undefined){
+        if(entry.names !== undefined)
             info.name = entry.names[0].displayName;
-        } else {
+         else 
             info.name = "";
-        }
-        if(entry.phoneNumbers !== undefined){
+        
+        if(entry.phoneNumbers !== undefined)
             info.phone_number = entry.phoneNumbers[0].value;
-        } else {
+         else 
             info.phone_number = "";
-        }
-        if(entry.emailAddresses !== undefined){
+        
+        if(entry.emailAddresses !== undefined)
             info.email = entry.emailAddresses[0].value;
-        } else {
+         else 
             info.email = "";
-        }
+        
         return info;
     }
 
