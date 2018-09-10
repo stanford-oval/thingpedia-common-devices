@@ -31,7 +31,7 @@ for (let section of `the_fix,politics,powerpost,fact_checker,world_views,compost
 
         for (let result of results) {
             assertNonEmptyString(result.title);
-            assert.strictEqual(typeof result.description, 'string');
+            assert(typeof result.description === 'string' || result.description === null);
             assert(result.link.startsWith('http'), `Expected a link, got ${result.link}`);
 
             // FIXME the following is broken, until a new version of thingpedia-api is out
