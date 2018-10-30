@@ -16,18 +16,13 @@ const CameraDevice = class NestCameraDevice extends Tp.BaseDevice {
         this.url = url;
         this.uniqueId = 'com.nest-' + state.device_id;
         this.isTransient = true;
+
+        this.name = 'Nest Camera ' + this.state.name;
+        this.description = 'This is your ' + this.state.name_long;
     }
 
     get kind() {
         return 'com.nest.security_camera';
-    }
-
-    get name() {
-        return 'Nest Camera ' + this.state.name;
-    }
-
-    get description() {
-        return 'This is your ' + this.state.name_long;
     }
 
     checkAvailable() {

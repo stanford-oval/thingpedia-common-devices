@@ -40,18 +40,13 @@ const ThermostatDevice = class NestThermostatDevice extends Tp.BaseDevice {
         this.url = url;
         this.uniqueId = 'com.nest-' + state.device_id;
         this.isTransient = true;
+
+        this.name = 'Nest Thermostat ' + this.state.name;
+        this.description = 'This is your ' + this.state.name_long;
     }
 
     get kind() {
         return 'com.nest.thermostat';
-    }
-
-    get name() {
-        return 'Nest Thermostat ' + this.state.name;
-    }
-
-    get description() {
-        return 'This is your ' + this.state.name_long;
     }
 
     checkAvailable() {
