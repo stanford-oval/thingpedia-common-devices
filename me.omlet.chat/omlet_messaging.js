@@ -16,6 +16,8 @@ const Tp = require('thingpedia');
 const LDProto = require('omlib/src/longdan/ldproto');
 const RawIdentity = require('omlib/src/client/model/RawIdentity');
 
+const OMLET_ACCOUNT_PREFIX = 'me.omlet.chat-account:';
+
 function oinvoke(object, method) {
     var args = Array.prototype.slice.call(arguments, 2);
 
@@ -28,7 +30,7 @@ function oinvoke(object, method) {
 class OmletUser {
     constructor(id, o) {
         this.id = id;
-        this.account = o.account;
+        this.account = OMLET_ACCOUNT_PREFIX + o.account;
         this.name = o.name;
         this.thumbnail = o.thumbnailHash;
     }
@@ -36,8 +38,9 @@ class OmletUser {
 
 class OmletFeed extends Tp.Messaging.Feed {
     constructor(messaging, feedId) {
-        super(feedId);
+        super('me.omlet.chat:' + feedId);
 
+        this._omletFeedId = feedId;
         this._messaging = messaging;
         this._device = messaging._device;
         this._insertListener = null;
@@ -78,14 +81,14 @@ class OmletFeed extends Tp.Messaging.Feed {
         if (this._insertListener)
             this._db._data.removeListener('insert', this._insertListener);
         this._insertListener = null;
-        this._messaging.feedClosed(this.feedId);
+        this._messaging.feedClosed(this._omletFeedId);
 
         return Promise.resolve();
     }
 
     _getFeed() {
         return oinvoke(this._client.store, 'getFeeds')
-        .then((db) => oinvoke(db, 'getObjectByKey', this.feedId));
+        .then((db) => oinvoke(db, 'getObjectByKey', this._omletFeedId));
     }
 
     sendText(text) {
@@ -184,7 +187,7 @@ module.exports = class Messaging extends Tp.Messaging {
         this._feeds = {};
         this.client = null;
     }
-
+    
     _newMessage(feedId, msg) {
         if (this.account !== msg.sender)
             this.emit('incoming-message', feedId, msg);
@@ -192,8 +195,12 @@ module.exports = class Messaging extends Tp.Messaging {
             this.emit('outgoing-message', feedId, msg);
     }
 
+    get type() {
+        return 'me.omlet.chat';
+    }
+
     get account() {
-        return this.client.auth.getAccount();
+        return OMLET_ACCOUNT_PREFIX + this.client.auth.getAccount();
     }
 
     getIdentities() {
@@ -221,6 +228,8 @@ module.exports = class Messaging extends Tp.Messaging {
     }
 
     getFeed(feedId) {
+        if (feedId.startsWith('me.omlet.chat:'))
+            feedId = feedId.substring('me.omlet.chat:'.length);
         if (feedId in this._feeds)
             return this._feeds[feedId];
 
@@ -297,7 +306,7 @@ module.exports = class Messaging extends Tp.Messaging {
 
     searchAccountByName(name) {
         return oinvoke(this.client.store, 'getAccounts').then((db) => {
-            return db._data.where((doc) => doc.name.toLowerCase().indexOf(name) >= 0 && !doc.owned);
+            return db._data.where((doc) => doc.name.toLowerCase().indexOf(name) >= 0 && !doc.owned).map((o) => new OmletUser(o.id, o));
         });
     }
 
@@ -305,24 +314,36 @@ module.exports = class Messaging extends Tp.Messaging {
         return oinvoke(this.client._ldClient.identity, '_addAccountToContacts', contactId);
     }
 
-    getFeedWithContact(contactId) {
-        return Promise.resolve().then(() => {
+    getFeedWithContact(contactIds) {
+        if (!Array.isArray(contactIds))
+            contactIds = [contactIds];
+
+        contactIds = contactIds.map((contactId) => {
+            if (contactId.startsWith(OMLET_ACCOUNT_PREFIX))
+                contactId = contactId.substring(OMLET_ACCOUNT_PREFIX.length);
+            return contactId;
+        });
+
+        return Q.all(contactIds.map((contactId) => {
             if (contactId.indexOf(':') < 0)
                 return this.addAccountToContacts(contactId);
             else
                 return Promise.resolve();
-        }).then(() => {
-            return Q.ninvoke(this.client.feeds, 'getOrCreateFeedWithAccounts', [contactId]);
+        })).then(() => {
+            return Q.ninvoke(this.client.feeds, 'getOrCreateFeedWithAccounts', contactIds);
         }).then(([feed, existing]) => {
                 if (existing)
-                    console.log('Reusing feed ' + feed.identifier + ' with ' + contactId);
+                    console.log('Reusing feed ' + feed.identifier + ' with ' + contactIds);
                 else
-                    console.log('Created feed ' + feed.identifier + ' with ' + contactId);
+                    console.log('Created feed ' + feed.identifier + ' with ' + contactIds);
             return this.getFeed(feed.identifier);
         });
     }
 
     getAccountForIdentity(identity) {
+        if (identity.startsWith(OMLET_ACCOUNT_PREFIX))
+            identity = identity.substring(OMLET_ACCOUNT_PREFIX.length);
+    
         var identityHash = RawIdentity.parse(identity).getEncodedHashedIdentity();
         return oinvoke(this.client._ldClient.identity, 'getAccountsForIdentityHashes', [identityHash]).then((matches) => {
             if (matches.length > 0)
