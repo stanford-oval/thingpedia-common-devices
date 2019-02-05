@@ -31,7 +31,7 @@ function getDeviceFactory() {
 // monkey patch the loading code for JS device classes so we use our
 // code rather than downloading from Thingpedia
 TpClient.Modules['org.thingpedia.v2'].prototype.getDeviceFactory = getDeviceFactory;
-TpClient.Modules['org.thingpedia.v1'].prototype.getDeviceFactory = getDeviceFactory;
+//TpClient.Modules['org.thingpedia.v1'].prototype.getDeviceFactory = getDeviceFactory;
 
 async function loadDeviceFactory(deviceKind) {
     const ourMetadata = require('../' + deviceKind + '.json');
