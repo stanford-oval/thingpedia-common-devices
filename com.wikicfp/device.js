@@ -28,25 +28,29 @@ module.exports = class WikiCFP extends Tp.BaseDevice {
                             event.end = new Date(end);
                         }
                         if (j === 1) event.city = $(td).text();
-                        if (j === 2) event.deadline = new Date($(td).text());
-                    })
+                        if (j === 2) {
+                            // the deadline might includes the abstract deadline in parentheses, remove it if exists
+                            let deadline = $(td).text().replace(/\([^)]*\)/, '');
+                            event.deadline = new Date(deadline);
+                        }
+                    });
                     events.push(event);
                     event = {};
                 } else {
                     $('td', tr).each((j, td) => {
-                        if (j === 0) event.abbr = $(td).text();
+                        if (j === 0) {
+                            event.abbr = $(td).text();
+                            event.link = 'http://www.wikicfp.com' + $(td).children().attr('href');
+                        }
                         if (j === 1) event.name = $(td).text();
-                    })
+                    });
                 }
                 
             });
             return events;
         }).catch(function (e) {
-            console.log(e);
-            throw new Error('Failed to retrieve information from WikiCFP: ', e);
+            throw new Error('Failed to retrieve information from WikiCFP: ' + e);
         });
 
     }
-}
-
-
+};

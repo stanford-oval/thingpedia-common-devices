@@ -15,6 +15,7 @@ module.exports = [
             assert(result.start instanceof Date);
             assert(result.end instanceof Date);
             assert(result.deadline instanceof Date);
+            assert.strictEqual(typeof result.link, 'string');
         }
     }]
 ];
