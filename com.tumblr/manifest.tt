@@ -1,0 +1,30 @@
+class @com.tumblr
+#[child_types=["com.tumblr.blog"]] {
+  import loader from @org.thingpedia.v1();
+  import config from @org.thingpedia.config.oauth2();
+
+  monitorable list query new_text(in req blog_name: Entity(tt:username) #_[prompt="What blog name do you want to follow?"],
+                                  out date: Date,
+                                  out title: String,
+                                  out link: Entity(tt:url),
+                                  out tags: Array(Entity(tt:hashtag)),
+                                  out body: String)
+  #_[canonical="get text post on tumblr"]
+  #_[confirmation="recent posts in Tumblr blog $blog_name"]
+  #_[formatted=[{type="rdl",displayTitle="Post in ${blog_name}.tumblr.com: ${title}",displayText="${body}",webCallback="${link}"}]]
+  #[poll_interval=1800000ms]
+  #[doc="Trigger when there is a new text post."];
+
+  monitorable list query new_photo(in req blog_name: Entity(tt:username) #_[prompt="What blog name do you want to follow?"],
+                                   out date: Date,
+                                   out caption: String,
+                                   out link: Entity(tt:url),
+                                   out tags: Array(Entity(tt:hashtag)),
+                                   out picture_urls: Array(Entity(tt:picture)))
+  #_[canonical="get photo post on tumblr"]
+  #_[confirmation="recent pictures in $blog_name on Tumblr"]
+  #_[formatted=[{type="rdl",displayTitle="Post in ${blog_name}.tumblr.com: ${title}",displayText="${body}",webCallback="${link}"}]]
+  #[poll_interval=1800000ms]
+  #[doc="Trigger when there is a new photo post. `photo_urls` is an array of all image source urls in the post"];
+}
+

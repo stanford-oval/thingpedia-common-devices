@@ -1,0 +1,42 @@
+class @com.facebook {
+  import loader from @org.thingpedia.v2();
+  import config from @org.thingpedia.config.oauth2();
+
+  monitorable list query list_posts(out id: String,
+                                    out date: Date,
+                                    out message: String,
+                                    out picture_url: Entity(tt:picture),
+                                    out type: String,
+                                    out link: Entity(tt:url),
+                                    out link_title: String)
+  #_[canonical="facebook posts"]
+  #_[confirmation="my posts on facebook"]
+  #_[confirmation_remote="$__person's posts on facebook"]
+  #_[formatted=[{type="code",code="(function(params, hint, formatter) {\n    let formatted = [];\n    if (params.type === 'status') {\n        formatted.push({\n            type: 'rdl',\n            displayTitle: params.message ? params.message : 'Link',\n            webCallback: params.link,\n            callback: params.link,\n        });\n    } else if (params.type === 'photo') {\n        if (params.message)\n            formatted.push({\n                type: 'rdl',\n                displayTitle: params.message,\n                webCallback: params.link,\n                callback: params.link,\n            });\n        formatted.push({ type: 'picture', url: params.picture_url });\n    } else if (params.type === 'link' || params.type === 'video') {\n        if (params.message)\n            formatted.push({\n                type: 'rdl',\n                displayTitle: params.link_title ? params.link_title : 'Link',\n                displayText: params.message,\n                webCallback: params.link,\n                callback: params.link,\n            });\n        else\n            formatted.push({\n                type: 'rdl',\n                displayTitle: params.link_title ? params.link_title: 'Link',\n                webCallback: params.link,\n                callback: params.link,\n            });\n    }\n    formatted.push(`Posted on ${params.date}.`);\n    return formatted;\n})"}]]
+  #[poll_interval=3600000ms]
+  #[doc="List my facebook posts"];
+
+  monitorable list query list_photos(in opt album: String #_[prompt="Which album? "],
+                                     out date: Date,
+                                     out picture_url: Entity(tt:picture))
+  #_[canonical="facebook photos"]
+  #_[confirmation="my facebook photos"]
+  #_[confirmation_remote="$__person's facebook photos"]
+  #_[formatted=[{type="picture",url="$picture_url"}]]
+  #[poll_interval=3600000ms]
+  #[doc="list photos in an album on facebook"];
+
+  action post(in req status: String #_[prompt="What do you want to post?"])
+  #_[canonical="post on facebook"]
+  #_[confirmation="post $status on Facebook"]
+  #_[confirmation_remote="post $status on $__person's Facebook"]
+  #[doc="post a status update to Facebook"];
+
+  action post_picture(in req picture_url: Entity(tt:picture) #_[prompt="Upload the picture now."],
+                      in req caption: String #_[prompt="What should be the caption of the picture?"])
+  #_[canonical="post picture on facebook"]
+  #_[confirmation="upload a picture on Facebook with caption $caption"]
+  #_[confirmation_remote="upload a picture on $__person's Facebook with caption $caption"]
+  #[doc="upload a photo to your Facebook"];
+}
+

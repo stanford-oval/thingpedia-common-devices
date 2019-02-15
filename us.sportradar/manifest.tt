@@ -1,0 +1,118 @@
+class @us.sportradar {
+  import loader from @org.thingpedia.v1();
+  import config from @org.thingpedia.config.none();
+
+  monitorable query soccer_eu_tourney(in req tournament: Entity(sportradar:eu_tournament) #_[prompt="What tournament are you interested in?"],
+                                      out tournament_league_name: String,
+                                      out away_team: Entity(sportradar:eu_soccer_team),
+                                      out home_team: Entity(sportradar:eu_soccer_team),
+                                      out game_status: Enum(scheduled,inprogress,halftime,closed) #_[prompt="What point of the game are you interested in? Use scheduled, inprogress, halftime or closed."],
+                                      out scheduled_time: Date,
+                                      out away_score: Number,
+                                      out home_score: Number)
+  #_[canonical="eu soccer tournament status on sportradar"]
+  #_[confirmation="European soccer game "]
+  #_[confirmation_remote="European soccer game on Almond of $__person"]
+  #[poll_interval=300000ms]
+  #[doc="get soccer games as with soccer_eu_team, searching by tournament or league name (e.g., 'Champions League')"];
+
+  monitorable query soccer_us_tourney(in req tournament: Entity(sportradar:us_tournament) #_[prompt="What tournament are you interested in?"],
+                                      out tournament_league_name: String,
+                                      out away_team: Entity(sportradar:us_soccer_team),
+                                      out home_team: Entity(sportradar:us_soccer_team),
+                                      out game_status: Enum(scheduled,inprogress,halftime,closed) #_[prompt="What point of the game are you interested in? Use scheduled, inprogress, halftime or closed."],
+                                      out scheduled_time: Date,
+                                      out away_score: Number,
+                                      out home_score: Number)
+  #_[canonical="us soccer tournament status on sportradar"]
+  #_[confirmation="American soccer game "]
+  #_[confirmation_remote="American soccer game on Almond of $__person"]
+  #[poll_interval=300000ms]
+  #[doc="soccer games as with soccer_eu_team, searching by tournament or league name (e.g., 'Champions League')"];
+
+  monitorable query nba(in req team: Entity(sportradar:nba_team) #_[prompt="What team are you interested in? Use the 3 letter alias."],
+                        out opponent: Entity(sportradar:nba_team) #_[prompt="What team are you interested in competitions against? Use the 3 letter alias."],
+                        out is_home: Boolean,
+                        out game_status: Enum(scheduled,inprogress,halftime,closed) #_[prompt="What point of the game are you interested in? Use scheduled, inprogress, halftime or closed."],
+                        out scheduled_time: Date,
+                        out score: Number,
+                        out opponent_score: Number,
+                        out result: Enum(win,lose,unclosed))
+  #_[canonical="nba game status on sportradar"]
+  #_[confirmation="NBA game "]
+  #_[confirmation_remote="NBA game on Almond of $__person"]
+  #[poll_interval=300000ms]
+  #[doc="NBA games of a given team; `gameStatus` can be scheduled, inprogress, halftime or closed"];
+
+  monitorable query soccer_eu(in req team: Entity(sportradar:eu_soccer_team) #_[prompt="What team are you interested in? Use the 3 letter alias."],
+                              out opponent: Entity(sportradar:eu_soccer_team) #_[prompt="What team are you interested in competitions against? Use the 3 letter alias."],
+                              out is_home: Boolean,
+                              out game_status: Enum(scheduled,inprogress,halftime,closed) #_[prompt="What point of the game are you interested in? Use scheduled, inprogress, halftime or closed."],
+                              out scheduled_time: Date,
+                              out opponent_score: Number,
+                              out team_score: Number,
+                              out result: Enum(win,lose,draw,unclosed))
+  #_[canonical="eu soccer game status on sportradar"]
+  #_[confirmation="European soccer game"]
+  #_[confirmation_remote="European soccer game on Almond of $__person"]
+  #[poll_interval=300000ms]
+  #[doc="soccer games (national league, national cup or Champions League) of a given European team; `gameStatus` can be scheduled, inprogress, halftime or closed"];
+
+  monitorable query soccer_us(in req team: Entity(sportradar:us_soccer_team) #_[prompt="What team are you interested in? Use the 3 letter alias."],
+                              out opponent: Entity(sportradar:us_soccer_team) #_[prompt="What team are you interested in competitions against? Use the 3 letter alias."],
+                              out is_home: Boolean,
+                              out game_status: Enum(scheduled,inprogress,halftime,closed) #_[prompt="What point of the game are you interested in? Use scheduled, inprogress, halftime or closed."],
+                              out scheduled_time: Date,
+                              out opponent_score: Number,
+                              out team_score: Number,
+                              out result: Enum(win,lose,draw,unclosed))
+  #_[canonical="us soccer game status on sportradar"]
+  #_[confirmation="American soccer game"]
+  #_[confirmation_remote="American soccer game on Almond of $__person"]
+  #[poll_interval=300000ms]
+  #[doc="soccer games (CONCACAF, MSL, etc) of a given North American team; `gameStatus` can be scheduled, inprogress, halftime or closed"];
+
+  monitorable query mlb(in req team: Entity(sportradar:mlb_team) #_[prompt="What team are you interested in? Use the 3 letter alias."],
+                        out opponent: Entity(sportradar:mlb_team) #_[prompt="What team are you interested in competitions against? Use the 3 letter alias."],
+                        out is_home: Boolean,
+                        out game_status: Enum(scheduled,inprogress,halftime,closed) #_[prompt="What point of the game are you interested in? Use scheduled, inprogress, halftime or closed."],
+                        out scheduled_time: Date,
+                        out game_inning: String,
+                        out opponent_runs: Number,
+                        out team_runs: Number,
+                        out result: Enum(win,lose,draw,unclosed))
+  #_[canonical="mlb game status on sportradar"]
+  #_[confirmation="MLB game"]
+  #_[confirmation_remote="MLB game on Almond of $__person"]
+  #[poll_interval=300000ms]
+  #[doc="receive game for your favorite MLB teams"];
+
+  monitorable query ncaambb(in req team: Entity(sportradar:ncaambb_team) #_[prompt="What team are you interested in? Use the 3 letter alias."],
+                            out opponent: Entity(sportradar:ncaambb_team) #_[prompt="What team are you interested in competitions against? Use the 3 letter alias."],
+                            out is_home: Boolean,
+                            out game_status: Enum(scheduled,inprogress,halftime,closed) #_[prompt="What point of the game are you interested in? Use scheduled, inprogress, halftime or closed."],
+                            out scheduled_time: Date,
+                            out opponent_score: Number,
+                            out team_score: Number,
+                            out result: Enum(win,lose,unclosed))
+  #_[canonical="ncaa mbb game status on sportradar"]
+  #_[confirmation="NCAA Men's Basketball game"]
+  #_[confirmation_remote="NCAA Men's Basketball game on Almond of $__person"]
+  #[poll_interval=300000ms]
+  #[doc="NCAA Men's Basketball games of your favorite teams"];
+
+  monitorable query ncaafb(in req team: Entity(sportradar:ncaafb_team) #_[prompt="What team are you interested in? Use the 3 letter alias."],
+                           out opponent: Entity(sportradar:ncaafb_team) #_[prompt="What team are you interested in competitions against? Use the 3 letter alias."],
+                           out is_home: Boolean,
+                           out game_status: Enum(scheduled,inprogress,halftime,closed) #_[prompt="What point of the game are you interested in? Use scheduled, inprogress, halftime or closed."],
+                           out scheduled_time: Date,
+                           out opponent_score: Number,
+                           out team_score: Number,
+                           out result: Enum(win,lose,unclosed))
+  #_[canonical="ncaafb game status on sportradar"]
+  #_[confirmation="NCAA Football game"]
+  #_[confirmation_remote="NCAA Football game on Almond of $__person"]
+  #[poll_interval=300000ms]
+  #[doc="follow your favorite NCAA Football team all season long"];
+}
+

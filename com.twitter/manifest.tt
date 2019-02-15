@@ -1,0 +1,90 @@
+class @com.twitter {
+  import loader from @org.thingpedia.v2();
+  import config from @org.thingpedia.config.oauth2();
+
+  monitorable list query search(in opt count: Number #_[prompt="How many tweets do you want?"],
+                                out text: String,
+                                out hashtags: Array(Entity(tt:hashtag)),
+                                out urls: Array(Entity(tt:url)),
+                                out author: Entity(tt:username) #_[prompt="From which user do you want tweets?"],
+                                out in_reply_to: Entity(tt:username) #_[prompt="In reply to which user do you want tweets?"],
+                                out tweet_id: Entity(com.twitter:id))
+  #_[canonical="search on twitter"]
+  #_[confirmation="recent tweets"]
+  #_[formatted=[{type="text",text="@${author} tweeted: ${text}"}]]
+  #[poll_interval=600000ms]
+  #[doc="search recent tweets; default is 5"];
+
+  monitorable list query home_timeline(out text: String,
+                                       out hashtags: Array(Entity(tt:hashtag)),
+                                       out urls: Array(Entity(tt:url)),
+                                       out author: Entity(tt:username),
+                                       out in_reply_to: Entity(tt:username),
+                                       out tweet_id: Entity(com.twitter:id))
+  #_[canonical="twitter home timeline"]
+  #_[confirmation="tweets from anyone you follow"]
+  #_[confirmation_remote="tweets from anyone $__person's follow"]
+  #_[formatted=[{type="text",text="@${author} tweeted: ${text}"}]]
+  #[poll_interval=600000ms]
+  #[doc="shows your Twitter timeline (the home page of Twitter)"];
+
+  monitorable list query my_tweets(out text: String,
+                                   out hashtags: Array(Entity(tt:hashtag)),
+                                   out urls: Array(Entity(tt:url)),
+                                   out in_reply_to: Entity(tt:username),
+                                   out tweet_id: Entity(com.twitter:id))
+  #_[canonical="my tweets on twitter"]
+  #_[confirmation="tweets from you"]
+  #_[confirmation_remote="tweets from $__person"]
+  #_[formatted=[{type="text",text="You tweeted: ${text}"}]]
+  #[poll_interval=600000ms]
+  #[doc="get your recent tweets"];
+
+  monitorable list query direct_messages(out sender: Entity(tt:username),
+                                         out message: String)
+  #_[canonical="twitter direct messages"]
+  #_[confirmation="direct messages you received on Twitter"]
+  #_[confirmation_remote="direct messages $__person received on Twitter"]
+  #_[formatted=[{type="text",text="@${sender}: ${message}"}]]
+  #[poll_interval=600000ms]
+  #[doc="get recent direct messages you received"];
+
+  action send_direct_message(in req to: Entity(tt:username) #_[prompt="Who do you want to send the message to?"],
+                             in req message: String #_[prompt="What message do you want to send?"])
+  #_[canonical="send dm on twitter"]
+  #_[confirmation="send a direct message on Twitter to $to saying $message"]
+  #_[confirmation_remote="send a direct message on $__person's Twitter to $to saying $message"]
+  #[doc="send a direct message"];
+
+  action post_picture(in req caption: String #_[prompt="What caption do you want?"],
+                      in req picture_url: Entity(tt:picture) #_[prompt="Upload the picture now."])
+  #_[canonical="post picture on twitter"]
+  #_[confirmation="tweet $caption with an attached picture"]
+  #_[confirmation_remote="post $caption and a picture on $__person's Twitter"]
+  #[doc="post a tweet with a picture"];
+
+  action follow(in req user_name: Entity(tt:username) #_[prompt="What user do you want to follow?"])
+  #_[canonical="follow on twitter"]
+  #_[confirmation="follow $user_name on Twitter"]
+  #_[confirmation_remote="follow $user_name with $__person's Twitter"]
+  #[doc="follow the named user"];
+
+  action unfollow(in req user_name: Entity(tt:username) #_[prompt="What user do you want to unfollow?"])
+  #_[canonical="unfollow on twitter"]
+  #_[confirmation="unfollow $user_name on Twitter"]
+  #_[confirmation_remote="unfollow $user_name from $__person's Twitter"]
+  #[doc="stop following the named user; this call succeeds even if the user was already followed before"];
+
+  action post(in req status: String #_[prompt="What do you want to tweet?"])
+  #_[canonical="post on twitter"]
+  #_[confirmation="tweet $status"]
+  #_[confirmation_remote="post $status on $__person's Twitter"]
+  #[doc="post a tweet; use # to include a hashtag and @ to reply"];
+
+  action retweet(in req tweet_id: Entity(com.twitter:id) #_[prompt="What tweet do you want to retweet?"])
+  #_[canonical="retweet"]
+  #_[confirmation="retween $tweet_id"]
+  #_[confirmation_remote="retweet $tweet_id on $__person's Twitter Account"]
+  #[doc="retweet a given tweet, by id"];
+}
+

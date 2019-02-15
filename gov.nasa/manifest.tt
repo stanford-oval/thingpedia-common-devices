@@ -1,0 +1,38 @@
+class @gov.nasa {
+  import loader from @org.thingpedia.v2();
+  import config from @org.thingpedia.config.none();
+
+  monitorable query apod(out title: String,
+                         out description: String,
+                         out picture_url: Entity(tt:picture))
+  #_[canonical="get astronomy picture of the day on nasa"]
+  #_[confirmation="NASA's Astronomy Picture of the Day"]
+  #_[formatted=[{type="text",text="${title}"}, {type="text",text="${description}"}, {type="picture",url="${picture_url}"}]]
+  #[poll_interval=86400000ms]
+  #[doc="Title, description, and image URL of NASA's Astronomy Picture of the Day (APOD)"];
+
+  monitorable list query rover(in opt date_taken: Date #_[prompt="From what Earth day do you want pictures?"],
+                               in opt count: Number #_[prompt="How many pictures do you want?"],
+                               out picture_url: Entity(tt:picture),
+                               out camera_used: Entity(gov.nasa:curiosity_rover_camera))
+  #_[canonical="get curiosity rover picture on nasa"]
+  #_[confirmation="Curiosity Rover photos from NASA"]
+  #_[formatted=[{type="picture",url="${picture_url}"}]]
+  #[poll_interval=86400000ms]
+  #[doc="photos from the Curiosity Rover on Mars"];
+
+  monitorable query asteroid(out asteroid_id: Entity(gov.nasa:asteroid_id),
+                             out name: String,
+                             out estimated_diameter_min: Measure(m),
+                             out estimated_diameter_max: Measure(m),
+                             out is_dangerous: Boolean,
+                             out relative_velocity: Measure(mps),
+                             out distance: Measure(m),
+                             out orbiting_body: String)
+  #_[canonical="close asteroid on nasa"]
+  #_[confirmation="the asteroid passing close to Earth today"]
+  #_[formatted=[{type="code",code="(function({is_dangerous,name}, hint, formatter) {\nif (is_dangerous)\nreturn `Dangerous object near Earth today: ${name}`;\nelse\nreturn `Nearest asteroid today: ${name}`;\n})"}, {type="text",text="Diameter: between ${estimated_diameter_min:m} m and ${estimated_diameter_max:m} m"}, {type="text",text="Relative velocity: ${relative_velocity:mps} m/s"}, {type="text",text="Closest distance to Earth: ${distance:km} km"}]]
+  #[poll_interval=86400000ms]
+  #[doc="Daily-updated data on the closest asteroid to earth"];
+}
+

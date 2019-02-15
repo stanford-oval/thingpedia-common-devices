@@ -1,0 +1,49 @@
+class @com.dropbox {
+  import loader from @org.thingpedia.v2();
+  import config from @org.thingpedia.config.oauth2();
+
+  monitorable query get_space_usage(out used_space: Measure(byte),
+                                    out total_space: Measure(byte))
+  #_[canonical="get space usage on dropbox"]
+  #_[confirmation="your Dropbox quota info"]
+  #_[confirmation_remote="$__person's Dropbox quota info"]
+  #_[formatted=[{type="text",text="You have used ${used_space:MB} MBs out of ${total_space:MB}."}]]
+  #[poll_interval=3600000ms]
+  #[doc="retrieves the used and allocated space"];
+
+  monitorable list query list_folder(in req folder_name: Entity(tt:path_name) #_[prompt="What folder do you want to list?"],
+                                     out file_name: Entity(tt:path_name),
+                                     out is_folder: Boolean,
+                                     out modified_time: Date,
+                                     out file_size: Measure(byte),
+                                     out full_path: Entity(tt:path_name),
+                                     in opt order_by: Enum(modified_time_decreasing,modified_time_increasing,name_decreasing,name_increasing))
+  #_[canonical="list folder on dropbox"]
+  #_[confirmation="the content of $folder_name in your Dropbox"]
+  #_[confirmation_remote="the content of $folder_name in $__person's Dropbox"]
+  #_[formatted=[{type="code",code="(function(params, hint, formatter) {\nif (params.is_folder)\nreturn `${params.file_name} (dir)`;\nelse\nreturn `${params.file_name} (reg, ${formatter.measureToString(params.file_size, 1, 'KB')} KBs)`;\n})"}]]
+  #[poll_interval=3600000ms]
+  #[doc="list the content of a folder"];
+
+  query open(in req file_name: Entity(tt:path_name) #_[prompt="What file do you want to open? Use the full path name."],
+             out url: Entity(tt:url))
+  #_[canonical="open on dropbox"]
+  #_[confirmation="the link to $file_name in your Dropbox"]
+  #_[confirmation_remote="the link to $file_name in $__person's Dropbox"]
+  #_[formatted=[{type="rdl",webCallback="${url}",displayTitle="${file_name}"}]]
+  #[doc="open (retrieve a temporary link to) a file"];
+
+  action move(in req old_name: Entity(tt:path_name) #_[prompt="What file do you want to move?"],
+              in req new_name: Entity(tt:path_name) #_[prompt="What should be the new name?"])
+  #_[canonical="move on dropbox"]
+  #_[confirmation="rename $old_name to $new_name in your Dropbox"]
+  #_[confirmation_remote="rename $old_name to $new_name in $__person's Dropbox"]
+  #[doc="moves/renames a file"];
+
+  action create_new_folder(in req folder_name: Entity(tt:path_name) #_[prompt="How do you want to call the folder?"])
+  #_[canonical="create folder on dropbox"]
+  #_[confirmation="create a new folder called $folder_name in your Dropbox"]
+  #_[confirmation_remote="create a new folder called $folder_name in $__person's Dropbox"]
+  #[doc="creates new folder in user's root directory"];
+}
+

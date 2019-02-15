@@ -1,0 +1,29 @@
+class @com.wunderlist {
+  import loader from @org.thingpedia.v2();
+  import config from @org.thingpedia.config.oauth2();
+
+  list query get_lists(out id: Number,
+                       out title: String,
+                       out created_at: Date)
+  #_[canonical="get lists on Wunderlist"]
+  #_[confirmation="your Wunderlist lists"]
+  #_[confirmation_remote="$__person's  Wunderlist lists"]
+  #_[formatted=[{type="text",text="${title} created on ${created_at}"}]]
+  #[doc="retrieve your Wunderlist lists"];
+
+  monitorable list query get_tasks(in opt list_title: String,
+                                   out id: Number,
+                                   out created_at: Date,
+                                   out due_date: Date,
+                                   out starred: Boolean,
+                                   out title: String,
+                                   in opt time_window: Number,
+                                   in opt completed: Boolean)
+  #_[canonical="wunderlist tasks"]
+  #_[confirmation="your tasks in Wunderlist from $list_title"]
+  #_[confirmation_remote="retrieve $_person's tasks in Wunderlist from $list_title"]
+  #_[formatted=[{type="text",text="Task: ${title}  Due on: ${due_date}"}]]
+  #[poll_interval=60000ms]
+  #[doc="retrieve your tasks in a Wunderlist list"];
+}
+

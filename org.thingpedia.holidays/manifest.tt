@@ -1,0 +1,15 @@
+class @org.thingpedia.holidays {
+  import loader from @org.thingpedia.v2();
+  import config from @org.thingpedia.config.none();
+
+  monitorable list query get_holidays(in opt country: Entity(tt:country),
+                                      out date: Date,
+                                      out summary: String,
+                                      out description: String)
+  #_[canonical="get holidays"]
+  #_[confirmation="the holidays in ${country}"]
+  #_[formatted=[{type="text",text="${summary} on ${date:date}"}, {type="text",text="${description}"}]]
+  #[poll_interval=86400000ms]
+  #[doc="Retrieve the Holidays."];
+}
+

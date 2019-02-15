@@ -1,0 +1,21 @@
+class @com.yandex.translate {
+  import loader from @org.thingpedia.v2();
+  import config from @org.thingpedia.config.none();
+
+  query translate(in opt source_language: Entity(tt:iso_lang_code) #_[prompt="What's the source language? Use an ISO language code like it, en or zh."],
+                  in req target_language: Entity(tt:iso_lang_code) #_[prompt="What's the target language? Use an ISO language code like it, en or zh."],
+                  in req text: String #_[prompt="What do you want to translate?"],
+                  out translated_text: String)
+  #_[canonical="translate on ytranslate"]
+  #_[confirmation="the translation of $text to $target_language"]
+  #_[formatted=[{type="text",text="${translated_text}"}]]
+  #[doc="Translate text from source to destination language"];
+
+  query detect_language(in req text: String #_[prompt="What text do you want to analyze?"],
+                        out value: Entity(tt:iso_lang_code))
+  #_[canonical="detect language on ytranslate"]
+  #_[confirmation="the language of $text "]
+  #_[formatted=[{type="text",text="Detected as ${value}."}]]
+  #[doc="returns the ISO code of the guessed language of the given text"];
+}
+

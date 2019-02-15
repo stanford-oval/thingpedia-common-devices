@@ -1,0 +1,28 @@
+class @com.google.drive {
+  import loader from @org.thingpedia.v2();
+  import config from @org.thingpedia.config.oauth2();
+
+  monitorable list query list_drive_files(out file_id: Entity(com.google.drive:file_id),
+                                          out file_name: Entity(tt:path_name),
+                                          out mime_type: Entity(tt:mime_type),
+                                          out description: String,
+                                          out starred: Boolean,
+                                          out created_time: Date,
+                                          out modified_time: Date,
+                                          out file_size: Measure(byte),
+                                          in opt order_by: Enum(created_time_increasing,created_time_decreasing,modified_time_increasing,modified_time_decreasing,name_increasing,name_decreasing),
+                                          out last_modified_by: String,
+                                          out link: Entity(tt:url))
+  #_[canonical="google drive file list"]
+  #_[confirmation="files in your Google Drive"]
+  #_[confirmation_remote="files in $__person's Google Drive"]
+  #_[formatted=[{type="rdl",webCallback="${link}",displayTitle="${file_name} (last modified by ${last_modified_by} on ${modified_time})"}]]
+  #[poll_interval=60000ms]
+  #[doc="list files in Google Drive, sort by the given order, or modification date by default"];
+
+  action create_new_drive_file(in req file_name: Entity(tt:path_name) #_[prompt="what's the name of the file?"])
+  #_[canonical="create a new file on google drive"]
+  #_[confirmation="create a file with name $file_name on google drive"]
+  #[doc="create a new file with the specified name on google drive"];
+}
+

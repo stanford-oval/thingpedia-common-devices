@@ -1,0 +1,14 @@
+class @com.microsoft.cognitive.vision
+#_[name="Microsoft Computer Vision"]
+#_[description="Describe and tag images"] {
+  import loader from @org.thingpedia.v2();
+  import config from @org.thingpedia.config.none();
+
+  query generate_description(in req picture_url: Entity(tt:picture) #_[prompt="What picture do you want to describe?"],
+                             out description: String)
+  #_[canonical="generate description of picture"]
+  #_[confirmation="the description of ${picture_url}"]
+  #_[formatted=[{type="text",text="${description}"}, {type="picture",url="${picture_url}"}]]
+  #[doc="automatically generate a description for a picture"];
+}
+

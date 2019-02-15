@@ -1,0 +1,52 @@
+class @com.uber {
+  import loader from @org.thingpedia.v2();
+  import config from @org.thingpedia.config.oauth2();
+
+  monitorable query time_estimate(in req start: Location #_[prompt="Where do you want to call Uber?"],
+                                  out uber_type: Enum(pool,uber_x,uber_xl,uber_black,select,suv,assist),
+                                  out estimate: Measure(ms))
+  #_[canonical="get time estimate on uber"]
+  #_[confirmation="ETAs for uber services at $start"]
+  #_[formatted=[{type="text",text="Estimate for ${uber_type}: ${estimate:min} min"}]]
+  #[poll_interval=60000ms]
+  #[doc="returns ETAs for all Uber products (pool, uberX, select, etc.) offered at a given location"];
+
+  monitorable query price_estimate(in req start: Location #_[prompt="Where do you want to be picked up?"],
+                                   in req end: Location #_[prompt="Where do you want to go?"],
+                                   out uber_type: Enum(pool,uber_x,uber_xl,uber_black,select,suv,assist),
+                                   out low_estimate: Currency,
+                                   out high_estimate: Currency,
+                                   out surge: Number,
+                                   out duration: Measure(ms),
+                                   out distance: Measure(m))
+  #_[canonical="get price estimate on uber"]
+  #_[confirmation="estimated prices for Uber from $start to $end"]
+  #_[formatted=[{type="text",text="Estimate for ${uber_type}: between ${low_estimate} and ${high_estimate} (${surge}x surge). Distance: ${distance:km} km, Time: ${duration:min} min"}]]
+  #[poll_interval=60000ms]
+  #[doc="returns estimated prices for a given trip on all available products"];
+
+  monitorable query current(out status: String,
+                            out vehicle: String,
+                            out vehicle_picture: Entity(tt:picture),
+                            out driver: String,
+                            out driver_picture: Entity(tt:picture),
+                            out eta: Measure(ms),
+                            out from: Location,
+                            out to: Location)
+  #_[canonical="get current uber ride"]
+  #_[confirmation="your current Uber ride status"]
+  #_[confirmation_remote="$__person's current Uber ride status"]
+  #_[formatted=[{type="text",text="Your ride from ${from} to ${to} is ${status}, eta: ${eta:min}"}, {type="text",text="${driver}"}, {type="picture",url="${driver_picture}"}, {type="text",text="${vehicle}"}, {type="picture",url="${vehicle_picture}"}]]
+  #[poll_interval=60000ms]
+  #[doc="Get current Uber ride"];
+
+  action request(in req start: Location #_[prompt="Where do you want to call Uber?"],
+                 in req end: Location #_[prompt="Where to you want to go? "],
+                 in req uber_type: Enum(pool,uber_x,uber_xl,uber_black,select,suv,assist) #_[prompt="What type of uber do you want to call? "],
+                 in opt seat_count: Number #_[prompt="How many seats? "])
+  #_[canonical="request uber ride"]
+  #_[confirmation="request an Uber ride from $start to $end"]
+  #_[confirmation_remote="request an Uber ride from $start to $end from $__person's Uber account"]
+  #[doc="Request an uber ride "];
+}
+

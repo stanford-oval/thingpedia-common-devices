@@ -1,0 +1,24 @@
+class @com.linkedin {
+  import loader from @org.thingpedia.v2();
+  import config from @org.thingpedia.config.oauth2();
+
+  monitorable query get_profile(out formatted_name: String,
+                                out headline: String,
+                                out industry: String,
+                                out specialties: String,
+                                out positions: Array(String),
+                                out profile_picture: Entity(tt:picture))
+  #_[canonical="get profile on linkedin"]
+  #_[confirmation="your LinkedIn profile"]
+  #_[confirmation_remote="$__person's LinkedIn profile"]
+  #_[formatted=[{type="text",text="${formatted_name}"}, {type="text",text="${headline}"}, {type="picture",url="${profile_picture}"}, {type="text",text="Works in ${industry}"}]]
+  #[poll_interval=86400000ms]
+  #[doc="retrieve your LinkedIn profile"];
+
+  action share(in req status: String #_[prompt="What do you want to post? Include a link to a page."])
+  #_[canonical="post on linkedin"]
+  #_[confirmation="share $status on your LinkedIn"]
+  #_[confirmation_remote="share $status on $__person's LinkedIn"]
+  #[doc="share a comment and a link "];
+}
+

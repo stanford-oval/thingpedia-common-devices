@@ -1,0 +1,47 @@
+class @com.lg.tv.webos2 {
+  import loader from @org.thingpedia.v2();
+  import config from @org.thingpedia.config.discovery.undefined();
+
+  action set_power(in req power: Enum(on,off) #_[prompt="Do you want to turn the tv on or off?"])
+  #_[canonical="set power on lg webos tv"]
+  #_[confirmation="turn $power your LG WebOS TV"]
+  #_[confirmation_remote="turn $power $__person's LG WebOS TV"]
+  #[doc="turn off the TV (turning on is not supported)"];
+
+  action raise_volume()
+  #_[canonical="raise volume on lg webos tv"]
+  #_[confirmation="increase the volume on your LG WebOS TV"]
+  #_[confirmation_remote="increase the volume on $__person's LG WebOS TV"]
+  #[doc="increase the volume of the tv"];
+
+  action lower_volume()
+  #_[canonical="lower volume on lg webos tv"]
+  #_[confirmation="decrease the volume on your LG WebOS TV"]
+  #_[confirmation_remote="decrease the volume on $__person's LG WebOS TV"]
+  #[doc="lower the audio volume on the tv"];
+
+  action set_volume(in req percent: Number #_[prompt="What volume do you want to set (in percent)?"])
+  #_[canonical="set volume on lg webos tv"]
+  #_[confirmation="set the volume on your LG WebOS TV to $percent%"]
+  #_[confirmation_remote="set the volume on $__person's LG WebOS TV to $percent%"]
+  #[doc="set the volume on this device to the given percent value"];
+
+  action mute()
+  #_[canonical="mute on lg webos tv"]
+  #_[confirmation="mute your LG WebOS TV"]
+  #_[confirmation_remote="mute $__person's LG WebOS TV"]
+  #[doc="change the mute status on the tv"];
+
+  action unmute()
+  #_[canonical="unmute on lg webos tv"]
+  #_[confirmation="unmute your LG WebOS Tv"]
+  #_[confirmation_remote="unmute $__person's LG WebOS Tv"]
+  #[doc="change the mute status on the tv"];
+
+  action play_url(in req url: Entity(tt:url) #_[prompt="What video do you want to play? Use the full URL."])
+  #_[canonical="play url on lg webos tv"]
+  #_[confirmation="play $url on your LG WebOS TV"]
+  #_[confirmation_remote="play $url on $__person's LG WebOS TV"]
+  #[doc="start playing a video by URL"];
+}
+

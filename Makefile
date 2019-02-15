@@ -1,25 +1,25 @@
 NULL =
 
-jsonfiles := $(filter-out package.json,$(wildcard *.json))
-zipfiles := $(jsonfiles:.json=.zip)
+pkgfiles := $(wildcard */package.json)
+zipfiles := $(ttfiles:%/package.json=%.zip)
 
-.PRECIOUS: build/%
+.PRECIOUS: %/node_modules
 
 all: $(zipfiles)
+	@:
 
-%.zip: build/%
-	cd $< ; zip -r $(abspath $@) *
+%.zip: %
+	cd $< ; zip -x '*.tt' '*.yml' 'node_modules/.bin/*' -r $(abspath $@) .
 
-build/%: %
-	mkdir -p build/
-	-test -d $@ && rm -fr $@
-	cp -r $< $@
-	cd $@ ; yarn --only=prod --no-optional
+%/node_modules: %/package.json %/yarn.lock
+	cd `dirname $@` ; yarn --only=prod --no-optional
 	# unfortunately too many devices are old and dirty
 	# and fail, so we run with - to ignore the return value
-	-cd $@ ; eslint *.js
+	-cd `dirname $@` ; eslint *.js
+	touch $@
+
+%: %/package.json %/*.js %/node_modules
 	touch $@
 
 clean:
-	rm -fr build/
 	rm -f *.zip

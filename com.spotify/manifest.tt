@@ -1,0 +1,232 @@
+class @com.spotify {
+  import loader from @org.thingpedia.v2();
+  import config from @org.thingpedia.config.oauth2();
+
+  monitorable query get_currently_playing(out song: String)
+  #_[canonical="get currently playing track name"]
+  #_[confirmation="the currently playing track name"]
+  #_[confirmation_remote="$_person's currently playing track name"]
+  #_[formatted=[{type="text",text="The current playing song is ${song}."}]]
+  #[poll_interval=60000ms]
+  #[doc="retrieve the currently playing track name"];
+
+  monitorable query get_tempo(in opt song: String,
+                              out tempo: Number)
+  #_[canonical="retrieve the tempo"]
+  #_[confirmation="retrieve the tempo"]
+  #_[formatted=[{type="text",text="The tempo of this track is ${tempo} beats per minute."}]]
+  #[poll_interval=60000ms]
+  #[doc="retrieve the tempo"];
+
+  monitorable query get_danceability(in opt song: String,
+                                     out danceability: Number)
+  #_[canonical="danceability of this track"]
+  #_[confirmation="danceability of this track"]
+  #_[formatted=[{type="text",text="On a scale from 0 to 1, the danceability of this track is ${danceability}."}]]
+  #[poll_interval=60000ms]
+  #[doc="get danceability of this track"];
+
+  monitorable query get_acousticness(in opt song: String,
+                                     out acousticness: Number)
+  #_[canonical="acousticness of this track"]
+  #_[confirmation="acousticness of this track"]
+  #_[formatted=[{type="text",text="'On a scale from 0 to 1, the acousticness of this track is ${acousticness}."}]]
+  #[poll_interval=60000ms]
+  #[doc="acousticness of this track"];
+
+  monitorable query get_energy(in opt song: String,
+                               out energy: Number)
+  #_[canonical="energy of this track"]
+  #_[confirmation="energy of this track"]
+  #_[formatted=[{type="text",text="On a scale from 0 to 1, the energy of this track is ${energy}."}]]
+  #[poll_interval=60000ms]
+  #[doc="energy of this track"];
+
+  monitorable query get_speechiness(in opt song: String,
+                                    out speechness: Number)
+  #_[canonical="speechiness of this track"]
+  #_[confirmation="speechiness of this track"]
+  #_[formatted=[{type="text",text="On a scale from 0 to 1, the speechiness of this track is ${speechiness}."}]]
+  #[poll_interval=60000ms]
+  #[doc="get speechiness of this track"];
+
+  monitorable query get_valence(in opt song: String,
+                                out valence: Number)
+  #_[canonical="valence (positivity) of this track"]
+  #_[confirmation="valence (positivity) of this track"]
+  #_[formatted=[{type="text",text="On a scale from 0 to 1, the valence of this track is ${valence}"}]]
+  #[poll_interval=60000ms]
+  #[doc="valence (positivity) of this track"];
+
+  monitorable query get_liveness(in opt song: String,
+                                 out liveness: Number)
+  #_[canonical="liveness of this track"]
+  #_[confirmation="liveness of this track"]
+  #_[formatted=[{type="text",text="On a scale from 0 to 1, the liveness of this track is ${liveness}."}]]
+  #[poll_interval=60000ms]
+  #[doc="liveness of this track"];
+
+  monitorable query get_instrumentalness(in opt song: String,
+                                         out instrumentalness: Number)
+  #_[canonical="instrumentalness of this track"]
+  #_[confirmation="instrumentalness of this track"]
+  #_[formatted=[{type="text",text="On a scale from 0 to 1, the instrumentalness of this track is ${instrumentalness}."}]]
+  #[poll_interval=60000ms]
+  #[doc="instrumentalness of this track"];
+
+  monitorable query get_loudness(in opt song: String,
+                                 out loudness: Number)
+  #_[canonical="loudness of this track"]
+  #_[confirmation="loudness of this track"]
+  #_[formatted=[{type="text",text="On a scale from -60 to 0 dB, the loudness of this track is ${loudness} dB."}]]
+  #[poll_interval=60000ms]
+  #[doc="loudness of this track"];
+
+  monitorable query get_key(in opt song: String,
+                            out key: String,
+                            out modality: String)
+  #_[canonical="key of this track"]
+  #_[confirmation="key of this track"]
+  #_[formatted=[{type="text",text="The key of this track is ${key} ${modality}."}]]
+  #[poll_interval=60000ms]
+  #[doc="key of this track"];
+
+  monitorable query get_time_signature(in opt song: String,
+                                       out beats: Number)
+  #_[canonical="time signature of this track"]
+  #_[confirmation="time signature of this track"]
+  #_[formatted=[{type="text",text="This track has ${beats} beats per measure."}]]
+  #[poll_interval=60000ms]
+  #[doc="time signature of this track"];
+
+  monitorable list query get_user_playlist(out playlist: String)
+  #_[canonical="get my spotify playlist"]
+  #_[confirmation="your Spotify playlist"]
+  #_[confirmation_remote="$_person's Spotify playlist"]
+  #[poll_interval=86400000ms]
+  #[doc="retrieve your Spotify playlist"];
+
+  monitorable list query get_user_playlist_track(in req playlist: String #_[prompt="Which playlist do you want?"],
+                                                 out song: String)
+  #_[canonical="get songs in my spotify playlist"]
+  #_[confirmation="songs in your Spotify playlist ${playlist}"]
+  #_[confirmation_remote="songs in $_person's Spotify playlist ${playlist}"]
+  #_[formatted=[{type="text",text="${song}"}]]
+  #[poll_interval=86400000ms]
+  #[doc="list songs in your Spotify playlist"];
+
+  monitorable list query get_user_top_tracks(out song: String)
+  #_[canonical="sportify top tracks"]
+  #_[confirmation="my top tracks in Spotify"]
+  #_[confirmation_remote="$_person's top tracks in Spotify"]
+  #_[formatted=[{type="text",text="${song}"}]]
+  #[poll_interval=3600000ms]
+  #[doc="get user's top tracks in the last 4 weeks"];
+
+  action player_pause()
+  #_[canonical="pause playback"]
+  #_[confirmation="pause playback"]
+  #_[confirmation_remote="pause $_person's playback"]
+  #[doc="pause playback"];
+
+  action player_play()
+  #_[canonical="resume playback"]
+  #_[confirmation="resume playback"]
+  #_[confirmation_remote="resume $_person's playback"]
+  #[doc="resume playback"];
+
+  action player_next()
+  #_[canonical="go to the next song"]
+  #_[confirmation="go to the next song"]
+  #_[confirmation_remote="go to the next song"]
+  #[doc="go to the next song"];
+
+  action player_previous()
+  #_[canonical="go to the previous song"]
+  #_[confirmation="go to the previous song"]
+  #_[confirmation_remote="go to the previous song"]
+  #[doc="go to the previous song"];
+
+  action player_shuffle(in req shuffle: Enum(on,off) #_[prompt="Should we set the shuffle state to 'on' or 'off'?"])
+  #_[canonical="set the shuffle state"]
+  #_[confirmation="set the shuffle state"]
+  #_[confirmation_remote="set the shuffle state"]
+  #[doc="set the shuffle state"];
+
+  action player_repeat(in req repeat: Enum(track,context,off) #_[prompt="Should we set the repeat state to 'track', 'context', or 'off'?"])
+  #_[canonical="set the repeat state"]
+  #_[confirmation="set the repeat state"]
+  #_[confirmation_remote="set the repeat state"]
+  #[doc="set the repeat state"];
+
+  action play_album(in req toPlay: String #_[prompt="What album would you like to play?"])
+  #_[canonical="play an album"]
+  #_[confirmation="play the album $toPlay"]
+  #_[confirmation_remote="play the album $toPlay"]
+  #[doc="play an album"];
+
+  action play_artist(in req toPlay: String #_[prompt="What artist would you like to play?"])
+  #_[canonical="play an artist"]
+  #_[confirmation="play the artist $toPlay"]
+  #_[confirmation_remote="play the artist $toPlay"]
+  #[doc="play an artist"];
+
+  action play_playlist(in req toPlay: String #_[prompt="What playlist do you want to play?"])
+  #_[canonical="play the playlist"]
+  #_[confirmation="play the playlist $toPlay"]
+  #_[confirmation_remote="play the playlist $toPlay"]
+  #[doc="play the playlist"];
+
+  action play_my_playlist(in req toPlay: String #_[prompt="Which one of your playlists do you want to play?"])
+  #_[canonical="play your playlist"]
+  #_[confirmation="play your playlist $toPlay"]
+  #_[confirmation_remote="play your playlist $toPlay"]
+  #[doc="play your playlist"];
+
+  action play_seek_seconds(in req seconds: Measure(ms) #_[prompt="What timestamp (in seconds) should we seek to?"])
+  #_[canonical="seek the track in seconds"]
+  #_[confirmation="seek the track to $seconds seconds"]
+  #_[confirmation_remote="seek the track to $seconds seconds"]
+  #[doc="seek in seconds"];
+
+  action save_current_track()
+  #_[canonical="save the currently playing track"]
+  #_[confirmation="save the currently playing track"]
+  #_[confirmation_remote="save the currently playing track"]
+  #[doc="save the currently playing track"];
+
+  action create_new_playlist(in req title: String #_[prompt="What would you like to name your playlist?"],
+                             in opt description: String #_[prompt="What description would you like to give your playlist?"],
+                             in opt isPublic: String #_[prompt="Would you like your playlist to be public?"])
+  #_[canonical="create a new playlist"]
+  #_[confirmation="create a new playlist named $title"]
+  #_[confirmation_remote="create a new playlist named $title"]
+  #[doc="create a new playlist"];
+
+  action add_album_to_playlist(in req toAdd: String #_[prompt="What album would you like to add to your playlist?"],
+                               in req playlist: String #_[prompt="What play list would you like to add to?"])
+  #_[canonical="add an album to a playlist"]
+  #_[confirmation="add the album $toAdd to the playlist $playlist"]
+  #_[confirmation_remote="add the album $toAdd to the playlist $playlist"]
+  #[doc="add an album to a playlist"];
+
+  action add_this_song_to_playlist(in req playlist: String #_[prompt="What playlist would you like to add to?"])
+  #_[canonical="add this song to playlist"]
+  #_[confirmation="add this song to the playlist $playlist"]
+  #_[confirmation_remote="add this song to the playlist $playlist"]
+  #[doc="add this song to a playlist"];
+
+  action play_songs(in req toPlay: String #_[prompt="List the songs you want to play, separated by comma."])
+  #_[canonical="play the song(s)"]
+  #_[confirmation="play the song(s) $toPlay"]
+  #_[confirmation_remote="play the song(s) $toPlay"]
+  #[doc="play song(s)"];
+
+  action add_songs_to_playlist(in req toAdd: String #_[prompt="What songs would you like to add? List them separated by comma."],
+                               in req playlist: String #_[prompt="What playlist would you like to add to?"])
+  #_[canonical="add songs to a playlist"]
+  #_[confirmation="add the songs $toAdd to the playlist $playlist"]
+  #_[confirmation_remote="add the songs $toAdd to the playlist $playlist"]
+  #[doc="add songs to a playlist"];
+}
+

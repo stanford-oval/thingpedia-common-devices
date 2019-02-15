@@ -1,0 +1,16 @@
+class @com.fortnitetracker {
+  import loader from @org.thingpedia.v2();
+  import config from @org.thingpedia.config.none();
+
+  monitorable query get(in req user_id: String #_[prompt="what's the user id you want to track?"],
+                        out rating: Number,
+                        out rank: Number,
+                        out kd: Number,
+                        out winRatio: Number)
+  #_[canonical="get fortnite stats"]
+  #_[confirmation="fortnite stats of $user_id"]
+  #_[formatted=[{type="text",text="Stats for ${user_id}: "}, {type="text",text="rating: ${rating}; ranking: ${rank}; k/d ratio: ${kd}; win ratio: ${winRatio}"}]]
+  #[poll_interval=3600000ms]
+  #[doc="Get the stats of a user"];
+}
+
