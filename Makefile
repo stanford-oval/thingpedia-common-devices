@@ -1,7 +1,7 @@
 NULL =
 
 pkgfiles := $(wildcard */package.json)
-zipfiles := $(ttfiles:%/package.json=%.zip)
+zipfiles := $(pkgfiles:%/package.json=%.zip)
 
 .PRECIOUS: %/node_modules
 
