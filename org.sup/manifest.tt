@@ -1,0 +1,14 @@
+class @org.sup {
+  import loader from @org.thingpedia.rss();
+  import config from @org.thingpedia.config.none();
+
+  monitorable list query new_books(out title: String #_[canonical="title"] #[string_values="tt:news_title"],
+                                     out link: Entity(tt:url) #_[canonical="link"],
+                                     out updated: Date #_[canonical="updated"],
+                                     out description: String #[string_values="tt:news_description"])
+  #_[canonical="get new books by Stanford Press"]
+  #_[confirmation="new books by Stanford Press"]
+  #_[formatted=[{type="rdl",webCallback="${link}",displayTitle="${title}",displayText="${description}"}]]
+  #[url="https://www.sup.org/rss/?feed=newbooks"]
+  #[poll_interval=1h];
+}

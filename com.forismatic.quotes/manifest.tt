@@ -1,0 +1,12 @@
+class @com.forismatic.quotes {
+  import loader from @org.thingpedia.generic_rest.v1();
+  import config from @org.thingpedia.config.none();
+
+  query get(out text: String #[json_key="quoteText"],
+            out author: String #[json_key="quoteAuthor"])
+  #_[canonical="quote"]
+  #_[confirmation="a quote"]
+  #_[formatted=[{type="text",text="${text} By ${author}."}]]
+  #[doc="get a quote"]
+  #[url="http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en"];
+}

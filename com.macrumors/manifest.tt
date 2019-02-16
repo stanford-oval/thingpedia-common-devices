@@ -1,0 +1,13 @@
+class @com.macrumors {
+  import loader from @org.thingpedia.rss();
+  import config from @org.thingpedia.config.none();
+
+  monitorable list query stories(out title: String #_[canonical="title"] #[string_values="tt:news_title"],
+                                     out link: Entity(tt:url) #_[canonical="link"],
+                                     out updated: Date #_[canonical="updated"])
+  #_[canonical="get stories on MacRumors"]
+  #_[confirmation="top stories on MacRumors"]
+  #_[formatted=[{type="rdl",webCallback="${link}",displayTitle="${title}"}]]
+  #[url="http://feeds.macrumors.com/MacRumors-All"]
+  #[poll_interval=1h];
+}

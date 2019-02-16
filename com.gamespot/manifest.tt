@@ -1,0 +1,13 @@
+class @com.gamespot {
+  import loader from @org.thingpedia.rss();
+  import config from @org.thingpedia.config.none();
+
+  monitorable list query news(out title: String #_[canonical="title"] #[string_values="tt:news_title"],
+                                     out link: Entity(tt:url) #_[canonical="link"],
+                                     out updated: Date #_[canonical="updated"])
+  #_[canonical="get Gamespot news"]
+  #_[confirmation="latest news on Gamespot"]
+  #_[formatted=[{type="rdl",webCallback="${link}",displayTitle="${title}"}]]
+  #[url="https://www.gamespot.com/feeds/mashup/"]
+  #[poll_interval=1h];
+}

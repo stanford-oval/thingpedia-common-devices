@@ -1,0 +1,13 @@
+class @com.cryptonator {
+  import loader from @org.thingpedia.generic_rest.v1();
+  import config from @org.thingpedia.config.none();
+
+  monitorable query get_price(in req currency: Entity(tt:cryptocurrency_code) #_[prompt="What crypto currency do you want to check?"],
+                              out price: Currency #[json_key="ticker.price"])
+  #_[canonical="get crypto currency price"]
+  #_[confirmation="price of ${currency}"]
+  #_[formatted=[{type="text",text="The price of ${currency} is ${price}."}]]
+  #[poll_interval=300000ms]
+  #[doc="Get crypto currency price"]
+  #[url="https://api.cryptonator.com/api/ticker/${currency:url}-usd"];
+}

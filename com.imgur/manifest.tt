@@ -1,0 +1,74 @@
+class @com.imgur {
+    import loader from @org.thingpedia.v2();
+    import config from @org.thingpedia.config.oauth2(client_id=$undefined,
+                                                     client_secret=$undefined);
+
+    monitorable list query gallery(in opt section : Enum(hot,user),
+                                   in opt sort : Enum(viral,rising),
+                                   out title : String #[string_values="tt:news_title"],
+                                   out author : Entity(tt:username) #[string_values="com.twitter:username"],
+                                   out date : Date,
+                                   out picture_url : Entity(tt:picture),
+                                   out link : Entity(tt:url),
+                                   out points : Number,
+                                   out width : Number,
+                                   out height : Number,
+                                   out hashtags : Array(Entity(tt:hashtag)) #[string_values="com.giphy:tag"],
+                                   out is_album : Boolean,
+                                   out is_mature : Boolean,
+    				   out album_id : Entity(com.imgur:album_id))
+    #_[confirmation="images and albums in Imgur"]
+    #_[formatted=[{type="rdl",displayTitle="${title}",displayText="Uploaded by ${author} on ${date}. Tags: ${hashtags}",webCallback="${link}",callback="${link}"},
+                  {type="picture",url="${picture_url}"}]]
+    #[poll_interval=10min];
+
+
+    monitorable list query search (in req query : String #[string_values="tt:search_query"] #[prompt="What do you want to search?"],
+                                   out title : String #[string_values="tt:news_title"],
+                                   out author : Entity(tt:username) #[string_values="com.twitter:username"],
+                                   out date : Date,
+                                   out picture_url : Entity(tt:picture),
+                                   out link : Entity(tt:url),
+                                   out points : Number,
+                                   out width : Number,
+                                   out height : Number,
+                                   out hashtags : Array(Entity(tt:hashtag)) #[string_values="com.giphy:tag"],
+                                   out is_album : Boolean,
+                                   out is_mature : Boolean,
+    				   out album_id : Entity(com.imgur:album_id))
+    #_[confirmation="search ${query} in Imgur"]
+    #_[formatted=[{type="rdl",displayTitle="${title}",displayText="Uploaded by ${author} on ${date}. Tags: ${hashtags}",webCallback="${link}",callback="${link}"},
+                  {type="picture",url="${picture_url}"}]]
+    #[poll_interval=10min];
+
+
+    monitorable list query album(in req album_id : Entity(com.imgur:album_id) #[prompt="What album do you want to see?"],
+    			         out description : String #[string_values="tt:long_free_text"],
+    				 out author : Entity(tt:username) #[string_values="com.twitter:username"],
+    				 out date : Date,
+    				 out picture_url : Entity(tt:picture),
+    				 out width : Number,
+                                 out height : Number,
+				 out is_mature : Boolean)
+    #_[confirmation="images in the Imgur album ${album_id}"]
+    #_[formatted=[{type="picture",url="${picture_url}"}, "${description}"]]
+    #[poll_interval=1h];
+
+
+    monitorable list query comments(in req album_id : Entity(com.imgur:album_id) #[prompt="What album do you want to see?"],
+    			            out comment : String #[string_values="tt:long_free_text"],
+                                    out author : Entity(tt:username) #[string_values="com.twitter:username"],
+                                    out date : Date,
+                                    out points : Number)
+    #_[confirmation="comments in Imgur album ${album_id}"]
+    #_[formatted=["@${author}: ${comment}"]]
+    #[poll_interval=10min];
+
+    action upload(in req picture_url : Entity(tt:picture) #[prompt="Upload the picture now"],
+    		  in req title : String #[string_values="com.instagram:caption"] #[prompt="What should be the title of the picture?"],
+    		  in opt body : String #[prompt="What should be the description of the picture?"],
+    		  in opt is_mature : Boolean #[prompt="Should I mark this picture as mature?"],
+    		  in opt hashtags : Array(Entity(tt:hashtag)) #[string_values="com.giphy:tag"],
+                  in req to_gallery : Boolean #[prompt="Do you want to share this picture to the gallery?"])
+    #_[confirmation="upload an image to Imgur with title ${title}"];
+}

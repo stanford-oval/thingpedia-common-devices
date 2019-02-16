@@ -1,0 +1,13 @@
+class @org.hackernews {
+  import loader from @org.thingpedia.rss();
+  import config from @org.thingpedia.config.none();
+
+  monitorable list query frontpage(out title: String #_[canonical="title"] #[string_values="tt:news_title"],
+                                   out link: Entity(tt:url) #_[canonical="link"],
+                                   out updated: Date #_[canonical="updated"])
+  #_[canonical="get hacker news frontpage"]
+  #_[confirmation="front page of Hacker News"]
+  #_[formatted=[{type="rdl",webCallback="${link}",displayTitle="${title}"}]]
+  #[url="https://hnrss.org/frontpage"]
+  #[poll_interval=1h];
+}

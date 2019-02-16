@@ -1,0 +1,14 @@
+class @com.medium {
+  import loader from @org.thingpedia.rss();
+  import config from @org.thingpedia.config.none();
+
+  monitorable list query articles(in req author: Entity(tt:username) #_[prompt="What is the username of the writer"] #[string_values="com.twitter:username"],
+    				     out title: String #_[canonical="title"] #[string_values="tt:news_title"],
+                                     out link: Entity(tt:url) #_[canonical="link"],
+                                     out updated: Date #_[canonical="updated"])
+  #_[canonical="get articles on medium"]
+  #_[confirmation="articles by $author"]
+  #_[formatted=[{type="rdl",webCallback="${link}",displayTitle="${title}"}]]
+  #[url="https://medium.com/feed/@${author}"]
+  #[poll_interval=1h];
+}

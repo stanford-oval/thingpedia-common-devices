@@ -1,6 +1,6 @@
 class @com.github {
   import loader from @org.thingpedia.v2();
-  import config from @org.thingpedia.config.oauth2();
+  import config from @org.thingpedia.config.oauth2(client_id=$undefined, client_secret=$undefined);
 
   monitorable list query get_issue(in req repo_name: Entity(tt:path_name) #_[prompt="What repository do you want to watch?"],
                                    out user: Entity(tt:username) #_[prompt="What user are you interested in?"],
@@ -53,6 +53,19 @@ class @com.github {
   #[poll_interval=3600000ms]
   #[doc="comments on issues"];
 
+  monitorable list query get_pull_requests(in req repo_name: Entity(tt:path_name) #_[prompt="What repository do you want to wath?"],
+                                           out title: String,
+                                           out body: String,
+                                           out time: Date,
+                                           out reviewers: Array(Entity(tt:username)),
+                                           out url: Entity(tt:url))
+  #_[canonical="pull requests on github"]
+  #_[confirmation="pull requests in Github repository ${repo_name}"]
+  #_[confirmation_remote="pull requests in $__person's Github repository ${repo_name}"]
+  #_[formatted=[{type="rdl",webCallback="${url}",displayTitle="PR: ${title}",displayText="${body}\nCreated at: ${time}\nRequested reviewers: ${reviewers}"}]]
+  #[poll_interval=3600000ms]
+  #[doc="pr"];
+
   query get_file(in req repo_name: Entity(tt:path_name) #_[prompt="What repository is the file in?"],
                  in req file_name: Entity(tt:path_name) #_[prompt="What file do you want to get?"],
                  out url: Entity(tt:url))
@@ -76,4 +89,3 @@ class @com.github {
   #_[confirmation_remote="comment on issue $issue_number in $repo_name on $__person's Github"]
   #[doc="post a new comment on a given issue"];
 }
-

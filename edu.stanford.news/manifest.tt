@@ -1,0 +1,12 @@
+class @edu.stanford.news {
+  import loader from @org.thingpedia.generic_rest.v1();
+  import config from @org.thingpedia.config.none();
+
+  monitorable list query get(out title: String #[json_key="title.rendered"] #[string_values="tt:news_title"],
+                             out url: Entity(tt:url) #[json_key="link"])
+  #_[canonical="Stanford news"]
+  #_[confirmation="stanford news"]
+  #_[formatted=[{type="rdl",webCallback="$url",displayTitle="$title"}]]
+  #[poll_interval=3600000ms]
+  #[url="https://news.stanford.edu/wp-json/wp/v2/posts"];
+}

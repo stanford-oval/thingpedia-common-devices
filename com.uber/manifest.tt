@@ -1,8 +1,8 @@
 class @com.uber {
   import loader from @org.thingpedia.v2();
-  import config from @org.thingpedia.config.oauth2();
+  import config from @org.thingpedia.config.oauth2(client_id=$undefined, client_secret=$undefined);
 
-  monitorable query time_estimate(in req start: Location #_[prompt="Where do you want to call Uber?"],
+  monitorable list query time_estimate(in req start: Location #_[prompt="Where do you want to call Uber?"],
                                   out uber_type: Enum(pool,uber_x,uber_xl,uber_black,select,suv,assist),
                                   out estimate: Measure(ms))
   #_[canonical="get time estimate on uber"]
@@ -11,7 +11,7 @@ class @com.uber {
   #[poll_interval=60000ms]
   #[doc="returns ETAs for all Uber products (pool, uberX, select, etc.) offered at a given location"];
 
-  monitorable query price_estimate(in req start: Location #_[prompt="Where do you want to be picked up?"],
+  monitorable list query price_estimate(in req start: Location #_[prompt="Where do you want to be picked up?"],
                                    in req end: Location #_[prompt="Where do you want to go?"],
                                    out uber_type: Enum(pool,uber_x,uber_xl,uber_black,select,suv,assist),
                                    out low_estimate: Currency,
@@ -49,4 +49,3 @@ class @com.uber {
   #_[confirmation_remote="request an Uber ride from $start to $end from $__person's Uber account"]
   #[doc="Request an uber ride "];
 }
-

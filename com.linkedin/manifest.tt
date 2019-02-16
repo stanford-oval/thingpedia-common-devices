@@ -1,10 +1,10 @@
 class @com.linkedin {
   import loader from @org.thingpedia.v2();
-  import config from @org.thingpedia.config.oauth2();
+  import config from @org.thingpedia.config.oauth2(client_id=$undefined, client_secret=$undefined);
 
-  monitorable query get_profile(out formatted_name: String,
-                                out headline: String,
-                                out industry: String,
+  monitorable query get_profile(out formatted_name: String #[string_values="tt:person_full_name"],
+                                out headline: String #[string_values="tt:job_title"],
+                                out industry: String #[string_values="com.linkedin:industry"],
                                 out specialties: String,
                                 out positions: Array(String),
                                 out profile_picture: Entity(tt:picture))
@@ -15,10 +15,9 @@ class @com.linkedin {
   #[poll_interval=86400000ms]
   #[doc="retrieve your LinkedIn profile"];
 
-  action share(in req status: String #_[prompt="What do you want to post? Include a link to a page."])
+  action share(in req status: String #_[prompt="What do you want to post? Include a link to a page."] #[string_values="tt:long_free_text"])
   #_[canonical="post on linkedin"]
   #_[confirmation="share $status on your LinkedIn"]
   #_[confirmation_remote="share $status on $__person's LinkedIn"]
   #[doc="share a comment and a link "];
 }
-

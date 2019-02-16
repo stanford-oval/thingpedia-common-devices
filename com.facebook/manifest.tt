@@ -1,14 +1,14 @@
 class @com.facebook {
   import loader from @org.thingpedia.v2();
-  import config from @org.thingpedia.config.oauth2();
+  import config from @org.thingpedia.config.oauth2(client_id=$undefined, client_secret=$undefined);
 
-  monitorable list query list_posts(out id: String,
+  monitorable list query list_posts(out id: Entity(com.facebook:id),
                                     out date: Date,
-                                    out message: String,
+                                    out message: String #[string_values="tt:long_free_text"],
                                     out picture_url: Entity(tt:picture),
-                                    out type: String,
+                                    out type: Enum(status,photo,link,video),
                                     out link: Entity(tt:url),
-                                    out link_title: String)
+                                    out link_title: String #[string_values="tt:news_title"])
   #_[canonical="facebook posts"]
   #_[confirmation="my posts on facebook"]
   #_[confirmation_remote="$__person's posts on facebook"]
@@ -16,7 +16,7 @@ class @com.facebook {
   #[poll_interval=3600000ms]
   #[doc="List my facebook posts"];
 
-  monitorable list query list_photos(in opt album: String #_[prompt="Which album? "],
+  monitorable list query list_photos(in opt album: String #_[prompt="Which album?"],
                                      out date: Date,
                                      out picture_url: Entity(tt:picture))
   #_[canonical="facebook photos"]
@@ -26,17 +26,16 @@ class @com.facebook {
   #[poll_interval=3600000ms]
   #[doc="list photos in an album on facebook"];
 
-  action post(in req status: String #_[prompt="What do you want to post?"])
+  action post(in req status: String #_[prompt="What do you want to post?"] #[string_values="tt:long_free_text"])
   #_[canonical="post on facebook"]
   #_[confirmation="post $status on Facebook"]
   #_[confirmation_remote="post $status on $__person's Facebook"]
   #[doc="post a status update to Facebook"];
 
   action post_picture(in req picture_url: Entity(tt:picture) #_[prompt="Upload the picture now."],
-                      in req caption: String #_[prompt="What should be the caption of the picture?"])
+                      in req caption: String #_[prompt="What should be the caption of the picture?"] #[string_values="com.instagram:caption"])
   #_[canonical="post picture on facebook"]
   #_[confirmation="upload a picture on Facebook with caption $caption"]
   #_[confirmation_remote="upload a picture on $__person's Facebook with caption $caption"]
   #[doc="upload a photo to your Facebook"];
 }
-

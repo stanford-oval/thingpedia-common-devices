@@ -1,0 +1,13 @@
+class @com.businessinsider {
+  import loader from @org.thingpedia.rss();
+  import config from @org.thingpedia.config.none();
+
+  monitorable list query news(out title: String #_[canonical="title"] #[string_values="tt:news_title"],
+                                     out link: Entity(tt:url) #_[canonical="link"],
+                                     out updated: Date #_[canonical="updated"])
+  #_[canonical="get latest news on Business Insider"]
+  #_[confirmation="news on Business Insider"]
+  #_[formatted=[{type="rdl",webCallback="${link}",displayTitle="${title}"}]]
+  #[url="http://feeds2.feedburner.com/businessinsider"]
+  #[poll_interval=1h];
+}

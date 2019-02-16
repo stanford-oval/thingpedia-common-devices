@@ -1,10 +1,10 @@
 class @com.bing {
   import loader from @org.thingpedia.v2();
-  import config from @org.thingpedia.config.none();
+  import config from @org.thingpedia.config.none(subscription_key=$undefined);
 
-  monitorable list query web_search(in req query: String #_[prompt="What do you want to search?"],
+  monitorable list query web_search(in req query: String #_[prompt="What do you want to search?"] #[string_values="tt:search_query"],
                                     out title: String,
-                                    out description: String,
+                                    out description: String #[string_values="tt:long_free_text"],
                                     out link: Entity(tt:url))
   #_[canonical="web search on bing"]
   #_[confirmation="websites matching $query on Bing"]
@@ -12,7 +12,7 @@ class @com.bing {
   #[poll_interval=3600000ms]
   #[doc="search for `query` on Bing"];
 
-  monitorable list query image_search(in req query: String #_[prompt="What do you want to search?"],
+  monitorable list query image_search(in req query: String #_[prompt="What do you want to search?"] #[string_values="tt:search_query"],
                                       out title: String,
                                       out picture_url: Entity(tt:picture),
                                       out link: Entity(tt:url),
@@ -24,4 +24,3 @@ class @com.bing {
   #[poll_interval=3600000ms]
   #[doc="search for `query` on Bing Images"];
 }
-

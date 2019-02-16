@@ -1,0 +1,22 @@
+class @com.nest.security_camera extends @security-camera {
+  import loader from @org.thingpedia.embedded();
+  import config from @org.thingpedia.config.builtin();
+
+  monitorable query current_event(out start_time: Date,
+                                  out has_sound: Boolean #_[prompt="Do you want events with sound?"],
+                                  out has_motion: Boolean #_[prompt="Do you want events with motion?"],
+                                  out has_person: Boolean #_[prompt="Do you want events with people in front of the camera?"],
+                                  out picture_url: Entity(tt:picture))
+  #_[canonical="current event on nest security camera"]
+  #_[confirmation="the current event detected on your Nest security camera"]
+  #_[confirmation_remote="the current event detected on $__person's Nest security camera"]
+  #_[formatted=[{type="code",code="function(argMap, hint, formatter) {\n    var timeString = formatter.dateAndTimeToString(argMap.start_time);\n\n    var title;\n    if (argMap.has_person)\n        title = `Person detected on your camera at ${timeString}`;\n    else if (argMap.has_sound && argMap.has_motion)\n        title = `Sound and motion detected on your camera at ${timeString}`;\n    else if (argMap.has_sound)\n        title = `Sound detected on your camera at ${timeString}`;\n    else if (argMap.has_motion)\n        title = `Motion detected on your camera at ${timeString}`;\n    else\n        title = `Something detected on your camera at ${timeString}`;\n    return title;\n}"}, {type="picture",url="${picture_url}"}]]
+  #[poll_interval=0ms]
+  #[doc="trigger on any new event detected by the camera, providing the start time of the event and a small gif"];
+
+  action set_power(in req power: Enum(on,off) #_[prompt="Do you want to turn your camera on or off?"])
+  #_[canonical="set power on nest security camera"]
+  #_[confirmation="turn $power your Nest security camera"]
+  #_[confirmation_remote="turn $power $__person's Nest security camera"]
+  #[doc="change the streaming status of the camera"];
+}

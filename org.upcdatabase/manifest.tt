@@ -1,0 +1,16 @@
+class @org.upcdatabase {
+  import loader from @org.thingpedia.generic_rest.v1();
+  import config from @org.thingpedia.config.none();
+
+  monitorable query get(in req query: String #_[prompt="What product do you want to search? "],
+                        out product: String #[json_key="description"],
+                        out upc: String #[json_key="upcnumber"])
+  #_[canonical="get upc code"]
+  #_[confirmation="upc code for $query"]
+  #_[formatted=[{type="text",text="UPC code for ${query}: ${product} - ${upc}"}]]
+  #[poll_interval=3600000ms]
+  #[doc="Search UPC code of a given product"]
+  #[url="https://api.upcdatabase.org/search/${query}/9C88B41DB0715FBF092F96F77D1A8810"]
+  #[json_key="0"];
+}
+

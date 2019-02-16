@@ -1,0 +1,18 @@
+class @com.tumblr.blog {
+  import loader from @org.thingpedia.embedded();
+  import config from @org.thingpedia.config.builtin();
+
+  action post_picture(in req caption: String #_[prompt="What is the caption of the picture?"] #[string_values="com.instagram:caption"],
+                      in req picture_url: Entity(tt:picture) #_[prompt="Upload the picture now."])
+  #_[canonical="post picture on tumblr blog"]
+  #_[confirmation="post a picture with caption $caption in your Tumblr"]
+  #_[confirmation_remote="post a picture with caption $caption in your Tumblr"]
+  #[doc="post a picture"];
+
+  action post_text(in req title: String #_[prompt="What is the title of the post?"],
+                   in req body: String #_[prompt="What is the body of the post? Markdown is allowed."] #[string_values="tt:long_free_text"])
+  #_[canonical="post on tumblr blog"]
+  #_[confirmation="post $title with body $body in your Tumblr"]
+  #_[confirmation_remote="post $title with body $body in your Tumblr"]
+  #[doc="make a new post"];
+}

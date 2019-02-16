@@ -1,11 +1,11 @@
 class @com.slack {
   import loader from @org.thingpedia.v2();
-  import config from @org.thingpedia.config.oauth2();
+  import config from @org.thingpedia.config.oauth2(client_id=$undefined, client_secret=$undefined);
 
   monitorable list query channel_history(out channel: Entity(tt:hashtag) #_[prompt="What channel are you interested in?"],
                                          out date: Date,
                                          out sender: Entity(tt:username) #_[prompt="What user are you interested in?"],
-                                         out message: String)
+                                         out message: String #[string_values="tt:message"])
   #_[canonical="get message on slack"]
   #_[confirmation="your messages on Slack"]
   #_[confirmation_remote="$__person's messages on Slack"]
@@ -14,7 +14,7 @@ class @com.slack {
   #[doc="Polls Slack and sends you any new messages that appear in public channels of your Slack team."];
 
   action send(in req channel: Entity(tt:hashtag) #_[prompt="What channel do you want to send the message to?"],
-              in req message: String #_[prompt="What message do you want me to send?"])
+              in req message: String #_[prompt="What message do you want me to send?"] #[string_values="tt:message"])
   #_[canonical="send message on slack"]
   #_[confirmation="send a message on slack to channel $channel saying $message"]
   #_[confirmation_remote="send a message on $__person's slack to channel $channel saying $message"]
@@ -45,11 +45,10 @@ class @com.slack {
   #[label="set your presence"];
 
   action send_picture(in req channel: Entity(tt:hashtag) #_[prompt="What channel do you want to send the message to?"],
-                      in req caption: String #_[prompt="What is the caption of the picture?"],
+                      in req caption: String #_[prompt="What is the caption of the picture?"] #[string_values="tt:message"],
                       in req picture_url: Entity(tt:picture) #_[prompt="Upload the picture now."])
   #_[canonical="send picture on slack"]
   #_[confirmation="send a picture on slack to channel $channel with caption $caption"]
   #_[confirmation_remote="send a picture on $__person's slack to channel $channel with caption $caption"]
   #[doc="Send a message with a picture attachment to the specified Slack channel. Omit the hashtag from the channel name."];
 }
-

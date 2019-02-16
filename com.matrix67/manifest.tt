@@ -1,0 +1,13 @@
+class @com.matrix67 {
+  import loader from @org.thingpedia.rss();
+  import config from @org.thingpedia.config.none();
+
+  monitorable list query posts(out title: String #_[canonical="title"] #[string_values="tt:news_title"],
+                                     out link: Entity(tt:url) #_[canonical="link"],
+                                     out updated: Date #_[canonical="updated"])
+  #_[canonical="get latest posts on Matrix67"]
+  #_[confirmation="posts on Matrix67"]
+  #_[formatted=[{type="rdl",webCallback="${link}",displayTitle="${title}"}]]
+  #[url="http://www.matrix67.com/blog/feed"]
+  #[poll_interval=1h];
+}

@@ -1,0 +1,14 @@
+class @com.poemist {
+  import loader from @org.thingpedia.generic_rest.v1();
+  import config from @org.thingpedia.config.none();
+
+  query get(out title: String,
+            out poem: String #[json_key="content"],
+            out url: Entity(tt:url),
+    	    out poet: String #[json_key="poet.name"] #[string_values="tt:person_full_name"])
+  #_[canonical="random poem"]
+  #_[confirmation="a random poem"]
+  #_[formatted=[{type="rdl",webCallback="${url}",displayTitle="${title} by ${poet}",displayText="${poem}"}]]
+  #[url="https://www.poemist.com/api/v1/randompoems"]
+  #[json_key="0"];
+}

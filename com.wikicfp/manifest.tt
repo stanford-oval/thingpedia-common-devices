@@ -1,22 +1,18 @@
-class @com.wikicfp
-#_[name="WikiCFP"]
-#_[description="Keep updated with paper submission deadlines"]
-#[version=14] {
+class @com.wikicfp {
   import loader from @org.thingpedia.v2();
   import config from @org.thingpedia.config.none();
 
   monitorable list query search(in req query: String #_[prompt="What do you want to search?"] #[string_values="tt:search_query"],
-                                out abbr: String,
-                                out name: String,
-                                out start: Date,
-                                out end: Date,
-                                out city: String,
-                                out deadline: Date,
-                                out link: Entity(tt:url))
+                                    out abbr: String #_[canonical="abbreviation"],
+                                    out name: String,
+                                    out start: Date #_[canonical="start date"],
+    				    out end: Date #_[canonical="end date"],
+                                    out city: String,
+                                    out deadline: Date,
+                                    out link: Entity(tt:url))
   #_[canonical="get events from wikicfp"]
   #_[confirmation="information of $query on wikicfp"]
-  #_[formatted=[{type="rdl",webCallback="${link}",displayTitle="${name} (${abbr})",displayText="Where: ${city},\nWhen: ${start:date} - ${end:date},\nDeadline: ${deadline:date}."}]]
+  #_[formatted=[{type="rdl",webCallback="${link}",displayTitle="${name} (${abbr})",displayText="Where: ${city},\nWhen: ${start:date} - ${end:date},\nDeadline: ${deadline:date}."}]]  
   #[poll_interval=3600000ms]
   #[doc="get conference details"];
 }
-

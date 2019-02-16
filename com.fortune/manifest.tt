@@ -1,0 +1,13 @@
+class @com.fortune {
+  import loader from @org.thingpedia.rss();
+  import config from @org.thingpedia.config.none();
+
+  monitorable list query news(out title: String #_[canonical="title"] #[string_values="tt:news_title"],
+                                     out link: Entity(tt:url) #_[canonical="link"],
+                                     out updated: Date #_[canonical="updated"])
+  #_[canonical="get news on Fortune"]
+  #_[confirmation="news on Fortune"]
+  #_[formatted=[{type="rdl",webCallback="${link}",displayTitle="${title}"}]]
+  #[url="http://fortune.com/feed/"]
+  #[poll_interval=1h];
+}

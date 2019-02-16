@@ -5,10 +5,10 @@ class @com.instagram {
   monitorable query get_pictures(in opt count: Number #_[prompt="How many pictures do you want?"],
                                  out media_id: Entity(instagram:media_id),
                                  out picture_url: Entity(tt:picture),
-                                 out caption: String,
+                                 out caption: String #[string_values="com.instagram:caption"],
                                  out link: Entity(tt:url),
                                  out filter: Entity(com.instagram:filter) #_[prompt="With what filters do you want pictures?"],
-                                 out hashtags: Array(Entity(tt:hashtag)),
+                                 out hashtags: Array(Entity(tt:hashtag)) #[string_values="com.instagram:hashtag"],
                                  out location: Location)
   #_[canonical="get pictures on instagram"]
   #_[confirmation="your recent Instagram pictures"]
@@ -17,4 +17,3 @@ class @com.instagram {
   #[poll_interval=600000ms]
   #[doc="get pictures recently uploaded by the user"];
 }
-

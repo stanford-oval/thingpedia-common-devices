@@ -3,9 +3,9 @@ class @com.washingtonpost {
   import config from @org.thingpedia.config.none();
 
   monitorable list query get_article(in req section: Enum(politics,opinions,local,sports,national,world,business,lifestyle) #_[prompt="What section do you want to read?"],
-                                     out title: String,
+                                     out title: String #[string_values="tt:news_title"],
                                      out link: Entity(tt:url),
-                                     out description: String,
+                                     out description: String #[string_values="tt:news_description"],
                                      out picture_url: Entity(tt:picture))
   #_[canonical="articles on washington post"]
   #_[confirmation="the latest articles in the ${section} section of the Washington Post"]
@@ -14,7 +14,7 @@ class @com.washingtonpost {
   #[doc="read washington post"];
 
   monitorable list query get_blog_post(in req section: Enum(the_fix,politics,powerpost,fact_checker,world_views,compost,the_plum_line,post_partisan,post_everything,right_turn,capital_weather_gang,morning_mix,wonkblog) #_[prompt="What blog do you want to monitor?"],
-                                       out title: String,
+                                       out title: String #[string_values="tt:news_title"],
                                        out link: Entity(tt:url),
                                        out updated: Date)
   #_[canonical="blog post on washington post"]
@@ -23,4 +23,3 @@ class @com.washingtonpost {
   #[poll_interval=10800000ms]
   #[doc="trigger on new blog posts"];
 }
-

@@ -1,0 +1,25 @@
+class @com.omdbapi {
+    import loader from @org.thingpedia.v2();
+    import config from @org.thingpedia.config.none(api_key=$undefined);
+
+    query search(in req title: String #_[prompt="What do you want to search?"] #[string_values="tt:movie_title"],
+                 out year: Number,
+                 out director: String #[string_values="tt:person_full_name"],
+                 out actors: Array(String) #[string_values="tt:person_full_name"],
+                 out plot: String,
+                 out picture_url: Entity(tt:picture) #[canonical="poster"],
+                 out link: Entity(tt:url),
+                 out rating: Enum(unknown,general_audiences,parental_guidance_suggested,parents_strongly_cautioned,restricted,adults_only),
+                 out release_date : Date,
+                 out genre: String,
+                 out metascore : Number)
+    #[canonical="search information of movie"]
+    #_[confirmation="search information of movie $title"]
+    #_[formatted=[
+    	{type="rdl", displayTitle="$title ($year)",
+         displayText="With ${actors}. Directed by $director.",
+         callback="${link}", webCallback="${link}"},
+    	{type="picture", url="$picture_url"},
+    	{type="text", text="Plot: $plot"},
+        {type="text", text="Critics rated it ${metascore}% (according to Metacritic)."}]];
+}

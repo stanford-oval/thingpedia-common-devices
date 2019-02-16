@@ -1,11 +1,9 @@
-class @com.wsj
-#_[name="The Wall Street Journal"]
-#_[description="Breaking News, Business, Financial and Economic News, World News and Video"] {
+class @com.wsj {
   import loader from @org.thingpedia.v2();
   import config from @org.thingpedia.config.none();
 
   monitorable list query get(in req section: Enum(opinions,world_news,us_business,markets,technology,lifestyle) #_[prompt="What section of the Wall Street Journal do you want to read?"],
-                             out title: String,
+                             out title: String #[string_values="tt:news_title"],
                              out link: Entity(tt:url),
                              out updated: Date)
   #_[canonical="get post on wall street journal"]
@@ -14,4 +12,3 @@ class @com.wsj
   #[poll_interval=1080000ms]
   #[doc="trigger on new articles"];
 }
-

@@ -1,11 +1,11 @@
 class @com.youtube {
   import loader from @org.thingpedia.v2();
-  import config from @org.thingpedia.config.oauth2();
+  import config from @org.thingpedia.config.oauth2(client_id=$undefined, client_secret=$undefined);
 
   monitorable list query channels_by_category(in req category_id: Enum(best_of_youtube,recommended,paid,music,comedy,film_and_entertainment,gaming,beauty_and_fashion,from_tv,automotive,animation,sports,diy,tech,science,cooking,causes,news_and_politics,lifestyle) #_[prompt="What category do you want to list?"],
                                               out channel_id: Entity(com.youtube:channel_id),
-                                              out title: String,
-                                              out description: String,
+                                              out title: String #[string_values="com.youtube:channel_title"],
+                                              out description: String #[string_values="com.youtube:video_title"],
                                               out thumbnail: Entity(tt:picture))
   #_[canonical="list channel by category on youtube"]
   #_[confirmation="channels in YouTube Category $category_id"]
@@ -14,8 +14,8 @@ class @com.youtube {
   #[doc="list channel in a given YouTube Guide Category"];
 
   monitorable list query list_subscriptions(out channel_id: Entity(com.youtube:channel_id),
-                                            out title: String,
-                                            out description: String,
+                                            out title: String #[string_values="com.youtube:channel_title"],
+                                            out description: String #[string_values="tt:long_free_text"],
                                             out thumbnail: Entity(tt:picture))
   #_[canonical="list subscriptions on youtube"]
   #_[confirmation="your subscribed channels on YouTube"]
@@ -23,10 +23,10 @@ class @com.youtube {
   #[poll_interval=86400000ms]
   #[doc="list channel you're subscribed to"];
 
-  monitorable list query search_channel(in req query: String #_[prompt="What do you want to search?"],
+  monitorable list query search_channel(in req query: String #_[prompt="What do you want to search?"] #[string_values="tt:search_query"],
                                         out channel_id: Entity(com.youtube:channel_id),
-                                        out title: String,
-                                        out description: String,
+                                        out title: String #[string_values="com.youtube:channel_title"],
+                                        out description: String #[string_values="tt:long_free_text"],
                                         out thumbnail: Entity(tt:picture))
   #_[canonical="search channel on youtube"]
   #_[confirmation="YouTube channels matching $query"]
@@ -34,11 +34,11 @@ class @com.youtube {
   #[poll_interval=86400000ms]
   #[doc="search channels"];
 
-  monitorable list query search_videos(in req query: String #_[prompt="What do you want to search?"],
+  monitorable list query search_videos(in req query: String #_[prompt="What do you want to search?"] #[string_values="tt:search_query"],
                                        out video_id: Entity(com.youtube:video_id),
                                        in opt channel_id: Entity(com.youtube:channel_id) #_[prompt="What channel do you want to limit the search to?"],
-                                       out title: String,
-                                       out description: String,
+                                       out title: String #[string_values="com.youtube:video_title"],
+                                       out description: String #[string_values="tt:long_free_text"],
                                        out thumbnail: Entity(tt:picture),
                                        in opt count: Number #_[prompt="How many search results do you want?"],
                                        out video_url: Entity(tt:url))
@@ -49,11 +49,11 @@ class @com.youtube {
   #[doc="search videos"];
 
   monitorable list query list_videos(in req channel_id: Entity(com.youtube:channel_id) #_[prompt="What channel do you want to be notified about? Use the full channel URL, like https://www.youtube.com/channels/xxxxxxx."],
-                                     out channel_title: String,
-                                     out title: String,
+                                     out channel_title: String #[string_values="com.youtube:channel_title"],
+                                     out title: String #[string_values="com.youtube:video_title"],
                                      out video_id: Entity(com.youtube:video_id),
                                      out video_url: Entity(tt:url),
-                                     out description: String,
+                                     out description: String #[string_values="tt:long_free_text"],
                                      out thumbnail: Entity(tt:picture))
   #_[canonical="list video on youtube"]
   #_[confirmation="recent videos in YouTube channel ${channel_id}"]
@@ -61,4 +61,3 @@ class @com.youtube {
   #[poll_interval=3600000ms]
   #[doc="trigger on new videos uploaded on the given channel"];
 }
-

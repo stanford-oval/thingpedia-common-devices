@@ -1,0 +1,12 @@
+class @edu.stanford.almond.nl {
+    import loader from @org.thingpedia.generic_rest.v1();
+    
+    query analyze(in req text : String #[string_values="tt:long_free_text"]
+                  #_[prompt="What sentence do you want to analyze?"],
+                  out sentiment : Enum(very_negative,negative,neutral,positive,very_positive),
+                  out tokens : Array(String) #[string_values="tt:word"] #[json_key="raw_tokens"])
+    #_[confirmation="the lexical analysis of ${text}"]
+    #_[canonical="natural language analysis"]
+    #_[formatted=["${text} is a ${sentiment} sentence."]]
+    #[url="https://almond-nl.stanford.edu/en-US/tokenize?q=${text:url}"];
+}

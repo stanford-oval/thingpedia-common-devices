@@ -1,0 +1,11 @@
+class @com.herokuapp.cat-fact {
+    import loader from @org.thingpedia.generic_rest.v1();
+    import config from @org.thingpedia.config.none();
+    
+    query random(in req animal : Enum(cat,dog,horse,snail) #_[prompt="What animal are you interested in?"],
+                 out text : String #[string_values="tt:long_free_text"])
+    #_[confirmation="a random ${animal} fact"]
+    #_[canonical="random animal fact"]
+    #_[formatted=["Here is a random ${animal} fact. ${text}"]]
+    #[url="https://cat-fact.herokuapp.com/facts/random?animal_type=${animal}"];
+}
