@@ -103,6 +103,23 @@ module.exports = class GithubDevice extends Tp.BaseDevice {
         });
     }
 
+    get_get_pull_requests( {repo_name }) {
+        const url = 'https://api.github.com/repos/' + repo_name + '/pulls';
+        return Tp.Helpers.Http.get(url, this.options).then((response) => {
+            const parsed = JSON.parse(response);
+            return Promise.all(parsed.map((pr) => {
+                return {
+                    title: pr.title,
+                    body: pr.body,
+                    user: pr.user.login,
+                    url: pr.html_url,
+                    time: new Date(pr.created_at),
+                    reviewers: pr.requested_reviewers.map((reviewer) => reviewer.login)
+                };
+            }));
+        });
+    }
+
     //TODO: add state (open/closed), labels, sort/direction, assignee/mentioned
     get_get_issue({ repo_name }) {
         const url = 'https://api.github.com/repos/' + repo_name + '/issues';
