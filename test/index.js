@@ -49,7 +49,7 @@ async function loadDeviceFactory(deviceKind) {
 
     for (let name in officialParsed.auth) {
         if (!ourParsed.auth[name])
-            ourParsed.auth[name] = officialMetadata.auth[name];
+            ourParsed.auth[name] = officialParsed.auth[name];
     }
 
     ourParsed.version = -1;
@@ -170,18 +170,30 @@ async function testOne(deviceKind) {
     console.log('# Completed tests for ' + deviceKind);
 }
 
+async function existsSafe(path) {
+    try {
+        await util.promisify(fs.access)(path);
+        return true;
+    } catch(e) {
+        if (e.code === 'ENOENT')
+            return false;
+        if (e.code === 'ENOTDIR')
+            return false;
+        throw e;
+    }
+}
+
 async function main() {
     if (process.argv.length > 2) {
         for (let toTest of process.argv.slice(2))
              await testOne(toTest);
     } else {
         for (let name of await util.promisify(fs.readdir)(path.resolve(path.dirname(module.filename), '..'))) {
-            if (name.startsWith('.') || name === 'package.json' ||
-               !name.endsWith('.json'))
-               continue;
+            if (!await existsSafe(name + '/manifest.tt')) //'
+                continue;
 
-            const deviceKind = name.substring(0, name.length - '.json'.length);
-            await testOne(deviceKind);
+            console.log(name);
+            await testOne(name);
         }
     }
 
