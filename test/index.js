@@ -14,16 +14,18 @@ const fs = require('fs');
 const path = require('path');
 
 const TpClient = require('thingpedia-client');
+const ThingTalk = require('thingtalk');
 const mockEngine = require('./mock');
 
 const _tpClient = new TpClient.HttpClient(mockEngine.platform, 'https://thingpedia.stanford.edu/thingpedia');
 mockEngine.thingpedia = _tpClient;
+const _schemas = new ThingTalk.SchemaRetriever(_tpClient, null, false);
 const _tpDownloader = new TpClient.ModuleDownloader(mockEngine.platform, _tpClient, {});
 
 function getDeviceFactory() {
     if (this._loading)
         return Promise.resolve(this._loading);
-    this._modulePath = path.resolve(path.dirname(module.filename), '../build/' + this._id);
+    this._modulePath = path.resolve(path.dirname(module.filename), '../' + this._id);
     var cached = this._loadJsModule();
     assert(cached);
     return Promise.resolve(this._loading = cached);
@@ -34,22 +36,27 @@ TpClient.Modules['org.thingpedia.v2'].prototype.getDeviceFactory = getDeviceFact
 //TpClient.Modules['org.thingpedia.v1'].prototype.getDeviceFactory = getDeviceFactory;
 
 async function loadDeviceFactory(deviceKind) {
-    const ourMetadata = require('../' + deviceKind + '.json');
+    const manifestPath = path.resolve(path.dirname(module.filename), '../' + deviceKind + '/manifest.tt');
+    const ourMetadata = (await util.promisify(fs.readFile)(manifestPath)).toString();
+    const ourParsed = (await ThingTalk.Grammar.parseAndTypecheck(ourMetadata, _schemas)).classes[0].toManifest();
 
     // ourMetadata might lack some of the fields that are in the
     // real metadata, such as api keys and OAuth secrets
     // for that reason we fetch the metadata for thingpedia as well,
     // and fill in any missing parameter
     const officialMetadata = await _tpClient.getDeviceCode(deviceKind);
+    const officialParsed = (await ThingTalk.Grammar.parseAndTypecheck(officialMetadata, _schemas)).classes[0].toManifest();
 
-    for (let name in officialMetadata.auth) {
-        if (!ourMetadata.auth[name])
-            ourMetadata.auth[name] = officialMetadata.auth[name];
+    for (let name in officialParsed.auth) {
+        if (!ourParsed.auth[name])
+            ourParsed.auth[name] = officialMetadata.auth[name];
     }
 
-    const module = new (TpClient.Modules[ourMetadata.module_type])(deviceKind, ourMetadata, _tpDownloader);
+    ourParsed.version = -1;
+    ourParsed.package_version = undefined;
+    const tpModule = new (TpClient.Modules[ourParsed.module_type])(deviceKind, ourParsed, _tpDownloader);
 
-    return module.getDeviceFactory();
+    return tpModule.getDeviceFactory();
 }
 
 async function createDeviceInstance(deviceKind, factory) {
@@ -115,7 +122,7 @@ async function testOne(deviceKind) {
     }
 
     // require the device once fully (to get complete code coverage)
-    require('../build/' + deviceKind);
+    require('../' + deviceKind);
 
     // now load the device through the TpClient loader code
     // (which will initialize the device class with stuff like
