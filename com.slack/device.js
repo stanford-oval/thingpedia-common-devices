@@ -201,7 +201,7 @@ module.exports = class InstagramClass extends Tp.BaseDevice {
         });
     }
 
-    do_setPresense({presence}) {
+    do_setPresence({presence}) {
         return Tp.Helpers.Http.post('https://slack.com/api/users.setPresence',
             'token=' + this.accessToken +
             '&presence=' + encodeURIComponent(presence), {
