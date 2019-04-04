@@ -40,16 +40,21 @@ async function loadDeviceFactory(deviceKind) {
     const ourMetadata = (await util.promisify(fs.readFile)(manifestPath)).toString();
     const ourParsed = (await ThingTalk.Grammar.parseAndTypecheck(ourMetadata, _schemas)).classes[0].toManifest();
 
-    // ourMetadata might lack some of the fields that are in the
-    // real metadata, such as api keys and OAuth secrets
-    // for that reason we fetch the metadata for thingpedia as well,
-    // and fill in any missing parameter
-    const officialMetadata = await _tpClient.getDeviceCode(deviceKind);
-    const officialParsed = (await ThingTalk.Grammar.parseAndTypecheck(officialMetadata, _schemas)).classes[0].toManifest();
+    try {
+        // ourMetadata might lack some of the fields that are in the
+        // real metadata, such as api keys and OAuth secrets
+        // for that reason we fetch the metadata for thingpedia as well,
+        // and fill in any missing parameter
+        const officialMetadata = await _tpClient.getDeviceCode(deviceKind);
+        const officialParsed = (await ThingTalk.Grammar.parseAndTypecheck(officialMetadata, _schemas)).classes[0].toManifest();
 
-    for (let name in officialParsed.auth) {
-        if (!ourParsed.auth[name])
-            ourParsed.auth[name] = officialParsed.auth[name];
+        for (let name in officialParsed.auth) {
+            if (!ourParsed.auth[name])
+                ourParsed.auth[name] = officialParsed.auth[name];
+        }
+    } catch(e) {
+        if (e.code !== 404)
+            throw e;
     }
 
     ourParsed.version = -1;
