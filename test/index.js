@@ -64,10 +64,10 @@ async function createDeviceInstance(deviceKind, factory) {
         return new factory(mockEngine, { kind: deviceKind });
     if (factory.metadata.auth.type === 'basic') {
         // credentials are stored in test/[DEVICE ID].cred.json
-        const credentialsPath = path.resolve(path.dirname(module.filename), deviceKind + '.cred.json');
+        const credentialsPath = path.resolve('./test', deviceKind + '.cred.json');
         const args = require(credentialsPath);
-        args.kind = deviceKind
-        return new factory(mockEngine, args)
+        args.kind = deviceKind;
+        return new factory(mockEngine, args);
     }
 
     // otherwise do something else...
