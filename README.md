@@ -33,7 +33,7 @@ A couple examples have been added for your reference.
 For example, if you want to test your device named `com.xxx`, 
 first create a test file `com.xxx.js`, and `com.xxx.cred.json` containing
 the username and password (for basic authentication only) under directory `test`, 
-and then run `yarn test com.xxx`.
+and then run `yarn test com.xxx` (or `node test/index.js com.xxx` if you are not a fan of `yarn`).
 
 Make sure your device either (1) has name and description annotation in `manifest.tt`
 (see `com.wikicfp/manifest.tt` as an example) or (2) has a constructor
