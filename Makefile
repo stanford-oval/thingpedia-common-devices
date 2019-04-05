@@ -8,10 +8,11 @@ zipfiles := $(pkgfiles:%/package.json=%.zip)
 all: $(zipfiles)
 	@:
 
-%.zip: %
+%.zip: % %/node_modules
 	cd $< ; zip -x '*.tt' '*.yml' 'node_modules/.bin/*' -r $(abspath $@) .
 
 %/node_modules: %/package.json %/yarn.lock
+	mkdir -p $@
 	cd `dirname $@` ; yarn --only=prod --no-optional
 	# unfortunately too many devices are old and dirty
 	# and fail, so we run with - to ignore the return value
