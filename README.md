@@ -38,7 +38,7 @@ contains a name and a description to pass the test. E.g.,:
 ```js
 class @com.xxx
 #_[name="XXX"]
-#_[description="YYY] {
+#_[description="YYY"] {
   ... 
 }
 ```
