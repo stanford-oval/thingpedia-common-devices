@@ -31,17 +31,11 @@ Once your device has been created, you can add the test under directory `test`.
 A couple examples have been added for your reference. 
 For example, if you want to test your device named `com.xxx`, 
 first create a test file `com.xxx.js` under directory `test`, 
-and then run `node test/index.js com.xxx`.
+and then run `yarn test com.xxx`.
 
-If the device has not been added to Thingpedia, make sure the `manifest.tt`
-contains a name and a description to pass the test. E.g.,: 
-```js
-class @com.xxx
-#_[name="XXX"]
-#_[description="YYY"] {
-  ... 
-}
-```
+Make sure your device either (1) has name and description annotation in `manifest.tt`
+(see `com.wikicfp/manifest.tt` as an example) or (2) has a constructor
+in the JavaScript class defining the name and description (see `com.bing` as an example).
 
 
 ## Prepare the package and upload to Thingpedia
