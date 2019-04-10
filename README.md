@@ -1,6 +1,6 @@
 # Various Thingpedia Devices
 
-[![Build Status](https://travis-ci.com/Stanford-Mobisocial-IoT-Lab/thingpedia-common-devices.svg?branch=master)](https://travis-ci.com/Stanford-Mobisocial-IoT-Lab/thingpedia-common-devices) [![Coverage Status](https://coveralls.io/repos/github/Stanford-Mobisocial-IoT-Lab/thingpedia-common-devices/badge.svg?branch=master)](https://coveralls.io/github/Stanford-Mobisocial-IoT-Lab/thingpedia-common-devices?branch=master)
+[![Build Status](https://travis-ci.com/stanford-oval/thingpedia-common-devices.svg?branch=master)](https://travis-ci.com/stanford-oval/thingpedia-common-devices) [![Coverage Status](https://coveralls.io/repos/github/stanford-oval/thingpedia-common-devices/badge.svg?branch=master)](https://coveralls.io/github/stanford-oval/thingpedia-common-devices?branch=master)
 
 ## Knowledge for your Virtual Assistant
 

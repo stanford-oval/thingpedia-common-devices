@@ -1,6 +1,7 @@
 // -*- mode: js; indent-tabs-mode: nil; js-basic-offset: 4 -*-
 //
 // Copyright 2016 Luke Hsiao & Jeff Setter
+"use strict";
 
 const Tp = require('thingpedia');
 
