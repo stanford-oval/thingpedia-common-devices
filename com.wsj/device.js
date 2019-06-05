@@ -8,12 +8,12 @@
 const Tp = require('thingpedia');
 
 const URLS = {
-    opinions: 'http://www.wsj.com/xml/rss/3_7041.xml',
-    world_news: 'http://www.wsj.com/xml/rss/3_7085.xml',
-    us_business: 'http://www.wsj.com/xml/rss/3_7014.xml',
-    markets: 'http://www.wsj.com/xml/rss/3_7031.xml',
-    technology: 'http://www.wsj.com/xml/rss/3_7455.xml',
-    lifestyle: 'http://www.wsj.com/xml/rss/3_7201.xml'
+    opinions: 'https://feeds.a.dj.com/rss/RSSOpinion.xml',
+    world_news: 'https://feeds.a.dj.com/rss/RSSWorldNews.xml',
+    us_business: 'https://feeds.a.dj.com/rss/WSJcomUSBusiness.xml',
+    markets: 'https://feeds.a.dj.com/rss/RSSMarketsMain.xml',
+    technology: 'https://feeds.a.dj.com/rss/RSSWSJD.xml',
+    lifestyle: 'https://feeds.a.dj.com/rss/RSSLifestyle.xml'
 };
 
 module.exports = class WSJDevice extends Tp.BaseDevice {
