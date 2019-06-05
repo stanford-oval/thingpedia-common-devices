@@ -9,7 +9,7 @@
 
 const Tp = require('thingpedia');
 
-const BASE_URL = 'http://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC';
+const BASE_URL = 'http://api.giphy.com/v1/gifs/random?api_key=';
 
 module.exports = class Giphy extends Tp.BaseDevice {
     constructor(engine, state) {
@@ -17,10 +17,11 @@ module.exports = class Giphy extends Tp.BaseDevice {
         this.uniqueId = 'com.giphy';
         this.name = "Giphy";
         this.description = "A GIF a day keeps the doctor away.";
+        this.url = BASE_URL + this.constructor.metadata.auth.api_key;
     }
 
     get_get({ tag }) {
-        let url = BASE_URL;
+        let url = this.url;
         if (tag)
             url += '&tag=' + encodeURIComponent(tag);
         return Tp.Helpers.Http.get(url).then((response) => {
