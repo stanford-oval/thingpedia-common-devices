@@ -85,7 +85,7 @@ module.exports = class InstagramClass extends Tp.BaseDevice {
                         throw ("Channels.History returned status of NOT OK.");
                     }
                     return Promise.all(parsed.messages.map((msg) => {
-                        return self.get_username(token, msg.user).then((username) => {
+                        return this.get_username(msg.user).then((username) => {
                             return {
                                 channel: channel.name,
                                 sender: username,
@@ -194,7 +194,7 @@ module.exports = class InstagramClass extends Tp.BaseDevice {
                 let parsed = JSON.parse(response);
                 if (!parsed.ok) 
                     console.log('[ERROR] invalid response from http POST');
-                
+
             }, (reason) => {
                 console.log('[info] Reason: ', String(reason));
                 console.log('[ERROR] Unable to send message to Slack.');
