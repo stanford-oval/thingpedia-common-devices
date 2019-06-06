@@ -36,7 +36,7 @@ function findMeme(search) {
 
         let meme = null;
         for (let candidate of parsed.data.memes) {
-            if (candidate.name.toLowerCase() === search) {
+            if (candidate.name.toLowerCase() === search.toLowerCase()) {
                 meme = candidate;
                 break;
             }
