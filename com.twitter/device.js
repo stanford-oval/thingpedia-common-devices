@@ -149,6 +149,26 @@ module.exports = class TwitterAccountDevice extends Tp.BaseDevice {
         }
     }
 
+    _pollUserScreenName(user_id) {
+        return new Promise((callback, errback) => {
+            this._twitter.getUser({ user_id }, errback, callback);
+        }).then((response) => {
+            return JSON.parse(response).screen_name;
+        }).catch((e) => {
+            console.log(e);
+        });
+    }
+
+    _pollUserId(screen_name) {
+        return new Promise((callback, errback) => {
+            this._twitter.getUser({ screen_name }, errback, callback);
+        }).then((response) => {
+            return JSON.parse(response).id;
+        }).catch((e) => {
+            console.log(e);
+        });
+    }
+
     _pollHomeTimeline(since_id) {
         return new Promise((callback, errback) => {
             if (since_id !== undefined)
@@ -171,16 +191,18 @@ module.exports = class TwitterAccountDevice extends Tp.BaseDevice {
     _pollDirectMessages(since_id) {
         return new Promise((callback, errback) => {
             if (since_id !== undefined)
-                this._twitter.getCustomApiCall('/direct_messages.json', { since_id: since_id, count: 20 }, errback, callback);
+                this._twitter.getCustomApiCall('/direct_messages/events/list.json', { since_id: since_id, count: 20 }, errback, callback);
             else
-                this._twitter.getCustomApiCall('/direct_messages.json', { count: 20 }, errback, callback);
-        }).then((results) => JSON.parse(results).map((dm) => {
-            return {
-                sender: dm.sender_screen_name,
-                message: dm.text,
-                tweet_id: dm.id_str
-            };
-        })).then((results) => results.filter((dm) => dm.sender.toLowerCase() !== this.screenName.toLowerCase()));
+                this._twitter.getCustomApiCall('/direct_messages/events/list.json', { count: 20 }, errback, callback);
+        }).then((results) => Promise.all(JSON.parse(results).events.map((dm) => {
+            console.log(JSON.stringify(dm));
+            return this._pollUserScreenName(dm.message_create.sender_id).then((screen_name) => {
+                return {
+                    sender: screen_name,
+                    message: dm.message_create.message_data.text
+                };
+            });
+        }))).then((results) => results.filter((dm) => dm.sender.toLowerCase() !== this.screenName.toLowerCase()));
     }
 
     get_home_timeline(params, filters) {
@@ -379,7 +401,30 @@ module.exports = class TwitterAccountDevice extends Tp.BaseDevice {
 
     do_send_direct_message({ to, message }) {
         return new Promise((callback, errback) => {
-            postCustomApiCall.call(this._twitter, '/direct_messages/new.json', { screen_name: String(to), text: message }, errback, callback);
+            this._pollUserId(String(to)).then((user_id) => {
+                if (!user_id)
+                    throw new Error('User not found');
+                const data = {
+                    event: {
+                        type: 'message_create',
+                        message_create: {
+                            target: { recipient_id: user_id },
+                            message_data: { text: String(message) }
+                        }
+                    }
+                };
+                this._twitter.oauth.post(this._twitter.baseUrl + '/direct_messages/events/new.json',
+                    this._twitter.accessToken,
+                    this._twitter.accessTokenSecret,
+                    JSON.stringify(data),
+                    "application/json",
+                    (err, body, response) => {
+                        if (!err && response.statusCode === 200)
+                            callback(body);
+                        else
+                            errback(err, response, body);
+                    });
+            });
         }).catch((e) => {
             if (e.message && (!e.data && !e.errors))
                 throw e;
