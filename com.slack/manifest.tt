@@ -2,6 +2,13 @@ class @com.slack {
   import loader from @org.thingpedia.v2();
   import config from @org.thingpedia.config.oauth2(client_id=$undefined, client_secret=$undefined);
 
+  monitorable query user_presence(in req username : Entity(tt:username) #_[prompt="What user do you want presence for?"],
+                                  out presence : Enum(away,auto))
+  #_[confirmation="whether $username is online or away on Slack"]
+  #_[formatted=["${username} is currently ${presence}"]]
+  #[doc="Get presence status of the given user"]
+  #[poll_interval=60000ms];
+
   monitorable list query channel_history(out channel: Entity(tt:hashtag) #_[prompt="What channel are you interested in?"],
                                          out date: Date,
                                          out sender: Entity(tt:username) #_[prompt="What user are you interested in?"],

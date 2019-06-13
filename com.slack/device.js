@@ -42,6 +42,8 @@ module.exports = class InstagramClass extends Tp.BaseDevice {
         this.name = "Slack %s".format(this.state.user_id);
         this.description = "This is Slack owned by %s"
             .format(this.state.user);
+
+        this._cachedUserIds = new Map;
     }
 
     get userId() {
@@ -54,6 +56,49 @@ module.exports = class InstagramClass extends Tp.BaseDevice {
 
     get accessToken() {
         return this.state.accessToken;
+    }
+
+    async get_user_presence({ username }) {
+        const userId = this._findUser(username);
+
+        const response = JSON.parse(await Tp.Helpers.Http.post('https://slack.com/api/users.getPresence',
+            'token=' + this.accessToken
+            + '&user=' + encodeURIComponent(userId), {
+                dataContentType: 'application/x-www-form-urlencoded'
+            }));
+
+        if (!response.ok) {
+            console.log('[ERROR] invalid response from http POST (users.getPresence)', response);
+            throw new Error("Users.GetPresence returned status of NOT OK.");
+        }
+
+        return { presence: response.presence };
+    }
+
+    async _findUser(username) {
+        if (this._cachedUserIds.has(username))
+            return this._cachedUserIds.get(username);
+
+        const response = JSON.parse(await Tp.Helpers.Http.post('https://slack.com/api/users.list',
+            'token=' + this.accessToken, {
+                dataContentType: 'application/x-www-form-urlencoded'
+            }));
+
+        if (!response.ok) {
+            console.log('[ERROR] invalid response from http POST (users.list)', response);
+            throw new Error("Users.List returned status of NOT OK.");
+        }
+
+        for (let u of response.members) {
+            if (u.name)
+                this._cachedUserIds.set(u.name, u.id);
+            else if (u.profile && u.profile.display_name)
+                this._cachedUserIds.set(u.profile.display_name, u.id);
+        }
+
+        if (!this._cachedUserIds.has(username))
+            throw new Error(`Invalid user ${username}`);
+        return this._cachedUserIds.sget(username);
     }
 
     async get_channel_history({channel, date, sender, message}) {
