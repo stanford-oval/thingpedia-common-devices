@@ -16,7 +16,6 @@ module.exports = class InstagramClass extends Tp.BaseDevice {
             authorize: 'https://slack.com/oauth/authorize',
             get_access_token: 'https://slack.com/api/oauth.access',
             callback: function (engine, accessToken, refreshToken) {
-                let auth = 'Bearer ' + accessToken;
                 return Tp.Helpers.Http.post('https://slack.com/api/auth.test', 'token=' + accessToken,
                     {dataContentType: 'application/x-www-form-urlencoded'})
                     .then((response) => {
@@ -57,58 +56,53 @@ module.exports = class InstagramClass extends Tp.BaseDevice {
         return this.state.accessToken;
     }
 
-    get_channel_history({channel, date, sender, message}) {
-        let self = this;
+    async get_channel_history({channel, date, sender, message}) {
         let token = this.accessToken;
-        return Tp.Helpers.Http.post('https://slack.com/api/channels.list',
+        const response = Tp.Helpers.Http.post('https://slack.com/api/channels.list',
             'token=' + token +
             '&exclude_archived=' + encodeURIComponent(1), {
                 dataContentType: 'application/x-www-form-urlencoded'
-        }).then((response) => {
+        });
+        let parsed = JSON.parse(response);
+        if (!parsed.ok) {
+            console.log('[ERROR] invalid response from http POST for channel list');
+            return [];
+        }
+        const messageLists = await Promise.all(parsed.channels.map(async (channel) => {
+            // Check the 5 latest messages
+            const response = await Tp.Helpers.Http.post('https://slack.com/api/channels.history',
+                'token=' + token +
+                '&channel=' + encodeURIComponent(channel.id) +
+                '&count=' + encodeURIComponent('5'), {
+                    dataContentType: 'application/x-www-form-urlencoded'
+                }
+            );
             let parsed = JSON.parse(response);
             if (!parsed.ok) {
-                console.log('[ERROR] invalid response from http POST for channel list');
-                return;
+                console.log('[ERROR] invalid response from http POST (channel.history)');
+                throw new Error("Channels.History returned status of NOT OK.");
             }
-            return Promise.all(parsed.channels.map((channel) => {
-                // Check the 5 latest messages
-                return Tp.Helpers.Http.post('https://slack.com/api/channels.history',
-                    'token=' + token +
-                    '&channel=' + encodeURIComponent(channel.id) +
-                    '&count=' + encodeURIComponent('5'), {
-                        dataContentType: 'application/x-www-form-urlencoded'
-                    }
-                ).then((response) => {
-                    let parsed = JSON.parse(response);
-                    if (!parsed.ok) {
-                        console.log('[ERROR] invalid response from http POST (channel.history)');
-                        throw ("Channels.History returned status of NOT OK.");
-                    }
-                    return Promise.all(parsed.messages.map((msg) => {
-                        return this.get_username(msg.user).then((username) => {
-                            return {
-                                channel: channel.name,
-                                sender: username,
-                                date: msg.ts,
-                                message: msg.text
-                            };
-                        });
-                    }));
-                });
-            })).then((messageLists) => {
-                const flatlist = [];
-                for (let list of messageLists)
-                    flatlist.push(...list);
-                return flatlist;
+            return Promise.all(parsed.messages.map(async (msg) => {
+                const username = await this.get_username(msg.user);
+                return {
+                    channel: channel.name,
+                    sender: username,
+                    date: msg.ts,
+                    message: msg.text
+                };
+            }));
+        }));
 
-            });
-        });
+        const flatlist = [];
+        for (let list of messageLists)
+            flatlist.push(...list);
+        return flatlist;
     }
 
     do_send({channel, message}) {
         return this.get_channel_id(channel).then((channel_id) => {
             if (channel_id === null)
-                throw ("Channel not found!");
+                throw new Error("Channel not found!");
             return Tp.Helpers.Http.post('https://slack.com/api/chat.postMessage',
                 'token=' + this.accessToken +
                 '&as_user=true' +
@@ -159,7 +153,7 @@ module.exports = class InstagramClass extends Tp.BaseDevice {
     do_updateChannelPurpose({channel, purpose}) {
         return this.get_channel_id(channel).then((channel_id) => {
             if (channel_id === null)
-                throw ("Channel not found!");
+                throw new Error("Channel not found!");
             return Tp.Helpers.Http.post('https://slack.com/api/channels.setPurpose',
                 'token=' + this.accessToken +
                 '&channel=' + encodeURIComponent(channel_id) +
@@ -182,7 +176,7 @@ module.exports = class InstagramClass extends Tp.BaseDevice {
     do_updateChannelTopic({channel, topic}) {
         return this.get_channel_id(channel).then((channel_id) => {
             if (channel_id === null)
-                throw ("Channel not found!");
+                throw new Error("Channel not found!");
             return Tp.Helpers.Http.post('https://slack.com/api/channels.setTopic',
                 'token=' + this.accessToken +
                 '&channel=' + encodeURIComponent(channel_id) +
@@ -229,7 +223,7 @@ module.exports = class InstagramClass extends Tp.BaseDevice {
             let parsed = JSON.parse(response);
             if (!parsed.ok) {
                 console.log('[ERROR] invalid response from http POST (users.info)');
-                throw ("Cannot find user " + user_id);
+                throw new Error("Cannot find user " + user_id);
             }
             // console.log('[info] Translated Username: ', parsed.user.name);
             return parsed.user.name;
