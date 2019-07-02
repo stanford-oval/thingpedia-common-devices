@@ -40,11 +40,9 @@ module.exports = class ArXivDevice extends Tp.BaseDevice {
             throw new Error('Please at least provide one parameter: author, category, or keyword');
 
         let url = baseUrl + `?search_query=${params.join(encodeURIComponent(' AND '))}&max_results=5&sortBy=submittedDate`;
-        console.log(url);
         return Tp.Helpers.Http.get(url).then((response) => {
             let parser = xml2js.parseString;
             return Q.nfcall(parser, response).then((res) => {
-                console.log(JSON.stringify(res));
                 return res.feed.entry.map((paper) => {
                     return {
                         title: paper.title,
