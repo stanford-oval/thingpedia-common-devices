@@ -1,118 +1,243 @@
-class @us.sportradar {
-  import loader from @org.thingpedia.v1();
+class @almond.sports
+#_[name="Universal Sports Skill"]
+#_[description="Sports Skill combining multiple APIs to display sports news, scores, and stats"]
+
+{
+  import loader from @org.thingpedia.v2();
   import config from @org.thingpedia.config.none();
 
-  monitorable query soccer_eu_tourney(in req tournament: Entity(sportradar:eu_tournament) #_[prompt="What tournament are you interested in?"],
-                                      out tournament_league_name: String,
-                                      out away_team: Entity(sportradar:eu_soccer_team),
-                                      out home_team: Entity(sportradar:eu_soccer_team),
-                                      out game_status: Enum(scheduled,inprogress,halftime,closed) #_[prompt="What point of the game are you interested in? Use scheduled, inprogress, halftime or closed."],
-                                      out scheduled_time: Date,
-                                      out away_score: Number,
-                                      out home_score: Number)
-  #_[canonical="eu soccer tournament status on sportradar"]
-  #_[confirmation="European soccer game "]
-  #_[confirmation_remote="European soccer game on Almond of $__person"]
-  #[poll_interval=300000ms]
-  #[doc="get soccer games as with soccer_eu_team, searching by tournament or league name (e.g., 'Champions League')"];
-
-  monitorable query soccer_us_tourney(in req tournament: Entity(sportradar:us_tournament) #_[prompt="What tournament are you interested in?"],
-                                      out tournament_league_name: String,
-                                      out away_team: Entity(sportradar:us_soccer_team),
-                                      out home_team: Entity(sportradar:us_soccer_team),
-                                      out game_status: Enum(scheduled,inprogress,halftime,closed) #_[prompt="What point of the game are you interested in? Use scheduled, inprogress, halftime or closed."],
-                                      out scheduled_time: Date,
-                                      out away_score: Number,
-                                      out home_score: Number)
-  #_[canonical="us soccer tournament status on sportradar"]
-  #_[confirmation="American soccer game "]
-  #_[confirmation_remote="American soccer game on Almond of $__person"]
-  #[poll_interval=300000ms]
-  #[doc="soccer games as with soccer_eu_team, searching by tournament or league name (e.g., 'Champions League')"];
-
-  monitorable query nba(in req team: Entity(sportradar:nba_team) #_[prompt="What team are you interested in? Use the 3 letter alias."],
-                        out opponent: Entity(sportradar:nba_team) #_[prompt="What team are you interested in competitions against? Use the 3 letter alias."],
-                        out is_home: Boolean,
-                        out game_status: Enum(scheduled,inprogress,halftime,closed) #_[prompt="What point of the game are you interested in? Use scheduled, inprogress, halftime or closed."],
-                        out scheduled_time: Date,
-                        out score: Number,
-                        out opponent_score: Number,
-                        out result: Enum(win,lose,unclosed))
-  #_[canonical="nba game status on sportradar"]
+  monitorable list query get_todays_games_nba(out home_team: Entity(sportradar:nba_team) #_[canonical="home team"],
+                                          out home_score: Number #_[canonical="home score"],
+                                          out away_team: Entity(sportradar:nba_team) #_[canonical="away team"],
+                                          out away_score: Number #_[canonical="away score"],
+                                          out status: String #_[canonical="status"])
+  #_[canonical="schedule for today's nba games"]
   #_[confirmation="NBA game "]
-  #_[confirmation_remote="NBA game on Almond of $__person"]
+  #_[formatted=[{type="text",text="${away_team}: ${away_score} @ ${home_team}: ${home_score} Game Status: ${status}"}]]
+  #_[confirmation_remote="NBA game"]
   #[poll_interval=300000ms]
-  #[doc="NBA games of a given team; `gameStatus` can be scheduled, inprogress, halftime or closed"];
+  #[doc="Daily Schedule for all NBA teams"];
 
-  monitorable query soccer_eu(in req team: Entity(sportradar:eu_soccer_team) #_[prompt="What team are you interested in? Use the 3 letter alias."],
-                              out opponent: Entity(sportradar:eu_soccer_team) #_[prompt="What team are you interested in competitions against? Use the 3 letter alias."],
-                              out is_home: Boolean,
-                              out game_status: Enum(scheduled,inprogress,halftime,closed) #_[prompt="What point of the game are you interested in? Use scheduled, inprogress, halftime or closed."],
-                              out scheduled_time: Date,
-                              out opponent_score: Number,
-                              out team_score: Number,
-                              out result: Enum(win,lose,draw,unclosed))
-  #_[canonical="eu soccer game status on sportradar"]
-  #_[confirmation="European soccer game"]
-  #_[confirmation_remote="European soccer game on Almond of $__person"]
+  monitorable list query get_todays_games_mlb(out home_team: Entity(sportradar:mlb_team) #_[canonical="home team"],
+                                          out home_score: Number #_[canonical="home score"],
+                                          out away_team: Entity(sportradar:nba_team) #_[canonical="away team"],
+                                          out away_score: Number #_[canonical="away score"],
+                                          out status: String #_[canonical="status"])
+  #_[canonical="schedule for today's mlb games"]
+  #_[confirmation="MLB game "]
+  #_[formatted=[{type="text",text="${away_team}: ${away_score} @ ${home_team}: ${home_score} Game Status: ${status}"}]]
+  #_[confirmation_remote="MLB game"]
   #[poll_interval=300000ms]
-  #[doc="soccer games (national league, national cup or Champions League) of a given European team; `gameStatus` can be scheduled, inprogress, halftime or closed"];
+  #[doc="Daily Schedule for all MLB teams"];
 
-  monitorable query soccer_us(in req team: Entity(sportradar:us_soccer_team) #_[prompt="What team are you interested in? Use the 3 letter alias."],
-                              out opponent: Entity(sportradar:us_soccer_team) #_[prompt="What team are you interested in competitions against? Use the 3 letter alias."],
-                              out is_home: Boolean,
-                              out game_status: Enum(scheduled,inprogress,halftime,closed) #_[prompt="What point of the game are you interested in? Use scheduled, inprogress, halftime or closed."],
-                              out scheduled_time: Date,
-                              out opponent_score: Number,
-                              out team_score: Number,
-                              out result: Enum(win,lose,draw,unclosed))
-  #_[canonical="us soccer game status on sportradar"]
-  #_[confirmation="American soccer game"]
-  #_[confirmation_remote="American soccer game on Almond of $__person"]
+  monitorable list query get_weekly_games_nfl(out home_team: Entity(sportradar:nfl_team) #_[canonical="home team"],
+                                          out home_score: Number #_[canonical="home score"],
+                                          out away_team: Entity(sportradar:nba_team) #_[canonical="away team"],
+                                          out away_score: Number #_[canonical="away score"],
+                                          out status: String #_[canonical="status"])
+  #_[canonical="schedule for today's NFL games"]
+  #_[confirmation="NFL game "]
+  #_[formatted=[{type="text",text="${away_team}: ${away_score} @ ${home_team}: ${home_score} Game Status: ${status}"}]]
+  #_[confirmation_remote="NFL game"]
   #[poll_interval=300000ms]
-  #[doc="soccer games (CONCACAF, MSL, etc) of a given North American team; `gameStatus` can be scheduled, inprogress, halftime or closed"];
+  #[doc="Daily Schedule for all NFL teams"];
 
-  monitorable query mlb(in req team: Entity(sportradar:mlb_team) #_[prompt="What team are you interested in? Use the 3 letter alias."],
-                        out opponent: Entity(sportradar:mlb_team) #_[prompt="What team are you interested in competitions against? Use the 3 letter alias."],
-                        out is_home: Boolean,
-                        out game_status: Enum(scheduled,inprogress,halftime,closed) #_[prompt="What point of the game are you interested in? Use scheduled, inprogress, halftime or closed."],
-                        out scheduled_time: Date,
-                        out game_inning: String,
-                        out opponent_runs: Number,
-                        out team_runs: Number,
-                        out result: Enum(win,lose,draw,unclosed))
-  #_[canonical="mlb game status on sportradar"]
-  #_[confirmation="MLB game"]
-  #_[confirmation_remote="MLB game on Almond of $__person"]
+  monitorable list query get_todays_games_nhl(out home_team: Entity(almond.sports:nhl_team) #_[canonical="home team"],
+                                          out home_score: Number #_[canonical="home score"],
+                                          out away_team: Entity(almond.sports:nhl_team) #_[canonical="away team"],
+                                          out away_score: Number #_[canonical="away score"],
+                                          out status: String #_[canonical="status"])
+  #_[canonical="schedule for today's NHL games"]
+  #_[confirmation="NHL game "]
+  #_[formatted=[{type="text",text="${away_team}: ${away_score} @ ${home_team}: ${home_score} Game Status: ${status}"}]]
+  #_[confirmation_remote="NHL game"]
   #[poll_interval=300000ms]
-  #[doc="receive game for your favorite MLB teams"];
+  #[doc="Daily Schedule for all NHL teams"];
 
-  monitorable query ncaambb(in req team: Entity(sportradar:ncaambb_team) #_[prompt="What team are you interested in? Use the 3 letter alias."],
-                            out opponent: Entity(sportradar:ncaambb_team) #_[prompt="What team are you interested in competitions against? Use the 3 letter alias."],
-                            out is_home: Boolean,
-                            out game_status: Enum(scheduled,inprogress,halftime,closed) #_[prompt="What point of the game are you interested in? Use scheduled, inprogress, halftime or closed."],
-                            out scheduled_time: Date,
-                            out opponent_score: Number,
-                            out team_score: Number,
-                            out result: Enum(win,lose,unclosed))
-  #_[canonical="ncaa mbb game status on sportradar"]
-  #_[confirmation="NCAA Men's Basketball game"]
-  #_[confirmation_remote="NCAA Men's Basketball game on Almond of $__person"]
+  monitorable list query get_todays_games_eu_soccer(out home_team: Entity(sportradar:eu_soccer_team) #_[canonical="home team"],
+                                          out away_team: Entity(sportradar:eu_soccer_team) #_[canonical="away team"],
+                                          out status: String #_[canonical="status"])
+  #_[canonical="schedule for today's EU Soccer games"]
+  #_[confirmation="EU Soccer game "]
+  #_[formatted=[{type="text",text="${away_team} @ ${home_team} Game Status: ${status}"}]]
+  #_[confirmation_remote="EU Soccer game"]
   #[poll_interval=300000ms]
-  #[doc="NCAA Men's Basketball games of your favorite teams"];
+  #[doc="Daily Schedule for all EU Soccer teams"];
 
-  monitorable query ncaafb(in req team: Entity(sportradar:ncaafb_team) #_[prompt="What team are you interested in? Use the 3 letter alias."],
-                           out opponent: Entity(sportradar:ncaafb_team) #_[prompt="What team are you interested in competitions against? Use the 3 letter alias."],
-                           out is_home: Boolean,
-                           out game_status: Enum(scheduled,inprogress,halftime,closed) #_[prompt="What point of the game are you interested in? Use scheduled, inprogress, halftime or closed."],
-                           out scheduled_time: Date,
-                           out opponent_score: Number,
-                           out team_score: Number,
-                           out result: Enum(win,lose,unclosed))
-  #_[canonical="ncaafb game status on sportradar"]
-  #_[confirmation="NCAA Football game"]
-  #_[confirmation_remote="NCAA Football game on Almond of $__person"]
+  monitorable query get_team_nba(in req team: Entity(sportradar:nba_team) #_[canonical="team"],
+                             out result: String #_[canonical="result"])
+  #_[canonical="nba game status on sportradar"]
+  #_[confirmation="${team} game "]
+  #_[formatted=[{type="text",text="${result}"}]]
+  #_[confirmation_remote="NBA game"]
   #[poll_interval=300000ms]
-  #[doc="follow your favorite NCAA Football team all season long"];
+  #[doc="NBA games for a given team"];
+
+  monitorable query get_team_mlb(in req team: Entity(sportradar:mlb_team) #_[canonical="team"],
+                             out result: String #_[canonical="result"])
+  #_[canonical="MLB game status on sportradar"]
+  #_[confirmation="${team} game "]
+  #_[formatted=[{type="text",text="${result}"}]]
+  #_[confirmation_remote="MLB game"]
+  #[poll_interval=300000ms]
+  #[doc="MLB games for a given team"];
+
+  monitorable query get_team_nfl(in req team: Entity(sportradar:nfl_team) #_[canonical="team"],
+                             out result: String #_[canonical="result"])
+  #_[canonical="NFL game status on sportradar"]
+  #_[confirmation="${team} game "]
+  #_[formatted=[{type="text",text="${result}"}]]
+  #_[confirmation_remote="${team} game"]
+  #[poll_interval=300000ms]
+  #[doc="NFL games for a given team"];
+
+  monitorable query get_team_nhl(in req team: Entity(almond.sports:nhl_team) #_[canonical="team"],
+                             out result: String #_[canonical="result"])
+  #_[canonical="NHL game status on sportradar"]
+  #_[confirmation="${team} game "]
+  #_[formatted=[{type="text",text="${result}"}]]
+  #_[confirmation_remote="${team} game"]
+  #[poll_interval=300000ms]
+  #[doc="NHL games for a given team"];
+
+  monitorable list query get_boxscore_nba(in req team: Entity(sportradar:nba_team) #_[canonical="team"],
+                          out home_team: Entity(sportradar:nba_team) #_[canonical="home team"],
+                          out home_score: Number #_[canonical="home score"],
+                          out home_quarter1: Number #_[canonical="home quarter1"],
+                          out home_quarter2: Number #_[canonical="home quarter2"],
+                          out home_quarter3: Number #_[canonical="home quarter3"],
+                          out home_quarter4: Number #_[canonical="home quarter4"],
+                          out home_leading_scorer: String #_[canonical="home leading scorer"],
+                          out away_team: Entity(sportradar:nba_team) #_[canonical="away team"],
+                          out away_score: Number #_[canonical="away score"],
+                          out away_quarter1: Number #_[canonical="away quarter1"],
+                          out away_quarter2: Number #_[canonical="away quarter2"],
+                          out away_quarter3: Number #_[canonical="away quarter3"],
+                          out away_quarter4: Number #_[canonical="away quarter4"],
+                          out away_leading_scorer: String #_[canonical="away leading scorer"],
+                          out status_message: String #_[canonical="additional status message"])
+  #_[canonical="nba boxscore on sportradar"]
+  #_[confirmation="the box score for the ${team} game"]
+  #_[formatted=[{type="text",text="${away_team}:${away_score} @ ${home_team}:${home_score}"},
+    {type="text",text="First Quarter: ${away_quarter1} - ${home_quarter1} Second Quarter:  ${away_quarter2} - ${home_quarter2} Third Quarter: ${away_quarter3} - ${home_quarter3} Fourth Quarter: ${away_quarter4} - ${home_quarter4}"},
+    {type="text",text="${home_team} leading scorer: ${home_leading_scorer} ${away_team} leading scorer: ${away_leading_scorer}"}, {type="text",text="${status_message}"}]]
+  #_[confirmation_remote="the box score for the ${team} game"]
+  #[poll_interval=300000ms]
+  #[doc="NBA games for a given team"];
+
+  monitorable list query get_boxscore_mlb(in req team: Entity(sportradar:mlb_team) #_[canonical="team"],
+                          out home_team: Entity(sportradar:mlb_team) #_[canonical="home team"],
+                          out home_score: Number #_[canonical="home score"],
+                          out home_inning1: Number #_[canonical="home inning 1"],
+                          out home_inning2: Number #_[canonical="home inning 2"],
+                          out home_inning3: Number #_[canonical="home inning 3"],
+                          out home_inning4: Number #_[canonical="home inning 4"],
+    		          out home_inning5: Number #_[canonical="home inning 5"],
+                          out home_inning6: Number #_[canonical="home inning 6"],
+                          out home_inning7: Number #_[canonical="home inning 7"],
+                          out home_inning8: Number #_[canonical="home inning 8"],
+    			  out home_inning9: Number #_[canonical="home inning 9"],
+                          out home_starting_pitcher: String #_[canonical="home starting pitcher"],
+                          out away_team: Entity(sportradar:mlb_team) #_[canonical="away team"],
+                          out away_score: Number #_[canonical="away score"],
+                          out away_inning1: Number #_[canonical="away inning 1"],
+                          out away_inning2: Number #_[canonical="away inning 2"],
+                          out away_inning3: Number #_[canonical="away inning 3"],
+                          out away_inning4: Number #_[canonical="away inning 4"],
+    		          out away_inning5: Number #_[canonical="away inning 5"],
+                          out away_inning6: Number #_[canonical="away inning 6"],
+                          out away_inning7: Number #_[canonical="away inning 7"],
+                          out away_inning8: Number #_[canonical="away inning 8"],
+    			  out away_inning9: Number #_[canonical="away inning 9"],
+                          out away_starting_pitcher: String #_[canonical="away starting pitcher"],
+                          out status_message: String #_[canonical="additional status message"])
+  #_[canonical="MLB boxscore on sportradar"]
+  #_[confirmation="the box score for the ${team} game"]
+  #_[formatted=[{type="text",text="${away_team}:${away_score} @ ${home_team}:${home_score}"},
+    {type="text",text="First Inning: ${away_inning1} - ${home_inning1} Second Inning: ${away_inning2} - ${home_inning2} Third Inning: ${away_inning3} - ${home_inning3} Fourth Inning: ${away_inning4} - ${home_inning4} Fifth Inning: ${away_inning5} - ${home_inning5} Sixth Inning: ${away_inning6} - ${home_inning6} Seventh Inning: ${away_inning7} - ${home_inning7} Eighth Inning: ${away_inning8} - ${home_inning8} Ninth Inning: ${away_inning9} - ${home_inning9}"},
+    {type="text",text="${home_team} starting pitcher: ${home_starting_pitcher} ${away_team} starting pitcher: ${away_starting_pitcher}"},
+    {type="text",text="${status_message}"}]]
+  #_[confirmation_remote="the box score for the ${team} game"]
+  #[poll_interval=300000ms]
+  #[doc="MLB boxscore for a given team"];
+
+  monitorable list query get_boxscore_nfl(in req team: Entity(sportradar:nfl_team) #_[canonical="team"],
+                          out home_team: Entity(sportradar:nfl_team) #_[canonical="home team"],
+                          out home_score: Number #_[canonical="home score"],
+                          out home_quarter1: Number #_[canonical="home quarter1"],
+                          out home_quarter2: Number #_[canonical="home quarter2"],
+                          out home_quarter3: Number #_[canonical="home quarter3"],
+                          out home_quarter4: Number #_[canonical="home quarter4"],
+                          out away_team: Entity(sportradar:nfl_team) #_[canonical="away team"],
+                          out away_score: Number #_[canonical="away score"],
+                          out away_quarter1: Number #_[canonical="away quarter1"],
+                          out away_quarter2: Number #_[canonical="away quarter2"],
+                          out away_quarter3: Number #_[canonical="away quarter3"],
+                          out away_quarter4: Number #_[canonical="away quarter4"],
+                          out status_message: String #_[canonical="additional status message"])
+
+  #_[canonical="NFL boxscore on sportradar"]
+  #_[confirmation="the box score for the ${team} game"]
+  #_[formatted=[{type="text",text="${away_team}:${away_score} @ ${home_team}:${home_score}"},
+    {type="text",text="First Quarter: ${away_quarter1} - ${home_quarter1} Second Quarter:  ${away_quarter2} - ${home_quarter2} Third Quarter: ${away_quarter3} - ${home_quarter3} Fourth Quarter: ${away_quarter4} - ${home_quarter4}"},
+    {type="text",text="${home_team} leading scorer: ${home_leading_scorer} ${away_team} leading scorer: ${away_leading_scorer}"}, {type="text",text="${status_message}"}]]
+  #_[confirmation_remote="the box score for the ${team} game"]
+  #[poll_interval=300000ms]
+  #[doc="NFL boxscores for a given team"];
+
+  monitorable list query get_boxscore_nhl(in req team: Entity(almond.sports:nhl_team) #_[canonical="team"],
+                          out home_team: Entity(almond.sports:nhl_team) #_[canonical="home team"],
+                          out home_score: Number #_[canonical="home score"],
+                          out home_period1: Number #_[canonical="home period1"],
+                          out home_period2: Number #_[canonical="home period2"],
+                          out home_period3: Number #_[canonical="home period3"],
+    			  out home_leading_scorer: String #_[canonical="home leading scorer"],
+                          out away_team: Entity(almond.sports:nhl_team) #_[canonical="away team"],
+                          out away_score: Number #_[canonical="away score"],
+                          out away_period1: Number #_[canonical="away period1"],
+                          out away_period2: Number #_[canonical="away period2"],
+                          out away_period3: Number #_[canonical="away period3"],
+     			  out away_leading_scorer: String #_[canonical="away leading scorer"],
+                          out status_message: String #_[canonical="additional status message"])
+
+  #_[canonical="NHL boxscore on sportradar"]
+  #_[confirmation="the box score for the ${team} game"]
+  #_[formatted=[{type="text",text="${away_team}:${away_score} @ ${home_team}:${home_score}"},
+    {type="text",text="First Period: ${away_period1} - ${home_period1} Second Period:  ${away_period2} - ${home_period2} Third Period: ${away_period3} - ${home_period3}"},
+    {type="text",text="${home_team} leading scorer: ${home_leading_scorer} ${away_team} leading scorer: ${away_leading_scorer}"}, {type="text",text="${status_message}"}]]
+  #_[confirmation_remote="the box score for the ${team} game"]
+  #[poll_interval=300000ms]
+  #[doc="NHL boxscores for a given team"];
+
+  monitorable list query get_team_eu_soccer(in req team: Entity(sportradar:eu_soccer_team) #_[canonical="team"],
+                          out home_team: Entity(sportradar:eu_soccer_team) #_[canonical="home team"],
+                          out home_score: Number #_[canonical="home score"],
+                          out home_half1: Number #_[canonical="home half1"],
+                          out home_half2: Number #_[canonical="home half2"],
+                          out away_team: Entity(sportradar:eu_soccer_team) #_[canonical="away team"],
+                          out away_score: Number #_[canonical="away score"],
+                          out away_half1: Number #_[canonical="away half1"],
+                          out away_half2: Number #_[canonical="away half2"],
+                       	  out match_status: String #_[canonical="status of the match"],
+                          out status_message: String #_[canonical="additional status message"])
+
+  #_[canonical="EU Soccer boxscore on sportradar"]
+  #_[confirmation="the box score for the ${team} game"]
+  #_[formatted=[{type="text",text="${away_team}:${away_score} @ ${home_team}:${home_score}"},
+    {type="text",text="First Half: ${away_half1} - ${home_half1} Second Half:  ${away_half2} - ${home_half2} ${match_status}"},
+    {type="text",text="${status_message}"}]]
+  #_[confirmation_remote="the box score for the ${team} game"]
+  #[poll_interval=300000ms]
+  #[doc="EU Soccer boxscores for a given team"];
+
+  monitorable list query get_sports_headlines(in req sport_league: String #_[canonical="sport league"],
+    					   out link: Entity(tt:url) #_[canonical="link"],
+                                           out title: String #_[canonical="title"] #[string_values="tt:news_title"],
+                                           out description: String #_[canonical="title"] #[string_values="tt:news_description"])
+  #_[canonical="Sports articles"]
+  #_[confirmation="get articles belonging to the league ${sport_league}"]
+  #_[formatted=[{type="rdl",webCallback="${link}",displayTitle="${title}",displayText="${description}"}]]
+  #_[confirmation_remote="Sports articles"]
+  #[poll_interval=300000ms]
+  #[doc="trigger on new articles"];
 }
-

@@ -1,202 +1,307 @@
-// -*- mode: js; indent-tabs-mode: nil; js-basic-offset: 4 -*-
-// vim: syntax=javascript
-//
-// Copyright 2016 Riad S. Wahby <rsw@cs.stanford.edu>
-// based on us.sportradar device by Giovannni Campagna <gcampagn@cs.stanford.edu>
-//
-// See LICENSE for details
+"use strict";
+
+String.prototype.format = function format() {
+    return vprintf(this, arguments);
+};
 
 const Tp = require('thingpedia');
 
-const API_KEY = 'tn5sx574v9yk995cc29ccftz';
-const SCHEDULE_URL = 'https://api.sportradar.us/mlb-t5/games/%d/%d/%d/schedule.xml?api_key=' + API_KEY;
-const BOXSCORE_URL = 'https://api.sportradar.us/mlb-t5/games/%s/boxscore.xml?api_key=' + API_KEY;
-const POLL_INTERVAL = 24 * 3600 * 1000; // 1 day
+const MLB_API_KEY = 'xzzvcwgkt6q8c2agt8qrnqs3';
+const MLB_SCHEDULE_URL = 'http://api.sportradar.us/mlb/trial/v6.5/en/games/%d/%d/%d/boxscore.json?api_key=' + MLB_API_KEY;
+const MLB_BOXSCORE_URL = 'http://api.sportradar.us/mlb/trial/v6.5/en/games/%s/boxscore.json?api_key=' + MLB_API_KEY;
 
-module.exports = new Tp.ChannelClass({
-    Name: 'SportRadarMLBChannel',
-    Extends: Tp.HttpPollingTrigger,
-    interval: POLL_INTERVAL,
+module.exports = class MLBSportRadarAPIDevice {
 
-    _init: function(engine, device, params) {
-        this.parent();
-        this.engine = engine;
 
-        this._params = params.slice(0, 1);
-        this._observedTeam = params[0];
-        if (!this._observedTeam)
-            throw new TypeError("Missing required parameter");
+  constructor(platform) {
 
-        this._updateUrl();
-        this.filterString = this._params.join('-');
+        this.platform = platform;
+        this.name = "Sport Radar MLB Channel";
+        this.description = "The MLB Channel for Sport Radar";
 
-        this._gameId = null;
-        this._nextGameTimer = null;
-        this._lastStatus = null;
-    },
+  }
 
-    _doClose: function() {
-        clearTimeout(this._nextGameTimer);
-        this._nextGameTimer = null;
-        return this.parent();
-    },
+  _updateUrl() {
 
-    _updateUrl: function() {
         var now = new Date;
-        this.url = SCHEDULE_URL.format(now.getFullYear(), now.getMonth() + 1, now.getDate());
-    },
+        this.url = MLB_SCHEDULE_URL.format(now.getFullYear(), now.getMonth() + 1, now.getDate() - 1);
+        //console.log('url', this.url);
+  }
 
-    formatEvent(event) {
-        var watchedAlias = event[0];
-        var otherAlias = event[1];
-        var watchedIsHome = event[2];
-        var awayName = event[3];
-        var homeName = event[4];
-        var gameStatus = event[5];
-        var scheduledTime = event[6];
-        var inning = event[7];
-        var awayRuns = event[8];
-        var homeRuns = event[9];
-        var result = event[10];
+  get_get_todays_games(){
 
-        var platform = this.engine.platform;
-        switch(gameStatus) {
-        case 'scheduled':
-            return "Next game %s @ %s at %s".format(awayName, homeName, scheduledTime.toLocaleString(platform.locale, { timeZone: platform.timezone }));
-        case 'inprogress':
-            return "Game update for %s @ %s: %d - %d".format(awayName, homeName, awayRuns, homeRuns);
-        case 'closed':
-            return "Final score for %s @ %s: %d - %d".format(awayName, homeName, awayRuns, homeRuns);
-        }
-        return [];
-    },
+    this._updateUrl();
+    return Tp.Helpers.Http.get(this.url).then((response) => {
 
-    _emit: function(status, inning, awayRuns, homeRuns) {
-        var currentEvent = [ this._awayAlias, this.homeAlias, false,
-                             this._awayName, this._homeName, status,
-                             this._scheduledTime, inning, awayRuns, homeRuns,
-                             'unclosed'];
+        const parsed = JSON.parse(response);
+        var game_statuses = [];
+        const games = parsed['league']['games'];
 
-        if (this._observedTeam === this._homeAlias) {
-            currentEvent[0] = this._homeAlias;
-            currentEvent[1] = this._awayAlias;
-            currentEvent[2] = true;
-        }
-        if (status === 'closed') {
-            if (awayRuns === homeRuns) 
-                currentEvent[10] = 'draw';
-            if (this._observedTeam === this._homeAlias && homeRuns > awayRuns)
-                currentEvent[10] = 'win';
-            else if (this._observedTeam === this._awayAlias && homeRuns < awayRuns)
-                currentEvent[10] = 'win';
-            else
-                currentEvent[10] = 'lose';
+        for (var i = 0; i < games.length; i++){
+          let game_status = {
+
+            home_team: games[i]['game']['home']['abbr'],
+            home_score: games[i]['game']['home']['runs'],
+            away_team: games[i]['game']['away']['abbr'],
+            away_score: games[i]['game']['away']['runs'],
+            result: games[i]['game']['status']
+
+          };
+
+          game_statuses.push(game_status)
+
         }
 
-        this.emitEvent(currentEvent);
-    },
+        return game_statuses.map((game_status) => {
 
-    _onNextGameEvent: function() {
-        Tp.Helpers.Http.get(BOXSCORE_URL.format(this._gameId)).then((response) => {
-            return Tp.Helpers.Xml.parseString(response);
-        }).then((parsed) => {
-            var inning = null;
-            if (parsed.game.$.status === 'closed' || parsed.game.$.status === 'complete') {
-                inning = String(parsed.game.final[0].$.inning_half) + String(parsed.game.final[0].$.inning);
-                this._nextGameTimer = null;
-                this._gameId = null;
-            } else {
-                inning = String(parsed.game.outcome[0].$.current_inning_half) + String(parsed.game.outcome[0].$.current_inning);
-                this._nextGameTimer = setTimeout(this._onNextGameEvent.bind(this), 5*60000); // poll in 5 minutes
-            }
-
-            // remember current status - only report each time the inning changes
-            if (inning === this._inning) 
-                return;
-             else 
-                this._inning = inning;
-            
-
-            var awayRuns = Number(parsed.game.away[0].$.runs);
-            var homeRuns = Number(parsed.game.home[0].$.runs);
-
-            this._emit(parsed.game.$.status, inning, awayRuns, homeRuns);
-        }).catch((e) => {
-            console.error('Failed to process MLB game updates: ' + e.message);
-            console.error(e.stack);
-        }).done();
-    },
-
-    _onTick: function() {
-        this._updateUrl();
-        return this.parent();
-    },
-
-    _onResponse: function(response) {
-        if(!response) 
-            return;
-        
-
-        Tp.Helpers.Xml.parseString(response).then((parsed) => {
-            var games = parsed.league['daily-schedule'][0].games[0].game;
-            var game = null;
-            for (var i = 0; i < games.length; i++) {
-                if (games[i].$.status === 'closed') 
-                    continue;
-                
-
-                if (games[i].home[0].$.abbr === this._observedTeam ||
-                    games[i].away[0].$.abbr === this._observedTeam ) {
-                    game = games[i];
-                    break;
-                }
-            }
-            if (game === null) {
-                console.log('No scheduled games found for ' + this._observedTeam);
-                clearTimeout(this._nextGameTimer);
-                this._nextGameTimer = null;
-                this._gameId = null;
-                return;
-            }
-
-            if (this._gameId === game.$.id) {
-                // we've already seen this game
-                return;
-            }
-
-            console.log('Found game ' + game.$.id + ': ' + game.home[0].$.abbr + ' vs. ' + game.away[0].$.abbr);
-            this._gameId = game.$.id;
-            this._awayAlias = game.away[0].abbr;
-            this._awayName = game.away[0].market + ' ' + game.away[0].name;
-            this._homeAlias = game.home[0].abbr;
-            this._homeName = game.home[0].market + ' ' + game.home[0].name;
-
-            var timeout;
-            if (game.$.status === 'scheduled') {
-                var scheduled = new Date(game.$.scheduled);
-                this._scheduledTime = scheduled;
-                var now = new Date();
-                timeout = scheduled.getTime - now.getTime() + 5000;
-                if (timeout >= 5000) 
-                    this._emit('scheduled', 'Pre', 0, 0);
-                 else 
-                    timeout = 5000;
-                
-
-                if (timeout > POLL_INTERVAL) {
-                    clearTimeout(this._nextGameTimer);
-                    return;
-                }
-            } else {
-                this._scheduleTime = new Date();
-                timeout = 5000;
-            }
-
-            clearTimeout(this._nextGameTimer);
-            this._nextGameTimer = setTimeout(this._onNextGameEvent.bind(this), timeout);
-        }).catch((error) => {
-            console.error('Failed to process MLB game schedule: ' + error.message);
-            console.error(error.stack);
+          return {
+                  home_team: game_status.home_team,
+                  home_score: game_status.home_score,
+                  away_team: game_status.away_team,
+                  away_score: game_status.away_score,
+                  status: game_status.result
+                 };
         });
-    },
-});
+
+  }).catch((e) => {
+            throw new TypeError("No MLB Games Today");
+        });
+
+  }
+
+  get_get_team(team){
+
+    this._updateUrl();
+    return Tp.Helpers.Http.get(this.url).then((response) => {
+
+        const parsed = JSON.parse(response);
+        const games = parsed['league']['games'];
+        var gameStatus;
+        var index = 0;
+        const platform = this.platform;
+        const team_name = team['team'];
+
+        for (var i = 0; i < games.length; i++){
+          if (games[i]['game']['home']['abbr'] === team_name || games[i]['game']['away']['abbr'] === team_name){
+            index = i;
+            gameStatus = games[i]['game']['status'];
+            if (gameStatus === "scheduled" || gameStatus === "inprogress"){
+              break;
+            }
+          }
+        }
+        const scheduledTime = games[index]['game']['scheduled'];
+        const awayName = games[index]['game']['away']['abbr'];
+        const homeName = games[index]['game']['home']['abbr'];
+        const awayPoints = games[index]['game']['away']['runs'];
+        const homePoints = games[index]['game']['home']['runs'];
+
+        switch(gameStatus) {
+
+        case 'scheduled':
+            var status_message = "Next game %s @ %s at %s".format(awayName, homeName, scheduledTime.toLocaleString(platform.locale, { timeZone: platform.timezone }));
+            return [{
+              result: status_message
+                  }];
+        case 'inprogress':
+            var status_message = "Game update for %s @ %s: %d - %d".format(awayName, homeName, awayPoints, homePoints);
+            return [{
+              result: status_message
+            }]
+        case 'complete':
+            var status_message = "The game is complete and statistics are being reviewed"
+            return [{
+              result: status_message
+            }]
+        case 'closed':
+            var status_message = "Final score for %s @ %s: %d - %d".format(awayName, homeName, awayPoints, homePoints);
+            return [{
+              result: status_message
+            }]
+        case 'wdelay':
+            var status_message = "The game has been delayed because of weather"
+            return [{
+              result: status_message
+            }]
+        case 'fdelay':
+            var status_message = "The game has been delayed because of facility issues"
+            return [{
+              result: status_message
+            }]
+        case 'odelay':
+            var status_message = "The game has been delayed"
+            return [{
+              result: status_message
+            }]
+        case 'canceled':
+            var status_message = "The game has been canceled"
+            return [{
+              result: status_message
+            }]
+
+        case 'unnecessary':
+            var status_message = "The game was scheduled to occur, but is now deemed unnecessary"
+            return [{
+              result: status_message
+            }]
+
+        case 'if_necessary':
+            var status_message = "The game will be scheduled if necessary"
+            return [{
+              result: status_message
+            }]
+
+        case 'postponed':
+            var status_message = "The game has been postponed"
+            return [{
+              result: status_message
+            }]
+
+        case 'suspended':
+            var status_message = "The game has been suspended"
+            return [{
+              result: status_message
+            }]
+
+        case 'maintenance':
+            var status_message = "The game failed review and is being repaired"
+            return [{
+              result: status_message
+            }]
+
+        }
+
+        return [];
+
+    }).catch((e) => {
+              return [{
+                result: "There are no MLB games today"
+              }]
+          });
+
+  }
+
+  get_get_boxscore(team){
+
+    this._updateUrl();
+    return Tp.Helpers.Http.get(this.url).then((response) => {
+
+        const parsed = JSON.parse(response);
+        const games = parsed['league']['games'];
+        const teamName = team['team'];
+        var index = 0;
+        var gameStatus = "nogame"
+        var gameId;
+        const platform = this.platform;
+
+        for (var i = 0; i < games.length; i++){
+
+          if (games[i]['game']['home']['abbr'] === teamName || games[i]['game']['away']['abbr'] === teamName){
+
+            index = i;
+            gameStatus = games[i]['game']['status'];
+            gameId = games[i]['game']['id'];
+
+          }
+
+        }
+
+        const homeTeam = games[index]['game']['home']['abbr']
+        const awayTeam = games[index]['game']['away']['abbr']
+        const homeScore = games[index]['game']['home']['runs']
+        const awayScore = games[index]['game']['away']['runs']
+
+        if (gameStatus === "nogame"){
+           return [{status_message: "There is no %s game today. I can notify you when there is a game if you want?".format(teamName)}];
+        }
+
+        if (gameStatus === "scheduled"){
+
+           const scheduledTime = games[index]['scheduled'];
+           const localTime = scheduledTime.toLocaleString(platform.locale, { timeZone: platform.timezone })
+           return [{status_message: "This game is scheduled for %s".format(localTime)}];
+
+        }else{
+           var promise = new Promise(function(resolve, reject) {
+
+
+           setTimeout(function(){
+             const url = MLB_BOXSCORE_URL.format(gameId)
+             return Tp.Helpers.Http.get(url).then((response) => {
+
+                const parsed = JSON.parse(response);
+                var homeInnings = [];
+                var awayInnings  = [];
+                var homePitcher = "";
+                var awayPitcher = "";
+
+                for (var i = 0; i < 9; i++){
+                  try {
+                    homeInnings.push(parsed['game']['home']['scoring'][i]['runs']);
+                    awayInnings.push(parsed['game']['away']['scoring'][i]['runs']);
+                  }
+                  catch(error){
+                    homeInnings.push(0);
+                    awayInnings.push(0);
+                  }
+                }
+                try {
+                  homePitcher = parsed['game']['home']['starting_pitcher']['preferred_name'] + " " + parsed['game']['home']['starting_pitcher']['last_name'];
+                  awayPitcher = parsed['game']['away']['starting_pitcher']['preferred_name'] + " " + parsed['game']['away']['starting_pitcher']['last_name']
+                }
+                catch(error){
+                  console.log(error)
+                }
+
+                let box_score = [{
+                  home_team: homeTeam,
+                  home_score: homeScore,
+                  home_inning1: homeInnings[0],
+                  home_inning2: homeInnings[1],
+                  home_inning3: homeInnings[2],
+                  home_inning4: homeInnings[3],
+                  home_inning5: homeInnings[4],
+                  home_inning6: homeInnings[5],
+                  home_inning7: homeInnings[6],
+                  home_inning8: homeInnings[7],
+                  home_inning9: homeInnings[8],
+                  home_starting_pitcher: homePitcher,
+                  away_team: awayTeam,
+                  away_score: awayScore,
+                  away_inning1: awayInnings[0],
+                  away_inning2: awayInnings[1],
+                  away_inning3: awayInnings[2],
+                  away_inning4: awayInnings[3],
+                  away_inning5: awayInnings[4],
+                  away_inning6: awayInnings[5],
+                  away_inning7: awayInnings[6],
+                  away_inning8: awayInnings[7],
+                  away_inning9: awayInnings[8],
+                  away_starting_pitcher: awayPitcher
+                }]
+
+                resolve(box_score)
+
+              });
+
+
+           }, 1000);
+
+         });
+          return promise
+        }
+    });
+
+  }
+
+  parse_boxscore(game_id){
+
+
+
+  }
+
+
+
+
+
+}

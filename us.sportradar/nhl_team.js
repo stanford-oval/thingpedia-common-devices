@@ -60,8 +60,7 @@ module.exports = class NHLSportRadarAPIDevice {
         });
 
   }).catch((e) => {
-            console.error('Failed to process NHL game updates: ' + e.message);
-            console.error(e.stack);
+            throw new TypeError("No NHL Games Today");
         });
 
   }
@@ -206,14 +205,14 @@ module.exports = class NHLSportRadarAPIDevice {
       const awayScore = games[index]['away_points'];
 
       if (gameStatus === "nogame"){
-         return [{special_message: "There is no %s game today. I can notify you when there is a game if you want?".format(teamName)}];
+         return [{status_message: "There is no %s game today. I can notify you when there is a game if you want?".format(teamName)}];
       }
 
       if (gameStatus === "scheduled"){
 
          const scheduledTime = games[index]['scheduled'];
          const localTime = scheduledTime.toLocaleString(platform.locale, { timeZone: platform.timezone })
-         return [{special_message: "This game is scheduled for %s".format(localTime)}];
+         return [{status_message: "This game is scheduled for %s".format(localTime)}];
 
       }else{
 
