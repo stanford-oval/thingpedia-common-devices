@@ -13,66 +13,22 @@ const util = require('util');
 const fs = require('fs');
 const path = require('path');
 
-const TpClient = require('thingpedia-client');
-const ThingTalk = require('thingtalk');
-const mockEngine = require('./mock');
+const Tp = require('thingpedia');
 
-const _tpClient = new TpClient.HttpClient(mockEngine.platform, 'https://thingpedia.stanford.edu/thingpedia');
-mockEngine.thingpedia = _tpClient;
-const _schemas = new ThingTalk.SchemaRetriever(_tpClient, null, false);
-const _tpDownloader = new TpClient.ModuleDownloader(mockEngine.platform, _tpClient, {});
+const _engine = require('./mock');
+const _tpFactory = new Tp.DeviceFactory(_engine, _engine.thingpedia, {});
 
-function getDeviceFactory() {
-    if (this._loading)
-        return Promise.resolve(this._loading);
-    this._modulePath = path.resolve(path.dirname(module.filename), '../' + this._id);
-    var cached = this._loadJsModule();
-    assert(cached);
-    return Promise.resolve(this._loading = cached);
-}
-// monkey patch the loading code for JS device classes so we use our
-// code rather than downloading from Thingpedia
-TpClient.Modules['org.thingpedia.v2'].prototype.getDeviceFactory = getDeviceFactory;
-//TpClient.Modules['org.thingpedia.v1'].prototype.getDeviceFactory = getDeviceFactory;
-
-async function loadDeviceFactory(deviceKind) {
-    const manifestPath = path.resolve(path.dirname(module.filename), '../' + deviceKind + '/manifest.tt');
-    const ourMetadata = (await util.promisify(fs.readFile)(manifestPath)).toString();
-    const ourParsed = (await ThingTalk.Grammar.parseAndTypecheck(ourMetadata, _schemas)).classes[0].toManifest();
-
-    try {
-        // ourMetadata might lack some of the fields that are in the
-        // real metadata, such as api keys and OAuth secrets
-        // for that reason we fetch the metadata for thingpedia as well,
-        // and fill in any missing parameter
-        const officialMetadata = await _tpClient.getDeviceCode(deviceKind);
-        const officialParsed = (await ThingTalk.Grammar.parseAndTypecheck(officialMetadata, _schemas)).classes[0].toManifest();
-
-        for (let name in officialParsed.auth) {
-            if (!ourParsed.auth[name])
-                ourParsed.auth[name] = officialParsed.auth[name];
-        }
-    } catch(e) {
-        if (e.code !== 404)
-            throw e;
-    }
-
-    ourParsed.version = -1;
-    ourParsed.package_version = undefined;
-    const tpModule = new (TpClient.Modules[ourParsed.module_type])(deviceKind, ourParsed, _tpDownloader);
-
-    return tpModule.getDeviceFactory();
-}
-
-async function createDeviceInstance(deviceKind, factory) {
-    if (factory.metadata.auth.type === 'none')
-        return new factory(mockEngine, { kind: deviceKind });
-    if (factory.metadata.auth.type === 'basic') {
+async function createDeviceInstance(deviceKind, manifest, devClass) {
+    const config = manifest.config;
+    if (config.module === 'org.thingpedia.config.none')
+        return new devClass(_engine, { kind: deviceKind });
+    if (config.module === 'org.thingpedia.config.basic_auth' ||
+        config.module === 'org.thingpedia.config.form') {
         // credentials are stored in test/[DEVICE ID].cred.json
         const credentialsPath = path.resolve('./test', deviceKind + '.cred.json');
         const args = require(credentialsPath);
         args.kind = deviceKind;
-        return new factory(mockEngine, args);
+        return new devClass(_engine, args);
     }
 
     // otherwise do something else...
@@ -140,11 +96,12 @@ async function testOne(deviceKind) {
     // (which will initialize the device class with stuff like
     // the OAuth helpers and the polling implementation of subscribe_*)
 
-    const factory = await loadDeviceFactory(deviceKind);
+    const manifest = await _engine.thingpedia.getDeviceManifest(deviceKind);
+    const devClass = await _tpFactory.getDeviceClass(deviceKind);
 
     if (typeof testsuite === 'function') {
         // if the testsuite is a function, we're done here
-        await testsuite(factory, _tpDownloader);
+        await testsuite(devClass);
         return;
     }
 
@@ -153,10 +110,10 @@ async function testOne(deviceKind) {
         const meta = testsuite;
         testsuite = meta.tests;
         if (meta.setUp)
-            instance = await meta.setUp(_tpDownloader);
+            instance = await meta.setUp(devClass);
     }
     if (instance === null)
-        instance = await createDeviceInstance(deviceKind, factory);
+        instance = await createDeviceInstance(deviceKind, manifest, devClass);
     if (instance === null) {
         console.log('FAILED: skipped tests for ' + deviceKind + ': missing credentials');
         _anyFailed = true;
