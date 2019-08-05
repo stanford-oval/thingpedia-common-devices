@@ -351,9 +351,8 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
     // plays multiple songs, separated by the phrase "comma"
     async do_play_songs({toPlay}) {
-        let songs = this.splitMultiString(toPlay);
-        console.log('songs to play are ' + JSON.stringify(songs));
-        let uris = await this.songNamesToURIs(songs);
+        console.log('songs to play are ' + JSON.stringify(toPlay));
+        let uris = await this.songNamesToURIs(toPlay);
         console.log('uris are ' + JSON.stringify(uris));
         return this.player_play_helper(JSON.stringify({'uris': uris}));
     }

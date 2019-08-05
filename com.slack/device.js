@@ -59,7 +59,7 @@ module.exports = class InstagramClass extends Tp.BaseDevice {
     }
 
     async get_user_presence({ username }) {
-        const userId = this._findUser(username);
+        const userId = await this._findUser(username);
 
         const response = JSON.parse(await Tp.Helpers.Http.post('https://slack.com/api/users.getPresence',
             'token=' + this.accessToken
@@ -72,7 +72,7 @@ module.exports = class InstagramClass extends Tp.BaseDevice {
             throw new Error("Users.GetPresence returned status of NOT OK.");
         }
 
-        return { presence: response.presence };
+        return [{ presence: response.presence }];
     }
 
     async _findUser(username) {
@@ -90,15 +90,20 @@ module.exports = class InstagramClass extends Tp.BaseDevice {
         }
 
         for (let u of response.members) {
-            if (u.name)
+            if (u.name) {
                 this._cachedUserIds.set(u.name, u.id);
-            else if (u.profile && u.profile.display_name)
+                this._cachedUserIds.set(u.name.toLowerCase(), u.id);
+            }
+            if (u.profile && u.profile.display_name) {
                 this._cachedUserIds.set(u.profile.display_name, u.id);
+                this._cachedUserIds.set(u.profile.display_name.toLowerCase(), u.id);
+            }
         }
 
+        console.log(this._cachedUserIds);
         if (!this._cachedUserIds.has(username))
             throw new Error(`Invalid user ${username}`);
-        return this._cachedUserIds.sget(username);
+        return this._cachedUserIds.get(username);
     }
 
     async get_channel_history({channel, date, sender, message}) {
