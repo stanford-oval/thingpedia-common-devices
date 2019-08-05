@@ -17,8 +17,8 @@ for (let section of `politics,opinions,local,sports,national,world,business,life
     module.exports.push(['query', 'get_article', { section }, (results) => {
         for (let result of results) {
             assertNonEmptyString(result.title);
-            assert.strictEqual(typeof result.description, 'string');
-            assert(result.link.startsWith('http'), `Expected a link, got ${result.link}`);
+            assert(result.description === null || typeof result.description === 'string');
+            assert(result.link === null || result.link.startsWith('http') || result.link.startsWith('mailto:'), `Expected a link, got ${result.link}`);
             assert(result.picture_url === null || result.picture_url.startsWith('http'),
                    `Expected a picture or null, got ${result.picture_url}`);
         }
