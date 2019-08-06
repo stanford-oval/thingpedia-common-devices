@@ -154,9 +154,7 @@ class TestPlatform extends Tp.BasePlatform {
     }
 
     getDeveloperKey() {
-        if (!process.env.THINGENGINE_DEVELOPER_KEY)
-            throw new Error('Invalid test setup: missing THINGENGINE_DEVELOPER_KEY');
-        return process.env.THINGENGINE_DEVELOPER_KEY;
+        return this._developerKey;
     }
     get type() {
         return 'test';
