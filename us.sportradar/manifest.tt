@@ -65,20 +65,30 @@ class @almond.sports
   #[doc="Daily Schedule for all EU Soccer teams"];
 
   monitorable query get_team_nba(in req team: Entity(sportradar:nba_team) #_[canonical="team"],
-                             out result: String #_[canonical="result"])
-  #_[canonical="nba game status on sportradar"]
+                             out result: String #_[canonical="result"],
+    			     out divisionPos: Number,
+    			     out divisionName: String,
+    			     out conferencePos: Number,
+    			     out conferenceName: String)
+  #_[canonical="NBA game status on sportradar"]
   #_[confirmation="${team} game "]
-  #_[formatted=[{type="text",text="${result}"}]]
+  #_[formatted=[{type="text",text="${result}"},
+    {type="text", text="The ${team} are currently #${divisionPos} in the ${divisionName} Division and #${conferencePos} in the ${conferenceName}"}]]
   #_[confirmation_remote="NBA game"]
   #[poll_interval=300000ms]
   #[doc="NBA games for a given team"];
 
   monitorable query get_team_mlb(in req team: Entity(sportradar:mlb_team) #_[canonical="team"],
-                             out result: String #_[canonical="result"])
+                             out result: String #_[canonical="result"],
+    			     out divisionPos: Number,
+    			     out divisionName: String,
+    			     out leaguePos: Number,
+    			     out leagueName: String)
   #_[canonical="MLB game status on sportradar"]
   #_[confirmation="${team} game "]
-  #_[formatted=[{type="text",text="${result}"}]]
-  #_[confirmation_remote="MLB game"]
+  #_[formatted=[{type="text",text="${result}"},
+    {type="text", text="The ${team} are currently #${divisionPos} in the ${divisionName} Division and #${leaguePos} in the ${leagueName}"}]]
+  #_[confirmation_remote="${team} game"]
   #[poll_interval=300000ms]
   #[doc="MLB games for a given team"];
 
@@ -92,10 +102,15 @@ class @almond.sports
   #[doc="NFL games for a given team"];
 
   monitorable query get_team_nhl(in req team: Entity(almond.sports:nhl_team) #_[canonical="team"],
-                             out result: String #_[canonical="result"])
+                             out result: String #_[canonical="result"],
+    			     out divisionPos: Number,
+    			     out divisionName: String,
+    			     out leaguePos: Number,
+    			     out leagueName: String)
   #_[canonical="NHL game status on sportradar"]
   #_[confirmation="${team} game "]
-  #_[formatted=[{type="text",text="${result}"}]]
+   #_[formatted=[{type="text",text="${result}"},
+    {type="text", text="The ${team} are currently #${divisionPos} in the ${divisionName} Division and #${leaguePos} in the ${leagueName}"}]]
   #_[confirmation_remote="${team} game"]
   #[poll_interval=300000ms]
   #[doc="NHL games for a given team"];
@@ -180,7 +195,7 @@ class @almond.sports
   #_[confirmation="the box score for the ${team} game"]
   #_[formatted=[{type="text",text="${away_team}:${away_score} @ ${home_team}:${home_score}"},
     {type="text",text="First Quarter: ${away_quarter1} - ${home_quarter1} Second Quarter:  ${away_quarter2} - ${home_quarter2} Third Quarter: ${away_quarter3} - ${home_quarter3} Fourth Quarter: ${away_quarter4} - ${home_quarter4}"},
-    {type="text",text="${home_team} leading scorer: ${home_leading_scorer} ${away_team} leading scorer: ${away_leading_scorer}"}, {type="text",text="${status_message}"}]]
+    {type="text",text="${status_message}"}]]
   #_[confirmation_remote="the box score for the ${team} game"]
   #[poll_interval=300000ms]
   #[doc="NFL boxscores for a given team"];
@@ -203,7 +218,7 @@ class @almond.sports
   #_[canonical="NHL boxscore on sportradar"]
   #_[confirmation="the box score for the ${team} game"]
   #_[formatted=[{type="text",text="${away_team}:${away_score} @ ${home_team}:${home_score}"},
-    {type="text",text="First Period: ${away_period1} - ${home_period1} Second Period:  ${away_period2} - ${home_period2} Third Period: ${away_period3} - ${home_period3}"},
+    {type="text",text="First Period: ${away_period1} - ${home_period1} Second Period: ${away_period2} - ${home_period2} Third Period: ${away_period3} - ${home_period3}"},
     {type="text",text="${home_team} leading scorer: ${home_leading_scorer} ${away_team} leading scorer: ${away_leading_scorer}"}, {type="text",text="${status_message}"}]]
   #_[confirmation_remote="the box score for the ${team} game"]
   #[poll_interval=300000ms]
@@ -224,11 +239,58 @@ class @almond.sports
   #_[canonical="EU Soccer boxscore on sportradar"]
   #_[confirmation="the box score for the ${team} game"]
   #_[formatted=[{type="text",text="${away_team}:${away_score} @ ${home_team}:${home_score}"},
-    {type="text",text="First Half: ${away_half1} - ${home_half1} Second Half:  ${away_half2} - ${home_half2} ${match_status}"},
+    {type="text",text="First Half: ${away_half1} - ${home_half1} Second Half: ${away_half2} - ${home_half2} ${match_status}"},
     {type="text",text="${status_message}"}]]
   #_[confirmation_remote="the box score for the ${team} game"]
   #[poll_interval=300000ms]
   #[doc="EU Soccer boxscores for a given team"];
+
+  monitorable list query get_team_am_soccer(in req team: Entity(sportradar:us_soccer_team) #_[canonical="team"],
+                          out home_team: Entity(sportradar:us_soccer_team) #_[canonical="home team"],
+                          out home_score: Number #_[canonical="home score"],
+                          out home_half1: Number #_[canonical="home half1"],
+                          out home_half2: Number #_[canonical="home half2"],
+                          out away_team: Entity(sportradar:us_soccer_team) #_[canonical="away team"],
+                          out away_score: Number #_[canonical="away score"],
+                          out away_half1: Number #_[canonical="away half1"],
+                          out away_half2: Number #_[canonical="away half2"],
+                       	  out match_status: String #_[canonical="status of the match"],
+                          out status_message: String #_[canonical="additional status message"])
+
+  #_[canonical="AM Soccer boxscore on sportradar"]
+  #_[confirmation="the box score for the ${team} game"]
+  #_[formatted=[{type="text",text="${away_team}:${away_score} @ ${home_team}:${home_score}"},
+    {type="text",text="First Half: ${away_half1} - ${home_half1} Second Half: ${away_half2} - ${home_half2} ${match_status}"},
+    {type="text",text="${status_message}"}]]
+  #_[confirmation_remote="the box score for the ${team} game"]
+  #[poll_interval=300000ms]
+  #[doc="AM Soccer boxscores for a given team"];
+
+  monitorable list query get_rankings_eu_soccer(in req soccer_league:String #_[canonical="team"],
+    			  out team_name:Entity(sportradar:eu_soccer_team) #_[canonical="soccer team"],
+    			  out team_rank:Number #_[canonical="team rank"],
+    			  out group_name: String #_[canonical="group name"])
+
+  #_[canonical="EU Soccer league rankings on sportradar"]
+  #_[confirmation="the league rankings for ${soccer_league}"]
+  #_[formatted=[{type="text", text="${team_rank}: ${team_name}"}, {type="text", text="${group_name}"}]]
+  #_[confirmation_remote="the league rankings for ${soccer_league}"]
+  #[poll_interval=300000ms]
+  #[doc="EU Soccer league rankings for a given league"];
+
+  monitorable list query get_rankings_am_soccer(in req soccer_league:String #_[canonical="team"],
+    			  out team_name:Entity(sportradar:us_soccer_team) #_[canonical="soccer team"],
+    			  out team_rank:Number #_[canonical="team rank"],
+    			  out group_name: String #_[canonical="group name"])
+
+  #_[canonical="AM Soccer league rankings on sportradar"]
+  #_[confirmation="the league rankings for ${soccer_league}"]
+  #_[formatted=[{type="text", text="${team_rank}: ${team_name}"}, {type="text", text="${group_name}"}]]
+  #_[confirmation_remote="the league rankings for ${soccer_league}"]
+  #[poll_interval=300000ms]
+  #[doc="AM Soccer league rankings for a given league"];
+
+
 
   monitorable list query get_sports_headlines(in req sport_league: String #_[canonical="sport league"],
     					   out link: Entity(tt:url) #_[canonical="link"],

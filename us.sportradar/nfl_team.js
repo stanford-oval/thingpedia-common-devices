@@ -15,7 +15,7 @@ module.exports = class NFLSportRadarAPIDevice {
     this.platform = platform;
     this.name = "Sport Radar NFL Channel";
     this.description = "The NFL Channel for Sport Radar";
-    var seasonStart = new Date();
+    const seasonStart = new Date();
 
     seasonStart.setFullYear(2019);
     seasonStart.setMonth(8);
@@ -25,8 +25,8 @@ module.exports = class NFLSportRadarAPIDevice {
   }
 
   get_week() {
-    var today = new Date();
-    var week = 0;
+    const today = new Date();
+    let week = 0;
     while (this.compare_dates(today, this._seasonStart)) {
       week += 1;
       today.setDate(today.getDate() - 7);
@@ -59,16 +59,16 @@ module.exports = class NFLSportRadarAPIDevice {
     return Tp.Helpers.Http.get(this.url)
       .then((response) => {
         const parsed = JSON.parse(response);
-        var game_statuses = [];
+        const game_statuses = [];
 
-        const games = parsed["week"]["games"];
-        for (var i = 0; i < games.length; i++) {
-          let game_status = {
-            home_team: games[i]["home"]["alias"],
-            home_score: games[i]["scoring"]["home_points"],
-            away_team: games[i]["away"]["alias"],
-            away_score: games[i]["scoring"]["away_points"],
-            result: games[i]["status"]
+        const games = parsed.week.games;
+        for (let i = 0; i < games.length; i++) {
+          const game_status = {
+            home_team: games[i].home.alias,
+            home_score: games[i].scoring.home_points,
+            away_team: games[i].away.alias,
+            away_score: games[i].scoring.away_points,
+            result: games[i].status
           };
 
           game_statuses.push(game_status);
@@ -94,31 +94,35 @@ module.exports = class NFLSportRadarAPIDevice {
     return Tp.Helpers.Http.get(this.url)
       .then((response) => {
         const parsed = JSON.parse(response);
-        const games = parsed["week"]["games"];
-        var gameStatus = "nogame";
-        var index = 0;
+        const games = parsed.week.games;
+        let gameStatus;
+        let index = 0;
         const platform = this.platform;
-        const team_name = team["team"];
+        const team_name = team.team.value;
+        const full_name = team.team.display;
 
-        for (var i = 0; i < games.length; i++) {
+        for (let i = 0; i < games.length; i++) {
           if (
-            games[i]["home"]["alias"].toLowerCase() === team_name ||
-            games[i]["away"]["alias"].toLowerCase() === team_name
+            games[i].home.alias.toLowerCase() === team_name ||
+            games[i].away.alias.toLowerCase() === team_name
           ) {
             index = i;
-            gameStatus = games[i]["status"];
+            gameStatus = games[i].status;
           }
         }
-        const scheduledTime = games[index]["scheduled"];
-        const awayName = games[index]["away"]["alias"];
-        const homeName = games[index]["home"]["alias"];
-        const awayPoints = games[index]["scoring"]["away_points"];
-        const homePoints = games[index]["scoring"]["home_points"];
-        var status_message;
+        const scheduledTime = games[index].scheduled;
+        const awayName = games[index].away.alias;
+        const homeName = games[index].home.alias;
+        const awayPoints = games[index].scoring.away_points;
+        const homePoints = games[index].scoring.home_points;
+        const dateTime = new Date(scheduledTime);
+        let status_message;
 
         switch (gameStatus) {
-          case "nogame":
-            status_message = "%s has no game today".format(team_name);
+          case undefined:
+            status_message = "There is no %s game today. I can notify you when there is a game if you want?".format(
+              full_name.toUpperCase()
+            );
             return [
               {
                 result: status_message
@@ -128,7 +132,7 @@ module.exports = class NFLSportRadarAPIDevice {
             status_message = "Next game is %s @ %s at %s".format(
               awayName,
               homeName,
-              scheduledTime.toLocaleString(platform.locale, {
+              dateTime.toLocaleString(platform.locale, {
                 timeZone: platform.timezone
               })
             );
@@ -181,7 +185,7 @@ module.exports = class NFLSportRadarAPIDevice {
             status_message = "The game scheduled has not been finalized yet. For now, the next game is %s @ %s at %s".format(
               awayName,
               homeName,
-              scheduledTime.toLocaleString(platform.locale, {
+              dateTime.toLocaleString(platform.locale, {
                 timeZone: platform.timezone
               })
             );
@@ -204,97 +208,96 @@ module.exports = class NFLSportRadarAPIDevice {
     return Tp.Helpers.Http.get(this.url)
       .then((response) => {
         const parsed = JSON.parse(response);
-        const games = parsed["week"]["games"];
-        const teamName = team["team"];
-        var index = 0;
-        var gameStatus = "nogame";
-        var gameId = "";
+        const games = parsed.week.games;
+        const team_name = team.team.value;
+        const full_name = team.team.display;
+        let index = 0;
+        let gameStatus;
+        let gameId = "";
         const platform = this.platform;
 
-        for (var i = 0; i < games.length; i++) {
+        for (let i = 0; i < games.length; i++) {
           if (
-            games[i]["home"]["alias"].toLowerCase() === teamName ||
-            games[i]["away"]["alias"].toLowerCase() === teamName
+            games[i].home.alias.toLowerCase() === team_name ||
+            games[i].away.alias.toLowerCase() === team_name
           ) {
             index = i;
-            gameStatus = games[i]["status"];
-            gameId = games[i]["id"];
+            gameStatus = games[i].status;
+            gameId = games[i].id;
           }
         }
 
-        const homeTeam = games[index]["home"]["alias"];
-        const awayTeam = games[index]["away"]["alias"];
-        const homeScore = games[index]["scoring"]["home_points"];
-        const awayScore = games[index]["scoring"]["away_points"];
+        const homeTeam = games[index].home.alias;
+        const awayTeam = games[index].away.alias;
+        const homeScore = games[index].scoring.home_points;
+        const awayScore = games[index].scoring.away_points;
+        const scheduledTime = games[index].scheduled;
+        const dateTime = new Date(scheduledTime);
 
-        if (gameStatus === "nogame") {
-          return [
-            {
-              status_message: "There is no %s game today. I can notify you when there is a game if you want?".format(
-                teamName
-              )
-            }
-          ];
-        }
+        switch (gameStatus) {
+          case undefined:
+            return [
+              {
+                status_message: "There is no %s game today. I can notify you when there is a game if you want?".format(
+                  full_name.toUpperCase()
+                )
+              }
+            ];
+          case "scheduled":
+            return [
+              {
+                status_message: "This game is scheduled for %s".format(
+                  dateTime.toLocaleString(platform.locale, {
+                    timeZone: platform.timezone
+                  })
+                )
+              }
+            ];
+          case "closed":
+          case "halftime":
+          case "inprogress":
+            return new Promise((resolve, reject) => {
+              const url = NFL_BOXSCORE_URL.format(gameId);
+              setTimeout(() => {
+                Tp.Helpers.Http.get(url).then((response) => {
+                  const parsed = JSON.parse(response);
+                  const homeQuarters = [];
+                  const awayQuarters = [];
 
-        if (gameStatus === "scheduled") {
-          const scheduledTime = games[index]["scheduled"];
-          const localTime = scheduledTime.toLocaleString(platform.locale, {
-            timeZone: platform.timezone
-          });
-          return [
-            {
-              status_message: "This game is scheduled for %s".format(localTime)
-            }
-          ];
-        } else if (
-          gameStatus === "closed" ||
-          gameStatus === "halftime" ||
-          gameStatus === "inprogress"
-        ) {
-          return new Promise((resolve, reject) => {
-            const url = NFL_BOXSCORE_URL.format(gameId);
-            setTimeout(() => {
-              Tp.Helpers.Http.get(url).then((response) => {
-                const parsed = JSON.parse(response);
-                var homeQuarters = [];
-                var awayQuarters = [];
-
-                for (var i = 0; i < 4; i++) {
-                  try {
-                    homeQuarters.push(parsed["scoring"][i]["home_points"]);
-                    awayQuarters.push(parsed["scoring"][i]["away_points"]);
-                  } catch (error) {
-                    homeQuarters.push(0);
-                    awayQuarters.push(0);
+                  for (let i = 0; i < 4; i++) {
+                    try {
+                      homeQuarters.push(parsed.scoring[i].home_points);
+                      awayQuarters.push(parsed.scoring[i].away_points);
+                    } catch (error) {
+                      homeQuarters.push(0);
+                      awayQuarters.push(0);
+                    }
                   }
-                }
 
-                let box_score = [
-                  {
-                    home_team: homeTeam,
-                    home_score: homeScore,
-                    home_quarter1: homeQuarters[0],
-                    home_quarter2: homeQuarters[1],
-                    home_quarter3: homeQuarters[2],
-                    home_quarter4: homeQuarters[3],
-                    away_team: awayTeam,
-                    away_score: awayScore,
-                    away_quarter1: awayQuarters[0],
-                    away_quarter2: awayQuarters[1],
-                    away_quarter3: awayQuarters[2],
-                    away_quarter4: awayQuarters[3],
-                    status_message: "Game Status: " + gameStatus
-                  }
-                ];
+                  const box_score = [
+                    {
+                      home_team: homeTeam,
+                      home_score: homeScore,
+                      home_quarter1: homeQuarters[0],
+                      home_quarter2: homeQuarters[1],
+                      home_quarter3: homeQuarters[2],
+                      home_quarter4: homeQuarters[3],
+                      away_team: awayTeam,
+                      away_score: awayScore,
+                      away_quarter1: awayQuarters[0],
+                      away_quarter2: awayQuarters[1],
+                      away_quarter3: awayQuarters[2],
+                      away_quarter4: awayQuarters[3],
+                      status_message: "Game Status: " + gameStatus
+                    }
+                  ];
 
-                resolve(box_score);
-              });
-            }, 1000);
-          });
-        } else {
-          return this.statusConditions(gameStatus);
+                  resolve(box_score);
+                });
+              }, 1000);
+            });
         }
+        return this.statusConditions(gameStatus);
       })
       .catch((e) => {
         throw new TypeError("No NFL Games This Week");
@@ -302,7 +305,7 @@ module.exports = class NFLSportRadarAPIDevice {
   }
 
   statusConditions(gameStatus) {
-    var status_message;
+    let status_message;
     switch (gameStatus) {
       case "canceled":
         status_message = "The game has been canceled";

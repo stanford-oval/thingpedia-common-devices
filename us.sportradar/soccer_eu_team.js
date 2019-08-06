@@ -12,6 +12,13 @@ const SOCCER_EU_LIVE_URL =
 const SOCCER_EU_CLOSED_URL =
   "http://api.sportradar.us/soccer-t3/eu/en/schedules/%s/results.json?api_key=" +
   SOCCER_EU_API_KEY;
+const SOCCER_EU_TOURNAMENTS_URL =
+  "https://api.sportradar.us/soccer-t3/eu/en/tournaments.json?api_key=" +
+  SOCCER_EU_API_KEY;
+
+const SOCCER_EU_TOURNAMENT_RANKINGS =
+  "https://api.sportradar.us/soccer-t3/eu/en/tournaments/%s/standings.json?api_key=" +
+  SOCCER_EU_API_KEY;
 
 module.exports = class SoccerEUSportRadarAPIDevice {
   constructor(platform) {
@@ -36,15 +43,15 @@ module.exports = class SoccerEUSportRadarAPIDevice {
     return Tp.Helpers.Http.get(SOCCER_EU_SCHEDULE_URL.format(this.date_url))
       .then((response) => {
         const parsed = JSON.parse(response);
-        var game_statuses = [];
+        const game_statuses = [];
 
-        const games = parsed["sport_events"];
-        for (var i = 0; i < games.length; i++) {
-          let game_status = {
-            home_team: games[i]["competitors"][0]["name"],
-            away_team: games[i]["competitors"][1]["name"],
-            tournament: games[i]["tournament"]["name"],
-            result: games[i]["status"]
+        const games = parsed.sport_events;
+        for (let i = 0; i < games.length; i++) {
+          const game_status = {
+            home_team: games[i].competitors[0].name,
+            away_team: games[i].competitors[1].name,
+            tournament: games[i].tournament.name,
+            result: games[i].status
           };
 
           game_statuses.push(game_status);
@@ -65,87 +72,86 @@ module.exports = class SoccerEUSportRadarAPIDevice {
   }
 
   get_live_results(team) {
-    return Tp.Helpers.Http.get(SOCCER_EU_LIVE_URL).then((response) => {
-      const parsed = JSON.parse(response);
-      const games = parsed["results"];
-
-      var index = 0;
-      for (var i = 0; i < games.length; i++) {
-        if (
-          games[i]["sport_event"]["competitors"][0][
-            "abbreviation"
-          ].toLowerCase() === team ||
-          games[i]["sport_event"]["competitors"][1][
-            "abbreviation"
-          ].toLowerCase() === team
-        )
-          index = i;
-      }
-      const homePoints = games[index]["sport_event_status"]["home_score"];
-      const awayPoints = games[index]["sport_event_status"]["home_score"];
-      const awayName = games[index]["sport_event"]["competitors"][1]["name"];
-      const homeName = games[index]["sport_event"]["competitors"][0]["name"];
-      const homeHalf1 =
-        games[index]["sport_event_status"]["period_scores"][0]["home_score"];
-      const homeHalf2 =
-        games[index]["sport_event_status"]["period_scores"][1]["home_score"];
-      const awayHalf1 =
-        games[index]["sport_event_status"]["period_scores"][0]["away_score"];
-      const awayHalf2 =
-        games[index]["sport_event_status"]["period_scores"][1]["away_score"];
-      const matchTime =
-        games[index]["sport_event_status"]["clock"]["match_time"];
-
-      let box_score = [
-        {
-          home_team: homeName,
-          home_score: homePoints,
-          home_half1: homeHalf1,
-          home_half2: homeHalf2,
-          away_team: awayName,
-          away_score: awayPoints,
-          away_half1: awayHalf1,
-          away_half2: awayHalf2,
-          match_status: "Clock: " + matchTime
-        }
-      ];
-
-      return box_score;
-    });
-  }
-
-  get_closed_results(team) {
-    return Tp.Helpers.Http.get(SOCCER_EU_CLOSED_URL.format(this.date_url)).then(
-      (response) => {
+    return Tp.Helpers.Http.get(SOCCER_EU_LIVE_URL)
+      .then((response) => {
         const parsed = JSON.parse(response);
-        const games = parsed["results"];
+        const games = parsed.results;
 
-        var index = 0;
-        for (var i = 0; i < games.length; i++) {
+        let index = 0;
+        for (let i = 0; i < games.length; i++) {
           if (
-            games[i]["sport_event"]["competitors"][0][
-              "abbreviation"
-            ].toLowerCase() === team ||
-            games[i]["sport_event"]["competitors"][1][
-              "abbreviation"
-            ].toLowerCase() === team
+            games[i].sport_event.competitors[0].abbreviation.toLowerCase() ===
+              team ||
+            games[i].sport_event.competitors[1].abbreviation.toLowerCase() ===
+              team
           )
             index = i;
         }
-        const homePoints = games[index]["sport_event_status"]["home_score"];
-        const awayPoints = games[index]["sport_event_status"]["away_score"];
-        const awayName = games[index]["sport_event"]["competitors"][1]["name"];
-        const homeName = games[index]["sport_event"]["competitors"][0]["name"];
+        const homePoints = games[index].sport_event_status.home_score;
+        const awayPoints = games[index].sport_event_status.home_score;
+        const awayName = games[index].sport_event.competitors[1].name;
+        const homeName = games[index].sport_event.competitors[0].name;
         const homeHalf1 =
-          games[index]["sport_event_status"]["period_scores"][0]["home_score"];
+          games[index].sport_event_status.period_scores[0].home_score;
         const homeHalf2 =
-          games[index]["sport_event_status"]["period_scores"][1]["home_score"];
+          games[index].sport_event_status.period_scores[1].home_score;
         const awayHalf1 =
-          games[index]["sport_event_status"]["period_scores"][0]["away_score"];
+          games[index].sport_event_status.period_scores[0].away_score;
         const awayHalf2 =
-          games[index]["sport_event_status"]["period_scores"][1]["away_score"];
+          games[index].sport_event_status.period_scores[1].away_score;
+        const matchTime = games[index].sport_event_status.clock.match_time;
 
-        let box_score = [
+        const box_score = [
+          {
+            home_team: homeName,
+            home_score: homePoints,
+            home_half1: homeHalf1,
+            home_half2: homeHalf2,
+            away_team: awayName,
+            away_score: awayPoints,
+            away_half1: awayHalf1,
+            away_half2: awayHalf2,
+            match_status: "Clock: " + matchTime
+          }
+        ];
+
+        return box_score;
+      })
+      .catch((e) => {
+        throw new TypeError("Invalid Team Input");
+      });
+  }
+
+  get_closed_results(team) {
+    return Tp.Helpers.Http.get(SOCCER_EU_CLOSED_URL.format(this.date_url))
+      .then((response) => {
+        const parsed = JSON.parse(response);
+        const games = parsed.results;
+
+        let index = 0;
+        for (let i = 0; i < games.length; i++) {
+          if (
+            games[i].sport_event.competitors[0].abbreviation.toLowerCase() ===
+              team ||
+            games[i].sport_event.competitors[1].abbreviation.toLowerCase() ===
+              team
+          )
+            index = i;
+        }
+        const homePoints = games[index].sport_event_status.home_score;
+        const awayPoints = games[index].sport_event_status.away_score;
+        const awayName = games[index].sport_event.competitors[1].name;
+        const homeName = games[index].sport_event.competitors[0].name;
+        const homeHalf1 =
+          games[index].sport_event_status.period_scores[0].home_score;
+        const homeHalf2 =
+          games[index].sport_event_status.period_scores[1].home_score;
+        const awayHalf1 =
+          games[index].sport_event_status.period_scores[0].away_score;
+        const awayHalf2 =
+          games[index].sport_event_status.period_scores[1].away_score;
+
+        const box_score = [
           {
             home_team: homeName,
             home_score: homePoints,
@@ -160,8 +166,10 @@ module.exports = class SoccerEUSportRadarAPIDevice {
         ];
 
         return box_score;
-      }
-    );
+      })
+      .catch((e) => {
+        throw new TypeError("Invalid Team Input");
+      });
   }
 
   get_get_team(team) {
@@ -170,45 +178,43 @@ module.exports = class SoccerEUSportRadarAPIDevice {
       .then((response) => {
         const parsed = JSON.parse(response);
 
-        const games = parsed["sport_events"];
-        const team_name = team["team"];
-        var index = 0;
-        var gameStatus = "nogame";
+        const games = parsed.sport_events;
+        const team_name = team.team.value;
+        const full_name = team.team.display;
+        let index = 0;
+        let gameStatus;
         const self = this;
         const platform = this.platform;
+        const scheduledTime = games[index].scheduled;
+        const dateTime = new Date(scheduledTime);
 
-        for (var i = 0; i < games.length; i++) {
+        for (let i = 0; i < games.length; i++) {
           if (
-            games[i]["competitors"][0]["abbreviation"].toLowerCase() ===
-              team_name ||
-            games[i]["competitors"][1]["abbreviation"].toLowerCase() ===
-              team_name
+            games[i].competitors[0].abbreviation.toLowerCase() === team_name ||
+            games[i].competitors[1].abbreviation.toLowerCase() === team_name
           ) {
             index = i;
-            gameStatus = games[i]["status"];
+            gameStatus = games[i].status;
           }
         }
 
         switch (gameStatus) {
-          case "nogame":
+          case undefined:
             return [
               {
                 status_message: "There is no %s game today. I can notify you when there is a game if you want?".format(
-                  team_name
+                  full_name.toUpperCase()
                 )
               }
             ];
 
           case "not_started":
-            var scheduledTime = games[index]["scheduled"];
-            var localTime = scheduledTime.toLocaleString(platform.locale, {
-              timeZone: platform.timezone
-            });
-
             return [
               {
                 status_message: "This game is scheduled for %s".format(
-                  localTime
+                  dateTime.toLocaleString(platform.locale, {
+                    timeZone: platform.timezone
+                  })
                 )
               }
             ];
@@ -239,8 +245,82 @@ module.exports = class SoccerEUSportRadarAPIDevice {
       });
   }
 
+  get_get_rankings(input_tournament) {
+    return this.get_tournament(input_tournament.soccer_league).then(
+      (response) => {
+        const tournament_id = response;
+
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            return Tp.Helpers.Http.get(
+              SOCCER_EU_TOURNAMENT_RANKINGS.format(tournament_id)
+            ).then((response) => {
+              const complete_standings = [];
+              const parsed = JSON.parse(response);
+              const standings = parsed.standings;
+              for (const standing of standings) {
+                const type = standing.type;
+                if (type === "total") {
+                  const groups = standing.groups;
+                  const areGroups = groups.length > 1;
+                  let group_name;
+                  for (const group of groups) {
+                    let validGroup = true;
+                    if (areGroups) {
+                      group_name = group.name;
+                      if (group_name === undefined) validGroup = false;
+                    }
+                    if (validGroup) {
+                      const team_standings = group.team_standings;
+                      complete_standings.push({ group_name: group_name });
+                      for (const team_standing of team_standings) {
+                        const team = team_standing.team.name;
+                        const rank = team_standing.rank;
+                        const standingsObj = {};
+                        standingsObj.team_name = team;
+                        standingsObj.team_rank = rank;
+                        complete_standings.push(standingsObj);
+                      }
+                    }
+                  }
+                  break;
+                }
+              }
+              resolve(
+                complete_standings.map((team_standings) => {
+                  return {
+                    team_name: team_standings.team_name,
+                    team_rank: team_standings.team_rank,
+                    group_name: team_standings.group_name
+                  };
+                })
+              );
+            });
+          }, 1000);
+        });
+      }
+    );
+  }
+
+  get_tournament(input_tournament) {
+    return Tp.Helpers.Http.get(SOCCER_EU_TOURNAMENTS_URL)
+      .then((response) => {
+        const parsed = JSON.parse(response);
+        const tournmaents = parsed.tournaments;
+        for (const tournament of tournmaents) {
+          const tournament_id = tournament.id;
+          const tournament_name = tournament.name;
+          if (tournament_name === input_tournament) return tournament_id;
+        }
+        throw new TypeError("Invalid Tournament Input");
+      })
+      .catch((e) => {
+        throw new TypeError("Invalid Tournament Input");
+      });
+  }
+
   statusConditions(gameStatus) {
-    var status_message;
+    let status_message;
     switch (gameStatus) {
       case "canceled":
         status_message = "The game has been canceled";
@@ -275,7 +355,7 @@ module.exports = class SoccerEUSportRadarAPIDevice {
           }
         ];
 
-      case "start_delayed-":
+      case "start_delayed":
         status_message = "The start of this match has been delayed";
         return [
           {
