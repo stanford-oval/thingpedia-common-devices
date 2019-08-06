@@ -155,11 +155,27 @@ class ThingpediaClient extends Tp.HttpClient {
     }
 }
 
+function getGitConfig(key, _default) {
+    try {
+        const args = ['config', '--get', '--default', _default || '', key];
+        const stdout = child_process.execFileSync('git', args);
+        return String(stdout).trim() || _default;
+    } catch(e) {
+        // ignore error if git is not installed
+        if (e.code !== 'ENOENT')
+            throw e;
+        // also ignore error if the key
+        return _default;
+    }
+}
+
 class TestPlatform extends Tp.BasePlatform {
     constructor() {
         super();
 
         this._thingpedia = new ThingpediaClient(this);
+
+        this._developerKey = getGitConfig('thingpedia.developer-key', process.env.THINGENGINE_DEVELOPER_KEY || null);
     }
 
     getDeveloperKey() {
