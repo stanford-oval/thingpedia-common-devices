@@ -12,10 +12,6 @@ const SOCCER_EU_LIVE_URL =
 const SOCCER_EU_CLOSED_URL =
     "https://api.sportradar.us/soccer-t3/eu/en/schedules/%s/results.json?api_key=" +
     SOCCER_EU_API_KEY;
-const SOCCER_EU_TOURNAMENTS_URL =
-    "https://api.sportradar.us/soccer-t3/eu/en/tournaments.json?api_key=" +
-    SOCCER_EU_API_KEY;
-
 const SOCCER_EU_TOURNAMENT_RANKINGS =
     "https://api.sportradar.us/soccer-t3/eu/en/tournaments/%s/standings.json?api_key=" +
     SOCCER_EU_API_KEY;
@@ -37,37 +33,42 @@ module.exports = class SoccerEUSportRadarAPIDevice {
         this.date_url = date_url;
     }
 
-    get_get_todays_games() {
-        this._updateUrl();
+    _createTpEntity(team) {
+        return new Tp.Value.Entity(team.abbreviation.toLowerCase(), team.name);
+    }
 
+    get_get_todays_games(input_league) {
+        this._updateUrl();
+        const leagueId = input_league.soccer_league.value;
         return Tp.Helpers.Http.get(SOCCER_EU_SCHEDULE_URL.format(this.date_url))
             .then((response) => {
                 const parsed = JSON.parse(response);
                 const game_statuses = [];
-
                 const games = parsed.sport_events;
                 for (let i = 0; i < games.length; i++) {
-                    const game_status = {
-                        home_team: games[i].competitors[0].name,
-                        away_team: games[i].competitors[1].name,
-                        tournament: games[i].tournament.name,
-                        result: games[i].status,
-                    };
+                    const league = games[i].tournament.id;
+                    if (league === leagueId) {
+                        const game_status = {
+                            home_team: this._createTpEntity(
+                                games[i].competitors[0]
+                            ),
+                            away_team: this._createTpEntity(
+                                games[i].competitors[1]
+                            ),
+                            tournament: games[i].tournament.name,
+                            status: games[i].status,
+                        };
 
-                    game_statuses.push(game_status);
+                        game_statuses.push(game_status);
+                    }
                 }
 
                 return game_statuses.map((game_status) => {
-                    return {
-                        home_team: game_status.home_team,
-                        away_team: game_status.away_team,
-                        tournament: game_status.tournament,
-                        status: game_status.result,
-                    };
+                    return game_status;
                 });
             })
             .catch((e) => {
-                throw new TypeError("No EU Soccer Games Today");
+                throw new TypeError("No EU Soccer Games Found");
             });
     }
 
@@ -76,7 +77,6 @@ module.exports = class SoccerEUSportRadarAPIDevice {
             .then((response) => {
                 const parsed = JSON.parse(response);
                 const games = parsed.results;
-
                 let index = 0;
                 for (let i = 0; i < games.length; i++) {
                     if (
@@ -91,10 +91,11 @@ module.exports = class SoccerEUSportRadarAPIDevice {
                     )
                         index = i;
                 }
+
                 const homePoints = games[index].sport_event_status.home_score;
                 const awayPoints = games[index].sport_event_status.home_score;
-                const awayName = games[index].sport_event.competitors[1].name;
-                const homeName = games[index].sport_event.competitors[0].name;
+                const awayTeam = games[index].sport_event.competitors[1];
+                const homeTeam = games[index].sport_event.competitors[0];
                 const homeHalf1 =
                     games[index].sport_event_status.period_scores[0].home_score;
                 const homeHalf2 =
@@ -108,11 +109,11 @@ module.exports = class SoccerEUSportRadarAPIDevice {
 
                 const box_score = [
                     {
-                        home_team: homeName,
+                        home_team: this._createTpEntity(homeTeam),
                         home_score: homePoints,
                         home_half1: homeHalf1,
                         home_half2: homeHalf2,
-                        away_team: awayName,
+                        away_team: this._createTpEntity(awayTeam),
                         away_score: awayPoints,
                         away_half1: awayHalf1,
                         away_half2: awayHalf2,
@@ -149,8 +150,8 @@ module.exports = class SoccerEUSportRadarAPIDevice {
                 }
                 const homePoints = games[index].sport_event_status.home_score;
                 const awayPoints = games[index].sport_event_status.away_score;
-                const awayName = games[index].sport_event.competitors[1].name;
-                const homeName = games[index].sport_event.competitors[0].name;
+                const awayTeam = games[index].sport_event.competitors[1];
+                const homeTeam = games[index].sport_event.competitors[0];
                 const homeHalf1 =
                     games[index].sport_event_status.period_scores[0].home_score;
                 const homeHalf2 =
@@ -162,11 +163,11 @@ module.exports = class SoccerEUSportRadarAPIDevice {
 
                 const box_score = [
                     {
-                        home_team: homeName,
+                        home_team: this._createTpEntity(homeTeam),
                         home_score: homePoints,
                         home_half1: homeHalf1,
                         home_half2: homeHalf2,
-                        away_team: awayName,
+                        away_team: this._createTpEntity(awayTeam),
                         away_score: awayPoints,
                         away_half1: awayHalf1,
                         away_half2: awayHalf2,
@@ -186,10 +187,10 @@ module.exports = class SoccerEUSportRadarAPIDevice {
         return Tp.Helpers.Http.get(SOCCER_EU_SCHEDULE_URL.format(this.date_url))
             .then((response) => {
                 const parsed = JSON.parse(response);
-
                 const games = parsed.sport_events;
                 const team_name = team.team.value;
                 const full_name = team.team.display;
+
                 let index = 0;
                 let gameStatus;
                 const self = this;
@@ -238,9 +239,11 @@ module.exports = class SoccerEUSportRadarAPIDevice {
                     case "live":
                         return new Promise((resolve, reject) => {
                             setTimeout(() => {
-                                self.get_live_results().then((response) => {
-                                    resolve(response);
-                                });
+                                self.get_live_results(team_name).then(
+                                    (response) => {
+                                        resolve(response);
+                                    }
+                                );
                             }, 1000);
                         });
 
@@ -259,88 +262,70 @@ module.exports = class SoccerEUSportRadarAPIDevice {
                 return this.statusConditions(gameStatus);
             })
             .catch((e) => {
-                throw new TypeError("No EU Soccer Games Today");
+                throw new TypeError("No EU Soccer Games Found");
             });
     }
 
-    get_get_rankings(input_tournament) {
-        return this.get_tournament(input_tournament.soccer_league)
-            .then((response) => {
-                const tournament_id = response;
-
-                return new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                        return Tp.Helpers.Http.get(
-                            SOCCER_EU_TOURNAMENT_RANKINGS.format(tournament_id)
-                        ).then((response) => {
-                            const complete_standings = [];
-                            const parsed = JSON.parse(response);
-                            const standings = parsed.standings;
-                            for (const standing of standings) {
-                                const type = standing.type;
-                                if (type === "total") {
-                                    const groups = standing.groups;
-                                    const areGroups = groups.length > 1;
-                                    let group_name;
-                                    for (const group of groups) {
-                                        let validGroup = true;
-                                        if (areGroups) {
-                                            group_name = group.name;
-                                            if (group_name === undefined)
-                                                validGroup = false;
-                                        }
-                                        if (validGroup) {
-                                            const team_standings =
-                                                group.team_standings;
-                                            complete_standings.push({
-                                                group_name: group_name,
-                                            });
-                                            for (const team_standing of team_standings) {
-                                                const team =
-                                                    team_standing.team.name;
-                                                const rank = team_standing.rank;
-                                                const standingsObj = {};
-                                                standingsObj.team_name = team;
-                                                standingsObj.team_rank = rank;
-                                                complete_standings.push(
-                                                    standingsObj
-                                                );
-                                            }
+    get_get_rankings(input_league) {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                return Tp.Helpers.Http.get(
+                    SOCCER_EU_TOURNAMENT_RANKINGS.format(
+                        input_league.soccer_league.value
+                    )
+                )
+                    .then((response) => {
+                        const complete_standings = [];
+                        const parsed = JSON.parse(response);
+                        const standings = parsed.standings;
+                        for (const standing of standings) {
+                            const type = standing.type;
+                            if (type === "total") {
+                                const groups = standing.groups;
+                                const areGroups = groups.length > 1;
+                                let group_name;
+                                for (const group of groups) {
+                                    let validGroup = true;
+                                    if (areGroups) {
+                                        group_name = group.name;
+                                        if (group_name === undefined)
+                                            validGroup = false;
+                                    }
+                                    if (validGroup) {
+                                        const team_standings =
+                                            group.team_standings;
+                                        complete_standings.push({
+                                            group_name: group_name,
+                                        });
+                                        for (const team_standing of team_standings) {
+                                            const team =
+                                                team_standing.team.name;
+                                            const rank = team_standing.rank;
+                                            const standingsObj = {};
+                                            standingsObj.team_name = team;
+                                            standingsObj.team_rank = rank;
+                                            complete_standings.push(
+                                                standingsObj
+                                            );
                                         }
                                     }
-                                    break;
                                 }
+                                break;
                             }
-                            resolve(
-                                complete_standings.map((team_standings) => {
-                                    return team_standings;
-                                })
-                            );
-                        });
-                    }, 1000);
-                });
-            })
-            .catch((e) => {
-                throw new TypeError("Invalid Team Input");
-            });
-    }
-
-    get_tournament(input_tournament) {
-        return Tp.Helpers.Http.get(SOCCER_EU_TOURNAMENTS_URL)
-            .then((response) => {
-                const parsed = JSON.parse(response);
-                const tournmaents = parsed.tournaments;
-                for (const tournament of tournmaents) {
-                    const tournament_id = tournament.id;
-                    const tournament_name = tournament.name;
-                    if (tournament_name === input_tournament)
-                        return tournament_id;
-                }
-                throw new TypeError("Invalid Tournament Input");
-            })
-            .catch((e) => {
-                throw new TypeError("Invalid Tournament Input");
-            });
+                        }
+                        resolve(
+                            complete_standings.map((team_standings) => {
+                                return team_standings;
+                            })
+                        );
+                    })
+                    .catch((e) => {
+                        throw new TypeError(
+                            `Can't get standings for the ${input_league.soccer_league.value}`
+                        );
+                    });
+            }, 1000);
+        });
     }
 
     statusConditions(gameStatus) {

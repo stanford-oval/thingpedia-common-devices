@@ -1,5 +1,7 @@
 "use strict";
 
+require("../polyfill.js");
+
 const Tp = require("thingpedia");
 const NbaTeam = require("./nba_team.js");
 const MlbTeam = require("./mlb_team.js");
@@ -22,12 +24,12 @@ module.exports = class SportsDevice extends Tp.BaseDevice {
         this.ncaaMbTeam = new NCAAMbTeam(this.engine.platform);
         this.ncaaFbTeam = new NCAAFbTeam(this.engine.platform);
         this.euSoccerTeam = new EUSoccerTeam(this.engine.platform);
-        this.amSoccerTeam = new AMSoccerTeam();
+        this.amSoccerTeam = new AMSoccerTeam(this.engine.platform);
         this.sportsNews = new SportsNews();
         this.uniqueId = "almond.sports";
-        this.name = "Sports";
+        this.name = "Sportradar and NewsApi Sports Skill";
         this.description =
-            "Universal Sports Skill which displays Sports scores, news, and stats. Supports NFL, NBA, European and USA Soccer, MLB, NCAAFB, and NCAAMBB.";
+            "Sports Skill which displays Sports scores, news, and stats. Supports NFL, NBA, European and American Soccer, MLB, NCAAFB, and NCAAMBB.";
     }
 
     get_get_todays_games_nba() {

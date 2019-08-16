@@ -10,8 +10,7 @@ const HEADLINES_API_URL =
 
 module.exports = class NewsHeadlines {
     constructor() {
-        this.uniqueId = "org.newsapi";
-        this.name = "News Api";
+        this.name = "Sports News Api";
         this.description =
             "News Api which is used to retrieve sports headlines";
     }

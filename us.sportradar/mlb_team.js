@@ -9,15 +9,12 @@ const MLB_SCHEDULE_URL =
 const MLB_BOXSCORE_URL =
     "https://api.sportradar.us/mlb/trial/v6.5/en/games/%s/boxscore.json?api_key=" +
     MLB_API_KEY;
-
 const MLB_RANKINGS_URL =
     "https://api.sportradar.us/mlb/trial/v6.5/en/seasons/%d/REG/rankings.json?api_key=" +
     MLB_API_KEY;
-
 const MLB_ROSTER_URL =
     "https://api.sportradar.us/mlb/trial/v6.5/en/teams/%s/depth_chart.json?api_key=" +
     MLB_API_KEY;
-
 const MLB_JSON = require("./teams/mlb.json");
 
 module.exports = class MLBSportRadarAPIDevice {
@@ -37,6 +34,10 @@ module.exports = class MLBSportRadarAPIDevice {
         this.rankings_url = MLB_RANKINGS_URL.format(now.getFullYear());
     }
 
+    _createTpEntity(team) {
+        return new Tp.Value.Entity(team.abbr.toLowerCase(), team.name);
+    }
+
     get_get_todays_games() {
         this._updateUrl();
         return Tp.Helpers.Http.get(this.schedule_url)
@@ -47,9 +48,9 @@ module.exports = class MLBSportRadarAPIDevice {
 
                 for (let i = 0; i < games.length; i++) {
                     const game_status = {
-                        home_team: games[i].game.home.name,
+                        home_team: this._createTpEntity(games[i].game.home),
                         home_score: games[i].game.home.runs,
-                        away_team: games[i].game.away.name,
+                        away_team: this._createTpEntity(games[i].game.away),
                         away_score: games[i].game.away.runs,
                         result: games[i].game.status,
                     };
@@ -58,17 +59,11 @@ module.exports = class MLBSportRadarAPIDevice {
                 }
 
                 return game_statuses.map((game_status) => {
-                    return {
-                        home_team: game_status.home_team,
-                        home_score: game_status.home_score,
-                        away_team: game_status.away_team,
-                        away_score: game_status.away_score,
-                        status: game_status.result,
-                    };
+                    return game_status;
                 });
             })
             .catch((e) => {
-                throw new TypeError("No MLB games today");
+                throw new TypeError("No MLB Games Found");
             });
     }
 
@@ -211,7 +206,7 @@ module.exports = class MLBSportRadarAPIDevice {
                 });
             })
             .catch((e) => {
-                throw new TypeError("No MLB games today");
+                throw new TypeError("No MLB Games Found");
             });
     }
 
@@ -272,8 +267,8 @@ module.exports = class MLBSportRadarAPIDevice {
                     }
                 }
 
-                const homeTeam = games[index].game.home.name;
-                const awayTeam = games[index].game.away.name;
+                const homeTeam = games[index].game.home;
+                const awayTeam = games[index].game.away;
                 const homeScore = games[index].game.home.runs;
                 const awayScore = games[index].game.away.runs;
                 const scheduledTime = games[index].game.scheduled;
@@ -293,7 +288,7 @@ module.exports = class MLBSportRadarAPIDevice {
                             {
                                 status_message: "Next game %s @ %s at %s".format(
                                     awayTeam,
-                                    homeTeam,
+                                    homeTeam.name,
                                     dateTime.toLocaleString(platform.locale, {
                                         timeZone: platform.timezone,
                                     })
@@ -328,28 +323,25 @@ module.exports = class MLBSportRadarAPIDevice {
                                                 awayInnings.push(0);
                                             }
                                         }
-                                        try {
-                                            homePitcher =
-                                                parsed.game.home
-                                                    .starting_pitcher
-                                                    .preferred_name +
-                                                " " +
-                                                parsed.game.home
-                                                    .starting_pitcher.last_name;
-                                            awayPitcher =
-                                                parsed.game.away
-                                                    .starting_pitcher
-                                                    .preferred_name +
-                                                " " +
-                                                parsed.game.away
-                                                    .starting_pitcher.last_name;
-                                        } catch (error) {
-                                            console.log(error);
-                                        }
+
+                                        homePitcher =
+                                            parsed.game.home.starting_pitcher
+                                                .preferred_name +
+                                            " " +
+                                            parsed.game.home.starting_pitcher
+                                                .last_name;
+                                        awayPitcher =
+                                            parsed.game.away.starting_pitcher
+                                                .preferred_name +
+                                            " " +
+                                            parsed.game.away.starting_pitcher
+                                                .last_name;
 
                                         const box_score = [
                                             {
-                                                home_team: homeTeam,
+                                                home_team: this._createTpEntity(
+                                                    homeTeam
+                                                ),
                                                 home_score: homeScore,
                                                 home_inning1: homeInnings[0],
                                                 home_inning2: homeInnings[1],
@@ -361,7 +353,9 @@ module.exports = class MLBSportRadarAPIDevice {
                                                 home_inning8: homeInnings[7],
                                                 home_inning9: homeInnings[8],
                                                 home_starting_pitcher: homePitcher,
-                                                away_team: awayTeam,
+                                                away_team: this._createTpEntity(
+                                                    awayTeam
+                                                ),
                                                 away_score: awayScore,
                                                 away_inning1: awayInnings[0],
                                                 away_inning2: awayInnings[1],
@@ -388,7 +382,7 @@ module.exports = class MLBSportRadarAPIDevice {
                 return this.statusConditions(gameStatus);
             })
             .catch((e) => {
-                throw new TypeError("No MLB games today");
+                throw new TypeError("No MLB Games Found");
             });
     }
 

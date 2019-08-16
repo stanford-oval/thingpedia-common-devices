@@ -33,11 +33,15 @@ module.exports = class NHLSportRadarAPIDevice {
             now.getMonth() + 1,
             now.getDate()
         );
-        this.rankings_url = NHL_RANKINGS_URL.format(2018);
+        this.rankings_url = NHL_RANKINGS_URL.format(now.getFullYear());
+    }
+
+    _createTpEntity(team) {
+        return new Tp.Value.Entity(team.alias.toLowerCase(), team.name);
     }
 
     get_get_todays_games() {
-        return Tp.Helpers.Http.get(NHL_SCHEDULE_URL.format(2019, 4, 2))
+        return Tp.Helpers.Http.get(this.schedule_url)
             .then((response) => {
                 const parsed = JSON.parse(response);
                 const game_statuses = [];
@@ -45,33 +49,27 @@ module.exports = class NHLSportRadarAPIDevice {
                 const games = parsed.games;
                 for (let i = 0; i < games.length; i++) {
                     const game_status = {
-                        home_team: games[i].home.name,
+                        home_team: this._createTpEntity(games[i].home),
                         home_score: games[i].home_points,
-                        away_team: games[i].away.name,
+                        away_team: this._createTpEntity(games[i].away),
                         away_score: games[i].away_points,
-                        result: games[i].status,
+                        status: games[i].status,
                     };
 
                     game_statuses.push(game_status);
                 }
 
                 return game_statuses.map((game_status) => {
-                    return {
-                        home_team: game_status.home_team,
-                        home_score: game_status.home_score,
-                        away_team: game_status.away_team,
-                        away_score: game_status.away_score,
-                        status: game_status.result,
-                    };
+                    return game_status;
                 });
             })
             .catch((e) => {
-                throw new TypeError("No NHL Games Today");
+                throw new TypeError("No NHL Games Found");
             });
     }
 
     get_get_team(team) {
-        return Tp.Helpers.Http.get(NHL_SCHEDULE_URL.format(2019, 4, 2))
+        return Tp.Helpers.Http.get(this.schedule_url)
             .then((response) => {
                 const parsed = JSON.parse(response);
                 const games = parsed.games;
@@ -241,7 +239,7 @@ module.exports = class NHLSportRadarAPIDevice {
                 });
             })
             .catch((e) => {
-                throw new TypeError("No NHL Games Today");
+                throw new TypeError("No NHL Games Found");
             });
     }
 
@@ -278,7 +276,7 @@ module.exports = class NHLSportRadarAPIDevice {
     }
 
     get_get_boxscore(team) {
-        return Tp.Helpers.Http.get(NHL_SCHEDULE_URL.format(2019, 4, 2))
+        return Tp.Helpers.Http.get(this.schedule_url)
             .then((response) => {
                 const parsed = JSON.parse(response);
                 const games = parsed.games;
@@ -300,8 +298,8 @@ module.exports = class NHLSportRadarAPIDevice {
                     }
                 }
 
-                const homeTeam = games[index].home.name;
-                const awayTeam = games[index].away.name;
+                const homeTeam = games[index].home;
+                const awayTeam = games[index].away;
                 const homeScore = games[index].home_points;
                 const awayScore = games[index].away_points;
                 const scheduledTime = games[index].scheduled;
@@ -320,8 +318,8 @@ module.exports = class NHLSportRadarAPIDevice {
                         return [
                             {
                                 status_message: "Next game %s @ %s at %s".format(
-                                    awayTeam,
-                                    homeTeam,
+                                    awayTeam.name,
+                                    homeTeam.name,
                                     dateTime.toLocaleString(platform.locale, {
                                         timeZone: platform.timezone,
                                     })
@@ -366,14 +364,18 @@ module.exports = class NHLSportRadarAPIDevice {
 
                                     const box_score = [
                                         {
-                                            home_team: homeTeam,
+                                            home_team: this._createTpEntity(
+                                                homeTeam
+                                            ),
                                             home_score: homeScore,
                                             home_period1: homePeriods[0],
                                             home_period2: homePeriods[1],
                                             home_period3: homePeriods[2],
                                             home_leading_scorer: homeLeader,
                                             away_team: awayTeam,
-                                            away_score: awayScore,
+                                            away_score: this._createTpEntity(
+                                                awayScore
+                                            ),
                                             away_period1: awayPeriods[0],
                                             away_period2: awayPeriods[1],
                                             away_period3: awayPeriods[2],
@@ -391,7 +393,7 @@ module.exports = class NHLSportRadarAPIDevice {
                 return this.statusConditions(gameStatus);
             })
             .catch((e) => {
-                throw new TypeError("No NHL Games Today");
+                throw new TypeError("No NHL Games Found");
             });
     }
 

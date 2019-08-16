@@ -26,41 +26,34 @@ module.exports = class NFLSportRadarAPIDevice {
         const seasonStart = new Date();
 
         seasonStart.setFullYear(2019);
-        seasonStart.setMonth(8);
+        seasonStart.setMonth(7);
         seasonStart.setDate(5);
 
         this._seasonStart = seasonStart;
     }
 
-    get_week() {
+    _get_week() {
         const today = new Date();
         let week = 0;
-        while (this.compare_dates(today, this._seasonStart)) {
+        while (today >= this._seasonStart) {
             week += 1;
             today.setDate(today.getDate() - 7);
         }
         return week;
     }
 
-    compare_dates(date1, date2) {
-        if (date1.getFullYear() > date2.getFullYear()) return true;
-        else if (date1.getFullYear() < date2.getFullYear()) return false;
-        else if (date1.getMonth() > date2.getMonth()) return true;
-        else if (date1.getMonth() < date2.getMonth()) return false;
-        else if (date1.getDate() >= date1.getDate()) return true;
-        else return false;
+    _updateUrl() {
+        const now = new Date();
+        const week = this._get_week();
+        if (week === 0 || week > 16)
+            throw new TypeError("There are no NFL games this week");
+
+        this.schedule_url = NFL_SCHEDULE_URL.format(now.getFullYear(), week);
+        this.standings_url = NFL_STANDINGS_URL.format(now.getFullYear());
     }
 
-    _updateUrl() {
-        //const now = new Date();
-        //const week = this.get_week();
-        // if (week == 0 || week > 16){
-        //   throw new TypeError("There are no NFL games this week");
-        // }
-
-        this.schedule_url = NFL_SCHEDULE_URL.format(2018, 1);
-        this.standings_url = NFL_STANDINGS_URL.format(2018);
-        //console.log('url', this.schedule_url);
+    _createTpEntity(team) {
+        return new Tp.Value.Entity(team.alias.toLowerCase(), team.name);
     }
 
     get_get_weekly_games() {
@@ -73,28 +66,22 @@ module.exports = class NFLSportRadarAPIDevice {
                 const games = parsed.week.games;
                 for (let i = 0; i < games.length; i++) {
                     const game_status = {
-                        home_team: games[i].home.name,
+                        home_team: this._createTpEntity(games[i].home),
                         home_score: games[i].scoring.home_points,
-                        away_team: games[i].away.name,
+                        away_team: this._createTpEntity(games[i].away),
                         away_score: games[i].scoring.away_points,
-                        result: games[i].status,
+                        status: games[i].status,
                     };
 
                     game_statuses.push(game_status);
                 }
 
                 return game_statuses.map((game_status) => {
-                    return {
-                        home_team: game_status.home_team,
-                        home_score: game_status.home_score,
-                        away_team: game_status.away_team,
-                        away_score: game_status.away_score,
-                        status: game_status.result,
-                    };
+                    return game_status;
                 });
             })
             .catch((e) => {
-                throw new TypeError("No NFL Games This Week");
+                throw new TypeError("No NFL Games Found");
             });
     }
 
@@ -282,7 +269,7 @@ module.exports = class NFLSportRadarAPIDevice {
                 });
             })
             .catch((e) => {
-                throw new TypeError("No NFL Games This Week");
+                throw new TypeError("No NFL Games Found");
             });
     }
 
@@ -328,7 +315,7 @@ module.exports = class NFLSportRadarAPIDevice {
                 const full_name = team.team.display;
                 let index = 0;
                 let gameStatus;
-                let gameId = "";
+                let gameId;
                 const platform = this.platform;
 
                 for (let i = 0; i < games.length; i++) {
@@ -342,8 +329,8 @@ module.exports = class NFLSportRadarAPIDevice {
                     }
                 }
 
-                const homeTeam = games[index].home.name;
-                const awayTeam = games[index].away.name;
+                const homeTeam = games[index].home;
+                const awayTeam = games[index].away;
                 const homeScore = games[index].scoring.home_points;
                 const awayScore = games[index].scoring.away_points;
                 const scheduledTime = games[index].scheduled;
@@ -362,8 +349,8 @@ module.exports = class NFLSportRadarAPIDevice {
                         return [
                             {
                                 status_message: "Next game is %s @ %s at %s".format(
-                                    awayTeam,
-                                    homeTeam,
+                                    awayTeam.name,
+                                    homeTeam.name,
                                     dateTime.toLocaleString(platform.locale, {
                                         timeZone: platform.timezone,
                                     })
@@ -397,13 +384,17 @@ module.exports = class NFLSportRadarAPIDevice {
 
                                     const box_score = [
                                         {
-                                            home_team: homeTeam,
+                                            home_team: this._createTpEntity(
+                                                homeTeam
+                                            ),
                                             home_score: homeScore,
                                             home_quarter1: homeQuarters[0],
                                             home_quarter2: homeQuarters[1],
                                             home_quarter3: homeQuarters[2],
                                             home_quarter4: homeQuarters[3],
-                                            away_team: awayTeam,
+                                            away_team: this._createTpEntity(
+                                                awayTeam
+                                            ),
                                             away_score: awayScore,
                                             away_quarter1: awayQuarters[0],
                                             away_quarter2: awayQuarters[1],
@@ -422,7 +413,7 @@ module.exports = class NFLSportRadarAPIDevice {
                 return this.statusConditions(gameStatus);
             })
             .catch((e) => {
-                throw new TypeError("No NFL Games This Week");
+                throw new TypeError("No NFL Games Found");
             });
     }
 

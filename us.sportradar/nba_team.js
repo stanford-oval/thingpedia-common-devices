@@ -31,11 +31,15 @@ module.exports = class NBASportRadarAPIDevice {
             now.getMonth() + 1,
             now.getDate()
         );
-        this.rankings_url = NBA_RANKINGS_URL.format(2018);
+        this.rankings_url = NBA_RANKINGS_URL.format(now.getFullYear());
+    }
+
+    _createTpEntity(team) {
+        return new Tp.Value.Entity(team.alias.toLowerCase(), team.name);
     }
 
     get_get_todays_games() {
-        return Tp.Helpers.Http.get(NBA_SCHEDULE_URL.format(2019, 4, 2))
+        return Tp.Helpers.Http.get(this.schedule_url)
             .then((response) => {
                 const parsed = JSON.parse(response);
                 const game_statuses = [];
@@ -43,9 +47,9 @@ module.exports = class NBASportRadarAPIDevice {
                 const games = parsed.games;
                 for (let i = 0; i < games.length; i++) {
                     const game_status = {
-                        home_team: games[i].home.name,
+                        home_team: this._createTpEntity(games[i].home),
                         home_score: games[i].home_points,
-                        away_team: games[i].away.name,
+                        away_team: this._createTpEntity(games[i].away),
                         away_score: games[i].away_points,
                         result: games[i].status,
                     };
@@ -54,22 +58,16 @@ module.exports = class NBASportRadarAPIDevice {
                 }
 
                 return game_statuses.map((game_status) => {
-                    return {
-                        home_team: game_status.home_team,
-                        home_score: game_status.home_score,
-                        away_team: game_status.away_team,
-                        away_score: game_status.away_score,
-                        status: game_status.result,
-                    };
+                    return game_status;
                 });
             })
             .catch((e) => {
-                throw new TypeError("No NBA Games Today");
+                throw new TypeError("No NBA Games Found");
             });
     }
 
     get_get_team(team) {
-        return Tp.Helpers.Http.get(NBA_SCHEDULE_URL.format(2019, 4, 2))
+        return Tp.Helpers.Http.get(this.schedule_url)
             .then((response) => {
                 const parsed = JSON.parse(response);
                 const games = parsed.games;
@@ -241,7 +239,7 @@ module.exports = class NBASportRadarAPIDevice {
                 });
             })
             .catch((e) => {
-                throw new TypeError("No NBA Games Today");
+                throw new TypeError("No NBA Games Found");
             });
     }
 
@@ -278,7 +276,7 @@ module.exports = class NBASportRadarAPIDevice {
     }
 
     get_get_boxscore(team) {
-        return Tp.Helpers.Http.get(NBA_SCHEDULE_URL.format(2019, 4, 2))
+        return Tp.Helpers.Http.get(this.schedule_url)
             .then((response) => {
                 const parsed = JSON.parse(response);
                 const games = parsed.games;
@@ -301,8 +299,8 @@ module.exports = class NBASportRadarAPIDevice {
                     }
                 }
 
-                const homeTeam = games[index].home.name;
-                const awayTeam = games[index].away.name;
+                const homeTeam = games[index].home;
+                const awayTeam = games[index].away;
                 const homeScore = games[index].home_points;
                 const awayScore = games[index].away_points;
                 const scheduledTime = games[index].scheduled;
@@ -321,8 +319,8 @@ module.exports = class NBASportRadarAPIDevice {
                         return [
                             {
                                 status_message: "Next game %s @ %s at %s".format(
-                                    awayTeam,
-                                    homeTeam,
+                                    awayTeam.name,
+                                    homeTeam.name,
                                     dateTime.toLocaleString(platform.locale, {
                                         timeZone: platform.timezone,
                                     })
@@ -367,14 +365,18 @@ module.exports = class NBASportRadarAPIDevice {
 
                                     const box_score = [
                                         {
-                                            home_team: homeTeam,
+                                            home_team: this._createTpEntity(
+                                                homeTeam
+                                            ),
                                             home_score: homeScore,
                                             home_quarter1: homeQuarters[0],
                                             home_quarter2: homeQuarters[1],
                                             home_quarter3: homeQuarters[2],
                                             home_quarter4: homeQuarters[3],
                                             home_leading_scorer: homeLeader,
-                                            away_team: awayTeam,
+                                            away_team: this._createTpEntity(
+                                                awayTeam
+                                            ),
                                             away_score: awayScore,
                                             away_quarter1: awayQuarters[0],
                                             away_quarter2: awayQuarters[1],
@@ -394,7 +396,7 @@ module.exports = class NBASportRadarAPIDevice {
                 return this.statusConditions(gameStatus);
             })
             .catch((e) => {
-                throw new TypeError("No NBA Games Today");
+                throw new TypeError("No NBA Games Found");
             });
     }
 
