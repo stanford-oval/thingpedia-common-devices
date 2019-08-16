@@ -16,6 +16,16 @@ with open('abbr-name-list.csv', 'w') as output_file:
                 for team in div["teams"]:
                     writer.writerow(['NBA', team["alias"], team["market"] + ' ' + team["name"]])
 
+# NHL
+    with open('./nhl.json', 'r') as input_file:
+        data = json.load(input_file)
+        conferences = data["conferences"]
+        for conf in conferences:
+            divisions = conf["divisions"]
+            for div in divisions:
+                for team in div["teams"]:
+                    writer.writerow(['NHL', team["alias"], team["market"] + ' ' + team["name"]])
+
 # NFL                    
     with open('./nfl.json', 'r') as input_file:
         data = json.load(input_file)
