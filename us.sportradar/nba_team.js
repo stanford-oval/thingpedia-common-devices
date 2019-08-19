@@ -14,29 +14,29 @@ const Tp = require("thingpedia");
 const { createTpEntity } = require('./utils');
 const NBA_JSON = require("./teams/nba.json");
 
-const NBA_API_KEY = "uuha5uz669b2yrnwqccraywh";
 const NBA_SCHEDULE_URL =
-    "https://api.sportradar.us/nba/trial/v5/en/games/%d/%d/%d/schedule.json?api_key=" + NBA_API_KEY;
+    "https://api.sportradar.us/nba/trial/v5/en/games/%d/%d/%d/schedule.json?api_key=%s";
 const NBA_BOXSCORE_URL =
-    "https://api.sportradar.us/nba/trial/v5/en/games/%s/boxscore.json?api_key=" + NBA_API_KEY;
+    "https://api.sportradar.us/nba/trial/v5/en/games/%s/boxscore.json?api_key=%s";
 const NBA_RANKINGS_URL =
-    "https://api.sportradar.us/nba/trial/v5/en/seasons/%s/REG/rankings.json?api_key=" + NBA_API_KEY;
+    "https://api.sportradar.us/nba/trial/v5/en/seasons/%s/REG/rankings.json?api_key=%s";
 const NBA_ROSTER_URL =
-    "https://api.sportradar.us/nba/trial/v5/en/teams/%s/profile.json?api_key=" + NBA_API_KEY;
+    "https://api.sportradar.us/nba/trial/v5/en/teams/%s/profile.json?api_key=%s";
 
 
 module.exports = class NBASportRadarAPIDevice {
-    constructor(platform) {
+    constructor(platform, key) {
         this.platform = platform;
         this.name = "Sport Radar NBA Channel";
         this.description = "The NBA Channel for Sport Radar";
+        this._api_key = key;
     }
 
     get_games(date) {
         if (date === undefined || date === null)
             date = new Date;
 
-        const url = NBA_SCHEDULE_URL.format(date.getFullYear(), date.getMonth()+1, date.getDate());
+        const url = NBA_SCHEDULE_URL.format(date.getFullYear(), date.getMonth()+1, date.getDate(), this._api_key);
         return Tp.Helpers.Http.get(url).then((response) => {
             const parsed = JSON.parse(response);
             return parsed.games.filter((game) => !!this._response(game)).map((game) => {
@@ -55,7 +55,7 @@ module.exports = class NBASportRadarAPIDevice {
     get_team_ranking(team, year) {
         const now = new Date();
         year = year ? year : (now.getMonth() > 10 ? now.getFullYear() : now.getFullYear() - 1);
-        const url = NBA_RANKINGS_URL.format(year);
+        const url = NBA_RANKINGS_URL.format(year, this._api_key);
         return Tp.Helpers.Http.get(url).then((response) => {
             const parsed = JSON.parse(response);
             const conferences = parsed.conferences;
@@ -84,7 +84,7 @@ module.exports = class NBASportRadarAPIDevice {
         if (date === undefined || date === null)
             date = new Date;
 
-        const url = NBA_SCHEDULE_URL.format(date.getFullYear(), date.getMonth()+1, date.getDate());
+        const url = NBA_SCHEDULE_URL.format(date.getFullYear(), date.getMonth()+1, date.getDate(), this._api_key);
 
         return Tp.Helpers.Http.get(url).then((response) => {
             const parsed = JSON.parse(response);
@@ -97,7 +97,7 @@ module.exports = class NBASportRadarAPIDevice {
                     const awayScore = game.away_points;
                     const homeScore = game.home_points;
 
-                    return Tp.Helpers.Http.get(NBA_BOXSCORE_URL.format(game.id)).then((response) => {
+                    return Tp.Helpers.Http.get(NBA_BOXSCORE_URL.format(game.id, this._api_key)).then((response) => {
                         const parsed = JSON.parse(response);
                         const homeQuarters = [];
                         const awayQuarters = [];
@@ -157,7 +157,7 @@ module.exports = class NBASportRadarAPIDevice {
                     const name = team.alias.toLowerCase();
                     if (name === team_name) {
                         return Tp.Helpers.Http.get(
-                            NBA_ROSTER_URL.format(team.id)
+                            NBA_ROSTER_URL.format(team.id, this._api_key)
                         ).then((response) => {
                             const parsed = JSON.parse(response);
                             const team_members = [];

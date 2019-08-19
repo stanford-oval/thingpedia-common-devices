@@ -25,20 +25,23 @@ const SportsNews = require("./sport_news.js");
 module.exports = class SportsDevice extends Tp.BaseDevice {
     constructor(engine, state) {
         super(engine, state);
+        this.keys = JSON.parse(this.constructor.metadata.auth.api_key);
 
-        this.nbaTeam = new NbaTeam(this.engine.platform);
-        this.mlbTeam = new MlbTeam(this.engine.platform);
-        this.nhlTeam = new NhlTeam(this.engine.platform);
-        this.nflTeam = new NflTeam(this.engine.platform);
-        this.ncaaMbTeam = new NCAAMbTeam(this.engine.platform);
-        this.ncaaFbTeam = new NCAAFbTeam(this.engine.platform);
-        this.euSoccerTeam = new EUSoccerTeam(this.engine.platform);
-        this.amSoccerTeam = new AMSoccerTeam(this.engine.platform);
-        this.sportsNews = new SportsNews();
+        this.nbaTeam = new NbaTeam(this.engine.platformj, this.keys.nba_api_key);
+        this.mlbTeam = new MlbTeam(this.engine.platform, this.keys.mlb_api_key);
+        this.nhlTeam = new NhlTeam(this.engine.platform, this.keys.nhl_api_key);
+        this.nflTeam = new NflTeam(this.engine.platform, this.keys.nfl_api_key);
+        this.ncaaMbTeam = new NCAAMbTeam(this.engine.platform, this.keys.ncaamb_api_key);
+        this.ncaaFbTeam = new NCAAFbTeam(this.engine.platform, this.keys.ncaafb_api_key);
+        this.euSoccerTeam = new EUSoccerTeam(this.engine.platform, this.keys.eusoccer_api_key);
+        this.amSoccerTeam = new AMSoccerTeam(this.engine.platform, this.keys.amsoccer_api_key);
+        this.sportsNews = new SportsNews(this.keys.news_api_key);
         this.uniqueId = "almond.sports";
         this.name = "Sportradar and NewsApi Sports Skill";
         this.description =
             "Sports Skill which displays Sports scores, news, and stats. Supports NFL, NBA, European and American Soccer, MLB, NCAAFB, and NCAAMBB.";
+
+
     }
 
     get_nba_games({ date }) {

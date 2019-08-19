@@ -11,22 +11,19 @@
 "use strict";
 
 const Tp = require("thingpedia");
-const NEWS_API_KEY = "97a0cd1b088c48d197b2b2301e00ad92";
-const NEWS_API_URL =
-    "https://newsapi.org/v2/everything?q=%s&apiKey=" + NEWS_API_KEY;
-const HEADLINES_API_URL =
-    "https://newsapi.org/v2/top-headlines?country=us&category=sports&apiKey=" +
-    NEWS_API_KEY;
+const NEWS_API_URL = "https://newsapi.org/v2/everything?q=%s&apiKey=%s";
+const HEADLINES_API_URL = "https://newsapi.org/v2/top-headlines?country=us&category=sports&apiKey=%s";
 
 module.exports = class NewsHeadlines {
-    constructor() {
+    constructor(key) {
         this.name = "Sports News Api";
         this.description =
             "News Api which is used to retrieve sports headlines";
+        this._api_key = key;
     }
 
     get_get_sports_headlines(league) {
-        const url = NEWS_API_URL.format(league.sport_league.display);
+        const url = NEWS_API_URL.format(league.sport_league.display, this._api_key);
         return Tp.Helpers.Http.get(url).then((response) => {
             const parsed = JSON.parse(response);
             const articles = parsed.articles;
@@ -41,7 +38,8 @@ module.exports = class NewsHeadlines {
     }
 
     get_get_top_headlines() {
-        return Tp.Helpers.Http.get(HEADLINES_API_URL).then((response) => {
+        const url = HEADLINES_API_URL.format(this._api_key);
+        return Tp.Helpers.Http.get(url).then((response) => {
             const parsed = JSON.parse(response);
             const articles = parsed.articles;
             return articles.map((a) => {
