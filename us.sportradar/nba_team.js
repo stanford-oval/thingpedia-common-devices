@@ -53,6 +53,7 @@ module.exports = class NBASportRadarAPIDevice {
     }
 
     get_team_ranking(team, year) {
+        const teamInfo = this._team(team);
         const now = new Date();
         year = year ? year : (now.getMonth() > 10 ? now.getFullYear() : now.getFullYear() - 1);
         const url = NBA_RANKINGS_URL.format(year, this._api_key);
@@ -64,8 +65,7 @@ module.exports = class NBASportRadarAPIDevice {
                 for (const division of divisions) {
                     const teams = division.teams;
                     for (const t of teams) {
-                        const team_name = `${t.market} ${t.name}`;
-                        if (team_name === team.display) {
+                        if (t.id === teamInfo.id) {
                             return [{
                                 divisionPos: t.rank.division,
                                 divisionName: division.name,
@@ -147,6 +147,38 @@ module.exports = class NBASportRadarAPIDevice {
     }
 
     get_roster(team) {
+        const teamInfo = this._team(team);
+        return Tp.Helpers.Http.get(NBA_ROSTER_URL.format(teamInfo.id, this._api_key)).then((response) => {
+            const parsed = JSON.parse(response);
+            const team_members = [];
+
+            const players = parsed.players;
+            const coaches = parsed.coaches;
+
+            for (const player of players) {
+                team_members.push({
+                    position: player.primary_position,
+                    member: player.full_name,
+                });
+            }
+
+            const sortedRoster = team_members.sort((a, b) => {
+                return a.member.localeCompare(b.member);
+            });
+            for (const coach of coaches) {
+                if (coach.position === "Head Coach") {
+                    const head_coach = coach.full_name;
+                    sortedRoster.push({
+                        position: coach.position,
+                        member: head_coach,
+                    });
+                }
+            }
+            return sortedRoster;
+        });
+    }
+
+    _team(team) {
         const team_name = team.value;
         const conferences = NBA_JSON.conferences;
         for (const conference of conferences) {
@@ -156,41 +188,17 @@ module.exports = class NBASportRadarAPIDevice {
                 for (const team of teams) {
                     const name = team.alias.toLowerCase();
                     if (name === team_name) {
-                        return Tp.Helpers.Http.get(
-                            NBA_ROSTER_URL.format(team.id, this._api_key)
-                        ).then((response) => {
-                            const parsed = JSON.parse(response);
-                            const team_members = [];
-
-                            const players = parsed.players;
-                            const coaches = parsed.coaches;
-
-                            for (const player of players) {
-                                team_members.push({
-                                    position: player.primary_position,
-                                    member: player.full_name,
-                                });
-                            }
-
-                            const sortedRoster = team_members.sort((a, b) => {
-                                return a.member.localeCompare(b.member);
-                            });
-                            for (const coach of coaches) {
-                                if (coach.position === "Head Coach") {
-                                    const head_coach = coach.full_name;
-                                    sortedRoster.push({
-                                        position: coach.position,
-                                        member: head_coach,
-                                    });
-                                }
-                            }
-                            return sortedRoster;
-                        });
+                        return {
+                            id: team.id,
+                            market: team.market,
+                            name: team.name,
+                            alias: name
+                        };
                     }
                 }
             }
         }
-        throw new TypeError("Invalid Team Input");
+        throw new Error(`Team ${team} not found`);
     }
 
     _response(game) {
