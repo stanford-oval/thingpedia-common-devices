@@ -20,14 +20,13 @@ module.exports = class NewsHeadlines {
         return Tp.Helpers.Http.get(url).then((response) => {
             const parsed = JSON.parse(response);
             const articles = parsed.articles;
-            const random_number = Math.floor(Math.random() * 20);
-            return [
-                {
-                    link: articles[random_number].url,
-                    title: articles[random_number].title,
-                    description: articles[random_number].description,
-                },
-            ];
+            return articles.map((a) => {
+                return {
+                    link: a.url,
+                    title: a.title,
+                    description: a.description,
+                };
+            });
         });
     }
 
@@ -35,14 +34,13 @@ module.exports = class NewsHeadlines {
         return Tp.Helpers.Http.get(HEADLINES_API_URL).then((response) => {
             const parsed = JSON.parse(response);
             const articles = parsed.articles;
-            const random_number = Math.floor(Math.random() * 20);
-            return [
-                {
-                    link: articles[random_number].url,
-                    title: articles[random_number].title,
-                    description: articles[random_number].description,
-                },
-            ];
+            return articles.map((a) => {
+                return {
+                    link: a.url,
+                    title: a.title,
+                    description: a.description,
+                };
+            });
         });
     }
 };
