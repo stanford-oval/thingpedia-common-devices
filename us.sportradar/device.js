@@ -1,7 +1,5 @@
 "use strict";
 
-require("../polyfill.js");
-
 const Tp = require("thingpedia");
 const NbaTeam = require("./nba_team.js");
 const MlbTeam = require("./mlb_team.js");
