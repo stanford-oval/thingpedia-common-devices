@@ -1,183 +1,386 @@
-// -*- mode: js; indent-tabs-mode: nil; js-basic-offset: 4 -*-
-//
-// Copyright 2015 Giovanni Campagna <gcampagn@cs.stanford.edu>
-//
-// See LICENSE for details
+"use strict";
 
-const Tp = require('thingpedia');
-const deepEqual = require('deep-equal');
+const Tp = require("thingpedia");
 
-const API_KEY = '9kx5ta95brfyftwzx83vmfsz';
-const SCHEDULE_URL = 'https://api.sportradar.us/soccer-t2/eu/matches/schedule.xml?api_key=' + API_KEY;
-const BOXSCORE_URL = 'https://api.sportradar.us/soccer-t2/eu/matches/%s/boxscore.xml?api_key=' + API_KEY;
-const POLL_INTERVAL = 24 * 3600 * 1000; // 1day
+const SOCCER_EU_API_KEY = "bqusuccn5zubfc4m6p9sspr2";
+const SOCCER_EU_SCHEDULE_URL =
+    "https://api.sportradar.us/soccer-t3/eu/en/schedules/%s/schedule.json?api_key=" +
+    SOCCER_EU_API_KEY;
+const SOCCER_EU_LIVE_URL =
+    "https://api.sportradar.us/soccer-t3/eu/en/schedules/live/results.json?api_key=" +
+    SOCCER_EU_API_KEY;
+const SOCCER_EU_CLOSED_URL =
+    "https://api.sportradar.us/soccer-t3/eu/en/schedules/%s/results.json?api_key=" +
+    SOCCER_EU_API_KEY;
+const SOCCER_EU_TOURNAMENT_RANKINGS =
+    "https://api.sportradar.us/soccer-t3/eu/en/tournaments/%s/standings.json?api_key=" +
+    SOCCER_EU_API_KEY;
 
-module.exports = new Tp.ChannelClass({
-    Name: 'SportRadarEUSoccerChannel',
-    Extends: Tp.HttpPollingTrigger,
-    RequiredCapabilities: ['channel-state'],
-    interval: POLL_INTERVAL,
+module.exports = class SoccerEUSportRadarAPIDevice {
+    constructor(platform) {
+        this.platform = platform;
+        this.name = "Sport Radar EU Soccer Channel";
+        this.description = "The EU Soccer Channel for Sport Radar";
+    }
 
-    _init: function(engine, state, device, params) {
-        this.parent(engine, state, device);
-        this.state = state;
+    _updateUrl() {
+        const now = new Date();
+        const date_url = "%d-%s-%s".format(
+            now.getFullYear(),
+            ("0" + (now.getMonth() + 1)).slice(-2),
+            ("0" + now.getDate()).slice(-2)
+        );
+        this.date_url = date_url;
+    }
 
-        this._params = params.slice(0, 1);
-        this._observedTeam = params[0];
-        if (!this._observedTeam)
-            throw new TypeError("Missing required parameter");
-        this.filterString = this._params.join('-');
-        this.url = SCHEDULE_URL;
+    _createTpEntity(team) {
+        return new Tp.Value.Entity(team.abbreviation.toLowerCase(), team.name);
+    }
 
-        this._gameId = null;
-        this._nextGameTimer = null;
-    },
+    get_get_todays_games(input_league) {
+        this._updateUrl();
+        const leagueId = input_league.soccer_league.value;
+        return Tp.Helpers.Http.get(SOCCER_EU_SCHEDULE_URL.format(this.date_url))
+            .then((response) => {
+                const parsed = JSON.parse(response);
+                const game_statuses = [];
+                const games = parsed.sport_events;
+                for (let i = 0; i < games.length; i++) {
+                    const league = games[i].tournament.id;
+                    if (league === leagueId) {
+                        const game_status = {
+                            home_team: this._createTpEntity(
+                                games[i].competitors[0]
+                            ),
+                            away_team: this._createTpEntity(
+                                games[i].competitors[1]
+                            ),
+                            tournament: games[i].tournament.name,
+                            status: games[i].status,
+                        };
 
-    formatEvent(event) {
-        var watchedAlias = event[0];
-        var otherAlias = event[1];
-        var watchedIsHome = event[2];
-        var awayName = event[3];
-        var homeName = event[4];
-        var gameStatus = event[5];
-        var scheduledTime = event[6];
-        var awayScore = event[7];
-        var homeScore = event[8];
-        var result = event[9];
-
-        var platform = this.engine.platform;
-        switch(gameStatus) {
-        case 'scheduled':
-            return "Next game %s - %s at %s".format(homeName, awayName, scheduledTime.toLocaleString(platform.locale, { timeZone: platform.timezone }));
-        case 'inprogress':
-            return "Game update for %s - %s: %d - %d".format(homeName, awayName, homeScore, awayScore);
-        case 'halftime':
-            return "Half-time for %s - %s: %d - %d".format(homeName, awayName, homeScore, awayScore);
-        case 'closed':
-            return "Final score for %s - %s: %d - %d".format(homeName, awayName, homeScore, awayScore);
-        }
-        return [];
-    },
-
-    _doClose: function() {
-        clearTimeout(this._nextGameTimer);
-        this._nextGameTimer = null;
-        return this.parent();
-    },
-
-    _emit: function(status, awayPoints, homePoints) {
-        var currentEvent = [this._awayAlias, this._homeAlias, false,
-                            this._awayName, this._homeName, status,
-                            this._scheduledTime, awayPoints, homePoints,
-                            'unclosed'];
-        if (this._observedTeam.toLowerCase() === this._homeAlias) {
-            currentEvent[0] = this._homeAlias;
-            currentEvent[1] = this._awayAlias;
-            currentEvent[2] = true;
-        }
-        if (status === 'closed') {
-            if (awayPoints === homePoints) 
-                currentEvent[9] = 'draw';
-            if (this._observedTeam === this._homeAlias && homePoints > awayPoints)
-                currentEvent[9] = 'win';
-            else if (this._observedTeam === this._awayAlias && homePoints < awayPoints)
-                currentEvent[9] = 'win';
-            else
-                currentEvent[9] = 'lose';
-        }
-
-        if (deepEqual(this.event, currentEvent, { strict: true }))
-            return;
-        this.emitEvent(currentEvent);
-    },
-
-    _onNextGameEvent: function() {
-        Tp.Helpers.Http.get(BOXSCORE_URL.format(this._gameId)).then((response) => {
-            return Tp.Helpers.Xml.parseString(response);
-        }).then((parsed) => {
-            var match = parsed.boxscore.matches[0].match[0];
-            var away = match.away[0];
-            var home = match.home[0];
-            var event = [];
-            this._emit(match.$.status, Number(away.$.score), Number(home.$.score));
-
-            if (match.$.status !== 'closed') {
-                this._nextGameTimer = setTimeout(this._onNextGameEvent.bind(this), 5 * 60000); // poll after 5 minutes
-            } else {
-                this._nextGameTimer = null;
-                this._gameId = null;
-            }
-        }).catch((e) => {
-            console.error('Failed to process EU soccer game updates: ' + e.message);
-            console.error(e.stack);
-        }).done();
-    },
-
-    _onResponse: function(response) {
-        if (!response)
-            return;
-        Tp.Helpers.Xml.parseString(response).then((parsed) => {
-            var matches = parsed.schedule.matches[0].match;
-            var match = null;
-            for (var i = 0; i < matches.length; i++) {
-                if (matches[i].$.status === 'closed')
-                    continue;
-                //console.log('Candidate match ' + matches[i].home[0].$.alias + ' - ' + matches[i].away[0].$.alias);
-                if (matches[i].home[0].$.alias.toLowerCase() === this._observedTeam.toLowerCase() ||
-                    matches[i].away[0].$.alias.toLowerCase() === this._observedTeam.toLowerCase()) {
-                    match = matches[i];
-                    break;
-                }
-            }
-            if (match === null) {
-                console.log('No game found scheduled');
-                clearTimeout(this._nextGameTimer);
-                this._nextGameTimer = null;
-                this._gameId = null;
-                return;
-            }
-
-            if (this._gameId === match.$.id) {
-                // saw again a game we knew about
-                return;
-            }
-
-            console.log('Found match ' + match.$.id + ': ' + match.home[0].$.alias + ' - ' + match.away[0].$.alias);
-            this._gameId = match.$.id;
-            this._awayAlias = match.away[0].$.alias.toLowerCase();
-            this._homeAlias = match.home[0].$.alias.toLowerCase();
-            this._awayName = match.away[0].$.name;
-            this._homeName = match.home[0].$.name;
-
-            var timeout;
-            if (match.$.status === 'scheduled') {
-                var scheduled = new Date(match.$.scheduled);
-                this._scheduledTime = scheduled;
-                var now = new Date();
-                timeout = scheduled.getTime() - now.getTime() + 5000;
-                if (timeout >= 5000) {
-                    var lastNotified = this.state.get('game-id');
-                    if (lastNotified !== this._gameId) {
-                        this.state.set('game-id', this._gameId);
-                        this._emit('scheduled', 0, 0);
+                        game_statuses.push(game_status);
                     }
-                } else {
-                    timeout = 5000;
                 }
-                if (timeout > POLL_INTERVAL) {
-                    clearTimeout(this._nextGameTimer);
-                    return;
-                }
-            } else {
-                this._scheduledTime = new Date();
-                timeout = 5000;
-            }
 
-            clearTimeout(this._nextGameTimer);
-            this._nextGameTimer = setTimeout(this._onNextGameEvent.bind(this), timeout);
-        }).catch((error) => {
-            console.error('Failed to process EU soccer game updates: ' + error.message);
-            console.error(error.stack);
+                return game_statuses.map((game_status) => {
+                    return game_status;
+                });
+            })
+            .catch((e) => {
+                throw new TypeError("No EU Soccer Games Found");
+            });
+    }
+
+    get_live_results(team) {
+        return Tp.Helpers.Http.get(SOCCER_EU_LIVE_URL)
+            .then((response) => {
+                const parsed = JSON.parse(response);
+                const games = parsed.results;
+                let index = 0;
+                for (let i = 0; i < games.length; i++) {
+                    if (
+                        games[
+                            i
+                        ].sport_event.competitors[0].abbreviation.toLowerCase() ===
+                            team ||
+                        games[
+                            i
+                        ].sport_event.competitors[1].abbreviation.toLowerCase() ===
+                            team
+                    )
+                        index = i;
+                }
+
+                const homePoints = games[index].sport_event_status.home_score;
+                const awayPoints = games[index].sport_event_status.home_score;
+                const awayTeam = games[index].sport_event.competitors[1];
+                const homeTeam = games[index].sport_event.competitors[0];
+                const homeHalf1 =
+                    games[index].sport_event_status.period_scores[0].home_score;
+                const homeHalf2 =
+                    games[index].sport_event_status.period_scores[1].home_score;
+                const awayHalf1 =
+                    games[index].sport_event_status.period_scores[0].away_score;
+                const awayHalf2 =
+                    games[index].sport_event_status.period_scores[1].away_score;
+                const matchTime =
+                    games[index].sport_event_status.clock.match_time;
+
+                const box_score = [
+                    {
+                        home_team: this._createTpEntity(homeTeam),
+                        home_score: homePoints,
+                        home_half1: homeHalf1,
+                        home_half2: homeHalf2,
+                        away_team: this._createTpEntity(awayTeam),
+                        away_score: awayPoints,
+                        away_half1: awayHalf1,
+                        away_half2: awayHalf2,
+                        match_status: "Clock: " + matchTime,
+                    },
+                ];
+
+                return box_score;
+            })
+            .catch((e) => {
+                throw new TypeError("Invalid Team Input");
+            });
+    }
+
+    get_closed_results(team) {
+        return Tp.Helpers.Http.get(SOCCER_EU_CLOSED_URL.format(this.date_url))
+            .then((response) => {
+                const parsed = JSON.parse(response);
+                const games = parsed.results;
+
+                let index = 0;
+                for (let i = 0; i < games.length; i++) {
+                    if (
+                        games[
+                            i
+                        ].sport_event.competitors[0].abbreviation.toLowerCase() ===
+                            team ||
+                        games[
+                            i
+                        ].sport_event.competitors[1].abbreviation.toLowerCase() ===
+                            team
+                    )
+                        index = i;
+                }
+                const homePoints = games[index].sport_event_status.home_score;
+                const awayPoints = games[index].sport_event_status.away_score;
+                const awayTeam = games[index].sport_event.competitors[1];
+                const homeTeam = games[index].sport_event.competitors[0];
+                const homeHalf1 =
+                    games[index].sport_event_status.period_scores[0].home_score;
+                const homeHalf2 =
+                    games[index].sport_event_status.period_scores[1].home_score;
+                const awayHalf1 =
+                    games[index].sport_event_status.period_scores[0].away_score;
+                const awayHalf2 =
+                    games[index].sport_event_status.period_scores[1].away_score;
+
+                const box_score = [
+                    {
+                        home_team: this._createTpEntity(homeTeam),
+                        home_score: homePoints,
+                        home_half1: homeHalf1,
+                        home_half2: homeHalf2,
+                        away_team: this._createTpEntity(awayTeam),
+                        away_score: awayPoints,
+                        away_half1: awayHalf1,
+                        away_half2: awayHalf2,
+                        match_status: "Game Status: Closed",
+                    },
+                ];
+
+                return box_score;
+            })
+            .catch((e) => {
+                throw new TypeError("Invalid Team Input");
+            });
+    }
+
+    get_get_team(team) {
+        this._updateUrl();
+        return Tp.Helpers.Http.get(SOCCER_EU_SCHEDULE_URL.format(this.date_url))
+            .then((response) => {
+                const parsed = JSON.parse(response);
+                const games = parsed.sport_events;
+                const team_name = team.team.value;
+                const full_name = team.team.display;
+
+                let index = 0;
+                let gameStatus;
+                const self = this;
+                const platform = this.platform;
+                const scheduledTime = games[index].scheduled;
+                const dateTime = new Date(scheduledTime);
+
+                for (let i = 0; i < games.length; i++) {
+                    if (
+                        games[i].competitors[0].abbreviation.toLowerCase() ===
+                            team_name ||
+                        games[i].competitors[1].abbreviation.toLowerCase() ===
+                            team_name
+                    ) {
+                        index = i;
+                        gameStatus = games[i].status;
+                    }
+                }
+
+                const homeTeam = games[index].competitors[0].name;
+                const awayTeam = games[index].competitors[1].name;
+
+                switch (gameStatus) {
+                    case undefined:
+                        return [
+                            {
+                                status_message: "There is no %s game today. I can notify you when there is a game if you want?".format(
+                                    full_name
+                                ),
+                            },
+                        ];
+
+                    case "not_started":
+                        return [
+                            {
+                                status_message: "Next game %s @ %s at %s".format(
+                                    awayTeam,
+                                    homeTeam,
+                                    dateTime.toLocaleString(platform.locale, {
+                                        timeZone: platform.timezone,
+                                    })
+                                ),
+                            },
+                        ];
+
+                    case "live":
+                        return new Promise((resolve, reject) => {
+                            setTimeout(() => {
+                                self.get_live_results(team_name).then(
+                                    (response) => {
+                                        resolve(response);
+                                    }
+                                );
+                            }, 1000);
+                        });
+
+                    case "closed":
+                        return new Promise((resolve, reject) => {
+                            setTimeout(() => {
+                                self.get_closed_results(team_name).then(
+                                    (response) => {
+                                        resolve(response);
+                                    }
+                                );
+                            }, 1000);
+                        });
+                }
+
+                return this.statusConditions(gameStatus);
+            })
+            .catch((e) => {
+                throw new TypeError("No EU Soccer Games Found");
+            });
+    }
+
+    get_get_rankings(input_league) {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                return Tp.Helpers.Http.get(
+                    SOCCER_EU_TOURNAMENT_RANKINGS.format(
+                        input_league.soccer_league.value
+                    )
+                )
+                    .then((response) => {
+                        const complete_standings = [];
+                        const parsed = JSON.parse(response);
+                        const standings = parsed.standings;
+                        for (const standing of standings) {
+                            const type = standing.type;
+                            if (type === "total") {
+                                const groups = standing.groups;
+                                const areGroups = groups.length > 1;
+                                let group_name;
+                                for (const group of groups) {
+                                    let validGroup = true;
+                                    if (areGroups) {
+                                        group_name = group.name;
+                                        if (group_name === undefined)
+                                            validGroup = false;
+                                    }
+                                    if (validGroup) {
+                                        const team_standings =
+                                            group.team_standings;
+                                        complete_standings.push({
+                                            group_name: group_name,
+                                        });
+                                        for (const team_standing of team_standings) {
+                                            const team =
+                                                team_standing.team.name;
+                                            const rank = team_standing.rank;
+                                            const standingsObj = {};
+                                            standingsObj.team_name = team;
+                                            standingsObj.team_rank = rank;
+                                            complete_standings.push(
+                                                standingsObj
+                                            );
+                                        }
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                        resolve(
+                            complete_standings.map((team_standings) => {
+                                return team_standings;
+                            })
+                        );
+                    })
+                    .catch((e) => {
+                        throw new TypeError(
+                            `Can't get standings for the ${input_league.soccer_league.value}`
+                        );
+                    });
+            }, 1000);
         });
-    },
-});
+    }
+
+    statusConditions(gameStatus) {
+        let status_message;
+        switch (gameStatus) {
+            case "canceled":
+                status_message = "The game has been canceled";
+                return [
+                    {
+                        result: status_message,
+                    },
+                ];
+
+            case "delayed":
+                status_message = "The game has been delayed";
+                return [
+                    {
+                        result: status_message,
+                    },
+                ];
+
+            case "unnecessary":
+                status_message =
+                    "The game was scheduled to occur, but is now deemed unnecessary";
+                return [
+                    {
+                        result: status_message,
+                    },
+                ];
+
+            case "if_necessary":
+                status_message = "The game will be scheduled if necessary";
+                return [
+                    {
+                        result: status_message,
+                    },
+                ];
+
+            case "start_delayed":
+                status_message = "The start of this match has been delayed";
+                return [
+                    {
+                        result: status_message,
+                    },
+                ];
+
+            case "abandoned":
+                status_message = "The game has been abandoned";
+                return [
+                    {
+                        result: status_message,
+                    },
+                ];
+        }
+
+        return [];
+    }
+};

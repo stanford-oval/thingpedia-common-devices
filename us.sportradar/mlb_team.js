@@ -1,202 +1,544 @@
-// -*- mode: js; indent-tabs-mode: nil; js-basic-offset: 4 -*-
-// vim: syntax=javascript
-//
-// Copyright 2016 Riad S. Wahby <rsw@cs.stanford.edu>
-// based on us.sportradar device by Giovannni Campagna <gcampagn@cs.stanford.edu>
-//
-// See LICENSE for details
+"use strict";
 
-const Tp = require('thingpedia');
+const Tp = require("thingpedia");
 
-const API_KEY = 'tn5sx574v9yk995cc29ccftz';
-const SCHEDULE_URL = 'https://api.sportradar.us/mlb-t5/games/%d/%d/%d/schedule.xml?api_key=' + API_KEY;
-const BOXSCORE_URL = 'https://api.sportradar.us/mlb-t5/games/%s/boxscore.xml?api_key=' + API_KEY;
-const POLL_INTERVAL = 24 * 3600 * 1000; // 1 day
+const MLB_API_KEY = "76qzdw27b4nm58f38ck7hkqu";
+const MLB_SCHEDULE_URL =
+    "https://api.sportradar.us/mlb/trial/v6.5/en/games/%d/%d/%d/boxscore.json?api_key=" +
+    MLB_API_KEY;
+const MLB_BOXSCORE_URL =
+    "https://api.sportradar.us/mlb/trial/v6.5/en/games/%s/boxscore.json?api_key=" +
+    MLB_API_KEY;
+const MLB_RANKINGS_URL =
+    "https://api.sportradar.us/mlb/trial/v6.5/en/seasons/%d/REG/rankings.json?api_key=" +
+    MLB_API_KEY;
+const MLB_ROSTER_URL =
+    "https://api.sportradar.us/mlb/trial/v6.5/en/teams/%s/depth_chart.json?api_key=" +
+    MLB_API_KEY;
+const MLB_JSON = require("./teams/mlb.json");
 
-module.exports = new Tp.ChannelClass({
-    Name: 'SportRadarMLBChannel',
-    Extends: Tp.HttpPollingTrigger,
-    interval: POLL_INTERVAL,
+module.exports = class MLBSportRadarAPIDevice {
+    constructor(platform) {
+        this.platform = platform;
+        this.name = "Sport Radar MLB Channel";
+        this.description = "The MLB Channel for Sport Radar";
+    }
 
-    _init: function(engine, device, params) {
-        this.parent();
-        this.engine = engine;
+    _updateUrl() {
+        const now = new Date();
+        this.schedule_url = MLB_SCHEDULE_URL.format(
+            now.getFullYear(),
+            now.getMonth() + 1,
+            now.getDate()
+        );
+        this.rankings_url = MLB_RANKINGS_URL.format(now.getFullYear());
+    }
 
-        this._params = params.slice(0, 1);
-        this._observedTeam = params[0];
-        if (!this._observedTeam)
-            throw new TypeError("Missing required parameter");
+    _createTpEntity(team) {
+        return new Tp.Value.Entity(team.abbr.toLowerCase(), team.name);
+    }
 
+    get_get_todays_games() {
         this._updateUrl();
-        this.filterString = this._params.join('-');
+        return Tp.Helpers.Http.get(this.schedule_url)
+            .then((response) => {
+                const parsed = JSON.parse(response);
+                const game_statuses = [];
+                const games = parsed.league.games;
 
-        this._gameId = null;
-        this._nextGameTimer = null;
-        this._lastStatus = null;
-    },
+                for (let i = 0; i < games.length; i++) {
+                    const game_status = {
+                        home_team: this._createTpEntity(games[i].game.home),
+                        home_score: games[i].game.home.runs,
+                        away_team: this._createTpEntity(games[i].game.away),
+                        away_score: games[i].game.away.runs,
+                        result: games[i].game.status,
+                    };
 
-    _doClose: function() {
-        clearTimeout(this._nextGameTimer);
-        this._nextGameTimer = null;
-        return this.parent();
-    },
+                    game_statuses.push(game_status);
+                }
 
-    _updateUrl: function() {
-        var now = new Date;
-        this.url = SCHEDULE_URL.format(now.getFullYear(), now.getMonth() + 1, now.getDate());
-    },
+                return game_statuses.map((game_status) => {
+                    return game_status;
+                });
+            })
+            .catch((e) => {
+                throw new TypeError("No MLB Games Found");
+            });
+    }
 
-    formatEvent(event) {
-        var watchedAlias = event[0];
-        var otherAlias = event[1];
-        var watchedIsHome = event[2];
-        var awayName = event[3];
-        var homeName = event[4];
-        var gameStatus = event[5];
-        var scheduledTime = event[6];
-        var inning = event[7];
-        var awayRuns = event[8];
-        var homeRuns = event[9];
-        var result = event[10];
+    get_get_team(team) {
+        this._updateUrl();
+        const team_name = team.team.value;
+        const full_name = team.team.display;
 
-        var platform = this.engine.platform;
-        switch(gameStatus) {
-        case 'scheduled':
-            return "Next game %s @ %s at %s".format(awayName, homeName, scheduledTime.toLocaleString(platform.locale, { timeZone: platform.timezone }));
-        case 'inprogress':
-            return "Game update for %s @ %s: %d - %d".format(awayName, homeName, awayRuns, homeRuns);
-        case 'closed':
-            return "Final score for %s @ %s: %d - %d".format(awayName, homeName, awayRuns, homeRuns);
+        return Tp.Helpers.Http.get(this.schedule_url)
+            .then((response) => {
+                const parsed = JSON.parse(response);
+                const games = parsed.league.games;
+                let gameStatus;
+                let index = 0;
+                const platform = this.platform;
+                let status_message;
+
+                for (let i = 0; i < games.length; i++) {
+                    if (
+                        games[i].game.home.abbr.toLowerCase() === team_name ||
+                        games[i].game.away.abbr.toLowerCase() === team_name
+                    ) {
+                        index = i;
+                        gameStatus = games[i].game.status;
+
+                        break;
+                    }
+                }
+
+                const scheduledTime = games[index].game.scheduled;
+                const awayTeam = games[index].game.away.name;
+                const homeTeam = games[index].game.home.name;
+                const awayPoints = games[index].game.away.runs;
+                const homePoints = games[index].game.home.runs;
+
+                const dateTime = new Date(scheduledTime);
+
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        this.get_rankings(team_name).then((response) => {
+                            const team_rankings = response;
+
+                            switch (gameStatus) {
+                                case undefined:
+                                    status_message = "There is no %s game today. I can notify you when there is a game if you want?".format(
+                                        full_name
+                                    );
+                                    resolve([
+                                        {
+                                            result: status_message,
+                                            divisionPos: team_rankings.division,
+                                            divisionName:
+                                                team_rankings.divisionName,
+                                            leaguePos: team_rankings.league,
+                                            leagueName:
+                                                team_rankings.leagueName,
+                                        },
+                                    ]);
+
+                                    return;
+
+                                case "scheduled":
+                                    status_message = "Next game %s @ %s at %s".format(
+                                        awayTeam,
+                                        homeTeam,
+                                        dateTime.toLocaleString(
+                                            platform.locale,
+                                            {
+                                                timeZone: platform.timezone,
+                                            }
+                                        )
+                                    );
+                                    resolve([
+                                        {
+                                            result: status_message,
+                                            divisionPos: team_rankings.division,
+                                            divisionName:
+                                                team_rankings.divisionName,
+                                            leaguePos: team_rankings.league,
+                                            leagueName:
+                                                team_rankings.leagueName,
+                                        },
+                                    ]);
+
+                                    return;
+
+                                case "inprogress":
+                                    status_message = "Game update for %s @ %s: %d - %d".format(
+                                        awayTeam,
+                                        homeTeam,
+                                        awayPoints,
+                                        homePoints
+                                    );
+
+                                    resolve([
+                                        {
+                                            result: status_message,
+                                            divisionPos: team_rankings.division,
+                                            divisionName:
+                                                team_rankings.divisionName,
+                                            leaguePos: team_rankings.league,
+                                            leagueName:
+                                                team_rankings.leagueName,
+                                        },
+                                    ]);
+
+                                    return;
+
+                                case "closed":
+                                    status_message = "Final score for %s @ %s: %d - %d".format(
+                                        awayTeam,
+                                        homeTeam,
+                                        awayPoints,
+                                        homePoints
+                                    );
+                                    resolve([
+                                        {
+                                            result: status_message,
+                                            divisionPos: team_rankings.division,
+                                            divisionName:
+                                                team_rankings.divisionName,
+                                            leaguePos: team_rankings.league,
+                                            leagueName:
+                                                team_rankings.leagueName,
+                                        },
+                                    ]);
+
+                                    return;
+                            }
+
+                            const status = this.statusConditions(gameStatus);
+                            status[0].divisionPos = team_rankings.division;
+                            status[0].divisionName = team_rankings.divisionName;
+                            status[0].leaguePos = team_rankings.league;
+                            status[0].leagueName = team_rankings.leagueName;
+
+                            resolve(status);
+                        });
+                    }, 1000);
+                });
+            })
+            .catch((e) => {
+                throw new TypeError("No MLB Games Found");
+            });
+    }
+
+    get_rankings(input_team) {
+        this._updateUrl();
+
+        return Tp.Helpers.Http.get(this.rankings_url)
+            .then((response) => {
+                const parsed = JSON.parse(response);
+                const leagues = parsed.league.season.leagues;
+                for (const league of leagues) {
+                    const divisions = league.divisions;
+                    for (const division of divisions) {
+                        const teams = division.teams;
+
+                        for (const team of teams) {
+                            const team_name = team.abbr.toLowerCase();
+
+                            if (team_name === input_team) {
+                                const rankingObj = team.rank;
+                                rankingObj.divisionName = division.name;
+                                rankingObj.leagueName = league.name;
+
+                                return rankingObj;
+                            }
+                        }
+                    }
+                }
+                throw new TypeError("Invalid Team Input");
+            })
+            .catch((e) => {
+                throw new TypeError("Invalid Team Input");
+            });
+    }
+
+    get_get_boxscore(team) {
+        this._updateUrl();
+        const team_name = team.team.value;
+        const full_name = team.team.display;
+
+        return Tp.Helpers.Http.get(this.schedule_url)
+            .then((response) => {
+                const parsed = JSON.parse(response);
+                const games = parsed.league.games;
+                let index = 0;
+                let gameStatus;
+                let gameId;
+                const platform = this.platform;
+
+                for (let i = 0; i < games.length; i++) {
+                    if (
+                        games[i].game.home.abbr.toLowerCase() === team_name ||
+                        games[i].game.away.abbr.toLowerCase() === team_name
+                    ) {
+                        index = i;
+                        gameStatus = games[i].game.status;
+                        gameId = games[i].game.id;
+                    }
+                }
+
+                const homeTeam = games[index].game.home;
+                const awayTeam = games[index].game.away;
+                const homeScore = games[index].game.home.runs;
+                const awayScore = games[index].game.away.runs;
+                const scheduledTime = games[index].game.scheduled;
+                const dateTime = new Date(scheduledTime);
+
+                switch (gameStatus) {
+                    case undefined:
+                        return [
+                            {
+                                status_message: "There is no %s game today. I can notify you when there is a game if you want?".format(
+                                    full_name
+                                ),
+                            },
+                        ];
+                    case "scheduled":
+                        return [
+                            {
+                                status_message: "Next game %s @ %s at %s".format(
+                                    awayTeam,
+                                    homeTeam.name,
+                                    dateTime.toLocaleString(platform.locale, {
+                                        timeZone: platform.timezone,
+                                    })
+                                ),
+                            },
+                        ];
+                    case "closed":
+                    case "inprogress":
+                        return new Promise((resolve, reject) => {
+                            setTimeout(() => {
+                                const url = MLB_BOXSCORE_URL.format(gameId);
+                                return Tp.Helpers.Http.get(url).then(
+                                    (response) => {
+                                        const parsed = JSON.parse(response);
+                                        const homeInnings = [];
+                                        const awayInnings = [];
+                                        let homePitcher = "";
+                                        let awayPitcher = "";
+
+                                        for (let i = 0; i < 9; i++) {
+                                            try {
+                                                homeInnings.push(
+                                                    parsed.game.home.scoring[i]
+                                                        .runs
+                                                );
+                                                awayInnings.push(
+                                                    parsed.game.away.scoring[i]
+                                                        .runs
+                                                );
+                                            } catch (error) {
+                                                homeInnings.push(0);
+                                                awayInnings.push(0);
+                                            }
+                                        }
+
+                                        homePitcher =
+                                            parsed.game.home.starting_pitcher
+                                                .preferred_name +
+                                            " " +
+                                            parsed.game.home.starting_pitcher
+                                                .last_name;
+                                        awayPitcher =
+                                            parsed.game.away.starting_pitcher
+                                                .preferred_name +
+                                            " " +
+                                            parsed.game.away.starting_pitcher
+                                                .last_name;
+
+                                        const box_score = [
+                                            {
+                                                home_team: this._createTpEntity(
+                                                    homeTeam
+                                                ),
+                                                home_score: homeScore,
+                                                home_inning1: homeInnings[0],
+                                                home_inning2: homeInnings[1],
+                                                home_inning3: homeInnings[2],
+                                                home_inning4: homeInnings[3],
+                                                home_inning5: homeInnings[4],
+                                                home_inning6: homeInnings[5],
+                                                home_inning7: homeInnings[6],
+                                                home_inning8: homeInnings[7],
+                                                home_inning9: homeInnings[8],
+                                                home_starting_pitcher: homePitcher,
+                                                away_team: this._createTpEntity(
+                                                    awayTeam
+                                                ),
+                                                away_score: awayScore,
+                                                away_inning1: awayInnings[0],
+                                                away_inning2: awayInnings[1],
+                                                away_inning3: awayInnings[2],
+                                                away_inning4: awayInnings[3],
+                                                away_inning5: awayInnings[4],
+                                                away_inning6: awayInnings[5],
+                                                away_inning7: awayInnings[6],
+                                                away_inning8: awayInnings[7],
+                                                away_inning9: awayInnings[8],
+                                                away_starting_pitcher: awayPitcher,
+                                                status_message:
+                                                    "Game Status: " +
+                                                    gameStatus,
+                                            },
+                                        ];
+
+                                        resolve(box_score);
+                                    }
+                                );
+                            }, 1000);
+                        });
+                }
+                return this.statusConditions(gameStatus);
+            })
+            .catch((e) => {
+                throw new TypeError("No MLB Games Found");
+            });
+    }
+
+    get_get_roster(team) {
+        this._updateUrl();
+        const team_name = team.team.value;
+        const mlb_info = MLB_JSON;
+        const leagues = mlb_info.leagues;
+        for (const league of leagues) {
+            const divisions = league.divisions;
+            for (const division of divisions) {
+                const teams = division.teams;
+                for (const team of teams) {
+                    const name = team.abbr.toLowerCase();
+                    if (name === team_name) {
+                        return Tp.Helpers.Http.get(
+                            MLB_ROSTER_URL.format(team.id)
+                        ).then((response) => {
+                            const parsed = JSON.parse(response);
+                            const team_members = [];
+
+                            const positions = parsed.team.positions;
+
+                            for (const position of positions) {
+                                const position_name = position.name;
+                                if (
+                                    position_name !== "BP" &&
+                                    position_name !== "SP"
+                                ) {
+                                    const players = position.players;
+                                    for (const player of players) {
+                                        if (player.depth === 1) {
+                                            const player_name =
+                                                player.preferred_name +
+                                                " " +
+                                                player.last_name;
+                                            {
+                                                team_members.push({
+                                                    player:
+                                                        position_name +
+                                                        ": " +
+                                                        player_name,
+                                                });
+                                            }
+                                        }
+                                    }
+                                } else if (position_name === "SP") {
+                                    const players = position.players;
+                                    for (let i = 0; i < players.length; i++) {
+                                        const player_name =
+                                            players[i].preferred_name +
+                                            " " +
+                                            players[i].last_name;
+
+                                        team_members.push({
+                                            player:
+                                                `SP${i + 1}: ` + player_name,
+                                        });
+                                    }
+                                }
+                            }
+
+                            const sortedRoster = team_members.sort((a, b) => {
+                                return a.player.localeCompare(b.player);
+                            });
+                            return sortedRoster;
+                        });
+                    }
+                }
+            }
+        }
+        throw new TypeError("Invalid Team Input");
+    }
+
+    statusConditions(gameStatus) {
+        let status_message;
+        switch (gameStatus) {
+            case "complete":
+                status_message =
+                    "The game is complete and statistics are being reviewed";
+                return [
+                    {
+                        result: status_message,
+                    },
+                ];
+            case "wdelay":
+                status_message = "The game has been delayed because of weather";
+                return [
+                    {
+                        result: status_message,
+                    },
+                ];
+            case "fdelay":
+                status_message =
+                    "The game has been delayed because of facility issues";
+                return [
+                    {
+                        result: status_message,
+                    },
+                ];
+            case "odelay":
+                status_message = "The game has been delayed";
+                return [
+                    {
+                        result: status_message,
+                    },
+                ];
+            case "canceled":
+                status_message = "The game has been canceled";
+                return [
+                    {
+                        result: status_message,
+                    },
+                ];
+
+            case "unnecessary":
+                status_message =
+                    "The game was scheduled to occur, but is now deemed unnecessary";
+                return [
+                    {
+                        result: status_message,
+                    },
+                ];
+
+            case "if_necessary":
+                status_message = "The game will be scheduled if necessary";
+                return [
+                    {
+                        result: status_message,
+                    },
+                ];
+
+            case "postponed":
+                status_message = "The game has been postponed";
+                return [
+                    {
+                        result: status_message,
+                    },
+                ];
+
+            case "suspended":
+                status_message = "The game has been suspended";
+                return [
+                    {
+                        result: status_message,
+                    },
+                ];
+
+            case "maintenance":
+                status_message = "The game failed review and is being repaired";
+                return [
+                    {
+                        result: status_message,
+                    },
+                ];
         }
         return [];
-    },
-
-    _emit: function(status, inning, awayRuns, homeRuns) {
-        var currentEvent = [ this._awayAlias, this.homeAlias, false,
-                             this._awayName, this._homeName, status,
-                             this._scheduledTime, inning, awayRuns, homeRuns,
-                             'unclosed'];
-
-        if (this._observedTeam === this._homeAlias) {
-            currentEvent[0] = this._homeAlias;
-            currentEvent[1] = this._awayAlias;
-            currentEvent[2] = true;
-        }
-        if (status === 'closed') {
-            if (awayRuns === homeRuns) 
-                currentEvent[10] = 'draw';
-            if (this._observedTeam === this._homeAlias && homeRuns > awayRuns)
-                currentEvent[10] = 'win';
-            else if (this._observedTeam === this._awayAlias && homeRuns < awayRuns)
-                currentEvent[10] = 'win';
-            else
-                currentEvent[10] = 'lose';
-        }
-
-        this.emitEvent(currentEvent);
-    },
-
-    _onNextGameEvent: function() {
-        Tp.Helpers.Http.get(BOXSCORE_URL.format(this._gameId)).then((response) => {
-            return Tp.Helpers.Xml.parseString(response);
-        }).then((parsed) => {
-            var inning = null;
-            if (parsed.game.$.status === 'closed' || parsed.game.$.status === 'complete') {
-                inning = String(parsed.game.final[0].$.inning_half) + String(parsed.game.final[0].$.inning);
-                this._nextGameTimer = null;
-                this._gameId = null;
-            } else {
-                inning = String(parsed.game.outcome[0].$.current_inning_half) + String(parsed.game.outcome[0].$.current_inning);
-                this._nextGameTimer = setTimeout(this._onNextGameEvent.bind(this), 5*60000); // poll in 5 minutes
-            }
-
-            // remember current status - only report each time the inning changes
-            if (inning === this._inning) 
-                return;
-             else 
-                this._inning = inning;
-            
-
-            var awayRuns = Number(parsed.game.away[0].$.runs);
-            var homeRuns = Number(parsed.game.home[0].$.runs);
-
-            this._emit(parsed.game.$.status, inning, awayRuns, homeRuns);
-        }).catch((e) => {
-            console.error('Failed to process MLB game updates: ' + e.message);
-            console.error(e.stack);
-        }).done();
-    },
-
-    _onTick: function() {
-        this._updateUrl();
-        return this.parent();
-    },
-
-    _onResponse: function(response) {
-        if(!response) 
-            return;
-        
-
-        Tp.Helpers.Xml.parseString(response).then((parsed) => {
-            var games = parsed.league['daily-schedule'][0].games[0].game;
-            var game = null;
-            for (var i = 0; i < games.length; i++) {
-                if (games[i].$.status === 'closed') 
-                    continue;
-                
-
-                if (games[i].home[0].$.abbr === this._observedTeam ||
-                    games[i].away[0].$.abbr === this._observedTeam ) {
-                    game = games[i];
-                    break;
-                }
-            }
-            if (game === null) {
-                console.log('No scheduled games found for ' + this._observedTeam);
-                clearTimeout(this._nextGameTimer);
-                this._nextGameTimer = null;
-                this._gameId = null;
-                return;
-            }
-
-            if (this._gameId === game.$.id) {
-                // we've already seen this game
-                return;
-            }
-
-            console.log('Found game ' + game.$.id + ': ' + game.home[0].$.abbr + ' vs. ' + game.away[0].$.abbr);
-            this._gameId = game.$.id;
-            this._awayAlias = game.away[0].abbr;
-            this._awayName = game.away[0].market + ' ' + game.away[0].name;
-            this._homeAlias = game.home[0].abbr;
-            this._homeName = game.home[0].market + ' ' + game.home[0].name;
-
-            var timeout;
-            if (game.$.status === 'scheduled') {
-                var scheduled = new Date(game.$.scheduled);
-                this._scheduledTime = scheduled;
-                var now = new Date();
-                timeout = scheduled.getTime - now.getTime() + 5000;
-                if (timeout >= 5000) 
-                    this._emit('scheduled', 'Pre', 0, 0);
-                 else 
-                    timeout = 5000;
-                
-
-                if (timeout > POLL_INTERVAL) {
-                    clearTimeout(this._nextGameTimer);
-                    return;
-                }
-            } else {
-                this._scheduleTime = new Date();
-                timeout = 5000;
-            }
-
-            clearTimeout(this._nextGameTimer);
-            this._nextGameTimer = setTimeout(this._onNextGameEvent.bind(this), timeout);
-        }).catch((error) => {
-            console.error('Failed to process MLB game schedule: ' + error.message);
-            console.error(error.stack);
-        });
-    },
-});
+    }
+};

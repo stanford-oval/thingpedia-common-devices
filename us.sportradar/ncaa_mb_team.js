@@ -2,36 +2,36 @@
 
 const Tp = require("thingpedia");
 
-const NBA_API_KEY = "uuha5uz669b2yrnwqccraywh";
-const NBA_SCHEDULE_URL =
-    "https://api.sportradar.us/nba/trial/v5/en/games/%d/%d/%d/schedule.json?api_key=" +
-    NBA_API_KEY;
-const NBA_BOXSCORE_URL =
-    "https://api.sportradar.us/nba/trial/v5/en/games/%s/boxscore.json?api_key=" +
-    NBA_API_KEY;
-const NBA_RANKINGS_URL =
-    "https://api.sportradar.us/nba/trial/v5/en/seasons/%s/REG/rankings.json?api_key=" +
-    NBA_API_KEY;
-const NBA_ROSTER_URL =
-    "https://api.sportradar.us/nba/trial/v5/en/teams/%s/profile.json?api_key=" +
-    NBA_API_KEY;
-const NBA_JSON = require("./teams/nba.json");
+const NCAA_MB_API_KEY = "7584setd3gx4uecy952exvxg";
+const NCAA_MB_SCHEDULE_URL =
+    "https://api.sportradar.us/ncaamb/trial/v4/en/games/%s/%s/%s/schedule.json?api_key=" +
+    NCAA_MB_API_KEY;
+const NCAA_MB_BOXSCORE_URL =
+    "https://api.sportradar.us/ncaamb/trial/v4/en/games/%s/boxscore.json?api_key=" +
+    NCAA_MB_API_KEY;
+const NCAA_MB_RANKINGS_URL =
+    "https://api.sportradar.us/ncaamb/trial/v4/en/seasons/%s/REG/standings.json?api_key=" +
+    NCAA_MB_API_KEY;
+const NCAA_MB_ROSTER_URL =
+    "https://api.sportradar.us/ncaamb/trial/v4/en/teams/%s/profile.json?api_key=" +
+    NCAA_MB_API_KEY;
+const NCAA_MB_JSON = require("./teams/ncaamb.json");
 
-module.exports = class NBASportRadarAPIDevice {
+module.exports = class NcaaMensBasketballSportRadarAPIDevice {
     constructor(platform) {
         this.platform = platform;
-        this.name = "Sport Radar NBA Channel";
-        this.description = "The NBA Channel for Sport Radar";
+        this.name = "Sport Radar NCAA Men's Basketball Channel";
+        this.description = "The NCAA Men's Basketball Channel for Sport Radar";
     }
 
     _updateUrl() {
         const now = new Date();
-        this.schedule_url = NBA_SCHEDULE_URL.format(
+        this.schedule_url = NCAA_MB_SCHEDULE_URL.format(
             now.getFullYear(),
             now.getMonth() + 1,
             now.getDate()
         );
-        this.rankings_url = NBA_RANKINGS_URL.format(now.getFullYear());
+        this.rankings_url = NCAA_MB_RANKINGS_URL.format(now.getFullYear());
     }
 
     _createTpEntity(team) {
@@ -62,7 +62,7 @@ module.exports = class NBASportRadarAPIDevice {
                 });
             })
             .catch((e) => {
-                throw new TypeError("No NBA Games Found");
+                throw new TypeError("No NCAA Men's Basketball Games Found");
             });
     }
 
@@ -88,8 +88,8 @@ module.exports = class NBASportRadarAPIDevice {
                 }
 
                 const scheduledTime = games[index].scheduled;
-                const awayTeam = games[index].away.name;
-                const homeTeam = games[index].home.name;
+                const awayTeam = games[index].away.alias;
+                const homeTeam = games[index].home.alias;
                 const awayPoints = games[index].away_points;
                 const homePoints = games[index].home_points;
                 const dateTime = new Date(scheduledTime);
@@ -107,13 +107,12 @@ module.exports = class NBASportRadarAPIDevice {
                                     resolve([
                                         {
                                             result: status_message,
-                                            divisionPos: team_rankings.division,
-                                            divisionName:
-                                                team_rankings.divisionName,
+                                            wins: team_rankings.wins,
+                                            losses: team_rankings.losses,
                                             conferencePos:
-                                                team_rankings.conference,
+                                                team_rankings.games_behind,
                                             conferenceName:
-                                                team_rankings.conferenceName,
+                                                team_rankings.conference,
                                         },
                                     ]);
 
@@ -133,13 +132,12 @@ module.exports = class NBASportRadarAPIDevice {
                                     resolve([
                                         {
                                             result: status_message,
-                                            divisionPos: team_rankings.division,
-                                            divisionName:
-                                                team_rankings.divisionName,
+                                            wins: team_rankings.wins,
+                                            losses: team_rankings.losses,
                                             conferencePos:
-                                                team_rankings.conference,
+                                                team_rankings.games_behind,
                                             conferenceName:
-                                                team_rankings.conferenceName,
+                                                team_rankings.conference,
                                         },
                                     ]);
 
@@ -154,13 +152,12 @@ module.exports = class NBASportRadarAPIDevice {
                                     resolve([
                                         {
                                             result: status_message,
-                                            divisionPos: team_rankings.division,
-                                            divisionName:
-                                                team_rankings.divisionName,
+                                            wins: team_rankings.wins,
+                                            losses: team_rankings.losses,
                                             conferencePos:
-                                                team_rankings.conference,
+                                                team_rankings.games_behind,
                                             conferenceName:
-                                                team_rankings.conferenceName,
+                                                team_rankings.conference,
                                         },
                                     ]);
 
@@ -175,13 +172,12 @@ module.exports = class NBASportRadarAPIDevice {
                                     resolve([
                                         {
                                             result: status_message,
-                                            divisionPos: team_rankings.division,
-                                            divisionName:
-                                                team_rankings.divisionName,
+                                            wins: team_rankings.wins,
+                                            losses: team_rankings.losses,
                                             conferencePos:
-                                                team_rankings.conference,
+                                                team_rankings.games_behind,
                                             conferenceName:
-                                                team_rankings.conferenceName,
+                                                team_rankings.conference,
                                         },
                                     ]);
 
@@ -192,13 +188,12 @@ module.exports = class NBASportRadarAPIDevice {
                                     resolve([
                                         {
                                             result: status_message,
-                                            divisionPos: team_rankings.division,
-                                            divisionName:
-                                                team_rankings.divisionName,
+                                            wins: team_rankings.wins,
+                                            losses: team_rankings.losses,
                                             conferencePos:
-                                                team_rankings.conference,
+                                                team_rankings.games_behind,
                                             conferenceName:
-                                                team_rankings.conferenceName,
+                                                team_rankings.conference,
                                         },
                                     ]);
 
@@ -213,13 +208,12 @@ module.exports = class NBASportRadarAPIDevice {
                                     resolve([
                                         {
                                             result: status_message,
-                                            divisionPos: team_rankings.division,
-                                            divisionName:
-                                                team_rankings.divisionName,
+                                            wins: team_rankings.wins,
+                                            losses: team_rankings.losses,
                                             conferencePos:
-                                                team_rankings.conference,
+                                                team_rankings.games_behind,
                                             conferenceName:
-                                                team_rankings.conferenceName,
+                                                team_rankings.conference,
                                         },
                                     ]);
 
@@ -227,11 +221,11 @@ module.exports = class NBASportRadarAPIDevice {
                             }
 
                             const status = this.statusConditions(gameStatus);
-                            status[0].divisionPos = team_rankings.division;
-                            status[0].divisionName = team_rankings.divisionName;
-                            status[0].conferencePos = team_rankings.conference;
-                            status[0].conferenceName =
-                                team_rankings.conferenceName;
+                            status[0].wins = team_rankings.wins;
+                            status[0].losses = team_rankings.losses;
+                            status[0].conferencePos =
+                                team_rankings.games_behind;
+                            status[0].conferenceName = team_rankings.conference;
 
                             resolve(status);
                         });
@@ -239,7 +233,7 @@ module.exports = class NBASportRadarAPIDevice {
                 });
             })
             .catch((e) => {
-                throw new TypeError("No NBA Games Found");
+                throw new TypeError("No NCAA Men's Basketball Games Found");
             });
     }
 
@@ -251,20 +245,16 @@ module.exports = class NBASportRadarAPIDevice {
                 const parsed = JSON.parse(response);
                 const conferences = parsed.conferences;
                 for (const conference of conferences) {
-                    const divisions = conference.divisions;
-                    for (const division of divisions) {
-                        const teams = division.teams;
-                        for (const team of teams) {
-                            const team_name = `${team.market} ${team.name}`;
-
-                            if (team_name === input_team) {
-                                const rankingObj = team.rank;
-
-                                rankingObj.divisionName = division.name;
-                                rankingObj.conferenceName = conference.name;
-
-                                return rankingObj;
-                            }
+                    const teams = conference.teams;
+                    for (const team of teams) {
+                        const team_name = `${team.market} ${team.name}`;
+                        if (team_name === input_team) {
+                            return {
+                                conference: conference.name,
+                                wins: team.wins,
+                                losses: team.losses,
+                                games_behind: team.games_behind.conference,
+                            };
                         }
                     }
                 }
@@ -331,25 +321,25 @@ module.exports = class NBASportRadarAPIDevice {
                     case "halftime":
                     case "inprogress":
                         return new Promise((resolve, reject) => {
-                            const url = NBA_BOXSCORE_URL.format(gameId);
+                            const url = NCAA_MB_BOXSCORE_URL.format(gameId);
                             setTimeout(() => {
                                 Tp.Helpers.Http.get(url).then((response) => {
                                     const parsed = JSON.parse(response);
-                                    const homeQuarters = [];
-                                    const awayQuarters = [];
+                                    const homeHalves = [];
+                                    const awayHalves = [];
                                     let homeLeader = "";
                                     let awayLeader = "";
                                     for (let i = 0; i < 4; i++) {
                                         try {
-                                            homeQuarters.push(
+                                            homeHalves.push(
                                                 parsed.home.scoring[i].points
                                             );
-                                            awayQuarters.push(
+                                            awayHalves.push(
                                                 parsed.away.scoring[i].points
                                             );
                                         } catch (error) {
-                                            homeQuarters.push(0);
-                                            awayQuarters.push(0);
+                                            homeHalves.push(0);
+                                            awayHalves.push(0);
                                         }
                                     }
                                     try {
@@ -369,19 +359,15 @@ module.exports = class NBASportRadarAPIDevice {
                                                 homeTeam
                                             ),
                                             home_score: homeScore,
-                                            home_quarter1: homeQuarters[0],
-                                            home_quarter2: homeQuarters[1],
-                                            home_quarter3: homeQuarters[2],
-                                            home_quarter4: homeQuarters[3],
+                                            home_half1: homeHalves[0],
+                                            home_half2: homeHalves[1],
                                             home_leading_scorer: homeLeader,
                                             away_team: this._createTpEntity(
                                                 awayTeam
                                             ),
                                             away_score: awayScore,
-                                            away_quarter1: awayQuarters[0],
-                                            away_quarter2: awayQuarters[1],
-                                            away_quarter3: awayQuarters[2],
-                                            away_quarter4: awayQuarters[3],
+                                            away_half1: awayHalves[0],
+                                            away_half2: awayHalves[1],
                                             away_leading_scorer: awayLeader,
                                             status_message:
                                                 "Game Status: " + gameStatus,
@@ -396,53 +382,65 @@ module.exports = class NBASportRadarAPIDevice {
                 return this.statusConditions(gameStatus);
             })
             .catch((e) => {
-                throw new TypeError("No NBA Games Found");
+                throw new TypeError("No NCAA Men's Basketball Games Found");
             });
     }
 
     get_get_roster(team) {
         this._updateUrl();
         const team_name = team.team.value;
-        const nba_info = NBA_JSON;
-        const conferences = nba_info.conferences;
-        for (const conference of conferences) {
-            const divisions = conference.divisions;
-            for (const division of divisions) {
-                const teams = division.teams;
-                for (const team of teams) {
-                    const name = team.alias.toLowerCase();
-                    if (name === team_name) {
-                        return Tp.Helpers.Http.get(
-                            NBA_ROSTER_URL.format(team.id)
-                        ).then((response) => {
-                            const parsed = JSON.parse(response);
-                            const team_members = [];
+        const nba_info = NCAA_MB_JSON;
+        const divisions = nba_info.divisions;
+        for (const division of divisions) {
+            if (division.alias === "D1") {
+                const conferences = division.conferences;
 
-                            const players = parsed.players;
-                            const coaches = parsed.coaches;
+                for (const conference of conferences) {
+                    const teams = conference.teams;
+                    if (teams.length > 0) {
+                        for (const team of teams) {
+                            const name = team.alias.toLowerCase();
+                            if (name === team_name) {
+                                console.log(team.id);
+                                return Tp.Helpers.Http.get(
+                                    NCAA_MB_ROSTER_URL.format(team.id)
+                                ).then((response) => {
+                                    const parsed = JSON.parse(response);
+                                    const team_members = [];
 
-                            for (const player of players) {
-                                team_members.push({
-                                    member:
-                                        player.primary_position +
-                                        ": " +
-                                        player.full_name,
+                                    const players = parsed.players;
+                                    const coaches = parsed.coaches;
+
+                                    for (const player of players) {
+                                        team_members.push({
+                                            member:
+                                                player.position +
+                                                ": " +
+                                                player.full_name,
+                                        });
+                                    }
+
+                                    const sortedRoster = team_members.sort(
+                                        (a, b) => {
+                                            return a.member.localeCompare(
+                                                b.member
+                                            );
+                                        }
+                                    );
+
+                                    for (const coach of coaches) {
+                                        if (coach.position === "Head Coach") {
+                                            const head_coach = coach.full_name;
+                                            sortedRoster.push({
+                                                member:
+                                                    "Head Coach: " + head_coach,
+                                            });
+                                        }
+                                    }
+                                    return sortedRoster;
                                 });
                             }
-
-                            const sortedRoster = team_members.sort((a, b) => {
-                                return a.member.localeCompare(b.member);
-                            });
-                            for (const coach of coaches) {
-                                if (coach.position === "Head Coach") {
-                                    const head_coach = coach.full_name;
-                                    sortedRoster.push({
-                                        member: "Head Coach: " + head_coach,
-                                    });
-                                }
-                            }
-                            return sortedRoster;
-                        });
+                        }
                     }
                 }
             }

@@ -2,54 +2,84 @@
 
 const Tp = require("thingpedia");
 
-const NBA_API_KEY = "uuha5uz669b2yrnwqccraywh";
-const NBA_SCHEDULE_URL =
-    "https://api.sportradar.us/nba/trial/v5/en/games/%d/%d/%d/schedule.json?api_key=" +
-    NBA_API_KEY;
-const NBA_BOXSCORE_URL =
-    "https://api.sportradar.us/nba/trial/v5/en/games/%s/boxscore.json?api_key=" +
-    NBA_API_KEY;
-const NBA_RANKINGS_URL =
-    "https://api.sportradar.us/nba/trial/v5/en/seasons/%s/REG/rankings.json?api_key=" +
-    NBA_API_KEY;
-const NBA_ROSTER_URL =
-    "https://api.sportradar.us/nba/trial/v5/en/teams/%s/profile.json?api_key=" +
-    NBA_API_KEY;
-const NBA_JSON = require("./teams/nba.json");
+const NCAA_FB_API_KEY = "2scv4ydgppgrc2kry66t8rhe";
+const NCAA_FB_SCHEDULE_URL =
+    "https://api.sportradar.us/ncaafb-t1/%d/REG/%d/schedule.json?api_key=" +
+    NCAA_FB_API_KEY;
+const NCAA_FB_BOXSCORE_URL =
+    "https://api.sportradar.us/ncaafb-t1/%d/REG/%d/%s/%s/boxscore.json?api_key=" +
+    NCAA_FB_API_KEY;
+const NCAA_FB_STANDINGS_URL =
+    "https://api.sportradar.us/ncaafb-t1/teams/FBS/%s/REG/standings.json?api_key=" +
+    NCAA_FB_API_KEY;
+const NCAA_FB_ROSTER_URL =
+    "https://api.sportradar.us//ncaafb-t1/teams/%s/roster.json?api_key=" +
+    NCAA_FB_API_KEY;
 
-module.exports = class NBASportRadarAPIDevice {
+module.exports = class NCAAFBSportRadarAPIDevice {
     constructor(platform) {
         this.platform = platform;
-        this.name = "Sport Radar NBA Channel";
-        this.description = "The NBA Channel for Sport Radar";
+        this.name = "Sport Radar NCAA Football Channel";
+        this.description = "The NCAA Football Channel for Sport Radar";
+
+        const seasonStart = new Date();
+        seasonStart.setFullYear(2019);
+        seasonStart.setMonth(7);
+        seasonStart.setDate(24);
+
+        this._seasonStart = seasonStart;
+        //week one is longer than the other weeks
+        this._weekOneLength = 13;
+    }
+
+    _get_week() {
+        const today = new Date();
+        let week = 0;
+        let isWeekOne = true;
+        while (today >= this._seasonStart) {
+            week += 1;
+            if (isWeekOne) {
+                today.setDate(today.getDate() - this._weekOneLength);
+                isWeekOne = false;
+            } else {
+                today.setDate(today.getDate() - 7);
+            }
+        }
+
+        return week;
     }
 
     _updateUrl() {
         const now = new Date();
-        this.schedule_url = NBA_SCHEDULE_URL.format(
+        const week = this._get_week();
+        console.log(week);
+
+        if (week === 0 || week > 16)
+            throw new TypeError("There are no NCAA Football games this week");
+
+        this.schedule_url = NCAA_FB_SCHEDULE_URL.format(
             now.getFullYear(),
-            now.getMonth() + 1,
-            now.getDate()
+            week
         );
-        this.rankings_url = NBA_RANKINGS_URL.format(now.getFullYear());
+
+        this.standings_url = NCAA_FB_STANDINGS_URL.format(now.getFullYear());
+        this._week = week;
     }
 
-    _createTpEntity(team) {
-        return new Tp.Value.Entity(team.alias.toLowerCase(), team.name);
-    }
-
-    get_get_todays_games() {
+    get_get_weekly_games() {
+        this._updateUrl();
         return Tp.Helpers.Http.get(this.schedule_url)
             .then((response) => {
                 const parsed = JSON.parse(response);
                 const game_statuses = [];
 
                 const games = parsed.games;
+                console.log(games);
                 for (let i = 0; i < games.length; i++) {
                     const game_status = {
-                        home_team: this._createTpEntity(games[i].home),
+                        home_team: games[i].home,
                         home_score: games[i].home_points,
-                        away_team: this._createTpEntity(games[i].away),
+                        away_team: games[i].away,
                         away_score: games[i].away_points,
                         result: games[i].status,
                     };
@@ -58,15 +88,23 @@ module.exports = class NBASportRadarAPIDevice {
                 }
 
                 return game_statuses.map((game_status) => {
-                    return game_status;
+                    return {
+                        home_team: game_status.home_team,
+                        home_score: game_status.home_score,
+                        away_team: game_status.away_team,
+                        away_score: game_status.away_score,
+                        status: game_status.result,
+                    };
                 });
             })
             .catch((e) => {
-                throw new TypeError("No NBA Games Found");
+                throw new TypeError("No NCAA Football Games This Week");
             });
     }
 
     get_get_team(team) {
+        this._updateUrl();
+
         return Tp.Helpers.Http.get(this.schedule_url)
             .then((response) => {
                 const parsed = JSON.parse(response);
@@ -79,48 +117,42 @@ module.exports = class NBASportRadarAPIDevice {
 
                 for (let i = 0; i < games.length; i++) {
                     if (
-                        games[i].home.alias.toLowerCase() === team_name ||
-                        games[i].away.alias.toLowerCase() === team_name
+                        games[i].home.toLowerCase() === team_name ||
+                        games[i].away.toLowerCase() === team_name
                     ) {
                         index = i;
                         gameStatus = games[i].status;
                     }
                 }
-
                 const scheduledTime = games[index].scheduled;
-                const awayTeam = games[index].away.name;
-                const homeTeam = games[index].home.name;
+                const awayTeam = games[index].away;
+                const homeTeam = games[index].home;
                 const awayPoints = games[index].away_points;
                 const homePoints = games[index].home_points;
                 const dateTime = new Date(scheduledTime);
                 let status_message;
-
                 return new Promise((resolve, reject) => {
                     setTimeout(() => {
-                        this.get_rankings(full_name).then((response) => {
+                        this.get_rankings(team_name).then((response) => {
                             const team_rankings = response;
                             switch (gameStatus) {
                                 case undefined:
                                     status_message = "There is no %s game today. I can notify you when there is a game if you want?".format(
-                                        full_name
+                                        full_name.toUpperCase()
                                     );
                                     resolve([
                                         {
                                             result: status_message,
-                                            divisionPos: team_rankings.division,
-                                            divisionName:
-                                                team_rankings.divisionName,
-                                            conferencePos:
-                                                team_rankings.conference,
+                                            wins: team_rankings.wins,
+                                            losses: team_rankings.losses,
                                             conferenceName:
-                                                team_rankings.conferenceName,
+                                                team_rankings.conference,
                                         },
                                     ]);
 
                                     return;
-
                                 case "scheduled":
-                                    status_message = "Next game %s @ %s at %s".format(
+                                    status_message = "Next game is %s @ %s at %s".format(
                                         awayTeam,
                                         homeTeam,
                                         dateTime.toLocaleString(
@@ -133,17 +165,15 @@ module.exports = class NBASportRadarAPIDevice {
                                     resolve([
                                         {
                                             result: status_message,
-                                            divisionPos: team_rankings.division,
-                                            divisionName:
-                                                team_rankings.divisionName,
-                                            conferencePos:
-                                                team_rankings.conference,
+                                            wins: team_rankings.wins,
+                                            losses: team_rankings.losses,
                                             conferenceName:
-                                                team_rankings.conferenceName,
+                                                team_rankings.conference,
                                         },
                                     ]);
 
                                     return;
+
                                 case "inprogress":
                                     status_message = "Game update for %s @ %s: %d - %d".format(
                                         awayTeam,
@@ -154,17 +184,15 @@ module.exports = class NBASportRadarAPIDevice {
                                     resolve([
                                         {
                                             result: status_message,
-                                            divisionPos: team_rankings.division,
-                                            divisionName:
-                                                team_rankings.divisionName,
-                                            conferencePos:
-                                                team_rankings.conference,
+                                            wins: team_rankings.wins,
+                                            losses: team_rankings.losses,
                                             conferenceName:
-                                                team_rankings.conferenceName,
+                                                team_rankings.conference,
                                         },
                                     ]);
 
                                     return;
+
                                 case "halftime":
                                     status_message = "Half-time for %s @ %s: %d - %d".format(
                                         awayTeam,
@@ -175,34 +203,15 @@ module.exports = class NBASportRadarAPIDevice {
                                     resolve([
                                         {
                                             result: status_message,
-                                            divisionPos: team_rankings.division,
-                                            divisionName:
-                                                team_rankings.divisionName,
-                                            conferencePos:
-                                                team_rankings.conference,
+                                            wins: team_rankings.wins,
+                                            losses: team_rankings.losses,
                                             conferenceName:
-                                                team_rankings.conferenceName,
+                                                team_rankings.conference,
                                         },
                                     ]);
 
                                     return;
-                                case "complete":
-                                    status_message =
-                                        "The game is complete and statistics are being reviewed";
-                                    resolve([
-                                        {
-                                            result: status_message,
-                                            divisionPos: team_rankings.division,
-                                            divisionName:
-                                                team_rankings.divisionName,
-                                            conferencePos:
-                                                team_rankings.conference,
-                                            conferenceName:
-                                                team_rankings.conferenceName,
-                                        },
-                                    ]);
 
-                                    return;
                                 case "closed":
                                     status_message = "Final score for %s @ %s: %d - %d".format(
                                         awayTeam,
@@ -213,13 +222,33 @@ module.exports = class NBASportRadarAPIDevice {
                                     resolve([
                                         {
                                             result: status_message,
-                                            divisionPos: team_rankings.division,
-                                            divisionName:
-                                                team_rankings.divisionName,
-                                            conferencePos:
-                                                team_rankings.conference,
+                                            wins: team_rankings.wins,
+                                            losses: team_rankings.losses,
                                             conferenceName:
-                                                team_rankings.conferenceName,
+                                                team_rankings.conference,
+                                        },
+                                    ]);
+
+                                    return;
+
+                                case "flex-schedule":
+                                    status_message = "The game scheduled has not been finalized yet. For now, the next game is %s @ %s at %s".format(
+                                        awayTeam,
+                                        homeTeam,
+                                        dateTime.toLocaleString(
+                                            platform.locale,
+                                            {
+                                                timeZone: platform.timezone,
+                                            }
+                                        )
+                                    );
+                                    resolve([
+                                        {
+                                            result: status_message,
+                                            wins: team_rankings.wins,
+                                            losses: team_rankings.losses,
+                                            conferenceName:
+                                                team_rankings.conference,
                                         },
                                     ]);
 
@@ -227,11 +256,9 @@ module.exports = class NBASportRadarAPIDevice {
                             }
 
                             const status = this.statusConditions(gameStatus);
-                            status[0].divisionPos = team_rankings.division;
-                            status[0].divisionName = team_rankings.divisionName;
-                            status[0].conferencePos = team_rankings.conference;
-                            status[0].conferenceName =
-                                team_rankings.conferenceName;
+                            status[0].wins = team_rankings.wins;
+                            status[0].losses = team_rankings.losses;
+                            status[0].conferenceName = team_rankings.conference;
 
                             resolve(status);
                         });
@@ -239,32 +266,27 @@ module.exports = class NBASportRadarAPIDevice {
                 });
             })
             .catch((e) => {
-                throw new TypeError("No NBA Games Found");
+                throw new TypeError("No NCAA Football Games This Week");
             });
     }
 
     get_rankings(input_team) {
         this._updateUrl();
 
-        return Tp.Helpers.Http.get(this.rankings_url)
+        return Tp.Helpers.Http.get(this.standings_url)
             .then((response) => {
                 const parsed = JSON.parse(response);
-                const conferences = parsed.conferences;
+                const conferences = parsed.division.conferences;
                 for (const conference of conferences) {
-                    const divisions = conference.divisions;
-                    for (const division of divisions) {
-                        const teams = division.teams;
-                        for (const team of teams) {
-                            const team_name = `${team.market} ${team.name}`;
-
-                            if (team_name === input_team) {
-                                const rankingObj = team.rank;
-
-                                rankingObj.divisionName = division.name;
-                                rankingObj.conferenceName = conference.name;
-
-                                return rankingObj;
-                            }
+                    const teams = conference.teams;
+                    for (const team of teams) {
+                        const team_id = team.id.toLowerCase();
+                        if (team_id === input_team) {
+                            return {
+                                conference: conference.name,
+                                wins: team.overall.wins,
+                                losses: team.overall.losses,
+                            };
                         }
                     }
                 }
@@ -276,26 +298,24 @@ module.exports = class NBASportRadarAPIDevice {
     }
 
     get_get_boxscore(team) {
+        this._updateUrl();
         return Tp.Helpers.Http.get(this.schedule_url)
             .then((response) => {
                 const parsed = JSON.parse(response);
                 const games = parsed.games;
                 const team_name = team.team.value;
                 const full_name = team.team.display;
-
                 let index = 0;
                 let gameStatus;
-                let gameId = "";
                 const platform = this.platform;
 
                 for (let i = 0; i < games.length; i++) {
                     if (
-                        games[i].home.alias.toLowerCase() === team_name ||
-                        games[i].away.alias.toLowerCase() === team_name
+                        games[i].home.toLowerCase() === team_name ||
+                        games[i].away.toLowerCase() === team_name
                     ) {
                         index = i;
                         gameStatus = games[i].status;
-                        gameId = games[i].id;
                     }
                 }
 
@@ -311,16 +331,16 @@ module.exports = class NBASportRadarAPIDevice {
                         return [
                             {
                                 status_message: "There is no %s game today. I can notify you when there is a game if you want?".format(
-                                    full_name
+                                    full_name.toUpperCase()
                                 ),
                             },
                         ];
                     case "scheduled":
                         return [
                             {
-                                status_message: "Next game %s @ %s at %s".format(
-                                    awayTeam.name,
-                                    homeTeam.name,
+                                status_message: "Next game is %s @ %s at %s".format(
+                                    awayTeam,
+                                    homeTeam,
                                     dateTime.toLocaleString(platform.locale, {
                                         timeZone: platform.timezone,
                                     })
@@ -331,58 +351,50 @@ module.exports = class NBASportRadarAPIDevice {
                     case "halftime":
                     case "inprogress":
                         return new Promise((resolve, reject) => {
-                            const url = NBA_BOXSCORE_URL.format(gameId);
+                            const now = new Date();
+                            const url = NCAA_FB_BOXSCORE_URL.format(
+                                now.getFullYear(),
+                                this._week,
+                                awayTeam,
+                                homeTeam
+                            );
+                            console.log(url);
                             setTimeout(() => {
                                 Tp.Helpers.Http.get(url).then((response) => {
                                     const parsed = JSON.parse(response);
                                     const homeQuarters = [];
                                     const awayQuarters = [];
-                                    let homeLeader = "";
-                                    let awayLeader = "";
+
                                     for (let i = 0; i < 4; i++) {
                                         try {
                                             homeQuarters.push(
-                                                parsed.home.scoring[i].points
+                                                parsed.home_team.scoring[i]
+                                                    .points
                                             );
                                             awayQuarters.push(
-                                                parsed.away.scoring[i].points
+                                                parsed.away_team.scoring[i]
+                                                    .points
                                             );
                                         } catch (error) {
                                             homeQuarters.push(0);
                                             awayQuarters.push(0);
                                         }
                                     }
-                                    try {
-                                        homeLeader =
-                                            parsed.home.leaders.points[0]
-                                                .full_name;
-                                        awayLeader =
-                                            parsed.away.leaders.points[0]
-                                                .full_name;
-                                    } catch (error) {
-                                        console.log(error);
-                                    }
 
                                     const box_score = [
                                         {
-                                            home_team: this._createTpEntity(
-                                                homeTeam
-                                            ),
+                                            home_team: homeTeam,
                                             home_score: homeScore,
                                             home_quarter1: homeQuarters[0],
                                             home_quarter2: homeQuarters[1],
                                             home_quarter3: homeQuarters[2],
                                             home_quarter4: homeQuarters[3],
-                                            home_leading_scorer: homeLeader,
-                                            away_team: this._createTpEntity(
-                                                awayTeam
-                                            ),
+                                            away_team: awayTeam,
                                             away_score: awayScore,
                                             away_quarter1: awayQuarters[0],
                                             away_quarter2: awayQuarters[1],
                                             away_quarter3: awayQuarters[2],
                                             away_quarter4: awayQuarters[3],
-                                            away_leading_scorer: awayLeader,
                                             status_message:
                                                 "Game Status: " + gameStatus,
                                         },
@@ -396,58 +408,47 @@ module.exports = class NBASportRadarAPIDevice {
                 return this.statusConditions(gameStatus);
             })
             .catch((e) => {
-                throw new TypeError("No NBA Games Found");
+                throw new TypeError("No NCAA Football Games This Week");
             });
     }
 
     get_get_roster(team) {
         this._updateUrl();
         const team_name = team.team.value;
-        const nba_info = NBA_JSON;
-        const conferences = nba_info.conferences;
-        for (const conference of conferences) {
-            const divisions = conference.divisions;
-            for (const division of divisions) {
-                const teams = division.teams;
-                for (const team of teams) {
-                    const name = team.alias.toLowerCase();
-                    if (name === team_name) {
-                        return Tp.Helpers.Http.get(
-                            NBA_ROSTER_URL.format(team.id)
-                        ).then((response) => {
-                            const parsed = JSON.parse(response);
-                            const team_members = [];
 
-                            const players = parsed.players;
-                            const coaches = parsed.coaches;
+        return Tp.Helpers.Http.get(NCAA_FB_ROSTER_URL.format(team_name))
+            .then((response) => {
+                const parsed = JSON.parse(response);
+                const team_members = [];
 
-                            for (const player of players) {
-                                team_members.push({
-                                    member:
-                                        player.primary_position +
-                                        ": " +
-                                        player.full_name,
-                                });
-                            }
+                const players = parsed.players;
+                const coaches = parsed.coaches;
 
-                            const sortedRoster = team_members.sort((a, b) => {
-                                return a.member.localeCompare(b.member);
-                            });
-                            for (const coach of coaches) {
-                                if (coach.position === "Head Coach") {
-                                    const head_coach = coach.full_name;
-                                    sortedRoster.push({
-                                        member: "Head Coach: " + head_coach,
-                                    });
-                                }
-                            }
-                            return sortedRoster;
+                for (const player of players) {
+                    {
+                        team_members.push({
+                            member: player.position + ": " + player.name_full,
                         });
                     }
                 }
-            }
-        }
-        throw new TypeError("Invalid Team Input");
+
+                const sortedRoster = team_members.sort((a, b) => {
+                    return a.member.localeCompare(b.member);
+                });
+
+                for (const coach of coaches) {
+                    if (coach.position === "Head Coach") {
+                        const head_coach = coach.name_full;
+                        sortedRoster.push({
+                            member: "Head Coach: " + head_coach,
+                        });
+                    }
+                }
+                return sortedRoster;
+            })
+            .catch((e) => {
+                throw new TypeError("Invalid Team Input");
+            });
     }
 
     statusConditions(gameStatus) {
@@ -478,14 +479,6 @@ module.exports = class NBASportRadarAPIDevice {
                     },
                 ];
 
-            case "if_necessary":
-                status_message = "The game will be scheduled if necessary";
-                return [
-                    {
-                        result: status_message,
-                    },
-                ];
-
             case "postponed":
                 status_message = "The game has been postponed";
                 return [
@@ -497,15 +490,6 @@ module.exports = class NBASportRadarAPIDevice {
             case "time-tbd":
                 status_message =
                     "The game has been scheduled but the time has yet to be announced";
-                return [
-                    {
-                        result: status_message,
-                    },
-                ];
-
-            case "created":
-                status_message =
-                    "The game has just began and information is being logged";
                 return [
                     {
                         result: status_message,
