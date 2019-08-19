@@ -33,8 +33,8 @@ module.exports = class SportsDevice extends Tp.BaseDevice {
     get_nba_games({ date }) {
         return this.nbaTeam.get_games(date);
     }
-    get_nba_team_ranking( { team } ) {
-        return this.nbaTeam.get_team_ranking(team);
+    get_nba_team_ranking( { team, year } ) {
+        return this.nbaTeam.get_team_ranking(team, year);
     }
     get_nba_boxscore({ date } ) {
         return this.nbaTeam.get_boxscore(date);

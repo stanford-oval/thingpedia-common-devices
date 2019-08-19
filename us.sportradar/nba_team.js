@@ -30,22 +30,21 @@ module.exports = class NBASportRadarAPIDevice {
         return Tp.Helpers.Http.get(url).then((response) => {
             const parsed = JSON.parse(response);
             return parsed.games.filter((game) => !!this._response(game)).map((game) => {
-                console.log(game);
                 return {
                     home_team: createTpEntity(game.home),
                     home_score: game.home_points,
                     away_team: createTpEntity(game.away),
                     away_score: game.away_points,
-                    result: game.status,
+                    status: game.status,
                     __response: this._response(game)
                 };
             });
         });
     }
 
-    get_team_ranking(team) {
+    get_team_ranking(team, year) {
         const now = new Date();
-        const year = now.getMonth() > 10 ? now.getFullYear() : now.getFullYear() - 1;
+        year = year ? year : (now.getMonth() > 10 ? now.getFullYear() : now.getFullYear() - 1);
         const url = NBA_RANKINGS_URL.format(year);
         return Tp.Helpers.Http.get(url).then((response) => {
             const parsed = JSON.parse(response);
@@ -79,9 +78,9 @@ module.exports = class NBASportRadarAPIDevice {
 
         return Tp.Helpers.Http.get(url).then((response) => {
             const parsed = JSON.parse(response);
-            return parsed.games.filter((game) => !!this._response(game)).map((game) => {
+            return Promise.all(parsed.games.filter((game) => !!this._response(game)).map((game) => {
                 if (game.status === 'scheduled') {
-                    return {__response: this._response(game)};
+                    return { __response: this._response(game) };
                 } else {
                     const awayTeam = game.away.name;
                     const homeTeam = game.home.name;
@@ -133,7 +132,7 @@ module.exports = class NBASportRadarAPIDevice {
 
                     });
                 }
-            });
+            }));
         });
     }
 
