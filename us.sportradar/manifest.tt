@@ -6,7 +6,8 @@ class @almond.sports
   import loader from @org.thingpedia.v2();
   import config from @org.thingpedia.config.none();
 
-  monitorable list query get_todays_games_nba(out home_team: Entity(sportradar:nba_team) #_[canonical="home team"],
+  monitorable list query nba_games(in opt date: Date,
+                                          out home_team: Entity(sportradar:nba_team) #_[canonical="home team"],
                                           out home_score: Number #_[canonical="home score"],
                                           out away_team: Entity(sportradar:nba_team) #_[canonical="away team"],
                                           out away_score: Number #_[canonical="away score"],
@@ -32,7 +33,7 @@ class @almond.sports
 
   monitorable list query get_todays_games_mlb(out home_team: Entity(sportradar:mlb_team) #_[canonical="home team"],
                                           out home_score: Number #_[canonical="home score"],
-                                          out away_team: Entity(sportradar:nba_team) #_[canonical="away team"],
+                                          out away_team: Entity(sportradar:mlb_team) #_[canonical="away team"],
                                           out away_score: Number #_[canonical="away score"],
                                           out status: String #_[canonical="status"])
   #_[canonical="schedule for today's MLB games"]
@@ -44,7 +45,7 @@ class @almond.sports
 
   monitorable list query get_weekly_games_nfl(out home_team: Entity(sportradar:nfl_team) #_[canonical="home team"],
                                           out home_score: Number #_[canonical="home score"],
-                                          out away_team: Entity(sportradar:nba_team) #_[canonical="away team"],
+                                          out away_team: Entity(sportradar:nfl_team) #_[canonical="away team"],
                                           out away_score: Number #_[canonical="away score"],
                                           out status: String #_[canonical="status"])
   #_[canonical="schedule for today's NFL games"]
@@ -98,19 +99,18 @@ class @almond.sports
   #[poll_interval=300000ms]
   #[doc="Daily Schedule for all American Soccer teams"];
 
-  monitorable query get_team_nba(in req team: Entity(sportradar:nba_team) #_[canonical="team"],
-                             out result: String #_[canonical="result"],
+  monitorable query nba_team_ranking(in req team: Entity(sportradar:nba_team) #_[canonical="team"],
     			     out divisionPos: Number #_[canonical="division position"],
     			     out divisionName: String #_[canonical="division name"],
     			     out conferencePos: Number #_[canonical="conference position"],
     			     out conferenceName: String #_[canonical="conference name"])
-  #_[canonical="NBA game status on sportradar"]
-  #_[confirmation="${team} game "]
-  #_[formatted=[{type="text",text="${result}"},
+  #_[canonical="NBA team ranking on sportradar"]
+  #_[confirmation="ranking of ${team}"]
+  #_[formatted=[
     {type="text", text="The ${team} are currently #${divisionPos} in the ${divisionName} Division and #${conferencePos} in the ${conferenceName}"}]]
-  #_[confirmation_remote="NBA game"]
+  #_[confirmation_remote="ranking of ${team}"]
   #[poll_interval=300000ms]
-  #[doc="NBA games for a given team"];
+  #[doc="Ranking of a team"];
 
   monitorable query get_team_ncaa_mb(in req team: Entity(sportradar:ncaambb_team) #_[canonical="team"],
                              out result: String #_[canonical="result"],
@@ -183,7 +183,8 @@ class @almond.sports
   #[poll_interval=300000ms]
   #[doc="NHL games for a given team"];
 
-  monitorable list query get_boxscore_nba(in req team: Entity(sportradar:nba_team) #_[canonical="team"],
+  monitorable list query nba_boxscore(
+                          in opt date: Date,
                           out home_team: Entity(sportradar:nba_team) #_[canonical="home team"],
                           out home_score: Number #_[canonical="home score"],
                           out home_quarter1: Number #_[canonical="home quarter1"],
@@ -200,13 +201,13 @@ class @almond.sports
                           out away_leading_scorer: String #_[canonical="away leading scorer"],
                           out status_message: String #_[canonical="additional status message"])
   #_[canonical="NBA boxscore on sportradar"]
-  #_[confirmation="the box score for the ${team} game"]
+  #_[confirmation="the box score for nba games"]
   #_[formatted=[{type="text",text="${away_team}:${away_score} @ ${home_team}:${home_score}"},
     {type="text",text="First Quarter: ${away_quarter1} - ${home_quarter1} Second Quarter:  ${away_quarter2} - ${home_quarter2} Third Quarter: ${away_quarter3} - ${home_quarter3} Fourth Quarter: ${away_quarter4} - ${home_quarter4}"},
     {type="text",text="${home_team} leading scorer: ${home_leading_scorer} ${away_team} leading scorer: ${away_leading_scorer}"}, {type="text",text="${status_message}"}]]
-  #_[confirmation_remote="the box score for the ${team} game"]
+  #_[confirmation_remote="the box score for nba games"]
   #[poll_interval=300000ms]
-  #[doc="NBA games for a given team"];
+  #[doc="Boxscore for nba games"];
 
   monitorable list query get_boxscore_ncaa_mb(in req team: Entity(sportradar:ncaambb_team) #_[canonical="team"],
                           out home_team: Entity(sportradar:ncaambb_team) #_[canonical="home team"],
@@ -381,11 +382,12 @@ class @almond.sports
   #[poll_interval=300000ms]
   #[doc="American Soccer boxscores for a given team"];
 
-  monitorable list query get_roster_nba(in req team: Entity(sportradar:nba_team) #_[canonical="team"],
+  monitorable list query nba_roster(in req team: Entity(sportradar:nba_team) #_[canonical="team"],
+                  out position: String #_[canonical="position"],
     			  out member: String #_[canonical="team member"])
   #_[canonical="Roster of nba team on sportradar"]
   #_[confirmation="the roster for the ${team}"]
-  #_[formatted=[{type="text", text = "${member}"}]]
+  #_[formatted=[{type="text", text = "${position}: ${member}"}]]
   #_[confirmation_remote="the roster for the ${team}"]
   #[poll_interval=86400000ms]
   #[doc="Roster for a given nba team"];

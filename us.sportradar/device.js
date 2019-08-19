@@ -30,9 +30,22 @@ module.exports = class SportsDevice extends Tp.BaseDevice {
             "Sports Skill which displays Sports scores, news, and stats. Supports NFL, NBA, European and American Soccer, MLB, NCAAFB, and NCAAMBB.";
     }
 
-    get_get_todays_games_nba() {
-        return this.nbaTeam.get_get_todays_games();
+    get_nba_games({ date }) {
+        return this.nbaTeam.get_games(date);
     }
+    get_nba_team_ranking( { team } ) {
+        return this.nbaTeam.get_team_ranking(team);
+    }
+    get_nba_boxscore({ date } ) {
+        return this.nbaTeam.get_boxscore(date);
+    }
+    get_nba_roster({ team }) {
+        return this.nbaTeam.get_roster(team);
+    }
+
+
+
+
 
     get_get_todays_games_mlb() {
         return this.mlbTeam.get_get_todays_games();
@@ -60,10 +73,6 @@ module.exports = class SportsDevice extends Tp.BaseDevice {
 
     get_get_weekly_games_ncaa_fb() {
         return this.ncaaFbTeam.get_get_weekly_games();
-    }
-
-    get_get_team_nba(team) {
-        return this.nbaTeam.get_get_team(team);
     }
 
     get_get_team_mlb(team) {
@@ -94,9 +103,7 @@ module.exports = class SportsDevice extends Tp.BaseDevice {
         return this.ncaaFbTeam.get_get_team(team);
     }
 
-    get_get_boxscore_nba(team) {
-        return this.nbaTeam.get_get_boxscore(team);
-    }
+
 
     get_get_boxscore_mlb(team) {
         return this.mlbTeam.get_get_boxscore(team);
@@ -116,10 +123,6 @@ module.exports = class SportsDevice extends Tp.BaseDevice {
 
     get_get_boxscore_ncaa_fb(team) {
         return this.ncaaFbTeam.get_get_boxscore(team);
-    }
-
-    get_get_roster_nba(team) {
-        return this.nbaTeam.get_get_roster(team);
     }
 
     get_get_roster_mlb(team) {
