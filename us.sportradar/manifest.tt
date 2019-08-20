@@ -7,7 +7,6 @@ class @almond.sports
   import config from @org.thingpedia.config.none(
       api_key = '{
         "nba_api_key": "uuha5uz669b2yrnwqccraywh",
-        "news_api_key": "97a0cd1b088c48d197b2b2301e00ad92",
         "mlb_api_key": "76qzdw27b4nm58f38ck7hkqu",
         "ncaafb_api_key": "2scv4ydgppgrc2kry66t8rhe",
         "ncaamb_api_key": "7584setd3gx4uecy952exvxg",
@@ -473,28 +472,4 @@ class @almond.sports
   #_[confirmation_remote="the league rankings for ${soccer_league}"]
   #[poll_interval=300000ms]
   #[doc="AM Soccer league rankings for a given league"];
-
-
-
-  monitorable list query get_sports_headlines(in req sport_league: Entity(org.wikidata:league) #_[canonical="sport league"],
-    					   out link: Entity(tt:url) #_[canonical="link"],
-                                           out title: String #_[canonical="title"] #[string_values="tt:news_title"],
-                                           out description: String #_[canonical="title"] #[string_values="tt:news_description"])
-  #_[canonical="Sports articles"]
-  #_[confirmation="get articles belonging to the league ${sport_league}"]
-  #_[formatted=[{type="rdl",webCallback="${link}",displayTitle="${title}",displayText="${description}"}]]
-  #_[confirmation_remote="Sports articles"]
-  #[poll_interval=300000ms]
-  #[doc="Sports news for specific leagues"];
-
-  monitorable list query get_top_sport_headlines(
-    					   out link: Entity(tt:url) #_[canonical="link"],
-                                           out title: String #_[canonical="title"] #[string_values="tt:news_title"],
-                                           out description: String #_[canonical="title"] #[string_values="tt:news_description"])
-  #_[canonical="Top sports articles"]
-  #_[confirmation="get top sports articles"]
-  #_[formatted=[{type="rdl",webCallback="${link}",displayTitle="${title}",displayText="${description}"}]]
-  #_[confirmation_remote="Top sport articles"]
-  #[poll_interval=300000ms]
-  #[doc="Top sports news from all sports"];
 }

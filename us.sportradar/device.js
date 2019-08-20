@@ -20,7 +20,6 @@ const EUSoccerTeam = require("./soccer_eu_team.js");
 const AMSoccerTeam = require("./soccer_am_team.js");
 const NCAAMbTeam = require("./ncaa_mb_team.js");
 const NCAAFbTeam = require("./ncaa_fb_team.js");
-const SportsNews = require("./sport_news.js");
 
 module.exports = class SportsDevice extends Tp.BaseDevice {
     constructor(engine, state) {
@@ -35,7 +34,6 @@ module.exports = class SportsDevice extends Tp.BaseDevice {
         this.ncaaFbTeam = new NCAAFbTeam(this.engine.platform, this.keys.ncaafb_api_key);
         this.euSoccerTeam = new EUSoccerTeam(this.engine.platform, this.keys.eusoccer_api_key);
         this.amSoccerTeam = new AMSoccerTeam(this.engine.platform, this.keys.amsoccer_api_key);
-        this.sportsNews = new SportsNews(this.keys.news_api_key);
         this.uniqueId = "almond.sports";
         this.name = "Sportradar and NewsApi Sports Skill";
         this.description =
@@ -165,13 +163,5 @@ module.exports = class SportsDevice extends Tp.BaseDevice {
 
     get_get_rankings_am_soccer(soccer_league) {
         return this.amSoccerTeam.get_get_rankings(soccer_league);
-    }
-
-    get_get_sports_headlines(league) {
-        return this.sportsNews.get_get_sports_headlines(league);
-    }
-
-    get_get_top_sport_headlines() {
-        return this.sportsNews.get_get_top_headlines();
     }
 };

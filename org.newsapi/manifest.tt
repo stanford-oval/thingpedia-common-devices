@@ -1,0 +1,16 @@
+class @org.newsapi
+{
+    import loader from @org.thingpedia.generic_rest.v1();
+    import config from @org.thingpedia.config.none();
+
+    monitorable query headlines(out link: URL #[json_key="url"],
+              out title: String,
+              out description: String)
+    #_[canonical="sports news"]
+    #_[confirmation="sports news"]
+    #_[formatted=[{type="rdl",webCallback="${link}",displayTitle="${title}",displayText="${description}"}]]
+    #[doc="get sports headline"]
+    #[poll_interval=300000ms]
+    #[json_key="articles"]
+    #[url="https://newsapi.org/v2/top-headlines?country=us&category=sports&apiKey=97a0cd1b088c48d197b2b2301e00ad92"];
+}
