@@ -42,7 +42,8 @@ class @almond.sports
   #[poll_interval=300000ms]
   #[doc="Daily Schedule for all NCAA Men's Basketball teams"];
 
-  monitorable list query get_todays_games_mlb(out home_team: Entity(sportradar:mlb_team) #_[canonical="home team"],
+  monitorable list query mlb_games(in opt date: Date,
+                                          out home_team: Entity(sportradar:mlb_team) #_[canonical="home team"],
                                           out home_score: Number #_[canonical="home score"],
                                           out away_team: Entity(sportradar:mlb_team) #_[canonical="away team"],
                                           out away_score: Number #_[canonical="away score"],
@@ -122,7 +123,7 @@ class @almond.sports
     {type="text", text="The ${team} are currently #${divisionPos} in the ${divisionName} Division and #${conferencePos} in the ${conferenceName}"}]]
   #_[confirmation_remote="ranking of ${team}"]
   #[poll_interval=300000ms]
-  #[doc="Ranking of a team"];
+  #[doc="Ranking of a NBA team"];
 
   monitorable query get_team_ncaa_mb(in req team: Entity(sportradar:ncaambb_team) #_[canonical="team"],
                              out result: String #_[canonical="result"],
@@ -139,19 +140,19 @@ class @almond.sports
   #[doc="NCAA Men's Basketball games for a given team"];
 
 
-  monitorable query get_team_mlb(in req team: Entity(sportradar:mlb_team) #_[canonical="team"],
-                             out result: String #_[canonical="result"],
+  monitorable query mlb_team_ranking(in req team: Entity(sportradar:mlb_team) #_[canonical="team"],
+                     in opt year: Number,
     			     out divisionPos: Number #_[canonical="division position"],
     			     out divisionName: String #_[canonical="division name"],
     			     out leaguePos: Number #_[canonical="league position"],
     			     out leagueName: String #_[canonical="league name"])
-  #_[canonical="MLB game status on sportradar"]
-  #_[confirmation="${team} game "]
+  #_[canonical="MLB team ranking on sportradar"]
+  #_[confirmation="ranking of ${team}"]
   #_[formatted=[{type="text",text="${result}"},
     {type="text", text="The ${team} are currently #${divisionPos} in the ${divisionName} Division and #${leaguePos} in the ${leagueName}"}]]
-  #_[confirmation_remote="${team} game"]
+  #_[confirmation_remote="ranking of ${team}"]
   #[poll_interval=300000ms]
-  #[doc="MLB games for a given team"];
+  #[doc="Ranking of a MLB team"];
 
   monitorable query get_team_nfl(in req team: Entity(sportradar:nfl_team) #_[canonical="team"],
                              out result: String #_[canonical="result"],
@@ -244,18 +245,19 @@ class @almond.sports
   #[doc="NCAA Men's Basketball games for a given team"];
 
 
-  monitorable list query get_boxscore_mlb(in req team: Entity(sportradar:mlb_team) #_[canonical="team"],
+  monitorable list query mlb_boxscore(in req team: Entity(sportradar:mlb_team) #_[canonical="team"],
+                          in opt date: Date,
                           out home_team: Entity(sportradar:mlb_team) #_[canonical="home team"],
                           out home_score: Number #_[canonical="home score"],
                           out home_inning1: Number #_[canonical="home inning 1"],
                           out home_inning2: Number #_[canonical="home inning 2"],
                           out home_inning3: Number #_[canonical="home inning 3"],
                           out home_inning4: Number #_[canonical="home inning 4"],
-    		          out home_inning5: Number #_[canonical="home inning 5"],
+    		                  out home_inning5: Number #_[canonical="home inning 5"],
                           out home_inning6: Number #_[canonical="home inning 6"],
                           out home_inning7: Number #_[canonical="home inning 7"],
                           out home_inning8: Number #_[canonical="home inning 8"],
-    			  out home_inning9: Number #_[canonical="home inning 9"],
+    			                out home_inning9: Number #_[canonical="home inning 9"],
                           out home_starting_pitcher: String #_[canonical="home starting pitcher"],
                           out away_team: Entity(sportradar:mlb_team) #_[canonical="away team"],
                           out away_score: Number #_[canonical="away score"],
@@ -263,11 +265,11 @@ class @almond.sports
                           out away_inning2: Number #_[canonical="away inning 2"],
                           out away_inning3: Number #_[canonical="away inning 3"],
                           out away_inning4: Number #_[canonical="away inning 4"],
-    		          out away_inning5: Number #_[canonical="away inning 5"],
+    		                  out away_inning5: Number #_[canonical="away inning 5"],
                           out away_inning6: Number #_[canonical="away inning 6"],
                           out away_inning7: Number #_[canonical="away inning 7"],
                           out away_inning8: Number #_[canonical="away inning 8"],
-    			  out away_inning9: Number #_[canonical="away inning 9"],
+    			                out away_inning9: Number #_[canonical="away inning 9"],
                           out away_starting_pitcher: String #_[canonical="away starting pitcher"],
                           out status_message: String #_[canonical="additional status message"])
   #_[canonical="MLB boxscore on sportradar"]
@@ -396,7 +398,7 @@ class @almond.sports
 
   monitorable list query nba_roster(in req team: Entity(sportradar:nba_team) #_[canonical="team"],
                   out position: String #_[canonical="position"],
-    			  out member: String #_[canonical="team member"])
+    			        out member: String #_[canonical="team member"])
   #_[canonical="Roster of nba team on sportradar"]
   #_[confirmation="the roster for the ${team}"]
   #_[formatted=[{type="text", text = "${position}: ${member}"}]]
@@ -404,11 +406,12 @@ class @almond.sports
   #[poll_interval=86400000ms]
   #[doc="Roster for a given nba team"];
 
-  monitorable list query get_roster_mlb(in req team: Entity(sportradar:mlb_team) #_[canonical="team"],
-    			  out player: String #_[canonical="team players"])
+  monitorable list query mlb_roster(in req team: Entity(sportradar:mlb_team) #_[canonical="team"],
+                  out position: String #_[canonical="position"],
+                  out member: String #_[canonical="team member"])
   #_[canonical="Roster of mlb team on sportradar"]
   #_[confirmation="the roster for the ${team}"]
-  #_[formatted=[{type="text", text = "${player}"}]]
+  #_[formatted=[{type="text", text = "${position}: ${member}"}]]
   #_[confirmation_remote="the roster for the ${team}"]
   #[poll_interval=86400000ms]
   #[doc="Roster for a given mlb team"];

@@ -10,10 +10,10 @@
 
 "use strict";
 
-const Tp = require('thingpedia');
+const Tp = require("thingpedia");
 
 module.exports = {
-    createTpEntity(team) {
-        return new Tp.Value.Entity(team.alias.toLowerCase(), team.name);
-    }
+    createTpEntity(team, abbreviation) {
+        return new Tp.Value.Entity(team[abbreviation].toLowerCase(), team.name);
+    },
 };

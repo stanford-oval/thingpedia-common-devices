@@ -8,7 +8,6 @@
 //
 // See LICENSE for details
 
-
 "use strict";
 
 const Tp = require("thingpedia");
@@ -38,29 +37,32 @@ module.exports = class SportsDevice extends Tp.BaseDevice {
         this.name = "Sportradar and NewsApi Sports Skill";
         this.description =
             "Sports Skill which displays Sports scores, news, and stats. Supports NFL, NBA, European and American Soccer, MLB, NCAAFB, and NCAAMBB.";
-
-
     }
 
     get_nba_games({ date }) {
         return this.nbaTeam.get_games(date);
     }
-    get_nba_team_ranking( { team, year } ) {
+    get_nba_team_ranking({ team, year }) {
         return this.nbaTeam.get_team_ranking(team, year);
     }
-    get_nba_boxscore({ date } ) {
+    get_nba_boxscore({ date }) {
         return this.nbaTeam.get_boxscore(date);
     }
     get_nba_roster({ team }) {
         return this.nbaTeam.get_roster(team);
     }
 
-
-
-
-
-    get_get_todays_games_mlb() {
-        return this.mlbTeam.get_get_todays_games();
+    get_mlb_games({ date }) {
+        return this.mlbTeam.get_games(date);
+    }
+    get_mlb_team_ranking({ team, year }) {
+        return this.mlbTeam.get_team_ranking(team, year);
+    }
+    get_mlb_boxscore({ date }) {
+        return this.mlbTeam.get_boxscore(date);
+    }
+    get_mlb_roster({ team }) {
+        return this.mlbTeam.get_roster(team);
     }
 
     get_get_todays_games_nhl() {
@@ -87,10 +89,6 @@ module.exports = class SportsDevice extends Tp.BaseDevice {
         return this.ncaaFbTeam.get_get_weekly_games();
     }
 
-    get_get_team_mlb(team) {
-        return this.mlbTeam.get_get_team(team);
-    }
-
     get_get_team_nhl(team) {
         return this.nhlTeam.get_get_team(team);
     }
@@ -115,12 +113,6 @@ module.exports = class SportsDevice extends Tp.BaseDevice {
         return this.ncaaFbTeam.get_get_team(team);
     }
 
-
-
-    get_get_boxscore_mlb(team) {
-        return this.mlbTeam.get_get_boxscore(team);
-    }
-
     get_get_boxscore_nhl(team) {
         return this.nhlTeam.get_get_boxscore(team);
     }
@@ -135,10 +127,6 @@ module.exports = class SportsDevice extends Tp.BaseDevice {
 
     get_get_boxscore_ncaa_fb(team) {
         return this.ncaaFbTeam.get_get_boxscore(team);
-    }
-
-    get_get_roster_mlb(team) {
-        return this.mlbTeam.get_get_roster(team);
     }
 
     get_get_roster_nfl(team) {
