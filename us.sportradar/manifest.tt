@@ -79,7 +79,8 @@ class @almond.sports
   #[poll_interval=300000ms]
   #[doc="Daily Schedule for all NCAA Football teams"];
 
-  monitorable list query get_todays_games_nhl(out home_team: Entity(almond.sports:nhl_team) #_[canonical="home team"],
+  monitorable list query nhl_games(in opt date: Date,
+                                          out home_team: Entity(almond.sports:nhl_team) #_[canonical="home team"],
                                           out home_score: Number #_[canonical="home score"],
                                           out away_team: Entity(almond.sports:nhl_team) #_[canonical="away team"],
                                           out away_score: Number #_[canonical="away score"],
@@ -182,8 +183,9 @@ class @almond.sports
   #[poll_interval=300000ms]
   #[doc="NCAA Football games for a given team"];
 
-  monitorable query get_team_nhl(in req team: Entity(almond.sports:nhl_team) #_[canonical="team"],
-                             out result: String #_[canonical="result"],
+  monitorable query nhl_team_ranking(in req team: Entity(almond.sports:nhl_team) #_[canonical="team"],
+                      in opt year: Number,
+               out result: String #_[canonical="result"],
     			     out divisionPos: Number #_[canonical="division position"],
     			     out divisionName: String #_[canonical="division name"],
     			     out conferencePos: Number #_[canonical="conference position"],
@@ -330,19 +332,20 @@ class @almond.sports
   #[poll_interval=300000ms]
   #[doc="NCAA Football boxscores for a given team"];
 
-  monitorable list query get_boxscore_nhl(in req team: Entity(almond.sports:nhl_team) #_[canonical="team"],
+  monitorable list query nhl_boxscore(in req team: Entity(almond.sports:nhl_team) #_[canonical="team"],
+                          in opt date: Date,
                           out home_team: Entity(almond.sports:nhl_team) #_[canonical="home team"],
                           out home_score: Number #_[canonical="home score"],
                           out home_period1: Number #_[canonical="home period1"],
                           out home_period2: Number #_[canonical="home period2"],
                           out home_period3: Number #_[canonical="home period3"],
-    			  out home_leading_scorer: String #_[canonical="home leading scorer"],
+    			                out home_leading_scorer: String #_[canonical="home leading scorer"],
                           out away_team: Entity(almond.sports:nhl_team) #_[canonical="away team"],
                           out away_score: Number #_[canonical="away score"],
                           out away_period1: Number #_[canonical="away period1"],
                           out away_period2: Number #_[canonical="away period2"],
                           out away_period3: Number #_[canonical="away period3"],
-     			  out away_leading_scorer: String #_[canonical="away leading scorer"],
+     			                out away_leading_scorer: String #_[canonical="away leading scorer"],
                           out status_message: String #_[canonical="additional status message"])
 
   #_[canonical="NHL boxscore on sportradar"]
@@ -425,11 +428,12 @@ class @almond.sports
   #[poll_interval=86400000ms]
   #[doc="Roster for a given nfl team"];
 
-  monitorable list query get_roster_nhl(in req team: Entity(almond.sports:nhl_team) #_[canonical="team"],
-    			  out member: String #_[canonical="team players"])
+  monitorable list query nhl_roster(in req team: Entity(almond.sports:nhl_team) #_[canonical="team"],
+                  out position: String #_[canonical="position"],
+                  out member: String #_[canonical="team member"])
   #_[canonical="Roster of nhl team on sportradar"]
   #_[confirmation="the roster for the ${team}"]
-  #_[formatted=[{type="text", text = "${member}"}]]
+  #_[formatted=[{type="text", text = "${position}: ${member}"}]]
   #_[confirmation_remote="the roster for the ${team}"]
   #[poll_interval=86400000ms]
   #[doc="Roster for a given nhl team"];

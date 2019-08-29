@@ -11,6 +11,7 @@
 "use strict";
 
 const Tp = require("thingpedia");
+
 const NbaTeam = require("./nba_team.js");
 const MlbTeam = require("./mlb_team.js");
 const NflTeam = require("./nfl_team.js");
@@ -65,8 +66,17 @@ module.exports = class SportsDevice extends Tp.BaseDevice {
         return this.mlbTeam.get_roster(team);
     }
 
-    get_get_todays_games_nhl() {
-        return this.nhlTeam.get_get_todays_games();
+    get_nhl_games({ date }) {
+        return this.nhlTeam.get_games(date);
+    }
+    get_nhl_team_ranking({ team, year }) {
+        return this.nhlTeam.get_team_ranking(team, year);
+    }
+    get_nhl_boxscore({ date }) {
+        return this.nhlTeam.get_boxscore(date);
+    }
+    get_nhl_roster({ team }) {
+        return this.nhlTeam.get_roster(team);
     }
 
     get_get_weekly_games_nfl() {
@@ -89,10 +99,6 @@ module.exports = class SportsDevice extends Tp.BaseDevice {
         return this.ncaaFbTeam.get_get_weekly_games();
     }
 
-    get_get_team_nhl(team) {
-        return this.nhlTeam.get_get_team(team);
-    }
-
     get_get_team_nfl(team) {
         return this.nflTeam.get_get_team(team);
     }
@@ -113,10 +119,6 @@ module.exports = class SportsDevice extends Tp.BaseDevice {
         return this.ncaaFbTeam.get_get_team(team);
     }
 
-    get_get_boxscore_nhl(team) {
-        return this.nhlTeam.get_get_boxscore(team);
-    }
-
     get_get_boxscore_nfl(team) {
         return this.nflTeam.get_get_boxscore(team);
     }
@@ -131,10 +133,6 @@ module.exports = class SportsDevice extends Tp.BaseDevice {
 
     get_get_roster_nfl(team) {
         return this.nflTeam.get_get_roster(team);
-    }
-
-    get_get_roster_nhl(team) {
-        return this.nhlTeam.get_get_roster(team);
     }
 
     get_get_roster_ncaa_mb(team) {

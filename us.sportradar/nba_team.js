@@ -11,9 +11,7 @@
 "use strict";
 
 const Tp = require("thingpedia");
-const {
-    createTpEntity
-} = require("./utils");
+const { createTpEntity } = require("./utils");
 const NBA_JSON = require("./teams/nba.json");
 
 const NBA_SCHEDULE_URL =
