@@ -10,427 +10,206 @@
 "use strict";
 
 const Tp = require("thingpedia");
-
-const NFL_API_KEY = "ru7baq9u5x3b4wh3q4g6p5qs";
-const NFL_SCHEDULE_URL =
-    "https://api.sportradar.us/nfl/official/trial/v5/en/games/%d/reg/%d/schedule.json?api_key=" +
-    NFL_API_KEY;
-const NFL_BOXSCORE_URL =
-    "https://api.sportradar.us/nfl/official/trial/v5/en/games/%s/boxscore.json?api_key=" +
-    NFL_API_KEY;
-const NFL_STANDINGS_URL =
-    "https://api.sportradar.us/nfl/official/trial/v5/en/seasons/%s/standings.json?api_key=" +
-    NFL_API_KEY;
-const NFL_ROSTER_URL =
-    "https://api.sportradar.us/nfl/official/trial/v5/en/teams/%s/full_roster.json?api_key=" +
-    NFL_API_KEY;
-
+const { createTpEntity } = require("./utils");
 const NFL_JSON = require("./teams/nfl.json");
 
+const NFL_SCHEDULE_URL =
+    "https://api.sportradar.us/nfl/official/trial/v5/en/games/%d/reg/%d/schedule.json?api_key=%s";
+const NFL_BOXSCORE_URL =
+    "https://api.sportradar.us/nfl/official/trial/v5/en/games/%s/boxscore.json?api_key=%s";
+const NFL_RANKINGS_URL =
+    "https://api.sportradar.us/nfl/official/trial/v5/en/seasons/%s/standings.json?api_key=%s";
+const NFL_ROSTER_URL =
+    "https://api.sportradar.us/nfl/official/trial/v5/en/teams/%s/full_roster.json?api_key=%s";
+
 module.exports = class NFLSportRadarAPIDevice {
-    constructor(platform) {
+    constructor(platform, key) {
         this.platform = platform;
         this.name = "Sport Radar NFL Channel";
         this.description = "The NFL Channel for Sport Radar";
-        const seasonStart = new Date();
-
-        seasonStart.setFullYear(2019);
-        seasonStart.setMonth(7);
-        seasonStart.setDate(5);
-
-        this._seasonStart = seasonStart;
+        this._api_key = key;
     }
 
-    _get_week() {
-        const today = new Date();
-        let week = 0;
-        while (today >= this._seasonStart) {
-            week += 1;
-            today.setDate(today.getDate() - 7);
-        }
-        return week;
-    }
-
-    _updateUrl() {
+    get_games(week, year) {
+        if (week === undefined || week === null) week = 1;
         const now = new Date();
-        const week = this._get_week();
-        if (week === 0 || week > 16)
-            throw new TypeError("There are no NFL games this week");
+        year = year ?
+            year :
+            now.getMonth() > 10 ?
+            now.getFullYear() :
+            now.getFullYear() - 1;
 
-        this.schedule_url = NFL_SCHEDULE_URL.format(now.getFullYear(), week);
-        this.standings_url = NFL_STANDINGS_URL.format(now.getFullYear());
-    }
-
-    _createTpEntity(team) {
-        return new Tp.Value.Entity(team.alias.toLowerCase(), team.name);
-    }
-
-    get_get_weekly_games() {
-        this._updateUrl();
-        return Tp.Helpers.Http.get(this.schedule_url)
-            .then((response) => {
-                const parsed = JSON.parse(response);
-                const game_statuses = [];
-
-                const games = parsed.week.games;
-                for (let i = 0; i < games.length; i++) {
-                    const game_status = {
-                        home_team: this._createTpEntity(games[i].home),
-                        home_score: games[i].scoring.home_points,
-                        away_team: this._createTpEntity(games[i].away),
-                        away_score: games[i].scoring.away_points,
-                        status: games[i].status,
+        const url = NFL_SCHEDULE_URL.format(
+            year,
+            week,
+            this._api_key
+        );
+        return Tp.Helpers.Http.get(url).then((response) => {
+            const parsed = JSON.parse(response);
+            return parsed.week.games
+                .filter((game) => !!this._response(game))
+                .map((game) => {
+                    return {
+                        home_team: createTpEntity(game.home, "alias"),
+                        home_score: game.scoring.home_points,
+                        away_team: createTpEntity(game.away, "alias"),
+                        away_score: game.scoring.away_points,
+                        status: game.status,
+                        __response: this._response(game),
                     };
-
-                    game_statuses.push(game_status);
-                }
-
-                return game_statuses.map((game_status) => {
-                    return game_status;
                 });
-            })
-            .catch((e) => {
-                throw new TypeError("No NFL Games Found");
-            });
+        });
+
     }
 
-    get_get_team(team) {
-        this._updateUrl();
+    get_team_ranking(team, year) {
+        const teamInfo = this._team(team);
+        const now = new Date();
+        year = year ?
+            year :
+            now.getMonth() > 10 ?
+            now.getFullYear() :
+            now.getFullYear() - 1;
 
-        return Tp.Helpers.Http.get(this.schedule_url)
-            .then((response) => {
-                const parsed = JSON.parse(response);
-                const games = parsed.week.games;
-                let gameStatus;
-                let index = 0;
-                const platform = this.platform;
-                const team_name = team.team.value;
-                const full_name = team.team.display;
+        const url = NFL_RANKINGS_URL.format(year, this._api_key);
 
-                for (let i = 0; i < games.length; i++) {
-                    if (
-                        games[i].home.alias.toLowerCase() === team_name ||
-                        games[i].away.alias.toLowerCase() === team_name
-                    ) {
-                        index = i;
-                        gameStatus = games[i].status;
-                    }
-                }
-                const scheduledTime = games[index].scheduled;
-                const awayTeam = games[index].away.name;
-                const homeTeam = games[index].home.name;
-                const awayPoints = games[index].scoring.away_points;
-                const homePoints = games[index].scoring.home_points;
-                const dateTime = new Date(scheduledTime);
-                let status_message;
-                return new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                        this.get_rankings(team_name).then((response) => {
-                            const team_rankings = response;
-                            switch (gameStatus) {
-                                case undefined:
-                                    status_message = "There is no %s game today. I can notify you when there is a game if you want?".format(
-                                        full_name.toUpperCase()
-                                    );
-                                    resolve([
-                                        {
-                                            result: status_message,
-                                            divisionPos: team_rankings.division,
-                                            divisionName:
-                                                team_rankings.divisionName,
-                                            conferencePos:
-                                                team_rankings.conference,
-                                            conferenceName:
-                                                team_rankings.conferenceName,
-                                        },
-                                    ]);
-
-                                    return;
-                                case "scheduled":
-                                    status_message = "Next game is %s @ %s at %s".format(
-                                        awayTeam,
-                                        homeTeam,
-                                        dateTime.toLocaleString(
-                                            platform.locale,
-                                            {
-                                                timeZone: platform.timezone,
-                                            }
-                                        )
-                                    );
-                                    resolve([
-                                        {
-                                            result: status_message,
-                                            divisionPos: team_rankings.division,
-                                            divisionName:
-                                                team_rankings.divisionName,
-                                            conferencePos:
-                                                team_rankings.conference,
-                                            conferenceName:
-                                                team_rankings.conferenceName,
-                                        },
-                                    ]);
-
-                                    return;
-
-                                case "inprogress":
-                                    status_message = "Game update for %s @ %s: %d - %d".format(
-                                        awayTeam,
-                                        homeTeam,
-                                        awayPoints,
-                                        homePoints
-                                    );
-                                    resolve([
-                                        {
-                                            result: status_message,
-                                            divisionPos: team_rankings.division,
-                                            divisionName:
-                                                team_rankings.divisionName,
-                                            conferencePos:
-                                                team_rankings.conference,
-                                            conferenceName:
-                                                team_rankings.conferenceName,
-                                        },
-                                    ]);
-
-                                    return;
-
-                                case "halftime":
-                                    status_message = "Half-time for %s @ %s: %d - %d".format(
-                                        awayTeam,
-                                        homeTeam,
-                                        awayPoints,
-                                        homePoints
-                                    );
-                                    resolve([
-                                        {
-                                            result: status_message,
-                                            divisionPos: team_rankings.division,
-                                            divisionName:
-                                                team_rankings.divisionName,
-                                            conferencePos:
-                                                team_rankings.conference,
-                                            conferenceName:
-                                                team_rankings.conferenceName,
-                                        },
-                                    ]);
-
-                                    return;
-
-                                case "closed":
-                                    status_message = "Final score for %s @ %s: %d - %d".format(
-                                        awayTeam,
-                                        homeTeam,
-                                        awayPoints,
-                                        homePoints
-                                    );
-                                    resolve([
-                                        {
-                                            result: status_message,
-                                            divisionPos: team_rankings.division,
-                                            divisionName:
-                                                team_rankings.divisionName,
-                                            conferencePos:
-                                                team_rankings.conference,
-                                            conferenceName:
-                                                team_rankings.conferenceName,
-                                        },
-                                    ]);
-
-                                    return;
-
-                                case "flex-schedule":
-                                    status_message = "The game scheduled has not been finalized yet. For now, the next game is %s @ %s at %s".format(
-                                        awayTeam,
-                                        homeTeam,
-                                        dateTime.toLocaleString(
-                                            platform.locale,
-                                            {
-                                                timeZone: platform.timezone,
-                                            }
-                                        )
-                                    );
-                                    resolve([
-                                        {
-                                            result: status_message,
-                                            divisionPos: team_rankings.division,
-                                            divisionName:
-                                                team_rankings.divisionName,
-                                            conferencePos:
-                                                team_rankings.conference,
-                                            conferenceName:
-                                                team_rankings.conferenceName,
-                                        },
-                                    ]);
-
-                                    return;
-                            }
-
-                            const status = this.statusConditions(gameStatus);
-                            status[0].divisionPos = team_rankings.division;
-                            status[0].divisionName = team_rankings.divisionName;
-                            status[0].conferencePos = team_rankings.conference;
-                            status[0].conferenceName =
-                                team_rankings.conferenceName;
-
-                            resolve(status);
-                        });
-                    }, 1000);
-                });
-            })
-            .catch((e) => {
-                throw new TypeError("No NFL Games Found");
-            });
-    }
-
-    get_rankings(input_team) {
-        this._updateUrl();
-
-        return Tp.Helpers.Http.get(this.standings_url)
-            .then((response) => {
-                const parsed = JSON.parse(response);
-                const conferences = parsed.conferences;
-                for (const conference of conferences) {
-                    const divisions = conference.divisions;
-                    for (const division of divisions) {
-                        const teams = division.teams;
-                        for (const team of teams) {
-                            const team_name = team.alias.toLowerCase();
-
-                            if (team_name === input_team) {
-                                const rankingObj = team.rank;
-
-                                rankingObj.divisionName = division.name;
-                                rankingObj.conferenceName = conference.name;
-
-                                return rankingObj;
-                            }
+        return Tp.Helpers.Http.get(url).then((response) => {
+            const parsed = JSON.parse(response);
+            const conferences = parsed.conferences;
+            for (const conference of conferences) {
+                const divisions = conference.divisions;
+                for (const division of divisions) {
+                    const teams = division.teams;
+                    for (const t of teams) {
+                        if (t.id === teamInfo.id) {
+                            return [{
+                                divisionPos: t.rank.division,
+                                divisionName: division.name,
+                                conferencePos: t.rank.conference,
+                                conferenceName: conference.name,
+                            }, ];
                         }
                     }
                 }
-                throw new TypeError("Invalid Team Input");
-            })
-            .catch((e) => {
-                throw new TypeError("Invalid Team Input");
-            });
+            }
+            throw new Error(`Team ${team.display} not found.`);
+        });
+
     }
 
-    get_get_boxscore(team) {
-        this._updateUrl();
-        return Tp.Helpers.Http.get(this.schedule_url)
-            .then((response) => {
-                const parsed = JSON.parse(response);
-                const games = parsed.week.games;
-                const team_name = team.team.value;
-                const full_name = team.team.display;
-                let index = 0;
-                let gameStatus;
-                let gameId;
-                const platform = this.platform;
+    get_boxscore(week, year) {
+        if (week === undefined || week === null) week = 1;
 
-                for (let i = 0; i < games.length; i++) {
-                    if (
-                        games[i].home.alias.toLowerCase() === team_name ||
-                        games[i].away.alias.toLowerCase() === team_name
-                    ) {
-                        index = i;
-                        gameStatus = games[i].status;
-                        gameId = games[i].id;
-                    }
-                }
+        const now = new Date();
+        year = year ?
+            year :
+            now.getMonth() > 10 ?
+            now.getFullYear() :
+            now.getFullYear() - 1;
 
-                const homeTeam = games[index].home;
-                const awayTeam = games[index].away;
-                const homeScore = games[index].scoring.home_points;
-                const awayScore = games[index].scoring.away_points;
-                const scheduledTime = games[index].scheduled;
-                const dateTime = new Date(scheduledTime);
+        const url = NFL_SCHEDULE_URL.format(
+            year,
+            week,
+            this._api_key
+        );
 
-                switch (gameStatus) {
-                    case undefined:
-                        return [
-                            {
-                                status_message: "There is no %s game today. I can notify you when there is a game if you want?".format(
-                                    full_name.toUpperCase()
+        return Tp.Helpers.Http.get(url).then((response) => {
+            const parsed = JSON.parse(response);
+            return Promise.all(
+                parsed.week.games
+                .filter((game) => !!this._response(game))
+                .map((game) => {
+                    if (game.status === "scheduled") {
+                        return {
+                            __response: this._response(game)
+                        };
+                    } else {
+                        const awayTeam = game.away.name;
+                        const homeTeam = game.home.name;
+                        const awayScore = game.scoring.away_points;
+                        const homeScore = game.scoring.home_points;
+                        return Tp.Helpers.Http.get(
+                            NFL_BOXSCORE_URL.format(game.id, this
+                                ._api_key)
+                        ).then((response) => {
+                            const parsed = JSON.parse(response);
+                            const homeHalves = [];
+                            const awayHalves = [];
+                            for (let i = 0; i < 4; i++) {
+                                try {
+                                    homeHalves.push(
+                                        parsed.scoring[i].points
+                                    );
+                                    awayHalves.push(
+                                        parsed.scoring[i].points
+                                    );
+                                } catch (error) {
+                                    homeHalves.push(0);
+                                    awayHalves.push(0);
+                                }
+                            }
+                            return {
+                                home_team: createTpEntity(
+                                    homeTeam,
+                                    "alias"
                                 ),
-                            },
-                        ];
-                    case "scheduled":
-                        return [
-                            {
-                                status_message: "Next game is %s @ %s at %s".format(
-                                    awayTeam.name,
-                                    homeTeam.name,
-                                    dateTime.toLocaleString(platform.locale, {
-                                        timeZone: platform.timezone,
-                                    })
+                                home_score: homeScore,
+                                home_half1: homeHalves[0],
+                                home_half2: homeHalves[1],
+                                away_team: createTpEntity(
+                                    awayTeam,
+                                    "alias"
                                 ),
-                            },
-                        ];
-                    case "closed":
-                    case "halftime":
-                    case "inprogress":
-                        return new Promise((resolve, reject) => {
-                            const url = NFL_BOXSCORE_URL.format(gameId);
-                            setTimeout(() => {
-                                Tp.Helpers.Http.get(url).then((response) => {
-                                    const parsed = JSON.parse(response);
-                                    const homeQuarters = [];
-                                    const awayQuarters = [];
+                                away_score: awayScore,
+                                away_half1: awayHalves[0],
+                                away_half2: awayHalves[1],
+                            };
 
-                                    for (let i = 0; i < 4; i++) {
-                                        try {
-                                            homeQuarters.push(
-                                                parsed.scoring[i].home_points
-                                            );
-                                            awayQuarters.push(
-                                                parsed.scoring[i].away_points
-                                            );
-                                        } catch (error) {
-                                            homeQuarters.push(0);
-                                            awayQuarters.push(0);
-                                        }
-                                    }
-
-                                    const box_score = [
-                                        {
-                                            home_team: this._createTpEntity(
-                                                homeTeam
-                                            ),
-                                            home_score: homeScore,
-                                            home_quarter1: homeQuarters[0],
-                                            home_quarter2: homeQuarters[1],
-                                            home_quarter3: homeQuarters[2],
-                                            home_quarter4: homeQuarters[3],
-                                            away_team: this._createTpEntity(
-                                                awayTeam
-                                            ),
-                                            away_score: awayScore,
-                                            away_quarter1: awayQuarters[0],
-                                            away_quarter2: awayQuarters[1],
-                                            away_quarter3: awayQuarters[2],
-                                            away_quarter4: awayQuarters[3],
-                                            status_message:
-                                                "Game Status: " + gameStatus,
-                                        },
-                                    ];
-
-                                    resolve(box_score);
-                                });
-                            }, 1000);
                         });
-                }
-                return this.statusConditions(gameStatus);
-            })
-            .catch((e) => {
-                throw new TypeError("No NFL Games Found");
-            });
+                    }
+                })
+            );
+        });
+
     }
 
-    get_get_roster(team) {
-        this._updateUrl();
-        const team_name = team.team.value;
-        const nfl_info = NFL_JSON;
-        const conferences = nfl_info.conferences;
+    get_roster(team) {
+        const teamInfo = this._team(team);
+        return Tp.Helpers.Http.get(
+            NFL_ROSTER_URL.format(teamInfo.id, this._api_key)
+        ).then((response) => {
+            const parsed = JSON.parse(response);
+            const team_members = [];
+
+            const players = parsed.players;
+            const coaches = parsed.coaches;
+
+            for (const player of players) {
+                team_members.push({
+                    position: player.position,
+                    member: player.name,
+                });
+            }
+
+            const sortedRoster = team_members.sort((a, b) => {
+                return a.member.localeCompare(b.member);
+            });
+            for (const coach of coaches) {
+                if (coach.position === "Head Coach") {
+                    const head_coach = coach.full_name;
+                    sortedRoster.push({
+                        position: coach.position,
+                        member: head_coach,
+                    });
+                }
+            }
+            return sortedRoster;
+        });
+    }
+
+    _team(team) {
+        const team_name = team.value;
+        const conferences = NFL_JSON.conferences;
         for (const conference of conferences) {
             const divisions = conference.divisions;
             for (const division of divisions) {
@@ -438,93 +217,92 @@ module.exports = class NFLSportRadarAPIDevice {
                 for (const team of teams) {
                     const name = team.alias.toLowerCase();
                     if (name === team_name) {
-                        return Tp.Helpers.Http.get(
-                            NFL_ROSTER_URL.format(team.id)
-                        ).then((response) => {
-                            const parsed = JSON.parse(response);
-                            const team_members = [];
-
-                            const players = parsed.players;
-                            const coaches = parsed.coaches;
-
-                            for (const player of players) {
-                                {
-                                    team_members.push({
-                                        member:
-                                            player.position +
-                                            ": " +
-                                            player.name,
-                                    });
-                                }
-                            }
-
-                            const sortedRoster = team_members.sort((a, b) => {
-                                return a.member.localeCompare(b.member);
-                            });
-
-                            for (const coach of coaches) {
-                                if (coach.position === "Head Coach") {
-                                    const head_coach = coach.full_name;
-                                    sortedRoster.push({
-                                        member: "Head Coach: " + head_coach,
-                                    });
-                                }
-                            }
-                            return sortedRoster;
-                        });
+                        return {
+                            id: team.id,
+                            market: team.market,
+                            name: team.name,
+                            alias: name,
+                        };
                     }
                 }
             }
         }
-        throw new TypeError("Invalid Team Input");
+        throw new Error(`Team ${team} not found`);
     }
 
-    statusConditions(gameStatus) {
+    _response(game) {
+        const awayTeam = game.away.name;
+        const homeTeam = game.home.name;
+        const awayPoints = game.away_points;
+        const homePoints = game.home_points;
+        const dateTime = new Date(game.scheduled);
+        switch (game.status) {
+            case "scheduled":
+                return "Next game %s @ %s at %s".format(
+                    awayTeam,
+                    homeTeam,
+                    dateTime.toLocaleString(this.platform.locale, {
+                        timeZone: this.platform.timezone,
+                    })
+                );
+            case "inprogress":
+                return "Game update for %s @ %s: %d - %d".format(
+                    awayTeam,
+                    homeTeam,
+                    awayPoints,
+                    homePoints
+                );
+            case "halftime":
+                return "Half-time for %s @ %s: %d - %d".format(
+                    awayTeam,
+                    homeTeam,
+                    awayPoints,
+                    homePoints
+                );
+            case "complete":
+            case "closed":
+                return "Final score for %s @ %s: %d - %d".format(
+                    awayTeam,
+                    homeTeam,
+                    awayPoints,
+                    homePoints
+                );
+            default:
+                return undefined;
+        }
+    }
+
+    _fallback(status) {
         let status_message;
-        switch (gameStatus) {
+        switch (status) {
             case "canceled":
                 status_message = "The game has been canceled";
-                return [
-                    {
-                        result: status_message,
-                    },
-                ];
+                break;
 
             case "delayed":
                 status_message = "The game has been delayed";
-                return [
-                    {
-                        result: status_message,
-                    },
-                ];
+                break;
 
             case "unnecessary":
                 status_message =
                     "The game was scheduled to occur, but is now deemed unnecessary";
-                return [
-                    {
-                        result: status_message,
-                    },
-                ];
+                break;
 
             case "postponed":
                 status_message = "The game has been postponed";
-                return [
-                    {
-                        result: status_message,
-                    },
-                ];
+                break;
 
             case "time-tbd":
                 status_message =
                     "The game has been scheduled but the time has yet to be announced";
-                return [
-                    {
-                        result: status_message,
-                    },
-                ];
+                break;
+
+            default:
+                status_message = "The status of the game is " + status;
         }
 
-        return [];
+        return {
+            __response: status_message
+        };
     }
 };

@@ -32,8 +32,10 @@ module.exports = class SportsDevice extends Tp.BaseDevice {
         this.nflTeam = new NflTeam(this.engine.platform, this.keys.nfl_api_key);
         this.ncaaMbTeam = new NCAAMbTeam(this.engine.platform, this.keys.ncaamb_api_key);
         this.ncaaFbTeam = new NCAAFbTeam(this.engine.platform, this.keys.ncaafb_api_key);
-        this.euSoccerTeam = new EUSoccerTeam(this.engine.platform, this.keys.eusoccer_api_key);
-        this.amSoccerTeam = new AMSoccerTeam(this.engine.platform, this.keys.amsoccer_api_key);
+        this.euSoccerTeam = new EUSoccerTeam(this.engine.platform, this.keys
+            .eusoccer_api_key);
+        this.amSoccerTeam = new AMSoccerTeam(this.engine.platform, this.keys
+            .amsoccer_api_key);
         this.uniqueId = "almond.sports";
         this.name = "Sportradar and NewsApi Sports Skill";
         this.description =
@@ -79,8 +81,17 @@ module.exports = class SportsDevice extends Tp.BaseDevice {
         return this.nhlTeam.get_roster(team);
     }
 
-    get_get_weekly_games_nfl() {
-        return this.nflTeam.get_get_weekly_games();
+    get_nfl_games({ date }) {
+        return this.nflTeam.get_games(date);
+    }
+    get_nfl_team_ranking({ team, year }) {
+        return this.nflTeam.get_team_ranking(team, year);
+    }
+    get_nfl_boxscore({ date }) {
+        return this.nflTeam.get_boxscore(date);
+    }
+    get_nfl_roster({ team }) {
+        return this.nflTeam.get_roster(team);
     }
 
     get_get_todays_games_eu_soccer() {
@@ -99,10 +110,6 @@ module.exports = class SportsDevice extends Tp.BaseDevice {
         return this.ncaaFbTeam.get_get_weekly_games();
     }
 
-    get_get_team_nfl(team) {
-        return this.nflTeam.get_get_team(team);
-    }
-
     get_get_team_eu_soccer(team) {
         return this.euSoccerTeam.get_get_team(team);
     }
@@ -119,20 +126,12 @@ module.exports = class SportsDevice extends Tp.BaseDevice {
         return this.ncaaFbTeam.get_get_team(team);
     }
 
-    get_get_boxscore_nfl(team) {
-        return this.nflTeam.get_get_boxscore(team);
-    }
-
     get_get_boxscore_ncaa_mb(team) {
         return this.ncaaMbTeam.get_get_boxscore(team);
     }
 
     get_get_boxscore_ncaa_fb(team) {
         return this.ncaaFbTeam.get_get_boxscore(team);
-    }
-
-    get_get_roster_nfl(team) {
-        return this.nflTeam.get_get_roster(team);
     }
 
     get_get_roster_ncaa_mb(team) {

@@ -49,10 +49,23 @@ module.exports = [
         }
     }],
 
+    ['query', 'nfl_games', { week: 10, year: 2018 }, (results) => {
+        for (let result of results) {
+            assert.strictEqual(typeof result.home_team.display,
+                'string');
+            assert.strictEqual(typeof result.home_score, 'number');
+            assert.strictEqual(typeof result.away_team.display,
+                'string');
+            assert.strictEqual(typeof result.away_score, 'number');
+            assert.strictEqual(result.status, 'closed');
+        }
+    }],
+
     ['query', 'nba_roster', { team: new Tp.Value.Entity('hou') }, (
         results) => {
         for (let result of results) {
-            assert(['SG', 'SF', 'PG', 'PF', 'C', 'Head Coach'].includes(result.position));
+            assert(['SG', 'SF', 'PG', 'PF', 'C', 'Head Coach'].includes(
+                result.position));
             assert.strictEqual(typeof result.member, 'string');
         }
     }],
@@ -60,8 +73,8 @@ module.exports = [
     ['query', 'mlb_roster', { team: new Tp.Value.Entity('oak') }, (
         results) => {
         for (let result of results) {
-            assert(['1B', '2B', '3B', 'SS', 'LF', 'CF', 'RF', 'C', 'DH',
-                'SP1', 'SP2', 'SP3', 'SP4', 'SP5', 'CL'
+            assert(['1B', '2B', '3B', 'SS', 'LF', 'CF', 'RF', 'C', 'DH', 'SP1', 'SP2',
+                'SP3', 'SP4', 'SP5', 'CL'
             ].includes(result.position));
             assert.strictEqual(typeof result.member, 'string');
         }
@@ -71,6 +84,17 @@ module.exports = [
         results) => {
         for (let result of results) {
             assert(['G', 'C', 'D', 'RW', 'LW', 'Head Coach'].includes(result.position));
+            assert.strictEqual(typeof result.member, 'string');
+        }
+    }],
+
+    ['query', 'nfl_roster', { team: new Tp.Value.Entity('la') }, (
+        results) => {
+        for (let result of results) {
+            assert(['TE', 'RB', 'DB', 'OLB', 'CB', 'T', 'C', 'NT', 'FS', 'WR',
+                'QB', 'LS', 'P', 'ILB', 'DT', 'LB', 'G', 'SS', 'K', 'DE',
+                'Head Coach'
+            ].includes(result.position));
             assert.strictEqual(typeof result.member, 'string');
         }
     }],
@@ -122,13 +146,28 @@ module.exports = [
             assert.strictEqual(typeof result.away_team.display,
                 'string');
             assert.strictEqual(typeof result.away_score, 'number');
-            assert.strictEqual(typeof result.home_quarter1, 'number');
-            assert.strictEqual(typeof result.away_quarter1, 'number');
+            assert.strictEqual(typeof result.home_period1, 'number');
+            assert.strictEqual(typeof result.away_period1, 'number');
 
             assert.strictEqual(typeof result.home_leading_scorer,
                 'string');
             assert.strictEqual(typeof result.away_leading_scorer,
                 'string');
+        }
+    }],
+
+    ['query', 'nfl_boxscore', { week: 10, year: 2018 }, (
+        results) => {
+        for (let result of results) {
+            assert.strictEqual(typeof result.home_team.display,
+                'string');
+            assert.strictEqual(typeof result.home_score, 'number');
+            assert.strictEqual(typeof result.away_team.display,
+                'string');
+            assert.strictEqual(typeof result.away_score, 'number');
+            assert.strictEqual(typeof result.home_half1, 'number');
+            assert.strictEqual(typeof result.away_half1, 'number');
+
         }
     }],
 
@@ -161,6 +200,19 @@ module.exports = [
     ['query', 'nhl_team_ranking', {
         team: new Tp.Value.Entity('sj',
             'San Jose Sharks'),
+        year: 2012
+    }, (results) => {
+        for (let result of results) {
+            assert.strictEqual(typeof result.divisionPos, 'number');
+            assert.strictEqual(typeof result.divisionName, 'string');
+            assert.strictEqual(typeof result.conferencePos, 'number');
+            assert.strictEqual(typeof result.conferenceName, 'string');
+        }
+    }],
+
+    ['query', 'nfl_team_ranking', {
+        team: new Tp.Value.Entity('oak',
+            'Oakland Raiders'),
         year: 2012
     }, (results) => {
         for (let result of results) {
