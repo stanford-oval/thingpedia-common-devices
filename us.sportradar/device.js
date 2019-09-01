@@ -94,6 +94,19 @@ module.exports = class SportsDevice extends Tp.BaseDevice {
         return this.nflTeam.get_roster(team);
     }
 
+    get_ncaamb_games({ date }) {
+        return this.ncaaMbTeam.get_games(date);
+    }
+    get_ncaamb_team_ranking({ team, year }) {
+        return this.ncaaMbTeam.get_team_ranking(team, year);
+    }
+    get_ncaamb_boxscore({ date }) {
+        return this.ncaaMbTeam.get_boxscore(date);
+    }
+    get_ncaamb_roster({ team }) {
+        return this.ncaaMbTeam.get_roster(team);
+    }
+
     get_get_todays_games_eu_soccer() {
         return this.euSoccerTeam.get_get_todays_games();
     }

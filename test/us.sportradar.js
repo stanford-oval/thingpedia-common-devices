@@ -61,6 +61,18 @@ module.exports = [
         }
     }],
 
+    ['query', 'ncaamb_games', { date: new Date(2018, 12, 19) }, (results) => {
+        for (let result of results) {
+            assert.strictEqual(typeof result.home_team.display,
+                'string');
+            assert.strictEqual(typeof result.home_score, 'number');
+            assert.strictEqual(typeof result.away_team.display,
+                'string');
+            assert.strictEqual(typeof result.away_score, 'number');
+            assert.strictEqual(result.status, 'closed');
+        }
+    }],
+
     ['query', 'nba_roster', { team: new Tp.Value.Entity('hou') }, (
         results) => {
         for (let result of results) {
@@ -95,6 +107,15 @@ module.exports = [
                 'QB', 'LS', 'P', 'ILB', 'DT', 'LB', 'G', 'SS', 'K', 'DE',
                 'Head Coach'
             ].includes(result.position));
+            assert.strictEqual(typeof result.member, 'string');
+        }
+    }],
+
+    ['query', 'ncaamb_roster', { team: new Tp.Value.Entity('duke') }, (
+        results) => {
+        for (let result of results) {
+            assert(['G', 'F', 'C', 'Head Coach'].includes(
+                result.position));
             assert.strictEqual(typeof result.member, 'string');
         }
     }],
@@ -171,6 +192,26 @@ module.exports = [
         }
     }],
 
+    ['query', 'ncaamb_boxscore', { week: 10, year: 2018 }, (
+        results) => {
+        for (let result of results) {
+            assert.strictEqual(typeof result.home_team.display,
+                'string');
+            assert.strictEqual(typeof result.home_score, 'number');
+            assert.strictEqual(typeof result.away_team.display,
+                'string');
+            assert.strictEqual(typeof result.away_score, 'number');
+            assert.strictEqual(typeof result.home_half1, 'number');
+            assert.strictEqual(typeof result.away_half1, 'number');
+
+            assert.strictEqual(typeof result.home_leading_scorer,
+                'string');
+            assert.strictEqual(typeof result.away_leading_scorer,
+                'string');
+
+        }
+    }],
+
     ['query', 'nba_team_ranking', {
         team: new Tp.Value.Entity('gsw',
             'Golden State Warriors'),
@@ -220,6 +261,19 @@ module.exports = [
             assert.strictEqual(typeof result.divisionName, 'string');
             assert.strictEqual(typeof result.conferencePos, 'number');
             assert.strictEqual(typeof result.conferenceName, 'string');
+        }
+    }],
+
+    ['query', 'ncaamb_team_ranking', {
+        team: new Tp.Value.Entity('unc',
+            'University of North Carolina'),
+        year: 2012
+    }, (results) => {
+        for (let result of results) {
+            assert.strictEqual(typeof result.conferenceName, 'string');
+            assert.strictEqual(typeof result.wins, 'number');
+            assert.strictEqual(typeof result.losses, 'number');
+            assert.strictEqual(typeof result.gamesBehind, 'number');
         }
     }],
 ];

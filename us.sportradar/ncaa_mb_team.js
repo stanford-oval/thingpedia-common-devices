@@ -10,516 +10,301 @@
 "use strict";
 
 const Tp = require("thingpedia");
-
-const NCAA_MB_API_KEY = "7584setd3gx4uecy952exvxg";
-const NCAA_MB_SCHEDULE_URL =
-    "https://api.sportradar.us/ncaamb/trial/v4/en/games/%s/%s/%s/schedule.json?api_key=" +
-    NCAA_MB_API_KEY;
-const NCAA_MB_BOXSCORE_URL =
-    "https://api.sportradar.us/ncaamb/trial/v4/en/games/%s/boxscore.json?api_key=" +
-    NCAA_MB_API_KEY;
-const NCAA_MB_RANKINGS_URL =
-    "https://api.sportradar.us/ncaamb/trial/v4/en/seasons/%s/REG/standings.json?api_key=" +
-    NCAA_MB_API_KEY;
-const NCAA_MB_ROSTER_URL =
-    "https://api.sportradar.us/ncaamb/trial/v4/en/teams/%s/profile.json?api_key=" +
-    NCAA_MB_API_KEY;
+const { createTpEntity } = require("./utils");
 const NCAA_MB_JSON = require("./teams/ncaamb.json");
 
+const NCAA_MB_SCHEDULE_URL =
+    "https://api.sportradar.us/ncaamb/trial/v4/en/games/%s/%s/%s/schedule.json?api_key=%s";
+const NCAA_MB_BOXSCORE_URL =
+    "https://api.sportradar.us/ncaamb/trial/v4/en/games/%s/boxscore.json?api_key=%s";
+const NCAA_MB_RANKINGS_URL =
+    "https://api.sportradar.us/ncaamb/trial/v4/en/seasons/%s/REG/standings.json?api_key=%s";
+const NCAA_MB_ROSTER_URL =
+    "https://api.sportradar.us/ncaamb/trial/v4/en/teams/%s/profile.json?api_key=%s";
+
 module.exports = class NcaaMensBasketballSportRadarAPIDevice {
-    constructor(platform) {
+    constructor(platform, key) {
         this.platform = platform;
         this.name = "Sport Radar NCAA Men's Basketball Channel";
         this.description = "The NCAA Men's Basketball Channel for Sport Radar";
+        this._api_key = key;
     }
 
-    _updateUrl() {
-        const now = new Date();
-        this.schedule_url = NCAA_MB_SCHEDULE_URL.format(
-            now.getFullYear(),
-            now.getMonth() + 1,
-            now.getDate()
+    get_games(date) {
+        if (date === undefined || date === null) date = new Date();
+
+        const url = NCAA_MB_SCHEDULE_URL.format(
+            date.getFullYear(),
+            date.getMonth() + 1,
+            date.getDate(),
+            this._api_key
         );
-        this.rankings_url = NCAA_MB_RANKINGS_URL.format(now.getFullYear());
-    }
 
-    _createTpEntity(team) {
-        return new Tp.Value.Entity(team.alias.toLowerCase(), team.name);
-    }
-
-    get_get_todays_games() {
-        return Tp.Helpers.Http.get(this.schedule_url)
-            .then((response) => {
-                const parsed = JSON.parse(response);
-                const game_statuses = [];
-
-                const games = parsed.games;
-                for (let i = 0; i < games.length; i++) {
-                    const game_status = {
-                        home_team: this._createTpEntity(games[i].home),
-                        home_score: games[i].home_points,
-                        away_team: this._createTpEntity(games[i].away),
-                        away_score: games[i].away_points,
-                        result: games[i].status,
+        return Tp.Helpers.Http.get(url).then((response) => {
+            const parsed = JSON.parse(response);
+            return parsed.games
+                .filter((game) => !!this._response(game))
+                .map((game) => {
+                    return {
+                        home_team: createTpEntity(game.home, "alias"),
+                        home_score: game.home_points,
+                        away_team: createTpEntity(game.away, "alias"),
+                        away_score: game.away_points,
+                        status: game.status,
+                        __response: this._response(game),
                     };
-
-                    game_statuses.push(game_status);
-                }
-
-                return game_statuses.map((game_status) => {
-                    return game_status;
                 });
-            })
-            .catch((e) => {
-                throw new TypeError("No NCAA Men's Basketball Games Found");
-            });
+        });
     }
 
-    get_get_team(team) {
-        return Tp.Helpers.Http.get(this.schedule_url)
-            .then((response) => {
-                const parsed = JSON.parse(response);
-                const games = parsed.games;
-                let gameStatus;
-                let index = 0;
-                const platform = this.platform;
-                const team_name = team.team.value;
-                const full_name = team.team.display;
+    get_team_ranking(team, year) {
+        const teamInfo = this._team(team);
+        const now = new Date();
+        year = year ?
+            year :
+            now.getMonth() > 10 ?
+            now.getFullYear() :
+            now.getFullYear() - 1;
 
-                for (let i = 0; i < games.length; i++) {
-                    if (
-                        games[i].home.alias.toLowerCase() === team_name ||
-                        games[i].away.alias.toLowerCase() === team_name
-                    ) {
-                        index = i;
-                        gameStatus = games[i].status;
+        const url = NCAA_MB_RANKINGS_URL.format(year, this._api_key);
+
+        return Tp.Helpers.Http.get(url).then((response) => {
+            const parsed = JSON.parse(response);
+            const conferences = parsed.conferences;
+            for (const conference of conferences) {
+                const teams = conference.teams;
+                for (const t of teams) {
+                    if (t.id === teamInfo.id) {
+                        return {
+                            conferenceName: conference.name,
+                            wins: t.wins,
+                            losses: t.losses,
+                            gamesBehind: t.games_behind.conference,
+                        };
                     }
                 }
+            }
+            throw new Error(`Team ${team.display} not found.`);
+        });
+    }
 
-                const scheduledTime = games[index].scheduled;
-                const awayTeam = games[index].away.alias;
-                const homeTeam = games[index].home.alias;
-                const awayPoints = games[index].away_points;
-                const homePoints = games[index].home_points;
-                const dateTime = new Date(scheduledTime);
-                let status_message;
+    get_boxscore(date) {
+        if (date === undefined || date === null) date = new Date();
 
-                return new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                        this.get_rankings(full_name).then((response) => {
-                            const team_rankings = response;
-                            switch (gameStatus) {
-                                case undefined:
-                                    status_message = "There is no %s game today. I can notify you when there is a game if you want?".format(
-                                        full_name
+        const url = NCAA_MB_SCHEDULE_URL.format(
+            date.getFullYear(),
+            date.getMonth() + 1,
+            date.getDate(),
+            this._api_key
+        );
+
+        return Tp.Helpers.Http.get(url).then((response) => {
+            const parsed = JSON.parse(response);
+            return Promise.all(
+                parsed.games
+                .filter((game) => !!this._response(game))
+                .map((game) => {
+                    if (game.status === "scheduled") {
+                        return {
+                            __response: this._response(game)
+                        };
+                    } else {
+                        const awayTeam = game.away.name;
+                        const homeTeam = game.home.name;
+                        const awayScore = game.away_points;
+                        const homeScore = game.home_points;
+
+                        return Tp.Helpers.Http.get(
+                            NCAA_MB_BOXSCORE_URL.format(game.id, this
+                                ._api_key)
+                        ).then((response) => {
+                            const parsed = JSON.parse(response);
+                            const homeHalves = [];
+                            const awayHalves = [];
+                            let homeLeader = "";
+                            let awayLeader = "";
+                            for (let i = 0; i < 2; i++) {
+                                try {
+                                    homeHalves.push(
+                                        parsed.home.scoring[i].points
                                     );
-                                    resolve([
-                                        {
-                                            result: status_message,
-                                            wins: team_rankings.wins,
-                                            losses: team_rankings.losses,
-                                            conferencePos:
-                                                team_rankings.games_behind,
-                                            conferenceName:
-                                                team_rankings.conference,
-                                        },
-                                    ]);
-
-                                    return;
-
-                                case "scheduled":
-                                    status_message = "Next game %s @ %s at %s".format(
-                                        awayTeam,
-                                        homeTeam,
-                                        dateTime.toLocaleString(
-                                            platform.locale,
-                                            {
-                                                timeZone: platform.timezone,
-                                            }
-                                        )
+                                    awayHalves.push(
+                                        parsed.away.scoring[i].points
                                     );
-                                    resolve([
-                                        {
-                                            result: status_message,
-                                            wins: team_rankings.wins,
-                                            losses: team_rankings.losses,
-                                            conferencePos:
-                                                team_rankings.games_behind,
-                                            conferenceName:
-                                                team_rankings.conference,
-                                        },
-                                    ]);
-
-                                    return;
-                                case "inprogress":
-                                    status_message = "Game update for %s @ %s: %d - %d".format(
-                                        awayTeam,
-                                        homeTeam,
-                                        awayPoints,
-                                        homePoints
-                                    );
-                                    resolve([
-                                        {
-                                            result: status_message,
-                                            wins: team_rankings.wins,
-                                            losses: team_rankings.losses,
-                                            conferencePos:
-                                                team_rankings.games_behind,
-                                            conferenceName:
-                                                team_rankings.conference,
-                                        },
-                                    ]);
-
-                                    return;
-                                case "halftime":
-                                    status_message = "Half-time for %s @ %s: %d - %d".format(
-                                        awayTeam,
-                                        homeTeam,
-                                        awayPoints,
-                                        homePoints
-                                    );
-                                    resolve([
-                                        {
-                                            result: status_message,
-                                            wins: team_rankings.wins,
-                                            losses: team_rankings.losses,
-                                            conferencePos:
-                                                team_rankings.games_behind,
-                                            conferenceName:
-                                                team_rankings.conference,
-                                        },
-                                    ]);
-
-                                    return;
-                                case "complete":
-                                    status_message =
-                                        "The game is complete and statistics are being reviewed";
-                                    resolve([
-                                        {
-                                            result: status_message,
-                                            wins: team_rankings.wins,
-                                            losses: team_rankings.losses,
-                                            conferencePos:
-                                                team_rankings.games_behind,
-                                            conferenceName:
-                                                team_rankings.conference,
-                                        },
-                                    ]);
-
-                                    return;
-                                case "closed":
-                                    status_message = "Final score for %s @ %s: %d - %d".format(
-                                        awayTeam,
-                                        homeTeam,
-                                        awayPoints,
-                                        homePoints
-                                    );
-                                    resolve([
-                                        {
-                                            result: status_message,
-                                            wins: team_rankings.wins,
-                                            losses: team_rankings.losses,
-                                            conferencePos:
-                                                team_rankings.games_behind,
-                                            conferenceName:
-                                                team_rankings.conference,
-                                        },
-                                    ]);
-
-                                    return;
+                                } catch (error) {
+                                    homeHalves.push(0);
+                                    awayHalves.push(0);
+                                }
                             }
-
-                            const status = this.statusConditions(gameStatus);
-                            status[0].wins = team_rankings.wins;
-                            status[0].losses = team_rankings.losses;
-                            status[0].conferencePos =
-                                team_rankings.games_behind;
-                            status[0].conferenceName = team_rankings.conference;
-
-                            resolve(status);
-                        });
-                    }, 1000);
-                });
-            })
-            .catch((e) => {
-                throw new TypeError("No NCAA Men's Basketball Games Found");
-            });
-    }
-
-    get_rankings(input_team) {
-        this._updateUrl();
-
-        return Tp.Helpers.Http.get(this.rankings_url)
-            .then((response) => {
-                const parsed = JSON.parse(response);
-                const conferences = parsed.conferences;
-                for (const conference of conferences) {
-                    const teams = conference.teams;
-                    for (const team of teams) {
-                        const team_name = `${team.market} ${team.name}`;
-                        if (team_name === input_team) {
+                            try {
+                                homeLeader = parsed.home.leaders.points[0].full_name;
+                                awayLeader = parsed.away.leaders.points[0].full_name;
+                            } catch (error) {
+                                console.log(error);
+                            }
                             return {
-                                conference: conference.name,
-                                wins: team.wins,
-                                losses: team.losses,
-                                games_behind: team.games_behind.conference,
+                                home_team: createTpEntity(homeTeam, "alias"),
+                                home_score: homeScore,
+                                home_half1: homeHalves[0],
+                                home_half2: homeHalves[1],
+                                home_leading_scorer: homeLeader,
+                                away_team: createTpEntity(awayTeam, "alias"),
+                                away_score: awayScore,
+                                away_half1: awayHalves[0],
+                                away_half2: awayHalves[1],
+                                away_leading_scorer: awayLeader,
                             };
-                        }
-                    }
-                }
-                throw new TypeError("Invalid Team Input");
-            })
-            .catch((e) => {
-                throw new TypeError("Invalid Team Input");
-            });
-    }
-
-    get_get_boxscore(team) {
-        return Tp.Helpers.Http.get(this.schedule_url)
-            .then((response) => {
-                const parsed = JSON.parse(response);
-                const games = parsed.games;
-                const team_name = team.team.value;
-                const full_name = team.team.display;
-
-                let index = 0;
-                let gameStatus;
-                let gameId = "";
-                const platform = this.platform;
-
-                for (let i = 0; i < games.length; i++) {
-                    if (
-                        games[i].home.alias.toLowerCase() === team_name ||
-                        games[i].away.alias.toLowerCase() === team_name
-                    ) {
-                        index = i;
-                        gameStatus = games[i].status;
-                        gameId = games[i].id;
-                    }
-                }
-
-                const homeTeam = games[index].home;
-                const awayTeam = games[index].away;
-                const homeScore = games[index].home_points;
-                const awayScore = games[index].away_points;
-                const scheduledTime = games[index].scheduled;
-                const dateTime = new Date(scheduledTime);
-
-                switch (gameStatus) {
-                    case undefined:
-                        return [
-                            {
-                                status_message: "There is no %s game today. I can notify you when there is a game if you want?".format(
-                                    full_name
-                                ),
-                            },
-                        ];
-                    case "scheduled":
-                        return [
-                            {
-                                status_message: "Next game %s @ %s at %s".format(
-                                    awayTeam.name,
-                                    homeTeam.name,
-                                    dateTime.toLocaleString(platform.locale, {
-                                        timeZone: platform.timezone,
-                                    })
-                                ),
-                            },
-                        ];
-                    case "closed":
-                    case "halftime":
-                    case "inprogress":
-                        return new Promise((resolve, reject) => {
-                            const url = NCAA_MB_BOXSCORE_URL.format(gameId);
-                            setTimeout(() => {
-                                Tp.Helpers.Http.get(url).then((response) => {
-                                    const parsed = JSON.parse(response);
-                                    const homeHalves = [];
-                                    const awayHalves = [];
-                                    let homeLeader = "";
-                                    let awayLeader = "";
-                                    for (let i = 0; i < 4; i++) {
-                                        try {
-                                            homeHalves.push(
-                                                parsed.home.scoring[i].points
-                                            );
-                                            awayHalves.push(
-                                                parsed.away.scoring[i].points
-                                            );
-                                        } catch (error) {
-                                            homeHalves.push(0);
-                                            awayHalves.push(0);
-                                        }
-                                    }
-                                    try {
-                                        homeLeader =
-                                            parsed.home.leaders.points[0]
-                                                .full_name;
-                                        awayLeader =
-                                            parsed.away.leaders.points[0]
-                                                .full_name;
-                                    } catch (error) {
-                                        console.log(error);
-                                    }
-
-                                    const box_score = [
-                                        {
-                                            home_team: this._createTpEntity(
-                                                homeTeam
-                                            ),
-                                            home_score: homeScore,
-                                            home_half1: homeHalves[0],
-                                            home_half2: homeHalves[1],
-                                            home_leading_scorer: homeLeader,
-                                            away_team: this._createTpEntity(
-                                                awayTeam
-                                            ),
-                                            away_score: awayScore,
-                                            away_half1: awayHalves[0],
-                                            away_half2: awayHalves[1],
-                                            away_leading_scorer: awayLeader,
-                                            status_message:
-                                                "Game Status: " + gameStatus,
-                                        },
-                                    ];
-
-                                    resolve(box_score);
-                                });
-                            }, 1000);
                         });
-                }
-                return this.statusConditions(gameStatus);
-            })
-            .catch((e) => {
-                throw new TypeError("No NCAA Men's Basketball Games Found");
-            });
+                    }
+                })
+            );
+
+        });
+
     }
 
-    get_get_roster(team) {
-        this._updateUrl();
-        const team_name = team.team.value;
-        const nba_info = NCAA_MB_JSON;
-        const divisions = nba_info.divisions;
+    get_roster(team) {
+        const teamInfo = this._team(team);
+        return Tp.Helpers.Http.get(
+            NCAA_MB_ROSTER_URL.format(teamInfo.id, this._api_key)
+        ).then((response) => {
+            const parsed = JSON.parse(response);
+            const team_members = [];
+
+            const players = parsed.players;
+            const coaches = parsed.coaches;
+
+            for (const player of players) {
+                team_members.push({
+                    position: player.position,
+                    member: player.full_name,
+                });
+            }
+
+            const sortedRoster = team_members.sort((a, b) => {
+                return a.member.localeCompare(b.member);
+            });
+            for (const coach of coaches) {
+                if (coach.position === "Head Coach") {
+                    const head_coach = coach.full_name;
+                    sortedRoster.push({
+                        position: coach.position,
+                        member: head_coach,
+                    });
+                }
+            }
+            return sortedRoster;
+        });
+    }
+
+    _team(team) {
+        const team_name = team.value;
+        const divisions = NCAA_MB_JSON.divisions;
         for (const division of divisions) {
             if (division.alias === "D1") {
                 const conferences = division.conferences;
-
                 for (const conference of conferences) {
                     const teams = conference.teams;
                     if (teams.length > 0) {
                         for (const team of teams) {
                             const name = team.alias.toLowerCase();
                             if (name === team_name) {
-                                console.log(team.id);
-                                return Tp.Helpers.Http.get(
-                                    NCAA_MB_ROSTER_URL.format(team.id)
-                                ).then((response) => {
-                                    const parsed = JSON.parse(response);
-                                    const team_members = [];
-
-                                    const players = parsed.players;
-                                    const coaches = parsed.coaches;
-
-                                    for (const player of players) {
-                                        team_members.push({
-                                            member:
-                                                player.position +
-                                                ": " +
-                                                player.full_name,
-                                        });
-                                    }
-
-                                    const sortedRoster = team_members.sort(
-                                        (a, b) => {
-                                            return a.member.localeCompare(
-                                                b.member
-                                            );
-                                        }
-                                    );
-
-                                    for (const coach of coaches) {
-                                        if (coach.position === "Head Coach") {
-                                            const head_coach = coach.full_name;
-                                            sortedRoster.push({
-                                                member:
-                                                    "Head Coach: " + head_coach,
-                                            });
-                                        }
-                                    }
-                                    return sortedRoster;
-                                });
+                                return {
+                                    id: team.id,
+                                    market: team.market,
+                                    name: team.name,
+                                    alias: name,
+                                };
                             }
+
                         }
                     }
                 }
             }
         }
-        throw new TypeError("Invalid Team Input");
+        throw new Error(`Team ${team} not found`);
     }
 
-    statusConditions(gameStatus) {
+    _response(game) {
+        const awayTeam = game.away.name;
+        const homeTeam = game.home.name;
+        const awayPoints = game.away_points;
+        const homePoints = game.home_points;
+        const dateTime = new Date(game.scheduled);
+        switch (game.status) {
+            case "scheduled":
+                return "Next game %s @ %s at %s".format(
+                    awayTeam,
+                    homeTeam,
+                    dateTime.toLocaleString(this.platform.locale, {
+                        timeZone: this.platform.timezone,
+                    })
+                );
+            case "inprogress":
+                return "Game update for %s @ %s: %d - %d".format(
+                    awayTeam,
+                    homeTeam,
+                    awayPoints,
+                    homePoints
+                );
+            case "halftime":
+                return "Half-time for %s @ %s: %d - %d".format(
+                    awayTeam,
+                    homeTeam,
+                    awayPoints,
+                    homePoints
+                );
+            case "complete":
+            case "closed":
+                return "Final score for %s @ %s: %d - %d".format(
+                    awayTeam,
+                    homeTeam,
+                    awayPoints,
+                    homePoints
+                );
+            default:
+                return undefined;
+        }
+    }
+
+    _fallback(status) {
         let status_message;
-        switch (gameStatus) {
+        switch (status) {
             case "canceled":
                 status_message = "The game has been canceled";
-                return [
-                    {
-                        result: status_message,
-                    },
-                ];
+                break;
 
             case "delayed":
                 status_message = "The game has been delayed";
-                return [
-                    {
-                        result: status_message,
-                    },
-                ];
+                break;
 
             case "unnecessary":
                 status_message =
                     "The game was scheduled to occur, but is now deemed unnecessary";
-                return [
-                    {
-                        result: status_message,
-                    },
-                ];
+                break;
 
             case "if_necessary":
                 status_message = "The game will be scheduled if necessary";
-                return [
-                    {
-                        result: status_message,
-                    },
-                ];
-
+                break;
             case "postponed":
                 status_message = "The game has been postponed";
-                return [
-                    {
-                        result: status_message,
-                    },
-                ];
+                break;
 
             case "time-tbd":
                 status_message =
                     "The game has been scheduled but the time has yet to be announced";
-                return [
-                    {
-                        result: status_message,
-                    },
-                ];
+                break;
 
             case "created":
                 status_message =
                     "The game has just began and information is being logged";
-                return [
-                    {
-                        result: status_message,
-                    },
-                ];
-        }
+                break;
 
-        return [];
+            default:
+                status_message = "The status of the game is " + status;
+        }
+        return {
+            __response: status_message
+        };
     }
 };
