@@ -81,7 +81,7 @@ module.exports = class NHLSportRadarAPIDevice {
                                 divisionName: division.name,
                                 conferencePos: t.rank.conference,
                                 conferenceName: conference.name,
-                            }, ];
+                            }];
                         }
                     }
                 }

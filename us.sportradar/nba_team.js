@@ -82,7 +82,7 @@ module.exports = class NBASportRadarAPIDevice {
                                 divisionName: division.name,
                                 conferencePos: t.rank.conference,
                                 conferenceName: conference.name,
-                            }, ];
+                            }];
                         }
                     }
                 }

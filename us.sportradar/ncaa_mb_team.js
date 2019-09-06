@@ -75,12 +75,12 @@ module.exports = class NcaaMensBasketballSportRadarAPIDevice {
                 const teams = conference.teams;
                 for (const t of teams) {
                     if (t.id === teamInfo.id) {
-                        return {
+                        return [{
                             conferenceName: conference.name,
                             wins: t.wins,
                             losses: t.losses,
                             gamesBehind: t.games_behind.conference,
-                        };
+                        }];
                     }
                 }
             }

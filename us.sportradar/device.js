@@ -81,14 +81,14 @@ module.exports = class SportsDevice extends Tp.BaseDevice {
         return this.nhlTeam.get_roster(team);
     }
 
-    get_nfl_games({ date }) {
-        return this.nflTeam.get_games(date);
+    get_nfl_games({ week, year }) {
+        return this.nflTeam.get_games(week, year);
     }
     get_nfl_team_ranking({ team, year }) {
         return this.nflTeam.get_team_ranking(team, year);
     }
-    get_nfl_boxscore({ date }) {
-        return this.nflTeam.get_boxscore(date);
+    get_nfl_boxscore({ week, year }) {
+        return this.nflTeam.get_boxscore(week, year);
     }
     get_nfl_roster({ team }) {
         return this.nflTeam.get_roster(team);
@@ -105,6 +105,19 @@ module.exports = class SportsDevice extends Tp.BaseDevice {
     }
     get_ncaamb_roster({ team }) {
         return this.ncaaMbTeam.get_roster(team);
+    }
+
+    get_ncaafb_games({ week, year }) {
+        return this.ncaaFbTeam.get_games(week, year);
+    }
+    get_ncaafb_team_ranking({ team, year }) {
+        return this.ncaaFbTeam.get_team_ranking(team, year);
+    }
+    get_ncaafb_boxscore({ week, year }) {
+        return this.ncaaFbTeam.get_boxscore(week, year);
+    }
+    get_ncaafb_roster({ team }) {
+        return this.ncaaFbTeam.get_roster(team);
     }
 
     get_get_todays_games_eu_soccer() {

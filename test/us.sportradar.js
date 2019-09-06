@@ -73,6 +73,18 @@ module.exports = [
         }
     }],
 
+    ['query', 'ncaafb_games', { week: 1, year: 2019 }, (results) => {
+        for (let result of results) {
+            assert.strictEqual(typeof result.home_team.display,
+                'string');
+            assert.strictEqual(typeof result.home_score, 'number');
+            assert.strictEqual(typeof result.away_team.display,
+                'string');
+            assert.strictEqual(typeof result.away_score, 'number');
+            assert.strictEqual(result.status, 'closed');
+        }
+    }],
+
     ['query', 'nba_roster', { team: new Tp.Value.Entity('hou') }, (
         results) => {
         for (let result of results) {
@@ -85,9 +97,17 @@ module.exports = [
     ['query', 'mlb_roster', { team: new Tp.Value.Entity('oak') }, (
         results) => {
         for (let result of results) {
-            assert(['1B', '2B', '3B', 'SS', 'LF', 'CF', 'RF', 'C', 'DH', 'SP1', 'SP2',
-                'SP3', 'SP4', 'SP5', 'CL'
-            ].includes(result.position));
+
+            try {
+                assert(['1B', '2B', '3B', 'SS', 'LF', 'CF', 'RF', 'C', 'DH', 'SP1', 'SP2',
+                    'SP3', 'SP4', 'SP5', 'CL'
+                ].includes(result.position));
+            } catch (error) {
+                //5 Starting Pitchers is standard, however there is
+                //no limit on the number of Starting Pitchers a team can have
+                assert(result.position.includes('SP'));
+            }
+
             assert.strictEqual(typeof result.member, 'string');
         }
     }],
@@ -116,6 +136,16 @@ module.exports = [
         for (let result of results) {
             assert(['G', 'F', 'C', 'Head Coach'].includes(
                 result.position));
+            assert.strictEqual(typeof result.member, 'string');
+        }
+    }],
+
+    ['query', 'ncaafb_roster', { team: new Tp.Value.Entity('bama') }, (
+        results) => {
+        for (let result of results) {
+            assert(['RB', 'LB', 'OL', 'DL', 'DB', 'QB', 'TE', 'WR', 'LS', 'P',
+                'K', 'K/P', 'Head Coach'
+            ].includes(result.position));
             assert.strictEqual(typeof result.member, 'string');
         }
     }],
@@ -192,7 +222,27 @@ module.exports = [
         }
     }],
 
-    ['query', 'ncaamb_boxscore', { week: 10, year: 2018 }, (
+    ['query', 'ncaamb_boxscore', { date: new Date(2018, 12, 19) }, (
+        results) => {
+        for (let result of results) {
+            assert.strictEqual(typeof result.home_team.display,
+                'string');
+            assert.strictEqual(typeof result.home_score, 'number');
+            assert.strictEqual(typeof result.away_team.display,
+                'string');
+            assert.strictEqual(typeof result.away_score, 'number');
+            assert.strictEqual(typeof result.home_quarter1, 'number');
+            assert.strictEqual(typeof result.away_quarter1, 'number');
+
+            assert.strictEqual(typeof result.home_leading_scorer,
+                'string');
+            assert.strictEqual(typeof result.away_leading_scorer,
+                'string');
+
+        }
+    }],
+
+    ['query', 'ncaafb_boxscore', { week: 2, year: 2018 }, (
         results) => {
         for (let result of results) {
             assert.strictEqual(typeof result.home_team.display,
@@ -204,18 +254,13 @@ module.exports = [
             assert.strictEqual(typeof result.home_half1, 'number');
             assert.strictEqual(typeof result.away_half1, 'number');
 
-            assert.strictEqual(typeof result.home_leading_scorer,
-                'string');
-            assert.strictEqual(typeof result.away_leading_scorer,
-                'string');
-
         }
     }],
 
     ['query', 'nba_team_ranking', {
         team: new Tp.Value.Entity('gsw',
             'Golden State Warriors'),
-        year: 2012
+        year: 2015
     }, (results) => {
         for (let result of results) {
             assert.strictEqual(typeof result.divisionPos, 'number');
@@ -241,7 +286,7 @@ module.exports = [
     ['query', 'nhl_team_ranking', {
         team: new Tp.Value.Entity('sj',
             'San Jose Sharks'),
-        year: 2012
+        year: 2017
     }, (results) => {
         for (let result of results) {
             assert.strictEqual(typeof result.divisionPos, 'number');
@@ -254,7 +299,7 @@ module.exports = [
     ['query', 'nfl_team_ranking', {
         team: new Tp.Value.Entity('oak',
             'Oakland Raiders'),
-        year: 2012
+        year: 2015
     }, (results) => {
         for (let result of results) {
             assert.strictEqual(typeof result.divisionPos, 'number');
@@ -267,13 +312,25 @@ module.exports = [
     ['query', 'ncaamb_team_ranking', {
         team: new Tp.Value.Entity('unc',
             'University of North Carolina'),
-        year: 2012
+        year: 2017
     }, (results) => {
         for (let result of results) {
             assert.strictEqual(typeof result.conferenceName, 'string');
             assert.strictEqual(typeof result.wins, 'number');
             assert.strictEqual(typeof result.losses, 'number');
             assert.strictEqual(typeof result.gamesBehind, 'number');
+        }
+    }],
+
+    ['query', 'ncaafb_team_ranking', {
+        team: new Tp.Value.Entity('bama',
+            'University of Alabama'),
+        year: 2012
+    }, (results) => {
+        for (let result of results) {
+            assert.strictEqual(typeof result.conferenceName, 'string');
+            assert.strictEqual(typeof result.wins, 'number');
+            assert.strictEqual(typeof result.losses, 'number');
         }
     }],
 ];

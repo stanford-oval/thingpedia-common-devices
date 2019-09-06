@@ -78,7 +78,7 @@ module.exports = class MLBSportRadarAPIDevice {
                     for (const t of teams) {
                         if (t.id === teamInfo.id) {
                             return [{
-                                divisonPos: t.rank.division,
+                                divisionPos: t.rank.division,
                                 divisionName: division.name,
                                 leaguePos: t.rank.league,
                                 leagueName: league.name

@@ -87,7 +87,7 @@ module.exports = class NFLSportRadarAPIDevice {
                                 divisionName: division.name,
                                 conferencePos: t.rank.conference,
                                 conferenceName: conference.name,
-                            }, ];
+                            }];
                         }
                     }
                 }
@@ -133,19 +133,19 @@ module.exports = class NFLSportRadarAPIDevice {
                                 ._api_key)
                         ).then((response) => {
                             const parsed = JSON.parse(response);
-                            const homeHalves = [];
-                            const awayHalves = [];
+                            const homeQuarters = [];
+                            const awayQuarters = [];
                             for (let i = 0; i < 4; i++) {
                                 try {
-                                    homeHalves.push(
+                                    homeQuarters.push(
                                         parsed.scoring[i].points
                                     );
-                                    awayHalves.push(
+                                    awayQuarters.push(
                                         parsed.scoring[i].points
                                     );
                                 } catch (error) {
-                                    homeHalves.push(0);
-                                    awayHalves.push(0);
+                                    homeQuarters.push(0);
+                                    awayQuarters.push(0);
                                 }
                             }
                             return {
@@ -154,15 +154,19 @@ module.exports = class NFLSportRadarAPIDevice {
                                     "alias"
                                 ),
                                 home_score: homeScore,
-                                home_half1: homeHalves[0],
-                                home_half2: homeHalves[1],
+                                home_quarter1: homeQuarters[0],
+                                home_quarter2: homeQuarters[1],
+                                home_quarter3: homeQuarters[2],
+                                home_quarter4: homeQuarters[3],
                                 away_team: createTpEntity(
                                     awayTeam,
                                     "alias"
                                 ),
                                 away_score: awayScore,
-                                away_half1: awayHalves[0],
-                                away_half2: awayHalves[1],
+                                away_quarter1: awayQuarters[0],
+                                away_quarter2: awayQuarters[1],
+                                away_quarter3: awayQuarters[2],
+                                away_quarter4: awayQuarters[3],
                             };
 
                         });
@@ -175,36 +179,35 @@ module.exports = class NFLSportRadarAPIDevice {
 
     get_roster(team) {
         const teamInfo = this._team(team);
-        return Tp.Helpers.Http.get(
-            NFL_ROSTER_URL.format(teamInfo.id, this._api_key)
-        ).then((response) => {
-            const parsed = JSON.parse(response);
-            const team_members = [];
+        return Tp.Helpers.Http.get(NFL_ROSTER_URL.format(teamInfo.id, this._api_key))
+            .then((response) => {
+                const parsed = JSON.parse(response);
+                const team_members = [];
 
-            const players = parsed.players;
-            const coaches = parsed.coaches;
+                const players = parsed.players;
+                const coaches = parsed.coaches;
 
-            for (const player of players) {
-                team_members.push({
-                    position: player.position,
-                    member: player.name,
-                });
-            }
-
-            const sortedRoster = team_members.sort((a, b) => {
-                return a.member.localeCompare(b.member);
-            });
-            for (const coach of coaches) {
-                if (coach.position === "Head Coach") {
-                    const head_coach = coach.full_name;
-                    sortedRoster.push({
-                        position: coach.position,
-                        member: head_coach,
+                for (const player of players) {
+                    team_members.push({
+                        position: player.position,
+                        member: player.name,
                     });
                 }
-            }
-            return sortedRoster;
-        });
+
+                const sortedRoster = team_members.sort((a, b) => {
+                    return a.member.localeCompare(b.member);
+                });
+                for (const coach of coaches) {
+                    if (coach.position === "Head Coach") {
+                        const head_coach = coach.full_name;
+                        sortedRoster.push({
+                            position: coach.position,
+                            member: head_coach,
+                        });
+                    }
+                }
+                return sortedRoster;
+            });
     }
 
     _team(team) {
@@ -237,6 +240,7 @@ module.exports = class NFLSportRadarAPIDevice {
         const homePoints = game.home_points;
         const dateTime = new Date(game.scheduled);
         switch (game.status) {
+            case "flex-schedule":
             case "scheduled":
                 return "Next game %s @ %s at %s".format(
                     awayTeam,
