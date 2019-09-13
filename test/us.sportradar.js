@@ -13,6 +13,7 @@ const assert = require('assert');
 const Tp = require('thingpedia');
 
 module.exports = [
+
     ['query', 'nba_games', { date: new Date(2018, 12, 19) }, (results) => {
         for (let result of results) {
             assert.strictEqual(typeof result.home_team.display,
@@ -81,6 +82,20 @@ module.exports = [
             assert.strictEqual(typeof result.away_team.display,
                 'string');
             assert.strictEqual(typeof result.away_score, 'number');
+            assert.strictEqual(result.status, 'closed');
+        }
+    }],
+
+    ['query', 'eu_soccer_games', {
+        league: new Tp.Value.Entity(
+            'sr:tournament:17'),
+        date: new Date(2018, 12, 19)
+    }, (results) => {
+        for (let result of results) {
+            assert.strictEqual(typeof result.home_team.display,
+                'string');
+            assert.strictEqual(typeof result.away_team.display,
+                'string');
             assert.strictEqual(result.status, 'closed');
         }
     }],
@@ -257,6 +272,26 @@ module.exports = [
         }
     }],
 
+    ['query', 'eu_soccer_boxscore', {
+        league: new Tp.Value.Entity(
+            'sr:tournament:17'),
+        date: new Date(2018, 12, 19)
+    }, (
+        results) => {
+        for (let result of results) {
+            assert.strictEqual(typeof result.home_team.display,
+                'string');
+            assert.strictEqual(typeof result.home_score, 'number');
+            assert.strictEqual(typeof result.away_team.display,
+                'string');
+            assert.strictEqual(typeof result.away_score, 'number');
+            assert.strictEqual(typeof result.home_half1, 'number');
+            assert.strictEqual(typeof result.away_half1, 'number');
+            assert.strictEqual(typeof result.match_status, 'The game has ended');
+
+        }
+    }],
+
     ['query', 'nba_team_ranking', {
         team: new Tp.Value.Entity('gsw',
             'Golden State Warriors'),
@@ -333,4 +368,16 @@ module.exports = [
             assert.strictEqual(typeof result.losses, 'number');
         }
     }],
+
+    ['query', 'eu_soccer_league_rankings', {
+        league: new Tp.Value.Entity('sr:tournament:17')
+    }, (results) => {
+        for (let result of results) {
+            assert.strictEqual(typeof result.team.display, 'string');
+            assert.strictEqual(typeof result.teamRank, 'number');
+            assert.strictEqual(typeof result.groupName, 'string');
+        }
+    }],
+
+
 ];

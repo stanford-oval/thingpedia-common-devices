@@ -97,7 +97,9 @@ class @almond.sports
   #[poll_interval=300000ms]
   #[doc="Daily Schedule for all NHL teams"];
 
-  monitorable list query get_todays_games_eu_soccer(out home_team: Entity(sportradar:eu_soccer_team) #_[canonical="home team"],
+  monitorable list query eu_soccer_games(in opt date: Date,
+                                          in opt league: Entity(almond.sports:eu_soccer_leagues),
+                                          out home_team: Entity(sportradar:eu_soccer_team) #_[canonical="home team"],
                                           out away_team: Entity(sportradar:eu_soccer_team) #_[canonical="away team"],
                                           out status: String #_[canonical="status"])
   #_[canonical="schedule for today's EU Soccer games"]
@@ -174,7 +176,7 @@ class @almond.sports
   #[poll_interval=300000ms]
   #[doc="NFL games for a given team"];
 
-   monitorable query ncaafb_ranking(in req team: Entity(sportradar:ncaafb_team) #_[canonical="team"],
+   monitorable query ncaafb_team_ranking(in req team: Entity(sportradar:ncaafb_team) #_[canonical="team"],
                       in opt year: Number,
     			     out wins: Number #_[canonical="wins"],
     			     out losses: String #_[canonical="losses"],
@@ -350,7 +352,8 @@ class @almond.sports
   #[poll_interval=300000ms]
   #[doc="NHL boxscores for a given team"];
 
-  monitorable list query get_team_eu_soccer(in req team: Entity(sportradar:eu_soccer_team) #_[canonical="team"],
+  monitorable list query eu_soccer_boxscore(in opt date: Date,
+                          in opt league: Entity(almond.sports:eu_soccer_leagues),
                           out home_team: Entity(sportradar:eu_soccer_team) #_[canonical="home team"],
                           out home_score: Number #_[canonical="home score"],
                           out home_half1: Number #_[canonical="home half1"],
@@ -359,14 +362,12 @@ class @almond.sports
                           out away_score: Number #_[canonical="away score"],
                           out away_half1: Number #_[canonical="away half1"],
                           out away_half2: Number #_[canonical="away half2"],
-                       	  out match_status: String #_[canonical="status of the match"],
-                          out status_message: String #_[canonical="additional status message"])
+                       	  out match_status: String #_[canonical="status of the match"])
 
   #_[canonical="EU Soccer boxscore on sportradar"]
   #_[confirmation="the box score for the ${team} game"]
   #_[formatted=[{type="text",text="${away_team}:${away_score} @ ${home_team}:${home_score}"},
-    {type="text",text="First Half: ${away_half1} - ${home_half1} Second Half: ${away_half2} - ${home_half2} ${match_status}"},
-    {type="text",text="${status_message}"}]]
+    {type="text",text="First Half: ${away_half1} - ${home_half1} Second Half: ${away_half2} - ${home_half2} ${match_status}"}]]
   #_[confirmation_remote="the box score for the ${team} game"]
   #[poll_interval=300000ms]
   #[doc="EU Soccer boxscores for a given team"];
@@ -452,14 +453,14 @@ class @almond.sports
   #[poll_interval=86400000ms]
   #[doc="Roster for a given ncaa football team"];
 
-  monitorable list query get_rankings_eu_soccer(in req soccer_league:Entity(almond.sports:eu_soccer_leagues) #_[canonical="team"],
+  monitorable list query eu_soccer_league_rankings(in req soccer_league:Entity(almond.sports:eu_soccer_leagues) #_[canonical="team"],
     			  out team_name:Entity(sportradar:eu_soccer_team) #_[canonical="soccer team"],
     			  out team_rank:Number #_[canonical="team rank"],
-    			  out group_name: String #_[canonical="group name"])
+    			  out groupName: String #_[canonical="group name"])
 
   #_[canonical="EU Soccer league rankings on sportradar"]
   #_[confirmation="the league rankings for ${soccer_league}"]
-  #_[formatted=[{type="text", text="${team_rank}: ${team_name}"}, {type="text", text="${group_name}"}]]
+  #_[formatted=[{type="text", text="${team_rank}: ${team_name}"}, {type="text", text="${groupName}"}]]
   #_[confirmation_remote="the league rankings for ${soccer_league}"]
   #[poll_interval=300000ms]
   #[doc="EU Soccer league rankings for a given league"];

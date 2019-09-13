@@ -120,58 +120,22 @@ module.exports = class SportsDevice extends Tp.BaseDevice {
         return this.ncaaFbTeam.get_roster(team);
     }
 
-    get_get_todays_games_eu_soccer() {
-        return this.euSoccerTeam.get_get_todays_games();
+    get_eu_soccer_games({ league, date }) {
+        return this.euSoccerTeam.get_games(league, date);
+    }
+    get_eu_soccer_boxscore({ league, date }) {
+        return this.euSoccerTeam.get_boxscore(league, date);
+    }
+    get_eu_soccer_league_rankings({ league }) {
+        return this.euSoccerTeam.get_league_rankings(league);
     }
 
     get_get_todays_games_am_soccer() {
         return this.amSoccerTeam.get_get_todays_games();
     }
-
-    get_get_todays_games_ncaa_mb() {
-        return this.ncaaMbTeam.get_get_todays_games();
-    }
-
-    get_get_weekly_games_ncaa_fb() {
-        return this.ncaaFbTeam.get_get_weekly_games();
-    }
-
-    get_get_team_eu_soccer(team) {
-        return this.euSoccerTeam.get_get_team(team);
-    }
-
     get_get_team_am_soccer(team) {
         return this.amSoccerTeam.get_get_team(team);
     }
-
-    get_get_team_ncaa_mb(team) {
-        return this.ncaaMbTeam.get_get_team(team);
-    }
-
-    get_get_team_ncaa_fb(team) {
-        return this.ncaaFbTeam.get_get_team(team);
-    }
-
-    get_get_boxscore_ncaa_mb(team) {
-        return this.ncaaMbTeam.get_get_boxscore(team);
-    }
-
-    get_get_boxscore_ncaa_fb(team) {
-        return this.ncaaFbTeam.get_get_boxscore(team);
-    }
-
-    get_get_roster_ncaa_mb(team) {
-        return this.ncaaMbTeam.get_get_roster(team);
-    }
-
-    get_get_roster_ncaa_fb(team) {
-        return this.ncaaFbTeam.get_get_roster(team);
-    }
-
-    get_get_rankings_eu_soccer(soccer_league) {
-        return this.euSoccerTeam.get_get_rankings(soccer_league);
-    }
-
     get_get_rankings_am_soccer(soccer_league) {
         return this.amSoccerTeam.get_get_rankings(soccer_league);
     }
