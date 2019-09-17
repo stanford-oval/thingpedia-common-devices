@@ -108,9 +108,8 @@ module.exports = class SoccerEUSportRadarAPIDevice {
     }
 
     _get_closed_results(teamId, formattedDate) {
-        return Tp.Helpers.Http.get(
-            SOCCER_EU_CLOSED_URL.format(formattedDate)
-        ).then((response) => {
+        const url = SOCCER_EU_CLOSED_URL.format(formattedDate, this._api_key);
+        return Tp.Helpers.Http.get(url).then((response) => {
             const parsed = JSON.parse(response);
             const games = parsed.results;
 
