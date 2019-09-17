@@ -130,13 +130,13 @@ module.exports = class SportsDevice extends Tp.BaseDevice {
         return this.euSoccerTeam.get_league_rankings(league);
     }
 
-    get_get_todays_games_am_soccer() {
-        return this.amSoccerTeam.get_get_todays_games();
+    get_am_soccer_games({ league, date }) {
+        return this.amSoccerTeam.get_games(league, date);
     }
-    get_get_team_am_soccer(team) {
-        return this.amSoccerTeam.get_get_team(team);
+    get_am_soccer_boxscore({ league, date }) {
+        return this.amSoccerTeam.get_boxscore(league, date);
     }
-    get_get_rankings_am_soccer(soccer_league) {
-        return this.amSoccerTeam.get_get_rankings(soccer_league);
+    get_am_soccer_league_rankings({ league }) {
+        return this.amSoccerTeam.get_league_rankings(league);
     }
 };
