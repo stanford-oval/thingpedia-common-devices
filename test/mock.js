@@ -93,28 +93,30 @@ class ThingpediaClient extends Tp.HttpClient {
         const ourParsed = ThingTalk.Grammar.parse(ourMetadata);
         ourParsed.classes[0].annotations.version = new ThingTalk.Ast.Value.Number(-1);
 
-        try {
-            // ourMetadata might lack some of the fields that are in the
-            // real metadata, such as api keys and OAuth secrets
-            // for that reason we fetch the metadata for thingpedia as well,
-            // and fill in any missing parameter
-            const officialMetadata = await super.getDeviceCode(deviceKind);
-            const officialParsed = ThingTalk.Grammar.parse(officialMetadata);
+        if (!ourParsed.classes[0].is_abstract) {
+            try {
+                // ourMetadata might lack some of the fields that are in the
+                // real metadata, such as api keys and OAuth secrets
+                // for that reason we fetch the metadata for thingpedia as well,
+                // and fill in any missing parameter
+                const officialMetadata = await super.getDeviceCode(deviceKind);
+                const officialParsed = ThingTalk.Grammar.parse(officialMetadata);
 
-            const ourConfig = ourParsed.classes[0].config;
+                const ourConfig = ourParsed.classes[0].config;
 
-            ourConfig.in_params = ourConfig.in_params.filter((ip) => !ip.value.isUndefined);
-            const ourConfigParams = new Set(ourConfig.in_params.map((ip) => ip.name));
-            const officialConfig = officialParsed.classes[0].config;
+                ourConfig.in_params = ourConfig.in_params.filter((ip) => !ip.value.isUndefined);
+                const ourConfigParams = new Set(ourConfig.in_params.map((ip) => ip.name));
+                const officialConfig = officialParsed.classes[0].config;
 
-            for (let in_param of officialConfig.in_params) {
-                if (!ourConfigParams.has(in_param.name))
-                    ourConfig.in_params.push(in_param);
+                for (let in_param of officialConfig.in_params) {
+                    if (!ourConfigParams.has(in_param.name))
+                        ourConfig.in_params.push(in_param);
+                }
+
+            } catch(e) {
+                if (e.code !== 404)
+                    throw e;
             }
-
-        } catch(e) {
-            if (e.code !== 404)
-                throw e;
         }
 
         this._cachedManifests.set(deviceKind, ourParsed.classes[0]);
