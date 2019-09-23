@@ -9,7 +9,7 @@ all: $(zipfiles)
 	@:
 
 %.zip: % %/node_modules
-	cd $< ; zip -x '*.tt' '*.yml' 'node_modules/.bin/*' -r $(abspath $@) .
+	cd $< ; zip -x '*.tt' '*.yml' 'node_modules/.bin/*' 'icon.png' -r $(abspath $@) .
 
 %/node_modules: %/package.json %/yarn.lock
 	mkdir -p $@
