@@ -81,6 +81,7 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
         let device;
         switch (type) {
         case 'light':
+            entityData.kind = 'light-bulb';
             device = new HomeAssistantLightbulbDevice(this.engine, entityData, this.master, entityId);
             break;
         default:
@@ -103,12 +104,13 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
     async start() {
         const existing = await HomeAssistant.getStates(this.master.connection);
 
-        for (let entityId in existing)
-            this._maybeAddEntity(entityId, existing[entityId]);
+        for (let entity of existing)
+            this._maybeAddEntity(entity.entity_id, entity.attributes);
 
-        this._unsubscribe = this.master.connection.subscribeEvents(({ entity_id, new_state }) => {
+        this._unsubscribe = this.master.connection.subscribeEvents((event) => {
+            const { entity_id, new_state } = event.data;
             if (new_state)
-                this._maybeAddEntity(entity_id, new_state);
+                this._maybeAddEntity(entity_id, new_state.attributes);
             else
                 this._maybeDeleteEntity(entity_id);
         }, 'state_changed');
@@ -130,10 +132,11 @@ module.exports = class HomeAssistantGateway extends Tp.BaseDevice {
     constructor(engine, state) {
         super(engine, state);
 
-        this.uniqueId = 'io.home-assistant/' + HASS_URL;
+        this.uniqueId = 'io.home-assistant/' + state.hassUrl;
 
         // FIXME i18n
-        this.name = `Home Assistant Gateway at ${HASS_URL}`;
+        this.name = `Home Assistant Gateway at ${state.hassUrl}`;
+        this._subdevices = new HomeAssistantDeviceSet(this);
     }
 
     static get subdevices() {
@@ -190,10 +193,18 @@ module.exports = class HomeAssistantGateway extends Tp.BaseDevice {
     }
 
     async start() {
-        this._connection = HomeAssistant.createConnection({
-            createSocket: this._createSocket.bind(this)
-        });
-        this._subdevices = new HomeAssistantDeviceSet(this);
+        try {
+            this._connection = await HomeAssistant.createConnection({
+                createSocket: this._createSocket.bind(this)
+            });
+            await this._subdevices.start();
+        } catch(e) {
+            console.error(e);
+        }
+    }
+
+    async stop() {
+        await this._subdevices.stop();
     }
 
     async _createSocket(options) {
@@ -201,7 +212,7 @@ module.exports = class HomeAssistantGateway extends Tp.BaseDevice {
             await this.refreshCredentials();
 
         // Convert from http:// -> ws://, https:// -> wss://
-        const wsUrl = `ws${this._device.hassUrl.substr(4)}/api/websocket`;
+        const wsUrl = `ws${this.hassUrl.substring(4)}/api/websocket`;
 
         // If invalid auth, we will not try to reconnect.
         let invalidAuth = false;
@@ -231,8 +242,9 @@ module.exports = class HomeAssistantGateway extends Tp.BaseDevice {
                     try {
                         if (this._accessTokenExpired)
                             await this.refreshCredentials();
-                        socket.send(JSON.stringify(HomeAssistant.messages.auth(this.accessToken)));
+                        socket.send(JSON.stringify({ type: 'auth', access_token: this.accessToken }));
                     } catch(e) {
+                        console.error('failed to send auth message', e);
                         invalidAuth = true;
                         socket.close();
                     }
