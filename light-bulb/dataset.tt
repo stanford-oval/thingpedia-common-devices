@@ -1,0 +1,28 @@
+dataset @light-bulb language "en" {
+    action (p_power :Enum(on,off))  := @light-bulb.set_power(power=p_power)
+    #_[utterances=["turn $p_power the lights",
+                   "set $p_power the lights",
+                   "turn $p_power my light bulb",
+                   "turn $p_power the light"]]
+    #[id=52295268]
+    #[name="SetPowerOnLightBulbWithPower"];
+
+    action  := @light-bulb.color_loop()
+    #_[utterances=["loop the color in my light bulb",
+                   "start disco lights",
+                   "color loop the lights"]]
+    #[id=52295272]
+    #[name="ColorLoopLightsOnLightBulb"];
+
+    action  := @light-bulb.set_power(power=enum(off))
+    #_[utterances=["shut down the lights"]]
+    #[id=52295275]
+    #[name="SetPowerOnLightBulbWithPowerOff"];
+
+    action  := @light-bulb.alert_long()
+    #_[utterances=["flash the lights",
+                   "alert me by flashing the lights"]]
+    #[id=52295276]
+    #[name="FlashAlertLightsOnLightBulb"];
+
+}
