@@ -10,6 +10,15 @@
 const HomeAssistantDevice = require('./base');
 
 module.exports = class HomeAssistantLightbulbDevice extends HomeAssistantDevice {
+    async get_power() {
+        return [{ power: this.state.state }];
+    }
+    async subscribe_power() {
+        return this._subscribeState(() => {
+            return { power: this.state.state };
+        });
+    }
+
     async do_set_power({ power }) {
         if (power === 'on')
             await this._callService('light', 'turn_on');

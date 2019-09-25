@@ -7,6 +7,8 @@
 // See LICENSE for details
 "use strict";
 
+const Stream = require('stream');
+
 const Tp = require('thingpedia');
 const HomeAssistant = require('home-assistant-js-websocket');
 
@@ -28,5 +30,25 @@ module.exports = class HomeAssistantDevice extends Tp.BaseDevice {
     _callService(domain, service, data = {}) {
         data.entity_id = this._entityId;
         return HomeAssistant.callService(this.master.connection, domain, service, data);
+    }
+
+    _subscribeState(callback) {
+        const stream = new Stream.Readable({
+            objectMode: true,
+
+            read() {}
+        });
+
+        const listener = () => {
+            const newEvent = callback();
+            if (newEvent)
+                stream.push(newEvent);
+        };
+        stream.destroy = () => {
+            this.removeListener('state-changed', listener);
+        };
+        this.on('state-changed', listener);
+
+        return stream;
     }
 };
