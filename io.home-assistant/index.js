@@ -11,52 +11,14 @@ const Tp = require('thingpedia');
 const WebSocket = require('ws');
 const HomeAssistant = require('home-assistant-js-websocket');
 
+const HomeAssistantLightbulbDevice = require('./light-bulb');
+
 // FIXME make configurable
 const HASS_URL = 'http://hassio.local:8123';
 
-class HomeAssistantDevice extends Tp.BaseDevice {
-    constructor(engine, state, master, entityId) {
-        super(engine, state);
-
-        this.master = master;
-        this._entityId = entityId;
-        this.uniqueId = master.uniqueId + '/' + entityId;
-        this.name = this.state.friendly_name;
-    }
-
-    updateState(state) {
-        super.updateState(state);
-        this.name = this.state.friendly_name;
-    }
-
-    _callService(domain, service, data = {}) {
-        data.entity_id = this._entityId;
-        return HomeAssistant.callService(this.master.connection, domain, service, data);
-    }
-}
-
-class HomeAssistantLightbulbDevice extends HomeAssistantDevice {
-    constructor(engine, state, master, entityId) {
-        super(engine, state, master, entityId);
-
-        this.uniqueId = master.uniqueId + '/' + entityId;
-    }
-
-    async do_set_power({ power }) {
-        if (power === 'on')
-            await this._callService('light', 'turn_on');
-        else
-            await this._callService('light', 'turn_off');
-    }
-
-    async do_alert_long() {
-        await this._callService('light', 'turn_on', { flash: 'long' });
-    }
-
-    async do_color_loop() {
-        await this._callService('light', 'turn_on', { effect: 'colorloop' });
-    }
-}
+const DOMAIN_TO_TP_KIND = {
+    'light': 'light-bulb'
+};
 
 class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
     constructor(master) {
@@ -67,28 +29,25 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
         this._unsubscribe = null;
     }
 
-    _maybeAddEntity(entityId, entityData) {
+    _maybeAddEntity(entityId, state, attributes) {
         const existing = this._devices.get(entityId);
         if (existing) {
-            // add "kind" property that Tp expects
-            entityData.kind = existing.state.kind;
-            existing.updateState(entityData);
+            existing.updateState({
+                kind: existing.state.kind,
+                state, attributes
+            });
             return;
         }
 
-        const [type,] = entityId.split('.');
-
-        let device;
-        switch (type) {
-        case 'light':
-            entityData.kind = 'light-bulb';
-            device = new HomeAssistantLightbulbDevice(this.engine, entityData, this.master, entityId);
-            break;
-        default:
-            console.log(`Unhandled Home Assistant entity ${entityId} of type ${type}`);
+        const [domain,] = entityId.split('.');
+        const kind = DOMAIN_TO_TP_KIND[domain];
+        if (kind === undefined) {
+            console.log(`Unhandled Home Assistant entity ${entityId} with domain ${domain}`);
             return;
         }
 
+        const deviceClass = this.constructor.subdevices[kind];
+        const device = new deviceClass(this.engine, { kind, state, attributes }, this.master, entityId);
         this._devices.set(entityId, device);
         this.objectAdded(device);
     }
@@ -105,12 +64,12 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
         const existing = await HomeAssistant.getStates(this.master.connection);
 
         for (let entity of existing)
-            this._maybeAddEntity(entity.entity_id, entity.attributes);
+            this._maybeAddEntity(entity.entity_id, entity.state, entity.attributes);
 
         this._unsubscribe = this.master.connection.subscribeEvents((event) => {
             const { entity_id, new_state } = event.data;
             if (new_state)
-                this._maybeAddEntity(entity_id, new_state.attributes);
+                this._maybeAddEntity(entity_id, new_state.state, new_state.attributes);
             else
                 this._maybeDeleteEntity(entity_id);
         }, 'state_changed');
