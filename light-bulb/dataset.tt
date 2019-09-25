@@ -1,4 +1,22 @@
 dataset @light-bulb language "en" {
+    program := now => @light-bulb.power() => notify
+    #_[utterances=["is my light bulb on?", "are the lights on?", "are the lights off?",
+                   "is my light-bulb on or off?", "is my lightbulb on?",
+                   "check if my lightbulb is on", "check that my lights are on",
+                   "check if my lights are off", "check if the lights are on or off"]];
+
+    query := @light-bulb.power()
+    #_[utterances=["whether the lights are on or off",
+                   "the power state of the light bulb", "the power state of my lights"]];
+
+    stream := monitor @light-bulb.power()
+    #_[utterances=["when I switch on or off my ligths", "when the state of my lights changes"]];
+
+    stream (p_power : Enum(on,off) := edge (monitor @light-bulb.power()) on (power == p_power)
+    #_[utterances=["when I switch ${p_power} my ligths", "when my lights turn ${p_power}",
+                   "when I turn ${p_power} the lights", "when somebody turns ${p_power} my lights",
+                   "when my lights are switched ${p_power}"]];
+
     action (p_power :Enum(on,off))  := @light-bulb.set_power(power=p_power)
     #_[utterances=["turn $p_power the lights",
                    "set $p_power the lights",
