@@ -12,7 +12,7 @@ dataset @light-bulb language "en" {
     stream := monitor @light-bulb.power()
     #_[utterances=["when I switch on or off my ligths", "when the state of my lights changes"]];
 
-    stream (p_power : Enum(on,off) := edge (monitor @light-bulb.power()) on (power == p_power)
+    stream (p_power : Enum(on,off)) := edge (monitor @light-bulb.power()) on (power == p_power)
     #_[utterances=["when I switch ${p_power} my ligths", "when my lights turn ${p_power}",
                    "when I turn ${p_power} the lights", "when somebody turns ${p_power} my lights",
                    "when my lights are switched ${p_power}"]];

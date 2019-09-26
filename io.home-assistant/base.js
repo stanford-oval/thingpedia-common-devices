@@ -20,16 +20,30 @@ module.exports = class HomeAssistantDevice extends Tp.BaseDevice {
         this._entityId = entityId;
         this.uniqueId = master.uniqueId + '/' + entityId;
         this.name = this.state.attributes.friendly_name;
+
+        this._clock = 0;
     }
 
+    // note: some versions of the thingpedia library don't emit "state-changed"
+    // in updateState(), and some do, hence we don't chain up here, to avoid
+    // double emission
     updateState(state) {
-        super.updateState(state);
+        this.state = state;
         this.name = this.state.attributes.friendly_name;
+        this.emit('state-changed');
     }
 
     _callService(domain, service, data = {}) {
         data.entity_id = this._entityId;
         return HomeAssistant.callService(this.master.connection, domain, service, data);
+    }
+
+    _lamportClock() {
+        let now = Date.now();
+        if (now < this._clock)
+            now = this._clock+1;
+        this._clock = now;
+        return now;
     }
 
     _subscribeState(callback) {
@@ -41,8 +55,12 @@ module.exports = class HomeAssistantDevice extends Tp.BaseDevice {
 
         const listener = () => {
             const newEvent = callback();
-            if (newEvent)
+            if (newEvent) {
+                // ensure that all events have different, monotonically increasing timestamps
+                // otherwise the edge-trigger logic will be confused
+                newEvent.__timestamp = this._lamportClock();
                 stream.push(newEvent);
+            }
         };
         stream.destroy = () => {
             this.removeListener('state-changed', listener);

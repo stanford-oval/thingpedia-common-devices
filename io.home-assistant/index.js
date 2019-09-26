@@ -19,6 +19,9 @@ const HASS_URL = 'http://hassio.local:8123';
 const DOMAIN_TO_TP_KIND = {
     'light': 'light-bulb'
 };
+const SUBDEVICES = {
+    'light-bulb': HomeAssistantLightbulbDevice
+};
 
 class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
     constructor(master) {
@@ -46,7 +49,7 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
             return;
         }
 
-        const deviceClass = this.constructor.subdevices[kind];
+        const deviceClass = SUBDEVICES[kind];
         const device = new deviceClass(this.engine, { kind, state, attributes }, this.master, entityId);
         this._devices.set(entityId, device);
         this.objectAdded(device);
@@ -96,12 +99,6 @@ module.exports = class HomeAssistantGateway extends Tp.BaseDevice {
         // FIXME i18n
         this.name = `Home Assistant Gateway at ${state.hassUrl}`;
         this._subdevices = new HomeAssistantDeviceSet(this);
-    }
-
-    static get subdevices() {
-        return {
-            'light-bulb': HomeAssistantLightbulbDevice
-        };
     }
 
     static async loadFromOAuth2(engine, accessToken, refreshToken, extraData) {
@@ -234,5 +231,5 @@ module.exports = class HomeAssistantGateway extends Tp.BaseDevice {
             connect(options.setupRetry);
         });
     }
-
 };
+module.exports.subdevices = SUBDEVICES;

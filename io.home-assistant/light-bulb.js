@@ -13,7 +13,8 @@ module.exports = class HomeAssistantLightbulbDevice extends HomeAssistantDevice 
     async get_power() {
         return [{ power: this.state.state }];
     }
-    async subscribe_power() {
+    // note: subscribe_ must NOT be async, or an ImplementationError will occur at runtime
+    subscribe_power() {
         return this._subscribeState(() => {
             return { power: this.state.state };
         });
