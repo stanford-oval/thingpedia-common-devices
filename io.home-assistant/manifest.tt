@@ -1,0 +1,21 @@
+class @io.home-assistant
+#_[thingpedia_name="Home Assistant"]
+#_[thingpedia_description="Integrate your Almond with Home Assistant to control your home with voice."]
+#_[description="This is your Home Assistant Gateway."]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="home"]
+#[child_types=["light-bulb"]]
+{
+    import loader from @org.thingpedia.v2();
+    import config from @org.thingpedia.config.oauth2(
+       client_id="https://thingengine.stanford.edu",
+       // There is no client secret, security is granted by matching the client_id and the redirect_uri
+       client_secret="",
+       set_state=true,
+
+       // FIXME the URL of the gateway should be configurable somehow...
+       authorize="http://hassio.local:8123/auth/authorize",
+       get_access_token="http://hassio.local:8123/auth/token"
+    );
+}

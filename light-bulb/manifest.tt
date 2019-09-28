@@ -1,0 +1,28 @@
+abstract class @light-bulb
+#_[thingpedia_name="Light Bulb"]
+#_[thingpedia_description="The general interface supported by all light bulbs."]
+#[license="CC-0"]
+#[license_gplcompatible=true]
+#[subcategory="home"]
+{
+  monitorable query power(out power : Enum(on,off))
+  #_[canonical="light bulb power state"]
+  #_[confirmation="the power state of your lightbulb"]
+  #_[formatted=["Your lights are ${power}"]];
+
+  action alert_long()
+  #_[canonical="flash alert lights on light bulb"]
+  #_[confirmation="flash alerts on your lightbulb"]
+  #[confirm=true];
+
+  action color_loop()
+  #_[canonical="color loop lights on light bulb"]
+  #_[confirmation="loop colors on your lightbulb"]
+  #[confirm=true];
+
+  action set_power(in req power: Enum(on,off) #_[prompt="Do you want to turn it on or off?"] #_[canonical="power"])
+  #_[canonical="set power on light bulb"]
+  #_[confirmation="turn $power your lightbulb"]
+  #[confirm=true];
+}
+
