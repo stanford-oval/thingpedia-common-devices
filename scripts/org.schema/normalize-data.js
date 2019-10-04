@@ -84,11 +84,12 @@ function processObject(value, type, output) {
         // at the bottom of the type hierarchy, we also check for @id and add to the output
 
         if (!output[type])
-            output[type] = [];
+            output[type] = {};
 
         // if we already have an ID, we're done
         if (value['@id']) {
-            output[type].push(value);
+            output[type][value['@id']] = value;
+            //console.error((output['Restaurant'] || []).length);
             return value['@id'];
         }
 
@@ -97,19 +98,23 @@ function processObject(value, type, output) {
         // see if we already have an object that is identical to this one
 
         value['@id'] = undefined;
-        for (let candidate of output[type]) {
-            // ignore the ID in comparison
-            const candidateId = candidate['@id'];
-            candidate['@id'] = undefined;
-            const good = deq(candidate, value, { strict: true });
-            candidate['@id'] = candidateId;
-            if (good)
-                return candidateId;
+        if (type !== 'Review' && type !== 'Person') { // but now for review or person, there are too many and it's slow
+            for (let candidateId in output[type]) {
+                const candidate = output[type][candidateId];
+                // ignore the ID in comparison
+                candidate['@id'] = undefined;
+                const good = deq(candidate, value, { strict: true });
+                candidate['@id'] = candidateId;
+                if (good)
+                    return candidateId;
+            }
         }
 
         // nope, make up a new object
         value['@id'] = 'https://thingpedia.stanford.edu/ns/uuid/' + type + '/' + uuid.v4();
-        output[type].push(value);
+        output[type][value['@id']] = value;
+
+        return value['@id'];
     }
 
     return true;
@@ -181,12 +186,13 @@ function processField(value, path, expectedType, output) {
             }
         } else {
             if (typeof value === 'object') {
-                const nestedtype = value['@type'];
+                let nestedtype = value['@type'];
                 if (!nestedtype) {
-                    console.error(`Nested object has no @type in ${path.join('.')}`, value);
-                    return undefined;
-                }
+                    //console.error(`Nested object has no @type in ${path.join('.')}, assuming ${expectedType.type}`);
 
+                    // add a type and hope for the best
+                    nestedtype = value['@type'] = expectedType.type;
+                }
                 return processObject(value, nestedtype, output);
             } else {
                 value = String(value);
@@ -224,7 +230,8 @@ function processField(value, path, expectedType, output) {
 }
 
 async function processFilename(filename, output) {
-    let input = JSON.parse(await util.promisify(fs.readFile)(process.argv[2]), { encoding: 'utf8' });
+    console.error('filename', filename);
+    let input = JSON.parse(await util.promisify(fs.readFile)(filename), { encoding: 'utf8' });
 
 
     if (!Array.isArray(input))

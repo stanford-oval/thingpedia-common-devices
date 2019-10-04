@@ -27,6 +27,8 @@ function makeMetadata(args) {
         const name = arg.name;
         if (name === 'id')
             continue;
+        if (name.indexOf('.') >= 0)
+            continue;
 
         let ptype = type;
         if (type.isArray)
