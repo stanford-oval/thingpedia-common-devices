@@ -56,24 +56,29 @@ module.exports = class GoogleContactsDevice extends Tp.BaseDevice {
         var info = {};
         if(entry.names !== undefined)
             info.name = entry.names[0].displayName;
-         else 
+        else
             info.name = "";
         
         if(entry.phoneNumbers !== undefined)
             info.phone_number = entry.phoneNumbers[0].value;
-         else 
+        else
             info.phone_number = "";
         
         if(entry.emailAddresses !== undefined)
             info.email = entry.emailAddresses[0].value;
-         else 
+        else
             info.email = "";
+
+        if(entry.addresses !== undefined)
+            info.address = entry.addresses[0].formattedValue;
+        else
+            info.address = "";
         
         return info;
     }
 
     get_get_contacts() {
-        return Tp.Helpers.Http.get(URL + "people/me/connections?personFields=emailAddresses,names,phoneNumbers", {
+        return Tp.Helpers.Http.get(URL + "people/me/connections?personFields=emailAddresses,names,phoneNumbers,addresses", {
             useOAuth2: this,
             dataContentType: 'application/json' 
             }).then((response) => {
