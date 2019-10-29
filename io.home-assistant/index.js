@@ -148,15 +148,23 @@ module.exports = class HomeAssistantGateway extends Tp.BaseDevice {
         }
     }
 
-    async start() {
+    async _doStart() {
         try {
             this._connection = await HomeAssistant.createConnection({
-                createSocket: this._createSocket.bind(this)
+                createSocket: this._createSocket.bind(this),
+                setupRetry: 10,
             });
             await this._subdevices.start();
         } catch(e) {
             console.error(e);
         }
+    }
+
+    async start() {
+        // start asynchronously as to not block Home Assistant from starting
+        // while it's waiting for /devices/create to return (which causes us
+        // to fail to connect)
+        this._doStart();
     }
 
     async stop() {
@@ -175,6 +183,7 @@ module.exports = class HomeAssistantGateway extends Tp.BaseDevice {
 
         return new Promise((resolve, reject) => {
             const connect = (triesLeft) => {
+                console.log(`Home Assistant: connection attempt ${options.setupRetry - triesLeft + 1}/${options.setupRetry}`);
                 const socket = new WebSocket(wsUrl);
 
                 const onClose = () => {
@@ -226,6 +235,9 @@ module.exports = class HomeAssistantGateway extends Tp.BaseDevice {
                 socket.on('close', onClose);
                 socket.on('open', onOpen);
                 socket.on('message', onMessage);
+                socket.on('error', (error) => {
+                    console.error('Error on Home Assistant websocket: ' + error);
+                });
             };
 
             connect(options.setupRetry);
