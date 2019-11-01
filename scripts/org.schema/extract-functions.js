@@ -64,7 +64,7 @@ async function main() {
     const manifest = await util.promisify(fs.readFile)('./org.schema/manifest.tt', { encoding: 'utf8' });
     const parsed = ThingTalk.Grammar.parse(manifest);
 
-    assert(parsed.isLibrary && parsed.classes.length === 1 && parsed.classes[0].kind === 'org.schema');
+    assert(parsed.isLibrary && parsed.classes.length === 1 && parsed.classes[0].kind.startsWith('org.schema'));
     const classDef = parsed.classes[0];
 
     const functions = {};

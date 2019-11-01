@@ -1,0 +1,157 @@
+{
+  "Thing": {
+    "extends": [],
+    "fields": {
+      "image": {
+        "isArray": false,
+        "type": "tt:Entity"
+      },
+      "description": {
+        "isArray": false,
+        "type": "tt:String"
+      }
+    }
+  },
+  "Place": {
+    "extends": [
+      "Thing"
+    ],
+    "fields": {
+      "address": {
+        "isArray": false,
+        "type": {
+          "streetAddress": {
+            "isArray": false,
+            "type": "tt:String"
+          },
+          "addressCountry": {
+            "isArray": false,
+            "type": "tt:Entity"
+          },
+          "addressRegion": {
+            "isArray": false,
+            "type": "tt:Entity"
+          },
+          "postalCode": {
+            "isArray": false,
+            "type": "tt:String"
+          },
+          "addressLocality": {
+            "isArray": false,
+            "type": "tt:String"
+          }
+        }
+      },
+      "aggregateRating": {
+        "isArray": false,
+        "type": {
+          "reviewCount": {
+            "isArray": false,
+            "type": "tt:Number"
+          },
+          "ratingValue": {
+            "isArray": false,
+            "type": "tt:Number"
+          }
+        }
+      },
+      "hasMap": {
+        "isArray": true,
+        "type": "tt:Entity"
+      },
+      "telephone": {
+        "isArray": false,
+        "type": "tt:Entity"
+      },
+      "geo": {
+        "isArray": false,
+        "type": {
+          "latitude": {
+            "isArray": false,
+            "type": "tt:Number"
+          },
+          "longitude": {
+            "isArray": false,
+            "type": "tt:Number"
+          }
+        }
+      }
+    }
+  },
+  "Organization": {
+    "extends": [
+      "Thing"
+    ],
+    "fields": {
+      "brand": {
+        "isArray": false,
+        "type": "tt:Entity"
+      }
+    }
+  },
+  "LocalBusiness": {
+    "extends": [
+      "Place",
+      "Organization"
+    ],
+    "fields": {}
+  },
+  "Intangible": {
+    "extends": [
+      "Thing"
+    ],
+    "fields": {}
+  },
+  "LodgingBusiness": {
+    "extends": [
+      "LocalBusiness"
+    ],
+    "fields": {
+      "checkinTime": {
+        "isArray": false,
+        "type": "tt:Time"
+      },
+      "amenityFeature": {
+        "isArray": true,
+        "type": "tt:Entity"
+      },
+      "checkoutTime": {
+        "isArray": false,
+        "type": "tt:Time"
+      }
+    }
+  },
+  "LocationFeatureSpecification": {
+    "extends": [
+      "Thing"
+    ],
+    "fields": {
+      "name": {
+        "isArray": false,
+        "type": "tt:String"
+      }
+    }
+  },
+  "Brand": {
+    "extends": [
+      "Intangible"
+    ],
+    "fields": {
+      "name": {
+        "isArray": false,
+        "type": "tt:String"
+      }
+    }
+  },
+  "Hotel": {
+    "extends": [
+      "LodgingBusiness"
+    ],
+    "fields": {
+      "name": {
+        "isArray": false,
+        "type": "tt:String"
+      }
+    }
+  }
+}

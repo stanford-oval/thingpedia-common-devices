@@ -1,0 +1,45 @@
+class @org.schema.Person
+#_[name="Person in Schema.org"]
+#_[description="Scraped data from websites that support schema.org"] {
+  import loader from @org.thingpedia.v2();
+  import config from @org.thingpedia.config.none();
+
+  list query Thing(out id: Entity(org.schema.Person:Thing) #[unique=true] #[genie=false] #[org_schema_has_data=true],
+                   out url: Entity(tt:url) #_[canonical={default="npp",npp=["url", "link"]}] #[org_schema_type="URL"] #[org_schema_has_data=true],
+                   out image: Entity(tt:picture) #_[canonical="image"] #[org_schema_type="URL"] #[org_schema_has_data=true])
+  #_[canonical="thing"]
+  #_[confirmation="thing"]
+  #[confirm=false]
+  #[org_schema_has_data=true]
+  #[org_schema_has_name=true];
+
+  list query Organization extends Thing(out id: Entity(org.schema.Person:Organization) #[unique=true] #[genie=false] #[org_schema_has_data=true],
+                                        out name: String #[org_schema_type="Text"] #[genie=false] #[string_values="org.schema.Person:Organization_name"] #[org_schema_has_data=true])
+  #_[canonical="organization"]
+  #_[confirmation="organization"]
+  #[confirm=false]
+  #[org_schema_has_data=true]
+  #[org_schema_has_name=true];
+
+  list query Person extends Thing(out id: Entity(org.schema.Person:Person) #[unique=true] #[genie=false] #[org_schema_has_data=true],
+                                  out name: String #[org_schema_type="Text"] #[genie=false] #[string_values="org.schema.Person:Person_name"] #[org_schema_has_data=true],
+                                  out address: {
+                                    addressLocality: String #_[canonical="city"] #[org_schema_type="Text"] #[string_values="org.schema.Person:Person_address_addressLocality"] #[org_schema_has_data=true]
+                                  } #_[canonical="address"] #[org_schema_type="PostalAddress"] #[org_schema_has_data=true],
+                                  out alumniOf: Array(Entity(org.schema.Person:Organization)) #_[canonical={default="npi",npi=["alumni of", "alumnus of", "alumna of", "#alumnus", "#alumni", "#grad", "#gradudate"],avp=["was educated at", "is graduated from", "was studied at", "went to", "graduated from", "attended"],pvp=["educated at", "graduated from", "studied at", "attended"],npp=["colleges", "universities", "alma maters"]}] #[org_schema_type="Organization"] #[org_schema_has_data=true],
+                                  out award: Array(String) #_[canonical={default="avp",npi=["winner of", "recipient of", "#winner", "#awardee", "#recipient", "#holder"],avp=["has the award", "has received the #award", "won the award for", "won the #award", "received the #award", "received the", "won the", "won", "holds the award for", "holds the #award"],pvp=["received"],npp=["awards"]}] #[org_schema_type="Text"] #[string_values="org.schema.Person:Person_award"] #[org_schema_has_data=true],
+                                  out worksFor: Array(Entity(org.schema.Person:Organization)) #_[canonical={default="avp",npi=["employee of", "#employee"],avp=["works for", "works at", "worked at", "worked for"],pvp=["employed at", "employed by"],npp=["jobs", "employers"]}] #[org_schema_type="Organization"] #[org_schema_has_data=true])
+  #_[canonical="person"]
+  #_[confirmation="person"]
+  #[confirm=false]
+  #[org_schema_has_data=true]
+  #[org_schema_has_name=true];
+
+  list query EducationalOrganization extends Organization(out id: Entity(org.schema.Person:EducationalOrganization) #[unique=true] #[genie=false] #[org_schema_has_data=true],
+                                                          out name: String #[org_schema_type="Text"] #[genie=false] #[string_values="org.schema.Person:EducationalOrganization_name"] #[org_schema_has_data=true])
+  #_[canonical="educational organization"]
+  #_[confirmation="educational organization"]
+  #[confirm=false]
+  #[org_schema_has_data=true]
+  #[org_schema_has_name=true];
+}
