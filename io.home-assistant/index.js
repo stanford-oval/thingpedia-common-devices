@@ -12,6 +12,29 @@ const WebSocket = require('ws');
 const HomeAssistant = require('home-assistant-js-websocket');
 
 const HomeAssistantLightbulbDevice = require('./light-bulb');
+const BatteryBinarySensor = require('./battery-binary-sensor/device');
+const ColdBinarySensor = require('./cold-binary-sensor/device');
+const ConnectivityBinarySensor = require('./connectivity-binary-sensor/device');
+const DoorBinarySensor = require('./door-binary-sensor/device');
+const GarageDoorBinarySensor = require('./garage-door-binary-sensor/device');
+const GasBinarySensor = require('./gas-binary-sensor/device');
+const HeatBinarySensor = require('./heat-binary-sensor/device');
+const LightBinarySensor = require('./light-binary-sensor/device');
+const LockBinarySensor = require('./lock-binary-sensor/device');
+const MoistureBinarySensor = require('./moisture-binary-sensor/device');
+const MotionBinarySensor = require('./motion-binary-sensor/device');
+const MovingBinarySensor = require('./moving-binary-sensor/device');
+const OccupancyBinarySensor = require('./occupancy-binary-sensor/device');
+const OpeningBinarySensor = require('./opening-binary-sensor/device');
+const PlugBinarySensor = require('./plug-binary-sensor/device');
+const PowerBinarySensor = require('./power-binary-sensor/device');
+const PresenceBinarySensor = require('./presence-binary-sensor/device');
+const ProblemBinarySensor = require('./problem-binary-sensor/device');
+const SafetyBinarySensor = require('./safety-binary-sensor/device');
+const SmokeBinarySensor = require('./smoke-binary-sensor/device');
+const SoundBinarySensor = require('./sound-binary-sensor/device');
+const VibrationBinarySensor = require('./vibration-binary-sensor/device');
+const WindowBinarySensor = require('./window-binary-sensor/device');
 
 // FIXME make configurable
 const HASS_URL = 'http://hassio.local:8123';
@@ -66,7 +89,7 @@ const SUBDEVICES = {
     'smoke-binary-sensor': SmokeBinarySensor,
     'sound-binary-sensor': SoundBinarySensor,
     'vibration-binary-sensor': VibrationBinarySensor,
-    'window-binary-sensor': WindowBinarySensor,
+    'window-binary-sensor': WindowBinarySensor
 };
 
 class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
