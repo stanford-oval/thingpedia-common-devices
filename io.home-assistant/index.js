@@ -51,6 +51,7 @@ const DOMAIN_TO_TP_KIND = {
     'binary_sensor_light': 'light-binary-sensor',
     'binary_sensor_lock': 'lock-binary-sensor',
     'binary_sensor_moisture': 'moisture-binary-sensor',
+    'binary_sensor_motion': 'motion-binary-sensor',
     'binary_sensor_moving': 'moving-binary-sensor',
     'binary_sensor_occupancy': 'occupancy-binary-sensor',
     'binary_sensor_opening': 'opening-binary-sensor',
@@ -58,7 +59,6 @@ const DOMAIN_TO_TP_KIND = {
     'binary_sensor_power': 'power-binary-sensor',
     'binary_sensor_presence': 'presence-binary-sensor',
     'binary_sensor_problem': 'problem-binary-sensor',
-    'binary_sensor_power': 'power-binary-sensor',
     'binary_sensor_safety': 'safety-binary-sensor',
     'binary_sensor_smoke': 'smoke-binary-sensor',
     'binary_sensor_sound': 'sound-binary-sensor',
@@ -112,13 +112,7 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
         }
 
         const [domain,] = entityId.split('.');
-
-        if (domain == "binary_sensor") {
-            // Use device_class to differentiate
-            const kind = DOMAIN_TO_TP_KIND[`binary_sensor_${attributes.device_class}`];
-        } else {
-            const kind = DOMAIN_TO_TP_KIND[domain];
-        }
+        const kind = (domain == 'binary_sensor') ? DOMAIN_TO_TP_KIND[`binary_sensor_${attributes.device_class}`] : DOMAIN_TO_TP_KIND[domain];
         
         if (kind === undefined) {
             console.log(`Unhandled Home Assistant entity ${entityId} with domain ${domain}`);
