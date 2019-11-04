@@ -1,0 +1,21 @@
+dataset @com.linkedin language "en" {
+    query  := @com.linkedin.get_profile()
+    #_[utterances=["my linkedin profile",
+                   "my profile on linkedin"]]
+    #[id=27924909]
+    #[name=""];
+
+    action (p_status :String)  := @com.linkedin.share(status=p_status)
+    #_[utterances=["share $p_status on linkedin",
+                   "post $p_status on linkedin"]]
+    #[id=27924911]
+    #[name=""];
+
+    action  := @com.linkedin.share(status=$?)
+    #_[utterances=["update my linkedin",
+                   "post something on my linkedin",
+                   "make a new linkedin post"]]
+    #[id=27924913]
+    #[name=""];
+
+}

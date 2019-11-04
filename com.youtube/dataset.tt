@@ -1,0 +1,64 @@
+dataset @com.youtube language "en" {
+    stream  := monitor (@com.youtube.list_videos(channel_id=$?))
+    #_[utterances=["when there is a new video from youtube channels I follow"]]
+    #[id=27925255]
+    #[name=""];
+
+    stream (p_channel_id :Entity(com.youtube:channel_id))  := monitor (@com.youtube.list_videos(channel_id=p_channel_id))
+    #_[utterances=["when there is a new video from youtube channel ${p_channel_id:const}",
+                   "when $p_channel_id uploads a video on youtube",
+                   "when $p_channel_id posts a new youtube video"]]
+    #[id=27925256]
+    #[name=""];
+
+    query (p_channel_id :Entity(com.youtube:channel_id))  := @com.youtube.list_videos(channel_id=p_channel_id)
+    #_[utterances=["youtube videos in $p_channel_id",
+                   "youtube channel $p_channel_id",
+                   "channel $p_channel_id in youtube"]]
+    #[id=27925259]
+    #[name=""];
+
+    query (p_category_id :Enum(best_of_youtube,recommended,paid,music,comedy,film_and_entertainment,gaming,beauty_and_fashion,from_tv,automotive,animation,sports,diy,tech,science,cooking,causes,news_and_politics,lifestyle))  := @com.youtube.channels_by_category(category_id=p_category_id)
+    #_[utterances=["channels in category $p_category_id on youtube",
+                   "youtube channels with category $p_category_id",
+                   "$p_category_id youtube channels",
+                   "$p_category_id channels in youtube",
+                   "youtube 's $p_category_id channels"]]
+    #[id=27925262]
+    #[name=""];
+
+    query  := @com.youtube.list_subscriptions()
+    #_[utterances=["channels I am subscribed to on youtube",
+                   "channels I follow on youtube",
+                   "youtube channels i follow"]]
+    #[id=27925267]
+    #[name=""];
+
+    query (p_query :String)  := @com.youtube.search_channel(query=p_query)
+    #_[utterances=["${p_query:const} channels on youtube",
+                   "channels matching ${p_query} on youtube",
+                   "youtube channel ${p_query:const}"]]
+    #[id=27925270]
+    #[name=""];
+
+    query (p_query :String)  := @com.youtube.search_videos(query=p_query)
+    #_[utterances=["a ${p_query:const} video on youtube",
+                   "a video matching $p_query on youtube",
+                   "${p_query:const} from youtube",
+                   "${p_query:const} videos from youtube",
+                   "youtube video ${p_query:const}"]]
+    #[id=27925273]
+    #[name=""];
+
+    query (p_channel_id :Entity(com.youtube:channel_id), p_query :String)  := @com.youtube.search_videos(query=p_query, channel_id=p_channel_id)
+    #_[utterances=["a video from ${p_channel_id:const} matching $p_query on youtube",
+                   "a video published by ${p_channel_id:const} matching $p_query on youtube"]]
+    #[id=27925278]
+    #[name=""];
+
+    query (p_count :Number, p_query :String)  := @com.youtube.search_videos(count=p_count, query=p_query)
+    #_[utterances=["${p_count:const} many videos matching $p_query on youtube"]]
+    #[id=27925280]
+    #[name=""];
+
+}

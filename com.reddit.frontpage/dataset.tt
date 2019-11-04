@@ -1,0 +1,38 @@
+dataset @com.reddit.frontpage language "en" {
+    stream  := monitor (@com.reddit.frontpage.get())
+    #_[utterances=["when reddit front page updates"]]
+    #[id=1688308]
+    #[name=""];
+
+    stream (p_category :String)  := monitor ((@com.reddit.frontpage.get()), category == p_category)
+    #_[utterances=["when a new post in category $p_category reaches reddit front page"]]
+    #[id=1688309]
+    #[name=""];
+
+    stream (p_user :Entity(tt:username))  := monitor ((@com.reddit.frontpage.get()), user == p_user)
+    #_[utterances=["when a new post from user $p_user reaches reddit front page"]]
+    #[id=1688310]
+    #[name=""];
+
+    query  := @com.reddit.frontpage.get()
+    #_[utterances=["the front page of reddit",
+                   "the latest posts in the reddit front page"]]
+    #[id=1688311]
+    #[name=""];
+
+    query (p_user :Entity(tt:username))  := (@com.reddit.frontpage.get()), user == p_user
+    #_[utterances=["front page posts by $p_user on reddit"]]
+    #[id=1688312]
+    #[name=""];
+
+    query (p_category :String)  := (@com.reddit.frontpage.get()), category == p_category
+    #_[utterances=["front page posts in $p_category on reddit"]]
+    #[id=1688313]
+    #[name=""];
+
+    query  := (@com.reddit.frontpage.get()), updated >= start_of(h)
+    #_[utterances=["reddit front page posts published in the last hour"]]
+    #[id=1688314]
+    #[name=""];
+
+}

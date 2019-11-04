@@ -1,0 +1,56 @@
+dataset @com.tumblr.blog language "en" {
+    action (p_title :String, p_body :String)  := @com.tumblr.blog.post_text(title=p_title, body=p_body)
+    #_[utterances=["post on tumblr with title $p_title and body $p_body",
+                   "make a tumblr blog post with title ${p_title:const} that says $p_body"]]
+    #[id=28160133]
+    #[name=""];
+
+    action (p_body :String)  := @com.tumblr.blog.post_text(body=p_body, title=$?)
+    #_[utterances=["post $p_body on tumblr",
+                   "post on tumblr saying $p_body",
+                   "make a post on tumblr with body ${p_body:const}"]]
+    #[id=28160135]
+    #[name=""];
+
+    action (p_title :String)  := @com.tumblr.blog.post_text(title=p_title, body=$?)
+    #_[utterances=["make a tumblr post with title $p_title",
+                   "post on tumblr with title $p_title",
+                   "make a blog post with title $p_title on tumblr",
+                   "make a blog post with $p_title as the title on tumblr",
+                   "publish a blog post with $p_title as the title on tumblr"]]
+    #[id=28160138]
+    #[name=""];
+
+    action (p_caption :String)  := @com.tumblr.blog.post_picture(caption=p_caption, picture_url=$?)
+    #_[utterances=["post a picture with caption $p_caption on tumblr",
+                   "post a picture on tumblr saying $p_caption",
+                   "upload a picture on tumblr with caption $p_caption"]]
+    #[id=28160140]
+    #[name=""];
+
+    action  := @com.tumblr.blog.post_picture(caption=$?, picture_url=$?)
+    #_[utterances=["post a picture on tumblr",
+                   "make a new tumblr picture post",
+                   "upload a picture to tumblr"]]
+    #[id=28160143]
+    #[name=""];
+
+    action  := @com.tumblr.blog.post_text(title=$?, body=$?)
+    #_[utterances=["post something on tumblr",
+                   "post something on my tumblr blog",
+                   "make a blog post on tumblr"]]
+    #[id=28160146]
+    #[name=""];
+
+    action (p_picture_url :Entity(tt:picture))  := @com.tumblr.blog.post_picture(picture_url=p_picture_url, caption=$?)
+    #_[utterances=["post $p_picture_url on tumblr",
+                   "upload $p_picture_url on tumblr"]]
+    #[id=28160152]
+    #[name=""];
+
+    action (p_picture_url :Entity(tt:picture), p_caption :String)  := @com.tumblr.blog.post_picture(picture_url=p_picture_url, caption=p_caption)
+    #_[utterances=["post $p_picture_url on tumblr with caption $p_caption"]]
+    #[id=28160154]
+    #[name=""];
+
+}

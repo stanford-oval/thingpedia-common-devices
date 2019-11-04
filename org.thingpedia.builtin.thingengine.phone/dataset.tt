@@ -1,0 +1,135 @@
+dataset @org.thingpedia.builtin.thingengine.phone language "en" {
+    stream  := monitor (@org.thingpedia.builtin.thingengine.phone.sms())
+    #_[utterances=["when i receive a sms",
+                   "when i get a text",
+                   "when i get at text from somebody",
+                   "when i receive a sms from somebody",
+                   "when somebody sends me a text",
+                   "when somebody texts me",
+                   "when somebody sms me",
+                   "when somebody sends me an sms"]]
+    #[id=52608433]
+    #[name="MonitorReceiveSmsOnPhone"];
+
+    stream (p_sender :Entity(tt:phone_number))  := monitor ((@org.thingpedia.builtin.thingengine.phone.sms()), sender == p_sender)
+    #_[utterances=["when i receive a sms from ${p_sender:no-undefined}",
+                   "when i get at text from ${p_sender:no-undefined}",
+                   "when ${p_sender:no-undefined} sends me a text",
+                   "when ${p_sender:no-undefined} texts me",
+                   "when ${p_sender:no-undefined} sms me",
+                   "when ${p_sender:no-undefined} sends me an sms"]]
+    #[id=52608441]
+    #[name="MonitorReceiveSmsOnPhoneBySender"];
+
+    action (p_to :Entity(tt:phone_number), p_message :String)  := @org.thingpedia.builtin.thingengine.phone.send_sms(to=p_to, message=p_message)
+    #_[utterances=["send an sms to $p_to saying $p_message",
+                   "send an sms message to $p_to saying $p_message",
+                   "send a text to $p_to saying $p_message",
+                   "text $p_to saying $p_message",
+                   "send a text to $p_to containing $p_message",
+                   "send a message to $p_to containing $p_message",
+                   "sms $p_to saying $p_message"]]
+    #[id=52608447]
+    #[name="SendSmsOnPhoneWithToWithMessage"];
+
+    action (p_mode :Enum(normal,vibrate,silent))  := @org.thingpedia.builtin.thingengine.phone.set_ringer(mode=p_mode)
+    #_[utterances=["set my phone to $p_mode",
+                   "change my phone to $p_mode",
+                   "adjust my phone to $p_mode"]]
+    #[id=52608454]
+    #[name="SetRingerOnPhoneWithMode"];
+
+    action (p_number :Entity(tt:phone_number))  := @org.thingpedia.builtin.thingengine.phone.call(number=p_number)
+    #_[utterances=["call $p_number",
+                   "dial $p_number",
+                   "phone $p_number"]]
+    #[id=52608457]
+    #[name="MakeCallOnPhoneWithNumber"];
+
+    action  := @org.thingpedia.builtin.thingengine.phone.call_emergency()
+    #_[utterances=["call 911",
+                   "call ambulance",
+                   "call fire department",
+                   "call police",
+                   "call emergency services"]]
+    #[id=52608460]
+    #[name="CallEmergencyOnPhone"];
+
+    action (p_to :Entity(tt:phone_number))  := @org.thingpedia.builtin.thingengine.phone.send_sms(to=p_to, message=$?)
+    #_[utterances=["send a text to $p_to",
+                   "send a message to $p_to",
+                   "sms $p_to",
+                   "text $p_to"]]
+    #[id=52608465]
+    #[name="SendSmsOnPhoneWithTo"];
+
+    query  := @org.thingpedia.builtin.thingengine.phone.sms()
+    #_[utterances=["my sms inbox",
+                   "sms in my phone",
+                   "texts i received",
+                   "my sms history",
+                   "sms",
+                   "texts"]]
+    #[id=52608469]
+    #[name="ReceiveSmsOnPhone"];
+
+    query (p_sender :Entity(tt:phone_number))  := (@org.thingpedia.builtin.thingengine.phone.sms()), sender == p_sender
+    #_[utterances=["texts from $p_sender"]]
+    #[id=52608475]
+    #[name="ReceiveSmsOnPhoneBySender"];
+
+    query  := (@org.thingpedia.builtin.thingengine.phone.sms()), date >= start_of(day)
+    #_[utterances=["texts i received today",
+                   "sms i received today",
+                   "sms from today"]]
+    #[id=52608476]
+    #[name="ReceiveSmsOnPhoneByDateGreaterThan"];
+
+    query  := (@org.thingpedia.builtin.thingengine.phone.sms()), date >= start_of(h)
+    #_[utterances=["texts i received in the last hour",
+                   "texts from the last hour"]]
+    #[id=52608479]
+    #[name="ReceiveSmsOnPhoneByDateGreaterThan1"];
+
+    action  := @org.thingpedia.builtin.thingengine.phone.set_ringer(mode=enum(vibrate))
+    #_[utterances=["turn on vibration in my phone",
+                   "make my phone vibrate for calls",
+                   "enable vibration on my phone"]]
+    #[id=52608481]
+    #[name="SetRingerOnPhoneWithModeVibrate"];
+
+    action  := @org.thingpedia.builtin.thingengine.phone.set_ringer(mode=enum(silent))
+    #_[utterances=["turn off ringer and vibration in my phone",
+                   "make my phone silent",
+                   "mute my phone",
+                   "silence my phone",
+                   "disable ringer and vibration on my phone"]]
+    #[id=52608484]
+    #[name="SetRingerOnPhoneWithModeSilent"];
+
+    action  := @org.thingpedia.builtin.thingengine.phone.call(number=$?)
+    #_[utterances=["place a phone call",
+                   "call somebody",
+                   "call my friend",
+                   "make a phone call",
+                   "make a call"]]
+    #[id=52608489]
+    #[name="MakeCallOnPhone"];
+
+    action (p_number :Entity(tt:contact_name))  := @org.thingpedia.builtin.thingengine.phone.call(number=p_number)
+    #_[utterances=["call ${p_number}",
+                   "make a call to ${p_number}",
+                   "dial ${p_number}"]]
+    #[id=52608494]
+    #[name="MakeCallOnPhoneWithNumber1"];
+
+    action (p_str :String)  := @org.thingpedia.builtin.thingengine.phone.put_string(str=p_str)
+    #_[utterances=["put ${p_str} here",
+                   "insert ${p_str}",
+                   "insert ${p_str} here",
+                   "paste ${p_str}",
+                   "paste ${p_str} here"]]
+    #[id=52608497]
+    #[name="PutTextInTheTextboxWithStr"];
+
+}

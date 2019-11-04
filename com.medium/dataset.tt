@@ -1,0 +1,22 @@
+dataset @com.medium language "en" {
+    query  := @com.medium.articles(author=$undefined)
+    #_[utterances=["medium articles",
+                   "articles on medium",
+                   "blog on medium"]]
+    #[id=10909123]
+    #[name=""];
+
+    query (p_author :Entity(tt:username))  := @com.medium.articles(author=p_author)
+    #_[utterances=["medium articles by $p_author",
+                   "blog posted by $p_author on medium",
+                   "medium blog by $p_author"]]
+    #[id=10909126]
+    #[name=""];
+
+    stream (p_author :Entity(tt:username))  := monitor (@com.medium.articles(author=p_author))
+    #_[utterances=["when $p_author writes a new article on medium",
+                   "when $p_author posts on medium"]]
+    #[id=10909129]
+    #[name=""];
+
+}

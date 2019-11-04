@@ -1,0 +1,44 @@
+dataset @com.mapquest language "en" {
+    query (p_query :String)  := @com.mapquest.search(query=p_query, query_location=$undefined)
+    #_[utterances=["places matching ${p_query}",
+                   "addresses matching ${p_query}"]]
+    #[id=15254183]
+    #[name=""];
+
+    query (p_query :String)  := @com.mapquest.search(query=p_query, query_location=$context.location.current_location)
+    #_[utterances=["places matching ${p_query} nearby",
+                   "${p_query} near me",
+                   "${p_query} nearby",
+                   "${p_query} around me"]]
+    #[id=15254185]
+    #[name=""];
+
+    query (p_query :String)  := @com.mapquest.search(query=p_query, query_location=$context.location.home)
+    #_[utterances=["places matching ${p_query} near where I live",
+                   "${p_query} near where I live",
+                   "${p_query} near my home"]]
+    #[id=15254189]
+    #[name=""];
+
+    query (p_query :String)  := @com.mapquest.search(query=p_query, query_location=$context.location.work)
+    #_[utterances=["places matching ${p_query} near where I work",
+                   "${p_query} near where I work",
+                   "${p_query} near my workplace"]]
+    #[id=15254192]
+    #[name=""];
+
+    query (p_query_location :Location)  := @com.mapquest.search(query_location=p_query_location, query=$undefined)
+    #_[utterances=["places near ${p_query_location}",
+                   "addresses near ${p_query_location}",
+                   "points of interest near ${p_query_location}"]]
+    #[id=15254195]
+    #[name=""];
+
+    query (p_query :String, p_query_location :Location)  := @com.mapquest.search(query=p_query, query_location=p_query_location)
+    #_[utterances=["places matching ${p_query} near ${p_query_location}",
+                   "points of interest of ${p_query:const} type near ${p_query_location}",
+                   "${p_query} near ${p_query_location}"]]
+    #[id=15254198]
+    #[name=""];
+
+}

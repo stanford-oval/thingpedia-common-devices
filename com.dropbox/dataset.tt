@@ -1,0 +1,118 @@
+dataset @com.dropbox language "en" {
+    query  := @com.dropbox.get_space_usage()
+    #_[utterances=["my dropbox quota",
+                   "the space I have on dropbox",
+                   "the free space i have on dropbox",
+                   "the space left on my dropbox"]]
+    #[id=28016893]
+    #[name=""];
+
+    query (p_folder_name :Entity(tt:path_name))  := @com.dropbox.list_folder(folder_name=p_folder_name)
+    #_[utterances=["my dropbox files in folder ${p_folder_name:const}",
+                   "my files under ${p_folder_name:const} on dropbox",
+                   "files in dropbox folder $p_folder_name"]]
+    #[id=28016897]
+    #[name=""];
+
+    query (p_file_name :Entity(tt:path_name))  := @com.dropbox.open(file_name=p_file_name)
+    #_[utterances=["my file named ${p_file_name} on dropbox",
+                   "the temporary link to ${p_file_name:const} on dropbox",
+                   ", open ${p_file_name} from dropbox",
+                   ", download ${p_file_name} from dropbox"]]
+    #[id=28016900]
+    #[name=""];
+
+    action (p_old_name :Entity(tt:path_name), p_new_name :Entity(tt:path_name))  := @com.dropbox.move(old_name=p_old_name, new_name=p_new_name)
+    #_[utterances=["move file ${p_old_name:const} to ${p_new_name} in Dropbox",
+                   "rename ${p_old_name:const} to ${p_new_name} in Dropbox",
+                   "change the name of ${p_old_name:const} to ${p_new_name} in Dropbox"]]
+    #[id=28016904]
+    #[name=""];
+
+    action (p_old_name :Entity(tt:path_name))  := @com.dropbox.move(old_name=p_old_name, new_name=$?)
+    #_[utterances=["rename file ${p_old_name:const} in Dropbox",
+                   "change the name of ${p_old_name} in dropbox"]]
+    #[id=28016907]
+    #[name=""];
+
+    action (p_folder_name :Entity(tt:path_name))  := @com.dropbox.create_new_folder(folder_name=p_folder_name)
+    #_[utterances=["create a new folder with name ${p_folder_name} in my Dropbox",
+                   "create a folder ${p_folder_name:const} in my Dropbox",
+                   "create a new folder in dropbox and name it $p_folder_name",
+                   "create an empty folder in dropbox and name it $p_folder_name"]]
+    #[id=28016909]
+    #[name=""];
+
+    stream (p_folder_name :Entity(tt:path_name))  := monitor (@com.dropbox.list_folder(folder_name=p_folder_name))
+    #_[utterances=["when a file changed under folder ${p_folder_name:const} in my dropbox ",
+                   "when a file or folder changes under folder ${p_folder_name:const} in my dropbox",
+                   "when i change a file in dropbox folder ${p_folder_name:const}"]]
+    #[id=28016913]
+    #[name=""];
+
+    query (p_folder_name :Entity(tt:path_name))  := (@com.dropbox.list_folder(folder_name=p_folder_name)), modified_time >= start_of(week)
+    #_[utterances=["my dropbox files modified this week under folder ${p_folder_name:const}"]]
+    #[id=28016916]
+    #[name=""];
+
+    query (p_folder_name :Entity(tt:path_name), p_file_size :Measure(byte))  := (@com.dropbox.list_folder(folder_name=p_folder_name)), file_size <= p_file_size
+    #_[utterances=["my dropbox files smaller than ${p_file_size} under folder ${p_folder_name:const}"]]
+    #[id=28016917]
+    #[name=""];
+
+    query (p_folder_name :Entity(tt:path_name), p_file_size :Measure(byte))  := (@com.dropbox.list_folder(folder_name=p_folder_name)), file_size >= p_file_size
+    #_[utterances=["my dropbox files larger than ${p_file_size} under folder ${p_folder_name:const}"]]
+    #[id=28016918]
+    #[name=""];
+
+    stream (p_used_space :Measure(byte))  := edge (monitor (@com.dropbox.get_space_usage())) on used_space >= p_used_space
+    #_[utterances=["when I used more than $p_used_space on dropbox",
+                   "when my dropbox files total more than $p_used_space",
+                   "when my dropbox files amount to more than $p_used_space"]]
+    #[id=28016919]
+    #[name=""];
+
+    query  := @com.dropbox.list_folder(order_by=enum(modified_time_decreasing), folder_name=$?)
+    #_[utterances=["my dropbox files that changed most recently"]]
+    #[id=28016922]
+    #[name=""];
+
+    query (p_folder_name :Entity(tt:path_name))  := @com.dropbox.list_folder(folder_name=p_folder_name, order_by=enum(modified_time_decreasing))
+    #_[utterances=["my dropbox files under folder $p_folder_name that changed most recently"]]
+    #[id=28016923]
+    #[name=""];
+
+    query  := @com.dropbox.list_folder(folder_name=$?)
+    #_[utterances=["my dropbox files",
+                   "my dropbox files in some folder",
+                   "my files in dropbox"]]
+    #[id=28016924]
+    #[name=""];
+
+    query  := @com.dropbox.list_folder(order_by=enum(name_increasing), folder_name=$?)
+    #_[utterances=["my dropbox files in alphabetical order"]]
+    #[id=28016927]
+    #[name=""];
+
+    query (p_folder_name :Entity(tt:path_name))  := @com.dropbox.list_folder(folder_name=p_folder_name, order_by=enum(name_increasing))
+    #_[utterances=["my dropbox files under folder $p_folder_name in alphabetical order"]]
+    #[id=28016928]
+    #[name=""];
+
+    query  := @com.dropbox.list_folder(order_by=enum(name_decreasing), folder_name=$?)
+    #_[utterances=["my dropbox files in reverse alphabetical order"]]
+    #[id=28016929]
+    #[name=""];
+
+    query (p_folder_name :Entity(tt:path_name))  := @com.dropbox.list_folder(folder_name=p_folder_name, order_by=enum(name_decreasing))
+    #_[utterances=["my dropbox files under folder $p_folder_name in reverse alphabetical order"]]
+    #[id=28016930]
+    #[name=""];
+
+    action  := @com.dropbox.create_new_folder(folder_name=$?)
+    #_[utterances=["create a new empty folder in dropbox",
+                   "create a folder in dropbox"]]
+    #[id=28016931]
+    #[name=""];
+
+}

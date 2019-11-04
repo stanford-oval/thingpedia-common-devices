@@ -1,0 +1,32 @@
+dataset @com.google.contacts language "en" {
+    query  := @com.google.contacts.get_contacts()
+    #_[utterances=["my google contacts",
+                   "my contacts",
+                   "my contacts on google",
+                   "my contact's info",
+                   "get info on people I know"]]
+    #[id=28016990]
+    #[name=""];
+
+    query (p_email :Entity(tt:email_address))  := (@com.google.contacts.get_contacts()), email == p_email
+    #_[utterances=["my contacts with email ${p_email}",
+                   "my google contacts with email ${p_email}"]]
+    #[id=28016995]
+    #[name=""];
+
+    query (p_phone_number :Entity(tt:phone_number))  := (@com.google.contacts.get_contacts()), phone_number == p_phone_number
+    #_[utterances=["my contacts with phone number ${p_phone_number}"]]
+    #[id=28016997]
+    #[name=""];
+
+    query (p_name :String)  := (@com.google.contacts.get_contacts()), name =~ p_name
+    #_[utterances=["my contacts with name ${p_name}"]]
+    #[id=28016998]
+    #[name=""];
+
+    query (p_phone_number :Entity(tt:phone_number), p_email :Entity(tt:email_address))  := (@com.google.contacts.get_contacts()), (phone_number == p_phone_number && email == p_email)
+    #_[utterances=["my contacts with phone number ${p_phone_number} and email ${p_email}"]]
+    #[id=28016999]
+    #[name=""];
+
+}

@@ -1,0 +1,28 @@
+dataset @com.wsj language "en" {
+    stream (p_section :Enum(opinions,world_news,us_business,markets,technology,lifestyle))  := monitor (@com.wsj.get(section=p_section))
+    #_[utterances=["when there is a new article in wsj $p_section section",
+                   "when there is a new article in the wall street journal $p_section section",
+                   "when the wall street journal publishes a new article in the $p_section section"]]
+    #[id=28016966]
+    #[name=""];
+
+    query (p_section :Enum(opinions,world_news,us_business,markets,technology,lifestyle))  := @com.wsj.get(section=p_section)
+    #_[utterances=["wsj $p_section articles",
+                   "wall street journal articles in the $p_section section",
+                   "wall street journal $p_section"]]
+    #[id=28016969]
+    #[name=""];
+
+    query  := @com.wsj.get(section=$?)
+    #_[utterances=["wall street journal articles",
+                   "wall street journal",
+                   "wsj"]]
+    #[id=28016972]
+    #[name=""];
+
+    query (p_section :Enum(opinions,world_news,us_business,markets,technology,lifestyle))  := (@com.wsj.get(section=p_section)), updated >= start_of(h)
+    #_[utterances=["wall street journal articles in the $p_section section published in the last hour"]]
+    #[id=28016975]
+    #[name=""];
+
+}

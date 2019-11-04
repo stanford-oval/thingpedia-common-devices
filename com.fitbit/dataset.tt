@@ -1,0 +1,70 @@
+dataset @com.fitbit language "en" {
+    query  := @com.fitbit.getsteps()
+    #_[utterances=["my steps from fitbit",
+                   "the number of steps i took",
+                   "the number of steps from fitbit",
+                   "the count of steps from fitbit",
+                   "the step count from fitbit",
+                   "my fitbit step count",
+                   "the fitbit pedometer",
+                   "the fitbit step counter",
+                   "the steps i have taken"]]
+    #[id=27924652]
+    #[name=""];
+
+    query (p_date :Date)  := @com.fitbit.getsteps(date=p_date)
+    #_[utterances=["my fitbit steps on $p_date",
+                   "the number of steps i took on $p_date",
+                   "the number of steps from fitbit on $p_date",
+                   "the count of steps on $p_date from fitbit",
+                   "the step count on $p_date from fitbit",
+                   "my fitbit step count on $p_date",
+                   "the fitbit pedometer on $p_date",
+                   "the fitbit step counter on $p_date",
+                   "the steps i have taken on $p_date"]]
+    #[id=27924661]
+    #[name=""];
+
+    query  := @com.fitbit.getbody()
+    #_[utterances=["my body measurements from fitbit",
+                   "my bmi from fitbit",
+                   "my weight from fitbit"]]
+    #[id=27924670]
+    #[name=""];
+
+    stream (p_weight :Measure(kg))  := edge (monitor (@com.fitbit.getbody())) on weight >= p_weight
+    #_[utterances=["if my weight goes over $p_weight",
+                   "if i become fatter than $p_weight",
+                   "i am heavier than $p_weight",
+                   "when i become heavier than $p_weight"]]
+    #[id=27924673]
+    #[name=""];
+
+    action  := @com.fitbit.recordweight(weight=$?)
+    #_[utterances=["log my weight on fitbit",
+                   "record my weight on fitbit",
+                   "make note of my weight on fitbit"]]
+    #[id=27924677]
+    #[name=""];
+
+    stream  := monitor (@com.fitbit.getbody()) on new [weight]
+    #_[utterances=["when my weight changes on fitbit",
+                   "when i record a new weight on fitbit",
+                   "when i log a new weight value on fitbit"]]
+    #[id=27924680]
+    #[name=""];
+
+    stream (p_steps :Number)  := edge (monitor (@com.fitbit.getsteps())) on steps >= p_steps
+    #_[utterances=["when I walk more than ${p_steps:const} steps",
+                   "when i walk more than ${p_steps:const} steps in a day",
+                   "when i total more than ${p_steps:const} steps in one day",
+                   "when i make more than ${p_steps:const} steps in one day"]]
+    #[id=27924683]
+    #[name=""];
+
+    stream  := monitor (@com.fitbit.getsteps())
+    #_[utterances=["when my fitbit steps update"]]
+    #[id=27924687]
+    #[name=""];
+
+}

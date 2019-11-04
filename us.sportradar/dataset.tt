@@ -1,0 +1,122 @@
+dataset @us.sportradar language "en" {
+    stream (p_team :Entity(sportradar:nba_team))  := monitor ((@us.sportradar.nba(team=p_team)), game_status == enum(inprogress))
+    #_[utterances=["when nba team ${p_team:const} plays"]]
+    #[id=1688679]
+    #[name=""];
+
+    stream (p_team :Entity(sportradar:nba_team), p_opponent :Entity(sportradar:nba_team))  := monitor ((@us.sportradar.nba(team=p_team)), (opponent == p_opponent && game_status == enum(inprogress)))
+    #_[utterances=["when nba team ${p_team:const} plays against $p_opponent"]]
+    #[id=1688680]
+    #[name=""];
+
+    stream (p_team :Entity(sportradar:nba_team), p_game_status :Enum(scheduled,inprogress,halftime,closed))  := monitor ((@us.sportradar.nba(team=p_team)), game_status == p_game_status)
+    #_[utterances=["when nba team ${p_team:const} plays and the game is $p_game_status"]]
+    #[id=1688681]
+    #[name=""];
+
+    stream (p_team :Entity(sportradar:nba_team), p_result :Enum(win,lose,unclosed))  := monitor ((@us.sportradar.nba(team=p_team)), result == p_result)
+    #_[utterances=["when nba team ${p_team:const} $p_result a game"]]
+    #[id=1688682]
+    #[name=""];
+
+    stream (p_team :Entity(sportradar:eu_soccer_team))  := monitor ((@us.sportradar.soccer_eu(team=p_team)), game_status == enum(inprogress))
+    #_[utterances=["when eu soccer team ${p_team:const} plays"]]
+    #[id=1688683]
+    #[name=""];
+
+    stream (p_team :Entity(sportradar:eu_soccer_team), p_opponent :Entity(sportradar:eu_soccer_team))  := monitor ((@us.sportradar.soccer_eu(team=p_team)), (opponent == p_opponent && game_status == enum(inprogress)))
+    #_[utterances=["when eu soccer team ${p_team:const} plays against $p_opponent"]]
+    #[id=1688684]
+    #[name=""];
+
+    stream (p_team :Entity(sportradar:eu_soccer_team), p_game_status :Enum(scheduled,inprogress,halftime,closed))  := monitor ((@us.sportradar.soccer_eu(team=p_team)), game_status == p_game_status)
+    #_[utterances=["when eu soccer team ${p_team:const} plays and the game is $p_game_status"]]
+    #[id=1688685]
+    #[name=""];
+
+    stream (p_team :Entity(sportradar:eu_soccer_team), p_result :Enum(win,lose,draw,unclosed))  := monitor ((@us.sportradar.soccer_eu(team=p_team)), result == p_result)
+    #_[utterances=[" when eu soccer team ${p_team:const} $p_result a game"]]
+    #[id=1688686]
+    #[name=""];
+
+    stream (p_team :Entity(sportradar:us_soccer_team))  := monitor ((@us.sportradar.soccer_us(team=p_team)), game_status == enum(inprogress))
+    #_[utterances=["when us soccer team ${p_team:const} plays"]]
+    #[id=1688687]
+    #[name=""];
+
+    stream (p_team :Entity(sportradar:us_soccer_team), p_opponent :Entity(sportradar:us_soccer_team))  := monitor ((@us.sportradar.soccer_us(team=p_team)), (opponent == p_opponent && game_status == enum(inprogress)))
+    #_[utterances=["when us soccer team ${p_team:const} plays against $p_opponent"]]
+    #[id=1688688]
+    #[name=""];
+
+    stream (p_team :Entity(sportradar:us_soccer_team), p_game_status :Enum(scheduled,inprogress,halftime,closed))  := monitor ((@us.sportradar.soccer_us(team=p_team)), game_status == p_game_status)
+    #_[utterances=["when us soccer team ${p_team:const} plays and the game is $p_game_status"]]
+    #[id=1688689]
+    #[name=""];
+
+    stream (p_team :Entity(sportradar:us_soccer_team), p_result :Enum(win,lose,draw,unclosed))  := monitor ((@us.sportradar.soccer_us(team=p_team)), result == p_result)
+    #_[utterances=["when us soccer team ${p_team:const} $p_result a game"]]
+    #[id=1688690]
+    #[name=""];
+
+    stream (p_team :Entity(sportradar:mlb_team))  := monitor ((@us.sportradar.mlb(team=p_team)), game_status == enum(inprogress))
+    #_[utterances=["when mlb team ${p_team:const} plays"]]
+    #[id=1688691]
+    #[name=""];
+
+    stream (p_team :Entity(sportradar:mlb_team), p_opponent :Entity(sportradar:mlb_team))  := monitor ((@us.sportradar.mlb(team=p_team)), (opponent == p_opponent && game_status == enum(inprogress)))
+    #_[utterances=["when mlb team ${p_team:const} plays against $p_opponent"]]
+    #[id=1688692]
+    #[name=""];
+
+    stream (p_team :Entity(sportradar:mlb_team), p_game_status :Enum(scheduled,inprogress,halftime,closed))  := monitor ((@us.sportradar.mlb(team=p_team)), game_status == p_game_status)
+    #_[utterances=["when mlb team ${p_team:const} plays and the game is $p_game_status"]]
+    #[id=1688693]
+    #[name=""];
+
+    stream (p_team :Entity(sportradar:mlb_team), p_result :Enum(win,lose,draw,unclosed))  := monitor ((@us.sportradar.mlb(team=p_team)), result == p_result)
+    #_[utterances=["when mlb team ${p_team:const} $p_result a game."]]
+    #[id=1688694]
+    #[name=""];
+
+    stream (p_team :Entity(sportradar:ncaambb_team))  := monitor ((@us.sportradar.ncaambb(team=p_team)), game_status == enum(inprogress))
+    #_[utterances=["when ncaa mens basketball team ${p_team:const} plays"]]
+    #[id=1688695]
+    #[name=""];
+
+    stream (p_team :Entity(sportradar:ncaambb_team), p_opponent :Entity(sportradar:ncaambb_team))  := monitor ((@us.sportradar.ncaambb(team=p_team)), (opponent == p_opponent && game_status == enum(inprogress)))
+    #_[utterances=["when ncaa mens basketball team ${p_team:const} plays against $p_opponent"]]
+    #[id=1688696]
+    #[name=""];
+
+    stream (p_team :Entity(sportradar:ncaambb_team), p_game_status :Enum(scheduled,inprogress,halftime,closed))  := monitor ((@us.sportradar.ncaambb(team=p_team)), game_status == p_game_status)
+    #_[utterances=["when ncaa mens basketball team ${p_team:const} plays and the game is $p_game_status"]]
+    #[id=1688697]
+    #[name=""];
+
+    stream (p_team :Entity(sportradar:ncaambb_team), p_result :Enum(win,lose,unclosed))  := monitor ((@us.sportradar.ncaambb(team=p_team)), result == p_result)
+    #_[utterances=["when ncaa mens basketball team ${p_team:const} $p_result a game."]]
+    #[id=1688698]
+    #[name=""];
+
+    stream (p_team :Entity(sportradar:ncaafb_team))  := monitor ((@us.sportradar.ncaafb(team=p_team)), game_status == enum(inprogress))
+    #_[utterances=["when ncaafb team ${p_team:const} plays"]]
+    #[id=1688699]
+    #[name=""];
+
+    stream (p_team :Entity(sportradar:ncaafb_team), p_opponent :Entity(sportradar:ncaafb_team))  := monitor ((@us.sportradar.ncaafb(team=p_team)), (opponent == p_opponent && game_status == enum(inprogress)))
+    #_[utterances=["when ncaafb team ${p_team:const} plays against $p_opponent"]]
+    #[id=1688700]
+    #[name=""];
+
+    stream (p_team :Entity(sportradar:ncaafb_team), p_game_status :Enum(scheduled,inprogress,halftime,closed))  := monitor ((@us.sportradar.ncaafb(team=p_team)), game_status == p_game_status)
+    #_[utterances=["when ncaafb team ${p_team:const} plays and the game is $p_game_status"]]
+    #[id=1688701]
+    #[name=""];
+
+    stream (p_team :Entity(sportradar:ncaafb_team), p_result :Enum(win,lose,unclosed))  := monitor ((@us.sportradar.ncaafb(team=p_team)), result == p_result)
+    #_[utterances=["when ncaafb team ${p_team:const} $p_result a game"]]
+    #[id=1688702]
+    #[name=""];
+
+}

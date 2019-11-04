@@ -1,0 +1,451 @@
+dataset @com.spotify language "en" {
+    action  := @com.spotify.play_songs(toPlay=$?)
+    #[click_count=6]
+    #[like_count=0]
+    #_[utterances=["play some music on spotify",
+                   "open spotify and play some music",
+                   "use spotify to play some music"]]
+    #[id=27924738]
+    #[name=""];
+
+    action (p_song :String)  := @com.spotify.play_songs(toPlay=p_song)
+    #_[utterances=["play ${p_song} on spotify",
+                   "play the song ${p_song} on spotify",
+                   "play the songs ${p_song} on spotify",
+                   "on spotify play ${p_song}",
+                   "play ${p_song}",
+                   "play the song ${p_song}"]]
+    #[id=27924741]
+    #[name=""];
+
+    action  := @com.spotify.player_pause()
+    #_[utterances=["pause my spotify"]]
+    #[id=27924747]
+    #[name=""];
+
+    action  := @com.spotify.player_play()
+    #_[utterances=["play my spotify",
+                   "resume my spotify"]]
+    #[id=27924748]
+    #[name=""];
+
+    action  := @com.spotify.player_next()
+    #_[utterances=["play the next song on spotify",
+                   "play the next song",
+                   "skip this song",
+                   "skip this song on spotify"]]
+    #[id=27924750]
+    #[name=""];
+
+    action  := @com.spotify.player_previous()
+    #_[utterances=["go back",
+                   "play the previous song",
+                   "play the last song on spotify",
+                   "go back to the last song"]]
+    #[id=27924754]
+    #[name=""];
+
+    action (p_song :String, p_playlist :String)  := @com.spotify.add_songs_to_playlist(toAdd=p_song, playlist=p_playlist)
+    #_[utterances=["add ${p_song} to ${p_playlist}",
+                   "add song ${p_song} to ${p_playlist}",
+                   "add song ${p_song} to my playlist ${p_playlist}",
+                   "add ${p_song} to ${p_playlist} on Spotify",
+                   "add ${p_song} to my playlist ${p_playlist} "]]
+    #[id=27924758]
+    #[name=""];
+
+    query  := @com.spotify.get_danceability()
+    #_[utterances=[", how danceable is the current track",
+                   "the danceability of the current track",
+                   "the danceability of the current song",
+                   ", how dancey is this song",
+                   ", how danceable is this song",
+                   ", is this song dancey"]]
+    #[id=27924762]
+    #[name=""];
+
+    query (p_song :String)  := @com.spotify.get_danceability(song=p_song)
+    #_[utterances=[", how dancey is the song ${p_song}",
+                   "the danceability of the song ${p_song}",
+                   ", how dancey is ${p_song}",
+                   "the danceability of ${p_song}"]]
+    #[id=27924768]
+    #[name=""];
+
+    query  := @com.spotify.get_loudness()
+    #_[utterances=[", how loud is this song",
+                   "the loudness of the current song",
+                   "the loudness of the current track"]]
+    #[id=27924772]
+    #[name=""];
+
+    query (p_song :String)  := @com.spotify.get_loudness(song=p_song)
+    #_[utterances=["the loudness of ${p_song}",
+                   ", how loud is ${p_song}"]]
+    #[id=27924775]
+    #[name=""];
+
+    query  := @com.spotify.get_liveness()
+    #_[utterances=[", is this song live",
+                   "the liveness of this song",
+                   "the liveness of the current song",
+                   "the liveness of the current track"]]
+    #[id=27924777]
+    #[name=""];
+
+    query (p_song :String)  := @com.spotify.get_liveness(song=p_song)
+    #_[utterances=[", is ${p_song} live",
+                   "the liveness of ${p_song}",
+                   "the liveness of ${p_song}"]]
+    #[id=27924781]
+    #[name=""];
+
+    query  := @com.spotify.get_acousticness()
+    #_[utterances=[", is this song acoustic",
+                   "the acousticness of the current track",
+                   "the acousticness of the current song",
+                   "the acousticness of the current song"]]
+    #[id=27924784]
+    #[name=""];
+
+    query (p_song :String)  := @com.spotify.get_acousticness(song=p_song)
+    #_[utterances=["the acousticness of ${p_song}",
+                   "the acousticness of ${p_song}"]]
+    #[id=27924788]
+    #[name=""];
+
+    query  := @com.spotify.get_key()
+    #_[utterances=["the key of the current song",
+                   "the key of the current track",
+                   "the key of this song"]]
+    #[id=27924790]
+    #[name=""];
+
+    query (p_song :String)  := @com.spotify.get_key(song=p_song)
+    #_[utterances=["the key of ${p_song}",
+                   "the key of song ${p_song}"]]
+    #[id=27924793]
+    #[name=""];
+
+    query  := @com.spotify.get_energy()
+    #_[utterances=["the energy of this song",
+                   "the energy of level the current track",
+                   "the energy of the current song",
+                   "the energy of the current song",
+                   ", how energetic is the current song"]]
+    #[id=27924795]
+    #[name=""];
+
+    query (p_song :String)  := @com.spotify.get_energy(song=p_song)
+    #_[utterances=["the energy of ${p_song}",
+                   "the energy of song ${p_song}",
+                   ", how energetic is ${p_song}"]]
+    #[id=27924800]
+    #[name=""];
+
+    query  := @com.spotify.get_speechiness()
+    #_[utterances=["the speechiness of this song",
+                   "the speechiness of the current track",
+                   "the speechiness of the current song",
+                   "the speechiness of the current song",
+                   ", how speechlike is the current song"]]
+    #[id=27924803]
+    #[name=""];
+
+    query (p_song :String)  := @com.spotify.get_speechiness(song=p_song)
+    #_[utterances=["the speechiness of ${p_song}",
+                   "the speechiness of song ${p_song}",
+                   ", how speechlike is ${p_song}"]]
+    #[id=27924808]
+    #[name=""];
+
+    query  := @com.spotify.get_instrumentalness()
+    #_[utterances=["the instrumentalness of this song",
+                   "the instrumentalness of the current track",
+                   "the instrumentalness of the current song",
+                   "the instrumentalness of the current song",
+                   ", is the current song an instrumental"]]
+    #[id=27924811]
+    #[name=""];
+
+    query (p_song :String)  := @com.spotify.get_instrumentalness(song=p_song)
+    #_[utterances=["the instrumentalness of ${p_song}",
+                   "the instrumentalness of song ${p_song}",
+                   ", is ${p_song} instrumental"]]
+    #[id=27924816]
+    #[name=""];
+
+    query  := @com.spotify.get_time_signature()
+    #_[utterances=["the time signature of the current song",
+                   "the time signature of the current track",
+                   "the time signature"]]
+    #[id=27924819]
+    #[name=""];
+
+    query (p_song :String)  := @com.spotify.get_time_signature(song=p_song)
+    #_[utterances=["the time signature of ${p_song}",
+                   "the time signature of song ${p_song}"]]
+    #[id=27924822]
+    #[name=""];
+
+    query  := @com.spotify.get_valence()
+    #_[utterances=[", how upbeat is this song",
+                   ", how positive is this song",
+                   "the valence of this song",
+                   "the upbeatness of this track",
+                   "the positivity of this song",
+                   "the upbeatness",
+                   "the valence of this track"]]
+    #[id=27924824]
+    #[name=""];
+
+    query (p_song :String)  := @com.spotify.get_valence(song=p_song)
+    #_[utterances=["the valence of ${p_song}",
+                   ", how positive is ${p_song}",
+                   ", how upbeat is ${p_song}"]]
+    #[id=27924831]
+    #[name=""];
+
+    query  := @com.spotify.get_tempo()
+    #_[utterances=["the tempo of the current song",
+                   "the bpm of the current song",
+                   "the BPM of the current track",
+                   "the tempo",
+                   "the tempo of the current song",
+                   "the bpm of the current track"]]
+    #[id=27924834]
+    #[name=""];
+
+    query (p_song :String)  := @com.spotify.get_tempo(song=p_song)
+    #_[utterances=["the tempo of ${p_song}",
+                   "the tempo of song ${p_song}",
+                   "the bpm of ${p_song}",
+                   "the bpm of song ${p_song}"]]
+    #[id=27924840]
+    #[name=""];
+
+    query  := @com.spotify.get_currently_playing()
+    #_[utterances=[", what song is currently playing",
+                   "what's on right now",
+                   ", what song is currently playing",
+                   "the currently playing song"]]
+    #[id=27924844]
+    #[name=""];
+
+    action  := @com.spotify.save_current_track()
+    #_[utterances=["save the current track",
+                   "save whatever's playing to my library",
+                   "save this song"]]
+    #[id=27924848]
+    #[name=""];
+
+    action (p_time :Measure(ms))  := @com.spotify.play_seek_seconds(seconds=p_time)
+    #_[utterances=["seek to ${p_time} seconds in",
+                   "skip to ${p_time} seconds",
+                   "go to ${p_time} seconds"]]
+    #[id=27924851]
+    #[name=""];
+
+    action (p_state :Enum(on,off))  := @com.spotify.player_shuffle(shuffle=p_state)
+    #_[utterances=["turn shuffle ${p_state}",
+                   "turn ${p_state} shuffle"]]
+    #[id=27924854]
+    #[name=""];
+
+    action  := @com.spotify.player_shuffle(shuffle=enum(on))
+    #_[utterances=["shuffle my spotify"]]
+    #[id=27924856]
+    #[name=""];
+
+    action  := @com.spotify.player_repeat(repeat=enum(track))
+    #_[utterances=["repeat this song",
+                   "turn on repeat"]]
+    #[id=27924857]
+    #[name=""];
+
+    action  := @com.spotify.player_repeat(repeat=enum(off))
+    #_[utterances=["turn off repeat"]]
+    #[id=27924859]
+    #[name=""];
+
+    action  := @com.spotify.create_new_playlist(title=$?)
+    #_[utterances=["create a new playlist",
+                   "make a new playlist",
+                   "new playlist",
+                   "add a new playlist",
+                   "create a playlist",
+                   "make a playlist"]]
+    #[id=27924860]
+    #[name=""];
+
+    action (p_name :String)  := @com.spotify.create_new_playlist(title=p_name)
+    #_[utterances=["create a new playlist named ${p_name}",
+                   "create a new playlist titled ${p_name}"]]
+    #[id=27924866]
+    #[name=""];
+
+    action (p_song :String)  := @com.spotify.add_songs_to_playlist(toAdd=p_song, playlist=$?)
+    #_[utterances=["add ${p_song} to my playlist"]]
+    #[id=27924869]
+    #[name=""];
+
+    action (p_playlist :String)  := @com.spotify.add_songs_to_playlist(playlist=p_playlist, toAdd=$?)
+    #_[utterances=["add to playlist ${p_playlist}",
+                   "add a song to my playlist ${p_playlist}"]]
+    #[id=27924870]
+    #[name=""];
+
+    action  := @com.spotify.add_songs_to_playlist(toAdd=$?, playlist=$?)
+    #_[utterances=["add a song to my playlist"]]
+    #[id=27924872]
+    #[name=""];
+
+    action (p_playlist :String)  := @com.spotify.play_playlist(toPlay=p_playlist)
+    #_[utterances=["play the playlist ${p_playlist}"]]
+    #[id=27924873]
+    #[name=""];
+
+    action  := @com.spotify.play_playlist(toPlay=$?)
+    #_[utterances=["play a playlist"]]
+    #[id=27924874]
+    #[name=""];
+
+    action (p_artist :String)  := @com.spotify.play_artist(toPlay=p_artist)
+    #_[utterances=["play the artist ${p_artist}",
+                   "play $p_artist"]]
+    #[id=27924875]
+    #[name=""];
+
+    action  := @com.spotify.play_artist(toPlay=$?)
+    #_[utterances=["play an artist"]]
+    #[id=27924877]
+    #[name=""];
+
+    action (p_album :String)  := @com.spotify.play_album(toPlay=p_album)
+    #_[utterances=["play the album ${p_album}"]]
+    #[id=27924878]
+    #[name=""];
+
+    action  := @com.spotify.play_album(toPlay=$?)
+    #_[utterances=["play an album"]]
+    #[id=27924879]
+    #[name=""];
+
+    action  := @com.spotify.play_songs(toPlay=$?)
+    #_[utterances=["play a song"]]
+    #[id=27924880]
+    #[name=""];
+
+    action (p_playlist :String)  := @com.spotify.add_this_song_to_playlist(playlist=p_playlist)
+    #_[utterances=["add this to my playlist ${p_playlist}",
+                   "add this song to playlist ${p_playlist}",
+                   "add  the currently playing song to my playlist ${p_playlist}"]]
+    #[id=27924881]
+    #[name=""];
+
+    action  := @com.spotify.add_this_song_to_playlist(playlist=$?)
+    #_[utterances=["add this to my playlist",
+                   "add this song to my playlist",
+                   "add whatever's playing to my playlist"]]
+    #[id=27924884]
+    #[name=""];
+
+    action  := @com.spotify.add_album_to_playlist(toAdd=$?, playlist=$?)
+    #_[utterances=["add an album to my playlist"]]
+    #[id=27924887]
+    #[name=""];
+
+    action (p_album :String)  := @com.spotify.add_album_to_playlist(toAdd=p_album, playlist=$?)
+    #_[utterances=["add the album ${p_album} to my playlist",
+                   "add the album to my playlist ${p_album}"]]
+    #[id=27924888]
+    #[name=""];
+
+    action (p_album :String, p_playlist :String)  := @com.spotify.add_album_to_playlist(toAdd=p_album, playlist=p_playlist)
+    #_[utterances=["add the album ${p_album} to my playlist ${p_playlist}"]]
+    #[id=27924890]
+    #[name=""];
+
+    action (p_playlist :String)  := @com.spotify.play_my_playlist(toPlay=p_playlist)
+    #_[utterances=["play my playlist ${p_playlist}"]]
+    #[id=27924891]
+    #[name=""];
+
+    action  := @com.spotify.play_my_playlist(toPlay=$?)
+    #_[utterances=["play my playlist"]]
+    #[id=27924892]
+    #[name=""];
+
+    query  := @com.spotify.get_user_playlist()
+    #_[utterances=["my playlist"]]
+    #[id=27924893]
+    #[name=""];
+
+    query  := @com.spotify.get_user_playlist_track(playlist=$?)
+    #_[utterances=["songs in my playlist"]]
+    #[id=27924894]
+    #[name=""];
+
+    query (p_playlist :String)  := @com.spotify.get_user_playlist_track(playlist=p_playlist)
+    #_[utterances=["songs in my playlist ${p_playlist}"]]
+    #[id=27924895]
+    #[name=""];
+
+    query  := @com.spotify.get_user_top_tracks()
+    #_[utterances=["my favorite songs",
+                   "my top tracks"]]
+    #[id=27924896]
+    #[name=""];
+
+    stream  := monitor (@com.spotify.get_user_top_tracks())
+    #_[utterances=["when my top tracks changes",
+                   "when I have new favorite songs"]]
+    #[id=27924898]
+    #[name=""];
+
+    stream  := monitor (@com.spotify.get_currently_playing())
+    #_[utterances=["when a song is playing"]]
+    #[id=27924900]
+    #[name=""];
+
+    stream (p_tempo :Number)  := edge (monitor (@com.spotify.get_tempo())) on tempo >= p_tempo
+    #_[utterances=["when a song with tempo greater than ${p_tempo} is playing"]]
+    #[id=27924901]
+    #[name=""];
+
+    stream (p_tempo :Number)  := edge (monitor (@com.spotify.get_tempo())) on tempo <= p_tempo
+    #_[utterances=["when a song with tempo less than ${p_tempo} is playing"]]
+    #[id=27924902]
+    #[name=""];
+
+    stream (p_danceability :Number)  := edge (monitor (@com.spotify.get_danceability())) on danceability >= p_danceability
+    #_[utterances=["when a song with danceability greater than ${p_danceability} is playing"]]
+    #[id=27924903]
+    #[name=""];
+
+    stream (p_danceability :Number)  := edge (monitor (@com.spotify.get_danceability())) on danceability <= p_danceability
+    #_[utterances=["when a song with danceability less than ${p_danceability} is playing"]]
+    #[id=27924904]
+    #[name=""];
+
+    stream (p_liveness :Number)  := edge (monitor (@com.spotify.get_liveness())) on liveness >= p_liveness
+    #_[utterances=["when a song with liveness greater than ${p_liveness} is playing"]]
+    #[id=27924905]
+    #[name=""];
+
+    stream (p_liveness :Number)  := edge (monitor (@com.spotify.get_liveness())) on liveness <= p_liveness
+    #_[utterances=["when a song with liveness less than ${p_liveness} is playing"]]
+    #[id=27924906]
+    #[name=""];
+
+    stream (p_energy :Number)  := edge (monitor (@com.spotify.get_energy())) on energy >= p_energy
+    #_[utterances=["when a song with energy greater than ${p_energy} is playing"]]
+    #[id=27924907]
+    #[name=""];
+
+    stream (p_energy :Number)  := edge (monitor (@com.spotify.get_energy())) on energy <= p_energy
+    #_[utterances=["when a song with energy less than ${p_energy} is playing"]]
+    #[id=27924908]
+    #[name=""];
+
+}

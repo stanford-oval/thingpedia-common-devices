@@ -1,0 +1,28 @@
+dataset @com.numbersapi language "en" {
+    query  := @com.numbersapi.fact()
+    #_[utterances=["interesting facts about numbers",
+                   "random number facts"]]
+    #[id=11999255]
+    #[name=""];
+
+    query (p_number :Number)  := @com.numbersapi.fact(number=p_number)
+    #_[utterances=["interesting facts about the number ${p_number:const}",
+                   "facts about ${p_number}",
+                   "trivia about ${p_number}"]]
+    #[id=11999257]
+    #[name=""];
+
+    query (p_number :Number)  := @com.numbersapi.fact(number=p_number, type=enum(math))
+    #_[utterances=["math facts about ${p_number}",
+                   "mathematical trivia about ${p_number}"]]
+    #[id=11999260]
+    #[name=""];
+
+    query (p_year :Number)  := @com.numbersapi.fact(number=p_year, type=enum(year))
+    #_[utterances=["facts about the year ${p_year:const}",
+                   "what happened in the year ${p_year:const}",
+                   "what happened in ${p_year:const}"]]
+    #[id=11999262]
+    #[name=""];
+
+}

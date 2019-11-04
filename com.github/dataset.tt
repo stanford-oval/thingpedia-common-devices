@@ -1,0 +1,161 @@
+dataset @com.github language "en" {
+    stream (p_repo_name :Entity(tt:path_name))  := monitor (@com.github.get_issue(repo_name=p_repo_name))
+    #_[utterances=["when a new issue opened in Github repository $p_repo_name ",
+                   "when there are new issues on Github for $p_repo_name",
+                   "if someone opens an issue on Github for $p_repo_name"]]
+    #[id=16160557]
+    #[name=""];
+
+    stream (p_user :Entity(tt:username))  := monitor ((@com.github.get_issue(repo_name=$undefined)), user == p_user)
+    #_[utterances=["when $p_user opens an issue on Github",
+                   "if $p_user opens an issue on Github"]]
+    #[id=16160560]
+    #[name=""];
+
+    stream (p_user :Entity(tt:username), p_repo_name :Entity(tt:path_name))  := monitor ((@com.github.get_issue(repo_name=p_repo_name)), user == p_user)
+    #_[utterances=["when user $p_user opens an issue in Github repository $p_repo_name"]]
+    #[id=16160562]
+    #[name=""];
+
+    stream (p_repo_name :Entity(tt:path_name))  := monitor (@com.github.get_commit(repo_name=p_repo_name))
+    #_[utterances=["when there is a new commit for github repository $p_repo_name",
+                   "if someone commits in $p_repo_name"]]
+    #[id=16160563]
+    #[name=""];
+
+    stream (p_user :Entity(tt:username), p_repo_name :Entity(tt:path_name))  := monitor ((@com.github.get_commit(repo_name=p_repo_name)), user == p_user)
+    #_[utterances=["when user $p_user commits in github repository $p_repo_name",
+                   "if $p_user commits in $p_repo_name",
+                   "if $p_user pushes to $p_repo_name on github"]]
+    #[id=16160565]
+    #[name=""];
+
+    stream (p_repo_name :Entity(tt:path_name))  := monitor (@com.github.get_milestone(repo_name=p_repo_name))
+    #_[utterances=["when a new milestone is created in github repository $p_repo_name"]]
+    #[id=16160568]
+    #[name=""];
+
+    stream (p_user :Entity(tt:username), p_repo_name :Entity(tt:path_name))  := monitor ((@com.github.get_milestone(repo_name=p_repo_name)), user == p_user)
+    #_[utterances=["when user $p_user create a new milestone in github repository $p_repo_name"]]
+    #[id=16160569]
+    #[name=""];
+
+    stream (p_repo_name :Entity(tt:path_name))  := monitor (@com.github.get_issue_comment(repo_name=p_repo_name))
+    #_[utterances=["when there is a new comment in github repository $p_repo_name"]]
+    #[id=16160570]
+    #[name=""];
+
+    stream (p_user :Entity(tt:username), p_repo_name :Entity(tt:path_name))  := monitor ((@com.github.get_issue_comment(repo_name=p_repo_name)), user == p_user)
+    #_[utterances=["when user $p_user comments on some issue in repository $p_repo_name",
+                   "if $p_user comments on some issue in $p_repo_name on github"]]
+    #[id=16160571]
+    #[name=""];
+
+    stream (p_issue_number :Number, p_repo_name :Entity(tt:path_name))  := monitor ((@com.github.get_issue_comment(repo_name=p_repo_name)), issue_number == p_issue_number)
+    #_[utterances=["when there is a new comment on issue $p_issue_number in repository $p_repo_name",
+                   "if someone comments on issue $p_issue_number in $p_repo_name on github"]]
+    #[id=16160573]
+    #[name=""];
+
+    action (p_email :Entity(tt:email_address))  := @com.github.add_email(email=p_email)
+    #_[utterances=["add email $p_email to my github account"]]
+    #[id=16160575]
+    #[name=""];
+
+    action (p_issue_number :Number, p_repo_name :Entity(tt:path_name))  := @com.github.comment_issue(issue_number=p_issue_number, repo_name=p_repo_name, body=$undefined)
+    #_[utterances=["comment on issue $p_issue_number in github repository $p_repo_name",
+                   "leave a comment in issue $p_issue_number in repository $p_repo_name on github "]]
+    #[id=16160576]
+    #[name=""];
+
+    query (p_repo_name :Entity(tt:path_name))  := @com.github.get_issue(repo_name=p_repo_name)
+    #_[utterances=["issues opened in github repository $p_repo_name"]]
+    #[id=16160578]
+    #[name=""];
+
+    query (p_repo_name :Entity(tt:path_name))  := @com.github.get_milestone(repo_name=p_repo_name)
+    #_[utterances=["milestones of github repository $p_repo_name"]]
+    #[id=16160579]
+    #[name=""];
+
+    query (p_repo_name :Entity(tt:path_name))  := @com.github.get_commit(repo_name=p_repo_name)
+    #_[utterances=["commits on Github repository $p_repo_name"]]
+    #[id=16160580]
+    #[name=""];
+
+    query (p_repo_name :Entity(tt:path_name))  := @com.github.get_issue_comment(repo_name=p_repo_name)
+    #_[utterances=["issue comments of Github repository $p_repo_name"]]
+    #[id=16160581]
+    #[name=""];
+
+    action (p_issue_number :Number, p_repo_name :Entity(tt:path_name), p_body :String)  := @com.github.comment_issue(issue_number=p_issue_number, repo_name=p_repo_name, body=p_body)
+    #_[utterances=["comment on $p_issue_number on github repository $p_repo_name saying ${p_body:const}",
+                   "comment ${p_body:const} on $p_issue_number on github repository $p_repo_name"]]
+    #[id=16160582]
+    #[name=""];
+
+    stream  := monitor (@com.github.get_commit(repo_name=$undefined))
+    #_[utterances=["when someone commits to github"]]
+    #[id=16160584]
+    #[name=""];
+
+    stream  := monitor (@com.github.get_issue_comment(repo_name=$undefined))
+    #_[utterances=["when someone comments on a github issue"]]
+    #[id=16160585]
+    #[name=""];
+
+    query (p_repo_name :Entity(tt:path_name), p_file_name :Entity(tt:path_name))  := @com.github.get_file(repo_name=p_repo_name, file_name=p_file_name)
+    #_[utterances=["link of file $p_file_name in repo $p_repo_name on github",
+                   "file $p_file_name in github repository $p_repo_name"]]
+    #[id=16160586]
+    #[name=""];
+
+    query  := @com.github.get_file(repo_name=$undefined, file_name=$undefined)
+    #_[utterances=["file on github"]]
+    #[id=16160588]
+    #[name=""];
+
+    query (p_repo_name :Entity(tt:path_name))  := @com.github.get_file(repo_name=p_repo_name, file_name=$undefined)
+    #_[utterances=["file on github repository $p_repo_name",
+                   "link of file on github repository $p_repo_name"]]
+    #[id=16160589]
+    #[name=""];
+
+    stream (p_repo_name :Entity(tt:path_name), p_file_name :Entity(tt:path_name))  := monitor ((@com.github.get_commit(repo_name=p_repo_name)), contains(modified_files, p_file_name))
+    #_[utterances=["when a new commit in github repositoy $p_repo_name changes file $p_file_name",
+                   "when $p_file_name is modified in github repositoy $p_repo_name changes file ",
+                   "when $p_file_name is changed in github repositoy $p_repo_name changes file "]]
+    #[id=16160591]
+    #[name=""];
+
+    stream (p_repo_name :Entity(tt:path_name), p_file_name :Entity(tt:path_name), p_user :Entity(tt:username))  := monitor ((@com.github.get_commit(repo_name=p_repo_name)), (contains(modified_files, p_file_name) && user == p_user))
+    #_[utterances=["when $p_user changes file $p_file_name in github repository $p_repo_name"]]
+    #[id=16160594]
+    #[name=""];
+
+    query (p_repo_name :Entity(tt:path_name))  := @com.github.get_pull_requests(repo_name=p_repo_name)
+    #_[utterances=["pull requests in repository $p_repo_name",
+                   "PRs in repo $p_repo_name"]]
+    #[id=16160595]
+    #[name=""];
+
+    query (p_repo_name :Entity(tt:path_name), p_reviewer :Entity(tt:username))  := (@com.github.get_pull_requests(repo_name=p_repo_name)), contains(reviewers, p_reviewer)
+    #_[utterances=["PR review requests for $p_reviewer in $p_repo_name",
+                   "pull requests in $p_repo_name need to be reviewed by $p_reviewer"]]
+    #[id=16160597]
+    #[name=""];
+
+    stream (p_repo_name :Entity(tt:path_name))  := monitor (@com.github.get_pull_requests(repo_name=p_repo_name))
+    #_[utterances=["when there is a new pull requests in repository $p_repo_name",
+                   "when someone starts a new PR in repo $p_repo_name"]]
+    #[id=16160599]
+    #[name=""];
+
+    stream (p_repo_name :Entity(tt:path_name), p_reviewer :Entity(tt:username))  := monitor ((@com.github.get_pull_requests(repo_name=p_repo_name)), contains(reviewers, p_reviewer))
+    #_[utterances=["when there is a new review request for $p_reviewer in repository $p_repo_name",
+                   "when someone starts a new review request for $p_reviewer in repo $p_repo_name",
+                   "when $p_reviewer has a pull request to review in $p_repo_name"]]
+    #[id=16160601]
+    #[name=""];
+
+}

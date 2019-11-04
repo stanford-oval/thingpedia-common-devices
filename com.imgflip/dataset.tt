@@ -1,0 +1,58 @@
+dataset @com.imgflip language "en" {
+    query  := @com.imgflip.list()
+    #_[utterances=["all meme templates",
+                   "all imgflip meme templates",
+                   "the list of all memes"]]
+    #[id=1688247]
+    #[name=""];
+
+    query (p_name :String)  := (@com.imgflip.list()), name == p_name
+    #_[utterances=["meme template named ${p_name:const}",
+                   "meme template with name ${p_name}"]]
+    #[id=1688248]
+    #[name=""];
+
+    query (p_template :Entity(imgflip:meme_id), p_text_top :String, p_text_bottom :String)  := @com.imgflip.generate(template=p_template, text_top=p_text_top, text_bottom=p_text_bottom)
+    #_[utterances=["a meme on template $p_template with $p_text_top at the top and $p_text_bottom at the bottom",
+                   ", generate a meme on template $p_template with $p_text_top at the top and $p_text_bottom at the bottom"]]
+    #[id=1688249]
+    #[name=""];
+
+    query (p_template :Entity(imgflip:meme_id))  := @com.imgflip.generate(template=p_template, text_top=$undefined, text_bottom=$undefined)
+    #_[utterances=["a meme on template $p_template",
+                   "a ${p_template:const} meme",
+                   "a ${p_template:const} meme from imgflip",
+                   ", generate a meme on template ${p_template:const}",
+                   ", generate a ${p_template:const} meme"]]
+    #[id=1688251]
+    #[name=""];
+
+    query (p_template :Entity(imgflip:meme_id), p_text_top :String)  := @com.imgflip.generate(template=p_template, text_top=p_text_top, text_bottom="")
+    #_[utterances=["a meme on template $p_template with $p_text_top at the top and no text at the bottom"]]
+    #[id=1688252]
+    #[name=""];
+
+    query (p_template :Entity(imgflip:meme_id), p_text_bottom :String)  := @com.imgflip.generate(template=p_template, text_bottom=p_text_bottom, text_top="")
+    #_[utterances=["a meme on template $p_template with no text at the top and $p_text_bottom at the bottom"]]
+    #[id=1688254]
+    #[name=""];
+
+    query (p_name :String)  := (@com.imgflip.list()), name =~ p_name
+    #_[utterances=["meme templates about ${p_name:const}",
+                   "meme templates in imgflip about ${p_name:const}",
+                   "meme templates in imgflip whose name contains ${p_name}"]]
+    #[id=1688255]
+    #[name=""];
+
+    query  := @com.imgflip.generate(template=$undefined, text_top=$undefined, text_bottom=$undefined)
+    #_[utterances=[", generate a meme",
+                   ", make a meme"]]
+    #[id=1688264]
+    #[name=""];
+
+    query (p_template :Entity(imgflip:meme_id), p_text_top :String, p_text_bottom :String)  := @com.imgflip.generate(template=p_template, text_bottom=p_text_bottom, text_top=p_text_top)
+    #_[utterances=[", put the text ${p_text_top:const} at the top and ${p_text_bottom:const} at the bottom of a ${p_template:const} meme"]]
+    #[id=1688266]
+    #[name=""];
+
+}

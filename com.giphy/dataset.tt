@@ -1,0 +1,28 @@
+dataset @com.giphy language "en" {
+    query  := @com.giphy.get()
+    #_[utterances=["a random gif from giphy",
+                   "a random gif",
+                   "a random giphy",
+                   "a random picture from giphy",
+                   "a random animated gif",
+                   "some animated gif",
+                   "some gif from giphy",
+                   "a gif from giphy",
+                   "a gif",
+                   "a picture from giphy",
+                   "a giphy picture"]]
+    #[id=27924634]
+    #[name=""];
+
+    query (p_tag :Entity(tt:hashtag))  := @com.giphy.get(tag=p_tag)
+    #_[utterances=["a gif with tag ${p_tag} from giphy",
+                   "a ${p_tag:const} gif",
+                   "a ${p_tag:const} picture from giphy",
+                   "a gif tagged ${p_tag}",
+                   "a ${p_tag:const} animated picture",
+                   "a gif about ${p_tag:const}",
+                   "a picture from giphy about ${p_tag:const}"]]
+    #[id=27924645]
+    #[name=""];
+
+}

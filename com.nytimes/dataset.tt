@@ -1,0 +1,53 @@
+dataset @com.nytimes language "en" {
+    query  := @com.nytimes.get_front_page()
+    #_[utterances=["new york times",
+                   "the front page of the new york times",
+                   "the new york times front page",
+                   "articles in the new york times",
+                   "ny times",
+                   "nyt"]]
+    #[id=28160155]
+    #[name=""];
+
+    query  := (@com.nytimes.get_front_page()), updated >= start_of(day)
+    #_[utterances=["today 's articles in the new york times"]]
+    #[id=28160161]
+    #[name=""];
+
+    stream  := monitor (@com.nytimes.get_front_page())
+    #_[utterances=["when the new york times publishes a new article",
+                   "when the nyt publishes a new article"]]
+    #[id=28160162]
+    #[name=""];
+
+    query  := (@com.nytimes.get_front_page()), updated >= start_of(week)
+    #_[utterances=["new york times articles published this week"]]
+    #[id=28160164]
+    #[name=""];
+
+    query (p_section :Enum(world,us,business,technology,sports,science,health,arts,travel))  := @com.nytimes.get_section_page(section=p_section)
+    #_[utterances=["the ${p_section} section of the new york times",
+                   "the new york times ${p_section} section",
+                   "articles in the new york times ${p_section} section"]]
+    #[id=28160165]
+    #[name=""];
+
+    query (p_section :Enum(world,us,business,technology,sports,science,health,arts,travel), p_keyword :String)  := (@com.nytimes.get_section_page(section=p_section)), title =~ p_keyword
+    #_[utterances=["articles in the new york times ${p_section} section about ${p_keyword}",
+                   "articles about ${p_keyword} in nyt ${p_section} section"]]
+    #[id=28160168]
+    #[name=""];
+
+    stream (p_section :Enum(world,us,business,technology,sports,science,health,arts,travel))  := monitor (@com.nytimes.get_section_page(section=p_section))
+    #_[utterances=["when the new york times ${p_section} section publishes a new article",
+                   "when there are new articles in ${p_section} section of the new york times"]]
+    #[id=28160170]
+    #[name=""];
+
+    stream (p_section :Enum(world,us,business,technology,sports,science,health,arts,travel), p_keyword :String)  := monitor ((@com.nytimes.get_section_page(section=p_section)), title =~ p_keyword)
+    #_[utterances=["when the new york times ${p_section} section publishes a new article about ${p_keyword}",
+                   "when there are new articles about ${p_keyword} in ${p_section} section of the new york times"]]
+    #[id=28160172]
+    #[name=""];
+
+}

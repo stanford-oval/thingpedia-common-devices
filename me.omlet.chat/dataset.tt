@@ -1,0 +1,84 @@
+dataset @me.omlet.chat language "en" {
+    stream  := monitor (@me.omlet.chat.messages())
+    #_[utterances=["when i send or receive an omlet message"]]
+    #[id=1645981]
+    #[name=""];
+
+    stream  := monitor (@me.omlet.chat.messages(from_me=false))
+    #_[utterances=["when i receive a message on omlet"]]
+    #[id=1645982]
+    #[name=""];
+
+    stream (p_feed :Entity(omlet:feed_id))  := monitor ((@me.omlet.chat.messages(from_me=false)), feed == p_feed)
+    #_[utterances=["when i receive a message on omlet in feed $p_feed"]]
+    #[id=1645983]
+    #[name=""];
+
+    stream  := monitor (@me.omlet.chat.messages(from_me=true))
+    #_[utterances=["when i send a message on omlet"]]
+    #[id=1645984]
+    #[name=""];
+
+    query  := @me.omlet.chat.messages()
+    #_[utterances=["omlet messages"]]
+    #[id=1645985]
+    #[name=""];
+
+    stream (p_feed :Entity(omlet:feed_id))  := monitor ((@me.omlet.chat.messages()), feed == p_feed)
+    #_[utterances=["omlet feed $p_feed"]]
+    #[id=1645986]
+    #[name=""];
+
+    action (p_to :Entity(tt:username), p_message :String)  := @me.omlet.chat.send_to(to=p_to, message=p_message)
+    #_[utterances=["send an omlet to $p_to saying $p_message",
+                   "send a message on omlet to $p_to containing $p_message",
+                   "send $p_message to $p_to on omlet"]]
+    #[id=1645987]
+    #[name=""];
+
+    action (p_to :Entity(tt:username), p_caption :String)  := @me.omlet.chat.send_picture(to=p_to, caption=p_caption)
+    #_[utterances=["send a picture on omlet to $p_to with caption $p_caption"]]
+    #[id=1645989]
+    #[name=""];
+
+    action (p_to :Entity(tt:username))  := @me.omlet.chat.send_picture(to=p_to)
+    #_[utterances=["send a picture on omlet to $p_to"]]
+    #[id=1645990]
+    #[name=""];
+
+    action (p_to :Entity(tt:username))  := @me.omlet.chat.send_to(to=p_to)
+    #_[utterances=["send an omlet to $p_to"]]
+    #[id=1645991]
+    #[name=""];
+
+    query (p_feed :Entity(omlet:feed_id))  := (@me.omlet.chat.messages()), feed == p_feed
+    #_[utterances=["omlet messages in feed $p_feed"]]
+    #[id=1645992]
+    #[name=""];
+
+    query  := @me.omlet.chat.messages(from_me=true)
+    #_[utterances=["omlet messages from me"]]
+    #[id=1645993]
+    #[name=""];
+
+    query  := @me.omlet.chat.messages(from_me=false)
+    #_[utterances=["omlet messages i received"]]
+    #[id=1645994]
+    #[name=""];
+
+    action (p_message :String)  := @me.omlet.chat.send_to(message=p_message)
+    #_[utterances=["send $p_message on omlet"]]
+    #[id=1645996]
+    #[name=""];
+
+    action (p_to :Entity(tt:username), p_picture_url :Entity(tt:picture))  := @me.omlet.chat.send_picture(to=p_to, picture_url=p_picture_url)
+    #_[utterances=["send $p_picture_url to $p_to on omlet"]]
+    #[id=1645997]
+    #[name=""];
+
+    action (p_picture_url :Entity(tt:picture))  := @me.omlet.chat.send_picture(picture_url=p_picture_url)
+    #_[utterances=["send $p_picture_url on omlet"]]
+    #[id=1645998]
+    #[name=""];
+
+}

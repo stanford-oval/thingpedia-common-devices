@@ -1,0 +1,55 @@
+dataset @com.uber language "en" {
+    query  := @com.uber.time_estimate()
+    #_[utterances=["time estimate for uber"]]
+    #[id=1687998]
+    #[name=""];
+
+    query (p_start :Location, p_end :Location)  := @com.uber.price_estimate(start=p_start, end=p_end)
+    #_[utterances=["a price estimate for uber from $p_start to $p_end",
+                   "the price of an uber from $p_start to $p_end",
+                   "the cost of an uber from $p_start to $p_end"]]
+    #[id=1687999]
+    #[name=""];
+
+    query (p_start :Location, p_end :Location, p_uber_type :Enum(pool,uber_x,uber_xl,uber_black,select,suv,assist))  := (@com.uber.price_estimate(start=p_start, end=p_end)), uber_type == p_uber_type
+    #_[utterances=["a price estimate for uber $p_uber_type from $p_start to $p_end"]]
+    #[id=1688001]
+    #[name=""];
+
+    query (p_start :Location)  := @com.uber.time_estimate(start=p_start)
+    #_[utterances=["time estimate for uber around $p_start",
+                   "eta for uber at $p_start",
+                   "the distance of uber at $p_start",
+                   "the distance of the closest uber at $p_start"]]
+    #[id=1688002]
+    #[name=""];
+
+    query (p_start :Location, p_uber_type :Enum(pool,uber_x,uber_xl,uber_black,select,suv,assist))  := (@com.uber.time_estimate(start=p_start)), uber_type == p_uber_type
+    #_[utterances=["eta for uber of type $p_uber_type at $p_start"]]
+    #[id=1688004]
+    #[name=""];
+
+    action (p_uber_type :Enum(pool,uber_x,uber_xl,uber_black,select,suv,assist), p_start :Location, p_end :Location)  := @com.uber.request(start=p_start, end=p_end, uber_type=p_uber_type)
+    #_[utterances=["request an $p_uber_type from $p_start to $p_end"]]
+    #[id=1688008]
+    #[name=""];
+
+    query  := @com.uber.current()
+    #_[utterances=["get status of my current ride"]]
+    #[id=1688009]
+    #[name=""];
+
+    action (p_start :Location, p_end :Location)  := @com.uber.request(start=p_start, end=p_end)
+    #_[utterances=["request an uber from $p_start to $p_end",
+                   "order an uber from $p_start to $p_end"]]
+    #[id=1688010]
+    #[name=""];
+
+    action  := @com.uber.request()
+    #_[utterances=["request an uber ",
+                   "call uber",
+                   "order uber"]]
+    #[id=1688011]
+    #[name=""];
+
+}

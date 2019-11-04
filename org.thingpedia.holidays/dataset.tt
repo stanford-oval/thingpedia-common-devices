@@ -1,0 +1,23 @@
+dataset @org.thingpedia.holidays language "en" {
+    stream (p_country :Entity(tt:country))  := monitor ((@org.thingpedia.holidays.get_holidays(country=p_country)), (date >= start_of(day) && date <= end_of(day)))
+    #_[utterances=["when it 's a holiday in $p_country"]]
+    #[id=32513084]
+    #[name=""];
+
+    query (p_country :Entity(tt:country))  := @org.thingpedia.holidays.get_holidays(country=p_country)
+    #_[utterances=["the holidays in $p_country",
+                   "$p_country holidays"]]
+    #[id=32513085]
+    #[name=""];
+
+    stream  := monitor ((@org.thingpedia.holidays.get_holidays()), (date >= start_of(day) && date <= end_of(day)))
+    #_[utterances=["when it 's a holiday"]]
+    #[id=32513087]
+    #[name=""];
+
+    query  := @org.thingpedia.holidays.get_holidays()
+    #_[utterances=["the holidays"]]
+    #[id=32513088]
+    #[name=""];
+
+}

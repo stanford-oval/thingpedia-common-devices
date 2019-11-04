@@ -1,0 +1,33 @@
+dataset @com.tumblr language "en" {
+    stream (p_blog_name :Entity(tt:username))  := monitor (@com.tumblr.new_text(blog_name=p_blog_name))
+    #_[utterances=["when there is a new post in blog ${p_blog_name:const} on tumblr",
+                   "when tumblr blog ${p_blog_name:const} has a new post",
+                   "when tumblr blog ${p_blog_name:const} makes a new post",
+                   "when tumblr user ${p_blog_name:const} has a new post",
+                   "when ${p_blog_name} posts on tumblr"]]
+    #[id=28160118]
+    #[name=""];
+
+    query (p_blog_name :String)  := @com.tumblr.new_text(blog_name=p_blog_name)
+    #_[utterances=["blog ${p_blog_name:const} on tumblr",
+                   "posts in the ${p_blog_name:const} tumblr blog",
+                   "posts by $p_blog_name on tumblr",
+                   "tumblr blog $p_blog_name"]]
+    #[id=28160123]
+    #[name=""];
+
+    stream (p_blog_name :String)  := monitor (@com.tumblr.new_photo(blog_name=p_blog_name))
+    #_[utterances=["when there is a new picture uploaded in blog ${p_blog_name:const} on tumblr",
+                   "when someone posts a new picture in ${p_blog_name:const} on tumblr",
+                   "when ${p_blog_name} uploads a new picture on tumblr",
+                   "when ${p_blog_name} posts on tumblr"]]
+    #[id=28160127]
+    #[name=""];
+
+    query (p_blog_name :String)  := @com.tumblr.new_photo(blog_name=p_blog_name)
+    #_[utterances=["picture posts in ${p_blog_name:const} on tumblr",
+                   "picture posts in the ${p_blog_name:const} tumblr blog"]]
+    #[id=28160131]
+    #[name=""];
+
+}

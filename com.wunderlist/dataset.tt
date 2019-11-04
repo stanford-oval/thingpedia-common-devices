@@ -1,0 +1,49 @@
+dataset @com.wunderlist language "en" {
+    query  := @com.wunderlist.get_lists()
+    #_[utterances=["Wunderlist lists ",
+                   "my lists from Wunderlist "]]
+    #[id=1688386]
+    #[name=""];
+
+    query (p_list :String)  := @com.wunderlist.get_tasks(list_title=p_list)
+    #_[utterances=["tasks from $p_list on Wunderlist",
+                   "tasks from $p_list on Wunderlist"]]
+    #[id=1688388]
+    #[name=""];
+
+    query  := @com.wunderlist.get_tasks()
+    #_[utterances=["my tasks on Wunderlist"]]
+    #[id=1688389]
+    #[name=""];
+
+    query (p_days :Number)  := @com.wunderlist.get_tasks(time_window=p_days)
+    #_[utterances=["tasks from the last $p_days days from Wunderlist"]]
+    #[id=1688391]
+    #[name=""];
+
+    query  := @com.wunderlist.get_tasks(completed=true)
+    #_[utterances=["completed tasks from Wunderlist"]]
+    #[id=1688392]
+    #[name=""];
+
+    query (p_days :Number)  := @com.wunderlist.get_tasks(time_window=p_days, completed=true)
+    #_[utterances=["completed tasks from the last $p_days on Wunderlist"]]
+    #[id=1688393]
+    #[name=""];
+
+    query (p_list :String)  := @com.wunderlist.get_tasks(list_title=p_list, completed=true)
+    #_[utterances=["completed tasks from $p_list on Wunderlist"]]
+    #[id=1688394]
+    #[name=""];
+
+    query (p_list :String, p_days :Number)  := @com.wunderlist.get_tasks(list_title=p_list, time_window=p_days)
+    #_[utterances=["tasks from $p_list from the last $p_days days from Wunderlist"]]
+    #[id=1688395]
+    #[name=""];
+
+    query (p_list :String, p_days :Number)  := @com.wunderlist.get_tasks(list_title=p_list, time_window=p_days, completed=true)
+    #_[utterances=["completed tasks from $p_list from the last $p_days days on Wunderlist"]]
+    #[id=1688396]
+    #[name=""];
+
+}

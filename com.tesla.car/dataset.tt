@@ -1,0 +1,67 @@
+dataset @com.tesla.car language "en" {
+    query  := @com.tesla.car.get_vehicle_state()
+    #_[utterances=["the state of my tesla car ",
+                   "Are my Tesla's doors locked? "]]
+    #[id=1688480]
+    #[name=""];
+
+    query  := @com.tesla.car.get_mobile_enabled()
+    #_[utterances=["is my Tesla remotely accessible? "]]
+    #[id=1688481]
+    #[name=""];
+
+    query  := @com.tesla.car.get_charge_state()
+    #_[utterances=["get the battery level of my Tesla car",
+                   "Is my tesla car plugged in? "]]
+    #[id=1688482]
+    #[name=""];
+
+    query  := @com.tesla.car.get_climate_state()
+    #_[utterances=["get the temperature of my Tesla car",
+                   "get the climate state of my Tesla car"]]
+    #[id=1688483]
+    #[name=""];
+
+    query  := @com.tesla.car.get_drive_state()
+    #_[utterances=["where is my Tesla car?"]]
+    #[id=1688484]
+    #[name=""];
+
+    action  := @com.tesla.car.flash()
+    #_[utterances=["flash the Tesla car"]]
+    #[id=1688485]
+    #[name=""];
+
+    action  := @com.tesla.car.honk_horn()
+    #_[utterances=["honk the Tesla car"]]
+    #[id=1688486]
+    #[name=""];
+
+    action  := @com.tesla.car.wake_up()
+    #_[utterances=["wake up the Tesla car"]]
+    #[id=1688487]
+    #[name=""];
+
+    action (p_power :Enum(on,off))  := @com.tesla.car.set_air_conditioning(power=p_power)
+    #_[utterances=["turn ${p_power} my Tesla car air-conditioner"]]
+    #[id=1688488]
+    #[name=""];
+
+    action (p_value :Measure(C))  := @com.tesla.car.set_temperature(value=p_value)
+    #_[utterances=["set the temperature of my Tesla car to ${p_value:const}"]]
+    #[id=1688489]
+    #[name=""];
+
+    query  := (@com.tesla.car.get_drive_state()), location == $context.location.home
+    #_[utterances=["Is my car at home? "]]
+    #[id=1688493]
+    #[name=""];
+
+    action  := @car.honk_horn()
+    #_[utterances=["honk the horn on my car",
+                   "honk my car horn",
+                   "blow the horn in my car"]]
+    #[id=52312402]
+    #[name="HonkHornOnCar"];
+
+}

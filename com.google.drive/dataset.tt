@@ -1,0 +1,97 @@
+dataset @com.google.drive language "en" {
+    stream  := monitor (@com.google.drive.list_drive_files())
+    #_[utterances=["when a file is modified on google drive",
+                   "when a file changes in my google drive"]]
+    #[id=27925368]
+    #[name=""];
+
+    action (p_file_name :Entity(tt:path_name))  := @com.google.drive.create_new_drive_file(file_name=p_file_name)
+    #_[utterances=["create a new file with name ${p_file_name} on google drive",
+                   "create a file in google drive named ${p_file_name:const}"]]
+    #[id=27925370]
+    #[name=""];
+
+    stream  := monitor (@com.google.drive.list_drive_files(order_by=enum(created_time_decreasing))) on new [file_id]
+    #_[utterances=["when a file is created in google drive",
+                   "when i create a new file on google drive",
+                   "when i make a new file in google drive",
+                   "when there is a new file in google drive"]]
+    #[id=27925372]
+    #[name=""];
+
+    query  := @com.google.drive.list_drive_files()
+    #_[utterances=["my google drive files",
+                   "my files in google drive"]]
+    #[id=27925376]
+    #[name=""];
+
+    query (p_mime_type :Entity(tt:mime_type))  := (@com.google.drive.list_drive_files()), mime_type == p_mime_type
+    #_[utterances=["my google drive files of type ${p_mime_type}",
+                   "my ${p_mime_type:no-undefined} files in google drive"]]
+    #[id=27925378]
+    #[name=""];
+
+    query  := (@com.google.drive.list_drive_files()), starred == true
+    #_[utterances=["my starred google drive files",
+                   "the google drive files i starred"]]
+    #[id=27925380]
+    #[name=""];
+
+    query  := (@com.google.drive.list_drive_files(order_by=enum(created_time_decreasing))), created_time >= start_of(week)
+    #_[utterances=["my google drive files created this week"]]
+    #[id=27925382]
+    #[name=""];
+
+    query  := (@com.google.drive.list_drive_files()), modified_time >= start_of(week)
+    #_[utterances=["my google drive files modified this week"]]
+    #[id=27925383]
+    #[name=""];
+
+    query  := (@com.google.drive.list_drive_files()), modified_time >= start_of(day)
+    #_[utterances=["my google drive files modified today"]]
+    #[id=27925384]
+    #[name=""];
+
+    query (p_file_size :Measure(byte))  := (@com.google.drive.list_drive_files()), file_size <= p_file_size
+    #_[utterances=["my google drive files smaller than ${p_file_size}"]]
+    #[id=27925385]
+    #[name=""];
+
+    query (p_file_size :Measure(byte))  := (@com.google.drive.list_drive_files()), file_size >= p_file_size
+    #_[utterances=["my google drive files larger than ${p_file_size}"]]
+    #[id=27925386]
+    #[name=""];
+
+    query  := @com.google.drive.list_drive_files(order_by=enum(created_time_increasing))
+    #_[utterances=["my oldest google drive files"]]
+    #[id=27925387]
+    #[name=""];
+
+    query  := @com.google.drive.list_drive_files(order_by=enum(created_time_decreasing))
+    #_[utterances=["my newest google drive files",
+                   "my google drive files that were created most recently"]]
+    #[id=27925388]
+    #[name=""];
+
+    query  := @com.google.drive.list_drive_files(order_by=enum(modified_time_decreasing))
+    #_[utterances=["my google drive files that changed most recently"]]
+    #[id=27925390]
+    #[name=""];
+
+    query  := @com.google.drive.list_drive_files(order_by=enum(name_increasing))
+    #_[utterances=["my google drive files in alphabetical order"]]
+    #[id=27925391]
+    #[name=""];
+
+    query  := @com.google.drive.list_drive_files(order_by=enum(name_decreasing))
+    #_[utterances=["my google drive files in reverse alphabetical order"]]
+    #[id=27925392]
+    #[name=""];
+
+    action  := @com.google.drive.create_new_drive_file(file_name=$?)
+    #_[utterances=["create google drive file",
+                   "create a file in google drive"]]
+    #[id=27925393]
+    #[name=""];
+
+}

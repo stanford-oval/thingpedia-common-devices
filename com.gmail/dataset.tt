@@ -1,0 +1,182 @@
+dataset @com.gmail language "en" {
+    stream  := monitor (@com.gmail.inbox()) on new [email_id]
+    #_[utterances=["when i receive an email on Gmail",
+                   "when somebody emails me",
+                   "when somebody sends me an email",
+                   "when somebody sends me an email on gmail"]]
+    #[id=27925312]
+    #[name=""];
+
+    stream (p_sender_address :Entity(tt:email_address))  := monitor ((@com.gmail.inbox()), sender_address == p_sender_address) on new [email_id]
+    #_[utterances=["when i receive an email from ${p_sender_address:no-undefined} on Gmail",
+                   "when ${p_sender_address:no-undefined} sends me an email",
+                   "when ${p_sender_address:no-undefined} emails me"]]
+    #[id=27925316]
+    #[name=""];
+
+    stream  := monitor (@com.gmail.inbox(is_important=true)) on new [email_id]
+    #_[utterances=["when i receive an email marked as important",
+                   "when i receive an important email"]]
+    #[id=27925319]
+    #[name=""];
+
+    stream (p_sender_address :Entity(tt:email_address))  := monitor ((@com.gmail.inbox(is_important=true)), sender_address == p_sender_address) on new [email_id]
+    #_[utterances=["when i receive an important email from ${p_sender_address:no-undefined}"]]
+    #[id=27925321]
+    #[name=""];
+
+    query  := @com.gmail.inbox(is_primary=true)
+    #_[utterances=["my primary category emails"]]
+    #[id=27925322]
+    #[name=""];
+
+    stream (p_sender_address :Entity(tt:email_address))  := monitor ((@com.gmail.inbox(is_primary=true)), sender_address == p_sender_address)
+    #_[utterances=["if i receive an email from ${p_sender_address:no-undefined} in category primary"]]
+    #[id=27925323]
+    #[name=""];
+
+    query  := @com.gmail.inbox()
+    #_[utterances=["my latest email",
+                   "my emails",
+                   "my emails on gmail",
+                   "my gmail",
+                   "my gmail inbox"]]
+    #[id=27925324]
+    #[name=""];
+
+    query (p_sender_address :Entity(tt:email_address))  := (@com.gmail.inbox()), sender_address == p_sender_address
+    #_[utterances=["my emails from $p_sender_address",
+                   "emails i received from $p_sender_address",
+                   "emails i got from $p_sender_address"]]
+    #[id=27925329]
+    #[name=""];
+
+    query (p_label :String)  := (@com.gmail.inbox()), contains(labels, p_label)
+    #_[utterances=["my emails with label $p_label",
+                   "my emails labelled $p_label",
+                   "my emails that have label $p_label"]]
+    #[id=27925332]
+    #[name=""];
+
+    query (p_subject :String)  := (@com.gmail.inbox()), subject =~ p_subject
+    #_[utterances=["my emails with subject $p_subject"]]
+    #[id=27925335]
+    #[name=""];
+
+    action (p_to :Entity(tt:email_address), p_subject :String, p_message :String)  := @com.gmail.send_email(to=p_to, subject=p_subject, message=p_message)
+    #_[utterances=["send an email to $p_to with subject $p_subject with message $p_message using my gmail",
+                   "send an email to $p_to with subject $p_subject with message $p_message",
+                   "email $p_to with subject $p_subject and message $p_message"]]
+    #[id=27925336]
+    #[name=""];
+
+    action (p_to :Entity(tt:email_address), p_subject :String)  := @com.gmail.send_picture(to=p_to, subject=p_subject, message=$?, picture_url=$?)
+    #_[utterances=["send a picture to $p_to with subject $p_subject using my gmail",
+                   "send a picture to $p_to with subject $p_subject",
+                   "email a picture to $p_to with subject $p_subject"]]
+    #[id=27925339]
+    #[name=""];
+
+    action (p_to :Entity(tt:email_address))  := @com.gmail.send_email(to=p_to, subject=$?, message=$?)
+    #_[utterances=["send an email to $p_to using my gmail",
+                   "email $p_to",
+                   "reply to ${p_to}"]]
+    #[id=27925342]
+    #[name=""];
+
+    action  := @com.gmail.send_email(to=$?, subject=$?, message=$?)
+    #_[utterances=["send an email to somebody"]]
+    #[id=27925345]
+    #[name=""];
+
+    action (p_subject :String)  := @com.gmail.send_email(to=$?, subject=p_subject, message=$?)
+    #_[utterances=["send an email with subject $p_subject"]]
+    #[id=27925346]
+    #[name=""];
+
+    action (p_to :Entity(tt:email_address))  := @com.gmail.send_picture(to=p_to, subject=$?, message=$?, picture_url=$?)
+    #_[utterances=["email a picture to $p_to",
+                   "send a picture to $p_to"]]
+    #[id=27925347]
+    #[name=""];
+
+    query  := (@com.gmail.inbox()), date >= start_of(day)
+    #_[utterances=["emails arrived today",
+                   "emails arrived in the last hour"]]
+    #[id=27925349]
+    #[name=""];
+
+    query  := (@com.gmail.inbox()), date >= start_of(day) - 1day
+    #_[utterances=["emails arrived yesterday"]]
+    #[id=27925351]
+    #[name=""];
+
+    query  := @com.gmail.inbox(is_important=true)
+    #_[utterances=["important emails"]]
+    #[id=27925352]
+    #[name=""];
+
+    action (p_email_id :Entity(com.gmail:email_id), p_message :String)  := @com.gmail.reply(email_id=p_email_id, message=p_message)
+    #_[utterances=["reply to ${p_email_id} saying ${p_message}"]]
+    #[id=27925353]
+    #[name=""];
+
+    action (p_email_id :Entity(com.gmail:email_id), p_message :String, p_subject :String)  := @com.gmail.reply(email_id=p_email_id, message=p_message, subject=p_subject)
+    #_[utterances=["reply to ${p_email_id} saying ${p_message} ,  add ${p_subject} to the subject"]]
+    #[id=27925354]
+    #[name=""];
+
+    action (p_email_id :Entity(com.gmail:email_id))  := @com.gmail.reply(email_id=p_email_id, message=$?)
+    #_[utterances=["reply to ${p_email_id}"]]
+    #[id=27925355]
+    #[name=""];
+
+    action (p_to :Entity(tt:email_address), p_message :String)  := @com.gmail.send_email(to=p_to, message=p_message, subject=$?)
+    #_[utterances=["reply to ${p_to} saying ${p_message}",
+                   "send $p_message to $p_to"]]
+    #[id=27925356]
+    #[name=""];
+
+    action (p_email_id :Entity(com.gmail:email_id), p_to :Entity(tt:email_address), p_message :String)  := @com.gmail.forward(email_id=p_email_id, to=p_to, message=p_message)
+    #_[utterances=["forward ${p_email_id} to ${p_to} saying ${p_message}"]]
+    #[id=27925358]
+    #[name=""];
+
+    action (p_email_id :Entity(com.gmail:email_id), p_to :Entity(tt:email_address))  := @com.gmail.forward(email_id=p_email_id, to=p_to, message=$?)
+    #_[utterances=["forward ${p_email_id} to ${p_to}"]]
+    #[id=27925359]
+    #[name=""];
+
+    query  := @com.gmail.inbox(is_important=false)
+    #_[utterances=["my unimportant emails"]]
+    #[id=27925360]
+    #[name=""];
+
+    action (p_to :Entity(tt:email_address), p_subject :String, p_picture_url :Entity(tt:picture))  := @com.gmail.send_picture(to=p_to, subject=p_subject, picture_url=p_picture_url, message=$?)
+    #_[utterances=["send $p_picture_url to $p_to with subject $p_subject"]]
+    #[id=27925361]
+    #[name=""];
+
+    action (p_to :Entity(tt:email_address), p_picture_url :Entity(tt:picture))  := @com.gmail.send_picture(to=p_to, picture_url=p_picture_url, subject=$?, message=$?)
+    #_[utterances=["send $p_picture_url to $p_to"]]
+    #[id=27925362]
+    #[name=""];
+
+    action  := @com.gmail.send_picture(to=$?, subject=$?, message=$?, picture_url=$?)
+    #_[utterances=["send a picture via email"]]
+    #[id=27925363]
+    #[name=""];
+
+    action (p_message :String)  := @com.gmail.send_email(message=p_message, to=$?, subject=$?)
+    #_[utterances=["send $p_message via email",
+                   "send $p_message via gmail"]]
+    #[id=27925364]
+    #[name=""];
+
+    action (p_picture_url :Entity(tt:picture))  := @com.gmail.send_picture(picture_url=p_picture_url, to=$?, subject=$?, message=$?)
+    #_[utterances=["send $p_picture_url via email",
+                   "send $p_picture_url via gmail"]]
+    #[id=27925366]
+    #[name=""];
+
+}

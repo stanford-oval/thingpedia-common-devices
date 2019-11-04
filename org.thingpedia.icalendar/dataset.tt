@@ -1,0 +1,104 @@
+dataset @org.thingpedia.icalendar language "en" {
+    stream  := edge (monitor (@org.thingpedia.icalendar.list_events())) on status == enum(started)
+    #_[utterances=["when an event on my calendar begins",
+                   "when an appointment on my calendar begins",
+                   "when a meeting on my calendar begins",
+                   "when a meeting starts",
+                   "when it is time for my appointment"]]
+    #[id=27925395]
+    #[name=""];
+
+    stream (p_location :String)  := edge (monitor ((@org.thingpedia.icalendar.list_events()), location =~ p_location)) on status == enum(started)
+    #_[utterances=["when an event on my calendar at location $p_location begins"]]
+    #[id=27925400]
+    #[name=""];
+
+    stream (p_organizer :String)  := edge (monitor ((@org.thingpedia.icalendar.list_events()), organizer =~ p_organizer)) on status == enum(started)
+    #_[utterances=["when an event on my calendar organized by $p_organizer begins"]]
+    #[id=27925401]
+    #[name=""];
+
+    query  := @org.thingpedia.icalendar.list_events()
+    #_[utterances=["my icalendar events",
+                   "my schedule on icalendar",
+                   "my calendar events",
+                   "my schedule",
+                   "my calendar schedule",
+                   "my meeting schedule",
+                   "my appointments"]]
+    #[id=27925402]
+    #[name=""];
+
+    query (p_organizer :String)  := (@org.thingpedia.icalendar.list_events()), organizer =~ p_organizer
+    #_[utterances=["my icalendar events organized by $p_organizer",
+                   "my calendar events organized by $p_organizer"]]
+    #[id=27925409]
+    #[name=""];
+
+    query (p_location :String)  := (@org.thingpedia.icalendar.list_events()), location =~ p_location
+    #_[utterances=["my icalendar events at $p_location",
+                   "my calendar events at $p_location"]]
+    #[id=27925411]
+    #[name=""];
+
+    stream  := monitor (@org.thingpedia.icalendar.list_events())
+    #_[utterances=["when something changes on my icalendar",
+                   "when something changes on my calendar"]]
+    #[id=27925413]
+    #[name=""];
+
+    stream (p_organizer :String)  := monitor ((@org.thingpedia.icalendar.list_events()), organizer =~ p_organizer)
+    #_[utterances=["when events organized by $p_organizer change"]]
+    #[id=27925415]
+    #[name=""];
+
+    stream  := monitor (@org.thingpedia.icalendar.list_events()) on new [location]
+    #_[utterances=["when the location of some event changes on my icalendar"]]
+    #[id=27925416]
+    #[name=""];
+
+    stream  := monitor (@org.thingpedia.icalendar.list_events()) on new [start_date, end_date]
+    #_[utterances=["when the time of some event changes on my icalendar",
+                   "when the time of some event changes on my calendar",
+                   "when the time of my meetings changes"]]
+    #[id=27925417]
+    #[name=""];
+
+    stream  := edge (monitor (@org.thingpedia.icalendar.list_events())) on status == enum(upcoming)
+    #_[utterances=["when an event is about to start on my icalendar",
+                   "when an event is about to start on my calendar",
+                   "when an event in my schedule is about to start",
+                   "when an event is about to start"]]
+    #[id=27925420]
+    #[name=""];
+
+    stream (p_location :String)  := edge (monitor ((@org.thingpedia.icalendar.list_events()), location =~ p_location)) on status == enum(upcoming)
+    #_[utterances=["when an event on my calendar at location $p_location is about to begin"]]
+    #[id=27925424]
+    #[name=""];
+
+    stream (p_organizer :String)  := edge (monitor ((@org.thingpedia.icalendar.list_events()), organizer =~ p_organizer)) on status == enum(upcoming)
+    #_[utterances=["when an event on my calendar organized by $p_organizer is about to begin"]]
+    #[id=27925425]
+    #[name=""];
+
+    stream  := edge (monitor (@org.thingpedia.icalendar.list_events())) on status == enum(ended)
+    #_[utterances=["when an event on my icalendar ends",
+                   "when an event on my calendar ends",
+                   "when a meeting ends",
+                   "when the meeting is over",
+                   "when my appointment ends"]]
+    #[id=27925426]
+    #[name=""];
+
+    stream (p_location :String)  := edge (monitor ((@org.thingpedia.icalendar.list_events()), location =~ p_location)) on status == enum(ended)
+    #_[utterances=["when an event on my calendar at location $p_location ends"]]
+    #[id=27925431]
+    #[name=""];
+
+    stream (p_organizer :String)  := edge (monitor ((@org.thingpedia.icalendar.list_events()), organizer =~ p_organizer)) on status == enum(ended)
+    #_[utterances=["when an event on my calendar organized by $p_organizer ends"]]
+    #[id=27925432]
+    #[name=""];
+
+}

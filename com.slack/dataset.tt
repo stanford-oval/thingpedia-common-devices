@@ -1,0 +1,178 @@
+dataset @com.slack language "en" {
+    query (p_username :Entity(tt:username))  := @com.slack.user_presence(username=p_username)
+    #_[utterances=["the presence of $p_username on slack",
+                   "whether $p_username is active on slack",
+                   "whether $p_username is away on slack"]]
+    #[id=32453432]
+    #[name=""];
+
+    stream (p_username :Entity(tt:username))  := edge (monitor (@com.slack.user_presence(username=p_username))) on presence == enum(active)
+    #_[utterances=["when $p_username is online on slack",
+                   "when $p_username is active on slack",
+                   "when $p_username connects to slack",
+                   "when $p_username logins to slack",
+                   "when $p_username logs in on slack",
+                   "when slack user $p_username is online",
+                   "when slack user $p_username is active",
+                   "when $p_username goes online on slack",
+                   "when $p_username becomes active on slack"]]
+    #[id=32453435]
+    #[name=""];
+
+    stream (p_username :Entity(tt:username))  := edge (monitor (@com.slack.user_presence(username=p_username))) on presence == enum(away)
+    #_[utterances=["when $p_username is away on slack",
+                   "when $p_username is inactive on slack",
+                   "when $p_username is offline on slack",
+                   "when $p_username is off from slack",
+                   "when $p_username disconnects from slack",
+                   "when $p_username logs out off slack",
+                   "when $p_username logs out from slack",
+                   "when slack user $p_username is offline",
+                   "when slack user $p_username is away",
+                   "when $p_username goes offline on slack",
+                   "when $p_username goes away on slack",
+                   "when $p_username goes away from slack",
+                   "when $p_username becomes inactive on slack"]]
+    #[id=32453444]
+    #[name=""];
+
+    stream  := monitor (@com.slack.channel_history())
+    #_[utterances=["when i receive a message on slack",
+                   "when somebody sends a message to slack",
+                   "when somebody messages slack",
+                   "when there is a new slack message",
+                   "when a new message is posted on slack",
+                   "when a new message is sent on slack",
+                   "when somebody posts a message to slack"]]
+    #[id=32453457]
+    #[name=""];
+
+    stream (p_sender :Entity(tt:username))  := monitor ((@com.slack.channel_history()), sender == p_sender)
+    #_[utterances=["when i receive a message from ${p_sender:no-undefined} on slack",
+                   "when ${p_sender:no-undefined} messages me on slack",
+                   "when ${p_sender:no-undefined} sends a message on slack"]]
+    #[id=32453464]
+    #[name=""];
+
+    stream (p_channel :Entity(tt:hashtag))  := monitor ((@com.slack.channel_history()), channel == p_channel)
+    #_[utterances=["when i receive a message in channel ${p_channel:no-undefined} on slack",
+                   "when there is a new message in the slack channel ${p_channel:no-undefined}",
+                   "when somebody sends a message to the slack channel ${p_channel:no-undefined}",
+                   "when somebody posts to the slack channel ${p_channel:no-undefined}",
+                   "when there is a new post in the slack channel ${p_channel:no-undefined}"]]
+    #[id=32453467]
+    #[name=""];
+
+    query  := @com.slack.channel_history()
+    #_[utterances=["last slack messages",
+                   "slack channel history"]]
+    #[id=32453472]
+    #[name=""];
+
+    query (p_sender :Entity(tt:username))  := (@com.slack.channel_history()), sender == p_sender
+    #_[utterances=["recent messages from $p_sender in slack",
+                   "messages i received on slack from $p_sender"]]
+    #[id=32453474]
+    #[name=""];
+
+    query (p_channel :Entity(tt:hashtag))  := (@com.slack.channel_history()), channel == p_channel
+    #_[utterances=["recent slack messages in ${p_channel:const}",
+                   "messages i received on slack in $p_channel"]]
+    #[id=32453476]
+    #[name=""];
+
+    query  := (@com.slack.channel_history()), date >= start_of(h)
+    #_[utterances=["slack messages i received in the last hour"]]
+    #[id=32453478]
+    #[name=""];
+
+    query (p_channel :Entity(tt:hashtag))  := (@com.slack.channel_history()), (channel == p_channel && date >= start_of(h))
+    #_[utterances=["slack messages in ${p_channel:const} i received in the last hour"]]
+    #[id=32453479]
+    #[name=""];
+
+    action (p_channel :Entity(tt:hashtag), p_message :String)  := @com.slack.send(channel=p_channel, message=p_message)
+    #_[utterances=["send a message on slack to ${p_channel} saying ${p_message}",
+                   "message ${p_channel:const} on slack saying ${p_message}",
+                   "send ${p_message} to ${p_channel} on slack",
+                   "post $p_message to $p_channel on slack",
+                   "let slack channel ${p_channel:const} know that ${p_message:const}"]]
+    #[id=32453480]
+    #[name=""];
+
+    action (p_channel :Entity(tt:hashtag), p_purpose :String)  := @com.slack.updateChannelPurpose(channel=p_channel, purpose=p_purpose)
+    #_[utterances=["set the purpose for channel ${p_channel:const} to $p_purpose on slack",
+                   "set the purpose for slack channel $p_channel to $p_purpose"]]
+    #[id=32453485]
+    #[name=""];
+
+    action (p_channel :Entity(tt:hashtag), p_topic :String)  := @com.slack.updateChannelTopic(channel=p_channel, topic=p_topic)
+    #_[utterances=["set the topic for channel $p_channel to $p_topic on slack",
+                   "set the topic of slack channel ${p_channel:const} to $p_topic"]]
+    #[id=32453487]
+    #[name=""];
+
+    action  := @com.slack.setPresence(presence=enum(away))
+    #_[utterances=["set me as away on slack",
+                   "mark me as away on slack"]]
+    #[id=32453489]
+    #[name=""];
+
+    action  := @com.slack.setPresence(presence=enum(auto))
+    #_[utterances=["set me as not away on slack"]]
+    #[id=32453491]
+    #[name=""];
+
+    action  := @com.slack.setPresence(presence=$?)
+    #_[utterances=["change my slack presence"]]
+    #[id=32453492]
+    #[name=""];
+
+    action (p_channel :Entity(tt:hashtag), p_caption :String)  := @com.slack.send_picture(channel=p_channel, caption=p_caption, picture_url=$?)
+    #_[utterances=["send a picture on slack to $p_channel with caption $p_caption",
+                   "upload a picture to slack channel ${p_channel:const} with caption $p_caption",
+                   "post a picture on slack to ${p_channel:const} with caption $p_caption"]]
+    #[id=32453493]
+    #[name=""];
+
+    action (p_channel :Entity(tt:hashtag))  := @com.slack.send_picture(channel=p_channel, caption=$?, picture_url=$?)
+    #_[utterances=["send a picture on slack to $p_channel",
+                   "upload a picture to slack channel ${p_channel:const}",
+                   "post a picture on slack to ${p_channel:const}"]]
+    #[id=32453496]
+    #[name=""];
+
+    action (p_channel :Entity(tt:hashtag))  := @com.slack.send(channel=p_channel, message=$?)
+    #_[utterances=["send a message on slack to ${p_channel}",
+                   "post a message on slack to ${p_channel}",
+                   "send something to slack channel $p_channel",
+                   "post on slack to $p_channel",
+                   "post on slack channel ${p_channel:const}"]]
+    #[id=32453499]
+    #[name=""];
+
+    action  := @com.slack.send(channel=$?, message=$?)
+    #_[utterances=["send a message on slack",
+                   "post a message on slack",
+                   "post on slack"]]
+    #[id=32453504]
+    #[name=""];
+
+    action (p_channel :Entity(tt:hashtag), p_picture_url :Entity(tt:picture))  := @com.slack.send_picture(channel=p_channel, picture_url=p_picture_url, caption=$?)
+    #_[utterances=["send $p_picture_url to $p_channel on slack",
+                   "upload $p_picture_url to $p_channel on slack",
+                   "post $p_picture_url to slack channel $p_channel"]]
+    #[id=32453507]
+    #[name=""];
+
+    action (p_channel :Entity(tt:hashtag))  := @com.slack.updateChannelTopic(channel=p_channel, topic=$?)
+    #_[utterances=["change the topic of slack channel ${p_channel:const}"]]
+    #[id=32453510]
+    #[name=""];
+
+    action (p_channel :Entity(tt:hashtag))  := @com.slack.updateChannelPurpose(channel=p_channel, purpose=$?)
+    #_[utterances=["change the purpose of slack channel ${p_channel:const}"]]
+    #[id=32453511]
+    #[name=""];
+
+}

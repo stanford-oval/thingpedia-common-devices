@@ -1,0 +1,145 @@
+dataset @com.live.onedrive language "en" {
+    stream  := monitor (@com.live.onedrive.list_files()) on new [file_id]
+    #_[utterances=["when a new file is created on onedrive",
+                   "when i create a new file on onedrive",
+                   "when i make a new file in onedrive"]]
+    #[id=28160174]
+    #[name=""];
+
+    stream  := monitor (@com.live.onedrive.list_files())
+    #_[utterances=["when something changes on onedrive",
+                   "when a file is modified on onedrive",
+                   "when i change some file in onedrive"]]
+    #[id=28160177]
+    #[name=""];
+
+    stream (p_file_name :Entity(tt:path_name))  := monitor ((@com.live.onedrive.list_files()), file_name == p_file_name) on new [modified_time]
+    #_[utterances=["when file ${p_file_name:no-undefined} on onedrive is modified"]]
+    #[id=28160180]
+    #[name=""];
+
+    action (p_file_name :Entity(tt:path_name), p_contents :String)  := @com.live.onedrive.create_file(file_name=p_file_name, contents=p_contents)
+    #_[utterances=["create a new file on onedrive named $p_file_name containing $p_contents",
+                   "save $p_contents in a onedrive file named $p_file_name",
+                   "write $p_contents to a new onedrive file named $p_file_name"]]
+    #[id=28160181]
+    #[name=""];
+
+    action (p_file_name :Entity(tt:path_name))  := @com.live.onedrive.delete_file(file_name=p_file_name)
+    #_[utterances=["delete $p_file_name from my onedrive",
+                   "delete my onedrive file called ${p_file_name:const}",
+                   "delete the onedrive file with name ${p_file_name:const}",
+                   "remove the onedrive file called ${p_file_name:const}"]]
+    #[id=28160184]
+    #[name=""];
+
+    action (p_old_name :Entity(tt:path_name), p_new_name :Entity(tt:path_name))  := @com.live.onedrive.rename_file(old_name=p_old_name, new_name=p_new_name)
+    #_[utterances=["rename $p_old_name to $p_new_name on my onedrive",
+                   "move $p_old_name to $p_new_name on my onedrive",
+                   "change the name of $p_old_name to $p_new_name in onedrive",
+                   "change the name of onedrive file $p_old_name to $p_new_name"]]
+    #[id=28160188]
+    #[name=""];
+
+    action (p_file_name :Entity(tt:path_name))  := @com.live.onedrive.upload_picture(file_name=p_file_name, picture_url=$?)
+    #_[utterances=["upload a picture to onedrive with name $p_file_name",
+                   "copy a picture to my onedrive and name it $p_file_name"]]
+    #[id=28160192]
+    #[name=""];
+
+    action  := @com.live.onedrive.upload_picture(file_name=$?, picture_url=$?)
+    #_[utterances=["upload a picture to onedrive",
+                   "copy a picture to my onedrive"]]
+    #[id=28160194]
+    #[name=""];
+
+    query  := @com.live.onedrive.list_files()
+    #_[utterances=["my onedrive files"]]
+    #[id=28160196]
+    #[name=""];
+
+    query  := (@com.live.onedrive.list_files(order_by=enum(created_time_decreasing))), created_time >= start_of(week)
+    #_[utterances=["my onedrive files created this week"]]
+    #[id=28160197]
+    #[name=""];
+
+    query  := (@com.live.onedrive.list_files()), modified_time >= start_of(week)
+    #_[utterances=["my onedrive files modified this week"]]
+    #[id=28160198]
+    #[name=""];
+
+    query  := (@com.live.onedrive.list_files()), modified_time >= start_of(day)
+    #_[utterances=["my onedrive files modified today"]]
+    #[id=28160199]
+    #[name=""];
+
+    query  := @com.live.onedrive.list_files(order_by=enum(created_time_increasing))
+    #_[utterances=["my oldest onedrive files"]]
+    #[id=28160200]
+    #[name=""];
+
+    query  := @com.live.onedrive.list_files(order_by=enum(created_time_decreasing))
+    #_[utterances=["new newest onedrive files",
+                   "my onedrive files that were created most recently"]]
+    #[id=28160201]
+    #[name=""];
+
+    query  := @com.live.onedrive.list_files(order_by=enum(modified_time_decreasing))
+    #_[utterances=["my onedrive files that changed most recently"]]
+    #[id=28160203]
+    #[name=""];
+
+    query  := @com.live.onedrive.list_files(order_by=enum(name_decreasing))
+    #_[utterances=["my onedrive files in alphabetical order"]]
+    #[id=28160204]
+    #[name=""];
+
+    query  := @com.live.onedrive.list_files(order_by=enum(name_increasing))
+    #_[utterances=["my onedrive files in reverse alphabetical order"]]
+    #[id=28160205]
+    #[name=""];
+
+    action (p_old_name :Entity(tt:path_name))  := @com.live.onedrive.rename_file(old_name=p_old_name, new_name=$?)
+    #_[utterances=["rename $p_old_name on onedrive",
+                   "rename my onedrive file called ${p_old_name:const}",
+                   "change the name of $p_old_name in my onedrive",
+                   "change the name of my onedrive file $p_old_name"]]
+    #[id=28160206]
+    #[name=""];
+
+    action (p_file_name :Entity(tt:path_name))  := @com.live.onedrive.create_file(file_name=p_file_name, contents=$?)
+    #_[utterances=["create a new file on onedrive named $p_file_name",
+                   "create a new file in onedrive and name it $p_file_name",
+                   "write to onedrive file ${p_file_name:const}"]]
+    #[id=28160210]
+    #[name=""];
+
+    action  := @com.live.onedrive.create_file(file_name=$?, contents=$?)
+    #_[utterances=["create a new empty file in onedrive",
+                   "create a new text file in onedrive",
+                   "write to a new file in onedrive",
+                   "write to a new onedrive file"]]
+    #[id=28160213]
+    #[name=""];
+
+    action (p_picture_url :Entity(tt:picture), p_file_name :Entity(tt:path_name))  := @com.live.onedrive.upload_picture(picture_url=p_picture_url, file_name=p_file_name)
+    #_[utterances=["upload $p_picture_url to onedrive and name it $p_file_name",
+                   "copy $p_picture_url to onedrive with name $p_file_name"]]
+    #[id=28160217]
+    #[name=""];
+
+    action (p_picture_url :Entity(tt:picture))  := @com.live.onedrive.upload_picture(picture_url=p_picture_url, file_name=$?)
+    #_[utterances=["upload $p_picture_url to onedrive",
+                   "copy $p_picture_url to onedrive"]]
+    #[id=28160219]
+    #[name=""];
+
+    query (p_file_name :Entity(tt:path_name))  := @com.live.onedrive.open(file_name=p_file_name)
+    #_[utterances=["my file named ${p_file_name} on onedrive",
+                   "the temporary link to ${p_file_name:const} on onedrive",
+                   ", open ${p_file_name} from onedrive",
+                   ", download ${p_file_name} from onedrive"]]
+    #[id=28160221]
+    #[name=""];
+
+}

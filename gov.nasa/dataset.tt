@@ -1,0 +1,57 @@
+dataset @gov.nasa language "en" {
+    stream  := monitor (@gov.nasa.asteroid())
+    #_[utterances=["when an asteroid passes close to earth",
+                   "when there is an asteroid nearby",
+                   "when there is a new asteroid passing by"]]
+    #[id=28016947]
+    #[name=""];
+
+    query  := @gov.nasa.asteroid()
+    #_[utterances=["today's asteroid info",
+                   "today's asteroid"]]
+    #[id=28016950]
+    #[name=""];
+
+    query  := @gov.nasa.apod()
+    #_[utterances=["nasa 's astronomy picture of the day",
+                   "nasa 's apod",
+                   "a nasa picture"]]
+    #[id=28016952]
+    #[name=""];
+
+    query  := @gov.nasa.rover()
+    #_[utterances=["a picture from curiosity rover",
+                   "curiosity rover",
+                   "a picture from curiosity",
+                   "a picture from nasa curiosity",
+                   "a picture from mars"]]
+    #[id=28016955]
+    #[name=""];
+
+    query (p_count :Number)  := @gov.nasa.rover(count=p_count)
+    #_[utterances=["${p_count:const} pictures from curiosity rover"]]
+    #[id=28016960]
+    #[name=""];
+
+    query (p_date_taken :Date)  := @gov.nasa.rover(date_taken=p_date_taken)
+    #_[utterances=["a picture from curiosity rover taken on $p_date_taken",
+                   "a picture from curiosity taken on $p_date_taken"]]
+    #[id=28016961]
+    #[name=""];
+
+    stream  := monitor ((@gov.nasa.asteroid()), is_dangerous == true)
+    #_[utterances=["when a dangerous asteroid is close to earth"]]
+    #[id=28016963]
+    #[name=""];
+
+    stream (p_distance :Measure(m))  := edge (monitor (@gov.nasa.asteroid())) on distance <= p_distance
+    #_[utterances=["when an asteroid is closer to earth than ${p_distance}"]]
+    #[id=28016964]
+    #[name=""];
+
+    stream (p_relative_velocity :Measure(mps))  := edge (monitor (@gov.nasa.asteroid())) on relative_velocity >= p_relative_velocity
+    #_[utterances=["when a close asteroid is faster than ${p_relative_velocity}"]]
+    #[id=28016965]
+    #[name=""];
+
+}

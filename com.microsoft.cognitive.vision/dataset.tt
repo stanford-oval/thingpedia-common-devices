@@ -1,0 +1,15 @@
+dataset @com.microsoft.cognitive.vision language "en" {
+    query  := @com.microsoft.cognitive.vision.generate_description()
+    #_[utterances=[", describe a picture",
+                   "the description of a picture",
+                   ", generate a caption for a picture"]]
+    #[id=1652645]
+    #[name=""];
+
+    query (p_picture_url :Entity(tt:picture))  := @com.microsoft.cognitive.vision.generate_description(picture_url=p_picture_url)
+    #_[utterances=[", describe ${p_picture_url}",
+                   "the description of ${p_picture_url}"]]
+    #[id=1652646]
+    #[name=""];
+
+}
