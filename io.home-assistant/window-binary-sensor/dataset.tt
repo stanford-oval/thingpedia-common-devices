@@ -1,0 +1,59 @@
+dataset @io.home-assistant.window-binary-sensor {
+  program := now => @io.home-assistant.window-binary-sensor.state() => notify
+  #_[utterances="what is the state of my window sensor?",
+                "what is my window sensor showing?",
+                "what does my window sensor say?",
+                "is my window sensor open?",
+                "check if my window sensor is open",
+                "is my window sensor closed?",
+                "check if my window sensor is closed",
+                "check if my window sensor is open or closed"]];
+
+  query := @io.home-assistant.window-binary-sensor.state()
+  #_[utterances="the state of my window sensor",
+                "if my window sensor is open or closed",
+                "whether my window sensor is open or closed"]];
+
+  stream := monitor @window-binary-sensor.state()
+  #_[utterances=["when the state of my window sensor changes",
+                 "when my window sensor changes state",
+                 "when my window sensor changes"]];
+
+  stream (p_state : Enum(open, closed)) := edge( @io.home-assistant.window-binary-sensor.state()) on (state == p_state)
+  #_[utterances="when my window sensor becomes ${p_state}",
+                "when my window sensor is ${p_state}",
+                "when my window sensor turns ${p_state}",
+                "when my window sensor changes to ${p_state}",
+                "if my window sensor becomes ${p_state}",
+                "if my window sensor is ${p_state}",
+                "if my window sensor turns ${p_state}",
+                "if my window sensor changes to ${p_state}"]];
+
+  stream :=  edge( @io.home-assistant.window-binary-sensor.state()) on (state == enum(open))
+  #_[utterances="when my window sensor becomes open",
+                "when my window sensor turns open",
+                "when my window sensor changes to open",
+                "if my window sensor becomes open",
+                "if my window sensor turns open",
+                "if my window sensor changes to open",
+                "when my window sensor becomes not closed",
+                "when my window sensor turns not closed",
+                "when my window sensor changes to not closed",
+                "if my window sensor becomes not closed",
+                "if my window sensor turns not closed",
+                "if my window sensor changes to not closed"]];
+
+  stream :=  edge( @io.home-assistant.window-binary-sensor.state()) on (state == enum(closed))
+  #_[utterances="when my window sensor becomes closed",
+                "when my window sensor turns closed",
+                "when my window sensor changes to closed",
+                "if my window sensor becomes closed",
+                "if my window sensor turns closed",
+                "if my window sensor changes to closed",
+                "when my window sensor becomes not open",
+                "when my window sensor turns not open",
+                "when my window sensor changes to not open",
+                "if my window sensor becomes not open",
+                "if my window sensor turns not open",
+                "if my window sensor changes to not open"]];
+}

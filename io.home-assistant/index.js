@@ -17,10 +17,56 @@ const HomeAssistantLightbulbDevice = require('./light-bulb');
 const HASS_URL = 'http://hassio.local:8123';
 
 const DOMAIN_TO_TP_KIND = {
-    'light': 'light-bulb'
+    'light': 'light-bulb',
+    'binary_sensor_battery': 'battery-binary-sensor',
+    'binary_sensor_cold': 'cold-binary-sensor',
+    'binary_sensor_connectivity': 'connectivity-binary-sensor',
+    'binary_sensor_door': 'door-binary-sensor',
+    'binary_sensor_garage_door': 'garage-door-binary-sensor',
+    'binary_sensor_gas': 'gas-binary-sensor',
+    'binary_sensor_heat': 'heat-binary-sensor',
+    'binary_sensor_light': 'light-binary-sensor',
+    'binary_sensor_lock': 'lock-binary-sensor',
+    'binary_sensor_moisture': 'moisture-binary-sensor',
+    'binary_sensor_moving': 'moving-binary-sensor',
+    'binary_sensor_occupancy': 'occupancy-binary-sensor',
+    'binary_sensor_opening': 'opening-binary-sensor',
+    'binary_sensor_plug': 'plug-binary-sensor',
+    'binary_sensor_power': 'power-binary-sensor',
+    'binary_sensor_presence': 'presence-binary-sensor',
+    'binary_sensor_problem': 'problem-binary-sensor',
+    'binary_sensor_power': 'power-binary-sensor',
+    'binary_sensor_safety': 'safety-binary-sensor',
+    'binary_sensor_smoke': 'smoke-binary-sensor',
+    'binary_sensor_sound': 'sound-binary-sensor',
+    'binary_sensor_vibration': 'vibration-binary-sensor',
+    'binary_sensor_window': 'window-binary-sensor'
 };
 const SUBDEVICES = {
-    'light-bulb': HomeAssistantLightbulbDevice
+    'light-bulb': HomeAssistantLightbulbDevice,
+    'battery-binary-sensor': BatteryBinarySensor,
+    'cold-binary-sensor': ColdBinarySensor,
+    'connectivity-binary-sensor': ConnectivityBinarySensor,
+    'door-binary-sensor': DoorBinarySensor,
+    'garage-door-binary-sensor': GarageDoorBinarySensor,
+    'gas-binary-sensor': GasBinarySensor,
+    'heat-binary-sensor': HeatBinarySensor,
+    'light-binary-sensor': LightBinarySensor,
+    'lock-binary-sensor': LockBinarySensor,
+    'moisture-binary-sensor': MoistureBinarySensor,
+    'motion-binary-sensor': MotionBinarySensor,
+    'moving-binary-sensor': MovingBinarySensor,
+    'occupancy-binary-sensor': OccupancyBinarySensor,
+    'opening-binary-sensor': OpeningBinarySensor,
+    'plug-binary-sensor': PlugBinarySensor,
+    'power-binary-sensor': PowerBinarySensor,
+    'presence-binary-sensor': PresenceBinarySensor,
+    'problem-binary-sensor': ProblemBinarySensor,
+    'safety-binary-sensor': SafetyBinarySensor,
+    'smoke-binary-sensor': SmokeBinarySensor,
+    'sound-binary-sensor': SoundBinarySensor,
+    'vibration-binary-sensor': VibrationBinarySensor,
+    'window-binary-sensor': WindowBinarySensor,
 };
 
 class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
@@ -43,7 +89,14 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
         }
 
         const [domain,] = entityId.split('.');
-        const kind = DOMAIN_TO_TP_KIND[domain];
+
+        if (domain == "binary_sensor") {
+            // Use device_class to differentiate
+            const kind = DOMAIN_TO_TP_KIND[`binary_sensor_${attributes.device_class}`];
+        } else {
+            const kind = DOMAIN_TO_TP_KIND[domain];
+        }
+        
         if (kind === undefined) {
             console.log(`Unhandled Home Assistant entity ${entityId} with domain ${domain}`);
             return;

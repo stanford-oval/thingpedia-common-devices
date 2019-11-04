@@ -1,0 +1,19 @@
+dataset @binary-sensor language "en" {
+    program := now => @binary-sensor.state() => notify
+    #_[utterances=["is the sensor on?", "is the sensor on?", "is the sensor off?",
+                   "is my sensor on or off?", "is my sensor on?",
+                   "check if my sensor is on", "check that my sensor is on",
+                   "check if my sensor is off", "check if the sensor is on or off"]];
+
+    query := @binary-sensor.state()
+    #_[utterances=["whether the sensor is on or off",
+                   "the state of the sensor", "the state of my sensor"]];
+
+    stream := monitor @binary-sensor.state()
+    #_[utterances=["when I switch on or off my sensor", "when the state of my sensor changes"]];
+
+    stream (s_state : Enum(on,off)) := edge (monitor @binary-sensor.state()) on (power == s_state)
+    #_[utterances=["when the sensor is ${s_state}", "when my sensor turns ${s_state}",
+                   "when I turn ${s_state} the sensor", "when somebody turns ${s_state} my sensor",
+                   "when my sensor is switched ${s_state}"]];
+}

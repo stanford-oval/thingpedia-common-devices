@@ -1,0 +1,59 @@
+dataset @io.home-assistant.connectivity-binary-sensor {
+  program := now => @io.home-assistant.connectivity-binary-sensor.state() => notify
+  #_[utterances="what is the state of my connectivity sensor?",
+                "what is my connectivity sensor showing?",
+                "what does my connectivity sensor say?",
+                "is my connectivity sensor connected?",
+                "check if my connectivity sensor is connected",
+                "is my connectivity sensor disconnected?",
+                "check if my connectivity sensor is disconnected",
+                "check if my connectivity sensor is connected or disconnected"]];
+
+  query := @io.home-assistant.connectivity-binary-sensor.state()
+  #_[utterances="the state of my connectivity sensor",
+                "if my connectivity sensor is connected or disconnected",
+                "whether my connectivity sensor is connected or disconnected"]];
+
+  stream := monitor @connectivity-binary-sensor.state()
+  #_[utterances=["when the state of my connectivity sensor changes",
+                 "when my connectivity sensor changes state",
+                 "when my connectivity sensor changes"]];
+
+  stream (p_state : Enum(connected, disconnected)) := edge( @io.home-assistant.connectivity-binary-sensor.state()) on (state == p_state)
+  #_[utterances="when my connectivity sensor becomes ${p_state}",
+                "when my connectivity sensor is ${p_state}",
+                "when my connectivity sensor turns ${p_state}",
+                "when my connectivity sensor changes to ${p_state}",
+                "if my connectivity sensor becomes ${p_state}",
+                "if my connectivity sensor is ${p_state}",
+                "if my connectivity sensor turns ${p_state}",
+                "if my connectivity sensor changes to ${p_state}"]];
+
+  stream :=  edge( @io.home-assistant.connectivity-binary-sensor.state()) on (state == enum(connected))
+  #_[utterances="when my connectivity sensor becomes connected",
+                "when my connectivity sensor turns connected",
+                "when my connectivity sensor changes to connected",
+                "if my connectivity sensor becomes connected",
+                "if my connectivity sensor turns connected",
+                "if my connectivity sensor changes to connected",
+                "when my connectivity sensor becomes not disconnected",
+                "when my connectivity sensor turns not disconnected",
+                "when my connectivity sensor changes to not disconnected",
+                "if my connectivity sensor becomes not disconnected",
+                "if my connectivity sensor turns not disconnected",
+                "if my connectivity sensor changes to not disconnected"]];
+
+  stream :=  edge( @io.home-assistant.connectivity-binary-sensor.state()) on (state == enum(disconnected))
+  #_[utterances="when my connectivity sensor becomes disconnected",
+                "when my connectivity sensor turns disconnected",
+                "when my connectivity sensor changes to disconnected",
+                "if my connectivity sensor becomes disconnected",
+                "if my connectivity sensor turns disconnected",
+                "if my connectivity sensor changes to disconnected",
+                "when my connectivity sensor becomes not connected",
+                "when my connectivity sensor turns not connected",
+                "when my connectivity sensor changes to not connected",
+                "if my connectivity sensor becomes not connected",
+                "if my connectivity sensor turns not connected",
+                "if my connectivity sensor changes to not connected"]];
+}
