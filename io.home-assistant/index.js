@@ -135,6 +135,7 @@ module.exports = class HomeAssistantGateway extends Tp.BaseDevice {
         if (refreshToken)
             this.state.refreshToken = refreshToken;
         this.state.accessTokenExpires = extraData.expires_in * 1000 + Date.now();
+        await this._connection.setSocket(await this._createSocket({ setupRetry: 10}));
 
         this.stateChanged();
     }
