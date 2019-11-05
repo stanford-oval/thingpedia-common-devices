@@ -132,27 +132,10 @@ for device, states in supported_device_classes.items():
     "off": states["off"],
   }
 
-  device_js_string = """// -*- mode: js; indent-tabs-mode: nil; js-basic-offset: 4 -*-
-//
-// This file is part of io.home-assistant
-//
-// Copyright 2019 Swee Kiat Lim <sweekiat@cs.stanford.edu>
-//
-// See LICENSE for details
-"use strict";
-
-const HomeAssistantBinarySensor = require('../binary-sensor/device');
-
-module.exports = class {device_name}BinarySensor extends HomeAssistantBinarySensor {{}};
-""".format(**args)
-
   if not os.path.isdir(os.path.join(os.getcwd(), "{device}-binary-sensor".format(**args))):
     os.mkdir("{device}-binary-sensor".format(**args))
 
-  with open("{device}-binary-sensor/device.js".format(**args), "w") as file:
-    file.write(device_js_string)
-
-  manifest_string = """abstract class @{device}-binary-sensor
+  manifest_string = """abstract class @io.home-assistant.{device}-binary-sensor
 #_[thingpedia_name="{device_name} Binary Sensor"]
 #_[thingpedia_description="Interface for Home Assistant's {device_name} Binary Sensor."]
 #[license="CC-0"]
