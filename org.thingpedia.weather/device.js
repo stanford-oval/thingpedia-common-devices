@@ -10,8 +10,19 @@
 
 const Tp = require('thingpedia');
 
+const MS_PER_HOUR = 60 * 60 * 1000;
+const MS_PER_DAY = 24 * MS_PER_HOUR;
+
 const SUNRISE_URL = 'https://api.met.no/weatherapi/sunrise/2.0/?lat=%f&lon=%f&date=%04d-%02d-%02d&offset=-00:00';
 const WEATHER_URL = 'https://api.met.no/weatherapi/locationforecast/1.9/?lat=%f;lon=%f';
+
+
+function dateDiff(date1, date2) {
+    // Discard the time and time-zone information.
+    const utc1 = Date.UTC(date1.getFullYear(), date1.getMonth(), date1.getDate());
+    const utc2 = Date.UTC(date2.getFullYear(), date2.getMonth(), date2.getDate());
+    return Math.floor((utc2 - utc1) / MS_PER_DAY);
+}
 
 module.exports = class WeatherAPIDevice extends Tp.BaseDevice {
     constructor(engine, state) {
@@ -23,9 +34,6 @@ module.exports = class WeatherAPIDevice extends Tp.BaseDevice {
     }
 
     async _sunrise_data(location, date) {
-        if (date === undefined || date === null)
-            date = new Date;
-
         const url = SUNRISE_URL.format(location.y, location.x, date.getFullYear(), date.getMonth()+1, date.getDate());
         console.log('Loading sunrise data from ' + url);
         const parsed = await Tp.Helpers.Http.get(url).then(Tp.Helpers.Xml.parseString);
@@ -77,20 +85,36 @@ module.exports = class WeatherAPIDevice extends Tp.BaseDevice {
         };
     }
 
-
     async get_sunrise({ location, date }) {
+        if (date === undefined || date === null)
+            date = new Date();
         const data = await this._sunrise_data(location, date);
-        const rise = new Date(data.sunrise[0].$.time);
-        const set = new Date(data.sunset[0].$.time);
+
+        // the api might return sunset/sunrise time from the previous day
+        // we will need to convert to the same date first before comparison
+        // note that, using date.setDate(date.getDate() + 1) might cause problems due to daylight savings
+        // so we use millisecond instead.
+        let rise = new Date(data.sunrise[0].$.time);
+        if (rise.getDate() !== date.getDate())
+            rise = new Date(rise.getTime() + (dateDiff(rise, date) * MS_PER_DAY));
+        let set = new Date(data.sunset[0].$.time);
+        if (set.getDate() !== date.getDate())
+            set = new Date(set.getTime() + (dateDiff(set, date) * MS_PER_DAY));
+
+        const now = new Date();
         return [{
             location,
             date,
             sunrise_time: new Tp.Value.Time(rise.getHours(), rise.getMinutes(), rise.getSeconds()),
-            sunset_time: new Tp.Value.Time(set.getHours(), set.getMinutes(), set.getSeconds())
+            sunset_time: new Tp.Value.Time(set.getHours(), set.getMinutes(), set.getSeconds()),
+            sunrisen: now > rise,
+            sunset: now > set
         }];
     }
 
     async get_moon({ location, date }) {
+        if (date === undefined || date === null)
+            date = new Date();
         const data = await this._sunrise_data(location, date);
         const phase = /(?:\()([a-z ]*)(?:\))/g.exec(data.moonphase[0].$.desc)[1].replace(/ /g, '_');
         return [{ location, date, phase }];
@@ -108,7 +132,6 @@ module.exports = class WeatherAPIDevice extends Tp.BaseDevice {
         const data = await this._weather_data(location);
         const forecasts = [];
         const now = new Date(data[0].$.from);
-        const hour = 60 * 60 * 1000;
         const added = new Set();
         for (let i = 0; i < data.length; i++) {
             if (data[i].$.from !== data[i].$.to)
@@ -117,9 +140,9 @@ module.exports = class WeatherAPIDevice extends Tp.BaseDevice {
             if (datetime.getDate() === now.getDate()) {
                 // same day forecast
                 // return forecast every 6 hours
-                if ((datetime - now) < 6 * hour)
+                if ((datetime - now) < 6 * MS_PER_HOUR)
                     continue;
-                if ((datetime - now) % (6 * hour) !== 0)
+                if ((datetime - now) % (6 * MS_PER_HOUR) !== 0)
                     continue;
                 let forecast = await this._extract_weather(data[i], data[i+1]);
                 forecast.location = location;

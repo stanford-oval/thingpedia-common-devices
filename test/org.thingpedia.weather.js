@@ -12,16 +12,18 @@ const MOON_PHASE = 'new_moon,waxing_crescent,first_quarter,waxing_gibbous,full_m
 const WEATHER_STATUS = 'raining,cloudy,sunny,snowy,sleety,drizzling,windy'.split(',');
 
 module.exports = [
-    ['query', 'sunrise', { location: { x: 120, y: 37 }, date: new Date() }, (result) => {
+    ['query', 'sunrise', { location: { x: -120, y: 37 }, date: new Date() }, (result) => {
         assert(result[0].sunrise_time instanceof Tp.Value.Time);
         assert(result[0].sunset_time instanceof Tp.Value.Time);
+        assert(typeof result[0].sunset === 'boolean');
+        assert(typeof result[0].sunrisen === 'boolean');
     }],
 
-    ['query', 'moon', { location: { x: 120, y: 37 }, date: new Date() }, (result) => {
+    ['query', 'moon', { location: { x: -120, y: 37 }, date: new Date() }, (result) => {
         assert(MOON_PHASE.includes(result[0].phase));
     }],
 
-    ['query', 'current', { location: { x: 120, y: 37 } }, (result) => {
+    ['query', 'current', { location: { x: -120, y: 37 } }, (result) => {
         result.forEach((r) => {
             assert(typeof r.temperature === 'number');
             assert(typeof r.wind_speed === 'number');
@@ -32,7 +34,7 @@ module.exports = [
         });
     }],
 
-    ['query', 'forecast', { location: { x: 9.58, y: 60.10 } }, (result) => {
+    ['query', 'forecast', { location: { x: -120, y: 37 } }, (result) => {
         result.forEach((r) => {
             assert(r.datetime instanceof Date);
             assert(typeof r.temperature === 'number');
