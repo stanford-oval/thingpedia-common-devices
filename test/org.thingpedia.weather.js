@@ -36,7 +36,7 @@ module.exports = [
 
     ['query', 'forecast', { location: { x: -120, y: 37 } }, (result) => {
         result.forEach((r) => {
-            assert(r.datetime instanceof Date);
+            assert(r.date instanceof Date);
             assert(typeof r.temperature === 'number');
             assert(typeof r.wind_speed === 'number');
             assert(typeof r.fog === 'number');

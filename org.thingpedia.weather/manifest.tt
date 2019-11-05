@@ -39,7 +39,7 @@ class @org.thingpedia.weather {
 
 
   monitorable query forecast(in req location: Location #_[prompt="What location do you want the current weather for?"],
-                             out datetime: Date,
+                             out date: Date,
                              out temperature: Measure(C),
                              out wind_speed: Measure(mps),
                              out humidity: Number,
@@ -49,7 +49,7 @@ class @org.thingpedia.weather {
                              out icon: Entity(tt:picture))
   #_[canonical="get weather forecast on weatherapi"]
   #_[confirmation="the weather forecast for $location"]
-  #_[formatted=[{type="text",text="Weather for ${location} on ${datetime}: ${status}, temperature ${temperature:C} C, wind speed ${wind_speed:mps} m/s, humidity ${humidity}%, cloudiness ${cloudiness}%, fog ${fog}%."}]]
+  #_[formatted=[{type="text",text="Weather for ${location} on ${date:date}: ${status}, temperature ${temperature:C} C, wind speed ${wind_speed:mps} m/s, humidity ${humidity}%, cloudiness ${cloudiness}%, fog ${fog}%."}]]
   #[poll_interval=3600000ms]
   #[doc="Information about future weather"];
 }

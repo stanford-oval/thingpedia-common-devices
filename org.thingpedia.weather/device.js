@@ -146,7 +146,7 @@ module.exports = class WeatherAPIDevice extends Tp.BaseDevice {
                     continue;
                 let forecast = await this._extract_weather(data[i], data[i+1]);
                 forecast.location = location;
-                forecast.datetime = datetime;
+                forecast.date = datetime;
                 forecasts.push(forecast);
             } else {
                 // forecast for tomorrow and later
@@ -158,7 +158,7 @@ module.exports = class WeatherAPIDevice extends Tp.BaseDevice {
                     added.add(datetime.getDate());
                     let forecast = await this._extract_weather(data[i], data[i+1]);
                     forecast.location = location;
-                    forecast.datetime = datetime;
+                    forecast.date = datetime;
                     forecasts.push(forecast);
                 }
             }
