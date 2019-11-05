@@ -1,6 +1,7 @@
 // Copyright 2017 Rakesh Ramesh <rakeshr@cs.stanford.edu>
 //
 // See LICENSE for details
+"use strict";
 
 const Tp = require('thingpedia');
 
@@ -86,7 +87,7 @@ module.exports = class FitbitDevice extends Tp.BaseDevice {
         });
     }
 
-    get_getbody({}) {
+    get_getbody() {
         return Promise.all([this._getMeasureValue('weight'), this._getMeasureValue('bmi'), this._getMeasureValue('fat')])
             .then(([weight, bmi, fat]) => {
                 return [{

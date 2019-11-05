@@ -248,7 +248,7 @@ module.exports = class TwitterAccountDevice extends Tp.BaseDevice {
 
     get_search(params, filters, count) {
         let query = '';
-        if (false) {
+        /*if (false) {
             // FIXME filter on username or in_reply_to
             let from = filters[5];
             if (from !== undefined && from !== null)
@@ -256,7 +256,7 @@ module.exports = class TwitterAccountDevice extends Tp.BaseDevice {
             let inReplyTo = filters[6];
             if (inReplyTo !== undefined && inReplyTo !== null)
                 query += ' to:' + inReplyTo;
-        }
+        }*/
         query = query.trim();
 
         return this._doSearch(query, count);

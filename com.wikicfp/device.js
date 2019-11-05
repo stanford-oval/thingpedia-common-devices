@@ -48,7 +48,7 @@ module.exports = class WikiCFP extends Tp.BaseDevice {
                 
             });
             return events;
-        }).catch(function (e) {
+        }).catch((e) => {
             throw new Error('Failed to retrieve information from WikiCFP: ' + e);
         });
 

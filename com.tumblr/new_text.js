@@ -4,6 +4,7 @@
 //                Giovanni Campagna <gcampagn@cs.stanford.edu>
 //
 // See LICENSE for details
+"use strict";
 
 const Tp = require('thingpedia');
 
@@ -33,11 +34,11 @@ module.exports = new Tp.ChannelClass({
     },
 
     formatEvent(event, filters) {
-        var blog = event[0];
-        var date = event[1];
+        //var blog = event[0];
+        //var date = event[1];
         var title = event[2];
         var post_url = event[3];
-        var tags = event[4];
+        //var tags = event[4];
         var body = event[5];
 
         return [{
@@ -52,7 +53,7 @@ module.exports = new Tp.ChannelClass({
     _onResponse(response) {
         var parsed = JSON.parse(response);
 
-        var state = this.state;
+        //var state = this.state;
         var lastRead = this.state.get('last-read');
         var newest = undefined;
         parsed.response.posts.forEach((post) => {

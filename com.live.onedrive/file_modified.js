@@ -55,7 +55,7 @@ module.exports = new Tp.ChannelClass({
                     if (maxDate < date) 
                         maxDate = date;
                     
-                    if (previousResponseDate == undefined || previousResponseDate < date) 
+                    if (previousResponseDate === undefined || previousResponseDate < date)
                         this.emitEvent([value[i].name]);
                     
                 }

@@ -5,6 +5,7 @@
 //                Giovanni Campagna <gcampagn@cs.stanford.edu>
 //
 // See LICENSE for details
+"use strict";
 
 const Tp = require('thingpedia');
 const Url = require('url');
@@ -19,8 +20,8 @@ module.exports = new Tp.ChannelClass({
     Name: "UberPriceInformationChannel",
 
     formatEvent(event, filters, hint) {
-        var start = event[0];
-        var end = event[1];
+        //var start = event[0];
+        //var end = event[1];
         var name = event[2];
         var low = event[3];
         var high = event[4];

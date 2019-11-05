@@ -4,6 +4,7 @@
 //                Xiangyu Yue <xyyue@stanford.edu>
 //
 // See LICENSE for details
+"use strict";
 
 const Tp = require('thingpedia');
 const fs = require('fs');
@@ -177,7 +178,7 @@ module.exports = class GithubDevice extends Tp.BaseDevice {
             const sha = JSON.parse(response).sha;
             return Tp.Helpers.Http.get(baseUrl + '/git/blobs/' + sha, this.options).then((response) => {
                 const content = JSON.parse(response).content;
-                const name = file_name.replace(/^.*[\\\/]/, '');
+                const name = file_name.replace(/^.*[\\/]/, '');
                 const path = this.engine.platform.getCacheDir() + '/' + name;
                 try {
                     fs.writeFileSync(path, content, 'base64');

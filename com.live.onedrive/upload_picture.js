@@ -23,7 +23,7 @@ module.exports = new Tp.ChannelClass({
         if (!dirname || dirname === '.')
             dirname = 'root';
         var basename = path.basename(fileName);
-        var url = this._baseurl + dirname + "/children";
+        url = this._baseurl + dirname + "/children";
         return Tp.Helpers.Http.request(url, 'POST', JSON.stringify({
             '@content.sourceUrl': url,
             name: basename,

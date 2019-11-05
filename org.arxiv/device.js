@@ -3,6 +3,7 @@
 // Copyright 2018 Silei Xu <silei@cs.stanford.edu>
 //
 // See LICENSE for details
+"use strict";
 
 const Tp = require('thingpedia');
 const xml2js = require('xml2js');
