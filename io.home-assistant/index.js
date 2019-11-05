@@ -12,29 +12,7 @@ const WebSocket = require('ws');
 const HomeAssistant = require('home-assistant-js-websocket');
 
 const HomeAssistantLightbulbDevice = require('./light-bulb');
-const BatteryBinarySensor = require('./battery-binary-sensor/device');
-const ColdBinarySensor = require('./cold-binary-sensor/device');
-const ConnectivityBinarySensor = require('./connectivity-binary-sensor/device');
-const DoorBinarySensor = require('./door-binary-sensor/device');
-const GarageDoorBinarySensor = require('./garage-door-binary-sensor/device');
-const GasBinarySensor = require('./gas-binary-sensor/device');
-const HeatBinarySensor = require('./heat-binary-sensor/device');
-const LightBinarySensor = require('./light-binary-sensor/device');
-const LockBinarySensor = require('./lock-binary-sensor/device');
-const MoistureBinarySensor = require('./moisture-binary-sensor/device');
-const MotionBinarySensor = require('./motion-binary-sensor/device');
-const MovingBinarySensor = require('./moving-binary-sensor/device');
-const OccupancyBinarySensor = require('./occupancy-binary-sensor/device');
-const OpeningBinarySensor = require('./opening-binary-sensor/device');
-const PlugBinarySensor = require('./plug-binary-sensor/device');
-const PowerBinarySensor = require('./power-binary-sensor/device');
-const PresenceBinarySensor = require('./presence-binary-sensor/device');
-const ProblemBinarySensor = require('./problem-binary-sensor/device');
-const SafetyBinarySensor = require('./safety-binary-sensor/device');
-const SmokeBinarySensor = require('./smoke-binary-sensor/device');
-const SoundBinarySensor = require('./sound-binary-sensor/device');
-const VibrationBinarySensor = require('./vibration-binary-sensor/device');
-const WindowBinarySensor = require('./window-binary-sensor/device');
+const HomeAssistantBinarySensor = require('./binary-sensor');
 
 // FIXME make configurable
 const HASS_URL = 'http://hassio.local:8123';
@@ -66,31 +44,14 @@ const DOMAIN_TO_TP_KIND = {
     'binary_sensor_window': 'window-binary-sensor'
 };
 const SUBDEVICES = {
-    'light-bulb': HomeAssistantLightbulbDevice,
-    'battery-binary-sensor': BatteryBinarySensor,
-    'cold-binary-sensor': ColdBinarySensor,
-    'connectivity-binary-sensor': ConnectivityBinarySensor,
-    'door-binary-sensor': DoorBinarySensor,
-    'garage-door-binary-sensor': GarageDoorBinarySensor,
-    'gas-binary-sensor': GasBinarySensor,
-    'heat-binary-sensor': HeatBinarySensor,
-    'light-binary-sensor': LightBinarySensor,
-    'lock-binary-sensor': LockBinarySensor,
-    'moisture-binary-sensor': MoistureBinarySensor,
-    'motion-binary-sensor': MotionBinarySensor,
-    'moving-binary-sensor': MovingBinarySensor,
-    'occupancy-binary-sensor': OccupancyBinarySensor,
-    'opening-binary-sensor': OpeningBinarySensor,
-    'plug-binary-sensor': PlugBinarySensor,
-    'power-binary-sensor': PowerBinarySensor,
-    'presence-binary-sensor': PresenceBinarySensor,
-    'problem-binary-sensor': ProblemBinarySensor,
-    'safety-binary-sensor': SafetyBinarySensor,
-    'smoke-binary-sensor': SmokeBinarySensor,
-    'sound-binary-sensor': SoundBinarySensor,
-    'vibration-binary-sensor': VibrationBinarySensor,
-    'window-binary-sensor': WindowBinarySensor
+    'light-bulb': HomeAssistantLightbulbDevice
 };
+
+for (let value in Object.values(DOMAIN_TO_TP_KIND)) {
+    if (value.includes('binary-sensor')) {
+        SUBDEVICES[value] = class extends HomeAssistantBinarySensor {};
+    }
+}
 
 class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
     constructor(master) {
