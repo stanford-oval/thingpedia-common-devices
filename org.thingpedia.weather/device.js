@@ -92,7 +92,7 @@ module.exports = class WeatherAPIDevice extends Tp.BaseDevice {
 
     async get_moon({ location, date }) {
         const data = await this._sunrise_data(location, date);
-        const phase = data.moonphase[0].$.desc.match(/(?<=\()[a-z ]*(?=\))/g)[0].replace(/ /g, '_');
+        const phase = /(?:\()([a-z ]*)(?:\))/g.exec(data.moonphase[0].$.desc)[1].replace(/ /g, '_');
         return [{ location, date, phase }];
     }
 
