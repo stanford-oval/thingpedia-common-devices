@@ -10,8 +10,7 @@
 
 const Tp = require('thingpedia');
 
-const SUNRISE_URL = 'https://api.met.no/weatherapi/sunrise/1.1/?lat=%f;lon=%f;date=%04d-%02d-%02d';
-const MOON_URL = 'https://api.met.no/weatherapi/sunrise/1.1/?lat=%f;lon=%f;date=%04d-%02d-%02d';
+const SUNRISE_URL = 'https://api.met.no/weatherapi/sunrise/2.0/?lat=%f&lon=%f&date=%04d-%02d-%02d&offset=-00:00';
 const WEATHER_URL = 'https://api.met.no/weatherapi/locationforecast/1.9/?lat=%f;lon=%f';
 
 module.exports = class WeatherAPIDevice extends Tp.BaseDevice {
@@ -23,85 +22,124 @@ module.exports = class WeatherAPIDevice extends Tp.BaseDevice {
         this.uniqueId = 'org.thingpedia.weather';
     }
 
-    checkAvailable() {
-        return Tp.Availability.AVAILABLE;
-    }
-
-    get_sunrise({ location, date }) {
+    async _sunrise_data(location, date) {
         if (date === undefined || date === null)
             date = new Date;
 
-        var url = SUNRISE_URL.format(location.y, location.x, date.getFullYear(), date.getMonth()+1, date.getDate());
-
-        return Tp.Helpers.Http.get(url).then(Tp.Helpers.Xml.parseString).then((parsed) => {
-            var sun = parsed.astrodata.time[0].location[0].sun[0];
-            var rise = new Date(sun.$.rise);
-            var set = new Date(sun.$.set);
-
-            return [{
-                location,
-                date,
-                sunrise_time: new Tp.Value.Time(rise.getHours(), rise.getMinutes(), rise.getSeconds()),
-                sunset_time: new Tp.Value.Time(set.getHours(), set.getMinutes(), set.getSeconds())
-            }];
-        });
+        const url = SUNRISE_URL.format(location.y, location.x, date.getFullYear(), date.getMonth()+1, date.getDate());
+        console.log('Loading sunrise data from ' + url);
+        const parsed = await Tp.Helpers.Http.get(url).then(Tp.Helpers.Xml.parseString);
+        return parsed.astrodata.location[0].time[0];
     }
 
-    get_moon({ location, date }) {
-        if (date === undefined || date === null)
-            date = new Date;
-
-        var url = MOON_URL.format(location.y, location.x, date.getFullYear(), date.getMonth()+1, date.getDate());
-
-        return Tp.Helpers.Http.get(url).then((response) => {
-            return Tp.Helpers.Xml.parseString(response);
-        }).then((parsed) => {
-            var moon = parsed.astrodata.time[0].location[0].moon[0];
-            var phase = moon.$.phase.toLowerCase().replace(/ +/g, '_');
-
-            return [{ location, date, phase }];
-        });
+    async _weather_data(location) {
+        const url = WEATHER_URL.format(location.y, location.x);
+        console.log('Loading weather data from ' + url);
+        const parsed = await Tp.Helpers.Http.get(url).then(Tp.Helpers.Xml.parseString);
+        return parsed.weatherdata.product[0].time;
     }
 
-    get_current({ location }) {
-        var url = WEATHER_URL.format(location.y, location.x);
-        console.log('Loading weather from ' + url);
+    // the weather details is stored in the entry where time $.from === $.to
+    // however it contains no status information, which is available in the following entries
+    // (which have the same $.to, but different $.from)
+    // this function takes the entry with $.from === $.to for details, and one following entry for status info
+    async _extract_weather(entry1, entry2) {
+        const details = entry1.location[0];
+        const weather_id = parseInt(entry2.location[0].symbol[0].$.number);
 
-        return Tp.Helpers.Http.get(url).then(Tp.Helpers.Xml.parseString).then((parsed) => {
-            const entry = parsed.weatherdata.product[0].time[0].location[0];
-            const temperature = parseFloat(entry.temperature[0].$.value);
-            const wind_speed = parseFloat(entry.windSpeed[0].$.mps) || 0;
-            const humidity = parseFloat(entry.humidity[0].$.value) || 0;
-            const cloudiness = parseFloat(entry.cloudiness[0].$.percent) || 0;
-            const fog = parseFloat(entry.fog[0].$.percent) || 0;
-            const weather_id = parseInt(parsed.weatherdata.product[0].time[1].location[0].symbol[0].$.number);
+        // although symbol comes with a string, we still map it to a fixed set to simply natural language
+        // for example, "a cloudy day" can be LightCloud/PartlyCloud/Cloud in status
+        // for the full list of status, see: https://api.met.no/weatherapi/weathericon/1.1/documentation
+        let status;
+        if (weather_id === 1)
+            status = 'sunny';
+        else if (weather_id === 15)
+            status = 'foggy';
+        else if ([2, 3, 4].indexOf(weather_id) >= 0)
+            status = 'cloudy';
+        else if ([5, 6, 9, 10, 11, 22, 41].indexOf(weather_id) >= 0)
+            status = 'raining';
+        else if ([24, 30, 40, 46].indexOf(weather_id) >= 0)
+            status = 'drizzling';
+        else if ([8, 13, 14, 21, 28, 29, 33, 34, 44, 45, 49, 50].indexOf(weather_id) >= 0)
+            status = 'snowy';
+        else if ([7, 12, 20, 23, 26, 27, 31, 32, 42, 43, 47, 48].indexOf(weather_id) >= 0)
+            status = 'sleety';
 
-            let status;
-            if (weather_id === 1)
-                status = 'sunny';
-            else if (weather_id === 15)
-                status = 'foggy';
-            else if ([2, 3, 4].indexOf(weather_id) >= 0)
-                status = 'cloudy';
-            else if ([5, 6, 9, 10, 11, 22, 41].indexOf(weather_id) >= 0)
-                status = 'raining';
-            else if ([24, 30, 40, 46].indexOf(weather_id) >= 0)
-                status = 'drizzling';
-            else if ([8, 13, 14, 21, 28, 29, 33, 34, 44, 45, 49, 50].indexOf(weather_id) >= 0)
-                status = 'snowy';
-            else if ([7, 12, 20, 23, 26, 27, 31, 32, 42, 43, 47, 48].indexOf(weather_id) >= 0)
-                status = 'sleety';
+        return {
+            temperature: parseFloat(details.temperature ? details.temperature[0].$.value : 0),
+            wind_speed: parseFloat(details.windSpeed ? details.windSpeed[0].$.mps || 0 : 0),
+            humidity: parseFloat(details.humidity ? details.humidity[0].$.value || 0 : 0),
+            cloudiness: parseFloat(details.cloudiness ? details.cloudiness[0].$.percent || 0 : 0),
+            fog: parseFloat(details.fog ? details.fog[0].$.percent || 0 : 0),
+            status,
+            icon: `http://api.met.no/weatherapi/weathericon/1.1/?symbol=${weather_id};content_type=image/png`
+        };
+    }
 
-            return [{
-                location,
-                temperature,
-                wind_speed,
-                humidity,
-                cloudiness,
-                fog,
-                status,
-                icon: `http://api.met.no/weatherapi/weathericon/1.1/?symbol=${weather_id};content_type=image/png`
-            }];
-        });
+
+    async get_sunrise({ location, date }) {
+        const data = await this._sunrise_data(location, date);
+        const rise = new Date(data.sunrise[0].$.time);
+        const set = new Date(data.sunset[0].$.time);
+        return [{
+            location,
+            date,
+            sunrise_time: new Tp.Value.Time(rise.getHours(), rise.getMinutes(), rise.getSeconds()),
+            sunset_time: new Tp.Value.Time(set.getHours(), set.getMinutes(), set.getSeconds())
+        }];
+    }
+
+    async get_moon({ location, date }) {
+        const data = await this._sunrise_data(location, date);
+        const phase = data.moonphase[0].$.desc.match(/(?<=\()[a-z ]*(?=\))/g)[0].replace(/ /g, '_');
+        return [{ location, date, phase }];
+    }
+
+    async get_current({ location }) {
+        const data = await this._weather_data(location);
+        const current = await this._extract_weather(data[0], data[1]);
+
+        current.location = location;
+        return [ current ];
+    }
+
+    async get_forecast({ location }) {
+        const data = await this._weather_data(location);
+        const forecasts = [];
+        const now = new Date(data[0].$.from);
+        const hour = 60 * 60 * 1000;
+        const added = new Set();
+        for (let i = 0; i < data.length; i++) {
+            if (data[i].$.from !== data[i].$.to)
+                continue;
+            const datetime = new Date(data[i].$.from);
+            if (datetime.getDate() === now.getDate()) {
+                // same day forecast
+                // return forecast every 6 hours
+                if ((datetime - now) < 6 * hour)
+                    continue;
+                if ((datetime - now) % (6 * hour) !== 0)
+                    continue;
+                let forecast = await this._extract_weather(data[i], data[i+1]);
+                forecast.location = location;
+                forecast.datetime = datetime;
+                forecasts.push(forecast);
+            } else {
+                // forecast for tomorrow and later
+                // only return one forecast for each date
+                if (added.has(datetime.getDate()))
+                    continue;
+                // store the first UTC time that is later than 9 AM in local time
+                if (datetime.getHours() >= 9) {
+                    added.add(datetime.getDate());
+                    let forecast = await this._extract_weather(data[i], data[i+1]);
+                    forecast.location = location;
+                    forecast.datetime = datetime;
+                    forecasts.push(forecast);
+                }
+            }
+        }
+        return forecasts;
     }
 };
