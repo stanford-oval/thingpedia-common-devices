@@ -1,0 +1,16 @@
+class @com.appspot.randomuselessfact
+#_[name="Random Facts"]
+#_[description="The perfect solution for your daily needs of useless facts"]
+#[version=0]
+#[package_version=0] {
+  import loader from @org.thingpedia.generic_rest.v1();
+  import config from @org.thingpedia.config.none();
+
+  query random(out text: String #_[canonical="text"],
+               out link: Entity(tt:url) #_[canonical="link"] #[json_key="source_url"])
+  #_[canonical="random useless fact"]
+  #_[confirmation="a random useless fact"]
+  #_[formatted=["${text}"]]
+  #_[confirmation_remote="a random useless fact"]
+  #[url="https://uselessfacts.jsph.pl/random.json?language=en"];
+}
