@@ -9,6 +9,47 @@
 const Tp = require('thingpedia');
 const ICAL = require('ical.js');
 
+const url = "https://calendar.google.com/calendar/ical/en.COUNTRY%23holiday@group.v.calendar.google.com/public/basic.ics";
+
+const country_code = {
+    'us': 'usa',
+    'uk': 'uk',
+    'it': 'italian',
+    'cn': 'china',
+    'au': 'australian',
+    'at': 'austrian',
+    'be': 'be',
+    'br': 'brazilian',
+    'ca': 'canadian',
+    'hr': 'croatian',
+    'dk': 'danish',
+    'fi': 'finnish',
+    'fr': 'french',
+    'de': 'german',
+    'gr': 'greek',
+    'hk': 'hong_kong',
+    'hu': 'hungarian',
+    'is': 'is',
+    'in': 'indian',
+    'ie': 'irish',
+    'lt': 'lithuanian',
+    'mo': 'mo',
+    'nl': 'dutch',
+    'no': 'norwegian',
+    'pl': 'polish',
+    'pt': 'portuguese',
+    'ro': 'romanian',
+    'ru': 'russian',
+    'sg': 'singapore',
+    'si': 'slovenian',
+    'es': 'spain',
+    'se': 'swedish',
+    'ch': 'ch',
+    'tw': 'taiwan',
+    'tr': 'turkish',
+
+};
+
 module.exports = class ICalendarHolidaysDevice extends Tp.BaseDevice {
     constructor(engine, state) {
         super(engine, state);
@@ -19,18 +60,11 @@ module.exports = class ICalendarHolidaysDevice extends Tp.BaseDevice {
     }
 
     get_get_holidays({ country }) {
-        country = String(country);
-        let url;
-        if (country === 'us')
-            url = "https://calendar.google.com/calendar/ical/en.usa%23holiday@group.v.calendar.google.com/public/basic.ics";
-        else if (country === 'uk')
-            url = "https://calendar.google.com/calendar/ical/en_gb.uk%23holiday@group.v.calendar.google.com/public/basic.ics";
-        else if (country === 'it')
-            url = "https://calendar.google.com/calendar/ical/en.italian%23holiday%40group.v.calendar.google.com/public/basic.ics";
-        else // put the country there and hope for the best...
-            url = "https://calendar.google.com/calendar/ical/it." + country + "%23holiday%40group.v.calendar.google.com/public/basic.ics";
+        country = String(country || 'us');
+        if (!(country in country_code))
+            throw Error('The country is not supported.');
 
-        return Tp.Helpers.Http.get(url).then((data) => {
+        return Tp.Helpers.Http.get(url.replace('COUNTRY', country_code[country])).then((data) => {
             const jcalData = ICAL.parse(data);
             const comp = new ICAL.Component(jcalData);
             const vevents = comp.getAllSubcomponents("vevent");
