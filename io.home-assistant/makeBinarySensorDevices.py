@@ -157,7 +157,7 @@ for device, states in supported_device_classes.items():
   if "natural_off" in states:
     args["natural_off"] = states["natural_off"]
 
-  dataset_string = """dataset @{namespace} {{""".format(**args)
+  dataset_string = """dataset @{namespace} language "en" {{""".format(**args)
 
   for p_name in [False, True]:
     args["p_name"] = """${p_name} """ if p_name else ""
