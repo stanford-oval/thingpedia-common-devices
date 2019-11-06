@@ -49,7 +49,7 @@ module.exports = class Steam extends Tp.BaseDevice {
                 throw new Error("Can't make a bad game if you don't make the game. Half-Life 3 confirmed.");
             
             if(!Object.prototype.hasOwnProperty.call(STEAM_IDS, app_name))
-                throw new Error("I couldn't find a Steam app with that name. Check your spelling or try entering the ID instead.");
+                throw new Error("I couldn't find a Steam app with that name. The name has to be exactly the same with the one listed in Steam store. Check your spelling or try entering the ID instead.");
             
             app_id = STEAM_IDS[app_name];
         } else {
