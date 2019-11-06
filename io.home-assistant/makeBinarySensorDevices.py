@@ -130,10 +130,11 @@ for device, states in supported_device_classes.items():
     "natural_off": [states["off"]],
     "on": states["on"],
     "off": states["off"],
+    "namespace": "io.home-assistant.binary-sensor.{}".format(device),
   }
 
-  if not os.path.isdir(os.path.join(os.getcwd(), "../io.home-assistant.{device}-binary-sensor".format(**args))):
-    os.mkdir("../io.home-assistant.{device}-binary-sensor".format(**args))
+  if not os.path.isdir(os.path.join(os.getcwd(), "../{namespace}".format(**args))):
+    os.mkdir("../{namespace}".format(**args))
 
   manifest_string = """abstract class @io.home-assistant.{device}-binary-sensor
 #_[thingpedia_name="{device_name} Binary Sensor"]
@@ -148,7 +149,7 @@ for device, states in supported_device_classes.items():
   #_[formatted=["Your {device} sensor is ${{state}}"]];
 }}""".format(**args)
   
-  with open("../io.home-assistant.{device}-binary-sensor/manifest.tt".format(**args), "w") as file:
+  with open("../{namespace}/manifest.tt".format(**args), "w") as file:
     file.write(manifest_string)
 
   if "natural_on" in states:
@@ -418,5 +419,5 @@ for device, states in supported_device_classes.items():
   dataset_string = dataset_string[:-1] + """]];
 }"""
 
-  with open("../io.home-assistant.{device}-binary-sensor/dataset.tt".format(**args), "w") as file:
+  with open("../{namespace}/dataset.tt".format(**args), "w") as file:
     file.write(dataset_string)
