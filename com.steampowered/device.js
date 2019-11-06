@@ -9,7 +9,7 @@
 
 const Tp = require('thingpedia');
 const STEAM_IDS = require('./steam_data.json');
-const STORE_URL = 'http://store.steampowered.com/api/appdetails?appids=APP_ID&cc=us&filters=price_overview';
+const STORE_URL = 'http://store.steampowered.com/api/appdetails?appids=APP_ID&cc=COUNTRY&filters=price_overview';
 const API_ISteamUser_ResolveVanityURL = 'http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=API_KEY&vanityurl=VANITY_URL';
 
 module.exports = class Steam extends Tp.BaseDevice {
@@ -40,7 +40,7 @@ module.exports = class Steam extends Tp.BaseDevice {
     ///////////////////////////////////
     // Begin Steam Store API Functions
     ///////////////////////////////////
-    get_get_price({ game_name }) {
+    get_get_price({ game_name, country }) {
         let app_id;
         if (isNaN(game_name)) {
             // App name is entered
@@ -57,11 +57,14 @@ module.exports = class Steam extends Tp.BaseDevice {
             app_id = game_name;
         }
 
-        let url = STORE_URL.replace("APP_ID", app_id);
+        let url = STORE_URL.replace("APP_ID", app_id).replace('COUNTRY', country || 'us');
         return Tp.Helpers.Http.get(url).then((response) => {
             let parsed = JSON.parse(response);
-            if ("price_overview" in parsed[app_id]["data"])
-                return [{ price: parsed[app_id]["data"]["price_overview"]["final"]/100 }];
+            if ("price_overview" in parsed[app_id]["data"]) {
+                let price = parsed[app_id]["data"]["price_overview"]["final"] / 100;
+                let unit = parsed[app_id]["data"]["price_overview"]["currency"].toLowerCase();
+                return [{ price: new Tp.Value.Currency(price, unit) }];
+            }
             return [{ price: 0 }];
         });
 
