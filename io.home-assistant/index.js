@@ -13,6 +13,8 @@ const HomeAssistant = require('home-assistant-js-websocket');
 
 const HomeAssistantLightbulbDevice = require('./light-bulb');
 const HomeAssistantBinarySensor = require('./binary-sensor');
+const HomeAssistantCoverReadOnly = require('./cover-read-only');
+const HomeAssistantCover = require('./cover');
 
 // FIXME make configurable
 const HASS_URL = 'http://hassio.local:8123';
@@ -41,7 +43,16 @@ const DOMAIN_TO_TP_KIND = {
     'binary_sensor_smoke': 'smoke-binary-sensor',
     'binary_sensor_sound': 'sound-binary-sensor',
     'binary_sensor_vibration': 'vibration-binary-sensor',
-    'binary_sensor_window': 'window-binary-sensor'
+    'binary_sensor_window': 'window-binary-sensor',
+    'cover_read_only_door': 'door-cover-read-only',
+    'cover_read_only_garage': 'garage-cover-read-only',
+    'cover_awning': 'cover-awning',
+    'cover_blind': 'cover-blind',
+    'cover_curtain': 'cover-curtain',
+    'cover_damper': 'cover-damper',
+    'cover_shade': 'cover-shade',
+    'cover_shutter': 'cover-shutter',
+    'cover_window': 'cover-window'
 };
 const SUBDEVICES = {
     'light-bulb': HomeAssistantLightbulbDevice
@@ -50,6 +61,10 @@ const SUBDEVICES = {
 for (let value in Object.values(DOMAIN_TO_TP_KIND)) {
     if (value.includes('binary-sensor')) {
         SUBDEVICES[value] = class extends HomeAssistantBinarySensor {};
+    } else if (value.includes('cover-read-only')) {
+        SUBDEVICES[value] = class extends HomeAssistantCoverReadOnly {};
+    } else if (value.includes('cover')) {
+        SUBDEVICES[value] = class extends HomeAssistantCover {};
     }
 }
 
@@ -73,8 +88,18 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
         }
 
         const [domain,] = entityId.split('.');
-        const kind = (domain == 'binary_sensor') ? DOMAIN_TO_TP_KIND[`binary_sensor_${attributes.device_class}`] : DOMAIN_TO_TP_KIND[domain];
-        
+        // const kind = (domain == 'binary_sensor') ? DOMAIN_TO_TP_KIND[`binary_sensor_${attributes.device_class}`] : DOMAIN_TO_TP_KIND[domain];
+        let kind = undefined;
+        if (domain === 'binary_sensor') {
+            kind = DOMAIN_TO_TP_KIND[`binary_sensor_${attributes.device_class}`];
+        } else if (domain === 'cover' && ['door', 'garage'].includes(attributes.device_class)) {
+            kind = DOMAIN_TO_TP_KIND[`cover_read_only_${attributes.device_class}`];
+        } else if (domain === 'cover') {
+            kind = DOMAIN_TO_TP_KIND[`cover_${attributes.device_class}`];
+        } else {
+            kind = DOMAIN_TO_TP_KIND[domain];
+        }
+
         if (kind === undefined) {
             console.log(`Unhandled Home Assistant entity ${entityId} with domain ${domain}`);
             return;

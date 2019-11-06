@@ -1,0 +1,176 @@
+dataset @io.home-assistant.cover-read-only.garage language "en" {
+
+  program := now => @io.home-assistant.cover-read-only.garage.state() => notify
+  #_[utterances=["what is the state of my garage?",
+                "is my garage open?",
+                "check if my garage is open",
+                "is my garage opened?",
+                "check if my garage is opened",
+                "is my garage close?",
+                "check if my garage is close",
+                "is my garage closed?",
+                "check if my garage is closed",
+                "check if my garage is open or close",
+                "check if my garage is open or closed",
+                "check if my garage is opened or close",
+                "check if my garage is opened or closed"]];
+
+  query := @io.home-assistant.cover-read-only.garage.state()
+  #_[utterances=["the state of my garage",
+                "if my garage is open or close",
+                "whether my garage is open or close",
+                "if my garage is open or closed",
+                "whether my garage is open or closed",
+                "if my garage is opened or close",
+                "whether my garage is opened or close",
+                "if my garage is opened or closed",
+                "whether my garage is opened or closed"]];
+
+  stream := monitor @io.home-assistant.cover-read-only.garage.state()
+  #_[utterances=["when the state of my garage changes",
+                 "when my garage changes state",
+                 "when my garage changes"]];
+
+  stream (p_state : Enum(open, closed)) := edge( @io.home-assistant.cover-read-only.garage.state()) on (state == p_state)
+  #_[utterances=["when my garage becomes ${p_state}",
+                "when my garage is ${p_state}",
+                "when my garage changes to ${p_state}",
+                "if my garage becomes ${p_state}",
+                "if my garage is ${p_state}",
+                "if my garage changes to ${p_state}"]];
+
+  stream := edge( @io.home-assistant.cover-read-only.garage.state()) on (state == enum(open))
+  #_[utterances=["when my garage becomes open",
+                "when my garage changes to open",
+                "when my garage is open",
+                "if my garage becomes open",
+                "if my garage changes to open",
+                "if my garage is open",
+                "when my garage becomes opened",
+                "when my garage changes to opened",
+                "when my garage is opened",
+                "if my garage becomes opened",
+                "if my garage changes to opened",
+                "if my garage is opened",
+                "when my garage opens",
+                "if my garage opens",
+                "when my garage becomes not close",
+                "when my garage changes to not close",
+                "if my garage becomes not close",
+                "if my garage changes to not close",
+                "when my garage becomes not closed",
+                "when my garage changes to not closed",
+                "if my garage becomes not closed",
+                "if my garage changes to not closed"]];
+
+  stream := edge( @io.home-assistant.cover-read-only.garage.state()) on (state == enum(closed))
+  #_[utterances=["when my garage becomes close",
+                "when my garage changes to close",
+                "when my garage is close",
+                "if my garage becomes close",
+                "if my garage changes to close",
+                "if my garage is close",
+                "when my garage becomes closed",
+                "when my garage changes to closed",
+                "when my garage is closed",
+                "if my garage becomes closed",
+                "if my garage changes to closed",
+                "if my garage is closed",
+                "when my garage closes",
+                "if my garage closes",
+                "when my garage becomes not open",
+                "when my garage changes to not open",
+                "if my garage becomes not open",
+                "if my garage changes to not open",
+                "when my garage becomes not opened",
+                "when my garage changes to not opened",
+                "if my garage becomes not opened",
+                "if my garage changes to not opened"]];
+
+  program (p_name : String) := now => @io.home-assistant.cover-read-only.garage(name=p_name).state() => notify
+  #_[utterances=["what is the state of my ${p_name} garage?",
+                "is my ${p_name} garage open?",
+                "check if my ${p_name} garage is open",
+                "is my ${p_name} garage opened?",
+                "check if my ${p_name} garage is opened",
+                "is my ${p_name} garage close?",
+                "check if my ${p_name} garage is close",
+                "is my ${p_name} garage closed?",
+                "check if my ${p_name} garage is closed",
+                "check if my ${p_name} garage is open or close",
+                "check if my ${p_name} garage is open or closed",
+                "check if my ${p_name} garage is opened or close",
+                "check if my ${p_name} garage is opened or closed"]];
+
+  query (p_name : String) := @io.home-assistant.cover-read-only.garage(name=p_name).state()
+  #_[utterances=["the state of my ${p_name} garage",
+                "if my ${p_name} garage is open or close",
+                "whether my ${p_name} garage is open or close",
+                "if my ${p_name} garage is open or closed",
+                "whether my ${p_name} garage is open or closed",
+                "if my ${p_name} garage is opened or close",
+                "whether my ${p_name} garage is opened or close",
+                "if my ${p_name} garage is opened or closed",
+                "whether my ${p_name} garage is opened or closed"]];
+
+  stream (p_name : String) := monitor @io.home-assistant.cover-read-only.garage(name=p_name).state()
+  #_[utterances=["when the state of my ${p_name} garage changes",
+                 "when my ${p_name} garage changes state",
+                 "when my ${p_name} garage changes"]];
+
+  stream (p_name : String, p_state : Enum(open, closed)) := edge( @io.home-assistant.cover-read-only.garage(name=p_name).state()) on (state == p_state)
+  #_[utterances=["when my ${p_name} garage becomes ${p_state}",
+                "when my ${p_name} garage is ${p_state}",
+                "when my ${p_name} garage changes to ${p_state}",
+                "if my ${p_name} garage becomes ${p_state}",
+                "if my ${p_name} garage is ${p_state}",
+                "if my ${p_name} garage changes to ${p_state}"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.cover-read-only.garage(name=p_name).state()) on (state == enum(open))
+  #_[utterances=["when my ${p_name} garage becomes open",
+                "when my ${p_name} garage changes to open",
+                "when my ${p_name} garage is open",
+                "if my ${p_name} garage becomes open",
+                "if my ${p_name} garage changes to open",
+                "if my ${p_name} garage is open",
+                "when my ${p_name} garage becomes opened",
+                "when my ${p_name} garage changes to opened",
+                "when my ${p_name} garage is opened",
+                "if my ${p_name} garage becomes opened",
+                "if my ${p_name} garage changes to opened",
+                "if my ${p_name} garage is opened",
+                "when my ${p_name} garage opens",
+                "if my ${p_name} garage opens",
+                "when my ${p_name} garage becomes not close",
+                "when my ${p_name} garage changes to not close",
+                "if my ${p_name} garage becomes not close",
+                "if my ${p_name} garage changes to not close",
+                "when my ${p_name} garage becomes not closed",
+                "when my ${p_name} garage changes to not closed",
+                "if my ${p_name} garage becomes not closed",
+                "if my ${p_name} garage changes to not closed"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.cover-read-only.garage(name=p_name).state()) on (state == enum(closed))
+  #_[utterances=["when my ${p_name} garage becomes close",
+                "when my ${p_name} garage changes to close",
+                "when my ${p_name} garage is close",
+                "if my ${p_name} garage becomes close",
+                "if my ${p_name} garage changes to close",
+                "if my ${p_name} garage is close",
+                "when my ${p_name} garage becomes closed",
+                "when my ${p_name} garage changes to closed",
+                "when my ${p_name} garage is closed",
+                "if my ${p_name} garage becomes closed",
+                "if my ${p_name} garage changes to closed",
+                "if my ${p_name} garage is closed",
+                "when my ${p_name} garage closes",
+                "if my ${p_name} garage closes",
+                "when my ${p_name} garage becomes not open",
+                "when my ${p_name} garage changes to not open",
+                "if my ${p_name} garage becomes not open",
+                "if my ${p_name} garage changes to not open",
+                "when my ${p_name} garage becomes not opened",
+                "when my ${p_name} garage changes to not opened",
+                "if my ${p_name} garage becomes not opened",
+                "if my ${p_name} garage changes to not opened"]];
+}
