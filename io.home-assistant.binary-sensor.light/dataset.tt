@@ -1,5 +1,5 @@
-dataset @io.home-assistant.light-binary-sensor {
-  program := now => @io.home-assistant.light-binary-sensor.state() => notify
+dataset @io.home-assistant.binary-sensor.light {
+  program := now => @io.home-assistant.binary-sensor.light.state() => notify
   #_[utterances="what is the state of my light sensor?",
                 "what is my light sensor showing?",
                 "what does my light sensor say?",
@@ -12,7 +12,7 @@ dataset @io.home-assistant.light-binary-sensor {
                 "check if my light sensor is detecting light or not detecting light",
                 "check if my light sensor is detecting any light or not detecting light"]];
 
-  program (p_name : String) := now => @io.home-assistant.light-binary-sensor(name=p_name).state() => notify
+  program (p_name : String) := now => @io.home-assistant.binary-sensor.light(name=p_name).state() => notify
   #_[utterances="what is the state of my ${p_name} light sensor?",
                 "what is my ${p_name} light sensor showing?",
                 "what does my ${p_name} light sensor say?",
@@ -25,31 +25,31 @@ dataset @io.home-assistant.light-binary-sensor {
                 "check if my ${p_name} light sensor is detecting light or not detecting light",
                 "check if my ${p_name} light sensor is detecting any light or not detecting light"]];
 
-  query := @io.home-assistant.light-binary-sensor.state()
+  query := @io.home-assistant.binary-sensor.light.state()
   #_[utterances="the state of my light sensor",
                 "if my light sensor is detecting light or not detecting light",
                 "whether my light sensor is detecting light or not detecting light",
                 "if my light sensor is detecting any light or not detecting light",
                 "whether my light sensor is detecting any light or not detecting light"]];
 
-  query (p_name : String) := @io.home-assistant.light-binary-sensor(name=p_name).state()
+  query (p_name : String) := @io.home-assistant.binary-sensor.light(name=p_name).state()
   #_[utterances="the state of my ${p_name} light sensor",
                 "if my ${p_name} light sensor is detecting light or not detecting light",
                 "whether my ${p_name} light sensor is detecting light or not detecting light",
                 "if my ${p_name} light sensor is detecting any light or not detecting light",
                 "whether my ${p_name} light sensor is detecting any light or not detecting light"]];
 
-  stream := monitor @light-binary-sensor.state()
+  stream := monitor @io.home-assistant.binary-sensor.light.state()
   #_[utterances=["when the state of my light sensor changes",
                  "when my light sensor changes state",
                  "when my light sensor changes"]];
 
-  stream (p_name : String) := monitor @light-binary-sensor(name=p_name).state()
+  stream (p_name : String) := monitor @io.home-assistant.binary-sensor.light(name=p_name).state()
   #_[utterances=["when the state of my ${p_name} light sensor changes",
                  "when my ${p_name} light sensor changes state",
                  "when my ${p_name} light sensor changes"]];
 
-  stream (p_state : Enum(detecting_light, not_detecting_light)) := edge( @io.home-assistant.light-binary-sensor.state()) on (state == p_state)
+  stream (p_state : Enum(detecting_light, not_detecting_light)) := edge( @io.home-assistant.binary-sensor.light.state()) on (state == p_state)
   #_[utterances="when my light sensor becomes ${p_state}",
                 "when my light sensor is ${p_state}",
                 "when my light sensor turns ${p_state}",
@@ -59,7 +59,7 @@ dataset @io.home-assistant.light-binary-sensor {
                 "if my light sensor turns ${p_state}",
                 "if my light sensor changes to ${p_state}"]];
 
-  stream (p_name : String, p_state : Enum(detecting_light, not_detecting_light)) := edge( @io.home-assistant.light-binary-sensor(name=p_name).state()) on (state == p_state)
+  stream (p_name : String, p_state : Enum(detecting_light, not_detecting_light)) := edge( @io.home-assistant.binary-sensor.light(name=p_name).state()) on (state == p_state)
   #_[utterances="when my ${p_name} light sensor becomes ${p_state}",
                 "when my ${p_name} light sensor is ${p_state}",
                 "when my ${p_name} light sensor turns ${p_state}",
@@ -69,7 +69,7 @@ dataset @io.home-assistant.light-binary-sensor {
                 "if my ${p_name} light sensor turns ${p_state}",
                 "if my ${p_name} light sensor changes to ${p_state}"]];
 
-  stream :=  edge( @io.home-assistant.light-binary-sensor.state()) on (state == enum(detecting_light))
+  stream :=  edge( @io.home-assistant.binary-sensor.light.state()) on (state == enum(detecting_light))
   #_[utterances="when my light sensor becomes detecting light",
                 "when my light sensor turns detecting light",
                 "when my light sensor changes to detecting light",
@@ -83,7 +83,7 @@ dataset @io.home-assistant.light-binary-sensor {
                 "if my light sensor turns detecting any light",
                 "if my light sensor changes to detecting any light"]];
 
-  stream (p_name : String) :=  edge( @io.home-assistant.light-binary-sensor(name=p_name).state()) on (state == enum(detecting_light))
+  stream (p_name : String) :=  edge( @io.home-assistant.binary-sensor.light(name=p_name).state()) on (state == enum(detecting_light))
   #_[utterances="when my ${p_name} light sensor becomes detecting light",
                 "when my ${p_name} light sensor turns detecting light",
                 "when my ${p_name} light sensor changes to detecting light",
@@ -97,7 +97,7 @@ dataset @io.home-assistant.light-binary-sensor {
                 "if my ${p_name} light sensor turns detecting any light",
                 "if my ${p_name} light sensor changes to detecting any light"]];
 
-  stream :=  edge( @io.home-assistant.light-binary-sensor.state()) on (state == enum(not_detecting_light))
+  stream :=  edge( @io.home-assistant.binary-sensor.light.state()) on (state == enum(not_detecting_light))
   #_[utterances="when my light sensor becomes not detecting light",
                 "when my light sensor turns not detecting light",
                 "when my light sensor changes to not detecting light",
@@ -111,7 +111,7 @@ dataset @io.home-assistant.light-binary-sensor {
                 "if my light sensor turns not detecting any light",
                 "if my light sensor changes to not detecting any light"]];
 
-  stream (p_name : String) :=  edge( @io.home-assistant.light-binary-sensor(name=p_name).state()) on (state == enum(not_detecting_light))
+  stream (p_name : String) :=  edge( @io.home-assistant.binary-sensor.light(name=p_name).state()) on (state == enum(not_detecting_light))
   #_[utterances="when my ${p_name} light sensor becomes not detecting light",
                 "when my ${p_name} light sensor turns not detecting light",
                 "when my ${p_name} light sensor changes to not detecting light",

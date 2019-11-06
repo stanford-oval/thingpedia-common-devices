@@ -1,5 +1,5 @@
-dataset @io.home-assistant.gas-binary-sensor {
-  program := now => @io.home-assistant.gas-binary-sensor.state() => notify
+dataset @io.home-assistant.binary-sensor.gas {
+  program := now => @io.home-assistant.binary-sensor.gas.state() => notify
   #_[utterances="what is the state of my gas sensor?",
                 "what is my gas sensor showing?",
                 "what does my gas sensor say?",
@@ -12,7 +12,7 @@ dataset @io.home-assistant.gas-binary-sensor {
                 "check if my gas sensor is detecting gas or not detecting gas",
                 "check if my gas sensor is detecting any gas or not detecting gas"]];
 
-  program (p_name : String) := now => @io.home-assistant.gas-binary-sensor(name=p_name).state() => notify
+  program (p_name : String) := now => @io.home-assistant.binary-sensor.gas(name=p_name).state() => notify
   #_[utterances="what is the state of my ${p_name} gas sensor?",
                 "what is my ${p_name} gas sensor showing?",
                 "what does my ${p_name} gas sensor say?",
@@ -25,31 +25,31 @@ dataset @io.home-assistant.gas-binary-sensor {
                 "check if my ${p_name} gas sensor is detecting gas or not detecting gas",
                 "check if my ${p_name} gas sensor is detecting any gas or not detecting gas"]];
 
-  query := @io.home-assistant.gas-binary-sensor.state()
+  query := @io.home-assistant.binary-sensor.gas.state()
   #_[utterances="the state of my gas sensor",
                 "if my gas sensor is detecting gas or not detecting gas",
                 "whether my gas sensor is detecting gas or not detecting gas",
                 "if my gas sensor is detecting any gas or not detecting gas",
                 "whether my gas sensor is detecting any gas or not detecting gas"]];
 
-  query (p_name : String) := @io.home-assistant.gas-binary-sensor(name=p_name).state()
+  query (p_name : String) := @io.home-assistant.binary-sensor.gas(name=p_name).state()
   #_[utterances="the state of my ${p_name} gas sensor",
                 "if my ${p_name} gas sensor is detecting gas or not detecting gas",
                 "whether my ${p_name} gas sensor is detecting gas or not detecting gas",
                 "if my ${p_name} gas sensor is detecting any gas or not detecting gas",
                 "whether my ${p_name} gas sensor is detecting any gas or not detecting gas"]];
 
-  stream := monitor @gas-binary-sensor.state()
+  stream := monitor @io.home-assistant.binary-sensor.gas.state()
   #_[utterances=["when the state of my gas sensor changes",
                  "when my gas sensor changes state",
                  "when my gas sensor changes"]];
 
-  stream (p_name : String) := monitor @gas-binary-sensor(name=p_name).state()
+  stream (p_name : String) := monitor @io.home-assistant.binary-sensor.gas(name=p_name).state()
   #_[utterances=["when the state of my ${p_name} gas sensor changes",
                  "when my ${p_name} gas sensor changes state",
                  "when my ${p_name} gas sensor changes"]];
 
-  stream (p_state : Enum(detecting_gas, not_detecting_gas)) := edge( @io.home-assistant.gas-binary-sensor.state()) on (state == p_state)
+  stream (p_state : Enum(detecting_gas, not_detecting_gas)) := edge( @io.home-assistant.binary-sensor.gas.state()) on (state == p_state)
   #_[utterances="when my gas sensor becomes ${p_state}",
                 "when my gas sensor is ${p_state}",
                 "when my gas sensor turns ${p_state}",
@@ -59,7 +59,7 @@ dataset @io.home-assistant.gas-binary-sensor {
                 "if my gas sensor turns ${p_state}",
                 "if my gas sensor changes to ${p_state}"]];
 
-  stream (p_name : String, p_state : Enum(detecting_gas, not_detecting_gas)) := edge( @io.home-assistant.gas-binary-sensor(name=p_name).state()) on (state == p_state)
+  stream (p_name : String, p_state : Enum(detecting_gas, not_detecting_gas)) := edge( @io.home-assistant.binary-sensor.gas(name=p_name).state()) on (state == p_state)
   #_[utterances="when my ${p_name} gas sensor becomes ${p_state}",
                 "when my ${p_name} gas sensor is ${p_state}",
                 "when my ${p_name} gas sensor turns ${p_state}",
@@ -69,7 +69,7 @@ dataset @io.home-assistant.gas-binary-sensor {
                 "if my ${p_name} gas sensor turns ${p_state}",
                 "if my ${p_name} gas sensor changes to ${p_state}"]];
 
-  stream :=  edge( @io.home-assistant.gas-binary-sensor.state()) on (state == enum(detecting_gas))
+  stream :=  edge( @io.home-assistant.binary-sensor.gas.state()) on (state == enum(detecting_gas))
   #_[utterances="when my gas sensor becomes detecting gas",
                 "when my gas sensor turns detecting gas",
                 "when my gas sensor changes to detecting gas",
@@ -83,7 +83,7 @@ dataset @io.home-assistant.gas-binary-sensor {
                 "if my gas sensor turns detecting any gas",
                 "if my gas sensor changes to detecting any gas"]];
 
-  stream (p_name : String) :=  edge( @io.home-assistant.gas-binary-sensor(name=p_name).state()) on (state == enum(detecting_gas))
+  stream (p_name : String) :=  edge( @io.home-assistant.binary-sensor.gas(name=p_name).state()) on (state == enum(detecting_gas))
   #_[utterances="when my ${p_name} gas sensor becomes detecting gas",
                 "when my ${p_name} gas sensor turns detecting gas",
                 "when my ${p_name} gas sensor changes to detecting gas",
@@ -97,7 +97,7 @@ dataset @io.home-assistant.gas-binary-sensor {
                 "if my ${p_name} gas sensor turns detecting any gas",
                 "if my ${p_name} gas sensor changes to detecting any gas"]];
 
-  stream :=  edge( @io.home-assistant.gas-binary-sensor.state()) on (state == enum(not_detecting_gas))
+  stream :=  edge( @io.home-assistant.binary-sensor.gas.state()) on (state == enum(not_detecting_gas))
   #_[utterances="when my gas sensor becomes not detecting gas",
                 "when my gas sensor turns not detecting gas",
                 "when my gas sensor changes to not detecting gas",
@@ -111,7 +111,7 @@ dataset @io.home-assistant.gas-binary-sensor {
                 "if my gas sensor turns not detecting any gas",
                 "if my gas sensor changes to not detecting any gas"]];
 
-  stream (p_name : String) :=  edge( @io.home-assistant.gas-binary-sensor(name=p_name).state()) on (state == enum(not_detecting_gas))
+  stream (p_name : String) :=  edge( @io.home-assistant.binary-sensor.gas(name=p_name).state()) on (state == enum(not_detecting_gas))
   #_[utterances="when my ${p_name} gas sensor becomes not detecting gas",
                 "when my ${p_name} gas sensor turns not detecting gas",
                 "when my ${p_name} gas sensor changes to not detecting gas",

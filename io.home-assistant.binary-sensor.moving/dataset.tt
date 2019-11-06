@@ -1,5 +1,5 @@
-dataset @io.home-assistant.moving-binary-sensor {
-  program := now => @io.home-assistant.moving-binary-sensor.state() => notify
+dataset @io.home-assistant.binary-sensor.moving {
+  program := now => @io.home-assistant.binary-sensor.moving.state() => notify
   #_[utterances="what is the state of my moving sensor?",
                 "what is my moving sensor showing?",
                 "what does my moving sensor say?",
@@ -12,7 +12,7 @@ dataset @io.home-assistant.moving-binary-sensor {
                 "check if my moving sensor is moving or not moving",
                 "check if my moving sensor is moving or stationary"]];
 
-  program (p_name : String) := now => @io.home-assistant.moving-binary-sensor(name=p_name).state() => notify
+  program (p_name : String) := now => @io.home-assistant.binary-sensor.moving(name=p_name).state() => notify
   #_[utterances="what is the state of my ${p_name} moving sensor?",
                 "what is my ${p_name} moving sensor showing?",
                 "what does my ${p_name} moving sensor say?",
@@ -25,31 +25,31 @@ dataset @io.home-assistant.moving-binary-sensor {
                 "check if my ${p_name} moving sensor is moving or not moving",
                 "check if my ${p_name} moving sensor is moving or stationary"]];
 
-  query := @io.home-assistant.moving-binary-sensor.state()
+  query := @io.home-assistant.binary-sensor.moving.state()
   #_[utterances="the state of my moving sensor",
                 "if my moving sensor is moving or not moving",
                 "whether my moving sensor is moving or not moving",
                 "if my moving sensor is moving or stationary",
                 "whether my moving sensor is moving or stationary"]];
 
-  query (p_name : String) := @io.home-assistant.moving-binary-sensor(name=p_name).state()
+  query (p_name : String) := @io.home-assistant.binary-sensor.moving(name=p_name).state()
   #_[utterances="the state of my ${p_name} moving sensor",
                 "if my ${p_name} moving sensor is moving or not moving",
                 "whether my ${p_name} moving sensor is moving or not moving",
                 "if my ${p_name} moving sensor is moving or stationary",
                 "whether my ${p_name} moving sensor is moving or stationary"]];
 
-  stream := monitor @moving-binary-sensor.state()
+  stream := monitor @io.home-assistant.binary-sensor.moving.state()
   #_[utterances=["when the state of my moving sensor changes",
                  "when my moving sensor changes state",
                  "when my moving sensor changes"]];
 
-  stream (p_name : String) := monitor @moving-binary-sensor(name=p_name).state()
+  stream (p_name : String) := monitor @io.home-assistant.binary-sensor.moving(name=p_name).state()
   #_[utterances=["when the state of my ${p_name} moving sensor changes",
                  "when my ${p_name} moving sensor changes state",
                  "when my ${p_name} moving sensor changes"]];
 
-  stream (p_state : Enum(moving, not_moving)) := edge( @io.home-assistant.moving-binary-sensor.state()) on (state == p_state)
+  stream (p_state : Enum(moving, not_moving)) := edge( @io.home-assistant.binary-sensor.moving.state()) on (state == p_state)
   #_[utterances="when my moving sensor becomes ${p_state}",
                 "when my moving sensor is ${p_state}",
                 "when my moving sensor turns ${p_state}",
@@ -59,7 +59,7 @@ dataset @io.home-assistant.moving-binary-sensor {
                 "if my moving sensor turns ${p_state}",
                 "if my moving sensor changes to ${p_state}"]];
 
-  stream (p_name : String, p_state : Enum(moving, not_moving)) := edge( @io.home-assistant.moving-binary-sensor(name=p_name).state()) on (state == p_state)
+  stream (p_name : String, p_state : Enum(moving, not_moving)) := edge( @io.home-assistant.binary-sensor.moving(name=p_name).state()) on (state == p_state)
   #_[utterances="when my ${p_name} moving sensor becomes ${p_state}",
                 "when my ${p_name} moving sensor is ${p_state}",
                 "when my ${p_name} moving sensor turns ${p_state}",
@@ -69,7 +69,7 @@ dataset @io.home-assistant.moving-binary-sensor {
                 "if my ${p_name} moving sensor turns ${p_state}",
                 "if my ${p_name} moving sensor changes to ${p_state}"]];
 
-  stream :=  edge( @io.home-assistant.moving-binary-sensor.state()) on (state == enum(moving))
+  stream :=  edge( @io.home-assistant.binary-sensor.moving.state()) on (state == enum(moving))
   #_[utterances="when my moving sensor becomes moving",
                 "when my moving sensor turns moving",
                 "when my moving sensor changes to moving",
@@ -83,7 +83,7 @@ dataset @io.home-assistant.moving-binary-sensor {
                 "if my moving sensor turns not stationary",
                 "if my moving sensor changes to not stationary"]];
 
-  stream (p_name : String) :=  edge( @io.home-assistant.moving-binary-sensor(name=p_name).state()) on (state == enum(moving))
+  stream (p_name : String) :=  edge( @io.home-assistant.binary-sensor.moving(name=p_name).state()) on (state == enum(moving))
   #_[utterances="when my ${p_name} moving sensor becomes moving",
                 "when my ${p_name} moving sensor turns moving",
                 "when my ${p_name} moving sensor changes to moving",
@@ -97,7 +97,7 @@ dataset @io.home-assistant.moving-binary-sensor {
                 "if my ${p_name} moving sensor turns not stationary",
                 "if my ${p_name} moving sensor changes to not stationary"]];
 
-  stream :=  edge( @io.home-assistant.moving-binary-sensor.state()) on (state == enum(not_moving))
+  stream :=  edge( @io.home-assistant.binary-sensor.moving.state()) on (state == enum(not_moving))
   #_[utterances="when my moving sensor becomes not moving",
                 "when my moving sensor turns not moving",
                 "when my moving sensor changes to not moving",
@@ -111,7 +111,7 @@ dataset @io.home-assistant.moving-binary-sensor {
                 "if my moving sensor turns stationary",
                 "if my moving sensor changes to stationary"]];
 
-  stream (p_name : String) :=  edge( @io.home-assistant.moving-binary-sensor(name=p_name).state()) on (state == enum(not_moving))
+  stream (p_name : String) :=  edge( @io.home-assistant.binary-sensor.moving(name=p_name).state()) on (state == enum(not_moving))
   #_[utterances="when my ${p_name} moving sensor becomes not moving",
                 "when my ${p_name} moving sensor turns not moving",
                 "when my ${p_name} moving sensor changes to not moving",

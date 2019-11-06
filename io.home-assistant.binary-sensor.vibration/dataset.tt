@@ -1,5 +1,5 @@
-dataset @io.home-assistant.vibration-binary-sensor {
-  program := now => @io.home-assistant.vibration-binary-sensor.state() => notify
+dataset @io.home-assistant.binary-sensor.vibration {
+  program := now => @io.home-assistant.binary-sensor.vibration.state() => notify
   #_[utterances="what is the state of my vibration sensor?",
                 "what is my vibration sensor showing?",
                 "what does my vibration sensor say?",
@@ -28,7 +28,7 @@ dataset @io.home-assistant.vibration-binary-sensor {
                 "check if my vibration sensor is moving or not detecting vibration",
                 "check if my vibration sensor is moving or stationary"]];
 
-  program (p_name : String) := now => @io.home-assistant.vibration-binary-sensor(name=p_name).state() => notify
+  program (p_name : String) := now => @io.home-assistant.binary-sensor.vibration(name=p_name).state() => notify
   #_[utterances="what is the state of my ${p_name} vibration sensor?",
                 "what is my ${p_name} vibration sensor showing?",
                 "what does my ${p_name} vibration sensor say?",
@@ -57,7 +57,7 @@ dataset @io.home-assistant.vibration-binary-sensor {
                 "check if my ${p_name} vibration sensor is moving or not detecting vibration",
                 "check if my ${p_name} vibration sensor is moving or stationary"]];
 
-  query := @io.home-assistant.vibration-binary-sensor.state()
+  query := @io.home-assistant.binary-sensor.vibration.state()
   #_[utterances="the state of my vibration sensor",
                 "if my vibration sensor is detecting vibration or not detecting vibration",
                 "whether my vibration sensor is detecting vibration or not detecting vibration",
@@ -80,7 +80,7 @@ dataset @io.home-assistant.vibration-binary-sensor {
                 "if my vibration sensor is moving or stationary",
                 "whether my vibration sensor is moving or stationary"]];
 
-  query (p_name : String) := @io.home-assistant.vibration-binary-sensor(name=p_name).state()
+  query (p_name : String) := @io.home-assistant.binary-sensor.vibration(name=p_name).state()
   #_[utterances="the state of my ${p_name} vibration sensor",
                 "if my ${p_name} vibration sensor is detecting vibration or not detecting vibration",
                 "whether my ${p_name} vibration sensor is detecting vibration or not detecting vibration",
@@ -103,17 +103,17 @@ dataset @io.home-assistant.vibration-binary-sensor {
                 "if my ${p_name} vibration sensor is moving or stationary",
                 "whether my ${p_name} vibration sensor is moving or stationary"]];
 
-  stream := monitor @vibration-binary-sensor.state()
+  stream := monitor @io.home-assistant.binary-sensor.vibration.state()
   #_[utterances=["when the state of my vibration sensor changes",
                  "when my vibration sensor changes state",
                  "when my vibration sensor changes"]];
 
-  stream (p_name : String) := monitor @vibration-binary-sensor(name=p_name).state()
+  stream (p_name : String) := monitor @io.home-assistant.binary-sensor.vibration(name=p_name).state()
   #_[utterances=["when the state of my ${p_name} vibration sensor changes",
                  "when my ${p_name} vibration sensor changes state",
                  "when my ${p_name} vibration sensor changes"]];
 
-  stream (p_state : Enum(detecting_vibration, not_detecting_vibration)) := edge( @io.home-assistant.vibration-binary-sensor.state()) on (state == p_state)
+  stream (p_state : Enum(detecting_vibration, not_detecting_vibration)) := edge( @io.home-assistant.binary-sensor.vibration.state()) on (state == p_state)
   #_[utterances="when my vibration sensor becomes ${p_state}",
                 "when my vibration sensor is ${p_state}",
                 "when my vibration sensor turns ${p_state}",
@@ -123,7 +123,7 @@ dataset @io.home-assistant.vibration-binary-sensor {
                 "if my vibration sensor turns ${p_state}",
                 "if my vibration sensor changes to ${p_state}"]];
 
-  stream (p_name : String, p_state : Enum(detecting_vibration, not_detecting_vibration)) := edge( @io.home-assistant.vibration-binary-sensor(name=p_name).state()) on (state == p_state)
+  stream (p_name : String, p_state : Enum(detecting_vibration, not_detecting_vibration)) := edge( @io.home-assistant.binary-sensor.vibration(name=p_name).state()) on (state == p_state)
   #_[utterances="when my ${p_name} vibration sensor becomes ${p_state}",
                 "when my ${p_name} vibration sensor is ${p_state}",
                 "when my ${p_name} vibration sensor turns ${p_state}",
@@ -133,7 +133,7 @@ dataset @io.home-assistant.vibration-binary-sensor {
                 "if my ${p_name} vibration sensor turns ${p_state}",
                 "if my ${p_name} vibration sensor changes to ${p_state}"]];
 
-  stream :=  edge( @io.home-assistant.vibration-binary-sensor.state()) on (state == enum(detecting_vibration))
+  stream :=  edge( @io.home-assistant.binary-sensor.vibration.state()) on (state == enum(detecting_vibration))
   #_[utterances="when my vibration sensor becomes detecting vibration",
                 "when my vibration sensor turns detecting vibration",
                 "when my vibration sensor changes to detecting vibration",
@@ -171,7 +171,7 @@ dataset @io.home-assistant.vibration-binary-sensor {
                 "if my vibration sensor turns not stationary",
                 "if my vibration sensor changes to not stationary"]];
 
-  stream (p_name : String) :=  edge( @io.home-assistant.vibration-binary-sensor(name=p_name).state()) on (state == enum(detecting_vibration))
+  stream (p_name : String) :=  edge( @io.home-assistant.binary-sensor.vibration(name=p_name).state()) on (state == enum(detecting_vibration))
   #_[utterances="when my ${p_name} vibration sensor becomes detecting vibration",
                 "when my ${p_name} vibration sensor turns detecting vibration",
                 "when my ${p_name} vibration sensor changes to detecting vibration",
@@ -209,7 +209,7 @@ dataset @io.home-assistant.vibration-binary-sensor {
                 "if my ${p_name} vibration sensor turns not stationary",
                 "if my ${p_name} vibration sensor changes to not stationary"]];
 
-  stream :=  edge( @io.home-assistant.vibration-binary-sensor.state()) on (state == enum(not_detecting_vibration))
+  stream :=  edge( @io.home-assistant.binary-sensor.vibration.state()) on (state == enum(not_detecting_vibration))
   #_[utterances="when my vibration sensor becomes not detecting vibration",
                 "when my vibration sensor turns not detecting vibration",
                 "when my vibration sensor changes to not detecting vibration",
@@ -247,7 +247,7 @@ dataset @io.home-assistant.vibration-binary-sensor {
                 "if my vibration sensor turns not moving",
                 "if my vibration sensor changes to not moving"]];
 
-  stream (p_name : String) :=  edge( @io.home-assistant.vibration-binary-sensor(name=p_name).state()) on (state == enum(not_detecting_vibration))
+  stream (p_name : String) :=  edge( @io.home-assistant.binary-sensor.vibration(name=p_name).state()) on (state == enum(not_detecting_vibration))
   #_[utterances="when my ${p_name} vibration sensor becomes not detecting vibration",
                 "when my ${p_name} vibration sensor turns not detecting vibration",
                 "when my ${p_name} vibration sensor changes to not detecting vibration",
