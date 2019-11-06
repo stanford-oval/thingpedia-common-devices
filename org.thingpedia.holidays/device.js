@@ -19,7 +19,7 @@ module.exports = class ICalendarHolidaysDevice extends Tp.BaseDevice {
     }
 
     get_get_holidays({ country }) {
-        country = String(country);
+        country = String(country || 'us');
         let url;
         if (country === 'us')
             url = "https://calendar.google.com/calendar/ical/en.usa%23holiday@group.v.calendar.google.com/public/basic.ics";
@@ -27,8 +27,10 @@ module.exports = class ICalendarHolidaysDevice extends Tp.BaseDevice {
             url = "https://calendar.google.com/calendar/ical/en_gb.uk%23holiday@group.v.calendar.google.com/public/basic.ics";
         else if (country === 'it')
             url = "https://calendar.google.com/calendar/ical/en.italian%23holiday%40group.v.calendar.google.com/public/basic.ics";
-        else // put the country there and hope for the best...
-            url = "https://calendar.google.com/calendar/ical/it." + country + "%23holiday%40group.v.calendar.google.com/public/basic.ics";
+        else if (country === 'cn')
+            url = "https://calendar.google.com/calendar/ical/en.china%23holiday%40group.v.calendar.google.com/public/basic.ics";
+        else // country code won't work here, someone needs to manually create a map...
+            throw Error('The country is not supported, currently only support China, Italy, UK, and USA');
 
         return Tp.Helpers.Http.get(url).then((data) => {
             const jcalData = ICAL.parse(data);
