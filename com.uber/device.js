@@ -6,6 +6,7 @@
 //                Silei Xu <silei@cs.stanford.edu>
 //
 // See LICENSE for details
+"use strict";
 
 const Tp = require('thingpedia');
 
@@ -103,7 +104,7 @@ module.exports = class UberDeviceClass extends Tp.BaseDevice {
                     .then((response) => {
                         let fare = JSON.parse(response);
                         if ('errors' in fare)
-                            return env.output('com.uber:request', { Error: fare.errors[0].title });
+                            throw new Error(fare.errors[0].title);
                         return Tp.Helpers.Http.post(this.baseUrl + '/requests',
                             JSON.stringify({
                                 start_latitude: start.y,
@@ -122,7 +123,7 @@ module.exports = class UberDeviceClass extends Tp.BaseDevice {
                             .then((response) => {
                                 const parsedResponse = JSON.parse(response);
                                 if ('errors' in parsedResponse)
-                                    return env.output('com.uber:request', { Error: parsedResponse.errors[0].title });
+                                    throw new Error(parsedResponse.errors[0].title);
                                 let fullInfo = {
                                     status: parsedResponse.status,
                                     vehicle: parsedResponse.vehicle? `${parsedResponse.vehicle.make} ${parsedResponse.vehicle.model} ${parsedResponse.vehicle.plate}` : 'Not available yet',

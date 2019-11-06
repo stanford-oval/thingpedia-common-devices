@@ -9,9 +9,6 @@ all: $(zipfiles)
 	@:
 
 %.zip: % %/node_modules
-	# unfortunately too many devices are old and dirty
-	# and fail, so we run with - to ignore the return value
-	-cd $< ; eslint *.js
 	cd $< ; zip -x '*.tt' '*.yml' 'node_modules/.bin/*' 'icon.png' -r $(abspath $@) .
 
 %/node_modules: %/package.json %/yarn.lock
@@ -24,3 +21,9 @@ all: $(zipfiles)
 
 clean:
 	rm -f *.zip
+
+lint:
+	for f in */package.json ; do \
+		echo $$f ; \
+		eslint `dirname $$f`/*.js || exit 1 ; \
+	done

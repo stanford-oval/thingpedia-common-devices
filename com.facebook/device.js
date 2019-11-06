@@ -6,7 +6,7 @@
 "use strict";
 
 const Tp = require('thingpedia');
-const FormData = require('form-data');
+//const FormData = require('form-data');
 
 module.exports = class FacebokDevice extends Tp.BaseDevice {
     constructor(engine, state) {
@@ -27,14 +27,14 @@ module.exports = class FacebokDevice extends Tp.BaseDevice {
 
     do_post({status}) {
         throw new Error("Unfortunately, Facebook discontinues posting api starting from August 1st, 2018. We will reimplement this feature once there is an alternative way to do so");
-        return Tp.Helpers.Http.post('https://graph.facebook.com/v2.12/me/feed', 'message=' + encodeURIComponent(status),
-            {useOAuth2: this, dataContentType: 'application/x-www-form-urlencoded'});
+        /*return Tp.Helpers.Http.post('https://graph.facebook.com/v2.12/me/feed', 'message=' + encodeURIComponent(status),
+            {useOAuth2: this, dataContentType: 'application/x-www-form-urlencoded'});*/
     }
 
     do_post_picture({caption, picture_url}) {
         throw new Error("Unfortunately, Facebook discontinues posting api starting from August 1st, 2018. We will reimplement this feature once there is an alternative way to do so");
 
-        const fbURL = 'https://graph.facebook.com/v2.12/me/photos';
+        /*const fbURL = 'https://graph.facebook.com/v2.12/me/photos';
 
         picture_url = String(picture_url);
         if (Tp.Helpers.Content.isPubliclyAccessible(picture_url)) {
@@ -49,7 +49,7 @@ module.exports = class FacebokDevice extends Tp.BaseDevice {
                 return Tp.Helpers.Http.postStream(fbURL, formData,
                     {useOAuth2: this, dataContentType: 'multipart/form-data; boundary=' + formData.getBoundary()});
             });
-        }
+        }*/
     }
 
     get_list_posts() {
@@ -119,7 +119,7 @@ module.exports.runOAuth2 = Tp.Helpers.OAuth2({
     }
 });
 
-
+/*
 let formattedOutput = (function(params, hint, formatter) {
     let formatted = [];
     if (params.type === 'status') {
@@ -158,3 +158,4 @@ let formattedOutput = (function(params, hint, formatter) {
     formatted.push(`Posted on ${params.date}.`);
     return formatted;
 });
+*/

@@ -5,6 +5,7 @@
 //                Giovanni Campagna <gcampagn@cs.stanford.edu>
 //
 // See LICENSE for details
+"use strict";
 
 const Tp = require('thingpedia');
 const Url = require('url');
@@ -17,7 +18,7 @@ module.exports = new Tp.ChannelClass({
     Name: "UberTimeEstimateChannel",
 
     formatEvent(event, filters, hint) {
-        var start = event[0];
+        //var start = event[0];
         var name = event[1];
         var time = event[2];
 

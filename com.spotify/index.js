@@ -8,7 +8,7 @@ const Tp = require('thingpedia');
 const querystring = require('querystring');
 
 const USER_URL = 'https://api.spotify.com/v1/me';
-const USER_PLAYER_URL = 'https://api.spotify.com/v1/me/player';
+//const USER_PLAYER_URL = 'https://api.spotify.com/v1/me/player';
 
 
 // Player URLs
@@ -67,7 +67,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             set_state: true,
             authorize: 'https://accounts.spotify.com/authorize',
             get_access_token: 'https://accounts.spotify.com/api/token',
-            redirect_uri: platform.getOrigin() + '/devices/oauth2/callback/com.spotify',
 
             callback(engine, accessToken, refreshToken) {
                 return Tp.Helpers.Http.get(USER_URL, {
@@ -304,7 +303,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
     do_play_album({toPlay}) {
         return this.search(toPlay, 'album').then((searchResults) => {
-            if (!searchResults.hasOwnProperty('albums') || searchResults.albums.total === 0) throw new Error(`Album ${toPlay} not found`);
+            if (!Object.prototype.hasOwnProperty.call(searchResults, 'albums') || searchResults.albums.total === 0) throw new Error(`Album ${toPlay} not found`);
             let data = {'context_uri': searchResults.albums.items[0].uri};
             console.log('data is ' + JSON.stringify(data));
             return this.player_play_helper(JSON.stringify(data));
@@ -313,7 +312,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
     do_play_artist({toPlay}) {
         return this.search(toPlay, 'artist').then((searchResults) => {
-            if (!searchResults.hasOwnProperty('artists') || searchResults.artists.total === 0) throw new Error(`Artist ${toPlay} not found`);
+            if (!Object.prototype.hasOwnProperty.call(searchResults, 'artists') || searchResults.artists.total === 0) throw new Error(`Artist ${toPlay} not found`);
             let data = {'context_uri': searchResults.artists.items[0].uri};
             console.log('data is ' + JSON.stringify(data));
             return this.player_play_helper(JSON.stringify(data));
@@ -322,7 +321,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
     do_play_playlist({toPlay}) {
         return this.search(toPlay, 'playlist').then((searchResults) => {
-            if (!searchResults.hasOwnProperty('playlists') || searchResults.playlists.total === 0) throw new Error(`Playlist ${toPlay} not found`);
+            if (!Object.prototype.hasOwnProperty.call(searchResults, 'playlists') || searchResults.playlists.total === 0) throw new Error(`Playlist ${toPlay} not found`);
             let data = {'context_uri': searchResults.playlists.items[0].uri};
             console.log('data is ' + JSON.stringify(data));
             return this.player_play_helper(JSON.stringify(data));
@@ -342,7 +341,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         let uris = [];
         for (let i = 0; i < songs.length; i++) {
             let searchResults = await this.search(songs[i].trim(), 'track');
-            if (!searchResults.hasOwnProperty('tracks') || searchResults.tracks.total === 0)
+            if (!Object.prototype.hasOwnProperty.call(searchResults, 'tracks') || searchResults.tracks.total === 0)
                 throw new Error(`Song ${songs[i].trim()} not found`);
             uris.push(searchResults.tracks.items[0].uri);
         }
@@ -365,7 +364,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     }
 
     do_save_current_track() {
-        return this.currently_playing_helper().then((response) => {
+        return this.currently_playing_helper().then(async (response) => {
             if (response === '' || response.length === 0) 
                 throw new Error(`No song is playing`);
             
@@ -375,7 +374,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             
             let id = parsed.item.id;
             let save_url = TRACKS_URL + querystring.stringify({ids: id});
-            return this.http_put_default_options(save_url, '');
+            await this.http_put_default_options(save_url, '');
         });
     }
 
@@ -405,7 +404,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             });
         } else {
             return this.search(songName, 'track').then((searchResults) => {
-                if (!searchResults.hasOwnProperty('tracks')) throw new Error("No song found for that query.");
+                if (!Object.prototype.hasOwnProperty.call(searchResults, 'tracks')) throw new Error("No song found for that query.");
                 let id = searchResults.tracks.items[0].id;
                 return this.audio_features_get_by_id(id).then((response) => transformation(JSON.parse(response)));
             });
@@ -543,7 +542,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
     async getUserPlaylists() {
         let allPlaylists = [];
-        let next = USER_PLAYLISTS;
         let nextSet = await this.getPageOfPlaylists();
         allPlaylists = allPlaylists.concat(nextSet.items);
         let size = nextSet.total;
@@ -557,7 +555,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     async find_my_playlist(playlist) {
         let playlists = await this.getUserPlaylists();
         //TODO: change to return error.
-        if (playlists.length === 0) throw new Error(`You don't have any playlist`);
+        if (playlists.length === 0) throw new Error(`You don't have any playlist`);//'
         console.log("size is " + playlists.length);
         return this.findBestPlaylistMatch(playlist, playlists);
     }
@@ -568,7 +566,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         console.log("matched playlist is " + matchedPlaylistURI);
         if (matchedPlaylistURI.length === 0) return;
         console.log("best match is " + matchedPlaylistURI);
-        return this.player_play_helper(JSON.stringify({'context_uri': matchedPlaylistURI}));
+        await this.player_play_helper(JSON.stringify({'context_uri': matchedPlaylistURI}));
     }
 
 
@@ -605,7 +603,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     async do_add_album_to_playlist({toAdd, playlist}) {
         let albumResult = await this.search(toAdd, 'album');
         console.log("album is " + JSON.stringify(albumResult));
-        if (!albumResult.hasOwnProperty('albums') || albumResult.albums.total === 0) throw new Error(`Album ${toAdd} not found`);
+        if (!Object.prototype.hasOwnProperty.call(albumResult, 'albums') || albumResult.albums.total === 0) throw new Error(`Album ${toAdd} not found`);
         albumResult = albumResult.albums.items[0].uri;
         console.log(albumResult);
         let playlistResult = await this.find_my_playlist(playlist);
@@ -615,7 +613,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         let albumTracks = await this.get_album_tracks(albumResult);
         console.log("Album tracks are " + JSON.stringify(albumTracks));
         let data = {"uris": albumTracks};
-        return this.add_uris_to_playlist(playlistResult, data);
+        await this.add_uris_to_playlist(playlistResult, data);
     }
 
     async do_add_songs_to_playlist({toAdd, playlist}) {    //TODO: rename this later to _ "add songs ... "

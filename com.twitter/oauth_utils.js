@@ -12,8 +12,8 @@ performSecureStreamRequest= function( oauth_token, oauth_token_secret, method, u
     post_content_type= "application/x-www-form-urlencoded";
   
   var parsedUrl= URL.parse( url, false );
-  if( parsedUrl.protocol == "http:" && !parsedUrl.port ) parsedUrl.port= 80;
-  if( parsedUrl.protocol == "https:" && !parsedUrl.port ) parsedUrl.port= 443;
+  if( parsedUrl.protocol === "http:" && !parsedUrl.port ) parsedUrl.port= 80;
+  if( parsedUrl.protocol === "https:" && !parsedUrl.port ) parsedUrl.port= 443;
 
   var headers= {};
   var authorization = this._buildAuthorizationHeaders(orderedParameters);
@@ -26,24 +26,24 @@ performSecureStreamRequest= function( oauth_token, oauth_token_secret, method, u
 
   headers["Host"] = parsedUrl.host;
 
-  for( var key in this._headers ) {
-    if (this._headers.hasOwnProperty(key)) 
+  for(let key in this._headers ) {
+    if (Object.prototype.hasOwnProperty.call(this._headers, key))
       headers[key]= this._headers[key];
     
   }
 
   // Filter out any passed extra_params that are really to do with OAuth
-  for(var key in extra_params) {
+  for(let key in extra_params) {
     if( this._isParameterNameAnOAuthParameter( key ) ) 
       delete extra_params[key];
     
   }
 
-  if( (method == "POST" || method == "PUT")  && ( post_body == null && extra_params != null) ) {
+  if( (method === "POST" || method === "PUT")  && ( ( post_body === null || post_body === undefined ) && extra_params !== null) ) {
     // Fix the mismatch between the output of querystring.stringify() and this._encodeData()
     post_body= querystring.stringify(extra_params)
-                       .replace(/\!/g, "%21")
-                       .replace(/\'/g, "%27")
+                       .replace(/!/g, "%21")
+                       .replace(/'/g, "%27")
                        .replace(/\(/g, "%28")
                        .replace(/\)/g, "%29")
                        .replace(/\*/g, "%2A");
@@ -62,12 +62,12 @@ performSecureStreamRequest= function( oauth_token, oauth_token_secret, method, u
   headers["Content-Type"]= post_content_type;
 
   var path;
-  if( !parsedUrl.pathname  || parsedUrl.pathname == "" ) parsedUrl.pathname ="/";
+  if( !parsedUrl.pathname  || parsedUrl.pathname === "" ) parsedUrl.pathname ="/";
   if( parsedUrl.query ) path= parsedUrl.pathname + "?"+ parsedUrl.query ;
   else path= parsedUrl.pathname;
 
   var request;
-  if( parsedUrl.protocol == "https:" ) 
+  if( parsedUrl.protocol === "https:" )
     request= this._createClient(parsedUrl.port, parsedUrl.hostname, method, path, headers, true);
   
   else 
@@ -87,7 +87,7 @@ performSecureStreamRequest= function( oauth_token, oauth_token_secret, method, u
           callback(null, data, response);
         } else {
           // Follow 301 or 302 redirects with Location HTTP header
-          if((response.statusCode == 301 || response.statusCode == 302) && clientOptions.followRedirects && response.headers && response.headers.location) {
+          if((response.statusCode === 301 || response.statusCode === 302) && clientOptions.followRedirects && response.headers && response.headers.location) {
             self._performSecureRequest( oauth_token, oauth_token_secret, method, response.headers.location, extra_params, post_body, post_content_type,  callback);
           }
             else {
@@ -113,13 +113,14 @@ performSecureStreamRequest= function( oauth_token, oauth_token_secret, method, u
       }
     });
 
-    if( (method == "POST" || method =="PUT") && post_body != null && post_body != "" ) 
+    if( (method === "POST" || method ==="PUT") && post_body !== null && post_body !== "" )
       request.write(post_body);
     
     request.end();
+    return undefined;
   }
   else {
-    if( (method == "POST" || method =="PUT") && post_body != null && post_body != "" ) 
+    if( (method === "POST" || method ==="PUT") && post_body !== null && post_body !== "" )
       request.write(post_body);
     
     return request;

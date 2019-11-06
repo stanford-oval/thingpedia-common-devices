@@ -21,7 +21,7 @@ module.exports = class WikidataClass extends Tp.BaseDevice {
     async query(query) {
         const sparql = ThingTalk.Helper.toSparql(query);
         if (!sparql)
-            throw new Error(`Failed to convert query "${query.prettyprint()}", got ${sparql}`);
+            throw new Error(`Failed to convert query "${query.prettyprint()}", got ${sparql}`); //"
         console.log(sparql);
         return Tp.Helpers.Http.get(`${this.url}?query=${encodeURIComponent(sparql)}`, {
             accept: 'application/json'

@@ -183,11 +183,11 @@ class TeslaCarDevice extends Tp.BaseDevice {
     do_honk_horn() {
         return this._do_command ('/command/honk_horn', null);
     }
-    do_set_air_conditioning({ power }) {
+    async do_set_air_conditioning({ power }) {
         if (power === 'on')
-            return this._do_command ('/command/auto_conditioning_start', null);
+            await this._do_command ('/command/auto_conditioning_start', null);
         else if (power === 'off')
-            return this._do_command ('/command/auto_conditioning_stop', null);
+            await this._do_command ('/command/auto_conditioning_stop', null);
         else
             console.log('Error in parameter to air-conditioning' + power);
     }

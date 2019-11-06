@@ -4,6 +4,7 @@
 //                Giovanni Campagna <gcampagn@cs.stanford.edu>
 //
 // See LICENSE for details
+"use strict";
 
 const Q = require('q');
 const Url = require('url');

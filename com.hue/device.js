@@ -5,6 +5,7 @@
 // Copyright 2016 Rakesh Ramesh <rakeshr1@stanford.edu>
 //
 // See COPYING for details
+"use strict";
 
 const Tp = require('thingpedia');
 const hue = require('node-hue-api');
@@ -146,12 +147,12 @@ const PhilipsHueDevice = new Tp.DeviceClass({
     completeDiscovery(delegate) {
         if (this.userToken) {
             delegate.configDone();
-            return;
+            return Promise.resolve();
         }
 
         return delegate.confirm("Press the Hue bridge button now. Say yes when done, or no to cancel.").then((confirmed) => {
             if (!confirmed)
-                return;
+                return Promise.resolve();
 
             var hue = new HueApi(this.host);
             return hue.registerUser(this.host, "Sabrina HUE User");
