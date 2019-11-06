@@ -26,7 +26,7 @@ supported_device_classes = {
     "on": "detecting_gas",
     "off": "not_detecting_gas",
     "natural_on": ["detecting gas", "detecting any gas"],
-    "natural_off": ["not detecting gas", "not detecting any gas"],
+    "natural_off": ["not detecting gas"],
   },
   "heat": {
     "on": "hot",
@@ -37,7 +37,7 @@ supported_device_classes = {
     "on": "detecting_light",
     "off": "not_detecting_light",
     "natural_on": ["detecting light", "detecting any light"],
-    "natural_off": ["not detecting light", "not detecting any light"],
+    "natural_off": ["not detecting light"],
   },
   "lock": {
     "on": "unlocked",
@@ -54,7 +54,7 @@ supported_device_classes = {
     "on": "detecting_motion",
     "off": "not_detecting_motion",
     "natural_on": ["detecting motion", "detecting movement", "detecting any motion", "detecting any movement"],
-    "natural_off": ["not detecting motion", "not detecting movement", "not detecting any motion", "not detecting any movement"],
+    "natural_off": ["not detecting motion"],
   },
   "moving": {
     "on": "moving",
@@ -81,7 +81,7 @@ supported_device_classes = {
     "on": "detecting_power",
     "off": "not_detecting_power",
     "natural_on": ["detecting power", "detecting any power"],
-    "natural_off": ["not detecting power", "not detecting any power"],
+    "natural_off": ["not detecting power"],
   },
   "presence": {
     "on": "home",
@@ -91,7 +91,7 @@ supported_device_classes = {
     "on": "detecting_problem",
     "off": "not_detecting_problem",
     "natural_on": ["detecting a problem", "detecting any problem"],
-    "natural_off": ["not detecting a problem", "not detecting any problem"],
+    "natural_off": ["not detecting a problem"],
   },
   "safety": {
     "on": "unsafe",
@@ -101,19 +101,19 @@ supported_device_classes = {
     "on": "detecting_smoke",
     "off": "not_detecting_smoke",
     "natural_on": ["detecting smoke", "detecting any smoke"],
-    "natural_off": ["not detecting smoke", "not detecting any smoke"],
+    "natural_off": ["not detecting smoke"],
   },
   "sound": {
     "on": "detecting_sound",
     "off": "not_detecting_sound",
     "natural_on": ["detecting sound", "detecting any sound", "hearing anything", "hearing something"],
-    "natural_off": ["not detecting sound", "not detecting any sound", "not hearing anything"],
+    "natural_off": ["not detecting sound"],
   },
   "vibration": {
     "on": "detecting_vibration",
     "off": "not_detecting_vibration",
     "natural_on": ["detecting vibration", "detecting any vibration", "vibrating", "shaking", "moving"],
-    "natural_off": ["not detecting vibration", "not detecting any vibration", "stationary"],
+    "natural_off": ["not detecting vibration", "stationary"],
   },
   "window": {
     "on": "open",
@@ -132,8 +132,8 @@ for device, states in supported_device_classes.items():
     "off": states["off"],
   }
 
-  if not os.path.isdir(os.path.join(os.getcwd(), "{device}-binary-sensor".format(**args))):
-    os.mkdir("{device}-binary-sensor".format(**args))
+  if not os.path.isdir(os.path.join(os.getcwd(), "../io.home-assistant.{device}-binary-sensor".format(**args))):
+    os.mkdir("../io.home-assistant.{device}-binary-sensor".format(**args))
 
   manifest_string = """abstract class @io.home-assistant.{device}-binary-sensor
 #_[thingpedia_name="{device_name} Binary Sensor"]
@@ -148,7 +148,7 @@ for device, states in supported_device_classes.items():
   #_[formatted=["Your {device} sensor is ${{state}}"]];
 }}""".format(**args)
   
-  with open("{device}-binary-sensor/manifest.tt".format(**args), "w") as file:
+  with open("../io.home-assistant.{device}-binary-sensor/manifest.tt".format(**args), "w") as file:
     file.write(manifest_string)
 
   if "natural_on" in states:
@@ -185,6 +185,34 @@ for device, states in supported_device_classes.items():
 
   dataset_string += """
 
+  program (p_name : String) := now => @io.home-assistant.{device}-binary-sensor(name=p_name).state() => notify
+  #_[utterances="what is the state of my ${{p_name}} {device} sensor?",
+                "what is my ${{p_name}} {device} sensor showing?",
+                "what does my ${{p_name}} {device} sensor say?",""".format(**args)
+
+  for natural_on_token in args["natural_on"]:
+    args["natural_on_token"] = natural_on_token
+    dataset_string += """
+                "is my ${{p_name}} {device} sensor {natural_on_token}?",
+                "check if my ${{p_name}} {device} sensor is {natural_on_token}",""".format(**args)
+
+  for natural_off_token in args["natural_off"]:
+    args["natural_off_token"] = natural_off_token
+    dataset_string += """
+                "is my ${{p_name}} {device} sensor {natural_off_token}?",
+                "check if my ${{p_name}} {device} sensor is {natural_off_token}",""".format(**args)
+
+  for natural_on_token in args["natural_on"]:
+    for natural_off_token in args["natural_off"]:
+      args["natural_on_token"] = natural_on_token
+      args["natural_off_token"] = natural_off_token
+      dataset_string += """
+                "check if my ${{p_name}} {device} sensor is {natural_on_token} or {natural_off_token}",""".format(**args)
+
+  dataset_string = dataset_string[:-1] + """]];"""
+
+  dataset_string += """
+
   query := @io.home-assistant.{device}-binary-sensor.state()
   #_[utterances="the state of my {device} sensor",""".format(**args)
 
@@ -200,10 +228,30 @@ for device, states in supported_device_classes.items():
 
   dataset_string += """
 
+  query (p_name : String) := @io.home-assistant.{device}-binary-sensor(name=p_name).state()
+  #_[utterances="the state of my ${{p_name}} {device} sensor",""".format(**args)
+
+  for natural_on_token in args["natural_on"]:
+    for natural_off_token in args["natural_off"]:
+      args["natural_on_token"] = natural_on_token
+      args["natural_off_token"] = natural_off_token
+      dataset_string += """
+                "if my ${{p_name}} {device} sensor is {natural_on_token} or {natural_off_token}",
+                "whether my ${{p_name}} {device} sensor is {natural_on_token} or {natural_off_token}",""".format(**args)
+
+  dataset_string = dataset_string[:-1] + """]];"""
+
+  dataset_string += """
+
   stream := monitor @{device}-binary-sensor.state()
   #_[utterances=["when the state of my {device} sensor changes",
                  "when my {device} sensor changes state",
                  "when my {device} sensor changes"]];
+
+  stream (p_name : String) := monitor @{device}-binary-sensor(name=p_name).state()
+  #_[utterances=["when the state of my ${{p_name}} {device} sensor changes",
+                 "when my ${{p_name}} {device} sensor changes state",
+                 "when my ${{p_name}} {device} sensor changes"]];
 
   stream (p_state : Enum({on}, {off})) := edge( @io.home-assistant.{device}-binary-sensor.state()) on (state == p_state)
   #_[utterances="when my {device} sensor becomes ${{p_state}}",
@@ -214,6 +262,18 @@ for device, states in supported_device_classes.items():
                 "if my {device} sensor is ${{p_state}}",
                 "if my {device} sensor turns ${{p_state}}",
                 "if my {device} sensor changes to ${{p_state}}"]];
+
+  stream (p_name : String, p_state : Enum({on}, {off})) := edge( @io.home-assistant.{device}-binary-sensor(name=p_name).state()) on (state == p_state)
+  #_[utterances="when my ${{p_name}} {device} sensor becomes ${{p_state}}",
+                "when my ${{p_name}} {device} sensor is ${{p_state}}",
+                "when my ${{p_name}} {device} sensor turns ${{p_state}}",
+                "when my ${{p_name}} {device} sensor changes to ${{p_state}}",
+                "if my ${{p_name}} {device} sensor becomes ${{p_state}}",
+                "if my ${{p_name}} {device} sensor is ${{p_state}}",
+                "if my ${{p_name}} {device} sensor turns ${{p_state}}",
+                "if my ${{p_name}} {device} sensor changes to ${{p_state}}"]];""".format(**args)
+
+  dataset_string += """
 
   stream :=  edge( @io.home-assistant.{device}-binary-sensor.state()) on (state == enum({on}))""".format(**args)
 
@@ -251,6 +311,42 @@ for device, states in supported_device_classes.items():
 
   dataset_string += """
 
+  stream (p_name : String) :=  edge( @io.home-assistant.{device}-binary-sensor(name=p_name).state()) on (state == enum({on}))""".format(**args)
+
+  for i, natural_on_token in enumerate(args["natural_on"]):
+    args["natural_on_token"] = natural_on_token
+    if i == 0:
+      dataset_string += """
+  #_[utterances="when my ${{p_name}} {device} sensor becomes {natural_on_token}",
+                "when my ${{p_name}} {device} sensor turns {natural_on_token}",
+                "when my ${{p_name}} {device} sensor changes to {natural_on_token}",
+                "if my ${{p_name}} {device} sensor becomes {natural_on_token}",
+                "if my ${{p_name}} {device} sensor turns {natural_on_token}",
+                "if my ${{p_name}} {device} sensor changes to {natural_on_token}",""".format(**args)
+    else:
+      dataset_string += """
+                "when my ${{p_name}} {device} sensor becomes {natural_on_token}",
+                "when my ${{p_name}} {device} sensor turns {natural_on_token}",
+                "when my ${{p_name}} {device} sensor changes to {natural_on_token}",
+                "if my ${{p_name}} {device} sensor becomes {natural_on_token}",
+                "if my ${{p_name}} {device} sensor turns {natural_on_token}",
+                "if my ${{p_name}} {device} sensor changes to {natural_on_token}",""".format(**args)
+
+  for natural_off_token in args["natural_off"]:
+    if not natural_off_token.startswith("not"):
+      args["natural_off_token"] = natural_off_token
+      dataset_string += """
+                "when my ${{p_name}} {device} sensor becomes not {natural_off_token}",
+                "when my ${{p_name}} {device} sensor turns not {natural_off_token}",
+                "when my ${{p_name}} {device} sensor changes to not {natural_off_token}",
+                "if my ${{p_name}} {device} sensor becomes not {natural_off_token}",
+                "if my ${{p_name}} {device} sensor turns not {natural_off_token}",
+                "if my ${{p_name}} {device} sensor changes to not {natural_off_token}",""".format(**args)
+
+  dataset_string = dataset_string[:-1] + """]];""".format(**args)
+
+  dataset_string += """
+
   stream :=  edge( @io.home-assistant.{device}-binary-sensor.state()) on (state == enum({off}))""".format(**args)
 
   for i, natural_off_token in enumerate(args["natural_off"]):
@@ -273,7 +369,7 @@ for device, states in supported_device_classes.items():
                 "if my {device} sensor changes to {natural_off_token}",""".format(**args)
 
   for natural_on_token in args["natural_on"]:
-    if not natural_on_token.startswith("not"):
+    if not "not " + natural_on_token in args["natural_off"]:
       args["natural_on_token"] = natural_on_token
       dataset_string += """
                 "when my {device} sensor becomes not {natural_on_token}",
@@ -283,8 +379,44 @@ for device, states in supported_device_classes.items():
                 "if my {device} sensor turns not {natural_on_token}",
                 "if my {device} sensor changes to not {natural_on_token}",""".format(**args)
 
+  dataset_string = dataset_string[:-1] + """]];""".format(**args)
+
+  dataset_string += """
+
+  stream (p_name : String) :=  edge( @io.home-assistant.{device}-binary-sensor(name=p_name).state()) on (state == enum({off}))""".format(**args)
+
+  for i, natural_off_token in enumerate(args["natural_off"]):
+    args["natural_off_token"] = natural_off_token
+    if i == 0:
+      dataset_string += """
+  #_[utterances="when my ${{p_name}} {device} sensor becomes {natural_off_token}",
+                "when my ${{p_name}} {device} sensor turns {natural_off_token}",
+                "when my ${{p_name}} {device} sensor changes to {natural_off_token}",
+                "if my ${{p_name}} {device} sensor becomes {natural_off_token}",
+                "if my ${{p_name}} {device} sensor turns {natural_off_token}",
+                "if my ${{p_name}} {device} sensor changes to {natural_off_token}",""".format(**args)
+    else:
+      dataset_string += """
+                "when my ${{p_name}} {device} sensor becomes {natural_off_token}",
+                "when my ${{p_name}} {device} sensor turns {natural_off_token}",
+                "when my ${{p_name}} {device} sensor changes to {natural_off_token}",
+                "if my ${{p_name}} {device} sensor becomes {natural_off_token}",
+                "if my ${{p_name}} {device} sensor turns {natural_off_token}",
+                "if my ${{p_name}} {device} sensor changes to {natural_off_token}",""".format(**args)
+
+  for natural_on_token in args["natural_on"]:
+    if not "not " + natural_on_token in args["natural_off"]:
+      args["natural_on_token"] = natural_on_token
+      dataset_string += """
+                "when my ${{p_name}} {device} sensor becomes not {natural_on_token}",
+                "when my ${{p_name}} {device} sensor turns not {natural_on_token}",
+                "when my ${{p_name}} {device} sensor changes to not {natural_on_token}",
+                "if my ${{p_name}} {device} sensor becomes not {natural_on_token}",
+                "if my ${{p_name}} {device} sensor turns not {natural_on_token}",
+                "if my ${{p_name}} {device} sensor changes to not {natural_on_token}",""".format(**args)
+
   dataset_string = dataset_string[:-1] + """]];
 }"""
 
-  with open("{device}-binary-sensor/dataset.tt".format(**args), "w") as file:
+  with open("../io.home-assistant.{device}-binary-sensor/dataset.tt".format(**args), "w") as file:
     file.write(dataset_string)

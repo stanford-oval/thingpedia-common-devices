@@ -1,0 +1,117 @@
+dataset @io.home-assistant.plug-binary-sensor {
+  program := now => @io.home-assistant.plug-binary-sensor.state() => notify
+  #_[utterances="what is the state of my plug sensor?",
+                "what is my plug sensor showing?",
+                "what does my plug sensor say?",
+                "is my plug sensor plugged?",
+                "check if my plug sensor is plugged",
+                "is my plug sensor unplugged?",
+                "check if my plug sensor is unplugged",
+                "check if my plug sensor is plugged or unplugged"]];
+
+  program (p_name : String) := now => @io.home-assistant.plug-binary-sensor(name=p_name).state() => notify
+  #_[utterances="what is the state of my ${p_name} plug sensor?",
+                "what is my ${p_name} plug sensor showing?",
+                "what does my ${p_name} plug sensor say?",
+                "is my ${p_name} plug sensor plugged?",
+                "check if my ${p_name} plug sensor is plugged",
+                "is my ${p_name} plug sensor unplugged?",
+                "check if my ${p_name} plug sensor is unplugged",
+                "check if my ${p_name} plug sensor is plugged or unplugged"]];
+
+  query := @io.home-assistant.plug-binary-sensor.state()
+  #_[utterances="the state of my plug sensor",
+                "if my plug sensor is plugged or unplugged",
+                "whether my plug sensor is plugged or unplugged"]];
+
+  query (p_name : String) := @io.home-assistant.plug-binary-sensor(name=p_name).state()
+  #_[utterances="the state of my ${p_name} plug sensor",
+                "if my ${p_name} plug sensor is plugged or unplugged",
+                "whether my ${p_name} plug sensor is plugged or unplugged"]];
+
+  stream := monitor @plug-binary-sensor.state()
+  #_[utterances=["when the state of my plug sensor changes",
+                 "when my plug sensor changes state",
+                 "when my plug sensor changes"]];
+
+  stream (p_name : String) := monitor @plug-binary-sensor(name=p_name).state()
+  #_[utterances=["when the state of my ${p_name} plug sensor changes",
+                 "when my ${p_name} plug sensor changes state",
+                 "when my ${p_name} plug sensor changes"]];
+
+  stream (p_state : Enum(plugged, unplugged)) := edge( @io.home-assistant.plug-binary-sensor.state()) on (state == p_state)
+  #_[utterances="when my plug sensor becomes ${p_state}",
+                "when my plug sensor is ${p_state}",
+                "when my plug sensor turns ${p_state}",
+                "when my plug sensor changes to ${p_state}",
+                "if my plug sensor becomes ${p_state}",
+                "if my plug sensor is ${p_state}",
+                "if my plug sensor turns ${p_state}",
+                "if my plug sensor changes to ${p_state}"]];
+
+  stream (p_name : String, p_state : Enum(plugged, unplugged)) := edge( @io.home-assistant.plug-binary-sensor(name=p_name).state()) on (state == p_state)
+  #_[utterances="when my ${p_name} plug sensor becomes ${p_state}",
+                "when my ${p_name} plug sensor is ${p_state}",
+                "when my ${p_name} plug sensor turns ${p_state}",
+                "when my ${p_name} plug sensor changes to ${p_state}",
+                "if my ${p_name} plug sensor becomes ${p_state}",
+                "if my ${p_name} plug sensor is ${p_state}",
+                "if my ${p_name} plug sensor turns ${p_state}",
+                "if my ${p_name} plug sensor changes to ${p_state}"]];
+
+  stream :=  edge( @io.home-assistant.plug-binary-sensor.state()) on (state == enum(plugged))
+  #_[utterances="when my plug sensor becomes plugged",
+                "when my plug sensor turns plugged",
+                "when my plug sensor changes to plugged",
+                "if my plug sensor becomes plugged",
+                "if my plug sensor turns plugged",
+                "if my plug sensor changes to plugged",
+                "when my plug sensor becomes not unplugged",
+                "when my plug sensor turns not unplugged",
+                "when my plug sensor changes to not unplugged",
+                "if my plug sensor becomes not unplugged",
+                "if my plug sensor turns not unplugged",
+                "if my plug sensor changes to not unplugged"]];
+
+  stream (p_name : String) :=  edge( @io.home-assistant.plug-binary-sensor(name=p_name).state()) on (state == enum(plugged))
+  #_[utterances="when my ${p_name} plug sensor becomes plugged",
+                "when my ${p_name} plug sensor turns plugged",
+                "when my ${p_name} plug sensor changes to plugged",
+                "if my ${p_name} plug sensor becomes plugged",
+                "if my ${p_name} plug sensor turns plugged",
+                "if my ${p_name} plug sensor changes to plugged",
+                "when my ${p_name} plug sensor becomes not unplugged",
+                "when my ${p_name} plug sensor turns not unplugged",
+                "when my ${p_name} plug sensor changes to not unplugged",
+                "if my ${p_name} plug sensor becomes not unplugged",
+                "if my ${p_name} plug sensor turns not unplugged",
+                "if my ${p_name} plug sensor changes to not unplugged"]];
+
+  stream :=  edge( @io.home-assistant.plug-binary-sensor.state()) on (state == enum(unplugged))
+  #_[utterances="when my plug sensor becomes unplugged",
+                "when my plug sensor turns unplugged",
+                "when my plug sensor changes to unplugged",
+                "if my plug sensor becomes unplugged",
+                "if my plug sensor turns unplugged",
+                "if my plug sensor changes to unplugged",
+                "when my plug sensor becomes not plugged",
+                "when my plug sensor turns not plugged",
+                "when my plug sensor changes to not plugged",
+                "if my plug sensor becomes not plugged",
+                "if my plug sensor turns not plugged",
+                "if my plug sensor changes to not plugged"]];
+
+  stream (p_name : String) :=  edge( @io.home-assistant.plug-binary-sensor(name=p_name).state()) on (state == enum(unplugged))
+  #_[utterances="when my ${p_name} plug sensor becomes unplugged",
+                "when my ${p_name} plug sensor turns unplugged",
+                "when my ${p_name} plug sensor changes to unplugged",
+                "if my ${p_name} plug sensor becomes unplugged",
+                "if my ${p_name} plug sensor turns unplugged",
+                "if my ${p_name} plug sensor changes to unplugged",
+                "when my ${p_name} plug sensor becomes not plugged",
+                "when my ${p_name} plug sensor turns not plugged",
+                "when my ${p_name} plug sensor changes to not plugged",
+                "if my ${p_name} plug sensor becomes not plugged",
+                "if my ${p_name} plug sensor turns not plugged",
+                "if my ${p_name} plug sensor changes to not plugged"]];
+}

@@ -1,0 +1,117 @@
+dataset @io.home-assistant.door-binary-sensor {
+  program := now => @io.home-assistant.door-binary-sensor.state() => notify
+  #_[utterances="what is the state of my door sensor?",
+                "what is my door sensor showing?",
+                "what does my door sensor say?",
+                "is my door sensor open?",
+                "check if my door sensor is open",
+                "is my door sensor closed?",
+                "check if my door sensor is closed",
+                "check if my door sensor is open or closed"]];
+
+  program (p_name : String) := now => @io.home-assistant.door-binary-sensor(name=p_name).state() => notify
+  #_[utterances="what is the state of my ${p_name} door sensor?",
+                "what is my ${p_name} door sensor showing?",
+                "what does my ${p_name} door sensor say?",
+                "is my ${p_name} door sensor open?",
+                "check if my ${p_name} door sensor is open",
+                "is my ${p_name} door sensor closed?",
+                "check if my ${p_name} door sensor is closed",
+                "check if my ${p_name} door sensor is open or closed"]];
+
+  query := @io.home-assistant.door-binary-sensor.state()
+  #_[utterances="the state of my door sensor",
+                "if my door sensor is open or closed",
+                "whether my door sensor is open or closed"]];
+
+  query (p_name : String) := @io.home-assistant.door-binary-sensor(name=p_name).state()
+  #_[utterances="the state of my ${p_name} door sensor",
+                "if my ${p_name} door sensor is open or closed",
+                "whether my ${p_name} door sensor is open or closed"]];
+
+  stream := monitor @door-binary-sensor.state()
+  #_[utterances=["when the state of my door sensor changes",
+                 "when my door sensor changes state",
+                 "when my door sensor changes"]];
+
+  stream (p_name : String) := monitor @door-binary-sensor(name=p_name).state()
+  #_[utterances=["when the state of my ${p_name} door sensor changes",
+                 "when my ${p_name} door sensor changes state",
+                 "when my ${p_name} door sensor changes"]];
+
+  stream (p_state : Enum(open, closed)) := edge( @io.home-assistant.door-binary-sensor.state()) on (state == p_state)
+  #_[utterances="when my door sensor becomes ${p_state}",
+                "when my door sensor is ${p_state}",
+                "when my door sensor turns ${p_state}",
+                "when my door sensor changes to ${p_state}",
+                "if my door sensor becomes ${p_state}",
+                "if my door sensor is ${p_state}",
+                "if my door sensor turns ${p_state}",
+                "if my door sensor changes to ${p_state}"]];
+
+  stream (p_name : String, p_state : Enum(open, closed)) := edge( @io.home-assistant.door-binary-sensor(name=p_name).state()) on (state == p_state)
+  #_[utterances="when my ${p_name} door sensor becomes ${p_state}",
+                "when my ${p_name} door sensor is ${p_state}",
+                "when my ${p_name} door sensor turns ${p_state}",
+                "when my ${p_name} door sensor changes to ${p_state}",
+                "if my ${p_name} door sensor becomes ${p_state}",
+                "if my ${p_name} door sensor is ${p_state}",
+                "if my ${p_name} door sensor turns ${p_state}",
+                "if my ${p_name} door sensor changes to ${p_state}"]];
+
+  stream :=  edge( @io.home-assistant.door-binary-sensor.state()) on (state == enum(open))
+  #_[utterances="when my door sensor becomes open",
+                "when my door sensor turns open",
+                "when my door sensor changes to open",
+                "if my door sensor becomes open",
+                "if my door sensor turns open",
+                "if my door sensor changes to open",
+                "when my door sensor becomes not closed",
+                "when my door sensor turns not closed",
+                "when my door sensor changes to not closed",
+                "if my door sensor becomes not closed",
+                "if my door sensor turns not closed",
+                "if my door sensor changes to not closed"]];
+
+  stream (p_name : String) :=  edge( @io.home-assistant.door-binary-sensor(name=p_name).state()) on (state == enum(open))
+  #_[utterances="when my ${p_name} door sensor becomes open",
+                "when my ${p_name} door sensor turns open",
+                "when my ${p_name} door sensor changes to open",
+                "if my ${p_name} door sensor becomes open",
+                "if my ${p_name} door sensor turns open",
+                "if my ${p_name} door sensor changes to open",
+                "when my ${p_name} door sensor becomes not closed",
+                "when my ${p_name} door sensor turns not closed",
+                "when my ${p_name} door sensor changes to not closed",
+                "if my ${p_name} door sensor becomes not closed",
+                "if my ${p_name} door sensor turns not closed",
+                "if my ${p_name} door sensor changes to not closed"]];
+
+  stream :=  edge( @io.home-assistant.door-binary-sensor.state()) on (state == enum(closed))
+  #_[utterances="when my door sensor becomes closed",
+                "when my door sensor turns closed",
+                "when my door sensor changes to closed",
+                "if my door sensor becomes closed",
+                "if my door sensor turns closed",
+                "if my door sensor changes to closed",
+                "when my door sensor becomes not open",
+                "when my door sensor turns not open",
+                "when my door sensor changes to not open",
+                "if my door sensor becomes not open",
+                "if my door sensor turns not open",
+                "if my door sensor changes to not open"]];
+
+  stream (p_name : String) :=  edge( @io.home-assistant.door-binary-sensor(name=p_name).state()) on (state == enum(closed))
+  #_[utterances="when my ${p_name} door sensor becomes closed",
+                "when my ${p_name} door sensor turns closed",
+                "when my ${p_name} door sensor changes to closed",
+                "if my ${p_name} door sensor becomes closed",
+                "if my ${p_name} door sensor turns closed",
+                "if my ${p_name} door sensor changes to closed",
+                "when my ${p_name} door sensor becomes not open",
+                "when my ${p_name} door sensor turns not open",
+                "when my ${p_name} door sensor changes to not open",
+                "if my ${p_name} door sensor becomes not open",
+                "if my ${p_name} door sensor turns not open",
+                "if my ${p_name} door sensor changes to not open"]];
+}

@@ -1,0 +1,117 @@
+dataset @io.home-assistant.opening-binary-sensor {
+  program := now => @io.home-assistant.opening-binary-sensor.state() => notify
+  #_[utterances="what is the state of my opening sensor?",
+                "what is my opening sensor showing?",
+                "what does my opening sensor say?",
+                "is my opening sensor open?",
+                "check if my opening sensor is open",
+                "is my opening sensor closed?",
+                "check if my opening sensor is closed",
+                "check if my opening sensor is open or closed"]];
+
+  program (p_name : String) := now => @io.home-assistant.opening-binary-sensor(name=p_name).state() => notify
+  #_[utterances="what is the state of my ${p_name} opening sensor?",
+                "what is my ${p_name} opening sensor showing?",
+                "what does my ${p_name} opening sensor say?",
+                "is my ${p_name} opening sensor open?",
+                "check if my ${p_name} opening sensor is open",
+                "is my ${p_name} opening sensor closed?",
+                "check if my ${p_name} opening sensor is closed",
+                "check if my ${p_name} opening sensor is open or closed"]];
+
+  query := @io.home-assistant.opening-binary-sensor.state()
+  #_[utterances="the state of my opening sensor",
+                "if my opening sensor is open or closed",
+                "whether my opening sensor is open or closed"]];
+
+  query (p_name : String) := @io.home-assistant.opening-binary-sensor(name=p_name).state()
+  #_[utterances="the state of my ${p_name} opening sensor",
+                "if my ${p_name} opening sensor is open or closed",
+                "whether my ${p_name} opening sensor is open or closed"]];
+
+  stream := monitor @opening-binary-sensor.state()
+  #_[utterances=["when the state of my opening sensor changes",
+                 "when my opening sensor changes state",
+                 "when my opening sensor changes"]];
+
+  stream (p_name : String) := monitor @opening-binary-sensor(name=p_name).state()
+  #_[utterances=["when the state of my ${p_name} opening sensor changes",
+                 "when my ${p_name} opening sensor changes state",
+                 "when my ${p_name} opening sensor changes"]];
+
+  stream (p_state : Enum(open, closed)) := edge( @io.home-assistant.opening-binary-sensor.state()) on (state == p_state)
+  #_[utterances="when my opening sensor becomes ${p_state}",
+                "when my opening sensor is ${p_state}",
+                "when my opening sensor turns ${p_state}",
+                "when my opening sensor changes to ${p_state}",
+                "if my opening sensor becomes ${p_state}",
+                "if my opening sensor is ${p_state}",
+                "if my opening sensor turns ${p_state}",
+                "if my opening sensor changes to ${p_state}"]];
+
+  stream (p_name : String, p_state : Enum(open, closed)) := edge( @io.home-assistant.opening-binary-sensor(name=p_name).state()) on (state == p_state)
+  #_[utterances="when my ${p_name} opening sensor becomes ${p_state}",
+                "when my ${p_name} opening sensor is ${p_state}",
+                "when my ${p_name} opening sensor turns ${p_state}",
+                "when my ${p_name} opening sensor changes to ${p_state}",
+                "if my ${p_name} opening sensor becomes ${p_state}",
+                "if my ${p_name} opening sensor is ${p_state}",
+                "if my ${p_name} opening sensor turns ${p_state}",
+                "if my ${p_name} opening sensor changes to ${p_state}"]];
+
+  stream :=  edge( @io.home-assistant.opening-binary-sensor.state()) on (state == enum(open))
+  #_[utterances="when my opening sensor becomes open",
+                "when my opening sensor turns open",
+                "when my opening sensor changes to open",
+                "if my opening sensor becomes open",
+                "if my opening sensor turns open",
+                "if my opening sensor changes to open",
+                "when my opening sensor becomes not closed",
+                "when my opening sensor turns not closed",
+                "when my opening sensor changes to not closed",
+                "if my opening sensor becomes not closed",
+                "if my opening sensor turns not closed",
+                "if my opening sensor changes to not closed"]];
+
+  stream (p_name : String) :=  edge( @io.home-assistant.opening-binary-sensor(name=p_name).state()) on (state == enum(open))
+  #_[utterances="when my ${p_name} opening sensor becomes open",
+                "when my ${p_name} opening sensor turns open",
+                "when my ${p_name} opening sensor changes to open",
+                "if my ${p_name} opening sensor becomes open",
+                "if my ${p_name} opening sensor turns open",
+                "if my ${p_name} opening sensor changes to open",
+                "when my ${p_name} opening sensor becomes not closed",
+                "when my ${p_name} opening sensor turns not closed",
+                "when my ${p_name} opening sensor changes to not closed",
+                "if my ${p_name} opening sensor becomes not closed",
+                "if my ${p_name} opening sensor turns not closed",
+                "if my ${p_name} opening sensor changes to not closed"]];
+
+  stream :=  edge( @io.home-assistant.opening-binary-sensor.state()) on (state == enum(closed))
+  #_[utterances="when my opening sensor becomes closed",
+                "when my opening sensor turns closed",
+                "when my opening sensor changes to closed",
+                "if my opening sensor becomes closed",
+                "if my opening sensor turns closed",
+                "if my opening sensor changes to closed",
+                "when my opening sensor becomes not open",
+                "when my opening sensor turns not open",
+                "when my opening sensor changes to not open",
+                "if my opening sensor becomes not open",
+                "if my opening sensor turns not open",
+                "if my opening sensor changes to not open"]];
+
+  stream (p_name : String) :=  edge( @io.home-assistant.opening-binary-sensor(name=p_name).state()) on (state == enum(closed))
+  #_[utterances="when my ${p_name} opening sensor becomes closed",
+                "when my ${p_name} opening sensor turns closed",
+                "when my ${p_name} opening sensor changes to closed",
+                "if my ${p_name} opening sensor becomes closed",
+                "if my ${p_name} opening sensor turns closed",
+                "if my ${p_name} opening sensor changes to closed",
+                "when my ${p_name} opening sensor becomes not open",
+                "when my ${p_name} opening sensor turns not open",
+                "when my ${p_name} opening sensor changes to not open",
+                "if my ${p_name} opening sensor becomes not open",
+                "if my ${p_name} opening sensor turns not open",
+                "if my ${p_name} opening sensor changes to not open"]];
+}

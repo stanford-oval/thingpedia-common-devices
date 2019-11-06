@@ -1,0 +1,127 @@
+dataset @io.home-assistant.occupancy-binary-sensor {
+  program := now => @io.home-assistant.occupancy-binary-sensor.state() => notify
+  #_[utterances="what is the state of my occupancy sensor?",
+                "what is my occupancy sensor showing?",
+                "what does my occupancy sensor say?",
+                "is my occupancy sensor occupied?",
+                "check if my occupancy sensor is occupied",
+                "is my occupancy sensor not occupied?",
+                "check if my occupancy sensor is not occupied",
+                "is my occupancy sensor empty?",
+                "check if my occupancy sensor is empty",
+                "check if my occupancy sensor is occupied or not occupied",
+                "check if my occupancy sensor is occupied or empty"]];
+
+  program (p_name : String) := now => @io.home-assistant.occupancy-binary-sensor(name=p_name).state() => notify
+  #_[utterances="what is the state of my ${p_name} occupancy sensor?",
+                "what is my ${p_name} occupancy sensor showing?",
+                "what does my ${p_name} occupancy sensor say?",
+                "is my ${p_name} occupancy sensor occupied?",
+                "check if my ${p_name} occupancy sensor is occupied",
+                "is my ${p_name} occupancy sensor not occupied?",
+                "check if my ${p_name} occupancy sensor is not occupied",
+                "is my ${p_name} occupancy sensor empty?",
+                "check if my ${p_name} occupancy sensor is empty",
+                "check if my ${p_name} occupancy sensor is occupied or not occupied",
+                "check if my ${p_name} occupancy sensor is occupied or empty"]];
+
+  query := @io.home-assistant.occupancy-binary-sensor.state()
+  #_[utterances="the state of my occupancy sensor",
+                "if my occupancy sensor is occupied or not occupied",
+                "whether my occupancy sensor is occupied or not occupied",
+                "if my occupancy sensor is occupied or empty",
+                "whether my occupancy sensor is occupied or empty"]];
+
+  query (p_name : String) := @io.home-assistant.occupancy-binary-sensor(name=p_name).state()
+  #_[utterances="the state of my ${p_name} occupancy sensor",
+                "if my ${p_name} occupancy sensor is occupied or not occupied",
+                "whether my ${p_name} occupancy sensor is occupied or not occupied",
+                "if my ${p_name} occupancy sensor is occupied or empty",
+                "whether my ${p_name} occupancy sensor is occupied or empty"]];
+
+  stream := monitor @occupancy-binary-sensor.state()
+  #_[utterances=["when the state of my occupancy sensor changes",
+                 "when my occupancy sensor changes state",
+                 "when my occupancy sensor changes"]];
+
+  stream (p_name : String) := monitor @occupancy-binary-sensor(name=p_name).state()
+  #_[utterances=["when the state of my ${p_name} occupancy sensor changes",
+                 "when my ${p_name} occupancy sensor changes state",
+                 "when my ${p_name} occupancy sensor changes"]];
+
+  stream (p_state : Enum(occupied, not_occupied)) := edge( @io.home-assistant.occupancy-binary-sensor.state()) on (state == p_state)
+  #_[utterances="when my occupancy sensor becomes ${p_state}",
+                "when my occupancy sensor is ${p_state}",
+                "when my occupancy sensor turns ${p_state}",
+                "when my occupancy sensor changes to ${p_state}",
+                "if my occupancy sensor becomes ${p_state}",
+                "if my occupancy sensor is ${p_state}",
+                "if my occupancy sensor turns ${p_state}",
+                "if my occupancy sensor changes to ${p_state}"]];
+
+  stream (p_name : String, p_state : Enum(occupied, not_occupied)) := edge( @io.home-assistant.occupancy-binary-sensor(name=p_name).state()) on (state == p_state)
+  #_[utterances="when my ${p_name} occupancy sensor becomes ${p_state}",
+                "when my ${p_name} occupancy sensor is ${p_state}",
+                "when my ${p_name} occupancy sensor turns ${p_state}",
+                "when my ${p_name} occupancy sensor changes to ${p_state}",
+                "if my ${p_name} occupancy sensor becomes ${p_state}",
+                "if my ${p_name} occupancy sensor is ${p_state}",
+                "if my ${p_name} occupancy sensor turns ${p_state}",
+                "if my ${p_name} occupancy sensor changes to ${p_state}"]];
+
+  stream :=  edge( @io.home-assistant.occupancy-binary-sensor.state()) on (state == enum(occupied))
+  #_[utterances="when my occupancy sensor becomes occupied",
+                "when my occupancy sensor turns occupied",
+                "when my occupancy sensor changes to occupied",
+                "if my occupancy sensor becomes occupied",
+                "if my occupancy sensor turns occupied",
+                "if my occupancy sensor changes to occupied",
+                "when my occupancy sensor becomes not empty",
+                "when my occupancy sensor turns not empty",
+                "when my occupancy sensor changes to not empty",
+                "if my occupancy sensor becomes not empty",
+                "if my occupancy sensor turns not empty",
+                "if my occupancy sensor changes to not empty"]];
+
+  stream (p_name : String) :=  edge( @io.home-assistant.occupancy-binary-sensor(name=p_name).state()) on (state == enum(occupied))
+  #_[utterances="when my ${p_name} occupancy sensor becomes occupied",
+                "when my ${p_name} occupancy sensor turns occupied",
+                "when my ${p_name} occupancy sensor changes to occupied",
+                "if my ${p_name} occupancy sensor becomes occupied",
+                "if my ${p_name} occupancy sensor turns occupied",
+                "if my ${p_name} occupancy sensor changes to occupied",
+                "when my ${p_name} occupancy sensor becomes not empty",
+                "when my ${p_name} occupancy sensor turns not empty",
+                "when my ${p_name} occupancy sensor changes to not empty",
+                "if my ${p_name} occupancy sensor becomes not empty",
+                "if my ${p_name} occupancy sensor turns not empty",
+                "if my ${p_name} occupancy sensor changes to not empty"]];
+
+  stream :=  edge( @io.home-assistant.occupancy-binary-sensor.state()) on (state == enum(not_occupied))
+  #_[utterances="when my occupancy sensor becomes not occupied",
+                "when my occupancy sensor turns not occupied",
+                "when my occupancy sensor changes to not occupied",
+                "if my occupancy sensor becomes not occupied",
+                "if my occupancy sensor turns not occupied",
+                "if my occupancy sensor changes to not occupied",
+                "when my occupancy sensor becomes empty",
+                "when my occupancy sensor turns empty",
+                "when my occupancy sensor changes to empty",
+                "if my occupancy sensor becomes empty",
+                "if my occupancy sensor turns empty",
+                "if my occupancy sensor changes to empty"]];
+
+  stream (p_name : String) :=  edge( @io.home-assistant.occupancy-binary-sensor(name=p_name).state()) on (state == enum(not_occupied))
+  #_[utterances="when my ${p_name} occupancy sensor becomes not occupied",
+                "when my ${p_name} occupancy sensor turns not occupied",
+                "when my ${p_name} occupancy sensor changes to not occupied",
+                "if my ${p_name} occupancy sensor becomes not occupied",
+                "if my ${p_name} occupancy sensor turns not occupied",
+                "if my ${p_name} occupancy sensor changes to not occupied",
+                "when my ${p_name} occupancy sensor becomes empty",
+                "when my ${p_name} occupancy sensor turns empty",
+                "when my ${p_name} occupancy sensor changes to empty",
+                "if my ${p_name} occupancy sensor becomes empty",
+                "if my ${p_name} occupancy sensor turns empty",
+                "if my ${p_name} occupancy sensor changes to empty"]];
+}
