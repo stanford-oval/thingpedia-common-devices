@@ -1,6 +1,7 @@
 dataset @io.home-assistant.binary-sensor.safety {
+
   program := now => @io.home-assistant.binary-sensor.safety.state() => notify
-  #_[utterances="what is the state of my safety sensor?",
+  #_[utterances=["what is the state of my safety sensor?",
                 "what is my safety sensor showing?",
                 "what does my safety sensor say?",
                 "is my safety sensor unsafe?",
@@ -9,38 +10,18 @@ dataset @io.home-assistant.binary-sensor.safety {
                 "check if my safety sensor is safe",
                 "check if my safety sensor is unsafe or safe"]];
 
-  program (p_name : String) := now => @io.home-assistant.binary-sensor.safety(name=p_name).state() => notify
-  #_[utterances="what is the state of my ${p_name} safety sensor?",
-                "what is my ${p_name} safety sensor showing?",
-                "what does my ${p_name} safety sensor say?",
-                "is my ${p_name} safety sensor unsafe?",
-                "check if my ${p_name} safety sensor is unsafe",
-                "is my ${p_name} safety sensor safe?",
-                "check if my ${p_name} safety sensor is safe",
-                "check if my ${p_name} safety sensor is unsafe or safe"]];
-
   query := @io.home-assistant.binary-sensor.safety.state()
-  #_[utterances="the state of my safety sensor",
+  #_[utterances=["the state of my safety sensor",
                 "if my safety sensor is unsafe or safe",
                 "whether my safety sensor is unsafe or safe"]];
 
-  query (p_name : String) := @io.home-assistant.binary-sensor.safety(name=p_name).state()
-  #_[utterances="the state of my ${p_name} safety sensor",
-                "if my ${p_name} safety sensor is unsafe or safe",
-                "whether my ${p_name} safety sensor is unsafe or safe"]];
-
   stream := monitor @io.home-assistant.binary-sensor.safety.state()
-  #_[utterances=["when the state of my safety sensor changes",
+  #_[utterances=[["when the state of my safety sensor changes",
                  "when my safety sensor changes state",
                  "when my safety sensor changes"]];
 
-  stream (p_name : String) := monitor @io.home-assistant.binary-sensor.safety(name=p_name).state()
-  #_[utterances=["when the state of my ${p_name} safety sensor changes",
-                 "when my ${p_name} safety sensor changes state",
-                 "when my ${p_name} safety sensor changes"]];
-
   stream (p_state : Enum(unsafe, safe)) := edge( @io.home-assistant.binary-sensor.safety.state()) on (state == p_state)
-  #_[utterances="when my safety sensor becomes ${p_state}",
+  #_[utterances=["when my safety sensor becomes ${p_state}",
                 "when my safety sensor is ${p_state}",
                 "when my safety sensor turns ${p_state}",
                 "when my safety sensor changes to ${p_state}",
@@ -49,18 +30,8 @@ dataset @io.home-assistant.binary-sensor.safety {
                 "if my safety sensor turns ${p_state}",
                 "if my safety sensor changes to ${p_state}"]];
 
-  stream (p_name : String, p_state : Enum(unsafe, safe)) := edge( @io.home-assistant.binary-sensor.safety(name=p_name).state()) on (state == p_state)
-  #_[utterances="when my ${p_name} safety sensor becomes ${p_state}",
-                "when my ${p_name} safety sensor is ${p_state}",
-                "when my ${p_name} safety sensor turns ${p_state}",
-                "when my ${p_name} safety sensor changes to ${p_state}",
-                "if my ${p_name} safety sensor becomes ${p_state}",
-                "if my ${p_name} safety sensor is ${p_state}",
-                "if my ${p_name} safety sensor turns ${p_state}",
-                "if my ${p_name} safety sensor changes to ${p_state}"]];
-
-  stream :=  edge( @io.home-assistant.binary-sensor.safety.state()) on (state == enum(unsafe))
-  #_[utterances="when my safety sensor becomes unsafe",
+  stream := edge( @io.home-assistant.binary-sensor.safety.state()) on (state == enum(unsafe))
+  #_[utterances=["when my safety sensor becomes unsafe",
                 "when my safety sensor turns unsafe",
                 "when my safety sensor changes to unsafe",
                 "if my safety sensor becomes unsafe",
@@ -73,22 +44,8 @@ dataset @io.home-assistant.binary-sensor.safety {
                 "if my safety sensor turns not safe",
                 "if my safety sensor changes to not safe"]];
 
-  stream (p_name : String) :=  edge( @io.home-assistant.binary-sensor.safety(name=p_name).state()) on (state == enum(unsafe))
-  #_[utterances="when my ${p_name} safety sensor becomes unsafe",
-                "when my ${p_name} safety sensor turns unsafe",
-                "when my ${p_name} safety sensor changes to unsafe",
-                "if my ${p_name} safety sensor becomes unsafe",
-                "if my ${p_name} safety sensor turns unsafe",
-                "if my ${p_name} safety sensor changes to unsafe",
-                "when my ${p_name} safety sensor becomes not safe",
-                "when my ${p_name} safety sensor turns not safe",
-                "when my ${p_name} safety sensor changes to not safe",
-                "if my ${p_name} safety sensor becomes not safe",
-                "if my ${p_name} safety sensor turns not safe",
-                "if my ${p_name} safety sensor changes to not safe"]];
-
-  stream :=  edge( @io.home-assistant.binary-sensor.safety.state()) on (state == enum(safe))
-  #_[utterances="when my safety sensor becomes safe",
+  stream := edge( @io.home-assistant.binary-sensor.safety.state()) on (state == enum(safe))
+  #_[utterances=["when my safety sensor becomes safe",
                 "when my safety sensor turns safe",
                 "when my safety sensor changes to safe",
                 "if my safety sensor becomes safe",
@@ -101,8 +58,52 @@ dataset @io.home-assistant.binary-sensor.safety {
                 "if my safety sensor turns not unsafe",
                 "if my safety sensor changes to not unsafe"]];
 
-  stream (p_name : String) :=  edge( @io.home-assistant.binary-sensor.safety(name=p_name).state()) on (state == enum(safe))
-  #_[utterances="when my ${p_name} safety sensor becomes safe",
+  program (p_name : String) := now => @io.home-assistant.binary-sensor.safety(name=p_name).state() => notify
+  #_[utterances=["what is the state of my ${p_name} safety sensor?",
+                "what is my ${p_name} safety sensor showing?",
+                "what does my ${p_name} safety sensor say?",
+                "is my ${p_name} safety sensor unsafe?",
+                "check if my ${p_name} safety sensor is unsafe",
+                "is my ${p_name} safety sensor safe?",
+                "check if my ${p_name} safety sensor is safe",
+                "check if my ${p_name} safety sensor is unsafe or safe"]];
+
+  query (p_name : String) := @io.home-assistant.binary-sensor.safety(name=p_name).state()
+  #_[utterances=["the state of my ${p_name} safety sensor",
+                "if my ${p_name} safety sensor is unsafe or safe",
+                "whether my ${p_name} safety sensor is unsafe or safe"]];
+
+  stream (p_name : String) := monitor @io.home-assistant.binary-sensor.safety(name=p_name).state()
+  #_[utterances=[["when the state of my ${p_name} safety sensor changes",
+                 "when my ${p_name} safety sensor changes state",
+                 "when my ${p_name} safety sensor changes"]];
+
+  stream (p_name : String, p_state : Enum(unsafe, safe)) := edge( @io.home-assistant.binary-sensor.safety(name=p_name).state()) on (state == p_state)
+  #_[utterances=["when my ${p_name} safety sensor becomes ${p_state}",
+                "when my ${p_name} safety sensor is ${p_state}",
+                "when my ${p_name} safety sensor turns ${p_state}",
+                "when my ${p_name} safety sensor changes to ${p_state}",
+                "if my ${p_name} safety sensor becomes ${p_state}",
+                "if my ${p_name} safety sensor is ${p_state}",
+                "if my ${p_name} safety sensor turns ${p_state}",
+                "if my ${p_name} safety sensor changes to ${p_state}"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.binary-sensor.safety(name=p_name).state()) on (state == enum(unsafe))
+  #_[utterances=["when my ${p_name} safety sensor becomes unsafe",
+                "when my ${p_name} safety sensor turns unsafe",
+                "when my ${p_name} safety sensor changes to unsafe",
+                "if my ${p_name} safety sensor becomes unsafe",
+                "if my ${p_name} safety sensor turns unsafe",
+                "if my ${p_name} safety sensor changes to unsafe",
+                "when my ${p_name} safety sensor becomes not safe",
+                "when my ${p_name} safety sensor turns not safe",
+                "when my ${p_name} safety sensor changes to not safe",
+                "if my ${p_name} safety sensor becomes not safe",
+                "if my ${p_name} safety sensor turns not safe",
+                "if my ${p_name} safety sensor changes to not safe"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.binary-sensor.safety(name=p_name).state()) on (state == enum(safe))
+  #_[utterances=["when my ${p_name} safety sensor becomes safe",
                 "when my ${p_name} safety sensor turns safe",
                 "when my ${p_name} safety sensor changes to safe",
                 "if my ${p_name} safety sensor becomes safe",

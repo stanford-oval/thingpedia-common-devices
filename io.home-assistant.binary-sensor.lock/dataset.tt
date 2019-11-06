@@ -1,6 +1,7 @@
 dataset @io.home-assistant.binary-sensor.lock {
+
   program := now => @io.home-assistant.binary-sensor.lock.state() => notify
-  #_[utterances="what is the state of my lock sensor?",
+  #_[utterances=["what is the state of my lock sensor?",
                 "what is my lock sensor showing?",
                 "what does my lock sensor say?",
                 "is my lock sensor unlocked?",
@@ -16,25 +17,8 @@ dataset @io.home-assistant.binary-sensor.lock {
                 "check if my lock sensor is open or locked",
                 "check if my lock sensor is open or closed"]];
 
-  program (p_name : String) := now => @io.home-assistant.binary-sensor.lock(name=p_name).state() => notify
-  #_[utterances="what is the state of my ${p_name} lock sensor?",
-                "what is my ${p_name} lock sensor showing?",
-                "what does my ${p_name} lock sensor say?",
-                "is my ${p_name} lock sensor unlocked?",
-                "check if my ${p_name} lock sensor is unlocked",
-                "is my ${p_name} lock sensor open?",
-                "check if my ${p_name} lock sensor is open",
-                "is my ${p_name} lock sensor locked?",
-                "check if my ${p_name} lock sensor is locked",
-                "is my ${p_name} lock sensor closed?",
-                "check if my ${p_name} lock sensor is closed",
-                "check if my ${p_name} lock sensor is unlocked or locked",
-                "check if my ${p_name} lock sensor is unlocked or closed",
-                "check if my ${p_name} lock sensor is open or locked",
-                "check if my ${p_name} lock sensor is open or closed"]];
-
   query := @io.home-assistant.binary-sensor.lock.state()
-  #_[utterances="the state of my lock sensor",
+  #_[utterances=["the state of my lock sensor",
                 "if my lock sensor is unlocked or locked",
                 "whether my lock sensor is unlocked or locked",
                 "if my lock sensor is unlocked or closed",
@@ -44,29 +28,13 @@ dataset @io.home-assistant.binary-sensor.lock {
                 "if my lock sensor is open or closed",
                 "whether my lock sensor is open or closed"]];
 
-  query (p_name : String) := @io.home-assistant.binary-sensor.lock(name=p_name).state()
-  #_[utterances="the state of my ${p_name} lock sensor",
-                "if my ${p_name} lock sensor is unlocked or locked",
-                "whether my ${p_name} lock sensor is unlocked or locked",
-                "if my ${p_name} lock sensor is unlocked or closed",
-                "whether my ${p_name} lock sensor is unlocked or closed",
-                "if my ${p_name} lock sensor is open or locked",
-                "whether my ${p_name} lock sensor is open or locked",
-                "if my ${p_name} lock sensor is open or closed",
-                "whether my ${p_name} lock sensor is open or closed"]];
-
   stream := monitor @io.home-assistant.binary-sensor.lock.state()
-  #_[utterances=["when the state of my lock sensor changes",
+  #_[utterances=[["when the state of my lock sensor changes",
                  "when my lock sensor changes state",
                  "when my lock sensor changes"]];
 
-  stream (p_name : String) := monitor @io.home-assistant.binary-sensor.lock(name=p_name).state()
-  #_[utterances=["when the state of my ${p_name} lock sensor changes",
-                 "when my ${p_name} lock sensor changes state",
-                 "when my ${p_name} lock sensor changes"]];
-
   stream (p_state : Enum(unlocked, locked)) := edge( @io.home-assistant.binary-sensor.lock.state()) on (state == p_state)
-  #_[utterances="when my lock sensor becomes ${p_state}",
+  #_[utterances=["when my lock sensor becomes ${p_state}",
                 "when my lock sensor is ${p_state}",
                 "when my lock sensor turns ${p_state}",
                 "when my lock sensor changes to ${p_state}",
@@ -75,18 +43,8 @@ dataset @io.home-assistant.binary-sensor.lock {
                 "if my lock sensor turns ${p_state}",
                 "if my lock sensor changes to ${p_state}"]];
 
-  stream (p_name : String, p_state : Enum(unlocked, locked)) := edge( @io.home-assistant.binary-sensor.lock(name=p_name).state()) on (state == p_state)
-  #_[utterances="when my ${p_name} lock sensor becomes ${p_state}",
-                "when my ${p_name} lock sensor is ${p_state}",
-                "when my ${p_name} lock sensor turns ${p_state}",
-                "when my ${p_name} lock sensor changes to ${p_state}",
-                "if my ${p_name} lock sensor becomes ${p_state}",
-                "if my ${p_name} lock sensor is ${p_state}",
-                "if my ${p_name} lock sensor turns ${p_state}",
-                "if my ${p_name} lock sensor changes to ${p_state}"]];
-
-  stream :=  edge( @io.home-assistant.binary-sensor.lock.state()) on (state == enum(unlocked))
-  #_[utterances="when my lock sensor becomes unlocked",
+  stream := edge( @io.home-assistant.binary-sensor.lock.state()) on (state == enum(unlocked))
+  #_[utterances=["when my lock sensor becomes unlocked",
                 "when my lock sensor turns unlocked",
                 "when my lock sensor changes to unlocked",
                 "if my lock sensor becomes unlocked",
@@ -111,34 +69,8 @@ dataset @io.home-assistant.binary-sensor.lock {
                 "if my lock sensor turns not closed",
                 "if my lock sensor changes to not closed"]];
 
-  stream (p_name : String) :=  edge( @io.home-assistant.binary-sensor.lock(name=p_name).state()) on (state == enum(unlocked))
-  #_[utterances="when my ${p_name} lock sensor becomes unlocked",
-                "when my ${p_name} lock sensor turns unlocked",
-                "when my ${p_name} lock sensor changes to unlocked",
-                "if my ${p_name} lock sensor becomes unlocked",
-                "if my ${p_name} lock sensor turns unlocked",
-                "if my ${p_name} lock sensor changes to unlocked",
-                "when my ${p_name} lock sensor becomes open",
-                "when my ${p_name} lock sensor turns open",
-                "when my ${p_name} lock sensor changes to open",
-                "if my ${p_name} lock sensor becomes open",
-                "if my ${p_name} lock sensor turns open",
-                "if my ${p_name} lock sensor changes to open",
-                "when my ${p_name} lock sensor becomes not locked",
-                "when my ${p_name} lock sensor turns not locked",
-                "when my ${p_name} lock sensor changes to not locked",
-                "if my ${p_name} lock sensor becomes not locked",
-                "if my ${p_name} lock sensor turns not locked",
-                "if my ${p_name} lock sensor changes to not locked",
-                "when my ${p_name} lock sensor becomes not closed",
-                "when my ${p_name} lock sensor turns not closed",
-                "when my ${p_name} lock sensor changes to not closed",
-                "if my ${p_name} lock sensor becomes not closed",
-                "if my ${p_name} lock sensor turns not closed",
-                "if my ${p_name} lock sensor changes to not closed"]];
-
-  stream :=  edge( @io.home-assistant.binary-sensor.lock.state()) on (state == enum(locked))
-  #_[utterances="when my lock sensor becomes locked",
+  stream := edge( @io.home-assistant.binary-sensor.lock.state()) on (state == enum(locked))
+  #_[utterances=["when my lock sensor becomes locked",
                 "when my lock sensor turns locked",
                 "when my lock sensor changes to locked",
                 "if my lock sensor becomes locked",
@@ -163,8 +95,77 @@ dataset @io.home-assistant.binary-sensor.lock {
                 "if my lock sensor turns not open",
                 "if my lock sensor changes to not open"]];
 
-  stream (p_name : String) :=  edge( @io.home-assistant.binary-sensor.lock(name=p_name).state()) on (state == enum(locked))
-  #_[utterances="when my ${p_name} lock sensor becomes locked",
+  program (p_name : String) := now => @io.home-assistant.binary-sensor.lock(name=p_name).state() => notify
+  #_[utterances=["what is the state of my ${p_name} lock sensor?",
+                "what is my ${p_name} lock sensor showing?",
+                "what does my ${p_name} lock sensor say?",
+                "is my ${p_name} lock sensor unlocked?",
+                "check if my ${p_name} lock sensor is unlocked",
+                "is my ${p_name} lock sensor open?",
+                "check if my ${p_name} lock sensor is open",
+                "is my ${p_name} lock sensor locked?",
+                "check if my ${p_name} lock sensor is locked",
+                "is my ${p_name} lock sensor closed?",
+                "check if my ${p_name} lock sensor is closed",
+                "check if my ${p_name} lock sensor is unlocked or locked",
+                "check if my ${p_name} lock sensor is unlocked or closed",
+                "check if my ${p_name} lock sensor is open or locked",
+                "check if my ${p_name} lock sensor is open or closed"]];
+
+  query (p_name : String) := @io.home-assistant.binary-sensor.lock(name=p_name).state()
+  #_[utterances=["the state of my ${p_name} lock sensor",
+                "if my ${p_name} lock sensor is unlocked or locked",
+                "whether my ${p_name} lock sensor is unlocked or locked",
+                "if my ${p_name} lock sensor is unlocked or closed",
+                "whether my ${p_name} lock sensor is unlocked or closed",
+                "if my ${p_name} lock sensor is open or locked",
+                "whether my ${p_name} lock sensor is open or locked",
+                "if my ${p_name} lock sensor is open or closed",
+                "whether my ${p_name} lock sensor is open or closed"]];
+
+  stream (p_name : String) := monitor @io.home-assistant.binary-sensor.lock(name=p_name).state()
+  #_[utterances=[["when the state of my ${p_name} lock sensor changes",
+                 "when my ${p_name} lock sensor changes state",
+                 "when my ${p_name} lock sensor changes"]];
+
+  stream (p_name : String, p_state : Enum(unlocked, locked)) := edge( @io.home-assistant.binary-sensor.lock(name=p_name).state()) on (state == p_state)
+  #_[utterances=["when my ${p_name} lock sensor becomes ${p_state}",
+                "when my ${p_name} lock sensor is ${p_state}",
+                "when my ${p_name} lock sensor turns ${p_state}",
+                "when my ${p_name} lock sensor changes to ${p_state}",
+                "if my ${p_name} lock sensor becomes ${p_state}",
+                "if my ${p_name} lock sensor is ${p_state}",
+                "if my ${p_name} lock sensor turns ${p_state}",
+                "if my ${p_name} lock sensor changes to ${p_state}"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.binary-sensor.lock(name=p_name).state()) on (state == enum(unlocked))
+  #_[utterances=["when my ${p_name} lock sensor becomes unlocked",
+                "when my ${p_name} lock sensor turns unlocked",
+                "when my ${p_name} lock sensor changes to unlocked",
+                "if my ${p_name} lock sensor becomes unlocked",
+                "if my ${p_name} lock sensor turns unlocked",
+                "if my ${p_name} lock sensor changes to unlocked",
+                "when my ${p_name} lock sensor becomes open",
+                "when my ${p_name} lock sensor turns open",
+                "when my ${p_name} lock sensor changes to open",
+                "if my ${p_name} lock sensor becomes open",
+                "if my ${p_name} lock sensor turns open",
+                "if my ${p_name} lock sensor changes to open",
+                "when my ${p_name} lock sensor becomes not locked",
+                "when my ${p_name} lock sensor turns not locked",
+                "when my ${p_name} lock sensor changes to not locked",
+                "if my ${p_name} lock sensor becomes not locked",
+                "if my ${p_name} lock sensor turns not locked",
+                "if my ${p_name} lock sensor changes to not locked",
+                "when my ${p_name} lock sensor becomes not closed",
+                "when my ${p_name} lock sensor turns not closed",
+                "when my ${p_name} lock sensor changes to not closed",
+                "if my ${p_name} lock sensor becomes not closed",
+                "if my ${p_name} lock sensor turns not closed",
+                "if my ${p_name} lock sensor changes to not closed"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.binary-sensor.lock(name=p_name).state()) on (state == enum(locked))
+  #_[utterances=["when my ${p_name} lock sensor becomes locked",
                 "when my ${p_name} lock sensor turns locked",
                 "when my ${p_name} lock sensor changes to locked",
                 "if my ${p_name} lock sensor becomes locked",

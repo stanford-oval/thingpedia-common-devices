@@ -1,6 +1,7 @@
 dataset @io.home-assistant.binary-sensor.battery {
+
   program := now => @io.home-assistant.binary-sensor.battery.state() => notify
-  #_[utterances="what is the state of my battery sensor?",
+  #_[utterances=["what is the state of my battery sensor?",
                 "what is my battery sensor showing?",
                 "what does my battery sensor say?",
                 "is my battery sensor low?",
@@ -12,45 +13,20 @@ dataset @io.home-assistant.binary-sensor.battery {
                 "check if my battery sensor is low or normal",
                 "check if my battery sensor is too low or normal"]];
 
-  program (p_name : String) := now => @io.home-assistant.binary-sensor.battery(name=p_name).state() => notify
-  #_[utterances="what is the state of my ${p_name} battery sensor?",
-                "what is my ${p_name} battery sensor showing?",
-                "what does my ${p_name} battery sensor say?",
-                "is my ${p_name} battery sensor low?",
-                "check if my ${p_name} battery sensor is low",
-                "is my ${p_name} battery sensor too low?",
-                "check if my ${p_name} battery sensor is too low",
-                "is my ${p_name} battery sensor normal?",
-                "check if my ${p_name} battery sensor is normal",
-                "check if my ${p_name} battery sensor is low or normal",
-                "check if my ${p_name} battery sensor is too low or normal"]];
-
   query := @io.home-assistant.binary-sensor.battery.state()
-  #_[utterances="the state of my battery sensor",
+  #_[utterances=["the state of my battery sensor",
                 "if my battery sensor is low or normal",
                 "whether my battery sensor is low or normal",
                 "if my battery sensor is too low or normal",
                 "whether my battery sensor is too low or normal"]];
 
-  query (p_name : String) := @io.home-assistant.binary-sensor.battery(name=p_name).state()
-  #_[utterances="the state of my ${p_name} battery sensor",
-                "if my ${p_name} battery sensor is low or normal",
-                "whether my ${p_name} battery sensor is low or normal",
-                "if my ${p_name} battery sensor is too low or normal",
-                "whether my ${p_name} battery sensor is too low or normal"]];
-
   stream := monitor @io.home-assistant.binary-sensor.battery.state()
-  #_[utterances=["when the state of my battery sensor changes",
+  #_[utterances=[["when the state of my battery sensor changes",
                  "when my battery sensor changes state",
                  "when my battery sensor changes"]];
 
-  stream (p_name : String) := monitor @io.home-assistant.binary-sensor.battery(name=p_name).state()
-  #_[utterances=["when the state of my ${p_name} battery sensor changes",
-                 "when my ${p_name} battery sensor changes state",
-                 "when my ${p_name} battery sensor changes"]];
-
   stream (p_state : Enum(low, normal)) := edge( @io.home-assistant.binary-sensor.battery.state()) on (state == p_state)
-  #_[utterances="when my battery sensor becomes ${p_state}",
+  #_[utterances=["when my battery sensor becomes ${p_state}",
                 "when my battery sensor is ${p_state}",
                 "when my battery sensor turns ${p_state}",
                 "when my battery sensor changes to ${p_state}",
@@ -59,18 +35,8 @@ dataset @io.home-assistant.binary-sensor.battery {
                 "if my battery sensor turns ${p_state}",
                 "if my battery sensor changes to ${p_state}"]];
 
-  stream (p_name : String, p_state : Enum(low, normal)) := edge( @io.home-assistant.binary-sensor.battery(name=p_name).state()) on (state == p_state)
-  #_[utterances="when my ${p_name} battery sensor becomes ${p_state}",
-                "when my ${p_name} battery sensor is ${p_state}",
-                "when my ${p_name} battery sensor turns ${p_state}",
-                "when my ${p_name} battery sensor changes to ${p_state}",
-                "if my ${p_name} battery sensor becomes ${p_state}",
-                "if my ${p_name} battery sensor is ${p_state}",
-                "if my ${p_name} battery sensor turns ${p_state}",
-                "if my ${p_name} battery sensor changes to ${p_state}"]];
-
-  stream :=  edge( @io.home-assistant.binary-sensor.battery.state()) on (state == enum(low))
-  #_[utterances="when my battery sensor becomes low",
+  stream := edge( @io.home-assistant.binary-sensor.battery.state()) on (state == enum(low))
+  #_[utterances=["when my battery sensor becomes low",
                 "when my battery sensor turns low",
                 "when my battery sensor changes to low",
                 "if my battery sensor becomes low",
@@ -89,28 +55,8 @@ dataset @io.home-assistant.binary-sensor.battery {
                 "if my battery sensor turns not normal",
                 "if my battery sensor changes to not normal"]];
 
-  stream (p_name : String) :=  edge( @io.home-assistant.binary-sensor.battery(name=p_name).state()) on (state == enum(low))
-  #_[utterances="when my ${p_name} battery sensor becomes low",
-                "when my ${p_name} battery sensor turns low",
-                "when my ${p_name} battery sensor changes to low",
-                "if my ${p_name} battery sensor becomes low",
-                "if my ${p_name} battery sensor turns low",
-                "if my ${p_name} battery sensor changes to low",
-                "when my ${p_name} battery sensor becomes too low",
-                "when my ${p_name} battery sensor turns too low",
-                "when my ${p_name} battery sensor changes to too low",
-                "if my ${p_name} battery sensor becomes too low",
-                "if my ${p_name} battery sensor turns too low",
-                "if my ${p_name} battery sensor changes to too low",
-                "when my ${p_name} battery sensor becomes not normal",
-                "when my ${p_name} battery sensor turns not normal",
-                "when my ${p_name} battery sensor changes to not normal",
-                "if my ${p_name} battery sensor becomes not normal",
-                "if my ${p_name} battery sensor turns not normal",
-                "if my ${p_name} battery sensor changes to not normal"]];
-
-  stream :=  edge( @io.home-assistant.binary-sensor.battery.state()) on (state == enum(normal))
-  #_[utterances="when my battery sensor becomes normal",
+  stream := edge( @io.home-assistant.binary-sensor.battery.state()) on (state == enum(normal))
+  #_[utterances=["when my battery sensor becomes normal",
                 "when my battery sensor turns normal",
                 "when my battery sensor changes to normal",
                 "if my battery sensor becomes normal",
@@ -129,8 +75,63 @@ dataset @io.home-assistant.binary-sensor.battery {
                 "if my battery sensor turns not too low",
                 "if my battery sensor changes to not too low"]];
 
-  stream (p_name : String) :=  edge( @io.home-assistant.binary-sensor.battery(name=p_name).state()) on (state == enum(normal))
-  #_[utterances="when my ${p_name} battery sensor becomes normal",
+  program (p_name : String) := now => @io.home-assistant.binary-sensor.battery(name=p_name).state() => notify
+  #_[utterances=["what is the state of my ${p_name} battery sensor?",
+                "what is my ${p_name} battery sensor showing?",
+                "what does my ${p_name} battery sensor say?",
+                "is my ${p_name} battery sensor low?",
+                "check if my ${p_name} battery sensor is low",
+                "is my ${p_name} battery sensor too low?",
+                "check if my ${p_name} battery sensor is too low",
+                "is my ${p_name} battery sensor normal?",
+                "check if my ${p_name} battery sensor is normal",
+                "check if my ${p_name} battery sensor is low or normal",
+                "check if my ${p_name} battery sensor is too low or normal"]];
+
+  query (p_name : String) := @io.home-assistant.binary-sensor.battery(name=p_name).state()
+  #_[utterances=["the state of my ${p_name} battery sensor",
+                "if my ${p_name} battery sensor is low or normal",
+                "whether my ${p_name} battery sensor is low or normal",
+                "if my ${p_name} battery sensor is too low or normal",
+                "whether my ${p_name} battery sensor is too low or normal"]];
+
+  stream (p_name : String) := monitor @io.home-assistant.binary-sensor.battery(name=p_name).state()
+  #_[utterances=[["when the state of my ${p_name} battery sensor changes",
+                 "when my ${p_name} battery sensor changes state",
+                 "when my ${p_name} battery sensor changes"]];
+
+  stream (p_name : String, p_state : Enum(low, normal)) := edge( @io.home-assistant.binary-sensor.battery(name=p_name).state()) on (state == p_state)
+  #_[utterances=["when my ${p_name} battery sensor becomes ${p_state}",
+                "when my ${p_name} battery sensor is ${p_state}",
+                "when my ${p_name} battery sensor turns ${p_state}",
+                "when my ${p_name} battery sensor changes to ${p_state}",
+                "if my ${p_name} battery sensor becomes ${p_state}",
+                "if my ${p_name} battery sensor is ${p_state}",
+                "if my ${p_name} battery sensor turns ${p_state}",
+                "if my ${p_name} battery sensor changes to ${p_state}"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.binary-sensor.battery(name=p_name).state()) on (state == enum(low))
+  #_[utterances=["when my ${p_name} battery sensor becomes low",
+                "when my ${p_name} battery sensor turns low",
+                "when my ${p_name} battery sensor changes to low",
+                "if my ${p_name} battery sensor becomes low",
+                "if my ${p_name} battery sensor turns low",
+                "if my ${p_name} battery sensor changes to low",
+                "when my ${p_name} battery sensor becomes too low",
+                "when my ${p_name} battery sensor turns too low",
+                "when my ${p_name} battery sensor changes to too low",
+                "if my ${p_name} battery sensor becomes too low",
+                "if my ${p_name} battery sensor turns too low",
+                "if my ${p_name} battery sensor changes to too low",
+                "when my ${p_name} battery sensor becomes not normal",
+                "when my ${p_name} battery sensor turns not normal",
+                "when my ${p_name} battery sensor changes to not normal",
+                "if my ${p_name} battery sensor becomes not normal",
+                "if my ${p_name} battery sensor turns not normal",
+                "if my ${p_name} battery sensor changes to not normal"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.binary-sensor.battery(name=p_name).state()) on (state == enum(normal))
+  #_[utterances=["when my ${p_name} battery sensor becomes normal",
                 "when my ${p_name} battery sensor turns normal",
                 "when my ${p_name} battery sensor changes to normal",
                 "if my ${p_name} battery sensor becomes normal",

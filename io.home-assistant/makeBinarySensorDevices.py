@@ -136,7 +136,7 @@ for device, states in supported_device_classes.items():
   if not os.path.isdir(os.path.join(os.getcwd(), "../{namespace}".format(**args))):
     os.mkdir("../{namespace}".format(**args))
 
-  manifest_string = """abstract class @io.home-assistant.{device}-binary-sensor
+  manifest_string = """abstract class @{namespace}
 #_[thingpedia_name="{device_name} Binary Sensor"]
 #_[thingpedia_description="Interface for Home Assistant's {device_name} Binary Sensor."]
 #[license="CC-0"]
@@ -157,266 +157,147 @@ for device, states in supported_device_classes.items():
   if "natural_off" in states:
     args["natural_off"] = states["natural_off"]
 
-  dataset_string = """dataset @io.home-assistant.{device}-binary-sensor {{
-  program := now => @io.home-assistant.{device}-binary-sensor.state() => notify
-  #_[utterances="what is the state of my {device} sensor?",
-                "what is my {device} sensor showing?",
-                "what does my {device} sensor say?",""".format(**args)
+  dataset_string = """dataset @{namespace} {{""".format(**args)
 
-  for natural_on_token in args["natural_on"]:
-    args["natural_on_token"] = natural_on_token
+  for p_name in [False, True]:
+    args["p_name"] = """${p_name} """ if p_name else ""
+    args["p_name_fill"] = """(name=p_name)""" if p_name else ""
+    args["p_name_init"] = """(p_name : String) """ if p_name else ""
+    args["p_name_init_many"] = """p_name : String, """ if p_name else ""
+  
     dataset_string += """
-                "is my {device} sensor {natural_on_token}?",
-                "check if my {device} sensor is {natural_on_token}",""".format(**args)
 
-  for natural_off_token in args["natural_off"]:
-    args["natural_off_token"] = natural_off_token
+  program {p_name_init}:= now => @{namespace}{p_name_fill}.state() => notify
+  #_[utterances=["what is the state of my {p_name}{device} sensor?",
+                "what is my {p_name}{device} sensor showing?",
+                "what does my {p_name}{device} sensor say?",""".format(**args)
+
+    for natural_on_token in args["natural_on"]:
+      args["natural_on_token"] = natural_on_token
+      dataset_string += """
+                "is my {p_name}{device} sensor {natural_on_token}?",
+                "check if my {p_name}{device} sensor is {natural_on_token}",""".format(**args)
+
+    for natural_off_token in args["natural_off"]:
+      args["natural_off_token"] = natural_off_token
+      dataset_string += """
+                "is my {p_name}{device} sensor {natural_off_token}?",
+                "check if my {p_name}{device} sensor is {natural_off_token}",""".format(**args)
+
+    for natural_on_token in args["natural_on"]:
+      for natural_off_token in args["natural_off"]:
+        args["natural_on_token"] = natural_on_token
+        args["natural_off_token"] = natural_off_token
+        dataset_string += """
+                "check if my {p_name}{device} sensor is {natural_on_token} or {natural_off_token}",""".format(**args)
+
+    dataset_string = dataset_string[:-1] + """]];"""
+
     dataset_string += """
-                "is my {device} sensor {natural_off_token}?",
-                "check if my {device} sensor is {natural_off_token}",""".format(**args)
 
-  for natural_on_token in args["natural_on"]:
-    for natural_off_token in args["natural_off"]:
-      args["natural_on_token"] = natural_on_token
-      args["natural_off_token"] = natural_off_token
-      dataset_string += """
-                "check if my {device} sensor is {natural_on_token} or {natural_off_token}",""".format(**args)
+  query {p_name_init}:= @{namespace}{p_name_fill}.state()
+  #_[utterances=["the state of my {p_name}{device} sensor",""".format(**args)
 
-  dataset_string = dataset_string[:-1] + """]];"""
+    for natural_on_token in args["natural_on"]:
+      for natural_off_token in args["natural_off"]:
+        args["natural_on_token"] = natural_on_token
+        args["natural_off_token"] = natural_off_token
+        dataset_string += """
+                "if my {p_name}{device} sensor is {natural_on_token} or {natural_off_token}",
+                "whether my {p_name}{device} sensor is {natural_on_token} or {natural_off_token}",""".format(**args)
 
-  dataset_string += """
+    dataset_string = dataset_string[:-1] + """]];"""
 
-  program (p_name : String) := now => @io.home-assistant.{device}-binary-sensor(name=p_name).state() => notify
-  #_[utterances="what is the state of my ${{p_name}} {device} sensor?",
-                "what is my ${{p_name}} {device} sensor showing?",
-                "what does my ${{p_name}} {device} sensor say?",""".format(**args)
-
-  for natural_on_token in args["natural_on"]:
-    args["natural_on_token"] = natural_on_token
     dataset_string += """
-                "is my ${{p_name}} {device} sensor {natural_on_token}?",
-                "check if my ${{p_name}} {device} sensor is {natural_on_token}",""".format(**args)
 
-  for natural_off_token in args["natural_off"]:
-    args["natural_off_token"] = natural_off_token
+  stream {p_name_init}:= monitor @{namespace}{p_name_fill}.state()
+  #_[utterances=[["when the state of my {p_name}{device} sensor changes",
+                 "when my {p_name}{device} sensor changes state",
+                 "when my {p_name}{device} sensor changes"]];
+
+  stream ({p_name_init_many}p_state : Enum({on}, {off})) := edge( @{namespace}{p_name_fill}.state()) on (state == p_state)
+  #_[utterances=["when my {p_name}{device} sensor becomes ${{p_state}}",
+                "when my {p_name}{device} sensor is ${{p_state}}",
+                "when my {p_name}{device} sensor turns ${{p_state}}",
+                "when my {p_name}{device} sensor changes to ${{p_state}}",
+                "if my {p_name}{device} sensor becomes ${{p_state}}",
+                "if my {p_name}{device} sensor is ${{p_state}}",
+                "if my {p_name}{device} sensor turns ${{p_state}}",
+                "if my {p_name}{device} sensor changes to ${{p_state}}"]];""".format(**args)
+
     dataset_string += """
-                "is my ${{p_name}} {device} sensor {natural_off_token}?",
-                "check if my ${{p_name}} {device} sensor is {natural_off_token}",""".format(**args)
 
-  for natural_on_token in args["natural_on"]:
+  stream {p_name_init}:= edge( @{namespace}{p_name_fill}.state()) on (state == enum({on}))""".format(**args)
+
+    for i, natural_on_token in enumerate(args["natural_on"]):
+      args["natural_on_token"] = natural_on_token
+      if i == 0:
+        dataset_string += """
+  #_[utterances=["when my {p_name}{device} sensor becomes {natural_on_token}",
+                "when my {p_name}{device} sensor turns {natural_on_token}",
+                "when my {p_name}{device} sensor changes to {natural_on_token}",
+                "if my {p_name}{device} sensor becomes {natural_on_token}",
+                "if my {p_name}{device} sensor turns {natural_on_token}",
+                "if my {p_name}{device} sensor changes to {natural_on_token}",""".format(**args)
+      else:
+        dataset_string += """
+                "when my {p_name}{device} sensor becomes {natural_on_token}",
+                "when my {p_name}{device} sensor turns {natural_on_token}",
+                "when my {p_name}{device} sensor changes to {natural_on_token}",
+                "if my {p_name}{device} sensor becomes {natural_on_token}",
+                "if my {p_name}{device} sensor turns {natural_on_token}",
+                "if my {p_name}{device} sensor changes to {natural_on_token}",""".format(**args)
+
     for natural_off_token in args["natural_off"]:
-      args["natural_on_token"] = natural_on_token
+      if not natural_off_token.startswith("not"):
+        args["natural_off_token"] = natural_off_token
+        dataset_string += """
+                "when my {p_name}{device} sensor becomes not {natural_off_token}",
+                "when my {p_name}{device} sensor turns not {natural_off_token}",
+                "when my {p_name}{device} sensor changes to not {natural_off_token}",
+                "if my {p_name}{device} sensor becomes not {natural_off_token}",
+                "if my {p_name}{device} sensor turns not {natural_off_token}",
+                "if my {p_name}{device} sensor changes to not {natural_off_token}",""".format(**args)
+
+    dataset_string = dataset_string[:-1] + """]];""".format(**args)
+
+    dataset_string += """
+
+  stream {p_name_init}:= edge( @{namespace}{p_name_fill}.state()) on (state == enum({off}))""".format(**args)
+
+    for i, natural_off_token in enumerate(args["natural_off"]):
       args["natural_off_token"] = natural_off_token
-      dataset_string += """
-                "check if my ${{p_name}} {device} sensor is {natural_on_token} or {natural_off_token}",""".format(**args)
+      if i == 0:
+        dataset_string += """
+  #_[utterances=["when my {p_name}{device} sensor becomes {natural_off_token}",
+                "when my {p_name}{device} sensor turns {natural_off_token}",
+                "when my {p_name}{device} sensor changes to {natural_off_token}",
+                "if my {p_name}{device} sensor becomes {natural_off_token}",
+                "if my {p_name}{device} sensor turns {natural_off_token}",
+                "if my {p_name}{device} sensor changes to {natural_off_token}",""".format(**args)
+      else:
+        dataset_string += """
+                "when my {p_name}{device} sensor becomes {natural_off_token}",
+                "when my {p_name}{device} sensor turns {natural_off_token}",
+                "when my {p_name}{device} sensor changes to {natural_off_token}",
+                "if my {p_name}{device} sensor becomes {natural_off_token}",
+                "if my {p_name}{device} sensor turns {natural_off_token}",
+                "if my {p_name}{device} sensor changes to {natural_off_token}",""".format(**args)
 
-  dataset_string = dataset_string[:-1] + """]];"""
+    for natural_on_token in args["natural_on"]:
+      if not "not " + natural_on_token in args["natural_off"]:
+        args["natural_on_token"] = natural_on_token
+        dataset_string += """
+                "when my {p_name}{device} sensor becomes not {natural_on_token}",
+                "when my {p_name}{device} sensor turns not {natural_on_token}",
+                "when my {p_name}{device} sensor changes to not {natural_on_token}",
+                "if my {p_name}{device} sensor becomes not {natural_on_token}",
+                "if my {p_name}{device} sensor turns not {natural_on_token}",
+                "if my {p_name}{device} sensor changes to not {natural_on_token}",""".format(**args)
 
-  dataset_string += """
-
-  query := @io.home-assistant.{device}-binary-sensor.state()
-  #_[utterances="the state of my {device} sensor",""".format(**args)
-
-  for natural_on_token in args["natural_on"]:
-    for natural_off_token in args["natural_off"]:
-      args["natural_on_token"] = natural_on_token
-      args["natural_off_token"] = natural_off_token
-      dataset_string += """
-                "if my {device} sensor is {natural_on_token} or {natural_off_token}",
-                "whether my {device} sensor is {natural_on_token} or {natural_off_token}",""".format(**args)
-
-  dataset_string = dataset_string[:-1] + """]];"""
-
-  dataset_string += """
-
-  query (p_name : String) := @io.home-assistant.{device}-binary-sensor(name=p_name).state()
-  #_[utterances="the state of my ${{p_name}} {device} sensor",""".format(**args)
-
-  for natural_on_token in args["natural_on"]:
-    for natural_off_token in args["natural_off"]:
-      args["natural_on_token"] = natural_on_token
-      args["natural_off_token"] = natural_off_token
-      dataset_string += """
-                "if my ${{p_name}} {device} sensor is {natural_on_token} or {natural_off_token}",
-                "whether my ${{p_name}} {device} sensor is {natural_on_token} or {natural_off_token}",""".format(**args)
-
-  dataset_string = dataset_string[:-1] + """]];"""
+    dataset_string = dataset_string[:-1] + """]];"""
 
   dataset_string += """
-
-  stream := monitor @{device}-binary-sensor.state()
-  #_[utterances=["when the state of my {device} sensor changes",
-                 "when my {device} sensor changes state",
-                 "when my {device} sensor changes"]];
-
-  stream (p_name : String) := monitor @{device}-binary-sensor(name=p_name).state()
-  #_[utterances=["when the state of my ${{p_name}} {device} sensor changes",
-                 "when my ${{p_name}} {device} sensor changes state",
-                 "when my ${{p_name}} {device} sensor changes"]];
-
-  stream (p_state : Enum({on}, {off})) := edge( @io.home-assistant.{device}-binary-sensor.state()) on (state == p_state)
-  #_[utterances="when my {device} sensor becomes ${{p_state}}",
-                "when my {device} sensor is ${{p_state}}",
-                "when my {device} sensor turns ${{p_state}}",
-                "when my {device} sensor changes to ${{p_state}}",
-                "if my {device} sensor becomes ${{p_state}}",
-                "if my {device} sensor is ${{p_state}}",
-                "if my {device} sensor turns ${{p_state}}",
-                "if my {device} sensor changes to ${{p_state}}"]];
-
-  stream (p_name : String, p_state : Enum({on}, {off})) := edge( @io.home-assistant.{device}-binary-sensor(name=p_name).state()) on (state == p_state)
-  #_[utterances="when my ${{p_name}} {device} sensor becomes ${{p_state}}",
-                "when my ${{p_name}} {device} sensor is ${{p_state}}",
-                "when my ${{p_name}} {device} sensor turns ${{p_state}}",
-                "when my ${{p_name}} {device} sensor changes to ${{p_state}}",
-                "if my ${{p_name}} {device} sensor becomes ${{p_state}}",
-                "if my ${{p_name}} {device} sensor is ${{p_state}}",
-                "if my ${{p_name}} {device} sensor turns ${{p_state}}",
-                "if my ${{p_name}} {device} sensor changes to ${{p_state}}"]];""".format(**args)
-
-  dataset_string += """
-
-  stream :=  edge( @io.home-assistant.{device}-binary-sensor.state()) on (state == enum({on}))""".format(**args)
-
-  for i, natural_on_token in enumerate(args["natural_on"]):
-    args["natural_on_token"] = natural_on_token
-    if i == 0:
-      dataset_string += """
-  #_[utterances="when my {device} sensor becomes {natural_on_token}",
-                "when my {device} sensor turns {natural_on_token}",
-                "when my {device} sensor changes to {natural_on_token}",
-                "if my {device} sensor becomes {natural_on_token}",
-                "if my {device} sensor turns {natural_on_token}",
-                "if my {device} sensor changes to {natural_on_token}",""".format(**args)
-    else:
-      dataset_string += """
-                "when my {device} sensor becomes {natural_on_token}",
-                "when my {device} sensor turns {natural_on_token}",
-                "when my {device} sensor changes to {natural_on_token}",
-                "if my {device} sensor becomes {natural_on_token}",
-                "if my {device} sensor turns {natural_on_token}",
-                "if my {device} sensor changes to {natural_on_token}",""".format(**args)
-
-  for natural_off_token in args["natural_off"]:
-    if not natural_off_token.startswith("not"):
-      args["natural_off_token"] = natural_off_token
-      dataset_string += """
-                "when my {device} sensor becomes not {natural_off_token}",
-                "when my {device} sensor turns not {natural_off_token}",
-                "when my {device} sensor changes to not {natural_off_token}",
-                "if my {device} sensor becomes not {natural_off_token}",
-                "if my {device} sensor turns not {natural_off_token}",
-                "if my {device} sensor changes to not {natural_off_token}",""".format(**args)
-
-  dataset_string = dataset_string[:-1] + """]];""".format(**args)
-
-  dataset_string += """
-
-  stream (p_name : String) :=  edge( @io.home-assistant.{device}-binary-sensor(name=p_name).state()) on (state == enum({on}))""".format(**args)
-
-  for i, natural_on_token in enumerate(args["natural_on"]):
-    args["natural_on_token"] = natural_on_token
-    if i == 0:
-      dataset_string += """
-  #_[utterances="when my ${{p_name}} {device} sensor becomes {natural_on_token}",
-                "when my ${{p_name}} {device} sensor turns {natural_on_token}",
-                "when my ${{p_name}} {device} sensor changes to {natural_on_token}",
-                "if my ${{p_name}} {device} sensor becomes {natural_on_token}",
-                "if my ${{p_name}} {device} sensor turns {natural_on_token}",
-                "if my ${{p_name}} {device} sensor changes to {natural_on_token}",""".format(**args)
-    else:
-      dataset_string += """
-                "when my ${{p_name}} {device} sensor becomes {natural_on_token}",
-                "when my ${{p_name}} {device} sensor turns {natural_on_token}",
-                "when my ${{p_name}} {device} sensor changes to {natural_on_token}",
-                "if my ${{p_name}} {device} sensor becomes {natural_on_token}",
-                "if my ${{p_name}} {device} sensor turns {natural_on_token}",
-                "if my ${{p_name}} {device} sensor changes to {natural_on_token}",""".format(**args)
-
-  for natural_off_token in args["natural_off"]:
-    if not natural_off_token.startswith("not"):
-      args["natural_off_token"] = natural_off_token
-      dataset_string += """
-                "when my ${{p_name}} {device} sensor becomes not {natural_off_token}",
-                "when my ${{p_name}} {device} sensor turns not {natural_off_token}",
-                "when my ${{p_name}} {device} sensor changes to not {natural_off_token}",
-                "if my ${{p_name}} {device} sensor becomes not {natural_off_token}",
-                "if my ${{p_name}} {device} sensor turns not {natural_off_token}",
-                "if my ${{p_name}} {device} sensor changes to not {natural_off_token}",""".format(**args)
-
-  dataset_string = dataset_string[:-1] + """]];""".format(**args)
-
-  dataset_string += """
-
-  stream :=  edge( @io.home-assistant.{device}-binary-sensor.state()) on (state == enum({off}))""".format(**args)
-
-  for i, natural_off_token in enumerate(args["natural_off"]):
-    args["natural_off_token"] = natural_off_token
-    if i == 0:
-      dataset_string += """
-  #_[utterances="when my {device} sensor becomes {natural_off_token}",
-                "when my {device} sensor turns {natural_off_token}",
-                "when my {device} sensor changes to {natural_off_token}",
-                "if my {device} sensor becomes {natural_off_token}",
-                "if my {device} sensor turns {natural_off_token}",
-                "if my {device} sensor changes to {natural_off_token}",""".format(**args)
-    else:
-      dataset_string += """
-                "when my {device} sensor becomes {natural_off_token}",
-                "when my {device} sensor turns {natural_off_token}",
-                "when my {device} sensor changes to {natural_off_token}",
-                "if my {device} sensor becomes {natural_off_token}",
-                "if my {device} sensor turns {natural_off_token}",
-                "if my {device} sensor changes to {natural_off_token}",""".format(**args)
-
-  for natural_on_token in args["natural_on"]:
-    if not "not " + natural_on_token in args["natural_off"]:
-      args["natural_on_token"] = natural_on_token
-      dataset_string += """
-                "when my {device} sensor becomes not {natural_on_token}",
-                "when my {device} sensor turns not {natural_on_token}",
-                "when my {device} sensor changes to not {natural_on_token}",
-                "if my {device} sensor becomes not {natural_on_token}",
-                "if my {device} sensor turns not {natural_on_token}",
-                "if my {device} sensor changes to not {natural_on_token}",""".format(**args)
-
-  dataset_string = dataset_string[:-1] + """]];""".format(**args)
-
-  dataset_string += """
-
-  stream (p_name : String) :=  edge( @io.home-assistant.{device}-binary-sensor(name=p_name).state()) on (state == enum({off}))""".format(**args)
-
-  for i, natural_off_token in enumerate(args["natural_off"]):
-    args["natural_off_token"] = natural_off_token
-    if i == 0:
-      dataset_string += """
-  #_[utterances="when my ${{p_name}} {device} sensor becomes {natural_off_token}",
-                "when my ${{p_name}} {device} sensor turns {natural_off_token}",
-                "when my ${{p_name}} {device} sensor changes to {natural_off_token}",
-                "if my ${{p_name}} {device} sensor becomes {natural_off_token}",
-                "if my ${{p_name}} {device} sensor turns {natural_off_token}",
-                "if my ${{p_name}} {device} sensor changes to {natural_off_token}",""".format(**args)
-    else:
-      dataset_string += """
-                "when my ${{p_name}} {device} sensor becomes {natural_off_token}",
-                "when my ${{p_name}} {device} sensor turns {natural_off_token}",
-                "when my ${{p_name}} {device} sensor changes to {natural_off_token}",
-                "if my ${{p_name}} {device} sensor becomes {natural_off_token}",
-                "if my ${{p_name}} {device} sensor turns {natural_off_token}",
-                "if my ${{p_name}} {device} sensor changes to {natural_off_token}",""".format(**args)
-
-  for natural_on_token in args["natural_on"]:
-    if not "not " + natural_on_token in args["natural_off"]:
-      args["natural_on_token"] = natural_on_token
-      dataset_string += """
-                "when my ${{p_name}} {device} sensor becomes not {natural_on_token}",
-                "when my ${{p_name}} {device} sensor turns not {natural_on_token}",
-                "when my ${{p_name}} {device} sensor changes to not {natural_on_token}",
-                "if my ${{p_name}} {device} sensor becomes not {natural_on_token}",
-                "if my ${{p_name}} {device} sensor turns not {natural_on_token}",
-                "if my ${{p_name}} {device} sensor changes to not {natural_on_token}",""".format(**args)
-
-  dataset_string = dataset_string[:-1] + """]];
 }"""
 
   with open("../{namespace}/dataset.tt".format(**args), "w") as file:

@@ -1,6 +1,7 @@
 dataset @io.home-assistant.binary-sensor.heat {
+
   program := now => @io.home-assistant.binary-sensor.heat.state() => notify
-  #_[utterances="what is the state of my heat sensor?",
+  #_[utterances=["what is the state of my heat sensor?",
                 "what is my heat sensor showing?",
                 "what does my heat sensor say?",
                 "is my heat sensor hot?",
@@ -18,27 +19,8 @@ dataset @io.home-assistant.binary-sensor.heat {
                 "check if my heat sensor is warm or normal",
                 "check if my heat sensor is too warm or normal"]];
 
-  program (p_name : String) := now => @io.home-assistant.binary-sensor.heat(name=p_name).state() => notify
-  #_[utterances="what is the state of my ${p_name} heat sensor?",
-                "what is my ${p_name} heat sensor showing?",
-                "what does my ${p_name} heat sensor say?",
-                "is my ${p_name} heat sensor hot?",
-                "check if my ${p_name} heat sensor is hot",
-                "is my ${p_name} heat sensor too hot?",
-                "check if my ${p_name} heat sensor is too hot",
-                "is my ${p_name} heat sensor warm?",
-                "check if my ${p_name} heat sensor is warm",
-                "is my ${p_name} heat sensor too warm?",
-                "check if my ${p_name} heat sensor is too warm",
-                "is my ${p_name} heat sensor normal?",
-                "check if my ${p_name} heat sensor is normal",
-                "check if my ${p_name} heat sensor is hot or normal",
-                "check if my ${p_name} heat sensor is too hot or normal",
-                "check if my ${p_name} heat sensor is warm or normal",
-                "check if my ${p_name} heat sensor is too warm or normal"]];
-
   query := @io.home-assistant.binary-sensor.heat.state()
-  #_[utterances="the state of my heat sensor",
+  #_[utterances=["the state of my heat sensor",
                 "if my heat sensor is hot or normal",
                 "whether my heat sensor is hot or normal",
                 "if my heat sensor is too hot or normal",
@@ -48,29 +30,13 @@ dataset @io.home-assistant.binary-sensor.heat {
                 "if my heat sensor is too warm or normal",
                 "whether my heat sensor is too warm or normal"]];
 
-  query (p_name : String) := @io.home-assistant.binary-sensor.heat(name=p_name).state()
-  #_[utterances="the state of my ${p_name} heat sensor",
-                "if my ${p_name} heat sensor is hot or normal",
-                "whether my ${p_name} heat sensor is hot or normal",
-                "if my ${p_name} heat sensor is too hot or normal",
-                "whether my ${p_name} heat sensor is too hot or normal",
-                "if my ${p_name} heat sensor is warm or normal",
-                "whether my ${p_name} heat sensor is warm or normal",
-                "if my ${p_name} heat sensor is too warm or normal",
-                "whether my ${p_name} heat sensor is too warm or normal"]];
-
   stream := monitor @io.home-assistant.binary-sensor.heat.state()
-  #_[utterances=["when the state of my heat sensor changes",
+  #_[utterances=[["when the state of my heat sensor changes",
                  "when my heat sensor changes state",
                  "when my heat sensor changes"]];
 
-  stream (p_name : String) := monitor @io.home-assistant.binary-sensor.heat(name=p_name).state()
-  #_[utterances=["when the state of my ${p_name} heat sensor changes",
-                 "when my ${p_name} heat sensor changes state",
-                 "when my ${p_name} heat sensor changes"]];
-
   stream (p_state : Enum(hot, normal)) := edge( @io.home-assistant.binary-sensor.heat.state()) on (state == p_state)
-  #_[utterances="when my heat sensor becomes ${p_state}",
+  #_[utterances=["when my heat sensor becomes ${p_state}",
                 "when my heat sensor is ${p_state}",
                 "when my heat sensor turns ${p_state}",
                 "when my heat sensor changes to ${p_state}",
@@ -79,18 +45,8 @@ dataset @io.home-assistant.binary-sensor.heat {
                 "if my heat sensor turns ${p_state}",
                 "if my heat sensor changes to ${p_state}"]];
 
-  stream (p_name : String, p_state : Enum(hot, normal)) := edge( @io.home-assistant.binary-sensor.heat(name=p_name).state()) on (state == p_state)
-  #_[utterances="when my ${p_name} heat sensor becomes ${p_state}",
-                "when my ${p_name} heat sensor is ${p_state}",
-                "when my ${p_name} heat sensor turns ${p_state}",
-                "when my ${p_name} heat sensor changes to ${p_state}",
-                "if my ${p_name} heat sensor becomes ${p_state}",
-                "if my ${p_name} heat sensor is ${p_state}",
-                "if my ${p_name} heat sensor turns ${p_state}",
-                "if my ${p_name} heat sensor changes to ${p_state}"]];
-
-  stream :=  edge( @io.home-assistant.binary-sensor.heat.state()) on (state == enum(hot))
-  #_[utterances="when my heat sensor becomes hot",
+  stream := edge( @io.home-assistant.binary-sensor.heat.state()) on (state == enum(hot))
+  #_[utterances=["when my heat sensor becomes hot",
                 "when my heat sensor turns hot",
                 "when my heat sensor changes to hot",
                 "if my heat sensor becomes hot",
@@ -121,40 +77,8 @@ dataset @io.home-assistant.binary-sensor.heat {
                 "if my heat sensor turns not normal",
                 "if my heat sensor changes to not normal"]];
 
-  stream (p_name : String) :=  edge( @io.home-assistant.binary-sensor.heat(name=p_name).state()) on (state == enum(hot))
-  #_[utterances="when my ${p_name} heat sensor becomes hot",
-                "when my ${p_name} heat sensor turns hot",
-                "when my ${p_name} heat sensor changes to hot",
-                "if my ${p_name} heat sensor becomes hot",
-                "if my ${p_name} heat sensor turns hot",
-                "if my ${p_name} heat sensor changes to hot",
-                "when my ${p_name} heat sensor becomes too hot",
-                "when my ${p_name} heat sensor turns too hot",
-                "when my ${p_name} heat sensor changes to too hot",
-                "if my ${p_name} heat sensor becomes too hot",
-                "if my ${p_name} heat sensor turns too hot",
-                "if my ${p_name} heat sensor changes to too hot",
-                "when my ${p_name} heat sensor becomes warm",
-                "when my ${p_name} heat sensor turns warm",
-                "when my ${p_name} heat sensor changes to warm",
-                "if my ${p_name} heat sensor becomes warm",
-                "if my ${p_name} heat sensor turns warm",
-                "if my ${p_name} heat sensor changes to warm",
-                "when my ${p_name} heat sensor becomes too warm",
-                "when my ${p_name} heat sensor turns too warm",
-                "when my ${p_name} heat sensor changes to too warm",
-                "if my ${p_name} heat sensor becomes too warm",
-                "if my ${p_name} heat sensor turns too warm",
-                "if my ${p_name} heat sensor changes to too warm",
-                "when my ${p_name} heat sensor becomes not normal",
-                "when my ${p_name} heat sensor turns not normal",
-                "when my ${p_name} heat sensor changes to not normal",
-                "if my ${p_name} heat sensor becomes not normal",
-                "if my ${p_name} heat sensor turns not normal",
-                "if my ${p_name} heat sensor changes to not normal"]];
-
-  stream :=  edge( @io.home-assistant.binary-sensor.heat.state()) on (state == enum(normal))
-  #_[utterances="when my heat sensor becomes normal",
+  stream := edge( @io.home-assistant.binary-sensor.heat.state()) on (state == enum(normal))
+  #_[utterances=["when my heat sensor becomes normal",
                 "when my heat sensor turns normal",
                 "when my heat sensor changes to normal",
                 "if my heat sensor becomes normal",
@@ -185,8 +109,85 @@ dataset @io.home-assistant.binary-sensor.heat {
                 "if my heat sensor turns not too warm",
                 "if my heat sensor changes to not too warm"]];
 
-  stream (p_name : String) :=  edge( @io.home-assistant.binary-sensor.heat(name=p_name).state()) on (state == enum(normal))
-  #_[utterances="when my ${p_name} heat sensor becomes normal",
+  program (p_name : String) := now => @io.home-assistant.binary-sensor.heat(name=p_name).state() => notify
+  #_[utterances=["what is the state of my ${p_name} heat sensor?",
+                "what is my ${p_name} heat sensor showing?",
+                "what does my ${p_name} heat sensor say?",
+                "is my ${p_name} heat sensor hot?",
+                "check if my ${p_name} heat sensor is hot",
+                "is my ${p_name} heat sensor too hot?",
+                "check if my ${p_name} heat sensor is too hot",
+                "is my ${p_name} heat sensor warm?",
+                "check if my ${p_name} heat sensor is warm",
+                "is my ${p_name} heat sensor too warm?",
+                "check if my ${p_name} heat sensor is too warm",
+                "is my ${p_name} heat sensor normal?",
+                "check if my ${p_name} heat sensor is normal",
+                "check if my ${p_name} heat sensor is hot or normal",
+                "check if my ${p_name} heat sensor is too hot or normal",
+                "check if my ${p_name} heat sensor is warm or normal",
+                "check if my ${p_name} heat sensor is too warm or normal"]];
+
+  query (p_name : String) := @io.home-assistant.binary-sensor.heat(name=p_name).state()
+  #_[utterances=["the state of my ${p_name} heat sensor",
+                "if my ${p_name} heat sensor is hot or normal",
+                "whether my ${p_name} heat sensor is hot or normal",
+                "if my ${p_name} heat sensor is too hot or normal",
+                "whether my ${p_name} heat sensor is too hot or normal",
+                "if my ${p_name} heat sensor is warm or normal",
+                "whether my ${p_name} heat sensor is warm or normal",
+                "if my ${p_name} heat sensor is too warm or normal",
+                "whether my ${p_name} heat sensor is too warm or normal"]];
+
+  stream (p_name : String) := monitor @io.home-assistant.binary-sensor.heat(name=p_name).state()
+  #_[utterances=[["when the state of my ${p_name} heat sensor changes",
+                 "when my ${p_name} heat sensor changes state",
+                 "when my ${p_name} heat sensor changes"]];
+
+  stream (p_name : String, p_state : Enum(hot, normal)) := edge( @io.home-assistant.binary-sensor.heat(name=p_name).state()) on (state == p_state)
+  #_[utterances=["when my ${p_name} heat sensor becomes ${p_state}",
+                "when my ${p_name} heat sensor is ${p_state}",
+                "when my ${p_name} heat sensor turns ${p_state}",
+                "when my ${p_name} heat sensor changes to ${p_state}",
+                "if my ${p_name} heat sensor becomes ${p_state}",
+                "if my ${p_name} heat sensor is ${p_state}",
+                "if my ${p_name} heat sensor turns ${p_state}",
+                "if my ${p_name} heat sensor changes to ${p_state}"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.binary-sensor.heat(name=p_name).state()) on (state == enum(hot))
+  #_[utterances=["when my ${p_name} heat sensor becomes hot",
+                "when my ${p_name} heat sensor turns hot",
+                "when my ${p_name} heat sensor changes to hot",
+                "if my ${p_name} heat sensor becomes hot",
+                "if my ${p_name} heat sensor turns hot",
+                "if my ${p_name} heat sensor changes to hot",
+                "when my ${p_name} heat sensor becomes too hot",
+                "when my ${p_name} heat sensor turns too hot",
+                "when my ${p_name} heat sensor changes to too hot",
+                "if my ${p_name} heat sensor becomes too hot",
+                "if my ${p_name} heat sensor turns too hot",
+                "if my ${p_name} heat sensor changes to too hot",
+                "when my ${p_name} heat sensor becomes warm",
+                "when my ${p_name} heat sensor turns warm",
+                "when my ${p_name} heat sensor changes to warm",
+                "if my ${p_name} heat sensor becomes warm",
+                "if my ${p_name} heat sensor turns warm",
+                "if my ${p_name} heat sensor changes to warm",
+                "when my ${p_name} heat sensor becomes too warm",
+                "when my ${p_name} heat sensor turns too warm",
+                "when my ${p_name} heat sensor changes to too warm",
+                "if my ${p_name} heat sensor becomes too warm",
+                "if my ${p_name} heat sensor turns too warm",
+                "if my ${p_name} heat sensor changes to too warm",
+                "when my ${p_name} heat sensor becomes not normal",
+                "when my ${p_name} heat sensor turns not normal",
+                "when my ${p_name} heat sensor changes to not normal",
+                "if my ${p_name} heat sensor becomes not normal",
+                "if my ${p_name} heat sensor turns not normal",
+                "if my ${p_name} heat sensor changes to not normal"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.binary-sensor.heat(name=p_name).state()) on (state == enum(normal))
+  #_[utterances=["when my ${p_name} heat sensor becomes normal",
                 "when my ${p_name} heat sensor turns normal",
                 "when my ${p_name} heat sensor changes to normal",
                 "if my ${p_name} heat sensor becomes normal",

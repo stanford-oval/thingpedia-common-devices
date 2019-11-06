@@ -1,6 +1,7 @@
 dataset @io.home-assistant.binary-sensor.sound {
+
   program := now => @io.home-assistant.binary-sensor.sound.state() => notify
-  #_[utterances="what is the state of my sound sensor?",
+  #_[utterances=["what is the state of my sound sensor?",
                 "what is my sound sensor showing?",
                 "what does my sound sensor say?",
                 "is my sound sensor detecting sound?",
@@ -18,27 +19,8 @@ dataset @io.home-assistant.binary-sensor.sound {
                 "check if my sound sensor is hearing anything or not detecting sound",
                 "check if my sound sensor is hearing something or not detecting sound"]];
 
-  program (p_name : String) := now => @io.home-assistant.binary-sensor.sound(name=p_name).state() => notify
-  #_[utterances="what is the state of my ${p_name} sound sensor?",
-                "what is my ${p_name} sound sensor showing?",
-                "what does my ${p_name} sound sensor say?",
-                "is my ${p_name} sound sensor detecting sound?",
-                "check if my ${p_name} sound sensor is detecting sound",
-                "is my ${p_name} sound sensor detecting any sound?",
-                "check if my ${p_name} sound sensor is detecting any sound",
-                "is my ${p_name} sound sensor hearing anything?",
-                "check if my ${p_name} sound sensor is hearing anything",
-                "is my ${p_name} sound sensor hearing something?",
-                "check if my ${p_name} sound sensor is hearing something",
-                "is my ${p_name} sound sensor not detecting sound?",
-                "check if my ${p_name} sound sensor is not detecting sound",
-                "check if my ${p_name} sound sensor is detecting sound or not detecting sound",
-                "check if my ${p_name} sound sensor is detecting any sound or not detecting sound",
-                "check if my ${p_name} sound sensor is hearing anything or not detecting sound",
-                "check if my ${p_name} sound sensor is hearing something or not detecting sound"]];
-
   query := @io.home-assistant.binary-sensor.sound.state()
-  #_[utterances="the state of my sound sensor",
+  #_[utterances=["the state of my sound sensor",
                 "if my sound sensor is detecting sound or not detecting sound",
                 "whether my sound sensor is detecting sound or not detecting sound",
                 "if my sound sensor is detecting any sound or not detecting sound",
@@ -48,29 +30,13 @@ dataset @io.home-assistant.binary-sensor.sound {
                 "if my sound sensor is hearing something or not detecting sound",
                 "whether my sound sensor is hearing something or not detecting sound"]];
 
-  query (p_name : String) := @io.home-assistant.binary-sensor.sound(name=p_name).state()
-  #_[utterances="the state of my ${p_name} sound sensor",
-                "if my ${p_name} sound sensor is detecting sound or not detecting sound",
-                "whether my ${p_name} sound sensor is detecting sound or not detecting sound",
-                "if my ${p_name} sound sensor is detecting any sound or not detecting sound",
-                "whether my ${p_name} sound sensor is detecting any sound or not detecting sound",
-                "if my ${p_name} sound sensor is hearing anything or not detecting sound",
-                "whether my ${p_name} sound sensor is hearing anything or not detecting sound",
-                "if my ${p_name} sound sensor is hearing something or not detecting sound",
-                "whether my ${p_name} sound sensor is hearing something or not detecting sound"]];
-
   stream := monitor @io.home-assistant.binary-sensor.sound.state()
-  #_[utterances=["when the state of my sound sensor changes",
+  #_[utterances=[["when the state of my sound sensor changes",
                  "when my sound sensor changes state",
                  "when my sound sensor changes"]];
 
-  stream (p_name : String) := monitor @io.home-assistant.binary-sensor.sound(name=p_name).state()
-  #_[utterances=["when the state of my ${p_name} sound sensor changes",
-                 "when my ${p_name} sound sensor changes state",
-                 "when my ${p_name} sound sensor changes"]];
-
   stream (p_state : Enum(detecting_sound, not_detecting_sound)) := edge( @io.home-assistant.binary-sensor.sound.state()) on (state == p_state)
-  #_[utterances="when my sound sensor becomes ${p_state}",
+  #_[utterances=["when my sound sensor becomes ${p_state}",
                 "when my sound sensor is ${p_state}",
                 "when my sound sensor turns ${p_state}",
                 "when my sound sensor changes to ${p_state}",
@@ -79,18 +45,8 @@ dataset @io.home-assistant.binary-sensor.sound {
                 "if my sound sensor turns ${p_state}",
                 "if my sound sensor changes to ${p_state}"]];
 
-  stream (p_name : String, p_state : Enum(detecting_sound, not_detecting_sound)) := edge( @io.home-assistant.binary-sensor.sound(name=p_name).state()) on (state == p_state)
-  #_[utterances="when my ${p_name} sound sensor becomes ${p_state}",
-                "when my ${p_name} sound sensor is ${p_state}",
-                "when my ${p_name} sound sensor turns ${p_state}",
-                "when my ${p_name} sound sensor changes to ${p_state}",
-                "if my ${p_name} sound sensor becomes ${p_state}",
-                "if my ${p_name} sound sensor is ${p_state}",
-                "if my ${p_name} sound sensor turns ${p_state}",
-                "if my ${p_name} sound sensor changes to ${p_state}"]];
-
-  stream :=  edge( @io.home-assistant.binary-sensor.sound.state()) on (state == enum(detecting_sound))
-  #_[utterances="when my sound sensor becomes detecting sound",
+  stream := edge( @io.home-assistant.binary-sensor.sound.state()) on (state == enum(detecting_sound))
+  #_[utterances=["when my sound sensor becomes detecting sound",
                 "when my sound sensor turns detecting sound",
                 "when my sound sensor changes to detecting sound",
                 "if my sound sensor becomes detecting sound",
@@ -115,34 +71,8 @@ dataset @io.home-assistant.binary-sensor.sound {
                 "if my sound sensor turns hearing something",
                 "if my sound sensor changes to hearing something"]];
 
-  stream (p_name : String) :=  edge( @io.home-assistant.binary-sensor.sound(name=p_name).state()) on (state == enum(detecting_sound))
-  #_[utterances="when my ${p_name} sound sensor becomes detecting sound",
-                "when my ${p_name} sound sensor turns detecting sound",
-                "when my ${p_name} sound sensor changes to detecting sound",
-                "if my ${p_name} sound sensor becomes detecting sound",
-                "if my ${p_name} sound sensor turns detecting sound",
-                "if my ${p_name} sound sensor changes to detecting sound",
-                "when my ${p_name} sound sensor becomes detecting any sound",
-                "when my ${p_name} sound sensor turns detecting any sound",
-                "when my ${p_name} sound sensor changes to detecting any sound",
-                "if my ${p_name} sound sensor becomes detecting any sound",
-                "if my ${p_name} sound sensor turns detecting any sound",
-                "if my ${p_name} sound sensor changes to detecting any sound",
-                "when my ${p_name} sound sensor becomes hearing anything",
-                "when my ${p_name} sound sensor turns hearing anything",
-                "when my ${p_name} sound sensor changes to hearing anything",
-                "if my ${p_name} sound sensor becomes hearing anything",
-                "if my ${p_name} sound sensor turns hearing anything",
-                "if my ${p_name} sound sensor changes to hearing anything",
-                "when my ${p_name} sound sensor becomes hearing something",
-                "when my ${p_name} sound sensor turns hearing something",
-                "when my ${p_name} sound sensor changes to hearing something",
-                "if my ${p_name} sound sensor becomes hearing something",
-                "if my ${p_name} sound sensor turns hearing something",
-                "if my ${p_name} sound sensor changes to hearing something"]];
-
-  stream :=  edge( @io.home-assistant.binary-sensor.sound.state()) on (state == enum(not_detecting_sound))
-  #_[utterances="when my sound sensor becomes not detecting sound",
+  stream := edge( @io.home-assistant.binary-sensor.sound.state()) on (state == enum(not_detecting_sound))
+  #_[utterances=["when my sound sensor becomes not detecting sound",
                 "when my sound sensor turns not detecting sound",
                 "when my sound sensor changes to not detecting sound",
                 "if my sound sensor becomes not detecting sound",
@@ -167,8 +97,79 @@ dataset @io.home-assistant.binary-sensor.sound {
                 "if my sound sensor turns not hearing something",
                 "if my sound sensor changes to not hearing something"]];
 
-  stream (p_name : String) :=  edge( @io.home-assistant.binary-sensor.sound(name=p_name).state()) on (state == enum(not_detecting_sound))
-  #_[utterances="when my ${p_name} sound sensor becomes not detecting sound",
+  program (p_name : String) := now => @io.home-assistant.binary-sensor.sound(name=p_name).state() => notify
+  #_[utterances=["what is the state of my ${p_name} sound sensor?",
+                "what is my ${p_name} sound sensor showing?",
+                "what does my ${p_name} sound sensor say?",
+                "is my ${p_name} sound sensor detecting sound?",
+                "check if my ${p_name} sound sensor is detecting sound",
+                "is my ${p_name} sound sensor detecting any sound?",
+                "check if my ${p_name} sound sensor is detecting any sound",
+                "is my ${p_name} sound sensor hearing anything?",
+                "check if my ${p_name} sound sensor is hearing anything",
+                "is my ${p_name} sound sensor hearing something?",
+                "check if my ${p_name} sound sensor is hearing something",
+                "is my ${p_name} sound sensor not detecting sound?",
+                "check if my ${p_name} sound sensor is not detecting sound",
+                "check if my ${p_name} sound sensor is detecting sound or not detecting sound",
+                "check if my ${p_name} sound sensor is detecting any sound or not detecting sound",
+                "check if my ${p_name} sound sensor is hearing anything or not detecting sound",
+                "check if my ${p_name} sound sensor is hearing something or not detecting sound"]];
+
+  query (p_name : String) := @io.home-assistant.binary-sensor.sound(name=p_name).state()
+  #_[utterances=["the state of my ${p_name} sound sensor",
+                "if my ${p_name} sound sensor is detecting sound or not detecting sound",
+                "whether my ${p_name} sound sensor is detecting sound or not detecting sound",
+                "if my ${p_name} sound sensor is detecting any sound or not detecting sound",
+                "whether my ${p_name} sound sensor is detecting any sound or not detecting sound",
+                "if my ${p_name} sound sensor is hearing anything or not detecting sound",
+                "whether my ${p_name} sound sensor is hearing anything or not detecting sound",
+                "if my ${p_name} sound sensor is hearing something or not detecting sound",
+                "whether my ${p_name} sound sensor is hearing something or not detecting sound"]];
+
+  stream (p_name : String) := monitor @io.home-assistant.binary-sensor.sound(name=p_name).state()
+  #_[utterances=[["when the state of my ${p_name} sound sensor changes",
+                 "when my ${p_name} sound sensor changes state",
+                 "when my ${p_name} sound sensor changes"]];
+
+  stream (p_name : String, p_state : Enum(detecting_sound, not_detecting_sound)) := edge( @io.home-assistant.binary-sensor.sound(name=p_name).state()) on (state == p_state)
+  #_[utterances=["when my ${p_name} sound sensor becomes ${p_state}",
+                "when my ${p_name} sound sensor is ${p_state}",
+                "when my ${p_name} sound sensor turns ${p_state}",
+                "when my ${p_name} sound sensor changes to ${p_state}",
+                "if my ${p_name} sound sensor becomes ${p_state}",
+                "if my ${p_name} sound sensor is ${p_state}",
+                "if my ${p_name} sound sensor turns ${p_state}",
+                "if my ${p_name} sound sensor changes to ${p_state}"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.binary-sensor.sound(name=p_name).state()) on (state == enum(detecting_sound))
+  #_[utterances=["when my ${p_name} sound sensor becomes detecting sound",
+                "when my ${p_name} sound sensor turns detecting sound",
+                "when my ${p_name} sound sensor changes to detecting sound",
+                "if my ${p_name} sound sensor becomes detecting sound",
+                "if my ${p_name} sound sensor turns detecting sound",
+                "if my ${p_name} sound sensor changes to detecting sound",
+                "when my ${p_name} sound sensor becomes detecting any sound",
+                "when my ${p_name} sound sensor turns detecting any sound",
+                "when my ${p_name} sound sensor changes to detecting any sound",
+                "if my ${p_name} sound sensor becomes detecting any sound",
+                "if my ${p_name} sound sensor turns detecting any sound",
+                "if my ${p_name} sound sensor changes to detecting any sound",
+                "when my ${p_name} sound sensor becomes hearing anything",
+                "when my ${p_name} sound sensor turns hearing anything",
+                "when my ${p_name} sound sensor changes to hearing anything",
+                "if my ${p_name} sound sensor becomes hearing anything",
+                "if my ${p_name} sound sensor turns hearing anything",
+                "if my ${p_name} sound sensor changes to hearing anything",
+                "when my ${p_name} sound sensor becomes hearing something",
+                "when my ${p_name} sound sensor turns hearing something",
+                "when my ${p_name} sound sensor changes to hearing something",
+                "if my ${p_name} sound sensor becomes hearing something",
+                "if my ${p_name} sound sensor turns hearing something",
+                "if my ${p_name} sound sensor changes to hearing something"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.binary-sensor.sound(name=p_name).state()) on (state == enum(not_detecting_sound))
+  #_[utterances=["when my ${p_name} sound sensor becomes not detecting sound",
                 "when my ${p_name} sound sensor turns not detecting sound",
                 "when my ${p_name} sound sensor changes to not detecting sound",
                 "if my ${p_name} sound sensor becomes not detecting sound",
