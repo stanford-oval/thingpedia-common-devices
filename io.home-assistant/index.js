@@ -12,6 +12,7 @@ const WebSocket = require('ws');
 const HomeAssistant = require('home-assistant-js-websocket');
 
 const HomeAssistantLightbulbDevice = require('./light-bulb');
+const HomeAssistantSwitch = require('./switch');
 const HomeAssistantBinarySensor = require('./binary-sensor');
 const HomeAssistantCoverReadOnly = require('./cover-read-only');
 const HomeAssistantCover = require('./cover');
@@ -52,10 +53,12 @@ const DOMAIN_TO_TP_KIND = {
     'cover_damper': 'cover-damper',
     'cover_shade': 'cover-shade',
     'cover_shutter': 'cover-shutter',
-    'cover_window': 'cover-window'
+    'cover_window': 'cover-window',
+    'switch': 'switch'
 };
 const SUBDEVICES = {
-    'light-bulb': HomeAssistantLightbulbDevice
+    'light-bulb': HomeAssistantLightbulbDevice,
+    'switch': HomeAssistantSwitch
 };
 
 for (let value in Object.values(DOMAIN_TO_TP_KIND)) {
