@@ -90,7 +90,11 @@ async function testOne(deviceKind) {
     }
 
     // require the device once fully (to get complete code coverage)
-    require('../' + deviceKind);
+    try {
+        require('../' + deviceKind);
+    } catch (e) {
+        console.log('No Javascript code found for ' + deviceKind);
+    }
 
     // now load the device through the TpClient loader code
     // (which will initialize the device class with stuff like
