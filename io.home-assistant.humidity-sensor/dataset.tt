@@ -2,12 +2,18 @@ dataset @io.home-assistant.humidity-sensor {
   program := now => @io.home-assistant.humidity-sensor.state() => notify
   #_[utterances="what is the state of my humidity sensor?",
                 "what is my humidity sensor showing?",
-                "what does my humidity sensor say?"]];
+                "what does my humidity sensor say?",
+                "what is the value of my humidity sensor?",
+                "check the level of my humidity sensor.",
+               ]];
 
   program (p_name : String) := now => @io.home-assistant.humidity-sensor(name=p_name).state() => notify
   #_[utterances="what is the state of my ${p_name} humidity sensor?",
                 "what is my ${p_name} humidity sensor showing?",
-                "what does my ${p_name} humidity sensor say?"]];
+                "what does my ${p_name} humidity sensor say?",
+                "what is the value of my ${p_name} humidity sensor?",
+                "check the level of my ${p_name} humidity sensor.",
+               ]];
 
   query := @io.home-assistant.humidity-sensor.state()
   #_[utterances="the state of my humidity sensor"]];

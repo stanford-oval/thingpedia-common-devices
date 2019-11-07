@@ -2,12 +2,18 @@ dataset @io.home-assistant.pressure-sensor {
   program := now => @io.home-assistant.pressure-sensor.state() => notify
   #_[utterances="what is the state of my pressure sensor?",
                 "what is my pressure sensor showing?",
-                "what does my pressure sensor say?"]];
+                "what does my pressure sensor say?",
+                "what is the value of my pressure sensor?",
+                "check the level of my pressure sensor.",
+               ]];
 
   program (p_name : String) := now => @io.home-assistant.pressure-sensor(name=p_name).state() => notify
   #_[utterances="what is the state of my ${p_name} pressure sensor?",
                 "what is my ${p_name} pressure sensor showing?",
-                "what does my ${p_name} pressure sensor say?"]];
+                "what does my ${p_name} pressure sensor say?",
+                "what is the value of my ${p_name} pressure sensor?",
+                "check the level of my ${p_name} pressure sensor.",
+               ]];
 
   query := @io.home-assistant.pressure-sensor.state()
   #_[utterances="the state of my pressure sensor"]];

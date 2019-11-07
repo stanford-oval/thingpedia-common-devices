@@ -2,12 +2,18 @@ dataset @io.home-assistant.power-sensor {
   program := now => @io.home-assistant.power-sensor.state() => notify
   #_[utterances="what is the state of my power sensor?",
                 "what is my power sensor showing?",
-                "what does my power sensor say?"]];
+                "what does my power sensor say?",
+                "what is the value of my power sensor?",
+                "check the level of my power sensor.",
+               ]];
 
   program (p_name : String) := now => @io.home-assistant.power-sensor(name=p_name).state() => notify
   #_[utterances="what is the state of my ${p_name} power sensor?",
                 "what is my ${p_name} power sensor showing?",
-                "what does my ${p_name} power sensor say?"]];
+                "what does my ${p_name} power sensor say?",
+                "what is the value of my ${p_name} power sensor?",
+                "check the level of my ${p_name} power sensor.",
+               ]];
 
   query := @io.home-assistant.power-sensor.state()
   #_[utterances="the state of my power sensor"]];

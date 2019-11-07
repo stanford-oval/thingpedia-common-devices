@@ -2,12 +2,18 @@ dataset @io.home-assistant.timestamp-sensor {
   program := now => @io.home-assistant.timestamp-sensor.state() => notify
   #_[utterances="what is the state of my timestamp sensor?",
                 "what is my timestamp sensor showing?",
-                "what does my timestamp sensor say?"]];
+                "what does my timestamp sensor say?",
+                "what is the value of my timestamp sensor?",
+                "check the level of my timestamp sensor.",
+               ]];
 
   program (p_name : String) := now => @io.home-assistant.timestamp-sensor(name=p_name).state() => notify
   #_[utterances="what is the state of my ${p_name} timestamp sensor?",
                 "what is my ${p_name} timestamp sensor showing?",
-                "what does my ${p_name} timestamp sensor say?"]];
+                "what does my ${p_name} timestamp sensor say?",
+                "what is the value of my ${p_name} timestamp sensor?",
+                "check the level of my ${p_name} timestamp sensor.",
+               ]];
 
   query := @io.home-assistant.timestamp-sensor.state()
   #_[utterances="the state of my timestamp sensor"]];

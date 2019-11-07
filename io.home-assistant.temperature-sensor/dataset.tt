@@ -2,12 +2,18 @@ dataset @io.home-assistant.temperature-sensor {
   program := now => @io.home-assistant.temperature-sensor.state() => notify
   #_[utterances="what is the state of my temperature sensor?",
                 "what is my temperature sensor showing?",
-                "what does my temperature sensor say?"]];
+                "what does my temperature sensor say?",
+                "what is the value of my temperature sensor?",
+                "check the level of my temperature sensor.",
+               ]];
 
   program (p_name : String) := now => @io.home-assistant.temperature-sensor(name=p_name).state() => notify
   #_[utterances="what is the state of my ${p_name} temperature sensor?",
                 "what is my ${p_name} temperature sensor showing?",
-                "what does my ${p_name} temperature sensor say?"]];
+                "what does my ${p_name} temperature sensor say?",
+                "what is the value of my ${p_name} temperature sensor?",
+                "check the level of my ${p_name} temperature sensor.",
+               ]];
 
   query := @io.home-assistant.temperature-sensor.state()
   #_[utterances="the state of my temperature sensor"]];

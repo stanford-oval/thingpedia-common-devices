@@ -48,7 +48,10 @@ for device, states in supported_device_classes.items():
   program := now => @io.home-assistant.{device}-sensor.state() => notify
   #_[utterances="what is the state of my {device} sensor?",
                 "what is my {device} sensor showing?",
-                "what does my {device} sensor say?",""".format(**args)
+                "what does my {device} sensor say?",
+                "what is the value of my {device} sensor?",
+                "check the level of my {device} sensor.",
+                """.format(**args)
 
   dataset_string = dataset_string[:-1] + """]];"""
 
@@ -57,7 +60,10 @@ for device, states in supported_device_classes.items():
   program (p_name : String) := now => @io.home-assistant.{device}-sensor(name=p_name).state() => notify
   #_[utterances="what is the state of my ${{p_name}} {device} sensor?",
                 "what is my ${{p_name}} {device} sensor showing?",
-                "what does my ${{p_name}} {device} sensor say?",""".format(**args)
+                "what does my ${{p_name}} {device} sensor say?",
+                "what is the value of my ${{p_name}} {device} sensor?",
+                "check the level of my ${{p_name}} {device} sensor.",
+                """.format(**args)
 
   dataset_string = dataset_string[:-1] + """]];"""
 
