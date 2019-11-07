@@ -89,15 +89,16 @@ async function testOne(deviceKind) {
         return;
     }
 
-    // require the device once fully (to get complete code coverage)
-    require('../' + deviceKind);
-
     // now load the device through the TpClient loader code
     // (which will initialize the device class with stuff like
     // the OAuth helpers and the polling implementation of subscribe_*)
 
     const manifest = await _engine.thingpedia.getDeviceManifest(deviceKind);
     const devClass = await _tpFactory.getDeviceClass(deviceKind);
+
+    // require the device once fully (to get complete code coverage)
+    if (manifest.loader.module === 'org.thingpedia.v2')
+        require('../' + deviceKind);
 
     if (typeof testsuite === 'function') {
         // if the testsuite is a function, we're done here
@@ -152,18 +153,61 @@ async function existsSafe(path) {
     }
 }
 
-async function main() {
-    if (process.argv.length > 2) {
-        for (let toTest of process.argv.slice(2))
-             await testOne(toTest);
+function deviceChanged(fileChanged) {
+    if (fileChanged.startsWith('test/') && fileChanged.endsWith('.js')) {
+        let maybeDevice = fileChanged.substring('test/'.length, fileChanged.length - '.js'.length);
+        if (fs.lstatSync(path.resolve(path.dirname(module.filename), '..', maybeDevice)).isDirectory())
+            return maybeDevice;
+        else
+            return null;
+    } else if (fileChanged.includes('/')) {
+        let maybeDevice = fileChanged.substring(0, fileChanged.indexOf('/'));
+        if (fs.lstatSync(path.resolve(path.dirname(module.filename), '..', maybeDevice)).isDirectory())
+            return maybeDevice;
+        else
+            return null;
     } else {
-        for (let name of await util.promisify(fs.readdir)(path.resolve(path.dirname(module.filename), '..'))) {
-            if (!await existsSafe(name + '/manifest.tt')) //'
-                continue;
+        return null;
+    }
+}
 
-            console.log(name);
-            await testOne(name);
+async function toTest(argv) {
+    let devices = [];
+
+    if (argv.length > 2) {
+        const filesChanged = argv.slice(2);
+        for (let file of filesChanged) {
+            if (fs.lstatSync(path.resolve(path.dirname(module.filename), '..', file)).isDirectory()) {
+                // if it's a device name, add it directly
+                devices.push(file);
+            } else {
+                // if it's a path to a file, try to get the device name out of it
+                // if we failed to get the device name, test all
+                const maybeDevice = deviceChanged(file);
+                if (maybeDevice) {
+                    devices.push(maybeDevice);
+                } else {
+                    devices = [];
+                    break;
+                }
+            }
         }
+    }
+
+    if (devices.length === 0)
+        return await util.promisify(fs.readdir)(path.resolve(path.dirname(module.filename), '..'));
+    else
+        return devices;
+}
+
+async function main() {
+    // takes either (1) device names to test, or (2) changed files
+    for (let name of await toTest(process.argv)) {
+        if (!await existsSafe(name + '/manifest.tt')) //'
+            continue;
+
+        console.log(name);
+        await testOne(name);
     }
 
     if (_anyFailed)
