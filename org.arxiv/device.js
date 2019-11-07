@@ -10,6 +10,8 @@ const xml2js = require('xml2js');
 const Q = require('q');
 const baseUrl = 'http://export.arxiv.org/api/query';
 
+const categories = require('./cat.json');
+
 module.exports = class ArXivDevice extends Tp.BaseDevice {
     constructor(engine, state) {
         super(engine, state);
@@ -26,14 +28,22 @@ module.exports = class ArXivDevice extends Tp.BaseDevice {
             params.push(`all:${encodeURIComponent(query)}`);
         if (category) {
             category = category.toLowerCase();
-            if (category === 'ai') category = 'cs.AI';
-            if (category === 'machine learning' || category === 'ml') category = 'cs.ML';
-            if (category === 'cv' || category === 'computer vision') category = 'cs.CV';
-            if (category === 'HCI') category = 'cs.HC';
-            let tmp = category.split('.');
-            if (tmp.length !== 2) throw new Error ('Wrong category format. See https://arxiv.org/help/api/user-manual#subject_classifications for available categories.');
-            category = [tmp[0], tmp[1].toUpperCase()].join('.');
-            params.push(`cat:${encodeURIComponent(category)}`);
+            if (category === 'ai')
+                category = 'cs.AI';
+            else if (category === 'ml')
+                category = 'cs.ML';
+            else if (category === 'cv' || category === 'computer vision' || category === 'pattern recognition')
+                category = 'cs.CV';
+            else if (category === 'HCI' || category === 'human computer interaction')
+                category = 'cs.HC';
+            else if (category in categories)
+                category = categories[category];
+            else
+                category = null;
+            if (category)
+                params.push(`cat:${encodeURIComponent(category)}`);
+            else
+                params.push(`all:${encodeURIComponent(category)}`);
         }
         if (author) {
             params.push(`au:${encodeURIComponent(author)}`);
