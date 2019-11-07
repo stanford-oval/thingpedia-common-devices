@@ -21,6 +21,7 @@ module.exports = class ArXivDevice extends Tp.BaseDevice {
 
     get_query({ query, category, author }) {
         let params = [];
+        let suffix = `&sortBy=submittedDate`;
         if (query)
             params.push(`all:${encodeURIComponent(query)}`);
         if (category) {
@@ -34,13 +35,16 @@ module.exports = class ArXivDevice extends Tp.BaseDevice {
             category = [tmp[0], tmp[1].toUpperCase()].join('.');
             params.push(`cat:${encodeURIComponent(category)}`);
         }
-        if (author) 
+        if (author) {
             params.push(`au:${encodeURIComponent(author)}`);
+            // the result of searching by author is really bad, do not sort result by submitted date, using the default (by relevance)
+            suffix = '';
+        }
         
         if (params.length === 0)
             throw new Error('Please at least provide one parameter: author, category, or keyword');
 
-        let url = baseUrl + `?search_query=${params.join(encodeURIComponent(' AND '))}&max_results=5&sortBy=submittedDate`;
+        let url = baseUrl + `?search_query=${params.join(encodeURIComponent(' AND '))}&max_results=5${suffix}`;
         return Tp.Helpers.Http.get(url).then((response) => {
             let parser = xml2js.parseString;
             return Q.nfcall(parser, response).then((res) => {
