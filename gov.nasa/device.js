@@ -59,7 +59,8 @@ module.exports = class NasaDevice extends Tp.BaseDevice {
             date_taken.setHours(0,0,0);
             // we don't get pictures for the future
             if (new Date() < date_taken)
-                throw new Error(`Sorry, I am not a time machine, I cannot get photos from a future date`);
+                return [];
+                //throw new Error(`Sorry, I am not a time machine, I cannot get photos from a future date`);
         }
 
         const sol0 = new Date('2012-08-06T00:00:00Z');
@@ -75,11 +76,12 @@ module.exports = class NasaDevice extends Tp.BaseDevice {
             const resultObj = JSON.parse(response);
             const photos = resultObj.photos;
 
+            /*
             if (photos.length === 0) {
                 if (yesterday.getTime() < date_taken.getTime())
                     throw new Error('It seems Curiosity has not send back anything today');
                 throw new Error(`It seems Curiosity did not send back anything on ${date_taken.toDateString()}`);
-            }
+            }*/
 
             return photos.slice(0, count).map((photo) => {
                 const picture_url = photo.img_src;
