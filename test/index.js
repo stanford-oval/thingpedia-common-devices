@@ -89,19 +89,16 @@ async function testOne(deviceKind) {
         return;
     }
 
-    // require the device once fully (to get complete code coverage)
-    try {
-        require('../' + deviceKind);
-    } catch (e) {
-        console.log('No Javascript code found for ' + deviceKind);
-    }
-
     // now load the device through the TpClient loader code
     // (which will initialize the device class with stuff like
     // the OAuth helpers and the polling implementation of subscribe_*)
 
     const manifest = await _engine.thingpedia.getDeviceManifest(deviceKind);
     const devClass = await _tpFactory.getDeviceClass(deviceKind);
+
+    // require the device once fully (to get complete code coverage)
+    if (manifest.loader.module === 'org.thingpedia.v2')
+        require('../' + deviceKind);
 
     if (typeof testsuite === 'function') {
         // if the testsuite is a function, we're done here
