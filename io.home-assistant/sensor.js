@@ -9,7 +9,7 @@
 
 const HomeAssistantDevice = require('./base');
 
-module.exports = class HomeAssistantCoverReadOnly extends HomeAssistantDevice {
+module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
 	constructor(engine, state, master, entityId) {
 		super(engine, state, master, entityId);
     }
