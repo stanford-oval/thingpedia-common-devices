@@ -6,8 +6,6 @@
 "use strict";
 
 const Tp = require('thingpedia');
-const xml2js = require('xml2js');
-const Q = require('q');
 const baseUrl = 'http://export.arxiv.org/api/query';
 
 const categories = require('./cat.json');
@@ -21,7 +19,7 @@ module.exports = class ArXivDevice extends Tp.BaseDevice {
         this.description = "ArXiv interface";
     }
 
-    get_query({ query, category, author }) {
+    async get_query({ query, category, author }) {
         let params = [];
         let suffix = `&sortBy=submittedDate`;
         if (query)
@@ -55,19 +53,18 @@ module.exports = class ArXivDevice extends Tp.BaseDevice {
             throw new Error('Please at least provide one parameter: author, category, or keyword');
 
         let url = baseUrl + `?search_query=${params.join(encodeURIComponent(' AND '))}&max_results=5${suffix}`;
-        return Tp.Helpers.Http.get(url).then((response) => {
-            let parser = xml2js.parseString;
-            return Q.nfcall(parser, response).then((res) => {
-                return res.feed.entry.map((paper) => {
-                    return {
-                        title: paper.title,
-                        author: paper.author.map((au) => au.name).join(', '), // swtich back to a list once we fix the filter
-                        pubDate: new Date(paper.published),
-                        link: paper.link[0].$.href,
-                        summary: paper.summary,
-                    };
-                });
-            });
+
+        const parsed = await Tp.Helpers.Http.get(url).then(Tp.Helpers.Xml.parseString);
+        if (!parsed.feed.entry)
+            return [];
+        return parsed.feed.entry.map((paper) => {
+            return {
+                title: paper.title[0],
+                author: paper.author.map((au) => au.name).join(', '), // swtich back to a list once we fix the filter
+                pubDate: new Date(paper.published[0]),
+                link: paper.link[0].$.href,
+                summary: paper.summary[0],
+            };
         });
     }
 };
