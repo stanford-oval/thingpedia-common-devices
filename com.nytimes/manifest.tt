@@ -1,4 +1,6 @@
-class @com.nytimes {
+class @com.nytimes
+#_[name="New York Times"]
+#_[description="New York Times RSS feed"] {
   import loader from @org.thingpedia.rss();
   import config from @org.thingpedia.config.none();
 
@@ -12,4 +14,16 @@ class @com.nytimes {
   #[poll_interval=10800000ms]
   #[doc="read the front page of the New York Times"]
   #[url="http://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml"];
+
+  monitorable list query get_section_page(in req section: Enum(world,us,business,technology,sports,science,health,arts,travel) #_[prompt="What section of the New York Times do you want to read?"],
+                                        out title: String #[string_values="tt:news_title"],
+                                        out link: Entity(tt:url),
+                                        out updated: Date,
+                                        out description: String #[string_values="tt:news_description"])
+  #_[canonical="get new york times articles in a section"]
+  #_[confirmation="New York Times articles in ${section} section"]
+  #_[formatted=[{type="rdl",webCallback="${link}",displayTitle="${title}",displayText="${description}"}]]
+  #[poll_interval=10800000ms]
+  #[doc="read the section page of the New York Times"]
+  #[url="https://rss.nytimes.com/services/xml/rss/nyt/${section}.xml"];
 }

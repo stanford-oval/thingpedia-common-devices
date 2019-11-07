@@ -9,7 +9,7 @@ before_script: greenkeeper-lockfile-update
 after_script: greenkeeper-lockfile-upload
 script:
 - yarn make lint
-- TZ="America/Los_Angeles" yarn test
+- TZ="America/Los_Angeles" yarn test $(git diff --name-only $TRAVIS_COMMIT_RANGE | paste -sd " ")
 after_success: yarn run coverage
 env:
   global:

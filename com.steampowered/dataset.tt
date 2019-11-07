@@ -1,14 +1,25 @@
 dataset @com.steampowered language "en" {
     query (p_game_name :String)  := @com.steampowered.get_price(game_name=p_game_name)
-    #_[utterances=[",How much is $p_game_name on Steam?",
-                   "price of $p_game_name on Steam",
-                   "price of game $p_game_name"]]
-    #[id=29791224]
+    #_[utterances=["price of $p_game_name on Steam",
+                   "price of game $p_game_name",
+                   ",How much is $p_game_name on Steam?"]]
+    #[id=53473729]
     #[name=""];
+
+    query  := @com.steampowered.get_price(game_name=$?)
+    #_[utterances=["Steam price",
+                   "price of game on Steam"]]
+    #[id=53473733]
+    #[name=""];
+
+    query  := @com.steampowered.get_steam_id(name=$?)
+    #_[utterances=["Steam ID"]]
+    #[id=53473734]
+    #[name="GetUserSSteamID"];
 
     query (p_name :String)  := @com.steampowered.get_steam_id(name=p_name)
     #_[utterances=["the Steam ID of user $p_name"]]
-    #[id=29791227]
-    #[name=""];
+    #[id=53473731]
+    #[name="GetUserSSteamIDWithName"];
 
 }
