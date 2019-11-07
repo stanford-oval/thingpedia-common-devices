@@ -1,0 +1,18 @@
+dataset @io.home-assistant.signal_strength-sensor {
+  program := now => @io.home-assistant.signal_strength-sensor.state() => notify
+  #_[utterances="what is the state of my signal_strength sensor?",
+                "what is my signal_strength sensor showing?",
+                "what does my signal_strength sensor say?"]];
+
+  program (p_name : String) := now => @io.home-assistant.signal_strength-sensor(name=p_name).state() => notify
+  #_[utterances="what is the state of my ${p_name} signal_strength sensor?",
+                "what is my ${p_name} signal_strength sensor showing?",
+                "what does my ${p_name} signal_strength sensor say?"]];
+
+  query := @io.home-assistant.signal_strength-sensor.state()
+  #_[utterances="the state of my signal_strength sensor"]];
+
+  query (p_name : String) := @io.home-assistant.signal_strength-sensor(name=p_name).state()
+  #_[utterances="the state of my ${p_name} signal_strength sensor"]];
+
+  stream :=  edge( @io.home-assistant.signal_strength-sensor.state()) on (state == Number]];

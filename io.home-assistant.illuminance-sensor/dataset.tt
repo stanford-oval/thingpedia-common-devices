@@ -1,0 +1,18 @@
+dataset @io.home-assistant.illuminance-sensor {
+  program := now => @io.home-assistant.illuminance-sensor.state() => notify
+  #_[utterances="what is the state of my illuminance sensor?",
+                "what is my illuminance sensor showing?",
+                "what does my illuminance sensor say?"]];
+
+  program (p_name : String) := now => @io.home-assistant.illuminance-sensor(name=p_name).state() => notify
+  #_[utterances="what is the state of my ${p_name} illuminance sensor?",
+                "what is my ${p_name} illuminance sensor showing?",
+                "what does my ${p_name} illuminance sensor say?"]];
+
+  query := @io.home-assistant.illuminance-sensor.state()
+  #_[utterances="the state of my illuminance sensor"]];
+
+  query (p_name : String) := @io.home-assistant.illuminance-sensor(name=p_name).state()
+  #_[utterances="the state of my ${p_name} illuminance sensor"]];
+
+  stream :=  edge( @io.home-assistant.illuminance-sensor.state()) on (state == Number]];

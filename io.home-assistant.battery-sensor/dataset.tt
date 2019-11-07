@@ -1,0 +1,18 @@
+dataset @io.home-assistant.battery-sensor {
+  program := now => @io.home-assistant.battery-sensor.state() => notify
+  #_[utterances="what is the state of my battery sensor?",
+                "what is my battery sensor showing?",
+                "what does my battery sensor say?"]];
+
+  program (p_name : String) := now => @io.home-assistant.battery-sensor(name=p_name).state() => notify
+  #_[utterances="what is the state of my ${p_name} battery sensor?",
+                "what is my ${p_name} battery sensor showing?",
+                "what does my ${p_name} battery sensor say?"]];
+
+  query := @io.home-assistant.battery-sensor.state()
+  #_[utterances="the state of my battery sensor"]];
+
+  query (p_name : String) := @io.home-assistant.battery-sensor(name=p_name).state()
+  #_[utterances="the state of my ${p_name} battery sensor"]];
+
+  stream :=  edge( @io.home-assistant.battery-sensor.state()) on (state == Number]];

@@ -12,16 +12,32 @@ const WebSocket = require('ws');
 const HomeAssistant = require('home-assistant-js-websocket');
 
 const HomeAssistantLightbulbDevice = require('./light-bulb');
+const HomeAssistantSensor = require('./sensor');
 
 // FIXME make configurable
 const HASS_URL = 'http://hassio.local:8123';
 
 const DOMAIN_TO_TP_KIND = {
-    'light': 'light-bulb'
+    'light': 'light-bulb',
+    'sensor_battery': 'battery-sensor',
+    'sensor_humidity': 'humidity-sensor',
+    'sensor_illuminance': 'illuminance-sensor',
+    'sensor_power': 'power-sensor',
+    'sensor_pressure': 'pressure-sensor',
+    'sensor_signal_strength': 'signal-strength-sensor',
+    'sensor_temperature': 'temperature-sensor',
+    'sensor_timestamp': 'timestamp-sensor',
 };
 const SUBDEVICES = {
     'light-bulb': HomeAssistantLightbulbDevice
 };
+
+for (let value in Object.values(DOMAIN_TO_TP_KIND)) {
+    if (value.includes('sensor')) {
+        SUBDEVICES[value] = class extends HomeAssistantSensor {};
+    }
+}
+
 
 class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
     constructor(master) {
@@ -43,7 +59,11 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
         }
 
         const [domain,] = entityId.split('.');
-        const kind = DOMAIN_TO_TP_KIND[domain];
+        // const kind = DOMAIN_TO_TP_KIND[domain];
+        let kind = undefined;
+        if (domain === 'sensor') {
+            kind = DOMAIN_TO_TP_KIND[`sensor_${attributes.device_class}`];
+        }
         if (kind === undefined) {
             console.log(`Unhandled Home Assistant entity ${entityId} with domain ${domain}`);
             return;
