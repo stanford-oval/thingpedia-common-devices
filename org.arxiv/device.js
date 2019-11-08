@@ -8,8 +8,6 @@
 const Tp = require('thingpedia');
 const baseUrl = 'http://export.arxiv.org/api/query';
 
-const categories = require('./cat.json');
-
 module.exports = class ArXivDevice extends Tp.BaseDevice {
     constructor(engine, state) {
         super(engine, state);
@@ -24,25 +22,8 @@ module.exports = class ArXivDevice extends Tp.BaseDevice {
         let suffix = `&sortBy=submittedDate`;
         if (query)
             params.push(`all:${encodeURIComponent(query)}`);
-        if (category) {
-            category = category.toLowerCase();
-            if (category === 'ai')
-                category = 'cs.AI';
-            else if (category === 'ml')
-                category = 'cs.ML';
-            else if (category === 'cv' || category === 'computer vision' || category === 'pattern recognition')
-                category = 'cs.CV';
-            else if (category === 'HCI' || category === 'human computer interaction')
-                category = 'cs.HC';
-            else if (category in categories)
-                category = categories[category];
-            else
-                category = null;
-            if (category)
-                params.push(`cat:${encodeURIComponent(category)}`);
-            else
-                params.push(`all:${encodeURIComponent(category)}`);
-        }
+        if (category)
+            params.push(`cat:${encodeURIComponent(category)}`);
         if (author) {
             params.push(`au:${encodeURIComponent(author)}`);
             // the result of searching by author is really bad, do not sort result by submitted date, using the default (by relevance)
