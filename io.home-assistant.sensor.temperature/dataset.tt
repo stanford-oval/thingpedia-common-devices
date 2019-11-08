@@ -1,5 +1,5 @@
-dataset @io.home-assistant.temperature-sensor {
-  program := now => @io.home-assistant.temperature-sensor.state() => notify
+dataset @io.home-assistant.sensor.temperature {
+  program := now => @io.home-assistant.sensor.temperature.state() => notify
   #_[utterances="what is the state of my temperature sensor?",
                 "what is my temperature sensor showing?",
                 "what does my temperature sensor say?",
@@ -7,7 +7,7 @@ dataset @io.home-assistant.temperature-sensor {
                 "check the level of my temperature sensor.",
                ]];
 
-  program (p_name : String) := now => @io.home-assistant.temperature-sensor(name=p_name).state() => notify
+  program (p_name : String) := now => @io.home-assistant.sensor.temperature(name=p_name).state() => notify
   #_[utterances="what is the state of my ${p_name} temperature sensor?",
                 "what is my ${p_name} temperature sensor showing?",
                 "what does my ${p_name} temperature sensor say?",
@@ -15,10 +15,10 @@ dataset @io.home-assistant.temperature-sensor {
                 "check the level of my ${p_name} temperature sensor.",
                ]];
 
-  query := @io.home-assistant.temperature-sensor.state()
+  query := @io.home-assistant.sensor.temperature.state()
   #_[utterances="the state of my temperature sensor"]];
 
-  query (p_name : String) := @io.home-assistant.temperature-sensor(name=p_name).state()
+  query (p_name : String) := @io.home-assistant.sensor.temperature(name=p_name).state()
   #_[utterances="the state of my ${p_name} temperature sensor"]];
 
-  stream :=  edge( @io.home-assistant.temperature-sensor.state()) on (state == Number]];
+  stream :=  edge( @io.home-assistant.sensor.temperature.state()) on (state == Number]];

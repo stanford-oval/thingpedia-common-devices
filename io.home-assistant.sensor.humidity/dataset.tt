@@ -1,5 +1,5 @@
-dataset @io.home-assistant.humidity-sensor {
-  program := now => @io.home-assistant.humidity-sensor.state() => notify
+dataset @io.home-assistant.sensor.humidity {
+  program := now => @io.home-assistant.sensor.humidity.state() => notify
   #_[utterances="what is the state of my humidity sensor?",
                 "what is my humidity sensor showing?",
                 "what does my humidity sensor say?",
@@ -7,7 +7,7 @@ dataset @io.home-assistant.humidity-sensor {
                 "check the level of my humidity sensor.",
                ]];
 
-  program (p_name : String) := now => @io.home-assistant.humidity-sensor(name=p_name).state() => notify
+  program (p_name : String) := now => @io.home-assistant.sensor.humidity(name=p_name).state() => notify
   #_[utterances="what is the state of my ${p_name} humidity sensor?",
                 "what is my ${p_name} humidity sensor showing?",
                 "what does my ${p_name} humidity sensor say?",
@@ -15,10 +15,10 @@ dataset @io.home-assistant.humidity-sensor {
                 "check the level of my ${p_name} humidity sensor.",
                ]];
 
-  query := @io.home-assistant.humidity-sensor.state()
+  query := @io.home-assistant.sensor.humidity.state()
   #_[utterances="the state of my humidity sensor"]];
 
-  query (p_name : String) := @io.home-assistant.humidity-sensor(name=p_name).state()
+  query (p_name : String) := @io.home-assistant.sensor.humidity(name=p_name).state()
   #_[utterances="the state of my ${p_name} humidity sensor"]];
 
-  stream :=  edge( @io.home-assistant.humidity-sensor.state()) on (state == Number]];
+  stream :=  edge( @io.home-assistant.sensor.humidity.state()) on (state == Number]];

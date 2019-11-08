@@ -25,10 +25,10 @@ for device, states in supported_device_classes.items():
     "device_name": ''.join([t.capitalize() for t in device.split('-')]),
   }
 
-  if not os.path.isdir(os.path.join(os.getcwd(), "../io.home-assistant.{device}-sensor".format(**args))):
-    os.mkdir("../io.home-assistant.{device}-sensor".format(**args))
+  if not os.path.isdir(os.path.join(os.getcwd(), "../io.home-assistant.sensor.{device}".format(**args))):
+    os.mkdir("../io.home-assistant.sensor.{device}".format(**args))
 
-  manifest_string = """abstract class @io.home-assistant.{device}-sensor
+  manifest_string = """abstract class @io.home-assistant.sensor.{device}
 #_[thingpedia_name="{device_name} Sensor"]
 #_[thingpedia_description="Interface for Home Assistant's {device_name} Sensor."]
 #[license="CC-0"]
@@ -41,11 +41,11 @@ for device, states in supported_device_classes.items():
   #_[formatted=["Your {device} sensor is ${{state}}"]];
 }}""".format(**args)
   
-  with open("../io.home-assistant.{device}-sensor/manifest.tt".format(**args), "w") as file:
+  with open("../io.home-assistant.sensor.{device}/manifest.tt".format(**args), "w") as file:
     file.write(manifest_string)
 
-  dataset_string = """dataset @io.home-assistant.{device}-sensor {{
-  program := now => @io.home-assistant.{device}-sensor.state() => notify
+  dataset_string = """dataset @io.home-assistant.sensor.{device} {{
+  program := now => @io.home-assistant.sensor.{device}.state() => notify
   #_[utterances="what is the state of my {device} sensor?",
                 "what is my {device} sensor showing?",
                 "what does my {device} sensor say?",
@@ -57,7 +57,7 @@ for device, states in supported_device_classes.items():
 
   dataset_string += """
 
-  program (p_name : String) := now => @io.home-assistant.{device}-sensor(name=p_name).state() => notify
+  program (p_name : String) := now => @io.home-assistant.sensor.{device}(name=p_name).state() => notify
   #_[utterances="what is the state of my ${{p_name}} {device} sensor?",
                 "what is my ${{p_name}} {device} sensor showing?",
                 "what does my ${{p_name}} {device} sensor say?",
@@ -69,14 +69,14 @@ for device, states in supported_device_classes.items():
 
   dataset_string += """
 
-  query := @io.home-assistant.{device}-sensor.state()
+  query := @io.home-assistant.sensor.{device}.state()
   #_[utterances="the state of my {device} sensor",""".format(**args)
 
   dataset_string = dataset_string[:-1] + """]];"""
 
   dataset_string += """
 
-  query (p_name : String) := @io.home-assistant.{device}-sensor(name=p_name).state()
+  query (p_name : String) := @io.home-assistant.sensor.{device}(name=p_name).state()
   #_[utterances="the state of my ${{p_name}} {device} sensor",""".format(**args)
 
 
@@ -84,10 +84,10 @@ for device, states in supported_device_classes.items():
 
   dataset_string += """
 
-  stream :=  edge( @io.home-assistant.{device}-sensor.state()) on (state == Number)""".format(**args)
+  stream :=  edge( @io.home-assistant.sensor.{device}.state()) on (state == Number)""".format(**args)
 
   dataset_string = dataset_string[:-1] + """]];""".format(**args)
 
 
-  with open("../io.home-assistant.{device}-sensor/dataset.tt".format(**args), "w") as file:
+  with open("../io.home-assistant.sensor.{device}/dataset.tt".format(**args), "w") as file:
     file.write(dataset_string)

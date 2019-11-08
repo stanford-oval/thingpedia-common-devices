@@ -19,25 +19,26 @@ const HASS_URL = 'http://hassio.local:8123';
 
 const DOMAIN_TO_TP_KIND = {
     'light': 'light-bulb',
-    'sensor_battery': 'battery-sensor',
-    'sensor_humidity': 'humidity-sensor',
-    'sensor_illuminance': 'illuminance-sensor',
-    'sensor_power': 'power-sensor',
-    'sensor_pressure': 'pressure-sensor',
-    'sensor_signal_strength': 'signal-strength-sensor',
-    'sensor_temperature': 'temperature-sensor',
-    'sensor_timestamp': 'timestamp-sensor',
+    'sensor_battery': 'io.home-assistant.sensor.battery',
+    'sensor_humidity': 'io.home-assistant.sensor.humidity',
+    'sensor_illuminance': 'io.home-assistant.sensor.illuminance',
+    'sensor_power': 'io.home-assistant.sensor.power',
+    'sensor_pressure': 'io.home-assistant.sensor.pressure',
+    'sensor_signal_strength': 'io.home-assistant.sensor.signal_strength',
+    'sensor_temperature': 'io.home-assistant.sensor.temperature',
+    'sensor_timestamp': 'io.home-assistant.sensor.timestamp',
 };
 const SUBDEVICES = {
-    'light-bulb': HomeAssistantLightbulbDevice
+    'light-bulb': HomeAssistantLightbulbDevice,
 };
 
 for (let value in Object.values(DOMAIN_TO_TP_KIND)) {
-    if (value.includes('sensor')) {
-        SUBDEVICES[value] = class extends HomeAssistantSensor {};
+    if (Object.values(DOMAIN_TO_TP_KIND)[value].includes('sensor')) {
+        SUBDEVICES[Object.values(DOMAIN_TO_TP_KIND)[value]] = class extends HomeAssistantSensor {};
     }
 }
 
+console.log(SUBDEVICES);
 
 class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
     constructor(master) {
@@ -59,17 +60,27 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
         }
 
         const [domain,] = entityId.split('.');
+        // const [,curr_type] = entityId.split('.');
         // const kind = DOMAIN_TO_TP_KIND[domain];
         let kind = undefined;
+        // console.log("++++++");
+        // console.log(entityId);
+        // // console.log(curr_type);
+        // console.log(attributes);
         if (domain === 'sensor') {
             kind = DOMAIN_TO_TP_KIND[`sensor_${attributes.device_class}`];
+            console.log(kind);
+        } else {
+            kind = DOMAIN_TO_TP_KIND[domain];
         }
         if (kind === undefined) {
             console.log(`Unhandled Home Assistant entity ${entityId} with domain ${domain}`);
             return;
         }
-
         const deviceClass = SUBDEVICES[kind];
+        console.log("========");
+        console.log(deviceClass);
+        console.log(attributes);
         const device = new deviceClass(this.engine, { kind, state, attributes }, this.master, entityId);
         this._devices.set(entityId, device);
         this.objectAdded(device);
