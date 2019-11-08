@@ -28,7 +28,7 @@ module.exports = [
         }
     }],
 
-    ['query', 'query', { category: 'machine learning', author: 'silei xu'}, (results) => {
+    ['query', 'query', { category: 'cs.ML', author: 'silei xu'}, (results) => {
         for (let result of results) {
             assert(typeof result.title === 'string');
             assert(typeof result.author === 'string');
