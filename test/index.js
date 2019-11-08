@@ -177,7 +177,8 @@ async function toTest(argv) {
     if (argv.length > 2) {
         const filesChanged = argv.slice(2);
         for (let file of filesChanged) {
-            if (fs.lstatSync(path.resolve(path.dirname(module.filename), '..', file)).isDirectory()) {
+            let fullPath = path.resolve(path.dirname(module.filename), '..', file);
+            if (fs.existsSync(fullPath) && fs.lstatSync(fullPath).isDirectory()) {
                 // if it's a device name, add it directly
                 devices.push(file);
             } else {
