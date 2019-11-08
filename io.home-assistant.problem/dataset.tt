@@ -1,0 +1,23 @@
+dataset @io.home-assistant.problem {
+  program := now => @io.home-assistant.problem.state() => notify
+  #_[utterances="what is the state of my problem sensor?",
+                "what is my problem sensor showing?",
+                "what does my problem sensor say?",
+                "what is the value of my problem sensor?",
+                "check the level of my problem sensor.",
+               ]];
+
+  program (p_name : String) := now => @io.home-assistant.problem(name=p_name).state() => notify
+  #_[utterances="what is the state of my ${p_name} problem sensor?",
+                "what is my ${p_name} problem sensor showing?",
+                "what does my ${p_name} problem sensor say?",
+                "what is the value of my ${p_name} problem sensor?",
+                "check the level of my ${p_name} problem sensor.",
+               ]];
+
+  query := @io.home-assistant.problem.state()
+  #_[utterances="the state of my problem sensor"]];
+
+  query (p_name : String) := @io.home-assistant.problem(name=p_name).state()
+  #_[utterances="the state of my ${p_name} problem sensor"]];
+}

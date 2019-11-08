@@ -1,0 +1,23 @@
+dataset @io.home-assistant.connectivity {
+  program := now => @io.home-assistant.connectivity.state() => notify
+  #_[utterances="what is the state of my connectivity sensor?",
+                "what is my connectivity sensor showing?",
+                "what does my connectivity sensor say?",
+                "what is the value of my connectivity sensor?",
+                "check the level of my connectivity sensor.",
+               ]];
+
+  program (p_name : String) := now => @io.home-assistant.connectivity(name=p_name).state() => notify
+  #_[utterances="what is the state of my ${p_name} connectivity sensor?",
+                "what is my ${p_name} connectivity sensor showing?",
+                "what does my ${p_name} connectivity sensor say?",
+                "what is the value of my ${p_name} connectivity sensor?",
+                "check the level of my ${p_name} connectivity sensor.",
+               ]];
+
+  query := @io.home-assistant.connectivity.state()
+  #_[utterances="the state of my connectivity sensor"]];
+
+  query (p_name : String) := @io.home-assistant.connectivity(name=p_name).state()
+  #_[utterances="the state of my ${p_name} connectivity sensor"]];
+}

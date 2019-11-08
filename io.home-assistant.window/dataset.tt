@@ -1,0 +1,23 @@
+dataset @io.home-assistant.window {
+  program := now => @io.home-assistant.window.state() => notify
+  #_[utterances="what is the state of my window sensor?",
+                "what is my window sensor showing?",
+                "what does my window sensor say?",
+                "what is the value of my window sensor?",
+                "check the level of my window sensor.",
+               ]];
+
+  program (p_name : String) := now => @io.home-assistant.window(name=p_name).state() => notify
+  #_[utterances="what is the state of my ${p_name} window sensor?",
+                "what is my ${p_name} window sensor showing?",
+                "what does my ${p_name} window sensor say?",
+                "what is the value of my ${p_name} window sensor?",
+                "check the level of my ${p_name} window sensor.",
+               ]];
+
+  query := @io.home-assistant.window.state()
+  #_[utterances="the state of my window sensor"]];
+
+  query (p_name : String) := @io.home-assistant.window(name=p_name).state()
+  #_[utterances="the state of my ${p_name} window sensor"]];
+}

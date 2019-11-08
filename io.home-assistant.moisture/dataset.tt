@@ -1,0 +1,23 @@
+dataset @io.home-assistant.moisture {
+  program := now => @io.home-assistant.moisture.state() => notify
+  #_[utterances="what is the state of my moisture sensor?",
+                "what is my moisture sensor showing?",
+                "what does my moisture sensor say?",
+                "what is the value of my moisture sensor?",
+                "check the level of my moisture sensor.",
+               ]];
+
+  program (p_name : String) := now => @io.home-assistant.moisture(name=p_name).state() => notify
+  #_[utterances="what is the state of my ${p_name} moisture sensor?",
+                "what is my ${p_name} moisture sensor showing?",
+                "what does my ${p_name} moisture sensor say?",
+                "what is the value of my ${p_name} moisture sensor?",
+                "check the level of my ${p_name} moisture sensor.",
+               ]];
+
+  query := @io.home-assistant.moisture.state()
+  #_[utterances="the state of my moisture sensor"]];
+
+  query (p_name : String) := @io.home-assistant.moisture(name=p_name).state()
+  #_[utterances="the state of my ${p_name} moisture sensor"]];
+}

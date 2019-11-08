@@ -1,0 +1,23 @@
+dataset @io.home-assistant.vibration {
+  program := now => @io.home-assistant.vibration.state() => notify
+  #_[utterances="what is the state of my vibration sensor?",
+                "what is my vibration sensor showing?",
+                "what does my vibration sensor say?",
+                "what is the value of my vibration sensor?",
+                "check the level of my vibration sensor.",
+               ]];
+
+  program (p_name : String) := now => @io.home-assistant.vibration(name=p_name).state() => notify
+  #_[utterances="what is the state of my ${p_name} vibration sensor?",
+                "what is my ${p_name} vibration sensor showing?",
+                "what does my ${p_name} vibration sensor say?",
+                "what is the value of my ${p_name} vibration sensor?",
+                "check the level of my ${p_name} vibration sensor.",
+               ]];
+
+  query := @io.home-assistant.vibration.state()
+  #_[utterances="the state of my vibration sensor"]];
+
+  query (p_name : String) := @io.home-assistant.vibration(name=p_name).state()
+  #_[utterances="the state of my ${p_name} vibration sensor"]];
+}

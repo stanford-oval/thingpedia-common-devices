@@ -1,0 +1,23 @@
+dataset @io.home-assistant.moving {
+  program := now => @io.home-assistant.moving.state() => notify
+  #_[utterances="what is the state of my moving sensor?",
+                "what is my moving sensor showing?",
+                "what does my moving sensor say?",
+                "what is the value of my moving sensor?",
+                "check the level of my moving sensor.",
+               ]];
+
+  program (p_name : String) := now => @io.home-assistant.moving(name=p_name).state() => notify
+  #_[utterances="what is the state of my ${p_name} moving sensor?",
+                "what is my ${p_name} moving sensor showing?",
+                "what does my ${p_name} moving sensor say?",
+                "what is the value of my ${p_name} moving sensor?",
+                "check the level of my ${p_name} moving sensor.",
+               ]];
+
+  query := @io.home-assistant.moving.state()
+  #_[utterances="the state of my moving sensor"]];
+
+  query (p_name : String) := @io.home-assistant.moving(name=p_name).state()
+  #_[utterances="the state of my ${p_name} moving sensor"]];
+}

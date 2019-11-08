@@ -1,0 +1,23 @@
+dataset @io.home-assistant.heat {
+  program := now => @io.home-assistant.heat.state() => notify
+  #_[utterances="what is the state of my heat sensor?",
+                "what is my heat sensor showing?",
+                "what does my heat sensor say?",
+                "what is the value of my heat sensor?",
+                "check the level of my heat sensor.",
+               ]];
+
+  program (p_name : String) := now => @io.home-assistant.heat(name=p_name).state() => notify
+  #_[utterances="what is the state of my ${p_name} heat sensor?",
+                "what is my ${p_name} heat sensor showing?",
+                "what does my ${p_name} heat sensor say?",
+                "what is the value of my ${p_name} heat sensor?",
+                "check the level of my ${p_name} heat sensor.",
+               ]];
+
+  query := @io.home-assistant.heat.state()
+  #_[utterances="the state of my heat sensor"]];
+
+  query (p_name : String) := @io.home-assistant.heat(name=p_name).state()
+  #_[utterances="the state of my ${p_name} heat sensor"]];
+}

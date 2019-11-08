@@ -19,21 +19,42 @@ const HASS_URL = 'http://hassio.local:8123';
 
 const DOMAIN_TO_TP_KIND = {
     'light': 'light-bulb',
-    'sensor_battery': 'io.home-assistant.sensor.battery',
-    'sensor_humidity': 'io.home-assistant.sensor.humidity',
-    'sensor_illuminance': 'io.home-assistant.sensor.illuminance',
-    'sensor_power': 'io.home-assistant.sensor.power',
-    'sensor_pressure': 'io.home-assistant.sensor.pressure',
-    'sensor_signal_strength': 'io.home-assistant.sensor.signal_strength',
-    'sensor_temperature': 'io.home-assistant.sensor.temperature',
-    'sensor_timestamp': 'io.home-assistant.sensor.timestamp',
+    'sensor_battery': 'io.home-assistant.battery',
+    'sensor_cold': 'io.home-assistant.cold',
+    'sensor_connectivity': 'io.home-assistant.connectivity',
+    'sensor_door': 'io.home-assistant.door',
+    'sensor_garage_door': 'io.home-assistant.garage_door',
+    'sensor_gas': 'io.home-assistant.gas',
+    'sensor_heat': 'io.home-assistant.heat',
+    'sensor_humidity': 'io.home-assistant.humidity',
+    'sensor_illuminance': 'io.home-assistant.illuminance',
+    'sensor_light': 'io.home-assistant.light',
+    'sensor_lock': 'io.home-assistant.lock',
+    'sensor_moisture': 'io.home-assistant.moisture',
+    'sensor_motion': 'io.home-assistant.motion',
+    'sensor_moving': 'io.home-assistant.moving',
+    'sensor_occupancy': 'io.home-assistant.occupancy',
+    'sensor_opening': 'io.home-assistant.opening',
+    'sensor_plug': 'io.home-assistant.plug',
+    'sensor_power': 'io.home-assistant.power',
+    'sensor_presence': 'io.home-assistant.presence',
+    'sensor_pressure': 'io.home-assistant.pressure',
+    'sensor_problem': 'io.home-assistant.problem',
+    'sensor_safety': 'io.home-assistant.safety',
+    'sensor_signal_strength': 'io.home-assistant.signal_strength',
+    'sensor_smoke': 'io.home-assistant.smoke',
+    'sensor_sound': 'io.home-assistant.sound',
+    'sensor_temperature': 'io.home-assistant.temperature',
+    'sensor_timestamp': 'io.home-assistant.timestamp',
+    'sensor_vibration': 'io.home-assistant.vibration',
+    'sensor_window': 'io.home-assistant.window',
 };
 const SUBDEVICES = {
     'light-bulb': HomeAssistantLightbulbDevice,
 };
 
 for (let value in Object.values(DOMAIN_TO_TP_KIND)) {
-    if (Object.values(DOMAIN_TO_TP_KIND)[value].includes('sensor')) {
+    if (Object.values(DOMAIN_TO_TP_KIND)[value].includes('io.home-assistant')) {
         SUBDEVICES[Object.values(DOMAIN_TO_TP_KIND)[value]] = class extends HomeAssistantSensor {};
     }
 }
@@ -63,13 +84,12 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
         // const [,curr_type] = entityId.split('.');
         // const kind = DOMAIN_TO_TP_KIND[domain];
         let kind = undefined;
-        // console.log("++++++");
-        // console.log(entityId);
-        // // console.log(curr_type);
-        // console.log(attributes);
-        if (domain === 'sensor') {
+        if ((domain === 'sensor') || (domain === 'binary_sensor')) {
             kind = DOMAIN_TO_TP_KIND[`sensor_${attributes.device_class}`];
-            console.log(kind);
+            // console.log("=======\n\n\n");
+            // console.log(domain);
+            // console.log(attributes);
+            // console.log("+++++++\n\n\n");
         } else {
             kind = DOMAIN_TO_TP_KIND[domain];
         }
@@ -78,10 +98,8 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
             return;
         }
         const deviceClass = SUBDEVICES[kind];
-        console.log("========");
-        console.log(deviceClass);
-        console.log(attributes);
-        const device = new deviceClass(this.engine, { kind, state, attributes }, this.master, entityId);
+        const device = new deviceClass(
+            this.engine, { kind, state, attributes }, this.master, entityId);
         this._devices.set(entityId, device);
         this.objectAdded(device);
     }
@@ -134,7 +152,6 @@ module.exports = class HomeAssistantGateway extends Tp.BaseDevice {
 
     static async loadFromOAuth2(engine, accessToken, refreshToken, extraData) {
         const expires = extraData.expires_in * 1000 + Date.now();
-
         return new HomeAssistantGateway(engine, {
             kind: 'io.home-assistant',
 

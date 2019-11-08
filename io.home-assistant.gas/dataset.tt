@@ -1,0 +1,23 @@
+dataset @io.home-assistant.gas {
+  program := now => @io.home-assistant.gas.state() => notify
+  #_[utterances="what is the state of my gas sensor?",
+                "what is my gas sensor showing?",
+                "what does my gas sensor say?",
+                "what is the value of my gas sensor?",
+                "check the level of my gas sensor.",
+               ]];
+
+  program (p_name : String) := now => @io.home-assistant.gas(name=p_name).state() => notify
+  #_[utterances="what is the state of my ${p_name} gas sensor?",
+                "what is my ${p_name} gas sensor showing?",
+                "what does my ${p_name} gas sensor say?",
+                "what is the value of my ${p_name} gas sensor?",
+                "check the level of my ${p_name} gas sensor.",
+               ]];
+
+  query := @io.home-assistant.gas.state()
+  #_[utterances="the state of my gas sensor"]];
+
+  query (p_name : String) := @io.home-assistant.gas(name=p_name).state()
+  #_[utterances="the state of my ${p_name} gas sensor"]];
+}

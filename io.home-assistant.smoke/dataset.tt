@@ -1,0 +1,23 @@
+dataset @io.home-assistant.smoke {
+  program := now => @io.home-assistant.smoke.state() => notify
+  #_[utterances="what is the state of my smoke sensor?",
+                "what is my smoke sensor showing?",
+                "what does my smoke sensor say?",
+                "what is the value of my smoke sensor?",
+                "check the level of my smoke sensor.",
+               ]];
+
+  program (p_name : String) := now => @io.home-assistant.smoke(name=p_name).state() => notify
+  #_[utterances="what is the state of my ${p_name} smoke sensor?",
+                "what is my ${p_name} smoke sensor showing?",
+                "what does my ${p_name} smoke sensor say?",
+                "what is the value of my ${p_name} smoke sensor?",
+                "check the level of my ${p_name} smoke sensor.",
+               ]];
+
+  query := @io.home-assistant.smoke.state()
+  #_[utterances="the state of my smoke sensor"]];
+
+  query (p_name : String) := @io.home-assistant.smoke(name=p_name).state()
+  #_[utterances="the state of my ${p_name} smoke sensor"]];
+}

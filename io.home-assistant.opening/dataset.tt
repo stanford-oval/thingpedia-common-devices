@@ -1,0 +1,23 @@
+dataset @io.home-assistant.opening {
+  program := now => @io.home-assistant.opening.state() => notify
+  #_[utterances="what is the state of my opening sensor?",
+                "what is my opening sensor showing?",
+                "what does my opening sensor say?",
+                "what is the value of my opening sensor?",
+                "check the level of my opening sensor.",
+               ]];
+
+  program (p_name : String) := now => @io.home-assistant.opening(name=p_name).state() => notify
+  #_[utterances="what is the state of my ${p_name} opening sensor?",
+                "what is my ${p_name} opening sensor showing?",
+                "what does my ${p_name} opening sensor say?",
+                "what is the value of my ${p_name} opening sensor?",
+                "check the level of my ${p_name} opening sensor.",
+               ]];
+
+  query := @io.home-assistant.opening.state()
+  #_[utterances="the state of my opening sensor"]];
+
+  query (p_name : String) := @io.home-assistant.opening(name=p_name).state()
+  #_[utterances="the state of my ${p_name} opening sensor"]];
+}

@@ -1,0 +1,23 @@
+dataset @io.home-assistant.signal_strength {
+  program := now => @io.home-assistant.signal_strength.state() => notify
+  #_[utterances="what is the state of my signal_strength sensor?",
+                "what is my signal_strength sensor showing?",
+                "what does my signal_strength sensor say?",
+                "what is the value of my signal_strength sensor?",
+                "check the level of my signal_strength sensor.",
+               ]];
+
+  program (p_name : String) := now => @io.home-assistant.signal_strength(name=p_name).state() => notify
+  #_[utterances="what is the state of my ${p_name} signal_strength sensor?",
+                "what is my ${p_name} signal_strength sensor showing?",
+                "what does my ${p_name} signal_strength sensor say?",
+                "what is the value of my ${p_name} signal_strength sensor?",
+                "check the level of my ${p_name} signal_strength sensor.",
+               ]];
+
+  query := @io.home-assistant.signal_strength.state()
+  #_[utterances="the state of my signal_strength sensor"]];
+
+  query (p_name : String) := @io.home-assistant.signal_strength(name=p_name).state()
+  #_[utterances="the state of my ${p_name} signal_strength sensor"]];
+}

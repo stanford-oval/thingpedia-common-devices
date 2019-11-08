@@ -1,0 +1,23 @@
+dataset @io.home-assistant.lock {
+  program := now => @io.home-assistant.lock.state() => notify
+  #_[utterances="what is the state of my lock sensor?",
+                "what is my lock sensor showing?",
+                "what does my lock sensor say?",
+                "what is the value of my lock sensor?",
+                "check the level of my lock sensor.",
+               ]];
+
+  program (p_name : String) := now => @io.home-assistant.lock(name=p_name).state() => notify
+  #_[utterances="what is the state of my ${p_name} lock sensor?",
+                "what is my ${p_name} lock sensor showing?",
+                "what does my ${p_name} lock sensor say?",
+                "what is the value of my ${p_name} lock sensor?",
+                "check the level of my ${p_name} lock sensor.",
+               ]];
+
+  query := @io.home-assistant.lock.state()
+  #_[utterances="the state of my lock sensor"]];
+
+  query (p_name : String) := @io.home-assistant.lock(name=p_name).state()
+  #_[utterances="the state of my ${p_name} lock sensor"]];
+}
