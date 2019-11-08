@@ -114,41 +114,30 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
         } else if (this.domain == "sensor") {
             this.deviceStateMapping = this.state.attributes.unit_of_measurement;
         }
-
-        
-
-        // this.deviceClass = this.state.attributes.device_class;
-
     }
     async get_state() {
-        console.log("here");
         if (this.domain === "sensor") {
-            console.log(this.domain);
             var str_ret = this.state.state + this.deviceStateMapping;
             return [{state: str_ret}];
         } else if (this.domain === "binary_sensor") {
             var str_ret = this.deviceStateMapping[this.state.state];
             str_ret = str_ret.split("_");
-            console.log(this.domain);
             return [{state: str_ret}];
         }
     }
     // note: subscribe_ must NOT be async, or an ImplementationError will occur at runtime
     subscribe_state() {
-        // if (this.domain === "sensor") {
-        //     var str_ret = this.state.state + this.deviceStateMapping;
-        //     return this._subscribeState(() => {
-        //         return [{value: str_ret}];
-        //     });
-        // } else if (this.domain === "binary_sensor") {
-        //     var str_ret = this.deviceStateMapping[this.state.state];
-        //     str_ret = str_ret.split("_");
-        //     return this._subscribeState(() => {
-        //         return [{state: str_ret}];
-        //     });
-        // }
-        return this._subscribeState(() => {
-            return { state: this.state.state };
-        });
+        if (this.domain === "sensor") {
+            var str_ret = this.state.state + this.deviceStateMapping;
+            return this._subscribeState(() => {
+                return [{state: str_ret}];
+            });
+        } else if (this.domain === "binary_sensor") {
+            var str_ret = this.deviceStateMapping[this.state.state];
+            str_ret = str_ret.split("_");
+            return this._subscribeState(() => {
+                return [{state: str_ret}];
+            });
+        }
     }
 };
