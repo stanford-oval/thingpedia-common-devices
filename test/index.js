@@ -156,13 +156,15 @@ async function existsSafe(path) {
 function deviceChanged(fileChanged) {
     if (fileChanged.startsWith('test/') && fileChanged.endsWith('.js')) {
         let maybeDevice = fileChanged.substring('test/'.length, fileChanged.length - '.js'.length);
-        if (fs.lstatSync(path.resolve(path.dirname(module.filename), '..', maybeDevice)).isDirectory())
+        let fullPath = path.resolve(path.dirname(module.filename), '..', maybeDevice);
+        if (fs.existsSync(fullPath) && fs.lstatSync(fullPath).isDirectory())
             return maybeDevice;
         else
             return null;
     } else if (fileChanged.includes('/')) {
         let maybeDevice = fileChanged.substring(0, fileChanged.indexOf('/'));
-        if (fs.lstatSync(path.resolve(path.dirname(module.filename), '..', maybeDevice)).isDirectory())
+        let fullPath = path.resolve(path.dirname(module.filename), '..', maybeDevice);
+        if (fs.existsSync(fullPath) && fs.lstatSync(fullPath).isDirectory())
             return maybeDevice;
         else
             return null;
@@ -172,29 +174,30 @@ function deviceChanged(fileChanged) {
 }
 
 async function toTest(argv) {
-    let devices = [];
+    let devices = new Set();
 
     if (argv.length > 2) {
         const filesChanged = argv.slice(2);
         for (let file of filesChanged) {
-            if (fs.lstatSync(path.resolve(path.dirname(module.filename), '..', file)).isDirectory()) {
+            let fullPath = path.resolve(path.dirname(module.filename), '..', file);
+            if (fs.existsSync(fullPath) && fs.lstatSync(fullPath).isDirectory()) {
                 // if it's a device name, add it directly
-                devices.push(file);
+                devices.add(file);
             } else {
                 // if it's a path to a file, try to get the device name out of it
                 // if we failed to get the device name, test all
                 const maybeDevice = deviceChanged(file);
                 if (maybeDevice) {
-                    devices.push(maybeDevice);
+                    devices.add(maybeDevice);
                 } else {
-                    devices = [];
+                    devices.clear();
                     break;
                 }
             }
         }
     }
 
-    if (devices.length === 0)
+    if (devices.size === 0)
         return await util.promisify(fs.readdir)(path.resolve(path.dirname(module.filename), '..'));
     else
         return devices;
