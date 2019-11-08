@@ -11,15 +11,8 @@ const HomeAssistantDevice = require('./base');
 
 module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
 	constructor(engine, state, master, entityId) {
-        // console.log(state.attributes.device_class);
-        // console.log(state.attributes);
-        // console.log("======\n\n\n\n\n");
         const [domain,] = entityId.split('.');
 		super(engine, state, master, entityId);
-        // if ((this.state.attributes.device_class === "battery") ||
-        //     (this.state.attributes.device_class === "power")) {
-        //     console.log(this.master._subdevices);
-        // }
         this.domain = domain;
         if (this.domain === "binary_sensor") {
             let supportedDeviceClasses = {
@@ -128,22 +121,12 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
 
     }
     async get_state() {
-        // if ((this.state.attributes.device_class === "battery") ||
-        //     (this.state.attributes.device_class === "power")) {
-        //     return [{ state: this.state.state}];
-        // }
-        // console.log(this.state.attributes.device_class);
-        // console.log(this.master._subdevices);
         if (this.domain === "sensor") {
             var str_ret = this.state.state + this.deviceStateMapping;
-            console.log(this.state.state);
-            console.log(this.deviceStateMapping);
-            console.log(str_ret);
             return [{ state:  str_ret}];
         } else if (this.domain === "binary_sensor") {
             return [{ state: this.deviceStateMapping[this.state.state] }];
         }
-    	return [{ state: this.state.state }];
     }
     // note: subscribe_ must NOT be async, or an ImplementationError will occur at runtime
     subscribe_state() {

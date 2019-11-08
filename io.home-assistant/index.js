@@ -59,8 +59,6 @@ for (let value in Object.values(DOMAIN_TO_TP_KIND)) {
     }
 }
 
-console.log(SUBDEVICES);
-
 class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
     constructor(master) {
         super();
@@ -86,10 +84,6 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
         let kind = undefined;
         if ((domain === 'sensor') || (domain === 'binary_sensor')) {
             kind = DOMAIN_TO_TP_KIND[`sensor_${attributes.device_class}`];
-            // console.log("=======\n\n\n");
-            // console.log(domain);
-            // console.log(attributes);
-            // console.log("+++++++\n\n\n");
         } else {
             kind = DOMAIN_TO_TP_KIND[domain];
         }
