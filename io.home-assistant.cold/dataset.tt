@@ -1,102 +1,58 @@
 dataset @io.home-assistant.cold language "en" {
 
   program := now => @io.home-assistant.cold.state() => notify
-  #_[utterances=["is the cold sensor cold?",
-                 "check if the cold sensor is cold",
+  #_[utterances=["check if the cold sensor is cold",
                  "is the cold sensor too cold?",
-                 "check if the cold sensor is too cold",
-                 "is the cold sensor normal?",
-                 "check if the cold sensor is normal",
-                 "check if the cold sensor is cold or normal",
-                 "check if the cold sensor is too cold or normal"]];
+                 "is the cold sensor cold or normal?"]];
 
   query := @io.home-assistant.cold.state()
   #_[utterances=["the state of the cold sensor",
                  "if the cold sensor is cold or normal",
-                 "whether the cold sensor is cold or normal",
-                 "if the cold sensor is too cold or normal",
-                 "whether the cold sensor is too cold or normal"]];
+                 "whether the cold sensor is cold or normal"]];
 
   stream := monitor @io.home-assistant.cold.state()
   #_[utterances=["when the state of the cold sensor changes"]];
 
   stream (p_state : Enum(cold, normal)) := edge( @io.home-assistant.cold.state()) on (state == p_state)
-  #_[utterances=["when the cold sensor becomes ${p_state}",
-                "when the cold sensor is ${p_state}",
+  #_[utterances=["when my cold sensor becomes ${p_state}",
+                "if my cold sensor is ${p_state}",
                 "when the cold sensor turns ${p_state}",
-                "when the cold sensor changes to ${p_state}",
-                "if the cold sensor becomes ${p_state}",
-                "if the cold sensor is ${p_state}",
-                "if the cold sensor turns ${p_state}",
                 "if the cold sensor changes to ${p_state}"]];
 
   stream := edge( @io.home-assistant.cold.state()) on (state == enum(cold))
-  #_[utterances=["when the cold sensor is cold",
-                "if the cold sensor is cold",
-                "when the cold sensor becomes cold",
-                "if the cold sensor becomes cold",
-                "when the cold sensor turns cold",
-                "if the cold sensor turns cold",
-                "when the cold sensor gets cold",
-                "if the cold sensor gets cold"]];
+  #_[utterances=["when the cold sensor is freezing",
+                "if the cold sensor is chilly"]];
 
   stream := edge( @io.home-assistant.cold.state()) on (state == enum(normal))
-  #_[utterances=["when the cold sensor is normal",
-                "if the cold sensor is normal",
-                "when the cold sensor becomes normal",
-                "if the cold sensor becomes normal",
-                "when the cold sensor turns normal",
-                "if the cold sensor turns normal",
-                "when the cold sensor gets normal",
-                "if the cold sensor gets normal"]];
+  #_[utterances=["when the cold sensor is just normal",
+                "if the cold sensor is not cold anymore",
+                "when the cold sensor is no longer cold"]];
 
-  program (p_name : String) := now => @io.home-assistant.cold(name=p_name).state() => notify
-  #_[utterances=["is the ${p_name} cold sensor cold?",
-                 "check if the ${p_name} cold sensor is cold",
+  program (p_name : String) := now => @io.home-assistant(name=p_name).cold.state() => notify
+  #_[utterances=["check if the ${p_name} cold sensor is cold",
                  "is the ${p_name} cold sensor too cold?",
-                 "check if the ${p_name} cold sensor is too cold",
-                 "is the ${p_name} cold sensor normal?",
-                 "check if the ${p_name} cold sensor is normal",
-                 "check if the ${p_name} cold sensor is cold or normal",
-                 "check if the ${p_name} cold sensor is too cold or normal"]];
+                 "is the ${p_name} cold sensor cold or normal?"]];
 
-  query (p_name : String) := @io.home-assistant.cold(name=p_name).state()
+  query (p_name : String) := @io.home-assistant(name=p_name).cold.state()
   #_[utterances=["the state of the ${p_name} cold sensor",
                  "if the ${p_name} cold sensor is cold or normal",
-                 "whether the ${p_name} cold sensor is cold or normal",
-                 "if the ${p_name} cold sensor is too cold or normal",
-                 "whether the ${p_name} cold sensor is too cold or normal"]];
+                 "whether the ${p_name} cold sensor is cold or normal"]];
 
-  stream (p_name : String) := monitor @io.home-assistant.cold(name=p_name).state()
+  stream (p_name : String) := monitor @io.home-assistant(name=p_name).cold.state()
   #_[utterances=["when the state of the ${p_name} cold sensor changes"]];
 
-  stream (p_name : String, p_state : Enum(cold, normal)) := edge( @io.home-assistant.cold(name=p_name).state()) on (state == p_state)
-  #_[utterances=["when the ${p_name} cold sensor becomes ${p_state}",
-                "when the ${p_name} cold sensor is ${p_state}",
+  stream (p_name : String, p_state : Enum(cold, normal)) := edge( @io.home-assistant(name=p_name).cold.state()) on (state == p_state)
+  #_[utterances=["when my ${p_name} cold sensor becomes ${p_state}",
+                "if my ${p_name} cold sensor is ${p_state}",
                 "when the ${p_name} cold sensor turns ${p_state}",
-                "when the ${p_name} cold sensor changes to ${p_state}",
-                "if the ${p_name} cold sensor becomes ${p_state}",
-                "if the ${p_name} cold sensor is ${p_state}",
-                "if the ${p_name} cold sensor turns ${p_state}",
                 "if the ${p_name} cold sensor changes to ${p_state}"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.cold(name=p_name).state()) on (state == enum(cold))
-  #_[utterances=["when the ${p_name} cold sensor is cold",
-                "if the ${p_name} cold sensor is cold",
-                "when the ${p_name} cold sensor becomes cold",
-                "if the ${p_name} cold sensor becomes cold",
-                "when the ${p_name} cold sensor turns cold",
-                "if the ${p_name} cold sensor turns cold",
-                "when the ${p_name} cold sensor gets cold",
-                "if the ${p_name} cold sensor gets cold"]];
+  stream (p_name : String) := edge( @io.home-assistant(name=p_name).cold.state()) on (state == enum(cold))
+  #_[utterances=["when the ${p_name} cold sensor is freezing",
+                "if the ${p_name} cold sensor is chilly"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.cold(name=p_name).state()) on (state == enum(normal))
-  #_[utterances=["when the ${p_name} cold sensor is normal",
-                "if the ${p_name} cold sensor is normal",
-                "when the ${p_name} cold sensor becomes normal",
-                "if the ${p_name} cold sensor becomes normal",
-                "when the ${p_name} cold sensor turns normal",
-                "if the ${p_name} cold sensor turns normal",
-                "when the ${p_name} cold sensor gets normal",
-                "if the ${p_name} cold sensor gets normal"]];
+  stream (p_name : String) := edge( @io.home-assistant(name=p_name).cold.state()) on (state == enum(normal))
+  #_[utterances=["when the ${p_name} cold sensor is just normal",
+                "if the ${p_name} cold sensor is not cold anymore",
+                "when the ${p_name} cold sensor is no longer cold"]];
 }

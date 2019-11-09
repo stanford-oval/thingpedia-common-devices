@@ -2,101 +2,48 @@ dataset @io.home-assistant.humidity language "en" {
 
   program := now => @io.home-assistant.humidity.state() => notify
   #_[utterances=["is it humid?",
-                 "is the humidity sensor humid?",
-                 "check if the humidity sensor is humid",
-                 "is the humidity sensor normal?",
-                 "check if the humidity sensor is normal",
-                 "check if the humidity sensor is humid or normal"]];
+                 "check if my humidity sensor says it is humid",
+                 "what does my humidity sensor say?",
+                 "how humid is it?",
+                 "what is the level of humidity?",
+                 "how high is the humidity?"]];
 
   query := @io.home-assistant.humidity.state()
   #_[utterances=["the humidity",
                  "the state of the humidity sensor",
-                 "if the humidity sensor is humid or normal",
-                 "whether the humidity sensor is humid or normal"]];
+                 "if it is humid"]];
 
   stream := monitor @io.home-assistant.humidity.state()
   #_[utterances=["when the state of the humidity sensor changes"]];
 
   stream (p_state : Enum(humid, normal)) := edge( @io.home-assistant.humidity.state()) on (state == p_state)
-  #_[utterances=["when the humidity sensor becomes ${p_state}",
-                "when the humidity sensor is ${p_state}",
-                "when the humidity sensor turns ${p_state}",
-                "when the humidity sensor changes to ${p_state}",
-                "if the humidity sensor becomes ${p_state}",
-                "if the humidity sensor is ${p_state}",
-                "if the humidity sensor turns ${p_state}",
-                "if the humidity sensor changes to ${p_state}"]];
+  #_[utterances=["when the humidity becomes ${p_state}",
+                "if the humidity is ${p_state}",
+                "when the humidity turns ${p_state}",
+                "if the humidity changes to ${p_state}"]];
 
   stream := edge( @io.home-assistant.humidity.state()) on (state == enum(humid))
-  #_[utterances=["when it is humid",
-                "if it is humid",
-                "when it becomes humid",
-                "if it becomes humid",
-                "when it turns humid",
-                "if it turns humid",
-                "when it gets humid",
-                "if it gets humid",
-                "when the humidity is humid",
-                "if the humidity is humid",
-                "when the humidity becomes humid",
-                "if the humidity becomes humid",
-                "when the humidity turns humid",
-                "if the humidity turns humid",
-                "when the humidity gets humid",
-                "if the humidity gets humid"]];
+  #_[utterances=["when it gets humid",
+                 "when the humidity is high",
+                 "if it gets very humid",
+                 "when start getting super humid",
+                 "if it is too humid"]];
 
   stream := edge( @io.home-assistant.humidity.state()) on (state == enum(normal))
   #_[utterances=["when the humidity is normal",
-                "if the humidity is normal",
-                "when the humidity becomes normal",
-                "if the humidity becomes normal",
-                "when the humidity turns normal",
-                "if the humidity turns normal",
-                "when the humidity gets normal",
-                "if the humidity gets normal"]];
+                "if it is no longer humid",
+                "when it is not humid anymore"]];
 
   program (p_name : String) := now => @io.home-assistant.humidity(name=p_name).state() => notify
-  #_[utterances=["is the ${p_name} humidity sensor humid?",
-                 "check if the ${p_name} humidity sensor is humid",
-                 "is the ${p_name} humidity sensor normal?",
-                 "check if the ${p_name} humidity sensor is normal",
-                 "check if the ${p_name} humidity sensor is humid or normal"]];
+  #_[utterances=["check if my ${p_name} humidity sensor says it is humid",
+                 "what does my ${p_name} humidity sensor say?"]];
 
   query (p_name : String) := @io.home-assistant.humidity(name=p_name).state()
-  #_[utterances=["the state of the ${p_name} humidity sensor",
-                 "if the ${p_name} humidity sensor is humid or normal",
-                 "whether the ${p_name} humidity sensor is humid or normal"]];
+  #_[utterances=["the state of my ${p_name} humidity sensor"]];
 
   stream (p_name : String) := monitor @io.home-assistant.humidity(name=p_name).state()
   #_[utterances=["when the state of the ${p_name} humidity sensor changes"]];
 
   stream (p_name : String, p_state : Enum(humid, normal)) := edge( @io.home-assistant.humidity(name=p_name).state()) on (state == p_state)
-  #_[utterances=["when the ${p_name} humidity sensor becomes ${p_state}",
-                "when the ${p_name} humidity sensor is ${p_state}",
-                "when the ${p_name} humidity sensor turns ${p_state}",
-                "when the ${p_name} humidity sensor changes to ${p_state}",
-                "if the ${p_name} humidity sensor becomes ${p_state}",
-                "if the ${p_name} humidity sensor is ${p_state}",
-                "if the ${p_name} humidity sensor turns ${p_state}",
-                "if the ${p_name} humidity sensor changes to ${p_state}"]];
-
-  stream (p_name : String) := edge( @io.home-assistant.humidity(name=p_name).state()) on (state == enum(humid))
-  #_[utterances=["when the ${p_name} humidity sensor is humid",
-                "if the ${p_name} humidity sensor is humid",
-                "when the ${p_name} humidity sensor becomes humid",
-                "if the ${p_name} humidity sensor becomes humid",
-                "when the ${p_name} humidity sensor turns humid",
-                "if the ${p_name} humidity sensor turns humid",
-                "when the ${p_name} humidity sensor gets humid",
-                "if the ${p_name} humidity sensor gets humid"]];
-
-  stream (p_name : String) := edge( @io.home-assistant.humidity(name=p_name).state()) on (state == enum(normal))
-  #_[utterances=["when the ${p_name} humidity sensor is normal",
-                "if the ${p_name} humidity sensor is normal",
-                "when the ${p_name} humidity sensor becomes normal",
-                "if the ${p_name} humidity sensor becomes normal",
-                "when the ${p_name} humidity sensor turns normal",
-                "if the ${p_name} humidity sensor turns normal",
-                "when the ${p_name} humidity sensor gets normal",
-                "if the ${p_name} humidity sensor gets normal"]];
+  #_[utterances=["when the ${p_name} humidity sensor says it is ${p_state}"]];
 }
