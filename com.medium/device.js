@@ -13,22 +13,27 @@ module.exports = class MediumDevice extends Tp.BaseDevice {
 
     get_articles(author) {
         const url = PROFILE_URL.format(author.author);
-        return Tp.Helpers.Http.get(url).then((response) => {
-            return Tp.Helpers.Http.get(url).then((result) => Tp.Helpers.Xml.parseString(
-                result)).then((parsed) => {
-                const articles = parsed.rss.channel[0].item;
-                return articles.map((article) => {
-                    return ({
-                        title: article.title,
-                        link: article.link[0],
-                        updated: article['atom:updated']
-                    });
-                });
+        return Tp.Helpers.Http.get(url).then(
+            (result) => Tp.Helpers.Xml.parseString(result)
+        ).then((parsed) => {
+            const articles = parsed.rss.channel[0];
+            if (articles.item === undefined)
+                throw new Error("User has no posts");
 
+            return articles.item.map((article) => {
+                return ({
+                    title: article.title[0],
+                    link: article.link[0],
+                    updated: new Date(article['atom:updated'])
+                });
             });
 
         }).catch((e) => {
-            throw new Error("Invalid Username");
+            if (e.code === 404)
+                throw new Error("Invalid Username");
+            else
+                throw e;
+
         });
 
     }
