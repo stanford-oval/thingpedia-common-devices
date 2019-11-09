@@ -10,13 +10,8 @@ abstract class @io.home-assistant.awning
   #_[confirmation="the state of your awning"]
   #_[formatted=["Your awning is ${state}"]];
 
-  action open_cover()
-  #_[canonical="open awning"]
-  #_[confirmation="open your awning"]
-  #[confirm=true];
-
-  action close_cover()
-  #_[canonical="close awning"]
-  #_[confirmation="close your awning"]
+  action set_openclose(in req state: Enum(open,close) #_[prompt="Do you want to open or close it?"] #_[canonical="state"])
+  #_[canonical="open or close awning"]
+  #_[confirmation="$state $__device"]
   #[confirm=true];
 }

@@ -43,10 +43,10 @@ module.exports = class HomeAssistantCover extends HomeAssistantDevice {
             return { state: this.state.state };
         });
     }
-    async do_open_cover() {
-    	await this._callService("cover", "open_cover");
-    }
-    async do_close_cover() {
-    	await this._callService("cover", "close_cover");
+    async do_set_openclose({ state }) {
+    	if (state === 'open')
+    		await this._callService("cover", "open_cover");
+    	else
+    		await this._callService("cover", "close_cover");
     }
 };

@@ -10,13 +10,8 @@ abstract class @io.home-assistant.damper
   #_[confirmation="the state of your damper"]
   #_[formatted=["Your damper is ${state}"]];
 
-  action open_cover()
-  #_[canonical="open damper"]
-  #_[confirmation="open your damper"]
-  #[confirm=true];
-
-  action close_cover()
-  #_[canonical="close damper"]
-  #_[confirmation="close your damper"]
+  action set_openclose(in req state: Enum(open,close) #_[prompt="Do you want to open or close it?"] #_[canonical="state"])
+  #_[canonical="open or close damper"]
+  #_[confirmation="$state $__device"]
   #[confirm=true];
 }

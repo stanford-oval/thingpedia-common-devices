@@ -2,321 +2,95 @@ dataset @io.home-assistant.awning language "en" {
 
   program := now => @io.home-assistant.awning.state() => notify
   #_[utterances=["is my awning open?",
-                 "are my awnings open?",
-                 "check if my awning is open",
-                 "check if my awnings are open",
-                 "is the awning open?",
-                 "are the awnings open?",
-                 "check if the awning is open",
-                 "check if the awnings are open",
-                 "is my awning opened?",
-                 "are my awnings opened?",
-                 "check if my awning is opened",
-                 "check if my awnings are opened",
-                 "is the awning opened?",
-                 "are the awnings opened?",
-                 "check if the awning is opened",
-                 "check if the awnings are opened",
-                 "is my awning closed?",
                  "are my awnings closed?",
-                 "check if my awning is closed",
-                 "check if my awnings are closed",
-                 "is the awning closed?",
-                 "are the awnings closed?",
-                 "check if the awning is closed",
-                 "check if the awnings are closed",
-                 "check if my awning is open or closed",
-                 "check if my awnings are open or closed",
-                 "check if the awning is open or closed",
-                 "check if the awnings are open or closed",
-                 "check if my awning is opened or closed",
-                 "check if my awnings are opened or closed",
-                 "check if the awning is opened or closed",
-                 "check if the awnings are opened or closed"]];
+                 "check if my awning is extended",
+                 "are the awnings out?",
+                 "did I retract the awnings?",
+                 "check whether the awnings are retracted"]];
 
   query := @io.home-assistant.awning.state()
   #_[utterances=["if my awning is open or closed",
-                 "if my awnings are open or closed",
-                 "whether my awning is open or closed",
                  "whether my awnings are open or closed",
-                 "if the awning is open or closed",
-                 "if the awnings are open or closed",
-                 "whether the awning is open or closed",
-                 "whether the awnings are open or closed",
-                 "if my awning is opened or closed",
-                 "if my awnings are opened or closed",
-                 "whether my awning is opened or closed",
-                 "whether my awnings are opened or closed",
-                 "if the awning is opened or closed",
-                 "if the awnings are opened or closed",
-                 "whether the awning is opened or closed",
-                 "whether the awnings are opened or closed"]];
+                 "if I extended the awning",
+                 "whether the awning is extended or retracted"]];
 
   stream := monitor @io.home-assistant.awning.state()
-  #_[utterances=["when the state of my awning changes",
-                 "when the state of my awnings change",
-                 "when the state of the awning changes",
-                 "when the state of the awnings change"]];
+  #_[utterances=["when the state of the awning changes"]];
 
   stream (p_state : Enum(open, closed)) := edge( @io.home-assistant.awning.state()) on (state == p_state)
   #_[utterances=["when my awning becomes ${p_state}",
-                "when my awnings become ${p_state}",
-                "when my awning is ${p_state}",
-                "when my awnings are ${p_state}",
-                "if my awning becomes ${p_state}",
-                "if my awnings become ${p_state}",
-                "if my awning is ${p_state}",
-                "if my awnings are ${p_state}",
-                "when the awning becomes ${p_state}",
-                "when the awnings become ${p_state}",
-                "when the awning is ${p_state}",
-                "when the awnings are ${p_state}",
-                "if the awning becomes ${p_state}",
-                "if the awnings become ${p_state}",
-                "if the awning is ${p_state}",
-                "if the awnings are ${p_state}"]];
+                "if the awnings are ${p_state}",
+                "if my awning gets ${p_state}"]];
 
   stream := edge( @io.home-assistant.awning.state()) on (state == enum(open))
-  #_[utterances=["when my awning becomes open",
-                "when my awnings become open",
-                "when my awning is open",
-                "when my awnings are open",
-                "if my awning becomes open",
-                "if my awnings become open",
-                "if my awning is open",
-                "if my awnings are open",
-                "when the awning becomes open",
-                "when the awnings become open",
-                "when the awning is open",
+  #_[utterances=["if my awning is open",
                 "when the awnings are open",
-                "if the awning becomes open",
-                "if the awnings become open",
-                "if the awning is open",
-                "if the awnings are open",
-                "when my awning becomes opened",
-                "when my awnings become opened",
-                "when my awning is opened",
-                "when my awnings are opened",
-                "if my awning becomes opened",
-                "if my awnings become opened",
-                "if my awning is opened",
-                "if my awnings are opened",
-                "when the awning becomes opened",
-                "when the awnings become opened",
-                "when the awning is opened",
-                "when the awnings are opened",
-                "if the awning becomes opened",
-                "if the awnings become opened",
-                "if the awning is opened",
-                "if the awnings are opened",
-                "when my awning opens",
-                "if my awning opens",
-                "when the awning opens",
-                "if the awning opens",
-                "when my awnings open",
-                "if my awnings open",
-                "when the awnings open",
-                "if the awnings open"]];
+                "when I extend my awnings",
+                "the moment the awnings get extended"]];
 
   stream := edge( @io.home-assistant.awning.state()) on (state == enum(closed))
-  #_[utterances=["when my awning becomes closed",
-                "when my awnings become closed",
-                "when my awning is closed",
-                "when my awnings are closed",
-                "if my awning becomes closed",
-                "if my awnings become closed",
-                "if my awning is closed",
-                "if my awnings are closed",
-                "when the awning becomes closed",
-                "when the awnings become closed",
-                "when the awning is closed",
-                "when the awnings are closed",
+  #_[utterances=["when my awnings close",
                 "if the awning becomes closed",
-                "if the awnings become closed",
-                "if the awning is closed",
-                "if the awnings are closed",
-                "when my awning closes",
-                "if my awning closes",
-                "when the awning closes",
-                "if the awning closes",
-                "when my awnings close",
-                "if my awnings close",
-                "when the awnings close",
-                "if the awnings close"]];
+                "the moment the awnings get retracted",
+                "when the awnings finish retracting"]];
 
-  action := @io.home-assistant.awning.open_cover()
-  #_[utterances=["open my awning",
-                "open my awnings",
-                "open the awning",
-                "open the awnings",
-                "open awning",
-                "open awnings"]];
+  action (p_state :Enum(open,close))  := @io.home-assistant.awning.set_openclose(state=p_state)
+  #_[utterances=["${p_state} my awnings",
+                 "${p_state} the awning"]];
 
-  action := @io.home-assistant.awning.close_cover()
+  action := @io.home-assistant.awning.set_openclose(state=enum(open))
+  #_[utterances=["open my awning for me",
+                "extend the awnings",
+                "make the awnings extend"]];
+
+  action := @io.home-assistant.awning.set_openclose(state=enum(close))
   #_[utterances=["close my awning",
-                "close my awnings",
-                "close the awning",
-                "close the awnings",
-                "close awning",
-                "close awnings"]];
+                "retract the awnings"]];
 
   program (p_name : String) := now => @io.home-assistant.awning(name=p_name).state() => notify
   #_[utterances=["is my ${p_name} awning open?",
-                 "are my ${p_name} awnings open?",
-                 "check if my ${p_name} awning is open",
-                 "check if my ${p_name} awnings are open",
-                 "is the ${p_name} awning open?",
-                 "are the ${p_name} awnings open?",
-                 "check if the ${p_name} awning is open",
-                 "check if the ${p_name} awnings are open",
-                 "is my ${p_name} awning opened?",
-                 "are my ${p_name} awnings opened?",
-                 "check if my ${p_name} awning is opened",
-                 "check if my ${p_name} awnings are opened",
-                 "is the ${p_name} awning opened?",
-                 "are the ${p_name} awnings opened?",
-                 "check if the ${p_name} awning is opened",
-                 "check if the ${p_name} awnings are opened",
-                 "is my ${p_name} awning closed?",
                  "are my ${p_name} awnings closed?",
-                 "check if my ${p_name} awning is closed",
-                 "check if my ${p_name} awnings are closed",
-                 "is the ${p_name} awning closed?",
-                 "are the ${p_name} awnings closed?",
-                 "check if the ${p_name} awning is closed",
-                 "check if the ${p_name} awnings are closed",
-                 "check if my ${p_name} awning is open or closed",
-                 "check if my ${p_name} awnings are open or closed",
-                 "check if the ${p_name} awning is open or closed",
-                 "check if the ${p_name} awnings are open or closed",
-                 "check if my ${p_name} awning is opened or closed",
-                 "check if my ${p_name} awnings are opened or closed",
-                 "check if the ${p_name} awning is opened or closed",
-                 "check if the ${p_name} awnings are opened or closed"]];
+                 "check if my ${p_name} awning is extended",
+                 "are the ${p_name} awnings out?",
+                 "did I retract the ${p_name} awnings?",
+                 "check whether the ${p_name} awnings are retracted"]];
 
   query (p_name : String) := @io.home-assistant.awning(name=p_name).state()
   #_[utterances=["if my ${p_name} awning is open or closed",
-                 "if my ${p_name} awnings are open or closed",
-                 "whether my ${p_name} awning is open or closed",
                  "whether my ${p_name} awnings are open or closed",
-                 "if the ${p_name} awning is open or closed",
-                 "if the ${p_name} awnings are open or closed",
-                 "whether the ${p_name} awning is open or closed",
-                 "whether the ${p_name} awnings are open or closed",
-                 "if my ${p_name} awning is opened or closed",
-                 "if my ${p_name} awnings are opened or closed",
-                 "whether my ${p_name} awning is opened or closed",
-                 "whether my ${p_name} awnings are opened or closed",
-                 "if the ${p_name} awning is opened or closed",
-                 "if the ${p_name} awnings are opened or closed",
-                 "whether the ${p_name} awning is opened or closed",
-                 "whether the ${p_name} awnings are opened or closed"]];
+                 "if I extended the ${p_name} awning",
+                 "whether the ${p_name} awning is extended or retracted"]];
 
   stream (p_name : String) := monitor @io.home-assistant.awning(name=p_name).state()
-  #_[utterances=["when the state of my ${p_name} awning changes",
-                 "when the state of my ${p_name} awnings change",
-                 "when the state of the ${p_name} awning changes",
-                 "when the state of the ${p_name} awnings change"]];
+  #_[utterances=["when the state of the ${p_name} awning changes"]];
 
   stream (p_name : String, p_state : Enum(open, closed)) := edge( @io.home-assistant.awning(name=p_name).state()) on (state == p_state)
   #_[utterances=["when my ${p_name} awning becomes ${p_state}",
-                "when my ${p_name} awnings become ${p_state}",
-                "when my ${p_name} awning is ${p_state}",
-                "when my ${p_name} awnings are ${p_state}",
-                "if my ${p_name} awning becomes ${p_state}",
-                "if my ${p_name} awnings become ${p_state}",
-                "if my ${p_name} awning is ${p_state}",
-                "if my ${p_name} awnings are ${p_state}",
-                "when the ${p_name} awning becomes ${p_state}",
-                "when the ${p_name} awnings become ${p_state}",
-                "when the ${p_name} awning is ${p_state}",
-                "when the ${p_name} awnings are ${p_state}",
-                "if the ${p_name} awning becomes ${p_state}",
-                "if the ${p_name} awnings become ${p_state}",
-                "if the ${p_name} awning is ${p_state}",
-                "if the ${p_name} awnings are ${p_state}"]];
+                "if the ${p_name} awnings are ${p_state}",
+                "if my ${p_name} awning gets ${p_state}"]];
 
   stream (p_name : String) := edge( @io.home-assistant.awning(name=p_name).state()) on (state == enum(open))
-  #_[utterances=["when my ${p_name} awning becomes open",
-                "when my ${p_name} awnings become open",
-                "when my ${p_name} awning is open",
-                "when my ${p_name} awnings are open",
-                "if my ${p_name} awning becomes open",
-                "if my ${p_name} awnings become open",
-                "if my ${p_name} awning is open",
-                "if my ${p_name} awnings are open",
-                "when the ${p_name} awning becomes open",
-                "when the ${p_name} awnings become open",
-                "when the ${p_name} awning is open",
+  #_[utterances=["if my ${p_name} awning is open",
                 "when the ${p_name} awnings are open",
-                "if the ${p_name} awning becomes open",
-                "if the ${p_name} awnings become open",
-                "if the ${p_name} awning is open",
-                "if the ${p_name} awnings are open",
-                "when my ${p_name} awning becomes opened",
-                "when my ${p_name} awnings become opened",
-                "when my ${p_name} awning is opened",
-                "when my ${p_name} awnings are opened",
-                "if my ${p_name} awning becomes opened",
-                "if my ${p_name} awnings become opened",
-                "if my ${p_name} awning is opened",
-                "if my ${p_name} awnings are opened",
-                "when the ${p_name} awning becomes opened",
-                "when the ${p_name} awnings become opened",
-                "when the ${p_name} awning is opened",
-                "when the ${p_name} awnings are opened",
-                "if the ${p_name} awning becomes opened",
-                "if the ${p_name} awnings become opened",
-                "if the ${p_name} awning is opened",
-                "if the ${p_name} awnings are opened",
-                "when my ${p_name} awning opens",
-                "if my ${p_name} awning opens",
-                "when the ${p_name} awning opens",
-                "if the ${p_name} awning opens",
-                "when my ${p_name} awnings open",
-                "if my ${p_name} awnings open",
-                "when the ${p_name} awnings open",
-                "if the ${p_name} awnings open"]];
+                "when I extend my ${p_name} awnings",
+                "the moment the ${p_name} awnings get extended"]];
 
   stream (p_name : String) := edge( @io.home-assistant.awning(name=p_name).state()) on (state == enum(closed))
-  #_[utterances=["when my ${p_name} awning becomes closed",
-                "when my ${p_name} awnings become closed",
-                "when my ${p_name} awning is closed",
-                "when my ${p_name} awnings are closed",
-                "if my ${p_name} awning becomes closed",
-                "if my ${p_name} awnings become closed",
-                "if my ${p_name} awning is closed",
-                "if my ${p_name} awnings are closed",
-                "when the ${p_name} awning becomes closed",
-                "when the ${p_name} awnings become closed",
-                "when the ${p_name} awning is closed",
-                "when the ${p_name} awnings are closed",
+  #_[utterances=["when my ${p_name} awnings close",
                 "if the ${p_name} awning becomes closed",
-                "if the ${p_name} awnings become closed",
-                "if the ${p_name} awning is closed",
-                "if the ${p_name} awnings are closed",
-                "when my ${p_name} awning closes",
-                "if my ${p_name} awning closes",
-                "when the ${p_name} awning closes",
-                "if the ${p_name} awning closes",
-                "when my ${p_name} awnings close",
-                "if my ${p_name} awnings close",
-                "when the ${p_name} awnings close",
-                "if the ${p_name} awnings close"]];
+                "the moment the ${p_name} awnings get retracted",
+                "when the ${p_name} awnings finish retracting"]];
 
-  action (p_name : String) := @io.home-assistant.awning(name=p_name).open_cover()
-  #_[utterances=["open my ${p_name} awning",
-                "open my ${p_name} awnings",
-                "open the ${p_name} awning",
-                "open the ${p_name} awnings",
-                "open ${p_name} awning",
-                "open ${p_name} awnings"]];
+  action (p_name : String, p_state :Enum(open,close))  := @io.home-assistant.awning(name=p_name).set_openclose(state=p_state)
+  #_[utterances=["${p_state} my ${p_name} awnings",
+                 "${p_state} the ${p_name} awning"]];
 
-  action (p_name : String) := @io.home-assistant.awning(name=p_name).close_cover()
+  action (p_name : String) := @io.home-assistant.awning(name=p_name).set_openclose(state=enum(open))
+  #_[utterances=["open my ${p_name} awning for me",
+                "extend the ${p_name} awnings",
+                "make the ${p_name} awnings extend"]];
+
+  action (p_name : String) := @io.home-assistant.awning(name=p_name).set_openclose(state=enum(close))
   #_[utterances=["close my ${p_name} awning",
-                "close my ${p_name} awnings",
-                "close the ${p_name} awning",
-                "close the ${p_name} awnings",
-                "close ${p_name} awning",
-                "close ${p_name} awnings"]];
+                "retract the ${p_name} awnings"]];
 }

@@ -10,13 +10,8 @@ abstract class @io.home-assistant.blind
   #_[confirmation="the state of your blind"]
   #_[formatted=["Your blind is ${state}"]];
 
-  action open_cover()
-  #_[canonical="open blind"]
-  #_[confirmation="open your blind"]
-  #[confirm=true];
-
-  action close_cover()
-  #_[canonical="close blind"]
-  #_[confirmation="close your blind"]
+  action set_openclose(in req state: Enum(open,close) #_[prompt="Do you want to open or close it?"] #_[canonical="state"])
+  #_[canonical="open or close blind"]
+  #_[confirmation="$state $__device"]
   #[confirm=true];
 }

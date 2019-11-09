@@ -2,321 +2,73 @@ dataset @io.home-assistant.window language "en" {
 
   program := now => @io.home-assistant.window.state() => notify
   #_[utterances=["is my window open?",
-                 "are my windows open?",
-                 "check if my window is open",
-                 "check if my windows are open",
-                 "is the window open?",
-                 "are the windows open?",
-                 "check if the window is open",
-                 "check if the windows are open",
-                 "is my window opened?",
-                 "are my windows opened?",
-                 "check if my window is opened",
-                 "check if my windows are opened",
-                 "is the window opened?",
-                 "are the windows opened?",
-                 "check if the window is opened",
-                 "check if the windows are opened",
                  "is my window closed?",
-                 "are my windows closed?",
-                 "check if my window is closed",
-                 "check if my windows are closed",
-                 "is the window closed?",
-                 "are the windows closed?",
-                 "check if the window is closed",
-                 "check if the windows are closed",
-                 "check if my window is open or closed",
-                 "check if my windows are open or closed",
-                 "check if the window is open or closed",
-                 "check if the windows are open or closed",
-                 "check if my window is opened or closed",
-                 "check if my windows are opened or closed",
-                 "check if the window is opened or closed",
-                 "check if the windows are opened or closed"]];
+                 "check if my window is opened",
+                 "did I close the window?"]];
 
   query := @io.home-assistant.window.state()
   #_[utterances=["if my window is open or closed",
-                 "if my windows are open or closed",
                  "whether my window is open or closed",
-                 "whether my windows are open or closed",
-                 "if the window is open or closed",
-                 "if the windows are open or closed",
-                 "whether the window is open or closed",
-                 "whether the windows are open or closed",
-                 "if my window is opened or closed",
-                 "if my windows are opened or closed",
-                 "whether my window is opened or closed",
-                 "whether my windows are opened or closed",
-                 "if the window is opened or closed",
-                 "if the windows are opened or closed",
-                 "whether the window is opened or closed",
-                 "whether the windows are opened or closed"]];
+                 "if I opened the window"]];
 
   stream := monitor @io.home-assistant.window.state()
-  #_[utterances=["when the state of my window changes",
-                 "when the state of my windows change",
-                 "when the state of the window changes",
-                 "when the state of the windows change"]];
+  #_[utterances=["when the state of the window changes"]];
 
   stream (p_state : Enum(open, closed)) := edge( @io.home-assistant.window.state()) on (state == p_state)
-  #_[utterances=["when my window becomes ${p_state}",
-                "when my windows become ${p_state}",
-                "when my window is ${p_state}",
-                "when my windows are ${p_state}",
-                "if my window becomes ${p_state}",
-                "if my windows become ${p_state}",
-                "if my window is ${p_state}",
-                "if my windows are ${p_state}",
-                "when the window becomes ${p_state}",
-                "when the windows become ${p_state}",
-                "when the window is ${p_state}",
-                "when the windows are ${p_state}",
-                "if the window becomes ${p_state}",
-                "if the windows become ${p_state}",
-                "if the window is ${p_state}",
-                "if the windows are ${p_state}"]];
+  #_[utterances=["when the window is ${p_state}",
+                "if my window gets ${p_state}"]];
 
   stream := edge( @io.home-assistant.window.state()) on (state == enum(open))
-  #_[utterances=["when my window becomes open",
-                "when my windows become open",
-                "when my window is open",
-                "when my windows are open",
-                "if my window becomes open",
-                "if my windows become open",
-                "if my window is open",
-                "if my windows are open",
-                "when the window becomes open",
-                "when the windows become open",
-                "when the window is open",
-                "when the windows are open",
-                "if the window becomes open",
-                "if the windows become open",
-                "if the window is open",
-                "if the windows are open",
-                "when my window becomes opened",
-                "when my windows become opened",
-                "when my window is opened",
-                "when my windows are opened",
-                "if my window becomes opened",
-                "if my windows become opened",
-                "if my window is opened",
-                "if my windows are opened",
-                "when the window becomes opened",
-                "when the windows become opened",
-                "when the window is opened",
-                "when the windows are opened",
-                "if the window becomes opened",
-                "if the windows become opened",
-                "if the window is opened",
-                "if the windows are opened",
-                "when my window opens",
-                "if my window opens",
-                "when the window opens",
-                "if the window opens",
-                "when my windows open",
-                "if my windows open",
-                "when the windows open",
-                "if the windows open"]];
+  #_[utterances=["if my window is open"]];
 
   stream := edge( @io.home-assistant.window.state()) on (state == enum(closed))
-  #_[utterances=["when my window becomes closed",
-                "when my windows become closed",
-                "when my window is closed",
-                "when my windows are closed",
-                "if my window becomes closed",
-                "if my windows become closed",
-                "if my window is closed",
-                "if my windows are closed",
-                "when the window becomes closed",
-                "when the windows become closed",
-                "when the window is closed",
-                "when the windows are closed",
-                "if the window becomes closed",
-                "if the windows become closed",
-                "if the window is closed",
-                "if the windows are closed",
-                "when my window closes",
-                "if my window closes",
-                "when the window closes",
-                "if the window closes",
-                "when my windows close",
-                "if my windows close",
-                "when the windows close",
-                "if the windows close"]];
+  #_[utterances=["when my window closes"]];
 
-  action := @io.home-assistant.window.open_cover()
-  #_[utterances=["open my window",
-                "open my windows",
-                "open the window",
-                "open the windows",
-                "open window",
-                "open windows"]];
+  action (p_state :Enum(open,close)) := @io.home-assistant.window.set_openclose(state=p_state)
+  #_[utterances=["${p_state} my window",
+                 "${p_state} the window"]];
 
-  action := @io.home-assistant.window.close_cover()
+  action := @io.home-assistant.window.set_openclose(state=enum(open))
+  #_[utterances=["open my window for me",
+                "help me open the window"]];
+
+  action := @io.home-assistant.window.set_openclose(state=enum(close))
   #_[utterances=["close my window",
-                "close my windows",
-                "close the window",
-                "close the windows",
-                "close window",
-                "close windows"]];
+                "bring in the window"]];
 
   program (p_name : String) := now => @io.home-assistant.window(name=p_name).state() => notify
   #_[utterances=["is my ${p_name} window open?",
-                 "are my ${p_name} windows open?",
-                 "check if my ${p_name} window is open",
-                 "check if my ${p_name} windows are open",
-                 "is the ${p_name} window open?",
-                 "are the ${p_name} windows open?",
-                 "check if the ${p_name} window is open",
-                 "check if the ${p_name} windows are open",
-                 "is my ${p_name} window opened?",
-                 "are my ${p_name} windows opened?",
-                 "check if my ${p_name} window is opened",
-                 "check if my ${p_name} windows are opened",
-                 "is the ${p_name} window opened?",
-                 "are the ${p_name} windows opened?",
-                 "check if the ${p_name} window is opened",
-                 "check if the ${p_name} windows are opened",
                  "is my ${p_name} window closed?",
-                 "are my ${p_name} windows closed?",
-                 "check if my ${p_name} window is closed",
-                 "check if my ${p_name} windows are closed",
-                 "is the ${p_name} window closed?",
-                 "are the ${p_name} windows closed?",
-                 "check if the ${p_name} window is closed",
-                 "check if the ${p_name} windows are closed",
-                 "check if my ${p_name} window is open or closed",
-                 "check if my ${p_name} windows are open or closed",
-                 "check if the ${p_name} window is open or closed",
-                 "check if the ${p_name} windows are open or closed",
-                 "check if my ${p_name} window is opened or closed",
-                 "check if my ${p_name} windows are opened or closed",
-                 "check if the ${p_name} window is opened or closed",
-                 "check if the ${p_name} windows are opened or closed"]];
+                 "check if my ${p_name} window is opened",
+                 "did I close the ${p_name} window?"]];
 
   query (p_name : String) := @io.home-assistant.window(name=p_name).state()
   #_[utterances=["if my ${p_name} window is open or closed",
-                 "if my ${p_name} windows are open or closed",
                  "whether my ${p_name} window is open or closed",
-                 "whether my ${p_name} windows are open or closed",
-                 "if the ${p_name} window is open or closed",
-                 "if the ${p_name} windows are open or closed",
-                 "whether the ${p_name} window is open or closed",
-                 "whether the ${p_name} windows are open or closed",
-                 "if my ${p_name} window is opened or closed",
-                 "if my ${p_name} windows are opened or closed",
-                 "whether my ${p_name} window is opened or closed",
-                 "whether my ${p_name} windows are opened or closed",
-                 "if the ${p_name} window is opened or closed",
-                 "if the ${p_name} windows are opened or closed",
-                 "whether the ${p_name} window is opened or closed",
-                 "whether the ${p_name} windows are opened or closed"]];
+                 "if I opened the ${p_name} window"]];
 
   stream (p_name : String) := monitor @io.home-assistant.window(name=p_name).state()
-  #_[utterances=["when the state of my ${p_name} window changes",
-                 "when the state of my ${p_name} windows change",
-                 "when the state of the ${p_name} window changes",
-                 "when the state of the ${p_name} windows change"]];
+  #_[utterances=["when the state of the ${p_name} window change"]];
 
   stream (p_name : String, p_state : Enum(open, closed)) := edge( @io.home-assistant.window(name=p_name).state()) on (state == p_state)
-  #_[utterances=["when my ${p_name} window becomes ${p_state}",
-                "when my ${p_name} windows become ${p_state}",
-                "when my ${p_name} window is ${p_state}",
-                "when my ${p_name} windows are ${p_state}",
-                "if my ${p_name} window becomes ${p_state}",
-                "if my ${p_name} windows become ${p_state}",
-                "if my ${p_name} window is ${p_state}",
-                "if my ${p_name} windows are ${p_state}",
-                "when the ${p_name} window becomes ${p_state}",
-                "when the ${p_name} windows become ${p_state}",
-                "when the ${p_name} window is ${p_state}",
-                "when the ${p_name} windows are ${p_state}",
-                "if the ${p_name} window becomes ${p_state}",
-                "if the ${p_name} windows become ${p_state}",
-                "if the ${p_name} window is ${p_state}",
-                "if the ${p_name} windows are ${p_state}"]];
+  #_[utterances=["when the ${p_name} window is ${p_state}",
+                "if my ${p_name} window gets ${p_state}"]];
 
   stream (p_name : String) := edge( @io.home-assistant.window(name=p_name).state()) on (state == enum(open))
-  #_[utterances=["when my ${p_name} window becomes open",
-                "when my ${p_name} windows become open",
-                "when my ${p_name} window is open",
-                "when my ${p_name} windows are open",
-                "if my ${p_name} window becomes open",
-                "if my ${p_name} windows become open",
-                "if my ${p_name} window is open",
-                "if my ${p_name} windows are open",
-                "when the ${p_name} window becomes open",
-                "when the ${p_name} windows become open",
-                "when the ${p_name} window is open",
-                "when the ${p_name} windows are open",
-                "if the ${p_name} window becomes open",
-                "if the ${p_name} windows become open",
-                "if the ${p_name} window is open",
-                "if the ${p_name} windows are open",
-                "when my ${p_name} window becomes opened",
-                "when my ${p_name} windows become opened",
-                "when my ${p_name} window is opened",
-                "when my ${p_name} windows are opened",
-                "if my ${p_name} window becomes opened",
-                "if my ${p_name} windows become opened",
-                "if my ${p_name} window is opened",
-                "if my ${p_name} windows are opened",
-                "when the ${p_name} window becomes opened",
-                "when the ${p_name} windows become opened",
-                "when the ${p_name} window is opened",
-                "when the ${p_name} windows are opened",
-                "if the ${p_name} window becomes opened",
-                "if the ${p_name} windows become opened",
-                "if the ${p_name} window is opened",
-                "if the ${p_name} windows are opened",
-                "when my ${p_name} window opens",
-                "if my ${p_name} window opens",
-                "when the ${p_name} window opens",
-                "if the ${p_name} window opens",
-                "when my ${p_name} windows open",
-                "if my ${p_name} windows open",
-                "when the ${p_name} windows open",
-                "if the ${p_name} windows open"]];
+  #_[utterances=["if my ${p_name} window is open"]];
 
   stream (p_name : String) := edge( @io.home-assistant.window(name=p_name).state()) on (state == enum(closed))
-  #_[utterances=["when my ${p_name} window becomes closed",
-                "when my ${p_name} windows become closed",
-                "when my ${p_name} window is closed",
-                "when my ${p_name} windows are closed",
-                "if my ${p_name} window becomes closed",
-                "if my ${p_name} windows become closed",
-                "if my ${p_name} window is closed",
-                "if my ${p_name} windows are closed",
-                "when the ${p_name} window becomes closed",
-                "when the ${p_name} windows become closed",
-                "when the ${p_name} window is closed",
-                "when the ${p_name} windows are closed",
-                "if the ${p_name} window becomes closed",
-                "if the ${p_name} windows become closed",
-                "if the ${p_name} window is closed",
-                "if the ${p_name} windows are closed",
-                "when my ${p_name} window closes",
-                "if my ${p_name} window closes",
-                "when the ${p_name} window closes",
-                "if the ${p_name} window closes",
-                "when my ${p_name} windows close",
-                "if my ${p_name} windows close",
-                "when the ${p_name} windows close",
-                "if the ${p_name} windows close"]];
+  #_[utterances=["when my ${p_name} window closes"]];
 
-  action (p_name : String) := @io.home-assistant.window(name=p_name).open_cover()
-  #_[utterances=["open my ${p_name} window",
-                "open my ${p_name} windows",
-                "open the ${p_name} window",
-                "open the ${p_name} windows",
-                "open ${p_name} window",
-                "open ${p_name} windows"]];
+  action (p_name : String, p_state :Enum(open,close)) := @io.home-assistant.window(name=p_name).set_openclose(state=p_state)
+  #_[utterances=["${p_state} my ${p_name} window",
+                 "${p_state} the ${p_name} window"]];
 
-  action (p_name : String) := @io.home-assistant.window(name=p_name).close_cover()
+  action (p_name : String) := @io.home-assistant.window(name=p_name).set_openclose(state=enum(open))
+  #_[utterances=["open my ${p_name} window for me",
+                "help me open the ${p_name} window"]];
+
+  action (p_name : String) := @io.home-assistant.window(name=p_name).set_openclose(state=enum(close))
   #_[utterances=["close my ${p_name} window",
-                "close my ${p_name} windows",
-                "close the ${p_name} window",
-                "close the ${p_name} windows",
-                "close ${p_name} window",
-                "close ${p_name} windows"]];
+                "bring in the ${p_name} window"]];
 }

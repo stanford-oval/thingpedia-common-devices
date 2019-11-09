@@ -1,322 +1,100 @@
 dataset @io.home-assistant.blind language "en" {
 
   program := now => @io.home-assistant.blind.state() => notify
-  #_[utterances=["is my blind open?",
-                 "are my blinds open?",
-                 "check if my blind is open",
-                 "check if my blinds are open",
-                 "is the blind open?",
-                 "are the blinds open?",
-                 "check if the blind is open",
-                 "check if the blinds are open",
-                 "is my blind opened?",
-                 "are my blinds opened?",
-                 "check if my blind is opened",
-                 "check if my blinds are opened",
-                 "is the blind opened?",
-                 "are the blinds opened?",
-                 "check if the blind is opened",
-                 "check if the blinds are opened",
-                 "is my blind closed?",
+  #_[utterances=["are my blinds open?",
                  "are my blinds closed?",
-                 "check if my blind is closed",
-                 "check if my blinds are closed",
-                 "is the blind closed?",
-                 "are the blinds closed?",
-                 "check if the blind is closed",
-                 "check if the blinds are closed",
-                 "check if my blind is open or closed",
-                 "check if my blinds are open or closed",
-                 "check if the blind is open or closed",
-                 "check if the blinds are open or closed",
-                 "check if my blind is opened or closed",
-                 "check if my blinds are opened or closed",
-                 "check if the blind is opened or closed",
-                 "check if the blinds are opened or closed"]];
+                 "check if my blinds are raised",
+                 "are my blinds put down?",
+                 "did I raise the blinds?",
+                 "check whether the blinds are lowered"]];
 
   query := @io.home-assistant.blind.state()
-  #_[utterances=["if my blind is open or closed",
-                 "if my blinds are open or closed",
-                 "whether my blind is open or closed",
+  #_[utterances=["if my blinds are open or closed",
                  "whether my blinds are open or closed",
-                 "if the blind is open or closed",
-                 "if the blinds are open or closed",
-                 "whether the blind is open or closed",
-                 "whether the blinds are open or closed",
-                 "if my blind is opened or closed",
-                 "if my blinds are opened or closed",
-                 "whether my blind is opened or closed",
-                 "whether my blinds are opened or closed",
-                 "if the blind is opened or closed",
-                 "if the blinds are opened or closed",
-                 "whether the blind is opened or closed",
-                 "whether the blinds are opened or closed"]];
+                 "if I raised the blinds",
+                 "whether the blinds are raised or lowered"]];
 
   stream := monitor @io.home-assistant.blind.state()
-  #_[utterances=["when the state of my blind changes",
-                 "when the state of my blinds change",
-                 "when the state of the blind changes",
-                 "when the state of the blinds change"]];
+  #_[utterances=["when the state of the blinds change"]];
 
   stream (p_state : Enum(open, closed)) := edge( @io.home-assistant.blind.state()) on (state == p_state)
-  #_[utterances=["when my blind becomes ${p_state}",
-                "when my blinds become ${p_state}",
-                "when my blind is ${p_state}",
-                "when my blinds are ${p_state}",
-                "if my blind becomes ${p_state}",
-                "if my blinds become ${p_state}",
-                "if my blind is ${p_state}",
-                "if my blinds are ${p_state}",
-                "when the blind becomes ${p_state}",
-                "when the blinds become ${p_state}",
-                "when the blind is ${p_state}",
-                "when the blinds are ${p_state}",
-                "if the blind becomes ${p_state}",
-                "if the blinds become ${p_state}",
-                "if the blind is ${p_state}",
-                "if the blinds are ${p_state}"]];
+  #_[utterances=["when the blinds are ${p_state}",
+                "if my blinds gets ${p_state}"]];
 
   stream := edge( @io.home-assistant.blind.state()) on (state == enum(open))
-  #_[utterances=["when my blind becomes open",
-                "when my blinds become open",
-                "when my blind is open",
-                "when my blinds are open",
-                "if my blind becomes open",
-                "if my blinds become open",
-                "if my blind is open",
-                "if my blinds are open",
-                "when the blind becomes open",
-                "when the blinds become open",
-                "when the blind is open",
-                "when the blinds are open",
-                "if the blind becomes open",
-                "if the blinds become open",
-                "if the blind is open",
-                "if the blinds are open",
-                "when my blind becomes opened",
-                "when my blinds become opened",
-                "when my blind is opened",
-                "when my blinds are opened",
-                "if my blind becomes opened",
-                "if my blinds become opened",
-                "if my blind is opened",
-                "if my blinds are opened",
-                "when the blind becomes opened",
-                "when the blinds become opened",
-                "when the blind is opened",
-                "when the blinds are opened",
-                "if the blind becomes opened",
-                "if the blinds become opened",
-                "if the blind is opened",
-                "if the blinds are opened",
-                "when my blind opens",
-                "if my blind opens",
-                "when the blind opens",
-                "if the blind opens",
-                "when my blinds open",
-                "if my blinds open",
-                "when the blinds open",
-                "if the blinds open"]];
+  #_[utterances=["if my blinds are raised",
+                "when the blinds are put up",
+                "when I bring up my blinds"]];
 
   stream := edge( @io.home-assistant.blind.state()) on (state == enum(closed))
-  #_[utterances=["when my blind becomes closed",
-                "when my blinds become closed",
-                "when my blind is closed",
-                "when my blinds are closed",
-                "if my blind becomes closed",
-                "if my blinds become closed",
-                "if my blind is closed",
-                "if my blinds are closed",
-                "when the blind becomes closed",
-                "when the blinds become closed",
-                "when the blind is closed",
-                "when the blinds are closed",
-                "if the blind becomes closed",
-                "if the blinds become closed",
-                "if the blind is closed",
-                "if the blinds are closed",
-                "when my blind closes",
-                "if my blind closes",
-                "when the blind closes",
-                "if the blind closes",
-                "when my blinds close",
-                "if my blinds close",
-                "when the blinds close",
-                "if the blinds close"]];
+  #_[utterances=["when my blinds lower",
+                "if the blinds get lowered",
+                "the moment the blinds get put down",
+                "when the blinds finish lowering"]];
 
-  action := @io.home-assistant.blind.open_cover()
-  #_[utterances=["open my blind",
-                "open my blinds",
-                "open the blind",
-                "open the blinds",
-                "open blind",
-                "open blinds"]];
+  action := @io.home-assistant.blind.set_openclose()
+  #_[utterances=["draw my blinds"]];
 
-  action := @io.home-assistant.blind.close_cover()
-  #_[utterances=["close my blind",
-                "close my blinds",
-                "close the blind",
-                "close the blinds",
-                "close blind",
-                "close blinds"]];
+  action (p_state :Enum(open,close)) := @io.home-assistant.blind.set_openclose(state=p_state)
+  #_[utterances=["${p_state} my blinds",
+                 "${p_state} the blinds"]];
+
+  action := @io.home-assistant.blind.set_openclose(state=enum(open))
+  #_[utterances=["open my blinds for me",
+                "raise the blinds",
+                "put the blinds up"]];
+
+  action := @io.home-assistant.blind.set_openclose(state=enum(close))
+  #_[utterances=["close my blinds",
+                "lower the blinds",
+                "put the blinds down"]];
 
   program (p_name : String) := now => @io.home-assistant.blind(name=p_name).state() => notify
-  #_[utterances=["is my ${p_name} blind open?",
-                 "are my ${p_name} blinds open?",
-                 "check if my ${p_name} blind is open",
-                 "check if my ${p_name} blinds are open",
-                 "is the ${p_name} blind open?",
-                 "are the ${p_name} blinds open?",
-                 "check if the ${p_name} blind is open",
-                 "check if the ${p_name} blinds are open",
-                 "is my ${p_name} blind opened?",
-                 "are my ${p_name} blinds opened?",
-                 "check if my ${p_name} blind is opened",
-                 "check if my ${p_name} blinds are opened",
-                 "is the ${p_name} blind opened?",
-                 "are the ${p_name} blinds opened?",
-                 "check if the ${p_name} blind is opened",
-                 "check if the ${p_name} blinds are opened",
-                 "is my ${p_name} blind closed?",
+  #_[utterances=["are my ${p_name} blinds open?",
                  "are my ${p_name} blinds closed?",
-                 "check if my ${p_name} blind is closed",
-                 "check if my ${p_name} blinds are closed",
-                 "is the ${p_name} blind closed?",
-                 "are the ${p_name} blinds closed?",
-                 "check if the ${p_name} blind is closed",
-                 "check if the ${p_name} blinds are closed",
-                 "check if my ${p_name} blind is open or closed",
-                 "check if my ${p_name} blinds are open or closed",
-                 "check if the ${p_name} blind is open or closed",
-                 "check if the ${p_name} blinds are open or closed",
-                 "check if my ${p_name} blind is opened or closed",
-                 "check if my ${p_name} blinds are opened or closed",
-                 "check if the ${p_name} blind is opened or closed",
-                 "check if the ${p_name} blinds are opened or closed"]];
+                 "check if my ${p_name} blinds are raised",
+                 "are my ${p_name} blinds put down?",
+                 "did I raise the ${p_name} blinds?",
+                 "check whether the ${p_name} blinds are lowered"]];
 
   query (p_name : String) := @io.home-assistant.blind(name=p_name).state()
-  #_[utterances=["if my ${p_name} blind is open or closed",
-                 "if my ${p_name} blinds are open or closed",
-                 "whether my ${p_name} blind is open or closed",
+  #_[utterances=["if my ${p_name} blinds are open or closed",
                  "whether my ${p_name} blinds are open or closed",
-                 "if the ${p_name} blind is open or closed",
-                 "if the ${p_name} blinds are open or closed",
-                 "whether the ${p_name} blind is open or closed",
-                 "whether the ${p_name} blinds are open or closed",
-                 "if my ${p_name} blind is opened or closed",
-                 "if my ${p_name} blinds are opened or closed",
-                 "whether my ${p_name} blind is opened or closed",
-                 "whether my ${p_name} blinds are opened or closed",
-                 "if the ${p_name} blind is opened or closed",
-                 "if the ${p_name} blinds are opened or closed",
-                 "whether the ${p_name} blind is opened or closed",
-                 "whether the ${p_name} blinds are opened or closed"]];
+                 "if I raised the ${p_name} blinds",
+                 "whether the ${p_name} blinds is raised or lowered"]];
 
   stream (p_name : String) := monitor @io.home-assistant.blind(name=p_name).state()
-  #_[utterances=["when the state of my ${p_name} blind changes",
-                 "when the state of my ${p_name} blinds change",
-                 "when the state of the ${p_name} blind changes",
-                 "when the state of the ${p_name} blinds change"]];
+  #_[utterances=["when the state of the ${p_name} blinds change"]];
 
   stream (p_name : String, p_state : Enum(open, closed)) := edge( @io.home-assistant.blind(name=p_name).state()) on (state == p_state)
-  #_[utterances=["when my ${p_name} blind becomes ${p_state}",
-                "when my ${p_name} blinds become ${p_state}",
-                "when my ${p_name} blind is ${p_state}",
-                "when my ${p_name} blinds are ${p_state}",
-                "if my ${p_name} blind becomes ${p_state}",
-                "if my ${p_name} blinds become ${p_state}",
-                "if my ${p_name} blind is ${p_state}",
-                "if my ${p_name} blinds are ${p_state}",
-                "when the ${p_name} blind becomes ${p_state}",
-                "when the ${p_name} blinds become ${p_state}",
-                "when the ${p_name} blind is ${p_state}",
-                "when the ${p_name} blinds are ${p_state}",
-                "if the ${p_name} blind becomes ${p_state}",
-                "if the ${p_name} blinds become ${p_state}",
-                "if the ${p_name} blind is ${p_state}",
-                "if the ${p_name} blinds are ${p_state}"]];
+  #_[utterances=["when the ${p_name} blinds are ${p_state}",
+                "if my ${p_name} blinds gets ${p_state}"]];
 
   stream (p_name : String) := edge( @io.home-assistant.blind(name=p_name).state()) on (state == enum(open))
-  #_[utterances=["when my ${p_name} blind becomes open",
-                "when my ${p_name} blinds become open",
-                "when my ${p_name} blind is open",
-                "when my ${p_name} blinds are open",
-                "if my ${p_name} blind becomes open",
-                "if my ${p_name} blinds become open",
-                "if my ${p_name} blind is open",
-                "if my ${p_name} blinds are open",
-                "when the ${p_name} blind becomes open",
-                "when the ${p_name} blinds become open",
-                "when the ${p_name} blind is open",
-                "when the ${p_name} blinds are open",
-                "if the ${p_name} blind becomes open",
-                "if the ${p_name} blinds become open",
-                "if the ${p_name} blind is open",
-                "if the ${p_name} blinds are open",
-                "when my ${p_name} blind becomes opened",
-                "when my ${p_name} blinds become opened",
-                "when my ${p_name} blind is opened",
-                "when my ${p_name} blinds are opened",
-                "if my ${p_name} blind becomes opened",
-                "if my ${p_name} blinds become opened",
-                "if my ${p_name} blind is opened",
-                "if my ${p_name} blinds are opened",
-                "when the ${p_name} blind becomes opened",
-                "when the ${p_name} blinds become opened",
-                "when the ${p_name} blind is opened",
-                "when the ${p_name} blinds are opened",
-                "if the ${p_name} blind becomes opened",
-                "if the ${p_name} blinds become opened",
-                "if the ${p_name} blind is opened",
-                "if the ${p_name} blinds are opened",
-                "when my ${p_name} blind opens",
-                "if my ${p_name} blind opens",
-                "when the ${p_name} blind opens",
-                "if the ${p_name} blind opens",
-                "when my ${p_name} blinds open",
-                "if my ${p_name} blinds open",
-                "when the ${p_name} blinds open",
-                "if the ${p_name} blinds open"]];
+  #_[utterances=["if my ${p_name} blinds are raised",
+                "when the ${p_name} blinds are put up",
+                "when I bring up my ${p_name} blinds"]];
 
   stream (p_name : String) := edge( @io.home-assistant.blind(name=p_name).state()) on (state == enum(closed))
-  #_[utterances=["when my ${p_name} blind becomes closed",
-                "when my ${p_name} blinds become closed",
-                "when my ${p_name} blind is closed",
-                "when my ${p_name} blinds are closed",
-                "if my ${p_name} blind becomes closed",
-                "if my ${p_name} blinds become closed",
-                "if my ${p_name} blind is closed",
-                "if my ${p_name} blinds are closed",
-                "when the ${p_name} blind becomes closed",
-                "when the ${p_name} blinds become closed",
-                "when the ${p_name} blind is closed",
-                "when the ${p_name} blinds are closed",
-                "if the ${p_name} blind becomes closed",
-                "if the ${p_name} blinds become closed",
-                "if the ${p_name} blind is closed",
-                "if the ${p_name} blinds are closed",
-                "when my ${p_name} blind closes",
-                "if my ${p_name} blind closes",
-                "when the ${p_name} blind closes",
-                "if the ${p_name} blind closes",
-                "when my ${p_name} blinds close",
-                "if my ${p_name} blinds close",
-                "when the ${p_name} blinds close",
-                "if the ${p_name} blinds close"]];
+  #_[utterances=["when my ${p_name} blinds lower",
+                "if the ${p_name} blinds get lowered",
+                "the moment the ${p_name} blinds get put down",
+                "when the ${p_name} blinds finish lowering"]];
 
-  action (p_name : String) := @io.home-assistant.blind(name=p_name).open_cover()
-  #_[utterances=["open my ${p_name} blind",
-                "open my ${p_name} blinds",
-                "open the ${p_name} blind",
-                "open the ${p_name} blinds",
-                "open ${p_name} blind",
-                "open ${p_name} blinds"]];
+  action (p_name : String) := @io.home-assistant.blind(name=p_name).set_openclose()
+  #_[utterances=["draw my ${p_name} blinds"]];
 
-  action (p_name : String) := @io.home-assistant.blind(name=p_name).close_cover()
-  #_[utterances=["close my ${p_name} blind",
-                "close my ${p_name} blinds",
-                "close the ${p_name} blind",
-                "close the ${p_name} blinds",
-                "close ${p_name} blind",
-                "close ${p_name} blinds"]];
+  action (p_name : String, p_state :Enum(open,close)) := @io.home-assistant.blind(name=p_name).set_openclose(state=p_state)
+  #_[utterances=["${p_state} my ${p_name} blinds",
+                 "${p_state} the ${p_name} blinds"]];
+
+  action (p_name : String) := @io.home-assistant.blind(name=p_name).set_openclose(state=enum(open))
+  #_[utterances=["open my ${p_name} blinds for me",
+                "raise the ${p_name} blinds",
+                "put the ${p_name} blinds up"]];
+
+  action (p_name : String) := @io.home-assistant.blind(name=p_name).set_openclose(state=enum(close))
+  #_[utterances=["close my ${p_name} blinds",
+                "lower the ${p_name} blinds",
+                "put the ${p_name} blinds down"]];
 }

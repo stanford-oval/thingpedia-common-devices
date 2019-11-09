@@ -10,13 +10,8 @@ abstract class @io.home-assistant.shade
   #_[confirmation="the state of your shade"]
   #_[formatted=["Your shade is ${state}"]];
 
-  action open_cover()
-  #_[canonical="open shade"]
-  #_[confirmation="open your shade"]
-  #[confirm=true];
-
-  action close_cover()
-  #_[canonical="close shade"]
-  #_[confirmation="close your shade"]
+  action set_openclose(in req state: Enum(open,close) #_[prompt="Do you want to open or close it?"] #_[canonical="state"])
+  #_[canonical="open or close shade"]
+  #_[confirmation="$state $__device"]
   #[confirm=true];
 }

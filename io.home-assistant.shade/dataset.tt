@@ -1,322 +1,100 @@
 dataset @io.home-assistant.shade language "en" {
 
   program := now => @io.home-assistant.shade.state() => notify
-  #_[utterances=["is my shade open?",
-                 "are my shades open?",
-                 "check if my shade is open",
-                 "check if my shades are open",
-                 "is the shade open?",
-                 "are the shades open?",
-                 "check if the shade is open",
-                 "check if the shades are open",
-                 "is my shade opened?",
-                 "are my shades opened?",
-                 "check if my shade is opened",
-                 "check if my shades are opened",
-                 "is the shade opened?",
-                 "are the shades opened?",
-                 "check if the shade is opened",
-                 "check if the shades are opened",
-                 "is my shade closed?",
+  #_[utterances=["are my shades open?",
                  "are my shades closed?",
-                 "check if my shade is closed",
-                 "check if my shades are closed",
-                 "is the shade closed?",
-                 "are the shades closed?",
-                 "check if the shade is closed",
-                 "check if the shades are closed",
-                 "check if my shade is open or closed",
-                 "check if my shades are open or closed",
-                 "check if the shade is open or closed",
-                 "check if the shades are open or closed",
-                 "check if my shade is opened or closed",
-                 "check if my shades are opened or closed",
-                 "check if the shade is opened or closed",
-                 "check if the shades are opened or closed"]];
+                 "check if my shades are raised",
+                 "are my shades put down?",
+                 "did I raise the shades?",
+                 "check whether the shades are lowered"]];
 
   query := @io.home-assistant.shade.state()
-  #_[utterances=["if my shade is open or closed",
-                 "if my shades are open or closed",
-                 "whether my shade is open or closed",
+  #_[utterances=["if my shades are open or closed",
                  "whether my shades are open or closed",
-                 "if the shade is open or closed",
-                 "if the shades are open or closed",
-                 "whether the shade is open or closed",
-                 "whether the shades are open or closed",
-                 "if my shade is opened or closed",
-                 "if my shades are opened or closed",
-                 "whether my shade is opened or closed",
-                 "whether my shades are opened or closed",
-                 "if the shade is opened or closed",
-                 "if the shades are opened or closed",
-                 "whether the shade is opened or closed",
-                 "whether the shades are opened or closed"]];
+                 "if I raised the shades",
+                 "whether the shades are raised or lowered"]];
 
   stream := monitor @io.home-assistant.shade.state()
-  #_[utterances=["when the state of my shade changes",
-                 "when the state of my shades change",
-                 "when the state of the shade changes",
-                 "when the state of the shades change"]];
+  #_[utterances=["when the state of the shades change"]];
 
   stream (p_state : Enum(open, closed)) := edge( @io.home-assistant.shade.state()) on (state == p_state)
-  #_[utterances=["when my shade becomes ${p_state}",
-                "when my shades become ${p_state}",
-                "when my shade is ${p_state}",
-                "when my shades are ${p_state}",
-                "if my shade becomes ${p_state}",
-                "if my shades become ${p_state}",
-                "if my shade is ${p_state}",
-                "if my shades are ${p_state}",
-                "when the shade becomes ${p_state}",
-                "when the shades become ${p_state}",
-                "when the shade is ${p_state}",
-                "when the shades are ${p_state}",
-                "if the shade becomes ${p_state}",
-                "if the shades become ${p_state}",
-                "if the shade is ${p_state}",
-                "if the shades are ${p_state}"]];
+  #_[utterances=["when the shades are ${p_state}",
+                "if my shades gets ${p_state}"]];
 
   stream := edge( @io.home-assistant.shade.state()) on (state == enum(open))
-  #_[utterances=["when my shade becomes open",
-                "when my shades become open",
-                "when my shade is open",
-                "when my shades are open",
-                "if my shade becomes open",
-                "if my shades become open",
-                "if my shade is open",
-                "if my shades are open",
-                "when the shade becomes open",
-                "when the shades become open",
-                "when the shade is open",
-                "when the shades are open",
-                "if the shade becomes open",
-                "if the shades become open",
-                "if the shade is open",
-                "if the shades are open",
-                "when my shade becomes opened",
-                "when my shades become opened",
-                "when my shade is opened",
-                "when my shades are opened",
-                "if my shade becomes opened",
-                "if my shades become opened",
-                "if my shade is opened",
-                "if my shades are opened",
-                "when the shade becomes opened",
-                "when the shades become opened",
-                "when the shade is opened",
-                "when the shades are opened",
-                "if the shade becomes opened",
-                "if the shades become opened",
-                "if the shade is opened",
-                "if the shades are opened",
-                "when my shade opens",
-                "if my shade opens",
-                "when the shade opens",
-                "if the shade opens",
-                "when my shades open",
-                "if my shades open",
-                "when the shades open",
-                "if the shades open"]];
+  #_[utterances=["if my shades are raised",
+                "when the shades are put up",
+                "when I bring up my shades"]];
 
   stream := edge( @io.home-assistant.shade.state()) on (state == enum(closed))
-  #_[utterances=["when my shade becomes closed",
-                "when my shades become closed",
-                "when my shade is closed",
-                "when my shades are closed",
-                "if my shade becomes closed",
-                "if my shades become closed",
-                "if my shade is closed",
-                "if my shades are closed",
-                "when the shade becomes closed",
-                "when the shades become closed",
-                "when the shade is closed",
-                "when the shades are closed",
-                "if the shade becomes closed",
-                "if the shades become closed",
-                "if the shade is closed",
-                "if the shades are closed",
-                "when my shade closes",
-                "if my shade closes",
-                "when the shade closes",
-                "if the shade closes",
-                "when my shades close",
-                "if my shades close",
-                "when the shades close",
-                "if the shades close"]];
+  #_[utterances=["when my shades lower",
+                "if the shades get lowered",
+                "the moment the shades get put down",
+                "when the shades finish lowering"]];
 
-  action := @io.home-assistant.shade.open_cover()
-  #_[utterances=["open my shade",
-                "open my shades",
-                "open the shade",
-                "open the shades",
-                "open shade",
-                "open shades"]];
+  action := @io.home-assistant.shade.set_openclose()
+  #_[utterances=["draw my shades"]];
 
-  action := @io.home-assistant.shade.close_cover()
-  #_[utterances=["close my shade",
-                "close my shades",
-                "close the shade",
-                "close the shades",
-                "close shade",
-                "close shades"]];
+  action (p_state :Enum(open,close)) := @io.home-assistant.shade.set_openclose(state=p_state)
+  #_[utterances=["${p_state} my shades",
+                 "${p_state} the shades"]];
+
+  action := @io.home-assistant.shade.set_openclose(state=enum(open))
+  #_[utterances=["open my shades for me",
+                "raise the shades",
+                "put the shades up"]];
+
+  action := @io.home-assistant.shade.set_openclose(state=enum(close))
+  #_[utterances=["close my shades",
+                "lower the shades",
+                "put the shades down"]];
 
   program (p_name : String) := now => @io.home-assistant.shade(name=p_name).state() => notify
-  #_[utterances=["is my ${p_name} shade open?",
-                 "are my ${p_name} shades open?",
-                 "check if my ${p_name} shade is open",
-                 "check if my ${p_name} shades are open",
-                 "is the ${p_name} shade open?",
-                 "are the ${p_name} shades open?",
-                 "check if the ${p_name} shade is open",
-                 "check if the ${p_name} shades are open",
-                 "is my ${p_name} shade opened?",
-                 "are my ${p_name} shades opened?",
-                 "check if my ${p_name} shade is opened",
-                 "check if my ${p_name} shades are opened",
-                 "is the ${p_name} shade opened?",
-                 "are the ${p_name} shades opened?",
-                 "check if the ${p_name} shade is opened",
-                 "check if the ${p_name} shades are opened",
-                 "is my ${p_name} shade closed?",
+  #_[utterances=["are my ${p_name} shades open?",
                  "are my ${p_name} shades closed?",
-                 "check if my ${p_name} shade is closed",
-                 "check if my ${p_name} shades are closed",
-                 "is the ${p_name} shade closed?",
-                 "are the ${p_name} shades closed?",
-                 "check if the ${p_name} shade is closed",
-                 "check if the ${p_name} shades are closed",
-                 "check if my ${p_name} shade is open or closed",
-                 "check if my ${p_name} shades are open or closed",
-                 "check if the ${p_name} shade is open or closed",
-                 "check if the ${p_name} shades are open or closed",
-                 "check if my ${p_name} shade is opened or closed",
-                 "check if my ${p_name} shades are opened or closed",
-                 "check if the ${p_name} shade is opened or closed",
-                 "check if the ${p_name} shades are opened or closed"]];
+                 "check if my ${p_name} shades are raised",
+                 "are my ${p_name} shades put down?",
+                 "did I raise the ${p_name} shades?",
+                 "check whether the ${p_name} shades are lowered"]];
 
   query (p_name : String) := @io.home-assistant.shade(name=p_name).state()
-  #_[utterances=["if my ${p_name} shade is open or closed",
-                 "if my ${p_name} shades are open or closed",
-                 "whether my ${p_name} shade is open or closed",
+  #_[utterances=["if my ${p_name} shades are open or closed",
                  "whether my ${p_name} shades are open or closed",
-                 "if the ${p_name} shade is open or closed",
-                 "if the ${p_name} shades are open or closed",
-                 "whether the ${p_name} shade is open or closed",
-                 "whether the ${p_name} shades are open or closed",
-                 "if my ${p_name} shade is opened or closed",
-                 "if my ${p_name} shades are opened or closed",
-                 "whether my ${p_name} shade is opened or closed",
-                 "whether my ${p_name} shades are opened or closed",
-                 "if the ${p_name} shade is opened or closed",
-                 "if the ${p_name} shades are opened or closed",
-                 "whether the ${p_name} shade is opened or closed",
-                 "whether the ${p_name} shades are opened or closed"]];
+                 "if I raised the ${p_name} shades",
+                 "whether the ${p_name} shades is raised or lowered"]];
 
   stream (p_name : String) := monitor @io.home-assistant.shade(name=p_name).state()
-  #_[utterances=["when the state of my ${p_name} shade changes",
-                 "when the state of my ${p_name} shades change",
-                 "when the state of the ${p_name} shade changes",
-                 "when the state of the ${p_name} shades change"]];
+  #_[utterances=["when the state of the ${p_name} shades change"]];
 
   stream (p_name : String, p_state : Enum(open, closed)) := edge( @io.home-assistant.shade(name=p_name).state()) on (state == p_state)
-  #_[utterances=["when my ${p_name} shade becomes ${p_state}",
-                "when my ${p_name} shades become ${p_state}",
-                "when my ${p_name} shade is ${p_state}",
-                "when my ${p_name} shades are ${p_state}",
-                "if my ${p_name} shade becomes ${p_state}",
-                "if my ${p_name} shades become ${p_state}",
-                "if my ${p_name} shade is ${p_state}",
-                "if my ${p_name} shades are ${p_state}",
-                "when the ${p_name} shade becomes ${p_state}",
-                "when the ${p_name} shades become ${p_state}",
-                "when the ${p_name} shade is ${p_state}",
-                "when the ${p_name} shades are ${p_state}",
-                "if the ${p_name} shade becomes ${p_state}",
-                "if the ${p_name} shades become ${p_state}",
-                "if the ${p_name} shade is ${p_state}",
-                "if the ${p_name} shades are ${p_state}"]];
+  #_[utterances=["when the ${p_name} shades are ${p_state}",
+                "if my ${p_name} shades gets ${p_state}"]];
 
   stream (p_name : String) := edge( @io.home-assistant.shade(name=p_name).state()) on (state == enum(open))
-  #_[utterances=["when my ${p_name} shade becomes open",
-                "when my ${p_name} shades become open",
-                "when my ${p_name} shade is open",
-                "when my ${p_name} shades are open",
-                "if my ${p_name} shade becomes open",
-                "if my ${p_name} shades become open",
-                "if my ${p_name} shade is open",
-                "if my ${p_name} shades are open",
-                "when the ${p_name} shade becomes open",
-                "when the ${p_name} shades become open",
-                "when the ${p_name} shade is open",
-                "when the ${p_name} shades are open",
-                "if the ${p_name} shade becomes open",
-                "if the ${p_name} shades become open",
-                "if the ${p_name} shade is open",
-                "if the ${p_name} shades are open",
-                "when my ${p_name} shade becomes opened",
-                "when my ${p_name} shades become opened",
-                "when my ${p_name} shade is opened",
-                "when my ${p_name} shades are opened",
-                "if my ${p_name} shade becomes opened",
-                "if my ${p_name} shades become opened",
-                "if my ${p_name} shade is opened",
-                "if my ${p_name} shades are opened",
-                "when the ${p_name} shade becomes opened",
-                "when the ${p_name} shades become opened",
-                "when the ${p_name} shade is opened",
-                "when the ${p_name} shades are opened",
-                "if the ${p_name} shade becomes opened",
-                "if the ${p_name} shades become opened",
-                "if the ${p_name} shade is opened",
-                "if the ${p_name} shades are opened",
-                "when my ${p_name} shade opens",
-                "if my ${p_name} shade opens",
-                "when the ${p_name} shade opens",
-                "if the ${p_name} shade opens",
-                "when my ${p_name} shades open",
-                "if my ${p_name} shades open",
-                "when the ${p_name} shades open",
-                "if the ${p_name} shades open"]];
+  #_[utterances=["if my ${p_name} shades are raised",
+                "when the ${p_name} shades are put up",
+                "when I bring up my ${p_name} shades"]];
 
   stream (p_name : String) := edge( @io.home-assistant.shade(name=p_name).state()) on (state == enum(closed))
-  #_[utterances=["when my ${p_name} shade becomes closed",
-                "when my ${p_name} shades become closed",
-                "when my ${p_name} shade is closed",
-                "when my ${p_name} shades are closed",
-                "if my ${p_name} shade becomes closed",
-                "if my ${p_name} shades become closed",
-                "if my ${p_name} shade is closed",
-                "if my ${p_name} shades are closed",
-                "when the ${p_name} shade becomes closed",
-                "when the ${p_name} shades become closed",
-                "when the ${p_name} shade is closed",
-                "when the ${p_name} shades are closed",
-                "if the ${p_name} shade becomes closed",
-                "if the ${p_name} shades become closed",
-                "if the ${p_name} shade is closed",
-                "if the ${p_name} shades are closed",
-                "when my ${p_name} shade closes",
-                "if my ${p_name} shade closes",
-                "when the ${p_name} shade closes",
-                "if the ${p_name} shade closes",
-                "when my ${p_name} shades close",
-                "if my ${p_name} shades close",
-                "when the ${p_name} shades close",
-                "if the ${p_name} shades close"]];
+  #_[utterances=["when my ${p_name} shades lower",
+                "if the ${p_name} shades get lowered",
+                "the moment the ${p_name} shades get put down",
+                "when the ${p_name} shades finish lowering"]];
 
-  action (p_name : String) := @io.home-assistant.shade(name=p_name).open_cover()
-  #_[utterances=["open my ${p_name} shade",
-                "open my ${p_name} shades",
-                "open the ${p_name} shade",
-                "open the ${p_name} shades",
-                "open ${p_name} shade",
-                "open ${p_name} shades"]];
+  action (p_name : String) := @io.home-assistant.shade(name=p_name).set_openclose()
+  #_[utterances=["draw my ${p_name} shades"]];
 
-  action (p_name : String) := @io.home-assistant.shade(name=p_name).close_cover()
-  #_[utterances=["close my ${p_name} shade",
-                "close my ${p_name} shades",
-                "close the ${p_name} shade",
-                "close the ${p_name} shades",
-                "close ${p_name} shade",
-                "close ${p_name} shades"]];
+  action (p_name : String, p_state :Enum(open,close)) := @io.home-assistant.shade(name=p_name).set_openclose(state=p_state)
+  #_[utterances=["${p_state} my ${p_name} shades",
+                 "${p_state} the ${p_name} shades"]];
+
+  action (p_name : String) := @io.home-assistant.shade(name=p_name).set_openclose(state=enum(open))
+  #_[utterances=["open my ${p_name} shades for me",
+                "raise the ${p_name} shades",
+                "put the ${p_name} shades up"]];
+
+  action (p_name : String) := @io.home-assistant.shade(name=p_name).set_openclose(state=enum(close))
+  #_[utterances=["close my ${p_name} shades",
+                "lower the ${p_name} shades",
+                "put the ${p_name} shades down"]];
 }
