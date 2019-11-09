@@ -25,8 +25,8 @@ module.exports = class HomeAssistantFan extends HomeAssistantDevice {
         else
             await this._callService('fan', 'turn_off');
     }
-    async do_set_oscillate({ oscillate }) {
-        if (oscillate === 'on')
+    async do_set_oscillation({ oscillation }) {
+        if (oscillation === 'on')
             await this._callService('fan', 'oscillate', {oscillating: true});
         else
             await this._callService('fan', 'oscillate', {oscillating: false});
