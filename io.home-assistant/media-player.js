@@ -19,11 +19,11 @@ module.exports = class HomeAssistantMediaPlayer extends HomeAssistantDevice {
             return { state: this.state.state };
         });
     }
-    async do_turn_on() {
-    	await this._callService("media_player", "turn_on");
-    }
-    async do_turn_off() {
-    	await this._callService("media_player", "turn_off");
+    async do_set_power({ power }) {
+        if (power === 'on')
+            await this._callService('media_player', 'turn_on');
+        else
+            await this._callService('media_player', 'turn_off');
     }
     async do_volume_up() {
     	await this._callService("media_player", "volume_up");
@@ -36,5 +36,9 @@ module.exports = class HomeAssistantMediaPlayer extends HomeAssistantDevice {
     }
     async do_volume_unmute() {
         await this._callService("media_player", "volume_mute", {is_volume_muted: false});
+    }
+    async do_volume_set({ volume }) {
+        volume = Math.max(0, Math.min(1, volume));
+        await this._callService("media_player", "volume_set", {volume_level: volume});
     }
 };

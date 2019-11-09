@@ -20,11 +20,10 @@ module.exports = class HomeAssistantSwitch extends HomeAssistantDevice {
         });
     }
 
-    async do_turn_on() {
-        await this._callService("switch", "turn_on");
-    }
-
-    async do_turn_off() {
-        await this._callService("switch", "turn_off");
+    async do_set_power({ power }) {
+        if (power === 'on')
+            await this._callService('switch', 'turn_on');
+        else
+            await this._callService('switch', 'turn_off');
     }
 };

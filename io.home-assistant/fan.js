@@ -19,16 +19,16 @@ module.exports = class HomeAssistantFan extends HomeAssistantDevice {
             return { state: this.state.state };
         });
     }
-    async do_turn_on() {
-    	await this._callService("fan", "turn_on");
+    async do_set_power({ power }) {
+        if (power === 'on')
+            await this._callService('fan', 'turn_on');
+        else
+            await this._callService('fan', 'turn_off');
     }
-    async do_turn_off() {
-    	await this._callService("fan", "turn_off");
-    }
-    async do_start_oscillate() {
-    	await this._callService("fan", "oscillate", {oscillating: true});
-    }
-    async do_stop_oscillate() {
-    	await this._callService("fan", "oscillate", {oscillating: false});
+    async do_set_oscillate({ oscillate }) {
+        if (oscillate === 'on')
+            await this._callService('fan', 'oscillate', {oscillating: true});
+        else
+            await this._callService('fan', 'oscillate', {oscillating: false});
     }
 };

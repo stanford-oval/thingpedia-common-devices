@@ -19,11 +19,11 @@ module.exports = class HomeAssistantVacuum extends HomeAssistantDevice {
             return { state: this.state.state };
         });
     }
-    async do_turn_on() {
-    	await this._callService("vacuum", "turn_on");
-    }
-    async do_turn_off() {
-    	await this._callService("vacuum", "turn_off");
+    async do_set_power({ power }) {
+        if (power === 'on')
+            await this._callService('vacuum', 'turn_on');
+        else
+            await this._callService('vacuum', 'turn_off');
     }
     async do_return_to_base() {
     	await this._callService("vacuum", "return_to_base");
