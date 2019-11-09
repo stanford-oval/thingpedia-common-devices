@@ -15,13 +15,13 @@ dataset @io.home-assistant.door language "en" {
   stream := monitor @io.home-assistant.door.state()
   #_[utterances=["when the state of the door changes"]];
 
-  stream (p_state : Enum(open, closed)) := edge( @io.home-assistant.door.state()) on (state == p_state)
+  stream (p_state : Enum(open, closed)) := edge( monitor @io.home-assistant.door.state()) on (state == p_state)
   #_[utterances=["when the door becomes ${p_state}",
                 "if the door is ${p_state}",
                 "when my door gets ${p_state}",
                 "if my door changes to ${p_state}"]];
 
-  stream := edge( @io.home-assistant.door.state()) on (state == enum(open))
+  stream := edge( monitor @io.home-assistant.door.state()) on (state == enum(open))
   #_[utterances=["when my door opens",
                 "when I open the door",
                 "the moment I open the door",
@@ -30,7 +30,7 @@ dataset @io.home-assistant.door language "en" {
                 "whoever opens the door",
                 "if anyone opens the door"]];
 
-  stream := edge( @io.home-assistant.door.state()) on (state == enum(closed))
+  stream := edge( monitor @io.home-assistant.door.state()) on (state == enum(closed))
   #_[utterances=["when my door closes",
                 "when I close the door",
                 "the moment I close the door",
@@ -54,13 +54,13 @@ dataset @io.home-assistant.door language "en" {
   stream (p_name : String) := monitor @io.home-assistant.door(name=p_name).state()
   #_[utterances=["when the state of the ${p_name} door changes"]];
 
-  stream (p_name : String, p_state : Enum(open, closed)) := edge( @io.home-assistant.door(name=p_name).state()) on (state == p_state)
+  stream (p_name : String, p_state : Enum(open, closed)) := edge( monitor @io.home-assistant.door(name=p_name).state()) on (state == p_state)
   #_[utterances=["when the ${p_name} door becomes ${p_state}",
                 "if the ${p_name} door is ${p_state}",
                 "when my ${p_name} door gets ${p_state}",
                 "if my ${p_name} door changes to ${p_state}"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.door(name=p_name).state()) on (state == enum(open))
+  stream (p_name : String) := edge( monitor @io.home-assistant.door(name=p_name).state()) on (state == enum(open))
   #_[utterances=["when my ${p_name} door opens",
                 "when I open the ${p_name} door",
                 "the moment I open the ${p_name} door",
@@ -69,7 +69,7 @@ dataset @io.home-assistant.door language "en" {
                 "whoever opens the ${p_name} door",
                 "if anyone opens the ${p_name} door"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.door(name=p_name).state()) on (state == enum(closed))
+  stream (p_name : String) := edge( monitor @io.home-assistant.door(name=p_name).state()) on (state == enum(closed))
   #_[utterances=["when my ${p_name} door closes",
                 "when I close the ${p_name} door",
                 "the moment I close the ${p_name} door",
