@@ -13,7 +13,7 @@ dataset @io.home-assistant.occupancy language "en" {
   stream := monitor @io.home-assistant.occupancy.state()
   #_[utterances=["when the state of the occupancy sensor changes"]];
 
-  stream (p_state : Enum(occupied, not_occupied)) := edge( monitor @io.home-assistant.occupancy.state()) on (state == p_state)
+  stream (p_state : Enum(occupied, unoccupied)) := edge( monitor @io.home-assistant.occupancy.state()) on (state == p_state)
   #_[utterances=["when the occupancy sensor becomes ${p_state}",
                 "when the occupancy sensor is ${p_state}",
                 "if the occupancy sensor turns ${p_state}",
@@ -23,7 +23,7 @@ dataset @io.home-assistant.occupancy language "en" {
   #_[utterances=["when the occupancy sensor is occupied",
                 "if the occupancy sensor becomes occupied"]];
 
-  stream := edge( monitor @io.home-assistant.occupancy.state()) on (state == enum(not_occupied))
+  stream := edge( monitor @io.home-assistant.occupancy.state()) on (state == enum(unoccupied))
   #_[utterances=["when the occupancy sensor is not occupied",
                 "if the occupancy sensor becomes not occupied"]];
 
@@ -40,7 +40,7 @@ dataset @io.home-assistant.occupancy language "en" {
   stream (p_name : String) := monitor @io.home-assistant.occupancy(name=p_name).state()
   #_[utterances=["when the state of the ${p_name} occupancy sensor changes"]];
 
-  stream (p_name : String, p_state : Enum(occupied, not_occupied)) := edge( monitor @io.home-assistant.occupancy(name=p_name).state()) on (state == p_state)
+  stream (p_name : String, p_state : Enum(occupied, unoccupied)) := edge( monitor @io.home-assistant.occupancy(name=p_name).state()) on (state == p_state)
   #_[utterances=["when the ${p_name} occupancy sensor becomes ${p_state}",
                 "when the ${p_name} occupancy sensor is ${p_state}",
                 "if the ${p_name} occupancy sensor turns ${p_state}",
@@ -50,7 +50,7 @@ dataset @io.home-assistant.occupancy language "en" {
   #_[utterances=["when the ${p_name} occupancy sensor is occupied",
                 "if the ${p_name} occupancy sensor becomes occupied"]];
 
-  stream (p_name : String) := edge( monitor @io.home-assistant.occupancy(name=p_name).state()) on (state == enum(not_occupied))
+  stream (p_name : String) := edge( monitor @io.home-assistant.occupancy(name=p_name).state()) on (state == enum(unoccupied))
   #_[utterances=["when the ${p_name} occupancy sensor is not occupied",
                 "if the ${p_name} occupancy sensor becomes not occupied"]];
 }

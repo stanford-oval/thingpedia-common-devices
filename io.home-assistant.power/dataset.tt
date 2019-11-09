@@ -20,15 +20,15 @@ dataset @io.home-assistant.power language "en" {
   stream := monitor @io.home-assistant.power.state()
   #_[utterances=["when the state of the power sensor changes"]];
 
-  stream (p_state : Enum(detecting_power, not_detecting_power)) := edge( @io.home-assistant.power.state()) on (state == p_state)
+  stream (p_state : Enum(detecting, not_detecting)) := edge( monitor @io.home-assistant.power.state()) on (state == p_state)
   #_[utterances=["when the power sensor is ${p_state}",
                 "if the power sensor is ${p_state}"]];
 
-  stream := edge( @io.home-assistant.power.state()) on (state == enum(detecting_power))
+  stream := edge( monitor @io.home-assistant.power.state()) on (state == enum(detecting))
   #_[utterances=["when the power sensor is detecting power",
                 "if the power sensor is detecting power"]];
 
-  stream := edge( @io.home-assistant.power.state()) on (state == enum(not_detecting_power))
+  stream := edge( monitor @io.home-assistant.power.state()) on (state == enum(not_detecting))
   #_[utterances=["when the power sensor is not detecting power",
                 "if the power sensor is not detecting power"]];
 
@@ -52,16 +52,16 @@ dataset @io.home-assistant.power language "en" {
   stream (p_name : String) := monitor @io.home-assistant.power(name=p_name).state()
   #_[utterances=["when the state of the ${p_name} power sensor changes"]];
 
-  stream (p_name : String, p_state : Enum(detecting_power, not_detecting_power)) := edge( @io.home-assistant.power(name=p_name).state()) on (state == p_state)
+  stream (p_name : String, p_state : Enum(detecting, not_detecting)) := edge( monitor @io.home-assistant.power(name=p_name).state()) on (state == p_state)
   #_[utterances=["when the ${p_name} power sensor becomes ${p_state}",
                 "when the ${p_name} power sensor is ${p_state}"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.power(name=p_name).state()) on (state == enum(detecting_power))
+  stream (p_name : String) := edge( monitor @io.home-assistant.power(name=p_name).state()) on (state == enum(detecting))
   #_[utterances=["when the ${p_name} power sensor is detecting power",
                 "if the ${p_name} power sensor is detecting power",
                 "when the ${p_name} power sensor becomes detecting power"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.power(name=p_name).state()) on (state == enum(not_detecting_power))
+  stream (p_name : String) := edge( monitor @io.home-assistant.power(name=p_name).state()) on (state == enum(not_detecting))
   #_[utterances=["when the ${p_name} power sensor is not detecting power",
                 "if the ${p_name} power sensor is not detecting power"]];
 }
