@@ -38,7 +38,7 @@ module.exports = class HomeAssistantMediaPlayer extends HomeAssistantDevice {
         await this._callService("media_player", "volume_mute", {is_volume_muted: false});
     }
     async do_volume_set({ volume }) {
-        volume = Math.max(0, Math.min(1, volume));
+        volume = Math.max(0, Math.min(1, volume / 100.));
         await this._callService("media_player", "volume_set", {volume_level: volume});
     }
 };
