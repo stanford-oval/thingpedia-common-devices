@@ -1,18 +1,13 @@
 dataset @io.home-assistant.smoke language "en" {
 
   program := now => @io.home-assistant.smoke.state() => notify
-  #_[utterances=["is the smoke sensor detecting smoke?",
-                 "check if the smoke sensor is detecting smoke",
-                 "is the smoke sensor detecting any smoke?",
-                 "check if the smoke sensor is detecting any smoke",
-                 "is the smoke sensor not detecting smoke?",
-                 "check if the smoke sensor is not detecting smoke",
-                 "check if the smoke sensor is detecting smoke or not detecting smoke",
-                 "check if the smoke sensor is detecting any smoke or not detecting smoke"]];
+  #_[utterances=["is the smoke sensor detecting?",
+                 "check if the smoke sensor is detecting",
+                 "check whether the smoke sensor is detecting or not"]];
 
   query := @io.home-assistant.smoke.state()
   #_[utterances=["the state of the smoke sensor",
-                 "if the smoke sensor is detecting smoke or not detecting smoke",
+                 "if the smoke sensor is detecting or not detecting",
                  "whether the smoke sensor is detecting smoke or not detecting smoke",
                  "if the smoke sensor is detecting any smoke or not detecting smoke",
                  "whether the smoke sensor is detecting any smoke or not detecting smoke"]];
@@ -20,7 +15,7 @@ dataset @io.home-assistant.smoke language "en" {
   stream := monitor @io.home-assistant.smoke.state()
   #_[utterances=["when the state of the smoke sensor changes"]];
 
-  stream (p_state : Enum(detecting_smoke, not_detecting_smoke)) := edge( @io.home-assistant.smoke.state()) on (state == p_state)
+  stream (p_state : Enum(detecting, not_detecting)) := edge( @io.home-assistant.smoke.state()) on (state == p_state)
   #_[utterances=["when the smoke sensor becomes ${p_state}",
                 "when the smoke sensor is ${p_state}",
                 "when the smoke sensor turns ${p_state}",
@@ -30,11 +25,11 @@ dataset @io.home-assistant.smoke language "en" {
                 "if the smoke sensor turns ${p_state}",
                 "if the smoke sensor changes to ${p_state}"]];
 
-  stream := edge( @io.home-assistant.smoke.state()) on (state == enum(detecting_smoke))
+  stream := edge( @io.home-assistant.smoke.state()) on (state == enum(detecting))
   #_[utterances=["when the smoke sensor is detecting smoke",
                 "if the smoke sensor is detecting smoke"]];
 
-  stream := edge( @io.home-assistant.smoke.state()) on (state == enum(not_detecting_smoke))
+  stream := edge( @io.home-assistant.smoke.state()) on (state == enum(not_detecting))
   #_[utterances=["when the smoke sensor is not detecting smoke",
                 "if the smoke sensor is not detecting smoke"]];
 
@@ -58,7 +53,7 @@ dataset @io.home-assistant.smoke language "en" {
   stream (p_name : String) := monitor @io.home-assistant.smoke(name=p_name).state()
   #_[utterances=["when the state of the ${p_name} smoke sensor changes"]];
 
-  stream (p_name : String, p_state : Enum(detecting_smoke, not_detecting_smoke)) := edge( @io.home-assistant.smoke(name=p_name).state()) on (state == p_state)
+  stream (p_name : String, p_state : Enum(detecting, not_detecting)) := edge( @io.home-assistant.smoke(name=p_name).state()) on (state == p_state)
   #_[utterances=["when the ${p_name} smoke sensor becomes ${p_state}",
                 "when the ${p_name} smoke sensor is ${p_state}",
                 "when the ${p_name} smoke sensor turns ${p_state}",
@@ -68,11 +63,11 @@ dataset @io.home-assistant.smoke language "en" {
                 "if the ${p_name} smoke sensor turns ${p_state}",
                 "if the ${p_name} smoke sensor changes to ${p_state}"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.smoke(name=p_name).state()) on (state == enum(detecting_smoke))
+  stream (p_name : String) := edge( @io.home-assistant.smoke(name=p_name).state()) on (state == enum(detecting))
   #_[utterances=["when the ${p_name} smoke sensor is detecting smoke",
                 "if the ${p_name} smoke sensor is detecting smoke"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.smoke(name=p_name).state()) on (state == enum(not_detecting_smoke))
+  stream (p_name : String) := edge( @io.home-assistant.smoke(name=p_name).state()) on (state == enum(not_detecting))
   #_[utterances=["when the ${p_name} smoke sensor is not detecting smoke",
                 "if the ${p_name} smoke sensor is not detecting smoke"]];
 }

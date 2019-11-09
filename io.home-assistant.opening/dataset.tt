@@ -3,8 +3,6 @@ dataset @io.home-assistant.opening language "en" {
   program := now => @io.home-assistant.opening.state() => notify
   #_[utterances=["is the opening open?",
                  "check if the opening is open",
-                 "is the opening closed?",
-                 "check if the opening is closed",
                  "check if the opening is open or closed"]];
 
   query := @io.home-assistant.opening.state()
@@ -17,25 +15,17 @@ dataset @io.home-assistant.opening language "en" {
   stream (p_state : Enum(open, closed)) := edge( @io.home-assistant.opening.state()) on (state == p_state)
   #_[utterances=["when the opening becomes ${p_state}",
                 "when the opening is ${p_state}",
-                "when the opening turns ${p_state}",
-                "when the opening changes to ${p_state}",
-                "if the opening becomes ${p_state}",
-                "if the opening is ${p_state}",
                 "if the opening turns ${p_state}",
                 "if the opening changes to ${p_state}"]];
 
   stream := edge( @io.home-assistant.opening.state()) on (state == enum(open))
-  #_[utterances=["when the opening opens",
-                "if the opening opens",
-                "when the opening is open",
+  #_[utterances=["when the opening is open",
                 "if the opening is open",
                 "when the opening becomes open",
                 "if the opening becomes open"]];
 
   stream := edge( @io.home-assistant.opening.state()) on (state == enum(closed))
-  #_[utterances=["when the opening closes",
-                "if the opening closes",
-                "when the opening is closed",
+  #_[utterances=["when the opening is closed",
                 "if the opening is closed",
                 "when the opening becomes closed",
                 "if the opening becomes closed"]];
@@ -44,12 +34,11 @@ dataset @io.home-assistant.opening language "en" {
   #_[utterances=["is the ${p_name} opening open?",
                  "check if the ${p_name} opening is open",
                  "is the ${p_name} opening closed?",
-                 "check if the ${p_name} opening is closed",
-                 "check if the ${p_name} opening is open or closed"]];
+                 "check if the ${p_name} opening is closed"]];
 
   query (p_name : String) := @io.home-assistant.opening(name=p_name).state()
   #_[utterances=["the state of the ${p_name} opening",
-                 "if the ${p_name} opening is open or closed",
+                 "if the ${p_name} opening is open",
                  "whether the ${p_name} opening is open or closed"]];
 
   stream (p_name : String) := monitor @io.home-assistant.opening(name=p_name).state()
@@ -58,25 +47,17 @@ dataset @io.home-assistant.opening language "en" {
   stream (p_name : String, p_state : Enum(open, closed)) := edge( @io.home-assistant.opening(name=p_name).state()) on (state == p_state)
   #_[utterances=["when the ${p_name} opening becomes ${p_state}",
                 "when the ${p_name} opening is ${p_state}",
-                "when the ${p_name} opening turns ${p_state}",
-                "when the ${p_name} opening changes to ${p_state}",
-                "if the ${p_name} opening becomes ${p_state}",
-                "if the ${p_name} opening is ${p_state}",
                 "if the ${p_name} opening turns ${p_state}",
                 "if the ${p_name} opening changes to ${p_state}"]];
 
   stream (p_name : String) := edge( @io.home-assistant.opening(name=p_name).state()) on (state == enum(open))
-  #_[utterances=["when the ${p_name} opening opens",
-                "if the ${p_name} opening opens",
-                "when the ${p_name} opening is open",
+  #_[utterances=["when the ${p_name} opening is open",
                 "if the ${p_name} opening is open",
                 "when the ${p_name} opening becomes open",
                 "if the ${p_name} opening becomes open"]];
 
   stream (p_name : String) := edge( @io.home-assistant.opening(name=p_name).state()) on (state == enum(closed))
-  #_[utterances=["when the ${p_name} opening closes",
-                "if the ${p_name} opening closes",
-                "when the ${p_name} opening is closed",
+  #_[utterances=["when the ${p_name} opening is closed",
                 "if the ${p_name} opening is closed",
                 "when the ${p_name} opening becomes closed",
                 "if the ${p_name} opening becomes closed"]];
