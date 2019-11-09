@@ -11,9 +11,9 @@ const HomeAssistantDevice = require('./base');
 
 module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
 	constructor(engine, state, master, entityId) {
+        super(engine, state, master, entityId);
         const [domain,] = entityId.split('.');
-		super(engine, state, master, entityId);
-        this.domain = domain;
+		this.domain = domain;
         if (['binary_sensor', 'cover'].includes(this.domain)) {
             let supportedDeviceClasses = {
                 battery: {
@@ -120,7 +120,7 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
     // note: subscribe_ must NOT be async, or an ImplementationError will occur at runtime
     subscribe_state() {
         if (this.domain === 'sensor') {
-            var str_ret = this.state.state + this.state.attributes.unit_of_measurement;
+            var value = this.state.state + this.state.attributes.unit_of_measurement;
             return this._subscribeState(() => {
                 return [{state: undefined, value: value}];
             });

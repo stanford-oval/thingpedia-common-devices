@@ -1,4 +1,3 @@
-import os
 import pathlib
 supported_device_classes = {
   "battery": {
