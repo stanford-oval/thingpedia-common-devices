@@ -146,8 +146,30 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
         if (this.domain === 'sensor') {
             let value = this.state.state
             let unit = this.state.attributes.unit_of_measurement;
+            let value = parseFloat(this.state.state);
+            if (this.device_class === 'temperature') {
+                if (unit != '°C' && unit != 'C') {
+                    if (unit === '°F' || unit === 'F')
+                        value = Units.transformToBaseUnit(value, 'F');
+                    else if (unit === 'K')
+                        value = Units.transformToBaseUnit(value, 'K');
+                    else
+                        throw new Error(`Unrecognized unit ${unit}`)
+                }
+            } else if (this.device_class === 'pressure') {
+                if (unit != 'Pa') {
+                    if (unit === 'hPa' || unit === 'hpa')
+                        value *= 100;
+                    else if (unit === 'mbar')
+                        value = Units.transformToBaseUnit(value * 0.001, 'bar');
+                    else if (['bar', 'psi', 'mmHg', 'inHg', 'atm'].includes(unit))
+                        value = Units.transformToBaseUnit(value * 0.001, unit);
+                    else
+                        throw new Error(`Unrecognized unit ${unit}`)
+                }
+            }
             return this._subscribeState(() => {
-                return [{state: undefined, value: value, unit: unit}];
+                return [{state: undefined, value: value}];
             });
         } else if (this.domain === 'binary_sensor') {
             let state = this.deviceStateMapping[this.state.state];
