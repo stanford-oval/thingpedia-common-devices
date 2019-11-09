@@ -41,7 +41,7 @@ dataset @io.home-assistant.media-player language "en" {
   action (p_power :Enum(on,off)) := @io.home-assistant.media-player.set_power(power=p_power)
   #_[utterances=["turn ${p_power} my ${p_name} media player",
                  "switch ${p_power} the ${p_name} media player",
-                 "${p_power} the ${p_name} media player"]]
+                 "${p_power} the ${p_name} media player"]];
 
   action := @io.home-assistant.media-player.set_power(power=enum(on))
   #_[utterances=["on my media player",
@@ -86,7 +86,7 @@ dataset @io.home-assistant.media-player language "en" {
 
   action (p_volume : Number) := @io.home-assistant.media-player.volume_set(volume=p_volume)
   #_[utterances=["turn my media player sound to ${p_volume}",
-                 "set the media player's volume to ${p_volume}"]]
+                 "set the media player's volume to ${p_volume}"]];
 
   program (p_name : String) := now => @io.home-assistant.media-player(name=p_name).state() => notify
   #_[utterances=["is my ${p_name} media player on?",
@@ -129,7 +129,7 @@ dataset @io.home-assistant.media-player language "en" {
   action (p_name : String, p_power :Enum(on,off)) := @io.home-assistant.media-player(name=p_name).set_power(power=p_power)
   #_[utterances=["turn ${p_power} my ${p_name} media player",
                  "switch ${p_power} the ${p_name} media player",
-                 "${p_power} the ${p_name} media player"]]
+                 "${p_power} the ${p_name} media player"]];
 
   action (p_name : String) := @io.home-assistant.media-player(name=p_name).set_power(power=enum(on))
   #_[utterances=["on my ${p_name} media player",
@@ -174,5 +174,5 @@ dataset @io.home-assistant.media-player language "en" {
 
   action (p_name : String, p_volume : Number) := @io.home-assistant.media-player(name=p_name).volume_set(volume=p_volume)
   #_[utterances=["turn my ${p_name} media player sound to ${p_volume}",
-                 "set the ${p_name} media player's volume to ${p_volume}"]]
+                 "set the ${p_name} media player's volume to ${p_volume}"]];
 }
