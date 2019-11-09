@@ -13,17 +13,17 @@ dataset @io.home-assistant.sound language "en" {
   stream := monitor @io.home-assistant.sound.state()
   #_[utterances=["when the state of the sound sensor changes"]];
 
-  stream (p_state : Enum(detecting, not_detecting)) := edge( @io.home-assistant.sound.state()) on (state == p_state)
+  stream (p_state : Enum(detecting, not_detecting)) := edge(monitor @io.home-assistant.sound.state()) on (state == p_state)
   #_[utterances=["when the sound sensor turns ${p_state}",
                 "when the sound sensor changes to ${p_state}",
                 "if the sound sensor becomes ${p_state}",
                 "if the sound sensor is ${p_state}"]];
 
-  stream := edge( @io.home-assistant.sound.state()) on (state == enum(detecting))
+  stream := edge(monitor @io.home-assistant.sound.state()) on (state == enum(detecting))
   #_[utterances=["when the sound sensor is detecting sound",
                 "if the sound sensor is detecting any sound"]];
 
-  stream := edge( @io.home-assistant.sound.state()) on (state == enum(not_detecting))
+  stream := edge(monitor @io.home-assistant.sound.state()) on (state == enum(not_detecting))
   #_[utterances=["when the sound sensor is not detecting sound",
                 "if the sound sensor is not detecting sound"]];
 
@@ -42,18 +42,18 @@ dataset @io.home-assistant.sound language "en" {
   stream (p_name : String) := monitor @io.home-assistant.sound(name=p_name).state()
   #_[utterances=["when the state of the ${p_name} sound sensor changes"]];
 
-  stream (p_name : String, p_state : Enum(detecting, not_detecting)) := edge( @io.home-assistant.sound(name=p_name).state()) on (state == p_state)
+  stream (p_name : String, p_state : Enum(detecting, not_detecting)) := edge(monitor @io.home-assistant.sound(name=p_name).state()) on (state == p_state)
   #_[utterances=["when the ${p_name} sound sensor turns ${p_state}",
                 "when the ${p_name} sound sensor changes to ${p_state}",
                 "if the ${p_name} sound sensor becomes ${p_state}",
                 "if the ${p_name} sound sensor is ${p_state}",
                 "if the ${p_name} sound sensor turns ${p_state}"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.sound(name=p_name).state()) on (state == enum(detecting))
+  stream (p_name : String) := edge(monitor @io.home-assistant.sound(name=p_name).state()) on (state == enum(detecting))
   #_[utterances=["when the ${p_name} sound sensor detects sound",
                 "if the ${p_name} sound sensor detects sound"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.sound(name=p_name).state()) on (state == enum(not_detecting))
+  stream (p_name : String) := edge(monitor @io.home-assistant.sound(name=p_name).state()) on (state == enum(not_detecting))
   #_[utterances=["when the ${p_name} sound sensor stops detecting sound",
                 "if the ${p_name} sound sensor is not detecting sound"]];
 }
