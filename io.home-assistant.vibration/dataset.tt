@@ -1,23 +1,143 @@
-dataset @io.home-assistant.vibration {
-  program := now => @io.home-assistant.vibration.state() => notify
-  #_[utterances="what is the state of my vibration sensor?",
-                "what is my vibration sensor showing?",
-                "what does my vibration sensor say?",
-                "what is the value of my vibration sensor?",
-                "check the level of my vibration sensor.",
-               ]];
+dataset @io.home-assistant.vibration language "en" {
 
-  program (p_name : String) := now => @io.home-assistant.vibration(name=p_name).state() => notify
-  #_[utterances="what is the state of my ${p_name} vibration sensor?",
-                "what is my ${p_name} vibration sensor showing?",
-                "what does my ${p_name} vibration sensor say?",
-                "what is the value of my ${p_name} vibration sensor?",
-                "check the level of my ${p_name} vibration sensor.",
-               ]];
+  program := now => @io.home-assistant.vibration.state() => notify
+  #_[utterances=["is the vibration sensor detecting vibration?",
+                 "check if the vibration sensor is detecting vibration",
+                 "is the vibration sensor detecting any vibration?",
+                 "check if the vibration sensor is detecting any vibration",
+                 "is the vibration sensor vibrating?",
+                 "check if the vibration sensor is vibrating",
+                 "is the vibration sensor shaking?",
+                 "check if the vibration sensor is shaking",
+                 "is the vibration sensor moving?",
+                 "check if the vibration sensor is moving",
+                 "is the vibration sensor not detecting vibration?",
+                 "check if the vibration sensor is not detecting vibration",
+                 "is the vibration sensor stationary?",
+                 "check if the vibration sensor is stationary",
+                 "check if the vibration sensor is detecting vibration or not detecting vibration",
+                 "check if the vibration sensor is detecting vibration or stationary",
+                 "check if the vibration sensor is detecting any vibration or not detecting vibration",
+                 "check if the vibration sensor is detecting any vibration or stationary",
+                 "check if the vibration sensor is vibrating or not detecting vibration",
+                 "check if the vibration sensor is vibrating or stationary",
+                 "check if the vibration sensor is shaking or not detecting vibration",
+                 "check if the vibration sensor is shaking or stationary",
+                 "check if the vibration sensor is moving or not detecting vibration",
+                 "check if the vibration sensor is moving or stationary"]];
 
   query := @io.home-assistant.vibration.state()
-  #_[utterances="the state of my vibration sensor"]];
+  #_[utterances=["the state of the vibration sensor",
+                 "if the vibration sensor is detecting vibration or not detecting vibration",
+                 "whether the vibration sensor is detecting vibration or not detecting vibration",
+                 "if the vibration sensor is detecting vibration or stationary",
+                 "whether the vibration sensor is detecting vibration or stationary",
+                 "if the vibration sensor is detecting any vibration or not detecting vibration",
+                 "whether the vibration sensor is detecting any vibration or not detecting vibration",
+                 "if the vibration sensor is detecting any vibration or stationary",
+                 "whether the vibration sensor is detecting any vibration or stationary",
+                 "if the vibration sensor is vibrating or not detecting vibration",
+                 "whether the vibration sensor is vibrating or not detecting vibration",
+                 "if the vibration sensor is vibrating or stationary",
+                 "whether the vibration sensor is vibrating or stationary",
+                 "if the vibration sensor is shaking or not detecting vibration",
+                 "whether the vibration sensor is shaking or not detecting vibration",
+                 "if the vibration sensor is shaking or stationary",
+                 "whether the vibration sensor is shaking or stationary",
+                 "if the vibration sensor is moving or not detecting vibration",
+                 "whether the vibration sensor is moving or not detecting vibration",
+                 "if the vibration sensor is moving or stationary",
+                 "whether the vibration sensor is moving or stationary"]];
+
+  stream := monitor @io.home-assistant.vibration.state()
+  #_[utterances=["when the state of the vibration sensor changes"]];
+
+  stream (p_state : Enum(detecting_vibration, not_detecting_vibration)) := edge( @io.home-assistant.vibration.state()) on (state == p_state)
+  #_[utterances=["when the vibration sensor becomes ${p_state}",
+                "when the vibration sensor is ${p_state}",
+                "when the vibration sensor turns ${p_state}",
+                "when the vibration sensor changes to ${p_state}",
+                "if the vibration sensor becomes ${p_state}",
+                "if the vibration sensor is ${p_state}",
+                "if the vibration sensor turns ${p_state}",
+                "if the vibration sensor changes to ${p_state}"]];
+
+  stream := edge( @io.home-assistant.vibration.state()) on (state == enum(detecting_vibration))
+  #_[utterances=["when the vibration sensor is detecting vibration",
+                "if the vibration sensor is detecting vibration"]];
+
+  stream := edge( @io.home-assistant.vibration.state()) on (state == enum(not_detecting_vibration))
+  #_[utterances=["when the vibration sensor is not detecting vibration",
+                "if the vibration sensor is not detecting vibration"]];
+
+  program (p_name : String) := now => @io.home-assistant.vibration(name=p_name).state() => notify
+  #_[utterances=["is the ${p_name} vibration sensor detecting vibration?",
+                 "check if the ${p_name} vibration sensor is detecting vibration",
+                 "is the ${p_name} vibration sensor detecting any vibration?",
+                 "check if the ${p_name} vibration sensor is detecting any vibration",
+                 "is the ${p_name} vibration sensor vibrating?",
+                 "check if the ${p_name} vibration sensor is vibrating",
+                 "is the ${p_name} vibration sensor shaking?",
+                 "check if the ${p_name} vibration sensor is shaking",
+                 "is the ${p_name} vibration sensor moving?",
+                 "check if the ${p_name} vibration sensor is moving",
+                 "is the ${p_name} vibration sensor not detecting vibration?",
+                 "check if the ${p_name} vibration sensor is not detecting vibration",
+                 "is the ${p_name} vibration sensor stationary?",
+                 "check if the ${p_name} vibration sensor is stationary",
+                 "check if the ${p_name} vibration sensor is detecting vibration or not detecting vibration",
+                 "check if the ${p_name} vibration sensor is detecting vibration or stationary",
+                 "check if the ${p_name} vibration sensor is detecting any vibration or not detecting vibration",
+                 "check if the ${p_name} vibration sensor is detecting any vibration or stationary",
+                 "check if the ${p_name} vibration sensor is vibrating or not detecting vibration",
+                 "check if the ${p_name} vibration sensor is vibrating or stationary",
+                 "check if the ${p_name} vibration sensor is shaking or not detecting vibration",
+                 "check if the ${p_name} vibration sensor is shaking or stationary",
+                 "check if the ${p_name} vibration sensor is moving or not detecting vibration",
+                 "check if the ${p_name} vibration sensor is moving or stationary"]];
 
   query (p_name : String) := @io.home-assistant.vibration(name=p_name).state()
-  #_[utterances="the state of my ${p_name} vibration sensor"]];
+  #_[utterances=["the state of the ${p_name} vibration sensor",
+                 "if the ${p_name} vibration sensor is detecting vibration or not detecting vibration",
+                 "whether the ${p_name} vibration sensor is detecting vibration or not detecting vibration",
+                 "if the ${p_name} vibration sensor is detecting vibration or stationary",
+                 "whether the ${p_name} vibration sensor is detecting vibration or stationary",
+                 "if the ${p_name} vibration sensor is detecting any vibration or not detecting vibration",
+                 "whether the ${p_name} vibration sensor is detecting any vibration or not detecting vibration",
+                 "if the ${p_name} vibration sensor is detecting any vibration or stationary",
+                 "whether the ${p_name} vibration sensor is detecting any vibration or stationary",
+                 "if the ${p_name} vibration sensor is vibrating or not detecting vibration",
+                 "whether the ${p_name} vibration sensor is vibrating or not detecting vibration",
+                 "if the ${p_name} vibration sensor is vibrating or stationary",
+                 "whether the ${p_name} vibration sensor is vibrating or stationary",
+                 "if the ${p_name} vibration sensor is shaking or not detecting vibration",
+                 "whether the ${p_name} vibration sensor is shaking or not detecting vibration",
+                 "if the ${p_name} vibration sensor is shaking or stationary",
+                 "whether the ${p_name} vibration sensor is shaking or stationary",
+                 "if the ${p_name} vibration sensor is moving or not detecting vibration",
+                 "whether the ${p_name} vibration sensor is moving or not detecting vibration",
+                 "if the ${p_name} vibration sensor is moving or stationary",
+                 "whether the ${p_name} vibration sensor is moving or stationary"]];
+
+  stream (p_name : String) := monitor @io.home-assistant.vibration(name=p_name).state()
+  #_[utterances=["when the state of the ${p_name} vibration sensor changes"]];
+
+  stream (p_name : String, p_state : Enum(detecting_vibration, not_detecting_vibration)) := edge( @io.home-assistant.vibration(name=p_name).state()) on (state == p_state)
+  #_[utterances=["when the ${p_name} vibration sensor becomes ${p_state}",
+                "when the ${p_name} vibration sensor is ${p_state}",
+                "when the ${p_name} vibration sensor turns ${p_state}",
+                "when the ${p_name} vibration sensor changes to ${p_state}",
+                "if the ${p_name} vibration sensor becomes ${p_state}",
+                "if the ${p_name} vibration sensor is ${p_state}",
+                "if the ${p_name} vibration sensor turns ${p_state}",
+                "if the ${p_name} vibration sensor changes to ${p_state}"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.vibration(name=p_name).state()) on (state == enum(detecting_vibration))
+  #_[utterances=["when the ${p_name} vibration sensor is detecting vibration",
+                "if the ${p_name} vibration sensor is detecting vibration",
+                "when the ${p_name} vibration sensor becomes detecting vibration"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.vibration(name=p_name).state()) on (state == enum(not_detecting_vibration))
+  #_[utterances=["when the ${p_name} vibration sensor is not detecting vibration",
+                "if the ${p_name} vibration sensor is not detecting vibration"]];
 }

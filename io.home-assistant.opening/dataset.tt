@@ -1,23 +1,83 @@
-dataset @io.home-assistant.opening {
-  program := now => @io.home-assistant.opening.state() => notify
-  #_[utterances="what is the state of my opening sensor?",
-                "what is my opening sensor showing?",
-                "what does my opening sensor say?",
-                "what is the value of my opening sensor?",
-                "check the level of my opening sensor.",
-               ]];
+dataset @io.home-assistant.opening language "en" {
 
-  program (p_name : String) := now => @io.home-assistant.opening(name=p_name).state() => notify
-  #_[utterances="what is the state of my ${p_name} opening sensor?",
-                "what is my ${p_name} opening sensor showing?",
-                "what does my ${p_name} opening sensor say?",
-                "what is the value of my ${p_name} opening sensor?",
-                "check the level of my ${p_name} opening sensor.",
-               ]];
+  program := now => @io.home-assistant.opening.state() => notify
+  #_[utterances=["is the opening open?",
+                 "check if the opening is open",
+                 "is the opening closed?",
+                 "check if the opening is closed",
+                 "check if the opening is open or closed"]];
 
   query := @io.home-assistant.opening.state()
-  #_[utterances="the state of my opening sensor"]];
+  #_[utterances=["if the opening is open or closed",
+                 "whether the opening is open or closed"]];
+
+  stream := monitor @io.home-assistant.opening.state()
+  #_[utterances=["when the state of the opening changes"]];
+
+  stream (p_state : Enum(open, closed)) := edge( @io.home-assistant.opening.state()) on (state == p_state)
+  #_[utterances=["when the opening becomes ${p_state}",
+                "when the opening is ${p_state}",
+                "when the opening turns ${p_state}",
+                "when the opening changes to ${p_state}",
+                "if the opening becomes ${p_state}",
+                "if the opening is ${p_state}",
+                "if the opening turns ${p_state}",
+                "if the opening changes to ${p_state}"]];
+
+  stream := edge( @io.home-assistant.opening.state()) on (state == enum(open))
+  #_[utterances=["when the opening opens",
+                "if the opening opens",
+                "when the opening is open",
+                "if the opening is open",
+                "when the opening becomes open",
+                "if the opening becomes open"]];
+
+  stream := edge( @io.home-assistant.opening.state()) on (state == enum(closed))
+  #_[utterances=["when the opening closes",
+                "if the opening closes",
+                "when the opening is closed",
+                "if the opening is closed",
+                "when the opening becomes closed",
+                "if the opening becomes closed"]];
+
+  program (p_name : String) := now => @io.home-assistant.opening(name=p_name).state() => notify
+  #_[utterances=["is the ${p_name} opening open?",
+                 "check if the ${p_name} opening is open",
+                 "is the ${p_name} opening closed?",
+                 "check if the ${p_name} opening is closed",
+                 "check if the ${p_name} opening is open or closed"]];
 
   query (p_name : String) := @io.home-assistant.opening(name=p_name).state()
-  #_[utterances="the state of my ${p_name} opening sensor"]];
+  #_[utterances=["the state of the ${p_name} opening",
+                 "if the ${p_name} opening is open or closed",
+                 "whether the ${p_name} opening is open or closed"]];
+
+  stream (p_name : String) := monitor @io.home-assistant.opening(name=p_name).state()
+  #_[utterances=["when the state of the ${p_name} opening changes"]];
+
+  stream (p_name : String, p_state : Enum(open, closed)) := edge( @io.home-assistant.opening(name=p_name).state()) on (state == p_state)
+  #_[utterances=["when the ${p_name} opening becomes ${p_state}",
+                "when the ${p_name} opening is ${p_state}",
+                "when the ${p_name} opening turns ${p_state}",
+                "when the ${p_name} opening changes to ${p_state}",
+                "if the ${p_name} opening becomes ${p_state}",
+                "if the ${p_name} opening is ${p_state}",
+                "if the ${p_name} opening turns ${p_state}",
+                "if the ${p_name} opening changes to ${p_state}"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.opening(name=p_name).state()) on (state == enum(open))
+  #_[utterances=["when the ${p_name} opening opens",
+                "if the ${p_name} opening opens",
+                "when the ${p_name} opening is open",
+                "if the ${p_name} opening is open",
+                "when the ${p_name} opening becomes open",
+                "if the ${p_name} opening becomes open"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.opening(name=p_name).state()) on (state == enum(closed))
+  #_[utterances=["when the ${p_name} opening closes",
+                "if the ${p_name} opening closes",
+                "when the ${p_name} opening is closed",
+                "if the ${p_name} opening is closed",
+                "when the ${p_name} opening becomes closed",
+                "if the ${p_name} opening becomes closed"]];
 }

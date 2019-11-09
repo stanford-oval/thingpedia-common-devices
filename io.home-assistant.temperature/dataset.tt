@@ -1,23 +1,92 @@
-dataset @io.home-assistant.temperature {
-  program := now => @io.home-assistant.temperature.state() => notify
-  #_[utterances="what is the state of my temperature sensor?",
-                "what is my temperature sensor showing?",
-                "what does my temperature sensor say?",
-                "what is the value of my temperature sensor?",
-                "check the level of my temperature sensor.",
-               ]];
+dataset @io.home-assistant.temperature language "en" {
 
-  program (p_name : String) := now => @io.home-assistant.temperature(name=p_name).state() => notify
-  #_[utterances="what is the state of my ${p_name} temperature sensor?",
-                "what is my ${p_name} temperature sensor showing?",
-                "what does my ${p_name} temperature sensor say?",
-                "what is the value of my ${p_name} temperature sensor?",
-                "check the level of my ${p_name} temperature sensor.",
-               ]];
+  program := now => @io.home-assistant.temperature.state() => notify
+  #_[utterances=["is the temperature warm?",
+                 "check if the temperature is warm",
+                 "is the temperature cold?",
+                 "check if the temperature is cold",
+                 "check if the temperature is warm or cold"]];
 
   query := @io.home-assistant.temperature.state()
-  #_[utterances="the state of my temperature sensor"]];
+  #_[utterances=["the state of the temperature",
+                 "if the temperature is warm or cold",
+                 "whether the temperature is warm or cold"]];
+
+  stream := monitor @io.home-assistant.temperature.state()
+  #_[utterances=["when the state of the temperature changes"]];
+
+  stream (p_state : Enum(warm, cold)) := edge( @io.home-assistant.temperature.state()) on (state == p_state)
+  #_[utterances=["when the temperature becomes ${p_state}",
+                "when the temperature is ${p_state}",
+                "when the temperature turns ${p_state}",
+                "when the temperature changes to ${p_state}",
+                "if the temperature becomes ${p_state}",
+                "if the temperature is ${p_state}",
+                "if the temperature turns ${p_state}",
+                "if the temperature changes to ${p_state}"]];
+
+  stream := edge( @io.home-assistant.temperature.state()) on (state == enum(warm))
+  #_[utterances=["when the temperature is warm",
+                "if the temperature is warm",
+                "when the temperature becomes warm",
+                "if the temperature becomes warm",
+                "when the temperature turns warm",
+                "if the temperature turns warm",
+                "when the temperature gets warm",
+                "if the temperature gets warm"]];
+
+  stream := edge( @io.home-assistant.temperature.state()) on (state == enum(cold))
+  #_[utterances=["when the temperature is cold",
+                "if the temperature is cold",
+                "when the temperature becomes cold",
+                "if the temperature becomes cold",
+                "when the temperature turns cold",
+                "if the temperature turns cold",
+                "when the temperature gets cold",
+                "if the temperature gets cold"]];
+
+  program (p_name : String) := now => @io.home-assistant.temperature(name=p_name).state() => notify
+  #_[utterances=["is the ${p_name} temperature warm?",
+                 "check if the ${p_name} temperature is warm",
+                 "is the ${p_name} temperature cold?",
+                 "check if the ${p_name} temperature is cold",
+                 "check if the ${p_name} temperature is warm or cold"]];
 
   query (p_name : String) := @io.home-assistant.temperature(name=p_name).state()
-  #_[utterances="the state of my ${p_name} temperature sensor"]];
+  #_[utterances=["the state of the ${p_name} temperature",
+                 "if the ${p_name} temperature is warm or cold",
+                 "whether the ${p_name} temperature is warm or cold"]];
+
+  stream (p_name : String) := monitor @io.home-assistant.temperature(name=p_name).state()
+  #_[utterances=["when the state of the ${p_name} temperature changes"]];
+
+  stream (p_name : String, p_state : Enum(warm, cold)) := edge( @io.home-assistant.temperature(name=p_name).state()) on (state == p_state)
+  #_[utterances=["when the ${p_name} temperature becomes ${p_state}",
+                "when the ${p_name} temperature is ${p_state}",
+                "when the ${p_name} temperature turns ${p_state}",
+                "when the ${p_name} temperature changes to ${p_state}",
+                "if the ${p_name} temperature becomes ${p_state}",
+                "if the ${p_name} temperature is ${p_state}",
+                "if the ${p_name} temperature turns ${p_state}",
+                "if the ${p_name} temperature changes to ${p_state}"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.temperature(name=p_name).state()) on (state == enum(warm))
+  #_[utterances=["when the ${p_name} temperature is warm",
+                "if the ${p_name} temperature is warm",
+                "when the ${p_name} temperature becomes warm",
+                "if the ${p_name} temperature becomes warm",
+                "when the ${p_name} temperature turns warm",
+                "if the ${p_name} temperature turns warm",
+                "when the ${p_name} temperature gets warm",
+                "if the ${p_name} temperature gets warm"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.temperature(name=p_name).state()) on (state == enum(cold))
+  #_[utterances=["when the ${p_name} temperature is cold",
+                "if the ${p_name} temperature is cold",
+                "when the ${p_name} temperature becomes cold",
+                "if the ${p_name} temperature becomes cold",
+                "when the ${p_name} temperature turns cold",
+                "if the ${p_name} temperature turns cold",
+                "when the ${p_name} temperature gets cold",
+                "if the ${p_name} temperature gets cold"]];
 }

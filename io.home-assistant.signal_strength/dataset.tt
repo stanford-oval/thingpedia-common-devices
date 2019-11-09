@@ -1,23 +1,76 @@
-dataset @io.home-assistant.signal_strength {
-  program := now => @io.home-assistant.signal_strength.state() => notify
-  #_[utterances="what is the state of my signal_strength sensor?",
-                "what is my signal_strength sensor showing?",
-                "what does my signal_strength sensor say?",
-                "what is the value of my signal_strength sensor?",
-                "check the level of my signal_strength sensor.",
-               ]];
+dataset @io.home-assistant.signal_strength language "en" {
 
-  program (p_name : String) := now => @io.home-assistant.signal_strength(name=p_name).state() => notify
-  #_[utterances="what is the state of my ${p_name} signal_strength sensor?",
-                "what is my ${p_name} signal_strength sensor showing?",
-                "what does my ${p_name} signal_strength sensor say?",
-                "what is the value of my ${p_name} signal_strength sensor?",
-                "check the level of my ${p_name} signal_strength sensor.",
-               ]];
+  program := now => @io.home-assistant.signal_strength.state() => notify
+  #_[utterances=["is the signal strength strong?",
+                 "check if the signal strength is strong",
+                 "is the signal strength weak?",
+                 "check if the signal strength is weak",
+                 "check if the signal strength is strong or weak"]];
 
   query := @io.home-assistant.signal_strength.state()
-  #_[utterances="the state of my signal_strength sensor"]];
+  #_[utterances=["the state of the signal strength",
+                 "if the signal strength is strong or weak",
+                 "whether the signal strength is strong or weak"]];
+
+  stream := monitor @io.home-assistant.signal_strength.state()
+  #_[utterances=["when the state of the signal strength changes"]];
+
+  stream (p_state : Enum(strong, weak)) := edge( @io.home-assistant.signal_strength.state()) on (state == p_state)
+  #_[utterances=["when the signal strength becomes ${p_state}",
+                "when the signal strength is ${p_state}",
+                "when the signal strength turns ${p_state}",
+                "when the signal strength changes to ${p_state}",
+                "if the signal strength becomes ${p_state}",
+                "if the signal strength is ${p_state}",
+                "if the signal strength turns ${p_state}",
+                "if the signal strength changes to ${p_state}"]];
+
+  stream := edge( @io.home-assistant.signal_strength.state()) on (state == enum(strong))
+  #_[utterances=["when the signal strength is strong",
+                "if the signal strength is strong",
+                "when the signal strength becomes strong",
+                "if the signal strength becomes strong"]];
+
+  stream := edge( @io.home-assistant.signal_strength.state()) on (state == enum(weak))
+  #_[utterances=["when the signal strength is weak",
+                "if the signal strength is weak",
+                "when the signal strength becomes weak",
+                "if the signal strength becomes weak"]];
+
+  program (p_name : String) := now => @io.home-assistant.signal_strength(name=p_name).state() => notify
+  #_[utterances=["is the ${p_name} signal strength strong?",
+                 "check if the ${p_name} signal strength is strong",
+                 "is the ${p_name} signal strength weak?",
+                 "check if the ${p_name} signal strength is weak",
+                 "check if the ${p_name} signal strength is strong or weak"]];
 
   query (p_name : String) := @io.home-assistant.signal_strength(name=p_name).state()
-  #_[utterances="the state of my ${p_name} signal_strength sensor"]];
+  #_[utterances=["the state of the ${p_name} signal strength",
+                 "if the ${p_name} signal strength is strong or weak",
+                 "whether the ${p_name} signal strength is strong or weak"]];
+
+  stream (p_name : String) := monitor @io.home-assistant.signal_strength(name=p_name).state()
+  #_[utterances=["when the state of the ${p_name} signal strength changes"]];
+
+  stream (p_name : String, p_state : Enum(strong, weak)) := edge( @io.home-assistant.signal_strength(name=p_name).state()) on (state == p_state)
+  #_[utterances=["when the ${p_name} signal strength becomes ${p_state}",
+                "when the ${p_name} signal strength is ${p_state}",
+                "when the ${p_name} signal strength turns ${p_state}",
+                "when the ${p_name} signal strength changes to ${p_state}",
+                "if the ${p_name} signal strength becomes ${p_state}",
+                "if the ${p_name} signal strength is ${p_state}",
+                "if the ${p_name} signal strength turns ${p_state}",
+                "if the ${p_name} signal strength changes to ${p_state}"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.signal_strength(name=p_name).state()) on (state == enum(strong))
+  #_[utterances=["when the ${p_name} signal strength is strong",
+                "if the ${p_name} signal strength is strong",
+                "when the ${p_name} signal strength becomes strong",
+                "if the ${p_name} signal strength becomes strong"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.signal_strength(name=p_name).state()) on (state == enum(weak))
+  #_[utterances=["when the ${p_name} signal strength is weak",
+                "if the ${p_name} signal strength is weak",
+                "when the ${p_name} signal strength becomes weak",
+                "if the ${p_name} signal strength becomes weak"]];
 }

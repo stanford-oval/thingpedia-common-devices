@@ -1,12 +1,13 @@
 abstract class @io.home-assistant.safety
-#_[thingpedia_name="Safety Sensor"]
-#_[thingpedia_description="Interface for Home Assistant's Safety Sensor."]
+#_[thingpedia_name="Safety Binary Sensor"]
+#_[thingpedia_description="Interface for Home Assistant's Safety Binary Sensor."]
+#_[description="Interface for Home Assistant's Safety Binary Sensor."]
 #[license="CC-0"]
 #[license_gplcompatible=true]
 #[subcategory="home"]
 {
-  monitorable query state(out state : Number)
+  monitorable query state(out state : Enum(unsafe,safe), out value : String)
   #_[canonical="safety sensor state"]
   #_[confirmation="the state of your safety sensor"]
-  #_[formatted=["Your safety sensor is ${state}"]];
+  #_[formatted=["The safety sensor is ${state}."]];
 }

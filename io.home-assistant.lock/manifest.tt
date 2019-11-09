@@ -1,12 +1,13 @@
 abstract class @io.home-assistant.lock
-#_[thingpedia_name="Lock Sensor"]
-#_[thingpedia_description="Interface for Home Assistant's Lock Sensor."]
+#_[thingpedia_name="Lock Binary Sensor"]
+#_[thingpedia_description="Interface for Home Assistant's Lock Binary Sensor."]
+#_[description="Interface for Home Assistant's Lock Binary Sensor."]
 #[license="CC-0"]
 #[license_gplcompatible=true]
 #[subcategory="home"]
 {
-  monitorable query state(out state : Number)
-  #_[canonical="lock sensor state"]
-  #_[confirmation="the state of your lock sensor"]
-  #_[formatted=["Your lock sensor is ${state}"]];
+  monitorable query state(out state : Enum(unlocked,locked), out value : String)
+  #_[canonical="lock state"]
+  #_[confirmation="the state of your lock"]
+  #_[formatted=["The lock is ${state}."]];
 }

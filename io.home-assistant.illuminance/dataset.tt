@@ -1,23 +1,92 @@
-dataset @io.home-assistant.illuminance {
-  program := now => @io.home-assistant.illuminance.state() => notify
-  #_[utterances="what is the state of my illuminance sensor?",
-                "what is my illuminance sensor showing?",
-                "what does my illuminance sensor say?",
-                "what is the value of my illuminance sensor?",
-                "check the level of my illuminance sensor.",
-               ]];
+dataset @io.home-assistant.illuminance language "en" {
 
-  program (p_name : String) := now => @io.home-assistant.illuminance(name=p_name).state() => notify
-  #_[utterances="what is the state of my ${p_name} illuminance sensor?",
-                "what is my ${p_name} illuminance sensor showing?",
-                "what does my ${p_name} illuminance sensor say?",
-                "what is the value of my ${p_name} illuminance sensor?",
-                "check the level of my ${p_name} illuminance sensor.",
-               ]];
+  program := now => @io.home-assistant.illuminance.state() => notify
+  #_[utterances=["is the illuminance sensor bright?",
+                 "check if the illuminance sensor is bright",
+                 "is the illuminance sensor dark?",
+                 "check if the illuminance sensor is dark",
+                 "check if the illuminance sensor is bright or dark"]];
 
   query := @io.home-assistant.illuminance.state()
-  #_[utterances="the state of my illuminance sensor"]];
+  #_[utterances=["the state of the illuminance sensor",
+                 "if the illuminance sensor is bright or dark",
+                 "whether the illuminance sensor is bright or dark"]];
+
+  stream := monitor @io.home-assistant.illuminance.state()
+  #_[utterances=["when the state of the illuminance sensor changes"]];
+
+  stream (p_state : Enum(bright, dark)) := edge( @io.home-assistant.illuminance.state()) on (state == p_state)
+  #_[utterances=["when the illuminance sensor becomes ${p_state}",
+                "when the illuminance sensor is ${p_state}",
+                "when the illuminance sensor turns ${p_state}",
+                "when the illuminance sensor changes to ${p_state}",
+                "if the illuminance sensor becomes ${p_state}",
+                "if the illuminance sensor is ${p_state}",
+                "if the illuminance sensor turns ${p_state}",
+                "if the illuminance sensor changes to ${p_state}"]];
+
+  stream := edge( @io.home-assistant.illuminance.state()) on (state == enum(bright))
+  #_[utterances=["when the illuminance sensor is bright",
+                "if the illuminance sensor is bright",
+                "when the illuminance sensor becomes bright",
+                "if the illuminance sensor becomes bright",
+                "when the illuminance sensor turns bright",
+                "if the illuminance sensor turns bright",
+                "when the illuminance sensor gets bright",
+                "if the illuminance sensor gets bright"]];
+
+  stream := edge( @io.home-assistant.illuminance.state()) on (state == enum(dark))
+  #_[utterances=["when the illuminance sensor is dark",
+                "if the illuminance sensor is dark",
+                "when the illuminance sensor becomes dark",
+                "if the illuminance sensor becomes dark",
+                "when the illuminance sensor turns dark",
+                "if the illuminance sensor turns dark",
+                "when the illuminance sensor gets dark",
+                "if the illuminance sensor gets dark"]];
+
+  program (p_name : String) := now => @io.home-assistant.illuminance(name=p_name).state() => notify
+  #_[utterances=["is the ${p_name} illuminance sensor bright?",
+                 "check if the ${p_name} illuminance sensor is bright",
+                 "is the ${p_name} illuminance sensor dark?",
+                 "check if the ${p_name} illuminance sensor is dark",
+                 "check if the ${p_name} illuminance sensor is bright or dark"]];
 
   query (p_name : String) := @io.home-assistant.illuminance(name=p_name).state()
-  #_[utterances="the state of my ${p_name} illuminance sensor"]];
+  #_[utterances=["the state of the ${p_name} illuminance sensor",
+                 "if the ${p_name} illuminance sensor is bright or dark",
+                 "whether the ${p_name} illuminance sensor is bright or dark"]];
+
+  stream (p_name : String) := monitor @io.home-assistant.illuminance(name=p_name).state()
+  #_[utterances=["when the state of the ${p_name} illuminance sensor changes"]];
+
+  stream (p_name : String, p_state : Enum(bright, dark)) := edge( @io.home-assistant.illuminance(name=p_name).state()) on (state == p_state)
+  #_[utterances=["when the ${p_name} illuminance sensor becomes ${p_state}",
+                "when the ${p_name} illuminance sensor is ${p_state}",
+                "when the ${p_name} illuminance sensor turns ${p_state}",
+                "when the ${p_name} illuminance sensor changes to ${p_state}",
+                "if the ${p_name} illuminance sensor becomes ${p_state}",
+                "if the ${p_name} illuminance sensor is ${p_state}",
+                "if the ${p_name} illuminance sensor turns ${p_state}",
+                "if the ${p_name} illuminance sensor changes to ${p_state}"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.illuminance(name=p_name).state()) on (state == enum(bright))
+  #_[utterances=["when the ${p_name} illuminance sensor is bright",
+                "if the ${p_name} illuminance sensor is bright",
+                "when the ${p_name} illuminance sensor becomes bright",
+                "if the ${p_name} illuminance sensor becomes bright",
+                "when the ${p_name} illuminance sensor turns bright",
+                "if the ${p_name} illuminance sensor turns bright",
+                "when the ${p_name} illuminance sensor gets bright",
+                "if the ${p_name} illuminance sensor gets bright"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.illuminance(name=p_name).state()) on (state == enum(dark))
+  #_[utterances=["when the ${p_name} illuminance sensor is dark",
+                "if the ${p_name} illuminance sensor is dark",
+                "when the ${p_name} illuminance sensor becomes dark",
+                "if the ${p_name} illuminance sensor becomes dark",
+                "when the ${p_name} illuminance sensor turns dark",
+                "if the ${p_name} illuminance sensor turns dark",
+                "when the ${p_name} illuminance sensor gets dark",
+                "if the ${p_name} illuminance sensor gets dark"]];
 }

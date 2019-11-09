@@ -1,23 +1,178 @@
-dataset @io.home-assistant.battery {
-  program := now => @io.home-assistant.battery.state() => notify
-  #_[utterances="what is the state of my battery sensor?",
-                "what is my battery sensor showing?",
-                "what does my battery sensor say?",
-                "what is the value of my battery sensor?",
-                "check the level of my battery sensor.",
-               ]];
+dataset @io.home-assistant.battery language "en" {
 
-  program (p_name : String) := now => @io.home-assistant.battery(name=p_name).state() => notify
-  #_[utterances="what is the state of my ${p_name} battery sensor?",
-                "what is my ${p_name} battery sensor showing?",
-                "what does my ${p_name} battery sensor say?",
-                "what is the value of my ${p_name} battery sensor?",
-                "check the level of my ${p_name} battery sensor.",
-               ]];
+  program := now => @io.home-assistant.battery.state() => notify
+  #_[utterances=["is my battery low?",
+                 "check if my battery is low",
+                 "is my battery too low?",
+                 "check if my battery is too low",
+                 "is my battery normal?",
+                 "check if my battery is normal",
+                 "check if my battery is low or normal",
+                 "check if my battery is too low or normal",
+                 "is the battery low?",
+                 "check if the battery is low",
+                 "is the battery too low?",
+                 "check if the battery is too low",
+                 "is the battery normal?",
+                 "check if the battery is normal",
+                 "check if the battery is low or normal",
+                 "check if the battery is too low or normal"]];
 
   query := @io.home-assistant.battery.state()
-  #_[utterances="the state of my battery sensor"]];
+  #_[utterances=["the state of my battery",
+                 "if my battery is low or normal",
+                 "whether my battery is low or normal",
+                 "if my battery is too low or normal",
+                 "whether my battery is too low or normal",
+                 "the state of the battery",
+                 "if the battery is low or normal",
+                 "whether the battery is low or normal",
+                 "if the battery is too low or normal",
+                 "whether the battery is too low or normal"]];
+
+  stream := monitor @io.home-assistant.battery.state()
+  #_[utterances=["when the state of my battery changes",
+                 "when the state of the battery changes"]];
+
+  stream (p_state : Enum(low, normal)) := edge( @io.home-assistant.battery.state()) on (state == p_state)
+  #_[utterances=["when my battery becomes ${p_state}",
+                "when my battery is ${p_state}",
+                "when my battery turns ${p_state}",
+                "when my battery changes to ${p_state}",
+                "if my battery becomes ${p_state}",
+                "if my battery is ${p_state}",
+                "if my battery turns ${p_state}",
+                "if my battery changes to ${p_state}",
+                "when the battery becomes ${p_state}",
+                "when the battery is ${p_state}",
+                "when the battery turns ${p_state}",
+                "when the battery changes to ${p_state}",
+                "if the battery becomes ${p_state}",
+                "if the battery is ${p_state}",
+                "if the battery turns ${p_state}",
+                "if the battery changes to ${p_state}"]];
+
+  stream := edge( @io.home-assistant.battery.state()) on (state == enum(low))
+  #_[utterances=["when my battery is low",
+                "if my battery is low",
+                "when the battery is low",
+                "if the battery is low",
+                "when my battery becomes low",
+                "if my battery becomes low",
+                "when the battery becomes low",
+                "if the battery becomes low",
+                "when my battery turns low",
+                "if my battery turns low",
+                "when the battery turns low",
+                "if the battery turns low",
+                "when my battery gets low",
+                "if my battery gets low",
+                "when the battery gets low",
+                "if the battery gets low"]];
+
+  stream := edge( @io.home-assistant.battery.state()) on (state == enum(normal))
+  #_[utterances=["when my battery is normal",
+                "if my battery is normal",
+                "when the battery is normal",
+                "if the battery is normal",
+                "when my battery becomes normal",
+                "if my battery becomes normal",
+                "when the battery becomes normal",
+                "if the battery becomes normal",
+                "when my battery turns normal",
+                "if my battery turns normal",
+                "when the battery turns normal",
+                "if the battery turns normal",
+                "when my battery gets normal",
+                "if my battery gets normal",
+                "when the battery gets normal",
+                "if the battery gets normal"]];
+
+  program (p_name : String) := now => @io.home-assistant.battery(name=p_name).state() => notify
+  #_[utterances=["is my ${p_name} battery low?",
+                 "check if my ${p_name} battery is low",
+                 "is my ${p_name} battery too low?",
+                 "check if my ${p_name} battery is too low",
+                 "is my ${p_name} battery normal?",
+                 "check if my ${p_name} battery is normal",
+                 "check if my ${p_name} battery is low or normal",
+                 "check if my ${p_name} battery is too low or normal",
+                 "is the ${p_name} battery low?",
+                 "check if the ${p_name} battery is low",
+                 "is the ${p_name} battery too low?",
+                 "check if the ${p_name} battery is too low",
+                 "is the ${p_name} battery normal?",
+                 "check if the ${p_name} battery is normal",
+                 "check if the ${p_name} battery is low or normal",
+                 "check if the ${p_name} battery is too low or normal"]];
 
   query (p_name : String) := @io.home-assistant.battery(name=p_name).state()
-  #_[utterances="the state of my ${p_name} battery sensor"]];
+  #_[utterances=["the state of my ${p_name} battery",
+                 "if my ${p_name} battery is low or normal",
+                 "whether my ${p_name} battery is low or normal",
+                 "if my ${p_name} battery is too low or normal",
+                 "whether my ${p_name} battery is too low or normal",
+                 "the state of the ${p_name} battery",
+                 "if the ${p_name} battery is low or normal",
+                 "whether the ${p_name} battery is low or normal",
+                 "if the ${p_name} battery is too low or normal",
+                 "whether the ${p_name} battery is too low or normal"]];
+
+  stream (p_name : String) := monitor @io.home-assistant.battery(name=p_name).state()
+  #_[utterances=["when the state of my ${p_name} battery changes",
+                 "when the state of the ${p_name} battery changes"]];
+
+  stream (p_name : String, p_state : Enum(low, normal)) := edge( @io.home-assistant.battery(name=p_name).state()) on (state == p_state)
+  #_[utterances=["when my ${p_name} battery becomes ${p_state}",
+                "when my ${p_name} battery is ${p_state}",
+                "when my ${p_name} battery turns ${p_state}",
+                "when my ${p_name} battery changes to ${p_state}",
+                "if my ${p_name} battery becomes ${p_state}",
+                "if my ${p_name} battery is ${p_state}",
+                "if my ${p_name} battery turns ${p_state}",
+                "if my ${p_name} battery changes to ${p_state}",
+                "when the ${p_name} battery becomes ${p_state}",
+                "when the ${p_name} battery is ${p_state}",
+                "when the ${p_name} battery turns ${p_state}",
+                "when the ${p_name} battery changes to ${p_state}",
+                "if the ${p_name} battery becomes ${p_state}",
+                "if the ${p_name} battery is ${p_state}",
+                "if the ${p_name} battery turns ${p_state}",
+                "if the ${p_name} battery changes to ${p_state}"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.battery(name=p_name).state()) on (state == enum(low))
+  #_[utterances=["when my ${p_name} battery is low",
+                "if my ${p_name} battery is low",
+                "when the ${p_name} battery is low",
+                "if the ${p_name} battery is low",
+                "when my ${p_name} battery becomes low",
+                "if my ${p_name} battery becomes low",
+                "when the ${p_name} battery becomes low",
+                "if the ${p_name} battery becomes low",
+                "when my ${p_name} battery turns low",
+                "if my ${p_name} battery turns low",
+                "when the ${p_name} battery turns low",
+                "if the ${p_name} battery turns low",
+                "when my ${p_name} battery gets low",
+                "if my ${p_name} battery gets low",
+                "when the ${p_name} battery gets low",
+                "if the ${p_name} battery gets low"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.battery(name=p_name).state()) on (state == enum(normal))
+  #_[utterances=["when my ${p_name} battery is normal",
+                "if my ${p_name} battery is normal",
+                "when the ${p_name} battery is normal",
+                "if the ${p_name} battery is normal",
+                "when my ${p_name} battery becomes normal",
+                "if my ${p_name} battery becomes normal",
+                "when the ${p_name} battery becomes normal",
+                "if the ${p_name} battery becomes normal",
+                "when my ${p_name} battery turns normal",
+                "if my ${p_name} battery turns normal",
+                "when the ${p_name} battery turns normal",
+                "if the ${p_name} battery turns normal",
+                "when my ${p_name} battery gets normal",
+                "if my ${p_name} battery gets normal",
+                "when the ${p_name} battery gets normal",
+                "if the ${p_name} battery gets normal"]];
 }

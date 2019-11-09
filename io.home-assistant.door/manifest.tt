@@ -1,12 +1,13 @@
 abstract class @io.home-assistant.door
-#_[thingpedia_name="Door Sensor"]
-#_[thingpedia_description="Interface for Home Assistant's Door Sensor."]
+#_[thingpedia_name="Door Binary Sensor / Read-only Cover"]
+#_[thingpedia_description="Interface for Home Assistant's Door Binary Sensor / Read-only Cover."]
+#_[description="Interface for Home Assistant's Door Binary Sensor / Read-only Cover."]
 #[license="CC-0"]
 #[license_gplcompatible=true]
 #[subcategory="home"]
 {
-  monitorable query state(out state : Number)
-  #_[canonical="door sensor state"]
-  #_[confirmation="the state of your door sensor"]
-  #_[formatted=["Your door sensor is ${state}"]];
+  monitorable query state(out state : Enum(open,closed), out value : String)
+  #_[canonical="door state"]
+  #_[confirmation="the state of your door"]
+  #_[formatted=["The door is ${state}."]];
 }

@@ -1,0 +1,344 @@
+dataset @io.home-assistant.vacuum language "en" {
+
+  program := now => @io.home-assistant.vacuum.state() => notify
+  #_[utterances=["is my vacuum on?",
+                "check if my vacuum is on",
+                "is my vacuum turned on?",
+                "is my vacuum switched on?",
+                "check if my vacuum is turned on",
+                "check if my vacuum is switched on",
+                "is my vacuum off?",
+                "check if my vacuum is off",
+                "is my vacuum turned off?",
+                "is my vacuum switched off?",
+                "check if my vacuum is turned off",
+                "check if my vacuum is switched off",
+                "check if my vacuum is on or off",
+                "check if my vacuum is on or turned off",
+                "check if my vacuum is on or switched off",
+                "check if my vacuum is turned on or off",
+                "check if my vacuum is switched on or off",
+                "check if my vacuum is turned on or turned off",
+                "check if my vacuum is turned on or switched off",
+                "check if my vacuum is switched on or turned off",
+                "check if my vacuum is switched on or switched off"]];
+
+  query := @io.home-assistant.vacuum.state()
+  #_[utterances=["if my vacuum is on or off",
+                "whether my vacuum is on or off",
+                "if my vacuum is on or turned off",
+                "if my vacuum is on or switched off",
+                "whether my vacuum is on or turned off",
+                "whether my vacuum is on or switched off",
+                "if my vacuum is turned on or off",
+                "if my vacuum is switched on or off",
+                "whether my vacuum is turned on or off",
+                "whether my vacuum is switched on or off",
+                "if my vacuum is turned on or turned off",
+                "if my vacuum is switched on or turned off",
+                "whether my vacuum is turned on or turned off",
+                "whether my vacuum is turned on or switched off",
+                "whether my vacuum is switched on or turned off",
+                "whether my vacuum is switched on or switched off"]];
+
+  stream := monitor @io.home-assistant.vacuum.state()
+  #_[utterances=["when my vacuum changes state",
+                 "when my vacuum changes"]];
+
+  stream (p_state : Enum(on, off)) := edge( @io.home-assistant.vacuum.state()) on (state == p_state)
+  #_[utterances=["when my vacuum turns ${p_state}",
+                "when my vacuum switches ${p_state}",
+                "when my vacuum becomes ${p_state}",
+                "when my vacuum is ${p_state}",
+                "when my vacuum changes to ${p_state}",
+                "if my vacuum turns ${p_state}",
+                "if my vacuum switches ${p_state}",
+                "if my vacuum becomes ${p_state}",
+                "if my vacuum is ${p_state}",
+                "if my vacuum changes to ${p_state}"]];
+
+  stream := edge( @io.home-assistant.vacuum.state()) on (state == enum(on))
+  #_[utterances=["when my vacuum turns on",
+                "when my vacuum switches on",
+                "when my vacuum becomes on",
+                "when my vacuum changes to on",
+                "when my vacuum is on",
+                "if my vacuum turns on",
+                "if my vacuum switches on",
+                "if my vacuum becomes on",
+                "if my vacuum changes to on",
+                "if my vacuum is on",
+                "when my vacuum becomes turned on",
+                "when my vacuum becomes switched on",
+                "when my vacuum is turned on",
+                "when my vacuum is switched on",
+                "if my vacuum becomes turned on",
+                "if my vacuum becomes switched on",
+                "if my vacuum is turned on",
+                "if my vacuum is switched on"]];
+
+  stream := edge( @io.home-assistant.vacuum.state()) on (state == enum(off))
+  #_[utterances=["when my vacuum turns off",
+                "when my vacuum switches off",
+                "when my vacuum becomes off",
+                "when my vacuum changes to off",
+                "when my vacuum is off",
+                "if my vacuum turns off",
+                "if my vacuum switches off",
+                "if my vacuum becomes off",
+                "if my vacuum changes to off",
+                "if my vacuum is off",
+                "when my vacuum becomes turned off",
+                "when my vacuum becomes switched off",
+                "when my vacuum is turned off",
+                "when my vacuum is switched off",
+                "if my vacuum becomes turned off",
+                "if my vacuum becomes switched off",
+                "if my vacuum is turned off",
+                "if my vacuum is switched off"]];
+
+  action := @io.home-assistant.vacuum.turn_on()
+  #_[utterances=["on my vacuum",
+                "turn on my vacuum",
+                "switch on my vacuum",
+                "on the vacuum",
+                "turn on the vacuum",
+                "switch on the vacuum",
+                "on vacuum",
+                "turn on vacuum",
+                "switch off vacuum"]];
+
+  action := @io.home-assistant.vacuum.turn_off()
+  #_[utterances=["off my vacuum",
+                "turn off my vacuum",
+                "switch off my vacuum",
+                "off the vacuum",
+                "turn off the vacuum",
+                "switch off the vacuum",
+                "off vacuum",
+                "turn off vacuum",
+                "switch off vacuum"]];
+
+  action := @io.home-assistant.vacuum.return_to_base()
+  #_[utterances=["dock my vacuum",
+                 "charge my vacuum",
+                 "return my vacuum to base",
+                 "tell my vacuum to return to base",
+                 "ask my vacuum to return to base",
+                 "dock the vacuum",
+                 "charge the vacuum",
+                 "return the vacuum to base",
+                 "tell the vacuum to return to base",
+                 "ask the vacuum to return to base"]];
+
+  action := @io.home-assistant.vacuum.start()
+  #_[utterances=["start my vacuum",
+                 "make my vacuum start cleaning",
+                 "tell my vacuum to start cleaning",
+                 "ask my vacuum to start cleaning",
+                 "start the vacuum",
+                 "make the vacuum start cleaning",
+                 "tell the vacuum to start cleaning",
+                 "ask the vacuum to start cleaning"]];
+
+  action := @io.home-assistant.vacuum.pause()
+  #_[utterances=["pause my vacuum",
+                 "make my vacuum pause cleaning",
+                 "tell my vacuum to pause",
+                 "ask my vacuum to pause",
+                 "tell my vacuum to pause cleaning",
+                 "ask my vacuum to pause cleaning",
+                 "pause the vacuum",
+                 "make the vacuum pause cleaning",
+                 "tell the vacuum to pause",
+                 "ask the vacuum to pause",
+                 "tell the vacuum to pause cleaning",
+                 "ask the vacuum to pause cleaning"]];
+
+  action := @io.home-assistant.vacuum.stop()
+  #_[utterances=["stop my vacuum",
+                 "make my vacuum stop cleaning",
+                 "tell my vacuum to stop",
+                 "ask my vacuum to stop",
+                 "tell my vacuum to stop cleaning",
+                 "ask my vacuum to stop cleaning",
+                 "stop the vacuum",
+                 "make the vacuum stop cleaning",
+                 "tell the vacuum to stop",
+                 "ask the vacuum to stop",
+                 "tell the vacuum to stop cleaning",
+                 "ask the vacuum to stop cleaning"]];
+
+  program (p_name : String) := now => @io.home-assistant.vacuum(name=p_name).state() => notify
+  #_[utterances=["is my ${p_name} vacuum on?",
+                "check if my ${p_name} vacuum is on",
+                "is my ${p_name} vacuum turned on?",
+                "is my ${p_name} vacuum switched on?",
+                "check if my ${p_name} vacuum is turned on",
+                "check if my ${p_name} vacuum is switched on",
+                "is my ${p_name} vacuum off?",
+                "check if my ${p_name} vacuum is off",
+                "is my ${p_name} vacuum turned off?",
+                "is my ${p_name} vacuum switched off?",
+                "check if my ${p_name} vacuum is turned off",
+                "check if my ${p_name} vacuum is switched off",
+                "check if my ${p_name} vacuum is on or off",
+                "check if my ${p_name} vacuum is on or turned off",
+                "check if my ${p_name} vacuum is on or switched off",
+                "check if my ${p_name} vacuum is turned on or off",
+                "check if my ${p_name} vacuum is switched on or off",
+                "check if my ${p_name} vacuum is turned on or turned off",
+                "check if my ${p_name} vacuum is turned on or switched off",
+                "check if my ${p_name} vacuum is switched on or turned off",
+                "check if my ${p_name} vacuum is switched on or switched off"]];
+
+  query (p_name : String) := @io.home-assistant.vacuum(name=p_name).state()
+  #_[utterances=["if my ${p_name} vacuum is on or off",
+                "whether my ${p_name} vacuum is on or off",
+                "if my ${p_name} vacuum is on or turned off",
+                "if my ${p_name} vacuum is on or switched off",
+                "whether my ${p_name} vacuum is on or turned off",
+                "whether my ${p_name} vacuum is on or switched off",
+                "if my ${p_name} vacuum is turned on or off",
+                "if my ${p_name} vacuum is switched on or off",
+                "whether my ${p_name} vacuum is turned on or off",
+                "whether my ${p_name} vacuum is switched on or off",
+                "if my ${p_name} vacuum is turned on or turned off",
+                "if my ${p_name} vacuum is switched on or turned off",
+                "whether my ${p_name} vacuum is turned on or turned off",
+                "whether my ${p_name} vacuum is turned on or switched off",
+                "whether my ${p_name} vacuum is switched on or turned off",
+                "whether my ${p_name} vacuum is switched on or switched off"]];
+
+  stream (p_name : String) := monitor @io.home-assistant.vacuum(name=p_name).state()
+  #_[utterances=["when my ${p_name} vacuum changes state",
+                 "when my ${p_name} vacuum changes"]];
+
+  stream (p_name : String, p_state : Enum(on, off)) := edge( @io.home-assistant.vacuum(name=p_name).state()) on (state == p_state)
+  #_[utterances=["when my ${p_name} vacuum turns ${p_state}",
+                "when my ${p_name} vacuum switches ${p_state}",
+                "when my ${p_name} vacuum becomes ${p_state}",
+                "when my ${p_name} vacuum is ${p_state}",
+                "when my ${p_name} vacuum changes to ${p_state}",
+                "if my ${p_name} vacuum turns ${p_state}",
+                "if my ${p_name} vacuum switches ${p_state}",
+                "if my ${p_name} vacuum becomes ${p_state}",
+                "if my ${p_name} vacuum is ${p_state}",
+                "if my ${p_name} vacuum changes to ${p_state}"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.vacuum(name=p_name).state()) on (state == enum(on))
+  #_[utterances=["when my ${p_name} vacuum turns on",
+                "when my ${p_name} vacuum switches on",
+                "when my ${p_name} vacuum becomes on",
+                "when my ${p_name} vacuum changes to on",
+                "when my ${p_name} vacuum is on",
+                "if my ${p_name} vacuum turns on",
+                "if my ${p_name} vacuum switches on",
+                "if my ${p_name} vacuum becomes on",
+                "if my ${p_name} vacuum changes to on",
+                "if my ${p_name} vacuum is on",
+                "when my ${p_name} vacuum becomes turned on",
+                "when my ${p_name} vacuum becomes switched on",
+                "when my ${p_name} vacuum is turned on",
+                "when my ${p_name} vacuum is switched on",
+                "if my ${p_name} vacuum becomes turned on",
+                "if my ${p_name} vacuum becomes switched on",
+                "if my ${p_name} vacuum changes to turned on",
+                "if my ${p_name} vacuum changes to switched on",
+                "if my ${p_name} vacuum is turned on",
+                "if my ${p_name} vacuum is switched on"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.vacuum(name=p_name).state()) on (state == enum(off))
+  #_[utterances=["when my ${p_name} vacuum turns off",
+                "when my ${p_name} vacuum switches off",
+                "when my ${p_name} vacuum becomes off",
+                "when my ${p_name} vacuum changes to off",
+                "when my ${p_name} vacuum is off",
+                "if my ${p_name} vacuum turns off",
+                "if my ${p_name} vacuum switches off",
+                "if my ${p_name} vacuum becomes off",
+                "if my ${p_name} vacuum changes to off",
+                "if my ${p_name} vacuum is off",
+                "when my ${p_name} vacuum becomes turned off",
+                "when my ${p_name} vacuum becomes switched off",
+                "when my ${p_name} vacuum is turned off",
+                "when my ${p_name} vacuum is switched off",
+                "if my ${p_name} vacuum becomes turned off",
+                "if my ${p_name} vacuum becomes switched off",
+                "if my ${p_name} vacuum changes to turned off",
+                "if my ${p_name} vacuum changes to switched off",
+                "if my ${p_name} vacuum is turned off",
+                "if my ${p_name} vacuum is switched off"]];
+
+  action (p_name : String) := @io.home-assistant.vacuum(name=p_name).turn_on()
+  #_[utterances=["on my ${p_name} vacuum",
+                "turn on my ${p_name} vacuum",
+                "switch on my ${p_name} vacuum",
+                "on the ${p_name} vacuum",
+                "turn on the ${p_name} vacuum",
+                "switch on the ${p_name} vacuum",
+                "on ${p_name} vacuum",
+                "turn on ${p_name} vacuum",
+                "switch on ${p_name} vacuum"]];
+
+  action (p_name : String) := @io.home-assistant.vacuum(name=p_name).turn_off()
+  #_[utterances=["off my ${p_name} vacuum",
+                "turn off my ${p_name} vacuum",
+                "switch off my ${p_name} vacuum",
+                "off the ${p_name} vacuum",
+                "turn off the ${p_name} vacuum",
+                "switch off the ${p_name} vacuum",
+                "off ${p_name} vacuum",
+                "turn off ${p_name} vacuum",
+                "switch off ${p_name} vacuum"]];
+
+  action (p_name : String) := @io.home-assistant.vacuum(name=p_name).return_to_base()
+  #_[utterances=["dock my ${p_name} vacuum",
+                 "charge my ${p_name} vacuum",
+                 "return my ${p_name} vacuum to base",
+                 "tell my ${p_name} vacuum to return to base",
+                 "ask my ${p_name} vacuum to return to base",
+                 "dock the ${p_name} vacuum",
+                 "charge the ${p_name} vacuum",
+                 "return the ${p_name} vacuum to base",
+                 "tell the ${p_name} vacuum to return to base",
+                 "ask the ${p_name} vacuum to return to base"]];
+
+  action (p_name : String) := @io.home-assistant.vacuum(name=p_name).start()
+  #_[utterances=["start my ${p_name} vacuum",
+                 "make my ${p_name} vacuum start cleaning",
+                 "tell my ${p_name} vacuum to start cleaning",
+                 "ask my ${p_name} vacuum to start cleaning",
+                 "start the ${p_name} vacuum",
+                 "make the ${p_name} vacuum start cleaning",
+                 "tell the ${p_name} vacuum to start cleaning",
+                 "ask the ${p_name} vacuum to start cleaning"]];
+
+  action (p_name : String) := @io.home-assistant.vacuum(name=p_name).pause()
+  #_[utterances=["pause my ${p_name} vacuum",
+                 "make my ${p_name} vacuum pause cleaning",
+                 "tell my ${p_name} vacuum to pause",
+                 "ask my ${p_name} vacuum to pause",
+                 "tell my ${p_name} vacuum to pause cleaning",
+                 "ask my ${p_name} vacuum to pause cleaning",
+                 "pause the ${p_name} vacuum",
+                 "make the ${p_name} vacuum pause cleaning",
+                 "tell the ${p_name} vacuum to pause",
+                 "ask the ${p_name} vacuum to pause",
+                 "tell the ${p_name} vacuum to pause cleaning",
+                 "ask the ${p_name} vacuum to pause cleaning"]];
+
+  action (p_name : String) := @io.home-assistant.vacuum(name=p_name).stop()
+  #_[utterances=["stop my ${p_name} vacuum",
+                 "make my ${p_name} vacuum stop cleaning",
+                 "tell my ${p_name} vacuum to stop",
+                 "ask my ${p_name} vacuum to stop",
+                 "tell my ${p_name} vacuum to stop cleaning",
+                 "ask my ${p_name} vacuum to stop cleaning",
+                 "stop the ${p_name} vacuum",
+                 "make the ${p_name} vacuum stop cleaning",
+                 "tell the ${p_name} vacuum to stop",
+                 "ask the ${p_name} vacuum to stop",
+                 "tell the ${p_name} vacuum to stop cleaning",
+                 "ask the ${p_name} vacuum to stop cleaning"]];
+}

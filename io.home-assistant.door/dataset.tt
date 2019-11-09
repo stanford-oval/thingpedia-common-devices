@@ -1,23 +1,174 @@
-dataset @io.home-assistant.door {
-  program := now => @io.home-assistant.door.state() => notify
-  #_[utterances="what is the state of my door sensor?",
-                "what is my door sensor showing?",
-                "what does my door sensor say?",
-                "what is the value of my door sensor?",
-                "check the level of my door sensor.",
-               ]];
+dataset @io.home-assistant.door language "en" {
 
-  program (p_name : String) := now => @io.home-assistant.door(name=p_name).state() => notify
-  #_[utterances="what is the state of my ${p_name} door sensor?",
-                "what is my ${p_name} door sensor showing?",
-                "what does my ${p_name} door sensor say?",
-                "what is the value of my ${p_name} door sensor?",
-                "check the level of my ${p_name} door sensor.",
-               ]];
+  program := now => @io.home-assistant.door.state() => notify
+  #_[utterances=["is my door open?",
+                 "check if my door is open",
+                 "is my door closed?",
+                 "check if my door is closed",
+                 "check if my door is open or closed",
+                 "is the door open?",
+                 "check if the door is open",
+                 "is the door closed?",
+                 "check if the door is closed",
+                 "check if the door is open or closed"]];
 
   query := @io.home-assistant.door.state()
-  #_[utterances="the state of my door sensor"]];
+  #_[utterances=["the state of my door",
+                 "if my door is open or closed",
+                 "whether my door is open or closed",
+                 "the state of the door",
+                 "if the door is open or closed",
+                 "whether the door is open or closed"]];
+
+  stream := monitor @io.home-assistant.door.state()
+  #_[utterances=["when the state of my door changes",
+                 "when the state of the door changes"]];
+
+  stream (p_state : Enum(open, closed)) := edge( @io.home-assistant.door.state()) on (state == p_state)
+  #_[utterances=["when my door becomes ${p_state}",
+                "when my door is ${p_state}",
+                "when my door turns ${p_state}",
+                "when my door changes to ${p_state}",
+                "if my door becomes ${p_state}",
+                "if my door is ${p_state}",
+                "if my door turns ${p_state}",
+                "if my door changes to ${p_state}",
+                "when the door becomes ${p_state}",
+                "when the door is ${p_state}",
+                "when the door turns ${p_state}",
+                "when the door changes to ${p_state}",
+                "if the door becomes ${p_state}",
+                "if the door is ${p_state}",
+                "if the door turns ${p_state}",
+                "if the door changes to ${p_state}"]];
+
+  stream := edge( @io.home-assistant.door.state()) on (state == enum(open))
+  #_[utterances=["when my door opens",
+                "if my door opens",
+                "when the door opens",
+                "if the door opens",
+                "when my door is open",
+                "if my door is open",
+                "when the door is open",
+                "if the door is open",
+                "when my door becomes open",
+                "if my door becomes open",
+                "when the door becomes open",
+                "if the door becomes open",
+                "when my door turns open",
+                "if my door turns open",
+                "when the door turns open",
+                "if the door turns open",
+                "when my door gets open",
+                "if my door gets open",
+                "when the door gets open",
+                "if the door gets open"]];
+
+  stream := edge( @io.home-assistant.door.state()) on (state == enum(closed))
+  #_[utterances=["when my door closes",
+                "if my door closes",
+                "when the door closes",
+                "if the door closes",
+                "when my door is closed",
+                "if my door is closed",
+                "when the door is closed",
+                "if the door is closed",
+                "when my door becomes closed",
+                "if my door becomes closed",
+                "when the door becomes closed",
+                "if the door becomes closed",
+                "when my door turns closed",
+                "if my door turns closed",
+                "when the door turns closed",
+                "if the door turns closed",
+                "when my door gets closed",
+                "if my door gets closed",
+                "when the door gets closed",
+                "if the door gets closed"]];
+
+  program (p_name : String) := now => @io.home-assistant.door(name=p_name).state() => notify
+  #_[utterances=["is my ${p_name} door open?",
+                 "check if my ${p_name} door is open",
+                 "is my ${p_name} door closed?",
+                 "check if my ${p_name} door is closed",
+                 "check if my ${p_name} door is open or closed",
+                 "is the ${p_name} door open?",
+                 "check if the ${p_name} door is open",
+                 "is the ${p_name} door closed?",
+                 "check if the ${p_name} door is closed",
+                 "check if the ${p_name} door is open or closed"]];
 
   query (p_name : String) := @io.home-assistant.door(name=p_name).state()
-  #_[utterances="the state of my ${p_name} door sensor"]];
+  #_[utterances=["the state of my ${p_name} door",
+                 "if my ${p_name} door is open or closed",
+                 "whether my ${p_name} door is open or closed",
+                 "the state of the ${p_name} door",
+                 "if the ${p_name} door is open or closed",
+                 "whether the ${p_name} door is open or closed"]];
+
+  stream (p_name : String) := monitor @io.home-assistant.door(name=p_name).state()
+  #_[utterances=["when the state of my ${p_name} door changes",
+                 "when the state of the ${p_name} door changes"]];
+
+  stream (p_name : String, p_state : Enum(open, closed)) := edge( @io.home-assistant.door(name=p_name).state()) on (state == p_state)
+  #_[utterances=["when my ${p_name} door becomes ${p_state}",
+                "when my ${p_name} door is ${p_state}",
+                "when my ${p_name} door turns ${p_state}",
+                "when my ${p_name} door changes to ${p_state}",
+                "if my ${p_name} door becomes ${p_state}",
+                "if my ${p_name} door is ${p_state}",
+                "if my ${p_name} door turns ${p_state}",
+                "if my ${p_name} door changes to ${p_state}",
+                "when the ${p_name} door becomes ${p_state}",
+                "when the ${p_name} door is ${p_state}",
+                "when the ${p_name} door turns ${p_state}",
+                "when the ${p_name} door changes to ${p_state}",
+                "if the ${p_name} door becomes ${p_state}",
+                "if the ${p_name} door is ${p_state}",
+                "if the ${p_name} door turns ${p_state}",
+                "if the ${p_name} door changes to ${p_state}"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.door(name=p_name).state()) on (state == enum(open))
+  #_[utterances=["when my ${p_name} door opens",
+                "if my ${p_name} door opens",
+                "when the ${p_name} door opens",
+                "if the ${p_name} door opens",
+                "when my ${p_name} door is open",
+                "if my ${p_name} door is open",
+                "when the ${p_name} door is open",
+                "if the ${p_name} door is open",
+                "when my ${p_name} door becomes open",
+                "if my ${p_name} door becomes open",
+                "when the ${p_name} door becomes open",
+                "if the ${p_name} door becomes open",
+                "when my ${p_name} door turns open",
+                "if my ${p_name} door turns open",
+                "when the ${p_name} door turns open",
+                "if the ${p_name} door turns open",
+                "when my ${p_name} door gets open",
+                "if my ${p_name} door gets open",
+                "when the ${p_name} door gets open",
+                "if the ${p_name} door gets open"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.door(name=p_name).state()) on (state == enum(closed))
+  #_[utterances=["when my ${p_name} door closes",
+                "if my ${p_name} door closes",
+                "when the ${p_name} door closes",
+                "if the ${p_name} door closes",
+                "when my ${p_name} door is closed",
+                "if my ${p_name} door is closed",
+                "when the ${p_name} door is closed",
+                "if the ${p_name} door is closed",
+                "when my ${p_name} door becomes closed",
+                "if my ${p_name} door becomes closed",
+                "when the ${p_name} door becomes closed",
+                "if the ${p_name} door becomes closed",
+                "when my ${p_name} door turns closed",
+                "if my ${p_name} door turns closed",
+                "when the ${p_name} door turns closed",
+                "if the ${p_name} door turns closed",
+                "when my ${p_name} door gets closed",
+                "if my ${p_name} door gets closed",
+                "when the ${p_name} door gets closed",
+                "if the ${p_name} door gets closed"]];
 }

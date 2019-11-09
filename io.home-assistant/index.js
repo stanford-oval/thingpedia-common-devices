@@ -13,17 +13,28 @@ const HomeAssistant = require('home-assistant-js-websocket');
 
 const HomeAssistantLightbulbDevice = require('./light-bulb');
 const HomeAssistantSensor = require('./sensor');
+const HomeAssistantCover = require('./cover');
+const HomeAssistantFan = require('./fan');
+const HomeAssistantMediaPlayer = require('./media-player');
+const HomeAssistantSwitch = require('./switch');
+const HomeAssistantVacuum = require('./vacuum');
+const HomeAssistantWindow = require('./window');
 
 // FIXME make configurable
 const HASS_URL = 'http://hassio.local:8123';
 
 const DOMAIN_TO_TP_KIND = {
     'light': 'light-bulb',
+    'window': 'io.home-assistant.window',
+    'fan': 'io.home-assistant.fan',
+    'media_player': 'io.home-assistant.media-player',
+    'switch': 'io.home-assistant.switch',
+    'vacuum': 'io.home-assistant.vacuum',
     'sensor_battery': 'io.home-assistant.battery',
     'sensor_cold': 'io.home-assistant.cold',
     'sensor_connectivity': 'io.home-assistant.connectivity',
     'sensor_door': 'io.home-assistant.door',
-    'sensor_garage_door': 'io.home-assistant.garage_door',
+    'sensor_garage_door': 'io.home-assistant.garage-door',
     'sensor_gas': 'io.home-assistant.gas',
     'sensor_heat': 'io.home-assistant.heat',
     'sensor_humidity': 'io.home-assistant.humidity',
@@ -47,17 +58,29 @@ const DOMAIN_TO_TP_KIND = {
     'sensor_temperature': 'io.home-assistant.temperature',
     'sensor_timestamp': 'io.home-assistant.timestamp',
     'sensor_vibration': 'io.home-assistant.vibration',
-    'sensor_window': 'io.home-assistant.window',
+    'cover_awning': 'io.home-assistant.awning',
+    'cover_blind': 'io.home-assistant.blind',
+    'cover_curtain': 'io.home-assistant.curtain',
+    'cover_damper': 'io.home-assistant.damper',
+    'cover_shade': 'io.home-assistant.shade',
+    'cover_shutter': 'io.home-assistant.shutter'
 };
 const SUBDEVICES = {
     'light-bulb': HomeAssistantLightbulbDevice,
+    'io.home-assistant.window': HomeAssistantWindow,
+    'io.home-assistant.fan': HomeAssistantFan,
+    'io.home-assistant.media-player': HomeAssistantMediaPlayer,
+    'io.home-assistant.switch': HomeAssistantSwitch,
+    'io.home-assistant.vacuum': HomeAssistantVacuum
 };
 
-for (let value in Object.values(DOMAIN_TO_TP_KIND)) {
-    if (Object.values(DOMAIN_TO_TP_KIND)[value].includes('io.home-assistant')) {
-        SUBDEVICES[Object.values(DOMAIN_TO_TP_KIND)[value]] = class extends HomeAssistantSensor {};
+Object.entries(DOMAIN_TO_TP_KIND).forEach(([key,value]) => {
+    if (key.includes('sensor')) {
+        SUBDEVICES[value] = class extends HomeAssistantSensor {};
+    } else if (key.includes('cover')) {
+        SUBDEVICES[value] = class extends HomeAssistantCover {};
     }
-}
+});
 
 class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
     constructor(master) {
@@ -79,14 +102,19 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
         }
 
         const [domain,] = entityId.split('.');
-        // const [,curr_type] = entityId.split('.');
-        // const kind = DOMAIN_TO_TP_KIND[domain];
         let kind = undefined;
-        if ((domain === 'sensor') || (domain === 'binary_sensor')) {
+        if (domain === 'cover' && attributes.device_class === 'window') {
+            kind = DOMAIN_TO_TP_KIND['window'];
+        } else if ((domain === 'sensor') || (domain === 'binary_sensor') || ((domain === 'cover' && attributes.device_class === 'door'))) {
             kind = DOMAIN_TO_TP_KIND[`sensor_${attributes.device_class}`];
+        } else if (domain === 'cover' && attributes.device_class === 'garage') {
+            kind = DOMAIN_TO_TP_KIND['sensor_garage_door'];
+        } else if (domain === 'cover') {
+            kind = DOMAIN_TO_TP_KIND[`cover_${attributes.device_class}`];
         } else {
             kind = DOMAIN_TO_TP_KIND[domain];
         }
+
         if (kind === undefined) {
             console.log(`Unhandled Home Assistant entity ${entityId} with domain ${domain}`);
             return;

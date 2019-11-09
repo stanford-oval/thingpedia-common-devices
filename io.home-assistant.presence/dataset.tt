@@ -1,23 +1,62 @@
-dataset @io.home-assistant.presence {
-  program := now => @io.home-assistant.presence.state() => notify
-  #_[utterances="what is the state of my presence sensor?",
-                "what is my presence sensor showing?",
-                "what does my presence sensor say?",
-                "what is the value of my presence sensor?",
-                "check the level of my presence sensor.",
-               ]];
+dataset @io.home-assistant.presence language "en" {
 
-  program (p_name : String) := now => @io.home-assistant.presence(name=p_name).state() => notify
-  #_[utterances="what is the state of my ${p_name} presence sensor?",
-                "what is my ${p_name} presence sensor showing?",
-                "what does my ${p_name} presence sensor say?",
-                "what is the value of my ${p_name} presence sensor?",
-                "check the level of my ${p_name} presence sensor.",
-               ]];
+  program := now => @io.home-assistant.presence.state() => notify
+  #_[utterances=["is the presence sensor at home?",
+                 "check if the presence sensor is at home",
+                 "is the presence sensor away?",
+                 "check if the presence sensor is away",
+                 "check if the presence sensor is at home or away"]];
 
   query := @io.home-assistant.presence.state()
-  #_[utterances="the state of my presence sensor"]];
+  #_[utterances=["the state of the presence sensor",
+                 "if the presence sensor is at home or away",
+                 "whether the presence sensor is at home or away"]];
+
+  stream := monitor @io.home-assistant.presence.state()
+  #_[utterances=["when the state of the presence sensor changes"]];
+
+  stream (p_state : Enum(home, away)) := edge( @io.home-assistant.presence.state()) on (state == p_state)
+  #_[utterances=["when the presence sensor becomes ${p_state}",
+                "when the presence sensor is ${p_state}",
+                "when the presence sensor turns ${p_state}",
+                "when the presence sensor changes to ${p_state}",
+                "if the presence sensor becomes ${p_state}",
+                "if the presence sensor is ${p_state}",
+                "if the presence sensor turns ${p_state}",
+                "if the presence sensor changes to ${p_state}"]];
+
+  stream := edge( @io.home-assistant.presence.state()) on (state == enum(home))
+  #_[utterances=["when the presence sensor is at home",
+                "if the presence sensor is at home"]];
+
+  stream := edge( @io.home-assistant.presence.state()) on (state == enum(away))
+  #_[utterances=["when the presence sensor is away",
+                "if the presence sensor is away"]];
+
+  program (p_name : String) := now => @io.home-assistant.presence(name=p_name).state() => notify
+  #_[utterances=["is the ${p_name} presence sensor at home?",
+                 "check if the ${p_name} presence sensor is at home",
+                 "is the ${p_name} presence sensor away?",
+                 "check if the ${p_name} presence sensor is away",
+                 "check if the ${p_name} presence sensor is at home or away"]];
 
   query (p_name : String) := @io.home-assistant.presence(name=p_name).state()
-  #_[utterances="the state of my ${p_name} presence sensor"]];
+  #_[utterances=["the state of the ${p_name} presence sensor",
+                 "if the ${p_name} presence sensor is at home or away",
+                 "whether the ${p_name} presence sensor is at home or away"]];
+
+  stream (p_name : String) := monitor @io.home-assistant.presence(name=p_name).state()
+  #_[utterances=["when the state of the ${p_name} presence sensor changes"]];
+
+  stream (p_name : String, p_state : Enum(home, away)) := edge( @io.home-assistant.presence(name=p_name).state()) on (state == p_state)
+  #_[utterances=["when the ${p_name} presence sensor is ${p_state}",
+                "if the ${p_name} presence sensor is ${p_state}"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.presence(name=p_name).state()) on (state == enum(home))
+  #_[utterances=["when the ${p_name} presence sensor is at home",
+                "if the ${p_name} presence sensor is at home"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.presence(name=p_name).state()) on (state == enum(away))
+  #_[utterances=["when the ${p_name} presence sensor is away",
+                "if the ${p_name} presence sensor is away"]];
 }

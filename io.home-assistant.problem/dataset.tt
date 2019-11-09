@@ -1,23 +1,78 @@
-dataset @io.home-assistant.problem {
-  program := now => @io.home-assistant.problem.state() => notify
-  #_[utterances="what is the state of my problem sensor?",
-                "what is my problem sensor showing?",
-                "what does my problem sensor say?",
-                "what is the value of my problem sensor?",
-                "check the level of my problem sensor.",
-               ]];
+dataset @io.home-assistant.problem language "en" {
 
-  program (p_name : String) := now => @io.home-assistant.problem(name=p_name).state() => notify
-  #_[utterances="what is the state of my ${p_name} problem sensor?",
-                "what is my ${p_name} problem sensor showing?",
-                "what does my ${p_name} problem sensor say?",
-                "what is the value of my ${p_name} problem sensor?",
-                "check the level of my ${p_name} problem sensor.",
-               ]];
+  program := now => @io.home-assistant.problem.state() => notify
+  #_[utterances=["is the problem sensor detecting a problem?",
+                 "check if the problem sensor is detecting a problem",
+                 "is the problem sensor detecting any problem?",
+                 "check if the problem sensor is detecting any problem",
+                 "is the problem sensor not detecting a problem?",
+                 "check if the problem sensor is not detecting a problem",
+                 "check if the problem sensor is detecting a problem or not detecting a problem",
+                 "check if the problem sensor is detecting any problem or not detecting a problem"]];
 
   query := @io.home-assistant.problem.state()
-  #_[utterances="the state of my problem sensor"]];
+  #_[utterances=["the state of the problem sensor",
+                 "if the problem sensor is detecting a problem or not detecting a problem",
+                 "whether the problem sensor is detecting a problem or not detecting a problem",
+                 "if the problem sensor is detecting any problem or not detecting a problem",
+                 "whether the problem sensor is detecting any problem or not detecting a problem"]];
+
+  stream := monitor @io.home-assistant.problem.state()
+  #_[utterances=["when the state of the problem sensor changes"]];
+
+  stream (p_state : Enum(detecting_a_problem, not_detecting_a_problem)) := edge( @io.home-assistant.problem.state()) on (state == p_state)
+  #_[utterances=["when the problem sensor becomes ${p_state}",
+                "when the problem sensor is ${p_state}",
+                "when the problem sensor turns ${p_state}",
+                "when the problem sensor changes to ${p_state}",
+                "if the problem sensor becomes ${p_state}",
+                "if the problem sensor is ${p_state}",
+                "if the problem sensor turns ${p_state}",
+                "if the problem sensor changes to ${p_state}"]];
+
+  stream := edge( @io.home-assistant.problem.state()) on (state == enum(detecting_a_problem))
+  #_[utterances=["when the problem sensor is detecting a problem",
+                "if the problem sensor is detecting a problem"]];
+
+  stream := edge( @io.home-assistant.problem.state()) on (state == enum(not_detecting_a_problem))
+  #_[utterances=["when the problem sensor is not detecting a problem",
+                "if the problem sensor is not detecting a problem"]];
+
+  program (p_name : String) := now => @io.home-assistant.problem(name=p_name).state() => notify
+  #_[utterances=["is the ${p_name} problem sensor detecting a problem?",
+                 "check if the ${p_name} problem sensor is detecting a problem",
+                 "is the ${p_name} problem sensor detecting any problem?",
+                 "check if the ${p_name} problem sensor is detecting any problem",
+                 "is the ${p_name} problem sensor not detecting a problem?",
+                 "check if the ${p_name} problem sensor is not detecting a problem",
+                 "check if the ${p_name} problem sensor is detecting a problem or not detecting a problem",
+                 "check if the ${p_name} problem sensor is detecting any problem or not detecting a problem"]];
 
   query (p_name : String) := @io.home-assistant.problem(name=p_name).state()
-  #_[utterances="the state of my ${p_name} problem sensor"]];
+  #_[utterances=["the state of the ${p_name} problem sensor",
+                 "if the ${p_name} problem sensor is detecting a problem or not detecting a problem",
+                 "whether the ${p_name} problem sensor is detecting a problem or not detecting a problem",
+                 "if the ${p_name} problem sensor is detecting any problem or not detecting a problem",
+                 "whether the ${p_name} problem sensor is detecting any problem or not detecting a problem"]];
+
+  stream (p_name : String) := monitor @io.home-assistant.problem(name=p_name).state()
+  #_[utterances=["when the state of the ${p_name} problem sensor changes"]];
+
+  stream (p_name : String, p_state : Enum(detecting_a_problem, not_detecting_a_problem)) := edge( @io.home-assistant.problem(name=p_name).state()) on (state == p_state)
+  #_[utterances=["when the ${p_name} problem sensor becomes ${p_state}",
+                "when the ${p_name} problem sensor is ${p_state}",
+                "when the ${p_name} problem sensor turns ${p_state}",
+                "when the ${p_name} problem sensor changes to ${p_state}",
+                "if the ${p_name} problem sensor becomes ${p_state}",
+                "if the ${p_name} problem sensor is ${p_state}",
+                "if the ${p_name} problem sensor turns ${p_state}",
+                "if the ${p_name} problem sensor changes to ${p_state}"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.problem(name=p_name).state()) on (state == enum(detecting_a_problem))
+  #_[utterances=["when the ${p_name} problem sensor is detecting a problem",
+                "if the ${p_name} problem sensor is detecting a problem"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.problem(name=p_name).state()) on (state == enum(not_detecting_a_problem))
+  #_[utterances=["when the ${p_name} problem sensor is not detecting a problem",
+                "if the ${p_name} problem sensor is not detecting a problem"]];
 }

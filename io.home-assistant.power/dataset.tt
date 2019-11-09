@@ -1,23 +1,67 @@
-dataset @io.home-assistant.power {
-  program := now => @io.home-assistant.power.state() => notify
-  #_[utterances="what is the state of my power sensor?",
-                "what is my power sensor showing?",
-                "what does my power sensor say?",
-                "what is the value of my power sensor?",
-                "check the level of my power sensor.",
-               ]];
+dataset @io.home-assistant.power language "en" {
 
-  program (p_name : String) := now => @io.home-assistant.power(name=p_name).state() => notify
-  #_[utterances="what is the state of my ${p_name} power sensor?",
-                "what is my ${p_name} power sensor showing?",
-                "what does my ${p_name} power sensor say?",
-                "what is the value of my ${p_name} power sensor?",
-                "check the level of my ${p_name} power sensor.",
-               ]];
+  program := now => @io.home-assistant.power.state() => notify
+  #_[utterances=["is the power sensor detecting power?",
+                 "check if the power sensor is detecting power",
+                 "is the power sensor detecting any power?",
+                 "check if the power sensor is detecting any power",
+                 "is the power sensor not detecting power?",
+                 "check if the power sensor is not detecting power",
+                 "check if the power sensor is detecting power or not detecting power",
+                 "check if the power sensor is detecting any power or not detecting power"]];
 
   query := @io.home-assistant.power.state()
-  #_[utterances="the state of my power sensor"]];
+  #_[utterances=["the state of the power sensor",
+                 "if the power sensor is detecting power or not detecting power",
+                 "whether the power sensor is detecting power or not detecting power",
+                 "if the power sensor is detecting any power or not detecting power",
+                 "whether the power sensor is detecting any power or not detecting power"]];
+
+  stream := monitor @io.home-assistant.power.state()
+  #_[utterances=["when the state of the power sensor changes"]];
+
+  stream (p_state : Enum(detecting_power, not_detecting_power)) := edge( @io.home-assistant.power.state()) on (state == p_state)
+  #_[utterances=["when the power sensor is ${p_state}",
+                "if the power sensor is ${p_state}"]];
+
+  stream := edge( @io.home-assistant.power.state()) on (state == enum(detecting_power))
+  #_[utterances=["when the power sensor is detecting power",
+                "if the power sensor is detecting power"]];
+
+  stream := edge( @io.home-assistant.power.state()) on (state == enum(not_detecting_power))
+  #_[utterances=["when the power sensor is not detecting power",
+                "if the power sensor is not detecting power"]];
+
+  program (p_name : String) := now => @io.home-assistant.power(name=p_name).state() => notify
+  #_[utterances=["is the ${p_name} power sensor detecting power?",
+                 "check if the ${p_name} power sensor is detecting power",
+                 "is the ${p_name} power sensor detecting any power?",
+                 "check if the ${p_name} power sensor is detecting any power",
+                 "is the ${p_name} power sensor not detecting power?",
+                 "check if the ${p_name} power sensor is not detecting power",
+                 "check if the ${p_name} power sensor is detecting power or not detecting power",
+                 "check if the ${p_name} power sensor is detecting any power or not detecting power"]];
 
   query (p_name : String) := @io.home-assistant.power(name=p_name).state()
-  #_[utterances="the state of my ${p_name} power sensor"]];
+  #_[utterances=["the state of the ${p_name} power sensor",
+                 "if the ${p_name} power sensor is detecting power or not detecting power",
+                 "whether the ${p_name} power sensor is detecting power or not detecting power",
+                 "if the ${p_name} power sensor is detecting any power or not detecting power",
+                 "whether the ${p_name} power sensor is detecting any power or not detecting power"]];
+
+  stream (p_name : String) := monitor @io.home-assistant.power(name=p_name).state()
+  #_[utterances=["when the state of the ${p_name} power sensor changes"]];
+
+  stream (p_name : String, p_state : Enum(detecting_power, not_detecting_power)) := edge( @io.home-assistant.power(name=p_name).state()) on (state == p_state)
+  #_[utterances=["when the ${p_name} power sensor becomes ${p_state}",
+                "when the ${p_name} power sensor is ${p_state}"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.power(name=p_name).state()) on (state == enum(detecting_power))
+  #_[utterances=["when the ${p_name} power sensor is detecting power",
+                "if the ${p_name} power sensor is detecting power",
+                "when the ${p_name} power sensor becomes detecting power"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.power(name=p_name).state()) on (state == enum(not_detecting_power))
+  #_[utterances=["when the ${p_name} power sensor is not detecting power",
+                "if the ${p_name} power sensor is not detecting power"]];
 }

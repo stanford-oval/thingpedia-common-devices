@@ -14,129 +14,120 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
         const [domain,] = entityId.split('.');
 		super(engine, state, master, entityId);
         this.domain = domain;
-        if (this.domain === "binary_sensor") {
+        if (['binary_sensor', 'cover'].includes(this.domain)) {
             let supportedDeviceClasses = {
                 battery: {
-                    on: "low",
-                    off: "normal",
+                    on: 'low',
+                    off: 'normal'
                 },
                 cold: {
-                    on: "cold",
-                    off: "normal",
+                    on: 'cold',
+                    off: 'normal'
                 },
                 connectivity: {
-                    on: "connected",
-                    off: "disconnected",
+                    on: 'connected',
+                    off: 'disconnected'
                 },
                 door: {
-                    on: "open",
-                    off: "closed",
+                    on: 'open',
+                    off: 'closed'
                 },
                 garage_door: {
-                    on: "open",
-                    off: "closed",
+                    on: 'open',
+                    off: 'closed'
                 },
                 gas: {
-                    on: "detecting_gas",
-                    off: "not_detecting_gas",
+                    on: 'detecting_gas',
+                    off: 'not_detecting_gas'
                 },
                 heat: {
-                    on: "hot",
-                    off: "normal",
+                    on: 'hot',
+                    off: 'normal'
                 },
                 light: {
-                    on: "detecting_light",
-                    off: "not_detecting_light",
+                    on: 'detecting_light',
+                    off: 'not_detecting_light'
                 },
                 lock: {
-                    on: "unlocked",
-                    off: "locked",
+                    on: 'unlocked',
+                    off: 'locked'
                 },
                 moisture: {
-                    on: "wet",
-                    off: "dry",
+                    on: 'wet',
+                    off: 'dry'
                 },
                 motion: {
-                    on: "detecting_motion",
-                    off: "not_detecting_motion",
+                    on: 'detecting_motion',
+                    off: 'not_detecting_motion'
                 },
                 moving: {
-                    on: "moving",
-                    off: "not_moving",
+                    on: 'moving',
+                    off: 'not_moving'
                 },
                 occupancy: {
-                    on: "occupied",
-                    off: "not_occupied",
+                    on: 'occupied',
+                    off: 'not_occupied'
                 },
                 opening: {
-                    on: "open",
-                    off: "closed",
+                    on: 'open',
+                    off: 'closed'
                 },
                 plug: {
-                    on: "plugged",
-                    off: "unplugged",
+                    on: 'plugged',
+                    off: 'unplugged'
                 },
                 power: {
-                    on: "detecting_power",
-                    off: "not_detecting_power",
+                    on: 'detecting_power',
+                    off: 'not_detecting_power'
                 },
                 presence: {
-                    on: "home",
-                    off: "away",
+                    on: 'home',
+                    off: 'away'
                 },
                 problem: {
-                    on: "detecting_problem",
-                    off: "not_detecting_problem",
+                    on: 'detecting_a_problem',
+                    off: 'not_detecting_a_problem'
                 },
                 safety: {
-                    on: "unsafe",
-                    off: "safe",
+                    on: 'unsafe',
+                    off: 'safe'
                 },
                 smoke: {
-                    on: "detecting_smoke",
-                    off: "not_detecting_smoke",
+                    on: 'detecting_smoke',
+                    off: 'not_detecting_smoke'
                 },
                 sound: {
-                    on: "detecting_sound",
-                    off: "not_detecting_sound",
+                    on: 'detecting_sound',
+                    off: 'not_detecting_sound'
                 },
                 vibration: {
-                    on: "detecting_vibration",
-                    off: "not_detecting_vibration",
-                },
-                window: {
-                    on: "open",
-                    off: "closed",
-                },
+                    on: 'detecting_vibration',
+                    off: 'not_detecting_vibration'
+                }
             };
-            this.deviceStateMapping = supportedDeviceClasses[
-                this.state.attributes.device_class] || {on: "on", off: "off"};
-        } else if (this.domain == "sensor") {
-            this.deviceStateMapping = this.state.attributes.unit_of_measurement;
+            this.deviceStateMapping = supportedDeviceClasses[this.state.attributes.device_class] || {on: 'on', off: 'off'};
         }
     }
     async get_state() {
-        if (this.domain === "sensor") {
-            var str_ret = this.state.state + this.deviceStateMapping;
-            return [{state: str_ret}];
-        } else if (this.domain === "binary_sensor") {
-            var str_ret = this.deviceStateMapping[this.state.state];
-            str_ret = str_ret.split("_");
-            return [{state: str_ret}];
+        if (this.domain === 'sensor') {
+            var value = this.state.state + this.state.attributes.unit_of_measurement;
+            return [{state: undefined, value: value}];
+        } else if (this.domain === 'binary_sensor') {
+            var state = this.deviceStateMapping[this.state.state].split('_').join(' ');
+            return [{state: state, value: undefined}];
         }
     }
     // note: subscribe_ must NOT be async, or an ImplementationError will occur at runtime
     subscribe_state() {
-        if (this.domain === "sensor") {
-            var str_ret = this.state.state + this.deviceStateMapping;
+        if (this.domain === 'sensor') {
+            var str_ret = this.state.state + this.state.attributes.unit_of_measurement;
             return this._subscribeState(() => {
-                return [{state: str_ret}];
+                return [{state: undefined, value: value}];
             });
-        } else if (this.domain === "binary_sensor") {
-            var str_ret = this.deviceStateMapping[this.state.state];
-            str_ret = str_ret.split("_");
+        } else if (this.domain === 'binary_sensor') {
+            var state = this.deviceStateMapping[this.state.state].split('_').join(' ');
             return this._subscribeState(() => {
-                return [{state: str_ret}];
+                return [{state: state, value: undefined}];
             });
         }
     }

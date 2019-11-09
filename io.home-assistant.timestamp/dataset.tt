@@ -1,23 +1,22 @@
-dataset @io.home-assistant.timestamp {
-  program := now => @io.home-assistant.timestamp.state() => notify
-  #_[utterances="what is the state of my timestamp sensor?",
-                "what is my timestamp sensor showing?",
-                "what does my timestamp sensor say?",
-                "what is the value of my timestamp sensor?",
-                "check the level of my timestamp sensor.",
-               ]];
+dataset @io.home-assistant.temperature language "en" {
 
-  program (p_name : String) := now => @io.home-assistant.timestamp(name=p_name).state() => notify
-  #_[utterances="what is the state of my ${p_name} timestamp sensor?",
-                "what is my ${p_name} timestamp sensor showing?",
-                "what does my ${p_name} timestamp sensor say?",
-                "what is the value of my ${p_name} timestamp sensor?",
-                "check the level of my ${p_name} timestamp sensor.",
-               ]];
+  program := now => @io.home-assistant.temperature.state() => notify
+  #_[utterances=["what is the timestamp?",
+                 "check the timestamp"]];
 
-  query := @io.home-assistant.timestamp.state()
-  #_[utterances="the state of my timestamp sensor"]];
+  query := @io.home-assistant.temperature.state()
+  #_[utterances=["the timestamp"]];
 
-  query (p_name : String) := @io.home-assistant.timestamp(name=p_name).state()
-  #_[utterances="the state of my ${p_name} timestamp sensor"]];
+  stream := monitor @io.home-assistant.temperature.state()
+  #_[utterances=["when the timestamp changes"]];
+
+  program (p_name : String) := now => @io.home-assistant.temperature(name=p_name).state() => notify
+  #_[utterances=["what is the ${p_name} timestamp?",
+                 "check the ${p_name} timestamp"]];
+
+  query (p_name : String) := @io.home-assistant.temperature(name=p_name).state()
+  #_[utterances=["the ${p_name} timestamp"]];
+
+  stream (p_name : String) := monitor @io.home-assistant.temperature(name=p_name).state()
+  #_[utterances=["when the ${p_name} timestamp changes"]];
 }

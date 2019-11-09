@@ -1,12 +1,13 @@
 abstract class @io.home-assistant.power
-#_[thingpedia_name="Power Sensor"]
-#_[thingpedia_description="Interface for Home Assistant's Power Sensor."]
+#_[thingpedia_name="Power Sensor / Binary Sensor"]
+#_[thingpedia_description="Interface for Home Assistant's Power Sensor / Binary Sensor."]
+#_[description="Interface for Home Assistant's Power Sensor / Binary Sensor."]
 #[license="CC-0"]
 #[license_gplcompatible=true]
 #[subcategory="home"]
 {
-  monitorable query state(out state : Number)
+  monitorable query state(out state : Enum(detecting_power,not_detecting_power), out value : String)
   #_[canonical="power sensor state"]
   #_[confirmation="the state of your power sensor"]
-  #_[formatted=["Your power sensor is ${state}"]];
+  #_[formatted=["The power sensor is ${state}.", "The power sensor says ${value}."]];
 }

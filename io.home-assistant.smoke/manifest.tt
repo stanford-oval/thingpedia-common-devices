@@ -1,12 +1,13 @@
 abstract class @io.home-assistant.smoke
-#_[thingpedia_name="Smoke Sensor"]
-#_[thingpedia_description="Interface for Home Assistant's Smoke Sensor."]
+#_[thingpedia_name="Smoke Binary Sensor"]
+#_[thingpedia_description="Interface for Home Assistant's Smoke Binary Sensor."]
+#_[description="Interface for Home Assistant's Smoke Binary Sensor."]
 #[license="CC-0"]
 #[license_gplcompatible=true]
 #[subcategory="home"]
 {
-  monitorable query state(out state : Number)
+  monitorable query state(out state : Enum(detecting_smoke,not_detecting_smoke), out value : String)
   #_[canonical="smoke sensor state"]
   #_[confirmation="the state of your smoke sensor"]
-  #_[formatted=["Your smoke sensor is ${state}"]];
+  #_[formatted=["The smoke sensor is ${state}."]];
 }
