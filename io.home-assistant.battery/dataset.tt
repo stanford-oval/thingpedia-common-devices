@@ -19,20 +19,20 @@ dataset @io.home-assistant.battery language "en" {
   stream := monitor @io.home-assistant.battery.state()
   #_[utterances=["when the state of my battery changes"]];
 
-  stream (p_state : Enum(low, normal)) := edge( @io.home-assistant.battery.state()) on (state == p_state)
+  stream (p_state : Enum(low, normal)) := edge( monitor @io.home-assistant.battery.state()) on (state == p_state)
   #_[utterances=["when the battery becomes ${p_state}",
                 "if the battery is ${p_state}",
                 "when my battery turns ${p_state}",
                 "if my battery changes to ${p_state}"]];
 
-  stream := edge( @io.home-assistant.battery.state()) on (state == enum(low))
+  stream := edge( monitor @io.home-assistant.battery.state()) on (state == enum(low))
   #_[utterances=["when I am low on battery",
                 "if my battery is finishing",
                 "when the battery is running low",
                 "if my battery starts running out",
                 "when my battery has no juice"]];
 
-  stream := edge( @io.home-assistant.battery.state()) on (state == enum(normal))
+  stream := edge( monitor @io.home-assistant.battery.state()) on (state == enum(normal))
   #_[utterances=["when I have enough battery",
                  "when my battery is charged",
                  "if the battery is topped up",
@@ -57,20 +57,20 @@ dataset @io.home-assistant.battery language "en" {
   stream (p_name : String) := monitor @io.home-assistant.battery(name=p_name).state()
   #_[utterances=["when the state of my ${p_name} battery changes"]];
 
-  stream (p_name : String, p_state : Enum(low, normal)) := edge( @io.home-assistant.battery.state()) on (state == p_state)
+  stream (p_name : String, p_state : Enum(low, normal)) := edge( monitor @io.home-assistant.battery.state()) on (state == p_state)
   #_[utterances=["when the ${p_name} battery becomes ${p_state}",
                 "if the ${p_name} battery is ${p_state}",
                 "when my ${p_name} battery turns ${p_state}",
                 "if my ${p_name} battery changes to ${p_state}"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.battery(name=p_name).state()) on (state == enum(low))
+  stream (p_name : String) := edge( monitor @io.home-assistant.battery(name=p_name).state()) on (state == enum(low))
   #_[utterances=["when I am low on ${p_name} battery",
                 "if my ${p_name} battery is finishing",
                 "when the ${p_name} battery is running low",
                 "if my ${p_name} battery starts running out",
                 "when my ${p_name} battery has no juice"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.battery(name=p_name).state()) on (state == enum(normal))
+  stream (p_name : String) := edge( monitor @io.home-assistant.battery(name=p_name).state()) on (state == enum(normal))
   #_[utterances=["when I have enough ${p_name} battery",
                  "when my ${p_name} battery is charged",
                  "if the ${p_name} battery is topped up",

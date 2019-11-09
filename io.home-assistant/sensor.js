@@ -7,6 +7,8 @@
 // See LICENSE for details
 "use strict";
 
+const Units = require('thingtalk').Units
+
 const HomeAssistantDevice = require('./base');
 
 module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
@@ -14,6 +16,7 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
         super(engine, state, master, entityId);
         const [domain,] = entityId.split('.');
 		this.domain = domain;
+        this.device_class = this.state.attributes.device_class;
         if (['binary_sensor', 'cover'].includes(this.domain)) {
             let supportedDeviceClasses = {
                 battery: {
@@ -37,16 +40,16 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
                     off: 'closed'
                 },
                 gas: {
-                    on: 'detecting_gas',
-                    off: 'not_detecting_gas'
+                    on: 'detecting',
+                    off: 'not_detecting'
                 },
                 heat: {
                     on: 'hot',
                     off: 'normal'
                 },
                 light: {
-                    on: 'detecting_light',
-                    off: 'not_detecting_light'
+                    on: 'detecting',
+                    off: 'not_detecting'
                 },
                 lock: {
                     on: 'unlocked',
@@ -57,8 +60,8 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
                     off: 'dry'
                 },
                 motion: {
-                    on: 'detecting_motion',
-                    off: 'not_detecting_motion'
+                    on: 'detecting',
+                    off: 'not_detecting'
                 },
                 moving: {
                     on: 'moving',
@@ -66,7 +69,7 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
                 },
                 occupancy: {
                     on: 'occupied',
-                    off: 'not_occupied'
+                    off: 'unoccupied'
                 },
                 opening: {
                     on: 'open',
@@ -77,55 +80,77 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
                     off: 'unplugged'
                 },
                 power: {
-                    on: 'detecting_power',
-                    off: 'not_detecting_power'
+                    on: 'detecting',
+                    off: 'not_detecting'
                 },
                 presence: {
                     on: 'home',
                     off: 'away'
                 },
                 problem: {
-                    on: 'detecting_a_problem',
-                    off: 'not_detecting_a_problem'
+                    on: 'detecting',
+                    off: 'not_detecting'
                 },
                 safety: {
                     on: 'unsafe',
                     off: 'safe'
                 },
                 smoke: {
-                    on: 'detecting_smoke',
-                    off: 'not_detecting_smoke'
+                    on: 'detecting',
+                    off: 'not_detecting'
                 },
                 sound: {
-                    on: 'detecting_sound',
-                    off: 'not_detecting_sound'
+                    on: 'detecting',
+                    off: 'not_detecting'
                 },
                 vibration: {
-                    on: 'detecting_vibration',
-                    off: 'not_detecting_vibration'
+                    on: 'detecting',
+                    off: 'not_detecting'
                 }
             };
-            this.deviceStateMapping = supportedDeviceClasses[this.state.attributes.device_class] || {on: 'on', off: 'off'};
+            this.deviceStateMapping = supportedDeviceClasses[this.device_class] || {on: 'on', off: 'off'};
         }
     }
     async get_state() {
         if (this.domain === 'sensor') {
-            var value = this.state.state + this.state.attributes.unit_of_measurement;
+            let value = parseFloat(this.state.state);
+            if (this.device_class === 'temperature') {
+                if (unit != '°C' && unit != 'C') {
+                    if (unit === '°F' || unit === 'F')
+                        value = Units.transformToBaseUnit(value, 'F');
+                    else if (unit === 'K')
+                        value = Units.transformToBaseUnit(value, 'K');
+                    else
+                        throw new Error(`Unrecognized unit ${unit}`)
+                }
+            } else if (this.device_class === 'pressure') {
+                if (unit != 'Pa') {
+                    if (unit === 'hPa' || unit === 'hpa')
+                        value *= 100;
+                    else if (unit === 'mbar')
+                        value = Units.transformToBaseUnit(value * 0.001, 'bar');
+                    else if (['bar', 'psi', 'mmHg', 'inHg', 'atm'].includes(unit))
+                        value = Units.transformToBaseUnit(value * 0.001, unit);
+                    else
+                        throw new Error(`Unrecognized unit ${unit}`)
+                }
+            }
             return [{state: undefined, value: value}];
         } else if (this.domain === 'binary_sensor') {
-            var state = this.deviceStateMapping[this.state.state].split('_').join(' ');
+            var state = this.deviceStateMapping[this.state.state];
             return [{state: state, value: undefined}];
         }
     }
     // note: subscribe_ must NOT be async, or an ImplementationError will occur at runtime
     subscribe_state() {
         if (this.domain === 'sensor') {
-            var value = this.state.state + this.state.attributes.unit_of_measurement;
+            let value = this.state.state
+            let unit = this.state.attributes.unit_of_measurement;
             return this._subscribeState(() => {
-                return [{state: undefined, value: value}];
+                return [{state: undefined, value: value, unit: unit}];
             });
         } else if (this.domain === 'binary_sensor') {
-            var state = this.deviceStateMapping[this.state.state].split('_').join(' ');
+            let state = this.deviceStateMapping[this.state.state];
             return this._subscribeState(() => {
                 return [{state: state, value: undefined}];
             });

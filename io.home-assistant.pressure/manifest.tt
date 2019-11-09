@@ -6,8 +6,8 @@ abstract class @io.home-assistant.pressure
 #[license_gplcompatible=true]
 #[subcategory="home"]
 {
-  monitorable query state(out state : Enum(pressurized,normal), out value : String)
+  monitorable query state(out state : Enum(pressurized,normal), out value : Measure(Pa))
   #_[canonical="pressure sensor state"]
-  #_[confirmation="the state of your pressure sensor"]
-  #_[formatted=["The pressure sensor is ${state}.", "The pressure sensor is ${value}."]];
+  #_[confirmation="the state of $__device"]
+  #_[formatted=["The pressure sensor is ${state}.", "The pressure is ${value:psi}psi."]];
 }

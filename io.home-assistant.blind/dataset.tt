@@ -17,16 +17,16 @@ dataset @io.home-assistant.blind language "en" {
   stream := monitor @io.home-assistant.blind.state()
   #_[utterances=["when the state of the blinds change"]];
 
-  stream (p_state : Enum(open, closed)) := edge( @io.home-assistant.blind.state()) on (state == p_state)
+  stream (p_state : Enum(open, closed)) := edge( monitor @io.home-assistant.blind.state()) on (state == p_state)
   #_[utterances=["when the blinds are ${p_state}",
                 "if my blinds gets ${p_state}"]];
 
-  stream := edge( @io.home-assistant.blind.state()) on (state == enum(open))
+  stream := edge( monitor @io.home-assistant.blind.state()) on (state == enum(open))
   #_[utterances=["if my blinds are raised",
                 "when the blinds are put up",
                 "when I bring up my blinds"]];
 
-  stream := edge( @io.home-assistant.blind.state()) on (state == enum(closed))
+  stream := edge( monitor @io.home-assistant.blind.state()) on (state == enum(closed))
   #_[utterances=["when my blinds lower",
                 "if the blinds get lowered",
                 "the moment the blinds get put down",
@@ -66,16 +66,16 @@ dataset @io.home-assistant.blind language "en" {
   stream (p_name : String) := monitor @io.home-assistant.blind(name=p_name).state()
   #_[utterances=["when the state of the ${p_name} blinds change"]];
 
-  stream (p_name : String, p_state : Enum(open, closed)) := edge( @io.home-assistant.blind(name=p_name).state()) on (state == p_state)
+  stream (p_name : String, p_state : Enum(open, closed)) := edge( monitor @io.home-assistant.blind(name=p_name).state()) on (state == p_state)
   #_[utterances=["when the ${p_name} blinds are ${p_state}",
                 "if my ${p_name} blinds gets ${p_state}"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.blind(name=p_name).state()) on (state == enum(open))
+  stream (p_name : String) := edge( monitor @io.home-assistant.blind(name=p_name).state()) on (state == enum(open))
   #_[utterances=["if my ${p_name} blinds are raised",
                 "when the ${p_name} blinds are put up",
                 "when I bring up my ${p_name} blinds"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.blind(name=p_name).state()) on (state == enum(closed))
+  stream (p_name : String) := edge( monitor @io.home-assistant.blind(name=p_name).state()) on (state == enum(closed))
   #_[utterances=["when my ${p_name} blinds lower",
                 "if the ${p_name} blinds get lowered",
                 "the moment the ${p_name} blinds get put down",

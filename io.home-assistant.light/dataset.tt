@@ -3,88 +3,64 @@ dataset @io.home-assistant.light language "en" {
   program := now => @io.home-assistant.light.state() => notify
   #_[utterances=["is the light sensor detecting light?",
                  "check if the light sensor is detecting light",
-                 "is the light sensor detecting any light?",
-                 "check if the light sensor is detecting any light",
-                 "is the light sensor not detecting light?",
-                 "check if the light sensor is not detecting light",
-                 "check if the light sensor is detecting light or not detecting light",
-                 "check if the light sensor is detecting any light or not detecting light"]];
+                 "check whether the light sensor is detecting any light",
+                 "is the light sensor detecting light or not"]];
 
   query := @io.home-assistant.light.state()
   #_[utterances=["the state of the light sensor",
-                 "if the light sensor is detecting light or not detecting light",
-                 "whether the light sensor is detecting light or not detecting light",
-                 "if the light sensor is detecting any light or not detecting light",
-                 "whether the light sensor is detecting any light or not detecting light"]];
+                 "if the light sensor is detecting any light",
+                 "whether the light sensor is detecting light or not"]];
 
   stream := monitor @io.home-assistant.light.state()
   #_[utterances=["when the state of the light sensor changes"]];
 
-  stream (p_state : Enum(detecting_light, not_detecting_light)) := edge( @io.home-assistant.light.state()) on (state == p_state)
-  #_[utterances=["when the light sensor becomes ${p_state}",
-                "when the light sensor is ${p_state}",
-                "when the light sensor turns ${p_state}",
-                "when the light sensor changes to ${p_state}",
-                "if the light sensor becomes ${p_state}",
-                "if the light sensor is ${p_state}",
-                "if the light sensor turns ${p_state}",
-                "if the light sensor changes to ${p_state}"]];
+  stream (p_state : Enum(detecting, not_detecting)) := edge( @io.home-assistant.light.state()) on (state == p_state)
+  #_[utterances=["when my light sensor is ${p_state} light",
+                "when the light sensor changes to ${p_state} light"]];
 
-  stream := edge( @io.home-assistant.light.state()) on (state == enum(detecting_light))
-  #_[utterances=["when the light sensor detects light",
-                "if the light sensor detects light",
-                "when the light sensor detects any light",
-                "if the light sensor detects any light",
-                "when the light sensor is detecting light",
-                "if the light sensor is detecting light"]];
+  stream := edge( @io.home-assistant.light.state()) on (state == enum(detecting))
+  #_[utterances=["when the light sensor starts detecting light",
+                "if the light sensor senses light",
+                "when the light sensor sees any light",
+                "when the light sensor receives any light",
+                "if there is any light on the light sensor",
+                "when the light sensor becomes bright"]];
 
-  stream := edge( @io.home-assistant.light.state()) on (state == enum(not_detecting_light))
+  stream := edge( @io.home-assistant.light.state()) on (state == enum(not_detecting))
   #_[utterances=["when the light sensor stops detecting light",
-                "if the light sensor stops detecting light",
-                "when the light sensor is not detecting light",
-                "if the light sensor is not detecting light"]];
+                "if the light sensor stops sensing light",
+                "when the light sensor goes blind",
+                "if the light sensor becomes dark"]];
 
   program (p_name : String) := now => @io.home-assistant.light(name=p_name).state() => notify
   #_[utterances=["is the ${p_name} light sensor detecting light?",
                  "check if the ${p_name} light sensor is detecting light",
-                 "is the ${p_name} light sensor detecting any light?",
-                 "check if the ${p_name} light sensor is detecting any light",
-                 "is the ${p_name} light sensor not detecting light?",
-                 "check if the ${p_name} light sensor is not detecting light",
-                 "check if the ${p_name} light sensor is detecting light or not detecting light",
-                 "check if the ${p_name} light sensor is detecting any light or not detecting light"]];
+                 "check whether the ${p_name} light sensor is detecting any light",
+                 "is the ${p_name} light sensor detecting light or not"]];
 
   query (p_name : String) := @io.home-assistant.light(name=p_name).state()
   #_[utterances=["the state of the ${p_name} light sensor",
-                 "if the ${p_name} light sensor is detecting light or not detecting light",
-                 "whether the ${p_name} light sensor is detecting light or not detecting light",
-                 "if the ${p_name} light sensor is detecting any light or not detecting light",
-                 "whether the ${p_name} light sensor is detecting any light or not detecting light"]];
+                 "if the ${p_name} light sensor is detecting any light",
+                 "whether the ${p_name} light sensor is detecting light or not"]];
 
   stream (p_name : String) := monitor @io.home-assistant.light(name=p_name).state()
   #_[utterances=["when the state of the ${p_name} light sensor changes"]];
 
-  stream (p_name : String, p_state : Enum(detecting_light, not_detecting_light)) := edge( @io.home-assistant.light(name=p_name).state()) on (state == p_state)
-  #_[utterances=["when the ${p_name} light sensor becomes ${p_state}",
-                "when the ${p_name} light sensor is ${p_state}",
-                "when the ${p_name} light sensor turns ${p_state}",
-                "when the ${p_name} light sensor changes to ${p_state}",
-                "if the ${p_name} light sensor becomes ${p_state}",
-                "if the ${p_name} light sensor is ${p_state}",
-                "if the ${p_name} light sensor turns ${p_state}",
-                "if the ${p_name} light sensor changes to ${p_state}"]];
+  stream (p_name : String, p_state : Enum(detecting, not_detecting)) := edge( @io.home-assistant.light(name=p_name).state()) on (state == p_state)
+  #_[utterances=["when my ${p_name} light sensor is ${p_state} light",
+                "when the ${p_name} light sensor changes to ${p_state} light"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.light(name=p_name).state()) on (state == enum(detecting_light))
-  #_[utterances=["when the ${p_name} light sensor detects light",
-                "if the ${p_name} light sensor detects light",
-                "when the ${p_name} light sensor detects any light",
-                "if the ${p_name} light sensor detects any light",
-                "when the ${p_name} light sensor is detecting light",
-                "if the ${p_name} light sensor is detecting light"]];
+  stream (p_name : String) := edge( @io.home-assistant.light(name=p_name).state()) on (state == enum(detecting))
+  #_[utterances=["when the light sensor starts detecting light",
+                "if the ${p_name} light sensor senses light",
+                "when the ${p_name} light sensor sees any light",
+                "when the ${p_name} light sensor receives any light",
+                "if there is any ${p_name} light on the light sensor",
+                "when the ${p_name} light sensor becomes bright"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.light(name=p_name).state()) on (state == enum(not_detecting_light))
+  stream (p_name : String) := edge( @io.home-assistant.light(name=p_name).state()) on (state == enum(not_detecting))
   #_[utterances=["when the ${p_name} light sensor stops detecting light",
-                "if the ${p_name} light sensor stops detecting light",
-                "when the ${p_name} light sensor is not detecting light",
-                "if the ${p_name} light sensor is not detecting light"]];
+                "if the ${p_name} light sensor stops sensing light",
+                "when the ${p_name} light sensor goes blind",
+                "if the ${p_name} light sensor becomes dark"]];
 }

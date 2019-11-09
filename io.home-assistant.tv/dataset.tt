@@ -1,0 +1,178 @@
+dataset @io.home-assistant.tv language "en" {
+
+  program := now => @io.home-assistant.tv.state() => notify
+  #_[utterances=["is my tv on?",
+                "check if my television is off",
+                "is the tv turned on?",
+                "check if my tv is switched off",
+                "check if my television is turned on or off",
+                "check if my tv is switched on or switched off"]];
+
+  query := @io.home-assistant.tv.state()
+  #_[utterances=["if my television is on or off",
+                 "whether my tv is switched on or switched off"]];
+
+  stream := monitor @io.home-assistant.tv.state()
+  #_[utterances=["when my television changes state"]];
+
+  stream (p_state : Enum(on, off)) := edge( @io.home-assistant.tv.state()) on (state == p_state)
+  #_[utterances=["when my tv turns ${p_state}",
+                "if my television switches ${p_state}",
+                "when the tv becomes ${p_state}",
+                "if my television is ${p_state}",
+                "when my tv changes to ${p_state}"]];
+
+  stream := edge( @io.home-assistant.tv.state()) on (state == enum(on))
+  #_[utterances=["when my tv turns on",
+                "when I switch on the television",
+                "if the television becomes on",
+                "when my tv gets switched to on",
+                "if my television is on",
+                "when my television is turned on",
+                "the moment my tv is switched on"]];
+
+  stream := edge( @io.home-assistant.tv.state()) on (state == enum(off))
+  #_[utterances=["when my tv is turned off",
+                "if my television switches off",
+                "the moment my tv becomes off",
+                "if my television is off",
+                "when my tv gets turned off"]];
+
+  action (p_power :Enum(on,off)) := @io.home-assistant.tv.set_power(power=p_power)
+  #_[utterances=["turn ${p_power} my ${p_name} television",
+                 "switch ${p_power} the ${p_name} television",
+                 "${p_power} the ${p_name} tv"]];
+
+  action := @io.home-assistant.tv.set_power(power=enum(on))
+  #_[utterances=["on my television",
+                "turn on the tv",
+                "switch on my television",
+                "help me turn on the tv",
+                "switch on the tv for me"]];
+
+  action := @io.home-assistant.tv.set_power(power=enum(off))
+  #_[utterances=["turn off my television",
+                "switch off the tv",
+                "off the television",
+                "turn off the tv",
+                "help to off the tv"]];
+
+  action := @io.home-assistant.tv.volume_up()
+  #_[utterances=["increase the volume of the television",
+                 "increase my television 's volume",
+                 "make the tv louder"]];
+
+  action := @io.home-assistant.tv.volume_down()
+  #_[utterances=["decrease the volume of my tv",
+                 "decrease my ttelevisionv 's volume",
+                 "reduce the volume of the tv",
+                 "reduce my television 's volume",
+                 "make the tv softer"]];
+
+  action := @io.home-assistant.tv.volume_mute()
+  #_[utterances=["mute my tv",
+                 "silence my television 's volume",
+                 "turn off the volume of the tv"
+                 "switch off the sound for my tv"
+                 "mute my television 's sound",
+                 "make my tv silent"]];
+
+  action := @io.home-assistant.tv.volume_unmute()
+  #_[utterances=["unmute my tv",
+                 "unmute the television 's volume",
+                 "unmute my tv 's sound",
+                 "turn on the television sound",
+                 "stop muting my tv"]];
+
+  action (p_volume : Number) := @io.home-assistant.tv.volume_set(volume=p_volume)
+  #_[utterances=["turn my television sound to ${p_volume}",
+                 "set the tv 's volume to ${p_volume}"]];
+
+  program (p_name : String) := now => @io.home-assistant.tv(name=p_name).state() => notify
+  #_[utterances=["is my ${p_name} tv on?",
+                "check if my ${p_name} television is off",
+                "is the ${p_name} tv turned on?",
+                "check if my ${p_name} tv is switched off",
+                "check if my ${p_name} television is turned on or off",
+                "check if my ${p_name} tv is switched on or switched off"]];
+
+  query (p_name : String) := @io.home-assistant.tv(name=p_name).state()
+  #_[utterances=["if my ${p_name} television is on or off",
+                 "whether my ${p_name} tv is switched on or switched off"]];
+
+  stream (p_name : String) := monitor @io.home-assistant.tv(name=p_name).state()
+  #_[utterances=["when my ${p_name} television changes state"]];
+
+  stream (p_name : String, p_state : Enum(on, off)) := edge( @io.home-assistant.tv(name=p_name).state()) on (state == p_state)
+  #_[utterances=["when my ${p_name} television turns ${p_state}",
+                "if my ${p_name} tv switches ${p_state}",
+                "when the ${p_name} television becomes ${p_state}",
+                "if my ${p_name} tv is ${p_state}",
+                "when my ${p_name} tv changes to ${p_state}"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.tv(name=p_name).state()) on (state == enum(on))
+  #_[utterances=["when my ${p_name} tv turns on",
+                "when I switch on the ${p_name} tv",
+                "if the ${p_name} television becomes on",
+                "when my ${p_name} tv gets switched to on",
+                "if my ${p_name} television is on",
+                "when my ${p_name} tv is turned on",
+                "the moment my ${p_name} television is switched on"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.tv(name=p_name).state()) on (state == enum(off))
+  #_[utterances=["when my ${p_name} television is turned off",
+                "if my ${p_name} tv switches off",
+                "the moment my ${p_name} television becomes off",
+                "if my ${p_name} television is off",
+                "when my ${p_name} tv gets turned off"]];
+
+  action (p_name : String, p_power :Enum(on,off)) := @io.home-assistant.tv(name=p_name).set_power(power=p_power)
+  #_[utterances=["turn ${p_power} my ${p_name} television",
+                 "switch ${p_power} the ${p_name} tv",
+                 "${p_power} the ${p_name} television"]];
+
+  action (p_name : String) := @io.home-assistant.tv(name=p_name).set_power(power=enum(on))
+  #_[utterances=["on my ${p_name} tv",
+                "turn on the ${p_name} television",
+                "switch on my ${p_name} tv",
+                "help me turn on the ${p_name} tv",
+                "switch on the ${p_name} television for me"]];
+
+  action (p_name : String) := @io.home-assistant.tv(name=p_name).set_power(power=enum(off))
+  #_[utterances=["turn off my ${p_name} television",
+                "switch off the ${p_name} tv",
+                "off the ${p_name} tv",
+                "turn off the ${p_name} television",
+                "help to off the ${p_name} tv"]];
+
+  action (p_name : String) := @io.home-assistant.tv(name=p_name).volume_up()
+  #_[utterances=["increase the volume of the ${p_name} tv",
+                 "increase my ${p_name} television 's volume",
+                 "make the ${p_name} television louder"]];
+
+  action (p_name : String) := @io.home-assistant.tv(name=p_name).volume_down()
+  #_[utterances=["decrease the volume of my ${p_name} tv",
+                 "decrease my ${p_name} television 's volume",
+                 "reduce the volume of the ${p_name} tv",
+                 "reduce my ${p_name} tv 's volume",
+                 "make the ${p_name} tv softer"]];
+
+  action (p_name : String) := @io.home-assistant.tv(name=p_name).volume_mute()
+  #_[utterances=["mute my ${p_name} tv",
+                 "silence my ${p_name} tv 's volume",
+                 "turn off the volume of the ${p_name} television"
+                 "switch off the sound for my ${p_name} tv"
+                 "mute my ${p_name} television 's sound",
+                 "make my ${p_name} tv silent"]];
+
+  action (p_name : String) := @io.home-assistant.tv(name=p_name).volume_unmute()
+  #_[utterances=["unmute my ${p_name} television",
+                 "unmute the ${p_name} television 's volume",
+                 "unmute my ${p_name} tv 's sound",
+                 "turn on the ${p_name} tv sound",
+                 "stop muting my ${p_name} tv"]];
+
+  action (p_name : String, p_volume : Number) := @io.home-assistant.tv(name=p_name).volume_set(volume=p_volume)
+  #_[utterances=["turn my ${p_name} tv sound to ${p_volume}",
+                 "set the ${p_name} television 's volume to ${p_volume}"]];
+}

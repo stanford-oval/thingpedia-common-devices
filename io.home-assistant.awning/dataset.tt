@@ -17,18 +17,18 @@ dataset @io.home-assistant.awning language "en" {
   stream := monitor @io.home-assistant.awning.state()
   #_[utterances=["when the state of the awning changes"]];
 
-  stream (p_state : Enum(open, closed)) := edge( @io.home-assistant.awning.state()) on (state == p_state)
+  stream (p_state : Enum(open, closed)) := edge( monitor @io.home-assistant.awning.state()) on (state == p_state)
   #_[utterances=["when my awning becomes ${p_state}",
                 "if the awnings are ${p_state}",
                 "if my awning gets ${p_state}"]];
 
-  stream := edge( @io.home-assistant.awning.state()) on (state == enum(open))
+  stream := edge( monitor @io.home-assistant.awning.state()) on (state == enum(open))
   #_[utterances=["if my awning is open",
                 "when the awnings are open",
                 "when I extend my awnings",
                 "the moment the awnings get extended"]];
 
-  stream := edge( @io.home-assistant.awning.state()) on (state == enum(closed))
+  stream := edge( monitor @io.home-assistant.awning.state()) on (state == enum(closed))
   #_[utterances=["when my awnings close",
                 "if the awning becomes closed",
                 "the moment the awnings get retracted",
@@ -64,18 +64,18 @@ dataset @io.home-assistant.awning language "en" {
   stream (p_name : String) := monitor @io.home-assistant.awning(name=p_name).state()
   #_[utterances=["when the state of the ${p_name} awning changes"]];
 
-  stream (p_name : String, p_state : Enum(open, closed)) := edge( @io.home-assistant.awning(name=p_name).state()) on (state == p_state)
+  stream (p_name : String, p_state : Enum(open, closed)) := edge( monitor @io.home-assistant.awning(name=p_name).state()) on (state == p_state)
   #_[utterances=["when my ${p_name} awning becomes ${p_state}",
                 "if the ${p_name} awnings are ${p_state}",
                 "if my ${p_name} awning gets ${p_state}"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.awning(name=p_name).state()) on (state == enum(open))
+  stream (p_name : String) := edge( monitor @io.home-assistant.awning(name=p_name).state()) on (state == enum(open))
   #_[utterances=["if my ${p_name} awning is open",
                 "when the ${p_name} awnings are open",
                 "when I extend my ${p_name} awnings",
                 "the moment the ${p_name} awnings get extended"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.awning(name=p_name).state()) on (state == enum(closed))
+  stream (p_name : String) := edge( monitor @io.home-assistant.awning(name=p_name).state()) on (state == enum(closed))
   #_[utterances=["when my ${p_name} awnings close",
                 "if the ${p_name} awning becomes closed",
                 "the moment the ${p_name} awnings get retracted",

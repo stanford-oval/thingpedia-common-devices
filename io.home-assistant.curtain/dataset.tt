@@ -17,16 +17,16 @@ dataset @io.home-assistant.curtain language "en" {
   stream := monitor @io.home-assistant.curtain.state()
   #_[utterances=["when the state of the curtains change"]];
 
-  stream (p_state : Enum(open, closed)) := edge( @io.home-assistant.curtain.state()) on (state == p_state)
+  stream (p_state : Enum(open, closed)) := edge( monitor @io.home-assistant.curtain.state()) on (state == p_state)
   #_[utterances=["when the curtains are ${p_state}",
                 "if my curtains gets ${p_state}"]];
 
-  stream := edge( @io.home-assistant.curtain.state()) on (state == enum(open))
+  stream := edge( monitor @io.home-assistant.curtain.state()) on (state == enum(open))
   #_[utterances=["if my curtains are raised",
                 "when the curtains are put up",
                 "when I bring up my curtains"]];
 
-  stream := edge( @io.home-assistant.curtain.state()) on (state == enum(closed))
+  stream := edge( monitor @io.home-assistant.curtain.state()) on (state == enum(closed))
   #_[utterances=["when my curtains lower",
                 "if the curtains get lowered",
                 "the moment the curtains get put down",
@@ -69,16 +69,16 @@ dataset @io.home-assistant.curtain language "en" {
   stream (p_name : String) := monitor @io.home-assistant.curtain(name=p_name).state()
   #_[utterances=["when the state of the ${p_name} curtains change"]];
 
-  stream (p_name : String, p_state : Enum(open, closed)) := edge( @io.home-assistant.curtain(name=p_name).state()) on (state == p_state)
+  stream (p_name : String, p_state : Enum(open, closed)) := edge( monitor @io.home-assistant.curtain(name=p_name).state()) on (state == p_state)
   #_[utterances=["when the ${p_name} curtains are ${p_state}",
                 "if my ${p_name} curtains gets ${p_state}"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.curtain(name=p_name).state()) on (state == enum(open))
+  stream (p_name : String) := edge( monitor @io.home-assistant.curtain(name=p_name).state()) on (state == enum(open))
   #_[utterances=["if my ${p_name} curtains are raised",
                 "when the ${p_name} curtains are put up",
                 "when I bring up my ${p_name} curtains"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.curtain(name=p_name).state()) on (state == enum(closed))
+  stream (p_name : String) := edge( monitor @io.home-assistant.curtain(name=p_name).state()) on (state == enum(closed))
   #_[utterances=["when my ${p_name} curtains lower",
                 "if the ${p_name} curtains get lowered",
                 "the moment the ${p_name} curtains get put down",

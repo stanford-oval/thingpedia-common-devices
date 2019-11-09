@@ -1,76 +1,81 @@
 dataset @io.home-assistant.pressure language "en" {
 
   program := now => @io.home-assistant.pressure.state() => notify
-  #_[utterances=["is the pressure sensor pressurized?",
-                 "check if the pressure sensor is pressurized",
+  #_[utterances=["what is the pressure?",
+                 "how high is the pressure?",
+                 "what does my pressure sensor say?",
                  "is the pressure sensor normal?",
-                 "check if the pressure sensor is normal",
-                 "check if the pressure sensor is pressurized or normal"]];
+                 "check if the pressure sensor is normal"]];
 
   query := @io.home-assistant.pressure.state()
   #_[utterances=["the state of the pressure sensor",
-                 "if the pressure sensor is pressurized or normal",
-                 "whether the pressure sensor is pressurized or normal"]];
+                 "the pressure",
+                 "the pressure level",
+                 "if the pressure sensor is pressurized or normal"]];
 
   stream := monitor @io.home-assistant.pressure.state()
   #_[utterances=["when the state of the pressure sensor changes"]];
 
-  stream (p_state : Enum(pressurized, normal)) := edge( @io.home-assistant.pressure.state()) on (state == p_state)
-  #_[utterances=["when the pressure sensor becomes ${p_state}",
-                "when the pressure sensor is ${p_state}",
-                "when the pressure sensor turns ${p_state}",
-                "when the pressure sensor changes to ${p_state}",
-                "if the pressure sensor becomes ${p_state}",
-                "if the pressure sensor is ${p_state}",
+  stream (p_state : Enum(pressurized, normal)) := edge( monitor @io.home-assistant.pressure.state()) on (state == p_state)
+  #_[utterances=["if my pressure sensor becomes ${p_state}",
+                "when my pressure sensor is ${p_state}",
                 "if the pressure sensor turns ${p_state}",
-                "if the pressure sensor changes to ${p_state}"]];
+                "when the pressure sensor changes to ${p_state}"]];
 
-  stream := edge( @io.home-assistant.pressure.state()) on (state == enum(pressurized))
-  #_[utterances=["when the pressure sensor is pressurized",
-                "if the pressure sensor is pressurized",
-                "when the pressure sensor becomes pressurized",
-                "if the pressure sensor becomes pressurized"]];
+  stream := edge( monitor @io.home-assistant.pressure.state()) on (state == enum(pressurized))
+  #_[utterances=["when the pressure is high",
+                "if pressure is too high",
+                "when the pressure sensor gets pressurized"]];
 
-  stream := edge( @io.home-assistant.pressure.state()) on (state == enum(normal))
-  #_[utterances=["when the pressure sensor is normal",
-                "if the pressure sensor is normal",
-                "when the pressure sensor becomes normal",
-                "if the pressure sensor becomes normal"]];
+  stream := edge( monitor @io.home-assistant.pressure.state()) on (state == enum(normal))
+  #_[utterances=["when the pressure is normal",
+                "if the pressure sensor is normal"]];
+
+  stream (p_pressure :Measure(Pa)) := edge (monitor (@io.home-assistant.pressure.state())) on value >= p_pressure
+  #_[utterances=["when the sensor 's pressure is higher than $p_pressure",
+                   "if the pressure of the sensor is greater than $p_pressure",
+                   "when the pressure of the sensor goes above $p_pressure"]]
+
+  stream (p_pressure :Measure(Pa)) := edge (monitor (@io.home-assistant.pressure.state())) on value <= p_pressure
+  #_[utterances=["when the sensor 's pressure is lower than $p_pressure",
+                   "if the pressure of the sensor is smaller than $p_pressure",
+                   "when the pressure of the sensor goes below $p_pressure"]]
 
   program (p_name : String) := now => @io.home-assistant.pressure(name=p_name).state() => notify
-  #_[utterances=["is the ${p_name} pressure sensor pressurized?",
-                 "check if the ${p_name} pressure sensor is pressurized",
+  #_[utterances=["what does my ${p_name} pressure sensor say?",
                  "is the ${p_name} pressure sensor normal?",
-                 "check if the ${p_name} pressure sensor is normal",
-                 "check if the ${p_name} pressure sensor is pressurized or normal"]];
+                 "check if the ${p_name} pressure sensor is normal"]];
 
   query (p_name : String) := @io.home-assistant.pressure(name=p_name).state()
   #_[utterances=["the state of the ${p_name} pressure sensor",
-                 "if the ${p_name} pressure sensor is pressurized or normal",
-                 "whether the ${p_name} pressure sensor is pressurized or normal"]];
+                 "the ${p_name} pressure sensor 's pressure",
+                 "if the ${p_name} pressure sensor is pressurized or normal"]];
 
   stream (p_name : String) := monitor @io.home-assistant.pressure(name=p_name).state()
   #_[utterances=["when the state of the ${p_name} pressure sensor changes"]];
 
-  stream (p_name : String, p_state : Enum(pressurized, normal)) := edge( @io.home-assistant.pressure(name=p_name).state()) on (state == p_state)
-  #_[utterances=["when the ${p_name} pressure sensor becomes ${p_state}",
-                "when the ${p_name} pressure sensor is ${p_state}",
-                "when the ${p_name} pressure sensor turns ${p_state}",
-                "when the ${p_name} pressure sensor changes to ${p_state}",
-                "if the ${p_name} pressure sensor becomes ${p_state}",
-                "if the ${p_name} pressure sensor is ${p_state}",
+  stream (p_name : String, p_state : Enum(pressurized, normal)) := edge( monitor @io.home-assistant.pressure(name=p_name).state()) on (state == p_state)
+  #_[utterances=["if my ${p_name} pressure sensor becomes ${p_state}",
+                "when my ${p_name} pressure sensor is ${p_state}",
                 "if the ${p_name} pressure sensor turns ${p_state}",
-                "if the ${p_name} pressure sensor changes to ${p_state}"]];
+                "when the ${p_name} pressure sensor changes to ${p_state}"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.pressure(name=p_name).state()) on (state == enum(pressurized))
-  #_[utterances=["when the ${p_name} pressure sensor is pressurized",
-                "if the ${p_name} pressure sensor is pressurized",
-                "when the ${p_name} pressure sensor becomes pressurized",
-                "if the ${p_name} pressure sensor becomes pressurized"]];
+  stream (p_name : String) := edge( monitor @io.home-assistant.pressure(name=p_name).state()) on (state == enum(pressurized))
+  #_[utterances=["when the pressure of the ${p_name} pressure sensor is high",
+                "if ${p_name} sensor 's pressure is too high",
+                "when the ${p_name} pressure sensor gets pressurized"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.pressure(name=p_name).state()) on (state == enum(normal))
-  #_[utterances=["when the ${p_name} pressure sensor is normal",
-                "if the ${p_name} pressure sensor is normal",
-                "when the ${p_name} pressure sensor becomes normal",
-                "if the ${p_name} pressure sensor becomes normal"]];
+  stream (p_name : String) := edge( monitor @io.home-assistant.pressure(name=p_name).state()) on (state == enum(normal))
+  #_[utterances=["when the ${p_name} sensor 's pressure is normal",
+                "if the ${p_name} pressure sensor is normal"]];
+
+  stream (p_name : String, p_pressure :Measure(Pa)) := edge (monitor (@io.home-assistant.pressure(name=p_name).state())) on value >= p_pressure
+  #_[utterances=["when the ${p_name} sensor 's pressure is higher than $p_pressure",
+                   "if the pressure of the ${p_name} sensor is greater than $p_pressure",
+                   "when the pressure of the ${p_name} sensor goes above $p_pressure"]]
+
+  stream (p_name : String, p_pressure :Measure(Pa)) := edge (monitor (@io.home-assistant.pressure(name=p_name).state())) on value <= p_pressure
+  #_[utterances=["when the ${p_name} sensor 's pressure is lower than $p_pressure",
+                   "if the pressure of the ${p_name} sensor is smaller than $p_pressure",
+                   "when the pressure of the ${p_name} sensor goes below $p_pressure"]]
 }

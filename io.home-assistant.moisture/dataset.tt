@@ -2,111 +2,55 @@ dataset @io.home-assistant.moisture language "en" {
 
   program := now => @io.home-assistant.moisture.state() => notify
   #_[utterances=["is the moisture sensor wet?",
-                 "check if the moisture sensor is wet",
-                 "is the moisture sensor damp?",
                  "check if the moisture sensor is damp",
-                 "is the moisture sensor moist?",
-                 "check if the moisture sensor is moist",
-                 "is the moisture sensor dry?",
                  "check if the moisture sensor is dry",
-                 "check if the moisture sensor is wet or dry",
-                 "check if the moisture sensor is damp or dry",
-                 "check if the moisture sensor is moist or dry"]];
+                 "check if the moisture sensor is wet or dry"]];
 
   query := @io.home-assistant.moisture.state()
   #_[utterances=["the state of the moisture sensor",
-                 "if the moisture sensor is wet or dry",
-                 "whether the moisture sensor is wet or dry",
-                 "if the moisture sensor is damp or dry",
-                 "whether the moisture sensor is damp or dry",
-                 "if the moisture sensor is moist or dry",
-                 "whether the moisture sensor is moist or dry"]];
+                 "if the moisture sensor is wet",
+                 "whether the moisture sensor is damp or dry"]];
 
   stream := monitor @io.home-assistant.moisture.state()
   #_[utterances=["when the state of the moisture sensor changes"]];
 
   stream (p_state : Enum(wet, dry)) := edge( @io.home-assistant.moisture.state()) on (state == p_state)
-  #_[utterances=["when the moisture sensor becomes ${p_state}",
-                "when the moisture sensor is ${p_state}",
-                "when the moisture sensor turns ${p_state}",
-                "when the moisture sensor changes to ${p_state}",
-                "if the moisture sensor becomes ${p_state}",
-                "if the moisture sensor is ${p_state}",
-                "if the moisture sensor turns ${p_state}",
-                "if the moisture sensor changes to ${p_state}"]];
+  #_[utterances=["if my moisture sensor becomes ${p_state}",
+                "when my moisture sensor is ${p_state}",
+                "when the moisture sensor changes to ${p_state}"]];
 
   stream := edge( @io.home-assistant.moisture.state()) on (state == enum(wet))
-  #_[utterances=["when the moisture sensor is wet",
-                "if the moisture sensor is wet",
-                "when the moisture sensor becomes wet",
-                "if the moisture sensor becomes wet",
-                "when the moisture sensor turns wet",
-                "if the moisture sensor turns wet",
-                "when the moisture sensor gets wet",
-                "if the moisture sensor gets wet"]];
+  #_[utterances=["when the moisture sensor gets wet",
+                "if my moisture sensor turns damp"]];
 
   stream := edge( @io.home-assistant.moisture.state()) on (state == enum(dry))
-  #_[utterances=["when the moisture sensor is dry",
-                "if the moisture sensor is dry",
-                "when the moisture sensor becomes dry",
-                "if the moisture sensor becomes dry",
-                "when the moisture sensor turns dry",
-                "if the moisture sensor turns dry",
-                "when the moisture sensor gets dry",
-                "if the moisture sensor gets dry"]];
+  #_[utterances=["when the moisture sensor dries",
+                "if the moisture sensor dries up"]];
 
   program (p_name : String) := now => @io.home-assistant.moisture(name=p_name).state() => notify
   #_[utterances=["is the ${p_name} moisture sensor wet?",
-                 "check if the ${p_name} moisture sensor is wet",
-                 "is the ${p_name} moisture sensor damp?",
                  "check if the ${p_name} moisture sensor is damp",
-                 "is the ${p_name} moisture sensor moist?",
-                 "check if the ${p_name} moisture sensor is moist",
-                 "is the ${p_name} moisture sensor dry?",
                  "check if the ${p_name} moisture sensor is dry",
-                 "check if the ${p_name} moisture sensor is wet or dry",
-                 "check if the ${p_name} moisture sensor is damp or dry",
-                 "check if the ${p_name} moisture sensor is moist or dry"]];
+                 "check if the ${p_name} moisture sensor is wet or dry"]];
 
   query (p_name : String) := @io.home-assistant.moisture(name=p_name).state()
   #_[utterances=["the state of the ${p_name} moisture sensor",
-                 "if the ${p_name} moisture sensor is wet or dry",
-                 "whether the ${p_name} moisture sensor is wet or dry",
-                 "if the ${p_name} moisture sensor is damp or dry",
-                 "whether the ${p_name} moisture sensor is damp or dry",
-                 "if the ${p_name} moisture sensor is moist or dry",
-                 "whether the ${p_name} moisture sensor is moist or dry"]];
+                 "if the ${p_name} moisture sensor is wet",
+                 "whether the ${p_name} moisture sensor is damp or dry"]];
 
   stream (p_name : String) := monitor @io.home-assistant.moisture(name=p_name).state()
   #_[utterances=["when the state of the ${p_name} moisture sensor changes"]];
 
   stream (p_name : String, p_state : Enum(wet, dry)) := edge( @io.home-assistant.moisture(name=p_name).state()) on (state == p_state)
-  #_[utterances=["when the ${p_name} moisture sensor becomes ${p_state}",
-                "when the ${p_name} moisture sensor is ${p_state}",
-                "when the ${p_name} moisture sensor turns ${p_state}",
-                "when the ${p_name} moisture sensor changes to ${p_state}",
-                "if the ${p_name} moisture sensor becomes ${p_state}",
-                "if the ${p_name} moisture sensor is ${p_state}",
-                "if the ${p_name} moisture sensor turns ${p_state}",
-                "if the ${p_name} moisture sensor changes to ${p_state}"]];
+  #_[utterances=["if my ${p_name} moisture sensor becomes ${p_state}",
+                "when my ${p_name} moisture sensor is ${p_state}",
+                "when the ${p_name} moisture sensor changes to ${p_state}"]];
 
   stream (p_name : String) := edge( @io.home-assistant.moisture(name=p_name).state()) on (state == enum(wet))
-  #_[utterances=["when the ${p_name} moisture sensor is wet",
-                "if the ${p_name} moisture sensor is wet",
-                "when the ${p_name} moisture sensor becomes wet",
-                "if the ${p_name} moisture sensor becomes wet",
-                "when the ${p_name} moisture sensor turns wet",
-                "if the ${p_name} moisture sensor turns wet",
-                "when the ${p_name} moisture sensor gets wet",
-                "if the ${p_name} moisture sensor gets wet"]];
+  #_[utterances=["when the ${p_name} moisture sensor gets wet",
+                "if my ${p_name} moisture sensor turns damp"]];
 
   stream (p_name : String) := edge( @io.home-assistant.moisture(name=p_name).state()) on (state == enum(dry))
-  #_[utterances=["when the ${p_name} moisture sensor is dry",
-                "if the ${p_name} moisture sensor is dry",
-                "when the ${p_name} moisture sensor becomes dry",
-                "if the ${p_name} moisture sensor becomes dry",
-                "when the ${p_name} moisture sensor turns dry",
-                "if the ${p_name} moisture sensor turns dry",
-                "when the ${p_name} moisture sensor gets dry",
-                "if the ${p_name} moisture sensor gets dry"]];
+  #_[utterances=["when the ${p_name} moisture sensor dries",
+                "if the ${p_name} moisture sensor dries up"]];
 }

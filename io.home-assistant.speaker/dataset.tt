@@ -1,0 +1,178 @@
+dataset @io.home-assistant.speaker language "en" {
+
+  program := now => @io.home-assistant.speaker.state() => notify
+  #_[utterances=["is my speaker on?",
+                "check if my speaker is off",
+                "is the speaker turned on?",
+                "check if my speaker is switched off",
+                "check if my speaker is turned on or off",
+                "check if my speaker is switched on or switched off"]];
+
+  query := @io.home-assistant.speaker.state()
+  #_[utterances=["if my speaker is on or off",
+                 "whether my speaker is switched on or switched off"]];
+
+  stream := monitor @io.home-assistant.speaker.state()
+  #_[utterances=["when my speaker changes state"]];
+
+  stream (p_state : Enum(on, off)) := edge( @io.home-assistant.speaker.state()) on (state == p_state)
+  #_[utterances=["when my speaker turns ${p_state}",
+                "if my speaker switches ${p_state}",
+                "when the speaker becomes ${p_state}",
+                "if my speaker is ${p_state}",
+                "when my speaker changes to ${p_state}"]];
+
+  stream := edge( @io.home-assistant.speaker.state()) on (state == enum(on))
+  #_[utterances=["when my speaker turns on",
+                "when I switch on the speaker",
+                "if the speaker becomes on",
+                "when my speaker gets switched to on",
+                "if my speaker is on",
+                "when my speaker is turned on",
+                "the moment my speaker is switched on"]];
+
+  stream := edge( @io.home-assistant.speaker.state()) on (state == enum(off))
+  #_[utterances=["when my speaker is turned off",
+                "if my speaker switches off",
+                "the moment my speaker becomes off",
+                "if my speaker is off",
+                "when my speaker gets turned off"]];
+
+  action (p_power :Enum(on,off)) := @io.home-assistant.speaker.set_power(power=p_power)
+  #_[utterances=["turn ${p_power} my ${p_name} speaker",
+                 "switch ${p_power} the ${p_name} speaker",
+                 "${p_power} the ${p_name} speaker"]];
+
+  action := @io.home-assistant.speaker.set_power(power=enum(on))
+  #_[utterances=["on my speaker",
+                "turn on the speaker",
+                "switch on my speaker",
+                "help me turn on the speaker",
+                "switch on the speaker for me"]];
+
+  action := @io.home-assistant.speaker.set_power(power=enum(off))
+  #_[utterances=["turn off my speaker",
+                "switch off the speaker",
+                "off the speaker",
+                "turn off the speaker",
+                "help to off the speaker"]];
+
+  action := @io.home-assistant.speaker.volume_up()
+  #_[utterances=["increase the volume of the speaker",
+                 "increase my speaker 's volume",
+                 "make the speaker louder"]];
+
+  action := @io.home-assistant.speaker.volume_down()
+  #_[utterances=["decrease the volume of my speaker",
+                 "decrease my speaker 's volume",
+                 "reduce the volume of the speaker",
+                 "reduce my speaker 's volume",
+                 "make the speaker softer"]];
+
+  action := @io.home-assistant.speaker.volume_mute()
+  #_[utterances=["mute my speaker",
+                 "silence my speaker 's volume",
+                 "turn off the volume of the speaker"
+                 "switch off the sound for my speaker"
+                 "mute my speaker 's sound",
+                 "make my speaker silent"]];
+
+  action := @io.home-assistant.speaker.volume_unmute()
+  #_[utterances=["unmute my speaker",
+                 "unmute the speaker 's volume",
+                 "unmute my speaker 's sound",
+                 "turn on the speaker sound",
+                 "stop muting my speaker"]];
+
+  action (p_volume : Number) := @io.home-assistant.speaker.volume_set(volume=p_volume)
+  #_[utterances=["turn my speaker sound to ${p_volume}",
+                 "set the speaker 's volume to ${p_volume}"]];
+
+  program (p_name : String) := now => @io.home-assistant.speaker(name=p_name).state() => notify
+  #_[utterances=["is my ${p_name} speaker on?",
+                "check if my ${p_name} speaker is off",
+                "is the ${p_name} speaker turned on?",
+                "check if my ${p_name} speaker is switched off",
+                "check if my ${p_name} speaker is turned on or off",
+                "check if my ${p_name} speaker is switched on or switched off"]];
+
+  query (p_name : String) := @io.home-assistant.speaker(name=p_name).state()
+  #_[utterances=["if my ${p_name} speaker is on or off",
+                 "whether my ${p_name} speaker is switched on or switched off"]];
+
+  stream (p_name : String) := monitor @io.home-assistant.speaker(name=p_name).state()
+  #_[utterances=["when my ${p_name} speaker changes state"]];
+
+  stream (p_name : String, p_state : Enum(on, off)) := edge( @io.home-assistant.speaker(name=p_name).state()) on (state == p_state)
+  #_[utterances=["when my ${p_name} speaker turns ${p_state}",
+                "if my ${p_name} speaker switches ${p_state}",
+                "when the ${p_name} speaker becomes ${p_state}",
+                "if my ${p_name} speaker is ${p_state}",
+                "when my ${p_name} speaker changes to ${p_state}"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.speaker(name=p_name).state()) on (state == enum(on))
+  #_[utterances=["when my ${p_name} speaker turns on",
+                "when I switch on the ${p_name} speaker",
+                "if the ${p_name} speaker becomes on",
+                "when my ${p_name} speaker gets switched to on",
+                "if my ${p_name} speaker is on",
+                "when my ${p_name} speaker is turned on",
+                "the moment my ${p_name} speaker is switched on"]];
+
+  stream (p_name : String) := edge( @io.home-assistant.speaker(name=p_name).state()) on (state == enum(off))
+  #_[utterances=["when my ${p_name} speaker is turned off",
+                "if my ${p_name} speaker switches off",
+                "the moment my ${p_name} speaker becomes off",
+                "if my ${p_name} speaker is off",
+                "when my ${p_name} speaker gets turned off"]];
+
+  action (p_name : String, p_power :Enum(on,off)) := @io.home-assistant.speaker(name=p_name).set_power(power=p_power)
+  #_[utterances=["turn ${p_power} my ${p_name} speaker",
+                 "switch ${p_power} the ${p_name} speaker",
+                 "${p_power} the ${p_name} speaker"]];
+
+  action (p_name : String) := @io.home-assistant.speaker(name=p_name).set_power(power=enum(on))
+  #_[utterances=["on my ${p_name} speaker",
+                "turn on the ${p_name} speaker",
+                "switch on my ${p_name} speaker",
+                "help me turn on the ${p_name} speaker",
+                "switch on the ${p_name} speaker for me"]];
+
+  action (p_name : String) := @io.home-assistant.speaker(name=p_name).set_power(power=enum(off))
+  #_[utterances=["turn off my ${p_name} speaker",
+                "switch off the ${p_name} speaker",
+                "off the ${p_name} speaker",
+                "turn off the ${p_name} speaker",
+                "help to off the ${p_name} speaker"]];
+
+  action (p_name : String) := @io.home-assistant.speaker(name=p_name).volume_up()
+  #_[utterances=["increase the volume of the ${p_name} speaker",
+                 "increase my ${p_name} speaker 's volume",
+                 "make the ${p_name} speaker louder"]];
+
+  action (p_name : String) := @io.home-assistant.speaker(name=p_name).volume_down()
+  #_[utterances=["decrease the volume of my ${p_name} speaker",
+                 "decrease my ${p_name} speaker 's volume",
+                 "reduce the volume of the ${p_name} speaker",
+                 "reduce my ${p_name} speaker 's volume",
+                 "make the ${p_name} speaker softer"]];
+
+  action (p_name : String) := @io.home-assistant.speaker(name=p_name).volume_mute()
+  #_[utterances=["mute my ${p_name} speaker",
+                 "silence my ${p_name} speaker 's volume",
+                 "turn off the volume of the ${p_name} speaker"
+                 "switch off the sound for my ${p_name} speaker"
+                 "mute my ${p_name} speaker 's sound",
+                 "make my ${p_name} speaker silent"]];
+
+  action (p_name : String) := @io.home-assistant.speaker(name=p_name).volume_unmute()
+  #_[utterances=["unmute my ${p_name} speaker",
+                 "unmute the ${p_name} speaker 's volume",
+                 "unmute my ${p_name} speaker 's sound",
+                 "turn on the ${p_name} speaker sound",
+                 "stop muting my ${p_name} speaker"]];
+
+  action (p_name : String, p_volume : Number) := @io.home-assistant.speaker(name=p_name).volume_set(volume=p_volume)
+  #_[utterances=["turn my ${p_name} speaker sound to ${p_volume}",
+                 "set the ${p_name} speaker 's volume to ${p_volume}"]];
+}

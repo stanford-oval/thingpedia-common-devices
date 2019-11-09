@@ -1,5 +1,5 @@
-abstract class @io.home-assistant.media-player
-#_[thingpedia_name="Media Player"]
+abstract class @io.home-assistant.tv
+#_[thingpedia_name="TV"]
 #_[thingpedia_description="Interface for Home Assistant's Media Player."]
 #_[description="Interface for Home Assistant's Media Player."]
 #[license="CC-0"]
@@ -8,8 +8,8 @@ abstract class @io.home-assistant.media-player
 {
   monitorable query state(out state : Enum(on,off))
   #_[canonical="switch state"]
-  #_[confirmation="the state of your media player"]
-  #_[formatted=["Your $__device is ${state}"]];
+  #_[confirmation="the state of $__device"]
+  #_[formatted=["It is ${state}"]];
 
   action set_power(in req power: Enum(on,off) #_[prompt="Do you want to turn it on or off?"] #_[canonical="power"])
   #_[canonical="set power on $__device"]
@@ -17,27 +17,27 @@ abstract class @io.home-assistant.media-player
   #[confirm=true];
 
   action volume_up()
-  #_[canonical="increase media player volume"]
+  #_[canonical="increase tv volume"]
   #_[confirmation="increase $__device's volume"]
   #[confirm=true];
 
   action volume_down()
-  #_[canonical="decrease media player volume"]
+  #_[canonical="decrease tv volume"]
   #_[confirmation="decrease $__device's volume"]
   #[confirm=true];
 
   action volume_mute()
-  #_[canonical="mute media player"]
+  #_[canonical="mute tv"]
   #_[confirmation="mute $__device"]
   #[confirm=true];
 
   action volume_unmute()
-  #_[canonical="unmute media player"]
+  #_[canonical="unmute tv"]
   #_[confirmation="unmute $__device"]
   #[confirm=true];
 
   action volume_set(in req volume: Number #_[prompt="From 0 to 100, what volume do you want to set?"] #_[canonical="volume"])
-  #_[canonical="set volume on media player"]
+  #_[canonical="set volume on tv"]
   #_[confirmation="set $__device's volume to $volume"]
   #[confirm=true];
 }
