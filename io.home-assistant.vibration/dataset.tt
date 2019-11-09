@@ -18,17 +18,17 @@ dataset @io.home-assistant.vibration language "en" {
   stream := monitor @io.home-assistant.vibration.state()
   #_[utterances=["when the state of the vibration sensor changes"]];
 
-  stream (p_state : Enum(detecting, not_detecting)) := edge(monitor @io.home-assistant.vibration.state()) on (state == p_state)
+  stream (p_state : Enum(detecting, not_detecting)) := edge( monitor @io.home-assistant.vibration.state()) on (state == p_state)
   #_[utterances=["when the vibration sensor becomes ${p_state}",
                 "when the vibration sensor is ${p_state}",
                 "when the vibration sensor turns ${p_state}",
                 "when the vibration sensor changes to ${p_state}"]];
 
-  stream := edge(monitor @io.home-assistant.vibration.state()) on (state == enum(detecting))
+  stream := edge( monitor @io.home-assistant.vibration.state()) on (state == enum(detecting))
   #_[utterances=["when the vibration sensor is detecting vibration",
                 "if the vibration sensor is detecting vibration"]];
 
-  stream := edge(monitor @io.home-assistant.vibration.state()) on (state == enum(not_detecting))
+  stream := edge( monitor @io.home-assistant.vibration.state()) on (state == enum(not_detecting))
   #_[utterances=["when the vibration sensor is not detecting vibration",
                 "if the vibration sensor is not detecting vibration"]];
 
@@ -46,18 +46,18 @@ dataset @io.home-assistant.vibration language "en" {
   stream (p_name : String) := monitor @io.home-assistant.vibration(name=p_name).state()
   #_[utterances=["when the state of the ${p_name} vibration sensor changes"]];
 
-  stream (p_name : String, p_state : Enum(detecting, not_detecting)) := edge(monitor @io.home-assistant.vibration(name=p_name).state()) on (state == p_state)
+  stream (p_name : String, p_state : Enum(detecting, not_detecting)) := edge( monitor @io.home-assistant.vibration(name=p_name).state()) on (state == p_state)
   #_[utterances=["when the ${p_name} vibration sensor becomes ${p_state}",
                 "when the ${p_name} vibration sensor is ${p_state}",
                 "when the ${p_name} vibration sensor turns ${p_state}",
                 "when the ${p_name} vibration sensor changes to ${p_state}"]];
 
-  stream (p_name : String) := edge(monitor @io.home-assistant.vibration(name=p_name).state()) on (state == enum(detecting))
+  stream (p_name : String) := edge( monitor @io.home-assistant.vibration(name=p_name).state()) on (state == enum(detecting))
   #_[utterances=["when the ${p_name} vibration sensor is detecting vibration",
                 "if the ${p_name} vibration sensor is detecting vibration",
                 "when the ${p_name} vibration sensor becomes detecting vibration"]];
 
-  stream (p_name : String) := edge(monitor @io.home-assistant.vibration(name=p_name).state()) on (state == enum(not_detecting))
+  stream (p_name : String) := edge( monitor @io.home-assistant.vibration(name=p_name).state()) on (state == enum(not_detecting))
   #_[utterances=["when the ${p_name} vibration sensor is not detecting vibration",
                 "if the ${p_name} vibration sensor is not detecting vibration"]];
 }

@@ -13,17 +13,17 @@ dataset @io.home-assistant.gas language "en" {
   stream := monitor @io.home-assistant.gas.state()
   #_[utterances=["when the state of the gas sensor changes"]];
 
-  stream (p_state : Enum(detecting, not_detecting)) := edge( @io.home-assistant.gas.state()) on (state == p_state)
+  stream (p_state : Enum(detecting, not_detecting)) := edge( monitor @io.home-assistant.gas.state()) on (state == p_state)
   #_[utterances=["when the gas sensor is ${p_state} gas",
                 "if the gas sensor is ${p_state} gas"]];
 
-  stream := edge( @io.home-assistant.gas.state()) on (state == enum(detecting))
+  stream := edge( monitor @io.home-assistant.gas.state()) on (state == enum(detecting))
   #_[utterances=["if the gas sensor detects gas",
                 "when my gas sensor detects a gas leak",
                 "when the gas sensor smells gas",
                 "if my gas sensor is detecting gas leaking from somewhere"]];
 
-  stream := edge( @io.home-assistant.gas.state()) on (state == enum(not_detecting))
+  stream := edge( monitor @io.home-assistant.gas.state()) on (state == enum(not_detecting))
   #_[utterances=["when the gas sensor stops detecting gas",
                 "if the gas sensor no longer detects gas",
                 "when the gas sensor is not detecting gas anymore"]];
@@ -41,17 +41,17 @@ dataset @io.home-assistant.gas language "en" {
   stream (p_name : String) := monitor @io.home-assistant.gas(name=p_name).state()
   #_[utterances=["when the state of the ${p_name} gas sensor changes"]];
 
-  stream (p_name : String, p_state : Enum(detecting, not_detecting)) := edge( @io.home-assistant.gas(name=p_name).state()) on (state == p_state)
+  stream (p_name : String, p_state : Enum(detecting, not_detecting)) := edge( monitor @io.home-assistant.gas(name=p_name).state()) on (state == p_state)
   #_[utterances=["when the ${p_name} gas sensor is ${p_state} gas",
                 "if the ${p_name} gas sensor is ${p_state} gas"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.gas(name=p_name).state()) on (state == enum(detecting))
+  stream (p_name : String) := edge( monitor @io.home-assistant.gas(name=p_name).state()) on (state == enum(detecting))
   #_[utterances=["if the ${p_name} gas sensor detects gas",
                 "when my ${p_name} gas sensor detects a gas leak",
                 "when the ${p_name} gas sensor smells gas",
                 "if my ${p_name} gas sensor is detecting gas leaking from somewhere"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.gas(name=p_name).state()) on (state == enum(not_detecting))
+  stream (p_name : String) := edge( monitor @io.home-assistant.gas(name=p_name).state()) on (state == enum(not_detecting))
   #_[utterances=["when the gas sensor stops detecting gas",
                 "if the gas sensor no longer detects gas",
                 "when the gas sensor is not detecting gas anymore"]];

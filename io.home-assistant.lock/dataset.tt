@@ -15,19 +15,19 @@ dataset @io.home-assistant.lock language "en" {
   stream := monitor @io.home-assistant.lock.state()
   #_[utterances=["when the state of my lock changes"]];
 
-  stream (p_state : Enum(unlocked, locked)) := edge( @io.home-assistant.lock.state()) on (state == p_state)
+  stream (p_state : Enum(unlocked, locked)) := edge( monitor @io.home-assistant.lock.state()) on (state == p_state)
   #_[utterances=["if the lock becomes ${p_state}",
                 "when the lock is ${p_state}",
                 "if my lock gets ${p_state}",
                 "when my lock changes to ${p_state}"]];
 
-  stream := edge( @io.home-assistant.lock.state()) on (state == enum(unlocked))
+  stream := edge( monitor @io.home-assistant.lock.state()) on (state == enum(unlocked))
   #_[utterances=["when I open the lock",
                 "when I unlock my lock",
                 "if the lock unlocks",
                 "when the lock gets opened"]];
 
-  stream := edge( @io.home-assistant.lock.state()) on (state == enum(locked))
+  stream := edge( monitor @io.home-assistant.lock.state()) on (state == enum(locked))
   #_[utterances=["when I close the lock",
                 "when I lock my lock",
                 "if the lock locks",
@@ -48,19 +48,19 @@ dataset @io.home-assistant.lock language "en" {
   stream (p_name : String) := monitor @io.home-assistant.lock(name=p_name).state()
   #_[utterances=["when the state of my ${p_name} lock changes"]];
 
-  stream (p_name : String, p_state : Enum(unlocked, locked)) := edge( @io.home-assistant.lock(name=p_name).state()) on (state == p_state)
+  stream (p_name : String, p_state : Enum(unlocked, locked)) := edge( monitor @io.home-assistant.lock(name=p_name).state()) on (state == p_state)
   #_[utterances=["if the ${p_name} lock becomes ${p_state}",
                 "when the ${p_name} lock is ${p_state}",
                 "if my ${p_name} lock gets ${p_state}",
                 "when my ${p_name} lock changes to ${p_state}"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.lock(name=p_name).state()) on (state == enum(unlocked))
+  stream (p_name : String) := edge( monitor @io.home-assistant.lock(name=p_name).state()) on (state == enum(unlocked))
   #_[utterances=["when I open the ${p_name} lock",
                 "when I unlock my ${p_name} lock",
                 "if the ${p_name} lock unlocks",
                 "when the ${p_name} lock gets opened"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.lock(name=p_name).state()) on (state == enum(locked))
+  stream (p_name : String) := edge( monitor @io.home-assistant.lock(name=p_name).state()) on (state == enum(locked))
   #_[utterances=["when I close the ${p_name} lock",
                 "when I lock my ${p_name} lock",
                 "if the ${p_name} lock locks",

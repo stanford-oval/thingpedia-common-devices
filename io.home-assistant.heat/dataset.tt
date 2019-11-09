@@ -16,19 +16,19 @@ dataset @io.home-assistant.heat language "en" {
   stream := monitor @io.home-assistant.heat.state()
   #_[utterances=["when the state of the heat sensor changes"]];
 
-  stream (p_state : Enum(hot, normal)) := edge( @io.home-assistant.heat.state()) on (state == p_state)
+  stream (p_state : Enum(hot, normal)) := edge( monitor @io.home-assistant.heat.state()) on (state == p_state)
   #_[utterances=["when my heat sensor becomes ${p_state}",
                 "if my heat sensor is ${p_state}",
                 "when the heat sensor turns ${p_state}",
                 "if the heat sensor changes to ${p_state}",
                 "when the heat sensor says it is ${p_state}"]];
 
-  stream := edge( @io.home-assistant.heat.state()) on (state == enum(hot))
+  stream := edge( monitor @io.home-assistant.heat.state()) on (state == enum(hot))
   #_[utterances=["when the heat sensor is heating up",
                 "if the heat sensor is getting heated up",
                 "when the heat sensor grows warm"]];
 
-  stream := edge( @io.home-assistant.heat.state()) on (state == enum(normal))
+  stream := edge( monitor @io.home-assistant.heat.state()) on (state == enum(normal))
   #_[utterances=["when the heat sensor stops heating up",
                 "when the heat sensor is no longer warm",
                 "when the heat sensor is not hot anymore"]];
@@ -47,19 +47,19 @@ dataset @io.home-assistant.heat language "en" {
   stream (p_name : String) := monitor @io.home-assistant.heat(name=p_name).state()
   #_[utterances=["when the state of the ${p_name} heat sensor changes"]];
 
-  stream (p_name : String, p_state : Enum(hot, normal)) := edge( @io.home-assistant.heat(name=p_name).state()) on (state == p_state)
+  stream (p_name : String, p_state : Enum(hot, normal)) := edge( monitor @io.home-assistant.heat(name=p_name).state()) on (state == p_state)
   #_[utterances=["when my ${p_name} heat sensor becomes ${p_state}",
                 "if my ${p_name} heat sensor is ${p_state}",
                 "when the ${p_name} heat sensor turns ${p_state}",
                 "if the ${p_name} heat sensor changes to ${p_state}",
                 "when the ${p_name} heat sensor says it is ${p_state}"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.heat(name=p_name).state()) on (state == enum(hot))
+  stream (p_name : String) := edge( monitor @io.home-assistant.heat(name=p_name).state()) on (state == enum(hot))
   #_[utterances=["when the ${p_name} heat sensor is heating up",
                 "if the ${p_name} heat sensor is getting heated up",
                 "when the ${p_name} heat sensor grows warm"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.heat(name=p_name).state()) on (state == enum(normal))
+  stream (p_name : String) := edge( monitor @io.home-assistant.heat(name=p_name).state()) on (state == enum(normal))
   #_[utterances=["when the ${p_name} heat sensor stops heating up",
                 "when the ${p_name} heat sensor is no longer warm",
                 "when the ${p_name} heat sensor is not hot anymore"]];

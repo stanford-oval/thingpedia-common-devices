@@ -17,19 +17,19 @@ dataset @io.home-assistant.plug language "en" {
   #_[utterances=["when the state of my plug changes",
                  "when the state of the plug changes"]];
 
-  stream (p_state : Enum(plugged, unplugged)) := edge(monitor @io.home-assistant.plug.state()) on (state == p_state)
+  stream (p_state : Enum(plugged, unplugged)) := edge( monitor @io.home-assistant.plug.state()) on (state == p_state)
   #_[utterances=["when my plug turns ${p_state}",
                 "when my plug changes to ${p_state}",
                 "if my plug becomes ${p_state}",
                 "if my plug is ${p_state}"]];
 
-  stream := edge(monitor @io.home-assistant.plug.state()) on (state == enum(plugged))
+  stream := edge( monitor @io.home-assistant.plug.state()) on (state == enum(plugged))
   #_[utterances=["when my plug is plugged",
                 "if my plug is plugged",
                 "when the plug gets plugged",
                 "if the plug gets plugged"]];
 
-  stream := edge(monitor @io.home-assistant.plug.state()) on (state == enum(unplugged))
+  stream := edge( monitor @io.home-assistant.plug.state()) on (state == enum(unplugged))
   #_[utterances=["when my plug is unplugged",
                 "if my plug is unplugged",
                 "when the plug gets unplugged",
@@ -48,7 +48,7 @@ dataset @io.home-assistant.plug language "en" {
   stream (p_name : String) := monitor @io.home-assistant.plug(name=p_name).state()
   #_[utterances=["when the state of my ${p_name} plug changes"]];
 
-  stream (p_name : String, p_state : Enum(plugged, unplugged)) := edge(monitor @io.home-assistant.plug(name=p_name).state()) on (state == p_state)
+  stream (p_name : String, p_state : Enum(plugged, unplugged)) := edge( monitor @io.home-assistant.plug(name=p_name).state()) on (state == p_state)
   #_[utterances=["when my ${p_name} plug becomes ${p_state}",
                 "when my ${p_name} plug is ${p_state}",
                 "when my ${p_name} plug turns ${p_state}",
@@ -58,7 +58,7 @@ dataset @io.home-assistant.plug language "en" {
                 "if my ${p_name} plug turns ${p_state}",
                 "if my ${p_name} plug changes to ${p_state}"]];
 
-  stream (p_name : String) := edge(monitor @io.home-assistant.plug(name=p_name).state()) on (state == enum(plugged))
+  stream (p_name : String) := edge( monitor @io.home-assistant.plug(name=p_name).state()) on (state == enum(plugged))
   #_[utterances=["when my ${p_name} plug is plugged",
                 "if my ${p_name} plug is plugged",
                 "when my ${p_name} plug becomes plugged",
@@ -66,7 +66,7 @@ dataset @io.home-assistant.plug language "en" {
                 "when my ${p_name} plug gets plugged",
                 "if my ${p_name} plug gets plugged"]];
 
-  stream (p_name : String) := edge(monitor @io.home-assistant.plug(name=p_name).state()) on (state == enum(unplugged))
+  stream (p_name : String) := edge( monitor @io.home-assistant.plug(name=p_name).state()) on (state == enum(unplugged))
   #_[utterances=["when my ${p_name} plug is unplugged",
                 "if my ${p_name} plug is unplugged",
                 "when my ${p_name} plug gets unplugged",

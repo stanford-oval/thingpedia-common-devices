@@ -14,17 +14,17 @@ dataset @io.home-assistant.motion language "en" {
   stream := monitor @io.home-assistant.motion.state()
   #_[utterances=["when the state of the motion sensor changes"]];
 
-  stream (p_state : Enum(detecting, not_detecting)) := edge( @io.home-assistant.motion.state()) on (state == p_state)
+  stream (p_state : Enum(detecting, not_detecting)) := edge( monitor @io.home-assistant.motion.state()) on (state == p_state)
   #_[utterances=["if the motion sensor is ${p_state} movement",
                 "when my motion sensor is ${p_state} movement"]];
 
-  stream := edge( @io.home-assistant.motion.state()) on (state == enum(detecting))
+  stream := edge( monitor @io.home-assistant.motion.state()) on (state == enum(detecting))
   #_[utterances=["when the motion sensor sees something move",
                 "if the motion sensor detects movement",
                 "when my motion sensor detects someone",
                 "if my motion sensor senses something"]];
 
-  stream := edge( @io.home-assistant.motion.state()) on (state == enum(not_detecting))
+  stream := edge( monitor @io.home-assistant.motion.state()) on (state == enum(not_detecting))
   #_[utterances=["when the motion sensor stops detecting movement",
                 "if the motion sensor does not detect any movement"]];
 
@@ -42,17 +42,17 @@ dataset @io.home-assistant.motion language "en" {
   stream (p_name : String) := monitor @io.home-assistant.motion(name=p_name).state()
   #_[utterances=["when the state of the ${p_name} motion sensor changes"]];
 
-  stream (p_name : String, p_state : Enum(detecting, not_detecting)) := edge( @io.home-assistant.motion(name=p_name).state()) on (state == p_state)
+  stream (p_name : String, p_state : Enum(detecting, not_detecting)) := edge( monitor @io.home-assistant.motion(name=p_name).state()) on (state == p_state)
   #_[utterances=["if the ${p_name} motion sensor is ${p_state} movement",
                 "when my ${p_name} motion sensor is ${p_state} movement"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.motion(name=p_name).state()) on (state == enum(detecting))
+  stream (p_name : String) := edge( monitor @io.home-assistant.motion(name=p_name).state()) on (state == enum(detecting))
   #_[utterances=["when the ${p_name} motion sensor sees something move",
                 "if the ${p_name} motion sensor detects movement",
                 "when my ${p_name} motion sensor detects someone",
                 "if my ${p_name} motion sensor senses something"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.motion(name=p_name).state()) on (state == enum(not_detecting))
+  stream (p_name : String) := edge( monitor @io.home-assistant.motion(name=p_name).state()) on (state == enum(not_detecting))
   #_[utterances=["when the ${p_name} motion sensor stops detecting movement",
                 "if the ${p_name} motion sensor does not detect any movement"]];
 }
