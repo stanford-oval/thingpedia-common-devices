@@ -17,19 +17,19 @@ dataset @io.home-assistant.vacuum language "en" {
   stream := monitor @io.home-assistant.vacuum.state()
   #_[utterances=["when my vacuum changes state"]];
 
-  stream (p_state : Enum(on, off)) := edge( @io.home-assistant.vacuum.state()) on (state == p_state)
+  stream (p_state : Enum(on, off)) := edge( monitor @io.home-assistant.vacuum.state()) on (state == p_state)
   #_[utterances=["when my vacuum turns ${p_state}",
                 "if my vacuum switches ${p_state}",
                 "when the vacuum is ${p_state}"]];
 
-  stream := edge( @io.home-assistant.vacuum.state()) on (state == enum(on))
+  stream := edge( monitor @io.home-assistant.vacuum.state()) on (state == enum(on))
   #_[utterances=["when my vacuum turns on",
                 "if my vacuum switches on",
                 "when the vacuum is on",
                 "if my vacuum is switched on",
                 "when I turn on my vacuum"]];
 
-  stream := edge( @io.home-assistant.vacuum.state()) on (state == enum(off))
+  stream := edge( monitor @io.home-assistant.vacuum.state()) on (state == enum(off))
   #_[utterances=["when the vacuum turns off",
                 "if my vacuum turns off",
                 "once the vacuum switches off",
@@ -97,19 +97,19 @@ dataset @io.home-assistant.vacuum language "en" {
   stream (p_name : String) := monitor @io.home-assistant.vacuum(name=p_name).state()
   #_[utterances=["when my ${p_name} vacuum changes state"]];
 
-  stream (p_name : String, p_state : Enum(on, off)) := edge( @io.home-assistant.vacuum(name=p_name).state()) on (state == p_state)
+  stream (p_name : String, p_state : Enum(on, off)) := edge( monitor @io.home-assistant.vacuum(name=p_name).state()) on (state == p_state)
   #_[utterances=["when my ${p_name} vacuum turns ${p_state}",
                 "if my ${p_name} vacuum switches ${p_state}",
                 "when the ${p_name} vacuum is ${p_state}"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.vacuum(name=p_name).state()) on (state == enum(on))
+  stream (p_name : String) := edge( monitor @io.home-assistant.vacuum(name=p_name).state()) on (state == enum(on))
   #_[utterances=["when my ${p_name} vacuum turns on",
                 "if my ${p_name} vacuum switches on",
                 "when the ${p_name} vacuum is on",
                 "if my ${p_name} vacuum is switched on",
                 "when I turn on my ${p_name} vacuum"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.vacuum(name=p_name).state()) on (state == enum(off))
+  stream (p_name : String) := edge( monitor @io.home-assistant.vacuum(name=p_name).state()) on (state == enum(off))
   #_[utterances=["when the ${p_name} vacuum turns off",
                 "if my ${p_name} vacuum turns off",
                 "once the ${p_name} vacuum switches off",
@@ -117,7 +117,7 @@ dataset @io.home-assistant.vacuum language "en" {
                 "when my ${p_name} vacuum is turned off",
                 "when my ${p_name} vacuum gets switched off"]];
 
-  action (p_name: String, p_power :Enum(on,off)) := @io.home-assistant.vacuum(name=p_name).set_power(power=p_power)
+  action (p_name: String, p_power :Enum(on,off)) := monitor @io.home-assistant.vacuum(name=p_name).set_power(power=p_power)
   #_[utterances=["turn ${p_power} my ${p_name} vacuum",
                  "switch ${p_power} the ${p_name} vacuum",
                  "${p_power} the ${p_name} vacuum"]];

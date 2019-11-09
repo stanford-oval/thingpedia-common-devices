@@ -14,14 +14,14 @@ dataset @io.home-assistant.shutter language "en" {
   stream := monitor @io.home-assistant.shutter.state()
   #_[utterances=["when the state of the shutters change"]];
 
-  stream (p_state : Enum(open, closed)) := edge( @io.home-assistant.shutter.state()) on (state == p_state)
+  stream (p_state : Enum(open, closed)) := edge( monitor @io.home-assistant.shutter.state()) on (state == p_state)
   #_[utterances=["when the shutters are ${p_state}",
                 "if my shutters gets ${p_state}"]];
 
-  stream := edge( @io.home-assistant.shutter.state()) on (state == enum(open))
+  stream := edge( monitor @io.home-assistant.shutter.state()) on (state == enum(open))
   #_[utterances=["if my shutters are open"]];
 
-  stream := edge( @io.home-assistant.shutter.state()) on (state == enum(closed))
+  stream := edge( monitor @io.home-assistant.shutter.state()) on (state == enum(closed))
   #_[utterances=["when my shutters close"]];
 
   action (p_state :Enum(open,close)) := @io.home-assistant.shutter.set_openclose(state=p_state)
@@ -50,14 +50,14 @@ dataset @io.home-assistant.shutter language "en" {
   stream (p_name : String) := monitor @io.home-assistant.shutter(name=p_name).state()
   #_[utterances=["when the state of the ${p_name} shutters change"]];
 
-  stream (p_name : String, p_state : Enum(open, closed)) := edge( @io.home-assistant.shutter(name=p_name).state()) on (state == p_state)
+  stream (p_name : String, p_state : Enum(open, closed)) := edge( monitor @io.home-assistant.shutter(name=p_name).state()) on (state == p_state)
   #_[utterances=["when the ${p_name} shutters are ${p_state}",
                 "if my ${p_name} shutters gets ${p_state}"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.shutter(name=p_name).state()) on (state == enum(open))
+  stream (p_name : String) := edge( monitor @io.home-assistant.shutter(name=p_name).state()) on (state == enum(open))
   #_[utterances=["if my ${p_name} shutters are open"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.shutter(name=p_name).state()) on (state == enum(closed))
+  stream (p_name : String) := edge( monitor @io.home-assistant.shutter(name=p_name).state()) on (state == enum(closed))
   #_[utterances=["when my ${p_name} shutters close"]];
 
   action (p_name : String, p_state :Enum(open,close)) := @io.home-assistant.shutter(name=p_name).set_openclose(state=p_state)

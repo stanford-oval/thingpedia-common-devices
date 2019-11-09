@@ -14,17 +14,17 @@ dataset @io.home-assistant.illuminance language "en" {
   stream := monitor @io.home-assistant.illuminance.state()
   #_[utterances=["when the state of the illuminance sensor changes"]];
 
-  stream (p_state : Enum(bright, dark)) := edge( @io.home-assistant.illuminance.state()) on (state == p_state)
+  stream (p_state : Enum(bright, dark)) := edge( monitor @io.home-assistant.illuminance.state()) on (state == p_state)
   #_[utterances=["when my illuminance sensor becomes ${p_state}",
                 "if my illuminance sensor is ${p_state}",
                 "when the illuminance sensor turns ${p_state}",
                 "if the illuminance sensor changes to ${p_state}"]];
 
-  stream := edge( @io.home-assistant.illuminance.state()) on (state == enum(bright))
+  stream := edge( monitor @io.home-assistant.illuminance.state()) on (state == enum(bright))
   #_[utterances=["when the illuminance sensor is bright",
                 "if my illuminance sensor gets bright"]];
 
-  stream := edge( @io.home-assistant.illuminance.state()) on (state == enum(dark))
+  stream := edge( monitor @io.home-assistant.illuminance.state()) on (state == enum(dark))
   #_[utterances=["when the illuminance sensor is dark",
                 "if my illuminance sensor gets dark"]];
 
@@ -42,17 +42,17 @@ dataset @io.home-assistant.illuminance language "en" {
   stream (p_name : String) := monitor @io.home-assistant.illuminance(name=p_name).state()
   #_[utterances=["when the state of the ${p_name} illuminance sensor changes"]];
 
-  stream (p_name : String, p_state : Enum(bright, dark)) := edge( @io.home-assistant.illuminance(name=p_name).state()) on (state == p_state)
+  stream (p_name : String, p_state : Enum(bright, dark)) := edge( monitor @io.home-assistant.illuminance(name=p_name).state()) on (state == p_state)
   #_[utterances=["when my ${p_name} illuminance sensor becomes ${p_state}",
                 "if my ${p_name} illuminance sensor is ${p_state}",
                 "when the ${p_name} illuminance sensor turns ${p_state}",
                 "if the ${p_name} illuminance sensor changes to ${p_state}"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.illuminance(name=p_name).state()) on (state == enum(bright))
+  stream (p_name : String) := edge( monitor @io.home-assistant.illuminance(name=p_name).state()) on (state == enum(bright))
   #_[utterances=["when the ${p_name} illuminance sensor is bright",
                 "if my ${p_name} illuminance sensor gets bright"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.illuminance(name=p_name).state()) on (state == enum(dark))
+  stream (p_name : String) := edge( monitor @io.home-assistant.illuminance(name=p_name).state()) on (state == enum(dark))
   #_[utterances=["when the ${p_name} illuminance sensor is dark",
                 "if my ${p_name} illuminance sensor gets dark"]];
 }

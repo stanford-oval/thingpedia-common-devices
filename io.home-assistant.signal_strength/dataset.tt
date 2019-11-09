@@ -15,7 +15,7 @@ dataset @io.home-assistant.signal_strength language "en" {
   stream := monitor @io.home-assistant.signal_strength.state()
   #_[utterances=["when the state of the signal strength changes"]];
 
-  stream (p_state : Enum(strong, weak)) := edge( @io.home-assistant.signal_strength.state()) on (state == p_state)
+  stream (p_state : Enum(strong, weak)) := edge( monitor @io.home-assistant.signal_strength.state()) on (state == p_state)
   #_[utterances=["when the signal strength becomes ${p_state}",
                 "when the signal strength is ${p_state}",
                 "when the signal strength turns ${p_state}",
@@ -25,13 +25,13 @@ dataset @io.home-assistant.signal_strength language "en" {
                 "if the signal strength turns ${p_state}",
                 "if the signal strength changes to ${p_state}"]];
 
-  stream := edge( @io.home-assistant.signal_strength.state()) on (state == enum(strong))
+  stream := edge( monitor @io.home-assistant.signal_strength.state()) on (state == enum(strong))
   #_[utterances=["when the signal strength is strong",
                 "if the signal strength is strong",
                 "when the signal strength becomes strong",
                 "if the signal strength becomes strong"]];
 
-  stream := edge( @io.home-assistant.signal_strength.state()) on (state == enum(weak))
+  stream := edge( monitor @io.home-assistant.signal_strength.state()) on (state == enum(weak))
   #_[utterances=["when the signal strength is weak",
                 "if the signal strength is weak",
                 "when the signal strength becomes weak",
@@ -52,7 +52,7 @@ dataset @io.home-assistant.signal_strength language "en" {
   stream (p_name : String) := monitor @io.home-assistant.signal_strength(name=p_name).state()
   #_[utterances=["when the state of the ${p_name} signal strength changes"]];
 
-  stream (p_name : String, p_state : Enum(strong, weak)) := edge( @io.home-assistant.signal_strength(name=p_name).state()) on (state == p_state)
+  stream (p_name : String, p_state : Enum(strong, weak)) := edge( monitor @io.home-assistant.signal_strength(name=p_name).state()) on (state == p_state)
   #_[utterances=["when the ${p_name} signal strength becomes ${p_state}",
                 "when the ${p_name} signal strength is ${p_state}",
                 "when the ${p_name} signal strength turns ${p_state}",
@@ -62,13 +62,13 @@ dataset @io.home-assistant.signal_strength language "en" {
                 "if the ${p_name} signal strength turns ${p_state}",
                 "if the ${p_name} signal strength changes to ${p_state}"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.signal_strength(name=p_name).state()) on (state == enum(strong))
+  stream (p_name : String) := edge( monitor @io.home-assistant.signal_strength(name=p_name).state()) on (state == enum(strong))
   #_[utterances=["when the ${p_name} signal strength is strong",
                 "if the ${p_name} signal strength is strong",
                 "when the ${p_name} signal strength becomes strong",
                 "if the ${p_name} signal strength becomes strong"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.signal_strength(name=p_name).state()) on (state == enum(weak))
+  stream (p_name : String) := edge( monitor @io.home-assistant.signal_strength(name=p_name).state()) on (state == enum(weak))
   #_[utterances=["when the ${p_name} signal strength is weak",
                 "if the ${p_name} signal strength is weak",
                 "when the ${p_name} signal strength becomes weak",

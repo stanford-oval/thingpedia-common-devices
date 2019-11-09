@@ -17,16 +17,16 @@ dataset @io.home-assistant.shade language "en" {
   stream := monitor @io.home-assistant.shade.state()
   #_[utterances=["when the state of the shades change"]];
 
-  stream (p_state : Enum(open, closed)) := edge( @io.home-assistant.shade.state()) on (state == p_state)
+  stream (p_state : Enum(open, closed)) := edge( monitor @io.home-assistant.shade.state()) on (state == p_state)
   #_[utterances=["when the shades are ${p_state}",
                 "if my shades gets ${p_state}"]];
 
-  stream := edge( @io.home-assistant.shade.state()) on (state == enum(open))
+  stream := edge( monitor @io.home-assistant.shade.state()) on (state == enum(open))
   #_[utterances=["if my shades are raised",
                 "when the shades are put up",
                 "when I bring up my shades"]];
 
-  stream := edge( @io.home-assistant.shade.state()) on (state == enum(closed))
+  stream := edge( monitor @io.home-assistant.shade.state()) on (state == enum(closed))
   #_[utterances=["when my shades lower",
                 "if the shades get lowered",
                 "the moment the shades get put down",
@@ -66,16 +66,16 @@ dataset @io.home-assistant.shade language "en" {
   stream (p_name : String) := monitor @io.home-assistant.shade(name=p_name).state()
   #_[utterances=["when the state of the ${p_name} shades change"]];
 
-  stream (p_name : String, p_state : Enum(open, closed)) := edge( @io.home-assistant.shade(name=p_name).state()) on (state == p_state)
+  stream (p_name : String, p_state : Enum(open, closed)) := edge( monitor @io.home-assistant.shade(name=p_name).state()) on (state == p_state)
   #_[utterances=["when the ${p_name} shades are ${p_state}",
                 "if my ${p_name} shades gets ${p_state}"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.shade(name=p_name).state()) on (state == enum(open))
+  stream (p_name : String) := edge( monitor @io.home-assistant.shade(name=p_name).state()) on (state == enum(open))
   #_[utterances=["if my ${p_name} shades are raised",
                 "when the ${p_name} shades are put up",
                 "when I bring up my ${p_name} shades"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.shade(name=p_name).state()) on (state == enum(closed))
+  stream (p_name : String) := edge( monitor @io.home-assistant.shade(name=p_name).state()) on (state == enum(closed))
   #_[utterances=["when my ${p_name} shades lower",
                 "if the ${p_name} shades get lowered",
                 "the moment the ${p_name} shades get put down",

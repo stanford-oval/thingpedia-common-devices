@@ -17,21 +17,21 @@ dataset @io.home-assistant.switch language "en" {
   stream := monitor @io.home-assistant.switch.state()
   #_[utterances=["when my switch changes state"]];
 
-  stream (p_state : Enum(on, off)) := edge( @io.home-assistant.switch.state()) on (state == p_state)
+  stream (p_state : Enum(on, off)) := edge( monitor @io.home-assistant.switch.state()) on (state == p_state)
   #_[utterances=["when my switch turns ${p_state}",
                 "when the switch switches ${p_state}",
                 "if my switch becomes ${p_state}",
                 "when the switch is ${p_state}",
                 "if my switch changes to ${p_state}"]];
 
-  stream := edge( @io.home-assistant.switch.state()) on (state == enum(on))
+  stream := edge( monitor @io.home-assistant.switch.state()) on (state == enum(on))
   #_[utterances=["when my switch turns on",
                 "if the switch switches on",
                 "when the switch becomes on",
                 "the moment my switch changes to on",
                 "when my switch is on"]];
 
-  stream := edge( @io.home-assistant.switch.state()) on (state == enum(off))
+  stream := edge( monitor @io.home-assistant.switch.state()) on (state == enum(off))
   #_[utterances=["when the switch is turned off",
                 "once my switch is off",
                 "when I turn off my switch"
@@ -70,21 +70,21 @@ dataset @io.home-assistant.switch language "en" {
   stream (p_name : String) := monitor @io.home-assistant.switch(name=p_name).state()
   #_[utterances=["when my ${p_name} switch changes state"]];
 
-  stream (p_name : String, p_state : Enum(on, off)) := edge( @io.home-assistant.switch(name=p_name).state()) on (state == p_state)
+  stream (p_name : String, p_state : Enum(on, off)) := edge( monitor @io.home-assistant.switch(name=p_name).state()) on (state == p_state)
   #_[utterances=["when my ${p_name} switch turns ${p_state}",
                 "when the ${p_name} switch switches ${p_state}",
                 "if my ${p_name} switch becomes ${p_state}",
                 "when the ${p_name} switch is ${p_state}",
                 "if my ${p_name} switch changes to ${p_state}"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.switch(name=p_name).state()) on (state == enum(on))
+  stream (p_name : String) := edge( monitor @io.home-assistant.switch(name=p_name).state()) on (state == enum(on))
   #_[utterances=["when my ${p_name} switch turns on",
                 "if the ${p_name} switch switches on",
                 "when the ${p_name} switch becomes on",
                 "the moment my ${p_name} switch changes to on",
                 "when my ${p_name} switch is on"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.switch(name=p_name).state()) on (state == enum(off))
+  stream (p_name : String) := edge( monitor @io.home-assistant.switch(name=p_name).state()) on (state == enum(off))
   #_[utterances=["when the ${p_name} switch is turned off",
                 "once my ${p_name} switch is off",
                 "when I turn off my ${p_name} switch"

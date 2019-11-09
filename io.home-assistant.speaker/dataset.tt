@@ -15,14 +15,14 @@ dataset @io.home-assistant.speaker language "en" {
   stream := monitor @io.home-assistant.speaker.state()
   #_[utterances=["when my speaker changes state"]];
 
-  stream (p_state : Enum(on, off)) := edge( @io.home-assistant.speaker.state()) on (state == p_state)
+  stream (p_state : Enum(on, off)) := edge( monitor @io.home-assistant.speaker.state()) on (state == p_state)
   #_[utterances=["when my speaker turns ${p_state}",
                 "if my speaker switches ${p_state}",
                 "when the speaker becomes ${p_state}",
                 "if my speaker is ${p_state}",
                 "when my speaker changes to ${p_state}"]];
 
-  stream := edge( @io.home-assistant.speaker.state()) on (state == enum(on))
+  stream := edge( monitor @io.home-assistant.speaker.state()) on (state == enum(on))
   #_[utterances=["when my speaker turns on",
                 "when I switch on the speaker",
                 "if the speaker becomes on",
@@ -31,7 +31,7 @@ dataset @io.home-assistant.speaker language "en" {
                 "when my speaker is turned on",
                 "the moment my speaker is switched on"]];
 
-  stream := edge( @io.home-assistant.speaker.state()) on (state == enum(off))
+  stream := edge( monitor @io.home-assistant.speaker.state()) on (state == enum(off))
   #_[utterances=["when my speaker is turned off",
                 "if my speaker switches off",
                 "the moment my speaker becomes off",
@@ -103,14 +103,14 @@ dataset @io.home-assistant.speaker language "en" {
   stream (p_name : String) := monitor @io.home-assistant.speaker(name=p_name).state()
   #_[utterances=["when my ${p_name} speaker changes state"]];
 
-  stream (p_name : String, p_state : Enum(on, off)) := edge( @io.home-assistant.speaker(name=p_name).state()) on (state == p_state)
+  stream (p_name : String, p_state : Enum(on, off)) := edge( monitor @io.home-assistant.speaker(name=p_name).state()) on (state == p_state)
   #_[utterances=["when my ${p_name} speaker turns ${p_state}",
                 "if my ${p_name} speaker switches ${p_state}",
                 "when the ${p_name} speaker becomes ${p_state}",
                 "if my ${p_name} speaker is ${p_state}",
                 "when my ${p_name} speaker changes to ${p_state}"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.speaker(name=p_name).state()) on (state == enum(on))
+  stream (p_name : String) := edge( monitor @io.home-assistant.speaker(name=p_name).state()) on (state == enum(on))
   #_[utterances=["when my ${p_name} speaker turns on",
                 "when I switch on the ${p_name} speaker",
                 "if the ${p_name} speaker becomes on",
@@ -119,7 +119,7 @@ dataset @io.home-assistant.speaker language "en" {
                 "when my ${p_name} speaker is turned on",
                 "the moment my ${p_name} speaker is switched on"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.speaker(name=p_name).state()) on (state == enum(off))
+  stream (p_name : String) := edge( monitor @io.home-assistant.speaker(name=p_name).state()) on (state == enum(off))
   #_[utterances=["when my ${p_name} speaker is turned off",
                 "if my ${p_name} speaker switches off",
                 "the moment my ${p_name} speaker becomes off",

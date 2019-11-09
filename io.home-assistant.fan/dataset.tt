@@ -21,19 +21,19 @@ dataset @io.home-assistant.fan language "en" {
   #_[utterances=["when my fan changes state",
                  "when the fan changes"]];
 
-  stream (p_state : Enum(on, off)) := edge( @io.home-assistant.fan.state()) on (state == p_state)
+  stream (p_state : Enum(on, off)) := edge( monitor @io.home-assistant.fan.state()) on (state == p_state)
   #_[utterances=["when the fan turns ${p_state}",
                 "when my fan is ${p_state}",
                 "when the fan changes to ${p_state}",
                 "if my fan switches ${p_state}",
                 "if my fan becomes ${p_state}""]];
 
-  stream := edge( @io.home-assistant.fan.state()) on (state == enum(on))
+  stream := edge( monitor @io.home-assistant.fan.state()) on (state == enum(on))
   #_[utterances=["when my fan gets turned on",
                 "when the fan becomes switched on",
                 "when I turn on my fan"]];
 
-  stream := edge( @io.home-assistant.fan.state()) on (state == enum(off))
+  stream := edge( monitor @io.home-assistant.fan.state()) on (state == enum(off))
   #_[utterances=["when my fan turns off",
                 "if the fan switches off"
                 "when my fan gets switched off",
@@ -94,19 +94,19 @@ dataset @io.home-assistant.fan language "en" {
   #_[utterances=["when my ${p_name} fan changes state",
                  "when the ${p_name} fan changes"]];
 
-  stream (p_name : String, p_state : Enum(on, off)) := edge( @io.home-assistant.fan(name=p_name).state()) on (state == p_state)
+  stream (p_name : String, p_state : Enum(on, off)) := edge( monitor @io.home-assistant.fan(name=p_name).state()) on (state == p_state)
   #_[utterances=["when the ${p_name} fan turns ${p_state}",
                 "when my ${p_name} fan is ${p_state}",
                 "when the ${p_name} fan changes to ${p_state}",
                 "if my ${p_name} fan switches ${p_state}",
                 "if my ${p_name} fan becomes ${p_state}""]];
 
-  stream (p_name : String) := edge( @io.home-assistant.fan(name=p_name).state()) on (state == enum(on))
+  stream (p_name : String) := edge( monitor @io.home-assistant.fan(name=p_name).state()) on (state == enum(on))
   #_[utterances=["when my ${p_name} fan gets turned on",
                 "when the ${p_name} fan becomes switched on",
                 "when I turn on my ${p_name} fan"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.fan(name=p_name).state()) on (state == enum(off))
+  stream (p_name : String) := edge( monitor @io.home-assistant.fan(name=p_name).state()) on (state == enum(off))
   #_[utterances=["when my ${p_name} fan turns off",
                 "if the ${p_name} fan switches off"
                 "when my ${p_name} fan gets switched off",

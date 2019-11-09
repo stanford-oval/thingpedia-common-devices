@@ -19,17 +19,17 @@ dataset @io.home-assistant.temperature language "en" {
   stream := monitor @io.home-assistant.temperature.state()
   #_[utterances=["when the temperature changes"]];
 
-  stream (p_state : Enum(warm, cold)) := edge( @io.home-assistant.temperature.state()) on (state == p_state)
+  stream (p_state : Enum(warm, cold)) := edge( monitor @io.home-assistant.temperature.state()) on (state == p_state)
   #_[utterances=["if the temperature becomes ${p_state}",
                 "when the temperature is ${p_state}",
                 "if the temperature turns ${p_state}",
                 "when the temperature changes to ${p_state}"]];
 
-  stream := edge( @io.home-assistant.temperature.state()) on (state == enum(warm))
+  stream := edge( monitor @io.home-assistant.temperature.state()) on (state == enum(warm))
   #_[utterances=["when the temperature is warm",
                 "if the temperature gets hot"]];
 
-  stream := edge( @io.home-assistant.temperature.state()) on (state == enum(cold))
+  stream := edge( monitor @io.home-assistant.temperature.state()) on (state == enum(cold))
   #_[utterances=["when the temperature is cold",
                 "if the temperature is freezing",
                 "when the temperature becomes chilly"]];
