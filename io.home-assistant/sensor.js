@@ -144,7 +144,10 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
             }
             return [{state: undefined, value: value}];
         } else if (this.domain === 'binary_sensor') {
-            var state = this.deviceStateMapping[this.state.state];
+            let state = this.deviceStateMapping[this.state.state];
+            if (['gas', 'smoke'].includes(this.device_class)) {
+                state = state === 'detecting' ? this.device_class : 'nothing';
+            }
             return [{state: state, value: undefined}];
         }
     }
@@ -179,6 +182,9 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
             });
         } else if (this.domain === 'binary_sensor') {
             let state = this.deviceStateMapping[this.state.state];
+            if (['gas', 'smoke'].includes(this.device_class)) {
+                state = state === 'detecting' ? this.device_class : 'nothing';
+            }
             return this._subscribeState(() => {
                 return {state: state, value: undefined};
             });
