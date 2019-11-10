@@ -12,16 +12,46 @@ const WebSocket = require('ws');
 const HomeAssistant = require('home-assistant-js-websocket');
 
 const HomeAssistantLightbulbDevice = require('./light-bulb');
+const HomeAssistantSensor = require('./sensor');
+const HomeAssistantCover = require('./cover');
+const HomeAssistantFan = require('./fan');
+const HomeAssistantSwitch = require('./switch');
+const HomeAssistantVacuum = require('./vacuum');
+const HomeAssistantWindow = require('./window');
 
 // FIXME make configurable
 const HASS_URL = 'http://hassio.local:8123';
 
 const DOMAIN_TO_TP_KIND = {
-    'light': 'light-bulb'
+    'light': 'light-bulb',
+    'cover_active': 'io.home-assistant.cover',
+    'window': 'io.home-assistant.window',
+    'fan': 'io.home-assistant.fan',
+    'switch': 'io.home-assistant.switch',
+    'vacuum': 'io.home-assistant.vacuum',
+    'sensor_air': 'io.home-assistant.air',
+    'sensor_battery': 'io.home-assistant.battery',
+    'sensor_connectivity': 'io.home-assistant.connectivity',
+    'sensor_door': 'io.home-assistant.door',
+    'sensor_heat': 'io.home-assistant.heat',
+    'sensor_motion': 'io.home-assistant.motion',
+    'sensor_occupancy': 'io.home-assistant.occupancy',
+    'sensor_plug': 'io.home-assistant.plug',
+    'sensor_sound': 'io.home-assistant.sound'
 };
 const SUBDEVICES = {
-    'light-bulb': HomeAssistantLightbulbDevice
+    'light-bulb': HomeAssistantLightbulbDevice,
+    'io.home-assistant.cover': HomeAssistantCover,
+    'io.home-assistant.window': HomeAssistantWindow,
+    'io.home-assistant.fan': HomeAssistantFan,
+    'io.home-assistant.switch': HomeAssistantSwitch,
+    'io.home-assistant.vacuum': HomeAssistantVacuum
 };
+
+Object.entries(DOMAIN_TO_TP_KIND).forEach(([key,value]) => {
+    if (key.includes('sensor'))
+        SUBDEVICES[value] = class extends HomeAssistantSensor {};
+});
 
 class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
     constructor(master) {
@@ -43,14 +73,27 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
         }
 
         const [domain,] = entityId.split('.');
-        const kind = DOMAIN_TO_TP_KIND[domain];
+        let kind = undefined;
+        if (attributes.device_class === 'window')
+            kind = DOMAIN_TO_TP_KIND['window'];
+        else if (domain === 'binary_sensor' && ['smoke', 'gas'].includes(attributes.device_class))
+            kind = DOMAIN_TO_TP_KIND['sensor_air'];
+        else if (domain === 'binary_sensor' && ['heat', 'cold'].includes(attributes.device_class))
+            kind = DOMAIN_TO_TP_KIND['sensor_heat'];
+        else if ((domain === 'sensor') || (domain === 'binary_sensor') || (domain === 'cover' && attributes.device_class === 'door'))
+            kind = DOMAIN_TO_TP_KIND[`sensor_${attributes.device_class}`];
+        else if (domain === 'cover')
+            kind = DOMAIN_TO_TP_KIND['cover_active'];
+        else
+            kind = DOMAIN_TO_TP_KIND[domain];
+
         if (kind === undefined) {
             console.log(`Unhandled Home Assistant entity ${entityId} with domain ${domain}`);
             return;
         }
-
         const deviceClass = SUBDEVICES[kind];
-        const device = new deviceClass(this.engine, { kind, state, attributes }, this.master, entityId);
+        const device = new deviceClass(
+            this.engine, { kind, state, attributes }, this.master, entityId);
         this._devices.set(entityId, device);
         this.objectAdded(device);
     }
@@ -103,7 +146,6 @@ module.exports = class HomeAssistantGateway extends Tp.BaseDevice {
 
     static async loadFromOAuth2(engine, accessToken, refreshToken, extraData) {
         const expires = extraData.expires_in * 1000 + Date.now();
-
         return new HomeAssistantGateway(engine, {
             kind: 'io.home-assistant',
 
