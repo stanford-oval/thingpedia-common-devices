@@ -1,0 +1,80 @@
+dataset @io.home-assistant.heat language "en" {
+
+  program := now => @io.home-assistant.heat.state() => notify
+  #_[utterances=["is the heat sensor hot or cold?",
+                 "check if the heat sensor is hot",
+                 "what does the heat sensor say?",
+                 "is the heat sensor saying it is too hot or too cold?"]];
+
+  query := @io.home-assistant.heat.state()
+  #_[utterances=["if my heat sensor is hot",
+                 "if the heat sensor is hot or cold",
+                 "whether the heat sensor is warm or cold"]];
+
+  stream := monitor @io.home-assistant.heat.state()
+  #_[utterances=["when the state of the heat sensor changes"]];
+
+  stream (p_state : Enum(hot, cold, normal)) := edge( monitor @io.home-assistant.heat.state()) on (state == p_state)
+  #_[utterances=["when my heat sensor becomes ${p_state}",
+                "if my heat sensor is ${p_state}",
+                "when the heat sensor turns ${p_state}",
+                "if the heat sensor changes to ${p_state}",
+                "when the heat sensor says it is ${p_state}"]];
+
+  stream := edge( monitor @io.home-assistant.heat.state()) on (state == enum(hot))
+  #_[utterances=["when the heat sensor is heating up",
+                "if the heat sensor is getting heated up",
+                "when the heat sensor grows warm"]];
+
+  stream := edge( monitor @io.home-assistant.heat.state()) on (state == enum(cold))
+  #_[utterances=["when the heat sensor is cooling down",
+                "when the heat sensor is freezing",
+                "when the heat sensor is cold",
+                "when the heat sensor is chilly"]];
+
+  stream := edge( monitor @io.home-assistant.heat.state()) on (state == enum(normal))
+  #_[utterances=["when the heat sensor is normal",
+                "when the heat sensor is not cold",
+                "when the heat sensor is not hot"]];
+
+  program (p_name : String) := now => @io.home-assistant.heat(name=p_name).state() => notify
+  #_[utterances=["is the ${p_name} heat sensor hot or cold?",
+                 "check if the ${p_name} heat sensor is hot",
+                 "check if the ${p_name} heat sensor is cold",
+                 "what does the ${p_name} heat sensor say?",
+                 "is the ${p_name} heat sensor saying it is too hot?",
+                 "is the ${p_name} heat sensor saying it is too cold?"]];
+
+  query (p_name : String) := @io.home-assistant.heat(name=p_name).state()
+  #_[utterances=["if my ${p_name} heat sensor is hot or cold",
+                 "if the ${p_name} heat sensor is hot",
+                 "if the ${p_name} heat sensor is cold",
+                 "whether the ${p_name} heat sensor is warm"]];
+
+  stream (p_name : String) := monitor @io.home-assistant.heat(name=p_name).state()
+  #_[utterances=["when the state of the ${p_name} heat sensor changes"]];
+
+  stream (p_name : String, p_state : Enum(hot, cold, normal)) := edge( monitor @io.home-assistant.heat(name=p_name).state()) on (state == p_state)
+  #_[utterances=["when my ${p_name} heat sensor becomes ${p_state}",
+                "if my ${p_name} heat sensor is ${p_state}",
+                "when the ${p_name} heat sensor turns ${p_state}",
+                "if the ${p_name} heat sensor changes to ${p_state}",
+                "when the ${p_name} heat sensor says it is ${p_state}"]];
+
+  stream (p_name : String) := edge( monitor @io.home-assistant.heat(name=p_name).state()) on (state == enum(hot))
+  #_[utterances=["when the ${p_name} heat sensor is heating up",
+                "if the ${p_name} heat sensor is getting heated up",
+                "when the ${p_name} heat sensor grows warm"]];
+
+  stream (p_name : String) := edge( monitor @io.home-assistant.heat(name=p_name).state()) on (state == enum(cold))
+  #_[utterances=["when the ${p_name} heat sensor is cooling down",
+                "if the ${p_name} heat sensor is cold",
+                "when the ${p_name} heat sensor grows cool"]];
+
+  stream (p_name : String) := edge( monitor @io.home-assistant.heat(name=p_name).state()) on (state == enum(normal))
+  #_[utterances=["when the ${p_name} heat sensor stops heating up",
+                "when the ${p_name} heat sensor is no longer warm",
+                "when the ${p_name} heat sensor is not hot anymore",
+                "when the ${p_name} heat sensor is not cold anymore",
+                "when the ${p_name} heat sensor stops cooling down"]];
+}

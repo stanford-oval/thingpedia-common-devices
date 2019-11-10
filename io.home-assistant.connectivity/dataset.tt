@@ -1,0 +1,70 @@
+dataset @io.home-assistant.connectivity language "en" {
+
+  program := now => @io.home-assistant.connectivity.state() => notify
+  #_[utterances=["is the router connected?",
+                 "is the router disconnected?",
+                 "check whether the router is connected",
+                 "check if the router is connected or disconnected",
+                 "what is the state of the connection?",
+                 "what happened to the connectivity?",
+                 "did the connectivity drop?"]];
+
+  query := @io.home-assistant.connectivity.state()
+  #_[utterances=["the state of the router",
+                 "if the router is connected or disconnected",
+                 "whether the router is connected or disconnected"]];
+
+  stream := monitor @io.home-assistant.connectivity.state()
+  #_[utterances=["when the state of the connectivity changes"]];
+
+  stream (p_state : Enum(connected, disconnected)) := edge( monitor @io.home-assistant.connectivity.state()) on (state == p_state)
+  #_[utterances=["when my router becomes ${p_state}",
+                "when the router is ${p_state}",
+                "when the internet is ${p_state}",
+                "when the modem is ${p_state}"]];
+
+  stream := edge( monitor @io.home-assistant.connectivity.state()) on (state == enum(connected))
+  #_[utterances=["when the router gets connected",
+                "when the connection is up",
+                "once the connection is running smoothly",
+                "once there is a connection",
+                "when I have connectivity"]];
+
+  stream := edge( monitor @io.home-assistant.connectivity.state()) on (state == enum(disconnected))
+  #_[utterances=["when the router gets disconnected",
+                "when the connection drops",
+                "once I lose connectivity",
+                "when I don't have connection",
+                "when the connection is down",
+                "when there is no internet",
+                "when the internet goes down"]];
+
+  program (p_name : String) := now => @io.home-assistant.connectivity(name=p_name).state() => notify
+  #_[utterances=["is the ${p_name} router connected?",
+                 "is the ${p_name} router disconnected?",
+                 "check whether the ${p_name} router is connected",
+                 "check if the ${p_name} router is connected or disconnected"]];
+
+  query (p_name : String) := @io.home-assistant.connectivity(name=p_name).state()
+  #_[utterances=["the state of the ${p_name} router",
+                 "if the ${p_name} router is connected or disconnected",
+                 "whether the ${p_name} router is connected or disconnected"]];
+
+  stream (p_name : String) := monitor @io.home-assistant.connectivity(name=p_name).state()
+  #_[utterances=["when the state of ${p_name} changes"]];
+
+  stream (p_name : String, p_state : Enum(connected, disconnected)) := edge( monitor @io.home-assistant.connectivity(name=p_name).state()) on (state == p_state)
+  #_[utterances=["when my ${p_name} router becomes ${p_state}",
+                "when the ${p_name} router is ${p_state}",
+                "when the ${p_name} modem is ${p_state}"]];
+
+  stream (p_name : String) := edge( monitor @io.home-assistant.connectivity(name=p_name).state()) on (state == enum(connected))
+  #_[utterances=["when the ${p_name} router gets connected",
+                "when the ${p_name} connection is up",
+                "once the ${p_name} connection is running smoothly"]];
+
+  stream (p_name : String) := edge( monitor @io.home-assistant.connectivity(name=p_name).state()) on (state == enum(disconnected))
+  #_[utterances=["when the ${p_name} router gets disconnected",
+                "when the ${p_name} connection drops",
+                "when the ${p_name} connection is down"]];
+}

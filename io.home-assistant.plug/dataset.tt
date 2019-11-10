@@ -1,0 +1,88 @@
+dataset @io.home-assistant.plug language "en" {
+
+  program := now => @io.home-assistant.plug.state() => notify
+  #_[utterances=["is my smart plug connected?",
+                 "did my smart plug get disconnected?",
+                 "check if my plug is plugged",
+                 "is my smart plug unplugged?",
+                 "check if my plug is unplugged",
+                 "check whether my plug is plugged or not",
+                 "is my smart plug turned on?",
+                 "did somebody switch off my plug?"]];
+
+  query := @io.home-assistant.plug.state()
+  #_[utterances=["if my smart plug is connected",
+                 "whether my plug is plugged in",
+                 "whether my plug is turned on",
+                 "whether anyone switched off my plug"]];
+
+  stream := monitor @io.home-assistant.plug.state()
+  #_[utterances=["when my smart plug gets plugged or unplugged",
+                 "when the plug gets connected or disconnected",
+                 "when my plug is switched on or off",
+                 "when the smart plug is turned on or off"]];
+
+  stream (p_state : Enum(plugged, unplugged)) := edge( monitor @io.home-assistant.plug.state()) on (state == p_state)
+  #_[utterances=["when my smart plug becomes ${p_state}",
+                "when my plug is ${p_state}"]];
+
+  stream := edge( monitor @io.home-assistant.plug.state()) on (state == enum(plugged))
+  #_[utterances=["when my plug is plugged",
+                "when somebody plugs in my plug",
+                "when the plug gets plugged",
+                "once my smart plug is connected",
+                "once my plug is switched on",
+                "when I turn on the plug"]];
+
+  stream := edge( monitor @io.home-assistant.plug.state()) on (state == enum(unplugged))
+  #_[utterances=["when my plug is unplugged",
+                "when somebody unplugs my plug",
+                "when anyone takes out my plug",
+                "when the plug gets unplugged",
+                "once my smart plug is disconnected",
+                "once my plug is switched off",
+                "when I turn off the plug"]];
+
+  program (p_name : String) := now => @io.home-assistant.plug(name=p_name).state() => notify
+  #_[utterances=["is my ${p_name} smart plug connected?",
+                 "did my ${p_name} smart plug get disconnected?",
+                 "check if my ${p_name} plug is plugged",
+                 "is my ${p_name} smart plug unplugged?",
+                 "check if my ${p_name} plug is unplugged",
+                 "check whether my ${p_name} plug is plugged or not",
+                 "is my ${p_name} smart plug turned on?",
+                 "did somebody switch off my ${p_name} plug?"]];
+
+  query (p_name : String) := @io.home-assistant.plug(name=p_name).state()
+  #_[utterances=["if my ${p_name} smart plug is connected",
+                 "whether my ${p_name} plug is plugged in",
+                 "whether my ${p_name} plug is turned on",
+                 "whether anyone switched off my ${p_name} plug"]];
+
+  stream (p_name : String) := monitor @io.home-assistant.plug(name=p_name).state()
+  #_[utterances=["when my ${p_name} smart plug gets plugged or unplugged",
+                 "when the ${p_name} plug gets connected or disconnected",
+                 "when my ${p_name} plug is switched on or off",
+                 "when the ${p_name} smart plug is turned on or off"]];
+
+  stream (p_name : String, p_state : Enum(plugged, unplugged)) := edge( monitor @io.home-assistant.plug(name=p_name).state()) on (state == p_state)
+  #_[utterances=["when my ${p_name} smart plug becomes ${p_state}",
+                "when my ${p_name} plug is ${p_state}"]];
+
+  stream (p_name : String) := edge( monitor @io.home-assistant.plug(name=p_name).state()) on (state == enum(plugged))
+  #_[utterances=["when my ${p_name} plug is plugged",
+                "when somebody plugs in my ${p_name} plug",
+                "when the ${p_name} plug gets plugged",
+                "once my ${p_name} smart plug is connected",
+                "once my ${p_name} plug is switched on",
+                "when I turn on the ${p_name} plug"]];
+
+  stream (p_name : String) := edge( monitor @io.home-assistant.plug(name=p_name).state()) on (state == enum(unplugged))
+  #_[utterances=["when my ${p_name} plug is unplugged",
+                "when somebody unplugs my ${p_name} plug",
+                "when anyone takes out my ${p_name} plug",
+                "when the ${p_name} plug gets unplugged",
+                "once my ${p_name} smart plug is disconnected",
+                "once my ${p_name} plug is switched off",
+                "when I turn off the ${p_name} plug"]];
+}

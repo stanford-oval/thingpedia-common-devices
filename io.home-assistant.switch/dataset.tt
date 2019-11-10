@@ -1,0 +1,108 @@
+dataset @io.home-assistant.switch language "en" {
+
+  program := now => @io.home-assistant.switch.state() => notify
+  #_[utterances=["is my switch on?",
+                "check if the switch is on",
+                "is the switch turned on?",
+                "is my switch switched on?",
+                "check if the switch is switched on or off",
+                "is my switch turned on or turned off"]];
+
+  query := @io.home-assistant.switch.state()
+  #_[utterances=["if my switch is on or off",
+                "whether the switch is on or off",
+                "if the switch is turned on or turned off",
+                "whether my switch is switched on or switched off"]];
+
+  stream := monitor @io.home-assistant.switch.state()
+  #_[utterances=["when my switch changes state"]];
+
+  stream (p_state : Enum(on, off)) := edge( monitor @io.home-assistant.switch.state()) on (state == p_state)
+  #_[utterances=["when my switch turns ${p_state}",
+                "when the switch switches ${p_state}",
+                "if my switch becomes ${p_state}",
+                "when the switch is ${p_state}",
+                "if my switch changes to ${p_state}"]];
+
+  stream := edge( monitor @io.home-assistant.switch.state()) on (state == enum(on))
+  #_[utterances=["when my switch turns on",
+                "if the switch switches on",
+                "when the switch becomes on",
+                "the moment my switch changes to on",
+                "when my switch is on"]];
+
+  stream := edge( monitor @io.home-assistant.switch.state()) on (state == enum(off))
+  #_[utterances=["when the switch is turned off",
+                "once my switch is off",
+                "when I turn off my switch",
+                "if my switch gets switched off"]];
+
+  action (p_power :Enum(on,off))  := @io.home-assistant.switch.set_power(power=p_power)
+  #_[utterances=["turn ${p_power} my switch",
+                 "switch ${p_power} the switch",
+                 "${p_power} the switch"]];
+
+  action := @io.home-assistant.switch.set_power(power=enum(on))
+  #_[utterances=["on the switch",
+                "turn on my switch for me",
+                "turn the switch on"]];
+
+  action := @io.home-assistant.switch.set_power(power=enum(off))
+  #_[utterances=["flip my switch off",
+                "switch off my switch",
+                "help me turn off the switch",
+                "off my switch"]];
+
+  program (p_name : String) := now => @io.home-assistant.switch(name=p_name).state() => notify
+  #_[utterances=["is my ${p_name} switch on?",
+                "check if the ${p_name} switch is on",
+                "is the ${p_name} switch turned on?",
+                "is my ${p_name} switch switched on?",
+                "check if the ${p_name} switch is switched on or off",
+                "is my ${p_name} switch turned on or turned off"]];
+
+  query (p_name : String) := @io.home-assistant.switch(name=p_name).state()
+  #_[utterances=["if my ${p_name} switch is on or off",
+                "whether the ${p_name} switch is on or off",
+                "if the ${p_name} switch is turned on or turned off",
+                "whether my ${p_name} switch is switched on or switched off"]];
+
+  stream (p_name : String) := monitor @io.home-assistant.switch(name=p_name).state()
+  #_[utterances=["when my ${p_name} switch changes state"]];
+
+  stream (p_name : String, p_state : Enum(on, off)) := edge( monitor @io.home-assistant.switch(name=p_name).state()) on (state == p_state)
+  #_[utterances=["when my ${p_name} switch turns ${p_state}",
+                "when the ${p_name} switch switches ${p_state}",
+                "if my ${p_name} switch becomes ${p_state}",
+                "when the ${p_name} switch is ${p_state}",
+                "if my ${p_name} switch changes to ${p_state}"]];
+
+  stream (p_name : String) := edge( monitor @io.home-assistant.switch(name=p_name).state()) on (state == enum(on))
+  #_[utterances=["when my ${p_name} switch turns on",
+                "if the ${p_name} switch switches on",
+                "when the ${p_name} switch becomes on",
+                "the moment my ${p_name} switch changes to on",
+                "when my ${p_name} switch is on"]];
+
+  stream (p_name : String) := edge( monitor @io.home-assistant.switch(name=p_name).state()) on (state == enum(off))
+  #_[utterances=["when the ${p_name} switch is turned off",
+                "once my ${p_name} switch is off",
+                "when I turn off my ${p_name} switch",
+                "if my ${p_name} switch gets switched off"]];
+
+  action (p_name : String, p_power :Enum(on,off))  := @io.home-assistant.switch(name=p_name).set_power(power=p_power)
+  #_[utterances=["turn ${p_power} my ${p_name} switch",
+                 "switch ${p_power} the ${p_name} switch",
+                 "${p_power} the ${p_name} switch"]];
+
+  action (p_name : String) := @io.home-assistant.switch(name=p_name).set_power(power=enum(on))
+  #_[utterances=["on the ${p_name} switch",
+                "turn on my ${p_name} switch for me",
+                "turn the ${p_name} switch on"]];
+
+  action (p_name : String) := @io.home-assistant.switch(name=p_name).set_power(power=enum(off))
+  #_[utterances=["flip my ${p_name} switch off",
+                "switch off my ${p_name} switch",
+                "help me turn off the ${p_name} switch",
+                "off my ${p_name} switch"]];
+}
