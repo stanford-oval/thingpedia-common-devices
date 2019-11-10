@@ -57,21 +57,31 @@ module.exports = class NasaDevice extends Tp.BaseDevice {
             date_taken = yesterday;
         } else {
             date_taken.setHours(0,0,0);
-            // we don't get pictures for today, only up to yesterday
-            if (yesterday.getTime() < date_taken.getTime())
+            // we don't get pictures for the future
+            if (new Date() < date_taken)
                 return [];
+                //throw new Error(`Sorry, I am not a time machine, I cannot get photos from a future date`);
         }
 
         const sol0 = new Date('2012-08-06T00:00:00Z');
         const sol = Math.floor((date_taken.getTime() - sol0.getTime())/ 88775244.09);
 
+        // now we have "show more result", we should return all of them
         if (count === null || count === undefined)
-            count = 1;
+            count = 999;
 
         const url = "https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=" + sol + "&api_key=" + this._apiKey;
+
         return Tp.Helpers.Http.get(url).then((response) => {
             const resultObj = JSON.parse(response);
             const photos = resultObj.photos;
+
+            /*
+            if (photos.length === 0) {
+                if (yesterday.getTime() < date_taken.getTime())
+                    throw new Error('It seems Curiosity has not send back anything today');
+                throw new Error(`It seems Curiosity did not send back anything on ${date_taken.toDateString()}`);
+            }*/
 
             return photos.slice(0, count).map((photo) => {
                 const picture_url = photo.img_src;

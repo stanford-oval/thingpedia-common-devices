@@ -9,7 +9,7 @@
 
 const Tp = require('thingpedia');
 const STEAM_IDS = require('./steam_data.json');
-const STORE_URL = 'http://store.steampowered.com/api/appdetails?appids=APP_ID&cc=us&filters=price_overview';
+const STORE_URL = 'http://store.steampowered.com/api/appdetails?appids=APP_ID&cc=COUNTRY&filters=price_overview';
 const API_ISteamUser_ResolveVanityURL = 'http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=API_KEY&vanityurl=VANITY_URL';
 
 module.exports = class Steam extends Tp.BaseDevice {
@@ -40,7 +40,7 @@ module.exports = class Steam extends Tp.BaseDevice {
     ///////////////////////////////////
     // Begin Steam Store API Functions
     ///////////////////////////////////
-    get_get_price({ game_name }) {
+    get_get_price({ game_name, country }) {
         let app_id;
         if (isNaN(game_name)) {
             // App name is entered
@@ -49,7 +49,7 @@ module.exports = class Steam extends Tp.BaseDevice {
                 throw new Error("Can't make a bad game if you don't make the game. Half-Life 3 confirmed.");
             
             if(!Object.prototype.hasOwnProperty.call(STEAM_IDS, app_name))
-                throw new Error("I couldn't find a Steam app with that name. Check your spelling or try entering the ID instead.");
+                throw new Error("I couldn't find a Steam app with that name. The name has to be exactly the same with the one listed in Steam store. Check your spelling or try entering the ID instead.");
             
             app_id = STEAM_IDS[app_name];
         } else {
@@ -57,11 +57,14 @@ module.exports = class Steam extends Tp.BaseDevice {
             app_id = game_name;
         }
 
-        let url = STORE_URL.replace("APP_ID", app_id);
+        let url = STORE_URL.replace("APP_ID", app_id).replace('COUNTRY', country || 'us');
         return Tp.Helpers.Http.get(url).then((response) => {
             let parsed = JSON.parse(response);
-            if ("price_overview" in parsed[app_id]["data"])
-                return [{ price: parsed[app_id]["data"]["price_overview"]["final"]/100 }];
+            if ("price_overview" in parsed[app_id]["data"]) {
+                let price = parsed[app_id]["data"]["price_overview"]["final"] / 100;
+                let unit = parsed[app_id]["data"]["price_overview"]["currency"].toLowerCase();
+                return [{ price: new Tp.Value.Currency(price, unit) }];
+            }
             return [{ price: 0 }];
         });
 

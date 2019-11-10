@@ -11,7 +11,7 @@ const cheerio = require('cheerio');
 
 module.exports = class WikiCFP extends Tp.BaseDevice {
     get_search({ query }) {
-        const url = `http://www.wikicfp.com/cfp/servlet/tool.search?q=${query}&year=t`;
+        const url = `http://www.wikicfp.com/cfp/servlet/tool.search?q=${query}&year=n`;
 
         return Tp.Helpers.Http.get(url).then((response) => {
             const $ = cheerio.load(response);

@@ -61,5 +61,53 @@ dataset @light-bulb language "en" {
                    "flash the lights"]]
     #[id=52298589]
     #[name="FlashAlertLightsOnLightBulb"];
+    
+    program (p_name : String) := {
+  now => @light-bulb(name=p_name).power() => notify;
+}
+    #_[utterances=["are the ${p_name} lights off?",
+                   "is my ${p_name} light-bulb on or off?",
+                   "is my ${p_name} lightbulb on?",
+                   "check if my ${p_name} lightbulb is on",
+                   "check that my ${p_name} lights are on",
+                   "check if my ${p_name} lights are off",
+                   "check if the ${p_name} lights are on or off",
+                   "is my ${p_name} light bulb on?",
+                   "are the ${p_name} lights on?"]];
 
+    query (p_name : String) := @light-bulb(name=p_name).power()
+    #_[utterances=["the power state of my ${p_name} lights",
+                   "whether the ${p_name} lights are on or off",
+                   "the power state of the ${p_name} light bulb"]];
+
+    stream (p_name : String) := monitor (@light-bulb(name=p_name).power())
+    #_[utterances=["when I switch on or off my ${p_name} ligths",
+                   "when the state of my ${p_name} lights changes"]];
+
+    stream (p_name : String, p_power :Enum(on,off))  := edge (monitor (@light-bulb(name=p_name).power())) on power == p_power
+    #_[utterances=["when I turn ${p_power} the ${p_name} lights",
+                   "when somebody turns ${p_power} my ${p_name} lights",
+                   "when my ${p_name} lights are switched ${p_power}",
+                   "when I switch ${p_power} my ${p_name} ligths",
+                   "when my ${p_name} lights turn ${p_power}"]];
+
+    action (p_name : String, p_power :Enum(on,off))  := @light-bulb(name=p_name).set_power(power=p_power)
+    #_[utterances=["turn $p_power my ${p_name} light bulb",
+                   "turn $p_power the ${p_name} light",
+                   "turn $p_power the ${p_name} lights",
+                   "turn $p_power the lights called ${p_name}",
+                   "turn $p_power the lights in the ${p_name}",
+                   "set $p_power the ${p_name} lights"]];
+
+    action (p_name : String) := @light-bulb(name=p_name).color_loop()
+    #_[utterances=["color loop the ${p_name} lights",
+                   "loop the color in my ${p_name} light bulb",
+                   "start disco lights for my ${p_name} lights"]];
+
+    action (p_name : String) := @light-bulb(name=p_name).alert_long()
+    #_[utterances=["flash the ${p_name} lights",
+                   "alert me by flashing the ${p_name} lights"]];
+
+    action (p_name : String) := @light-bulb(name=p_name).set_power(power=enum(off))
+    #_[utterances=["shut down the ${p_name} lights"]];
 }
