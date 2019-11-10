@@ -168,12 +168,12 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
                 }
             }
             return this._subscribeState(() => {
-                return [{state: undefined, value: value}];
+                return {state: undefined, value: value};
             });
         } else if (this.domain === 'binary_sensor') {
             let state = this.deviceStateMapping[this.state.state];
             return this._subscribeState(() => {
-                return [{state: state, value: undefined}];
+                return {state: state, value: undefined};
             });
         }
     }

@@ -11,12 +11,12 @@ const HomeAssistantDevice = require('./base');
 
 module.exports = class HomeAssistantVacuum extends HomeAssistantDevice {
 	async get_state() {
-    	return [{ state: this.state.state }];
+    	return [{ state: this.state.state, status : this.state.attributes.status ? this.state.attributes.status.toLowerCase() : undefined }];
     }
     // note: subscribe_ must NOT be async, or an ImplementationError will occur at runtime
     subscribe_state() {
         return this._subscribeState(() => {
-            return { state: this.state.state };
+            return { state: this.state.state, status : this.state.attributes.status ? this.state.attributes.status.toLowerCase() : undefined };
         });
     }
     async do_set_power({ power }) {

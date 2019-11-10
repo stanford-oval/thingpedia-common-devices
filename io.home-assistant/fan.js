@@ -32,7 +32,14 @@ module.exports = class HomeAssistantFan extends HomeAssistantDevice {
     // note: subscribe_ must NOT be async, or an ImplementationError will occur at runtime
     subscribe_oscillation() {
         return this._subscribeState(() => {
-            return { state: this.state.state };
+            if (this.state.attributes.oscillating === undefined) {
+                throw new Error("Oh no! I couldn't retrieve the oscillation state of your fan");
+            } else {
+                if (this.state.attributes.oscillating)
+                    return { state: 'oscillating' };
+                else
+                    return { state: 'not_oscillating'};
+            }
         });
     }
     async do_set_power({ power }) {

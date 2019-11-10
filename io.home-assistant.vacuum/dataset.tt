@@ -6,36 +6,52 @@ dataset @io.home-assistant.vacuum language "en" {
                 "is the vacuum turned on?",
                 "is the vacuum switched on?"
                 "check if my vacuum is turned on or off",
-                "is my vacuum switched on or switched off?"]];
+                "is my vacuum switched on or switched off?",
+                "is the vacuum cleaning?",
+                "is the vacuum charging?",
+                "is the vacuum docked?",
+                "what is my vacuum doing?",
+                "what is my vacuum up to?"]];
 
   query := @io.home-assistant.vacuum.state()
   #_[utterances=["if the vacuum is on or off",
                 "whether my vacuum is on or off",
                 "if the vacuum is turned on or off",
-                "whether my vacuum is switched on or switched off"]];
+                "whether my vacuum is switched on or switched off",
+                "whether my vacuum is cleaning",
+                "whether my vacuum getting charged",
+                "whether my vacuum is docked"]];
 
   stream := monitor @io.home-assistant.vacuum.state()
-  #_[utterances=["when my vacuum changes state"]];
+  #_[utterances=["when my vacuum turns on or off",
+                 "when my vacuum starts or stops cleaning",]];
 
-  stream (p_state : Enum(on, off)) := edge( monitor @io.home-assistant.vacuum.state()) on (state == p_state)
-  #_[utterances=["when my vacuum turns ${p_state}",
-                "if my vacuum switches ${p_state}",
-                "when the vacuum is ${p_state}"]];
+  stream (p_state : Enum(on, off, docked)) := edge( monitor @io.home-assistant.vacuum.state()) on (state == p_state)
+  #_[utterances=["when my vacuum is ${p_state}",
+                "when the vacuum cleaner is ${p_state}"]];
 
   stream := edge( monitor @io.home-assistant.vacuum.state()) on (state == enum(on))
   #_[utterances=["when my vacuum turns on",
-                "if my vacuum switches on",
+                "once my vacuum switches on",
                 "when the vacuum is on",
-                "if my vacuum is switched on",
+                "once my vacuum is switched on",
                 "when I turn on my vacuum"]];
 
   stream := edge( monitor @io.home-assistant.vacuum.state()) on (state == enum(off))
   #_[utterances=["when the vacuum turns off",
-                "if my vacuum turns off",
+                "once my vacuum turns off",
                 "once the vacuum switches off",
                 "when my vacuum is off",
-                "when my vacuum is turned off",
+                "when I turn off the vacuum",
                 "when my vacuum gets switched off"]];
+
+  stream := edge( monitor @io.home-assistant.vacuum.state()) on (state == enum(docked))
+  #_[utterances=["when the vacuum is docking",
+                "once my vacuum returns to base",
+                "once the vacuum gets docked",
+                "when my vacuum starts charging",
+                "when I dock the vacuum",
+                "when my vacuum goes back to base"]];
 
   action (p_power :Enum(on,off))  := @io.home-assistant.vacuum.set_power(power=p_power)
   #_[utterances=["turn ${p_power} my vacuum",
@@ -81,41 +97,57 @@ dataset @io.home-assistant.vacuum language "en" {
                  "ask my vacuum to stop cleaning"]];
 
   program (p_name : String) := now => @io.home-assistant.vacuum(name=p_name).state() => notify
-  #_[utterances=["is my ${p_name} vacuum on?",
+  #_[utterances=["is my vacuum on?",
                 "check if my ${p_name} vacuum is on",
                 "is the ${p_name} vacuum turned on?",
                 "is the ${p_name} vacuum switched on?"
                 "check if my ${p_name} vacuum is turned on or off",
-                "is my ${p_name} vacuum switched on or switched off?"]];
+                "is my ${p_name} vacuum switched on or switched off?",
+                "is the ${p_name} vacuum cleaning?",
+                "is the ${p_name} vacuum charging?",
+                "is the ${p_name} vacuum docked?",
+                "what is my ${p_name} vacuum doing?",
+                "what is my ${p_name} vacuum up to?"]];
 
   query (p_name : String) := @io.home-assistant.vacuum(name=p_name).state()
-  #_[utterances=["if my ${p_name} vacuum is on or off",
-                "whether the ${p_name} vacuum is on or off",
-                "if my ${p_name} vacuum is turned on or off",
-                "whether the ${p_name} vacuum is switched on or switched off"]];
+  #_[utterances=["if the vacuum is on or off",
+                "whether my ${p_name} vacuum is on or off",
+                "if the ${p_name} vacuum is turned on or off",
+                "whether my ${p_name} vacuum is switched on or switched off",
+                "whether my ${p_name} vacuum is cleaning",
+                "whether my ${p_name} vacuum getting charged",
+                "whether my ${p_name} vacuum is docked"]];
 
   stream (p_name : String) := monitor @io.home-assistant.vacuum(name=p_name).state()
-  #_[utterances=["when my ${p_name} vacuum changes state"]];
+  #_[utterances=["when my ${p_name} vacuum turns on or off",
+                 "when my ${p_name} vacuum starts or stops cleaning",]];
 
-  stream (p_name : String, p_state : Enum(on, off)) := edge( monitor @io.home-assistant.vacuum(name=p_name).state()) on (state == p_state)
-  #_[utterances=["when my ${p_name} vacuum turns ${p_state}",
-                "if my ${p_name} vacuum switches ${p_state}",
-                "when the ${p_name} vacuum is ${p_state}"]];
+  stream (p_name : String, p_state : Enum(on, off, docked)) := edge( monitor @io.home-assistant.vacuum(name=p_name).state()) on (state == p_state)
+  #_[utterances=["when my ${p_name} vacuum is ${p_state}",
+                "when the ${p_name} vacuum cleaner is ${p_state}"]];
 
   stream (p_name : String) := edge( monitor @io.home-assistant.vacuum(name=p_name).state()) on (state == enum(on))
   #_[utterances=["when my ${p_name} vacuum turns on",
-                "if my ${p_name} vacuum switches on",
+                "once my ${p_name} vacuum switches on",
                 "when the ${p_name} vacuum is on",
-                "if my ${p_name} vacuum is switched on",
+                "once my ${p_name} vacuum is switched on",
                 "when I turn on my ${p_name} vacuum"]];
 
   stream (p_name : String) := edge( monitor @io.home-assistant.vacuum(name=p_name).state()) on (state == enum(off))
   #_[utterances=["when the ${p_name} vacuum turns off",
-                "if my ${p_name} vacuum turns off",
+                "once my ${p_name} vacuum turns off",
                 "once the ${p_name} vacuum switches off",
                 "when my ${p_name} vacuum is off",
-                "when my ${p_name} vacuum is turned off",
+                "when I turn off the ${p_name} vacuum",
                 "when my ${p_name} vacuum gets switched off"]];
+
+  stream (p_name : String) := edge( monitor @io.home-assistant.vacuum(name=p_name).state()) on (state == enum(docked))
+  #_[utterances=["when the ${p_name} vacuum is docking",
+                "once my ${p_name} vacuum returns to base",
+                "once the ${p_name} vacuum gets docked",
+                "when my ${p_name} vacuum starts charging",
+                "when I dock the ${p_name} vacuum",
+                "when my ${p_name} vacuum goes back to base"]];
 
   action (p_name: String, p_power :Enum(on,off)) := monitor @io.home-assistant.vacuum(name=p_name).set_power(power=p_power)
   #_[utterances=["turn ${p_power} my ${p_name} vacuum",
