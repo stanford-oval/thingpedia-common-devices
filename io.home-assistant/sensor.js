@@ -144,7 +144,6 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
     // note: subscribe_ must NOT be async, or an ImplementationError will occur at runtime
     subscribe_state() {
         if (this.domain === 'sensor') {
-            let value = this.state.state
             let unit = this.state.attributes.unit_of_measurement;
             let value = parseFloat(this.state.state);
             if (this.device_class === 'temperature') {

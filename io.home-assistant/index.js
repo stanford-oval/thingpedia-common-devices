@@ -57,17 +57,13 @@ const DOMAIN_TO_TP_KIND = {
     'sensor_temperature': 'io.home-assistant.temperature',
     // 'sensor_timestamp': 'io.home-assistant.timestamp',
     'sensor_vibration': 'io.home-assistant.vibration',
-    'cover_awning': 'io.home-assistant.awning',
-    'cover_blind': 'io.home-assistant.blind',
-    'cover_curtain': 'io.home-assistant.curtain',
-    'cover_damper': 'io.home-assistant.damper',
-    'cover_shade': 'io.home-assistant.shade',
-    'cover_shutter': 'io.home-assistant.shutter',
+    'cover_active': 'io.home-assistant.cover',
     'media_player_speaker': 'io.home-assistant.speaker',
     'media_player_tv': 'io.home-assistant.tv'
 };
 const SUBDEVICES = {
     'light-bulb': HomeAssistantLightbulbDevice,
+    'io.home-assistant.cover': HomeAssistantCover,
     'io.home-assistant.window': HomeAssistantWindow,
     'io.home-assistant.fan': HomeAssistantFan,
     'io.home-assistant.switch': HomeAssistantSwitch,
@@ -79,8 +75,6 @@ const SUBDEVICES = {
 Object.entries(DOMAIN_TO_TP_KIND).forEach(([key,value]) => {
     if (key.includes('sensor')) {
         SUBDEVICES[value] = class extends HomeAssistantSensor {};
-    } else if (key.includes('cover')) {
-        SUBDEVICES[value] = class extends HomeAssistantCover {};
     }
 });
 
@@ -112,7 +106,7 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
         } else if (domain === 'cover' && attributes.device_class === 'garage') {
             kind = DOMAIN_TO_TP_KIND['sensor_garage_door'];
         } else if (domain === 'cover') {
-            kind = DOMAIN_TO_TP_KIND[`cover_${attributes.device_class}`];
+            kind = DOMAIN_TO_TP_KIND['cover_active'];
         } else if (domain === 'media_player') {
             kind = DOMAIN_TO_TP_KIND[`media_player_${attributes.device_class}`];
         } else if (domain === 'lock') {
