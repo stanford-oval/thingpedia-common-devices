@@ -1,32 +1,4 @@
 dataset @org.arxiv language "en" {
-    query (p_query :String)  := @org.arxiv.query(query=p_query)
-    #_[utterances=["papers related to ${p_query} on arxiv",
-                   "paper about ${p_query} on arxiv",
-                   "papers related to ${p_query} on arxiv",
-                   "paper related to ${p_query} on arxiv"]]
-    #[id=53479460]
-    #[name=""];
-
-    query (p_category :Entity(org.arxiv:category))  := @org.arxiv.query(category=p_category)
-    #_[utterances=["paper in category ${p_category} on arxiv",
-                   "latest papers in category ${p_category} on arxiv"]]
-    #[id=53479464]
-    #[name=""];
-
-    query (p_query :String, p_category :Entity(org.arxiv:category))  := @org.arxiv.query(query=p_query, category=p_category)
-    #_[utterances=["papers about ${p_query} in category ${p_category} on arxiv",
-                   "latest work about ${p_query} in category ${p_category} on arxiv"]]
-    #[id=53479466]
-    #[name=""];
-
-    query (p_author :String)  := @org.arxiv.query(author=p_author)
-    #_[utterances=["${p_author}'s paper",
-                   "papers by ${p_author}",
-                   "paper by ${p_author}",
-                   "${p_author}'s papers "]]
-    #[id=53479468]
-    #[name=""];
-
     stream (p_author :String)  := monitor (@org.arxiv.query(author=p_author))
     #_[utterances=["when ${p_author} publishes a new paper on arxiv"]]
     #[id=53479471]
@@ -41,5 +13,33 @@ dataset @org.arxiv language "en" {
     #_[utterances=["when a paper about ${p_query} is pubshed on arxiv"]]
     #[id=53479473]
     #[name="MonitorSearchPapersOnArXivWithQuery"];
+
+    query (p_query :String)  := @org.arxiv.query(query=p_query)
+    #_[utterances=["papers related to ${p_query} on arxiv",
+                   "paper about ${p_query} on arxiv",
+                   "papers related to ${p_query} on arxiv",
+                   "paper related to ${p_query} on arxiv"]]
+    #[id=54299612]
+    #[name="QueryWithQuery"];
+
+    query (p_category :Entity(org.arxiv:category))  := @org.arxiv.query(category=p_category)
+    #_[utterances=["paper in category ${p_category} on arxiv",
+                   "latest papers in category ${p_category} on arxiv"]]
+    #[id=54299616]
+    #[name="QueryWithCategory"];
+
+    query (p_query :String, p_category :Entity(org.arxiv:category))  := @org.arxiv.query(query=p_query, category=p_category)
+    #_[utterances=["papers about ${p_query} in category ${p_category} on arxiv",
+                   "latest work about ${p_query} in category ${p_category} on arxiv"]]
+    #[id=54299618]
+    #[name="QueryWithQueryWithCategory"];
+
+    query (p_author :String)  := @org.arxiv.query(author=p_author)
+    #_[utterances=["${p_author}'s paper",
+                   "papers by ${p_author}",
+                   "paper by ${p_author}",
+                   "${p_author}'s papers "]]
+    #[id=54299620]
+    #[name="QueryWithAuthor"];
 
 }

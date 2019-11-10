@@ -1,14 +1,31 @@
 dataset @org.thingpedia.rss language "en" {
     stream  := monitor (@org.thingpedia.rss.get_post())
-    #_[utterances=["when there is a new post on rss feed",
-                   "when they publish something on the rss feed"]]
-    #[id=1688026]
-    #[name=""];
+    #_[utterances=["when they publish something on the rss feed",
+                   "when there is a new post on rss feed"]]
+    #[id=54031601]
+    #[name="MonitorGetPost"];
 
     query  := @org.thingpedia.rss.get_post()
-    #_[utterances=["latest posts on an atom feed",
-                   "latest posts on an rss feed"]]
-    #[id=1688027]
-    #[name=""];
+    #_[utterances=["latest posts on an rss feed",
+                   "an rss feed",
+                   "latest posts on an atom feed"]]
+    #[id=54031603]
+    #[name="GetPost"];
+
+    query  := @org.thingpedia.rss(all=true).get_post()
+    #_[utterances=["an rss feed",
+                   "all my rss feeds",
+                   "latest posts in all my rss feeds",
+                   "latest posts in all my rss subscriptions",
+                   "all my rss feed"]]
+    #[id=54031606]
+    #[name="GetPost1"];
+
+    stream  := monitor (@org.thingpedia.rss(all=true).get_post())
+    #_[utterances=["when any of my rss feeds update",
+                   "when any of my rss subscriptions update",
+                   "when there is a new post on any of my rss feeds"]]
+    #[id=54031611]
+    #[name="MonitorGetPost1"];
 
 }
