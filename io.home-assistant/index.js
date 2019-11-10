@@ -31,7 +31,7 @@ const DOMAIN_TO_TP_KIND = {
     'vacuum': 'io.home-assistant.vacuum',
     'sensor_air': 'io.home-assistant.air',
     'sensor_battery': 'io.home-assistant.battery',
-    'sensor_cold': 'io.home-assistant.cold',
+    // 'sensor_cold': 'io.home-assistant.cold',
     'sensor_connectivity': 'io.home-assistant.connectivity',
     'sensor_door': 'io.home-assistant.door',
     'sensor_garage_door': 'io.home-assistant.garage-door',
@@ -102,6 +102,8 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
             kind = DOMAIN_TO_TP_KIND['window'];
         } else if (domain === 'binary_sensor' && ['smoke', 'gas'].includes(attributes.device_class)) {
             kind = DOMAIN_TO_TP_KIND['sensor_air']
+        } else if (domain === 'binary_sensor' && ['heat', 'cold'].includes(attributes.device_class)) {
+            kind = DOMAIN_TO_TP_KIND['sensor_heat'];
         } else if ((domain === 'sensor') || (domain === 'binary_sensor') || ((domain === 'cover' && attributes.device_class === 'door'))) {
             kind = DOMAIN_TO_TP_KIND[`sensor_${attributes.device_class}`];
         } else if (domain === 'cover' && attributes.device_class === 'garage') {
