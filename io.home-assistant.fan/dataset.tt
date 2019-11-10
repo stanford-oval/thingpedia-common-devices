@@ -18,15 +18,15 @@ dataset @io.home-assistant.fan language "en" {
                 "if my fan is switched on or switched off"]];
 
   stream := monitor @io.home-assistant.fan.state()
-  #_[utterances=["when my fan changes state",
-                 "when the fan changes"]];
+  #_[utterances=["when my fan turns on or off",
+                 "when the fan switches on or off",]];
 
   stream (p_state : Enum(on, off)) := edge( monitor @io.home-assistant.fan.state()) on (state == p_state)
   #_[utterances=["when the fan turns ${p_state}",
                 "when my fan is ${p_state}",
                 "when the fan changes to ${p_state}",
                 "if my fan switches ${p_state}",
-                "if my fan becomes ${p_state}""]];
+                "if my fan becomes ${p_state}"]];
 
   stream := edge( monitor @io.home-assistant.fan.state()) on (state == enum(on))
   #_[utterances=["when my fan gets turned on",
@@ -39,6 +39,35 @@ dataset @io.home-assistant.fan language "en" {
                 "when my fan gets switched off",
                 "when the fan is off",
                 "if I switch off my fan"]];
+
+  program := now => @io.home-assistant.fan.oscillation() => notify
+  #_[utterances=["is the fan oscillating?",
+                "check if my fan is swinging",
+                "is the fan moving?",
+                "check if my fan is oscillating",
+                "did the fan stop oscillating?",
+                "did the fan stop swinging?"]];
+
+  query := @io.home-assistant.fan.oscillation()
+  #_[utterances=["if the fan is oscillating or not",
+                "whether my fan is oscillating or not",
+                "if my fan is oscillating or stationary"]];
+
+  stream := monitor @io.home-assistant.fan.oscillation()
+  #_[utterances=["when my fan starts or stops oscillating"]];
+
+  stream (p_state : Enum(oscillating, not_oscillating)) := edge( monitor @io.home-assistant.fan.oscillation()) on (state == p_state)
+  #_[utterances=["when the fan is ${p_state}"]];
+
+  stream := edge( monitor @io.home-assistant.fan.oscillation()) on (state == enum(oscillating))
+  #_[utterances=["when my fan starts oscillating",
+                "when I oscillate the fan",
+                "when my fan is swinging"]];
+
+  stream := edge( monitor @io.home-assistant.fan.oscillation()) on (state == enum(not_oscillating))
+  #_[utterances=["when my fan stops oscillating",
+                "when the fan stops swinging"
+                "when the fan oscillation stops"]];
 
   action (p_power :Enum(on,off))  := @io.home-assistant.fan.set_power(power=p_power)
   #_[utterances=["turn ${p_power} my fan",
@@ -68,7 +97,7 @@ dataset @io.home-assistant.fan language "en" {
   action := @io.home-assistant.fan.set_oscillation(oscillation=enum(off))
   #_[utterances=["stop my fan from oscillating",
                  "stop the fan from turning",
-                 "stop my oscillating fan",
+                 "halt my oscillating fan",
                  "stop turning the fan",
                  "stop moving the fan",
                  "stop the fan from swinging"]];
@@ -91,8 +120,8 @@ dataset @io.home-assistant.fan language "en" {
                 "if my ${p_name} fan is switched on or switched off"]];
 
   stream (p_name : String) := monitor @io.home-assistant.fan(name=p_name).state()
-  #_[utterances=["when my ${p_name} fan changes state",
-                 "when the ${p_name} fan changes"]];
+  #_[utterances=["when my ${p_name} fan turns on or off",
+                 "when the ${p_name} fan switches on or off"]];
 
   stream (p_name : String, p_state : Enum(on, off)) := edge( monitor @io.home-assistant.fan(name=p_name).state()) on (state == p_state)
   #_[utterances=["when the ${p_name} fan turns ${p_state}",
@@ -112,6 +141,35 @@ dataset @io.home-assistant.fan language "en" {
                 "when my ${p_name} fan gets switched off",
                 "when the ${p_name} fan is off",
                 "if I switch off my ${p_name} fan"]];
+
+  program (p_name : String) := now => @io.home-assistant.fan(name=p_name).oscillation() => notify
+  #_[utterances=["is the ${p_name} fan oscillating?",
+                "check if my ${p_name} fan is swinging",
+                "is the ${p_name} fan moving?",
+                "check if my ${p_name} fan is oscillating",
+                "did the ${p_name} fan stop oscillating?",
+                "did the ${p_name} fan stop swinging?"]];
+
+  query (p_name : String) := @io.home-assistant.fan(name=p_name).oscillation()
+  #_[utterances=["if the ${p_name} fan is oscillating or not",
+                "whether my ${p_name} fan is oscillating or not",
+                "if my ${p_name} fan is oscillating or stationary"]];
+
+  stream (p_name : String) := monitor @io.home-assistant.fan(name=p_name).oscillation()
+  #_[utterances=["when my ${p_name} fan starts or stops oscillating"]];
+
+  stream (p_name : String, p_state : Enum(oscillating, not_oscillating)) := edge( monitor @io.home-assistant.fan(name=p_name).oscillation()) on (state == p_state)
+  #_[utterances=["when the ${p_name} fan is ${p_state}"]];
+
+  stream (p_name : String) := edge( monitor @io.home-assistant.fan(name=p_name).oscillation()) on (state == enum(oscillating))
+  #_[utterances=["when my ${p_name} fan starts oscillating",
+                "when I oscillate the ${p_name} fan",
+                "when my ${p_name} fan is swinging"]];
+
+  stream (p_name : String) := edge( monitor @io.home-assistant.fan(name=p_name).oscillation()) on (state == enum(not_oscillating))
+  #_[utterances=["when my ${p_name} fan stops oscillating",
+                "when the ${p_name} fan stops swinging"
+                "when the ${p_name} fan oscillation stops"]];
 
   action (p_name : String) (p_power :Enum(on,off))  := @io.home-assistant.fan(name=p_name).set_power(power=p_power)
   #_[utterances=["turn ${p_power} my ${p_name} fan",
@@ -141,7 +199,7 @@ dataset @io.home-assistant.fan language "en" {
   action (p_name : String) := @io.home-assistant.fan(name=p_name).set_oscillation(oscillation=enum(off))
   #_[utterances=["stop my ${p_name} fan from oscillating",
                  "stop the ${p_name} fan from turning",
-                 "stop my oscillating ${p_name} fan",
+                 "halt my oscillating ${p_name} fan",
                  "stop turning the ${p_name} fan",
                  "stop moving the ${p_name} fan",
                  "stop the ${p_name} fan from swinging"]];

@@ -16,6 +16,11 @@ abstract class @io.home-assistant.fan
   #_[confirmation="turn $power $__device"]
   #[confirm=true];
 
+  monitorable query oscillation(out state : Enum(oscillating,not_oscillating))
+  #_[canonical="fan oscillation state"]
+  #_[confirmation="the oscillation of $__device"]
+  #_[formatted=["The fan is ${state:enum}"]];
+
   action set_oscillation(in req oscillation: Enum(on,off) #_[prompt="Do you want to turn oscillation on or off?"] #_[canonical="oscillation"])
   #_[canonical="set oscillation on fan"]
   #_[confirmation="turn $oscillation oscillation for $__device"]
