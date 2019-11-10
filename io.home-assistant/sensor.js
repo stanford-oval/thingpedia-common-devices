@@ -43,10 +43,6 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
                     on: 'detecting',
                     off: 'not_detecting'
                 },
-                heat: {
-                    on: 'hot',
-                    off: 'normal'
-                },
                 light: {
                     on: 'detecting',
                     off: 'not_detecting'
@@ -108,6 +104,17 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
                     off: 'not_detecting'
                 }
             };
+            if (['cold'].includes(this.device_class)) {
+                supportedDeviceClasses.heat = {
+                    on: 'cold',
+                    off: 'normal',
+                }
+            } else if (['hot'].includes(this.device_class)) {
+                supportedDeviceClasses.heat = {
+                    on: 'hot',
+                    off: 'normal',
+                }
+            }
             this.deviceStateMapping = supportedDeviceClasses[this.device_class] || {on: 'on', off: 'off'};
         }
     }
