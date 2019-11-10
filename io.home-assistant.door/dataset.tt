@@ -1,0 +1,83 @@
+dataset @io.home-assistant.door language "en" {
+
+  program := now => @io.home-assistant.door.state() => notify
+  #_[utterances=["is my door open?",
+                 "is my door closed?",
+                 "check whether my door is open or closed",
+                 "is the door ajar?",
+                 "did I leave the door open?",
+                 "did I forget to close my door?",
+                 "did somebody open the door?",
+                 "did anyone close the door",
+                 "was the door shut?"]];
+
+  query := @io.home-assistant.door.state()
+  #_[utterances=["if the door is open or closed",
+                 "whether the door is open or closed",
+                 "whether anyone opened the door"]];
+
+  stream := monitor @io.home-assistant.door.state()
+  #_[utterances=["when the door is opened or closed"]];
+
+  stream (p_state : Enum(open, closed)) := edge( monitor @io.home-assistant.door.state()) on (state == p_state)
+  #_[utterances=["when the door is ${p_state}",
+                "when my door gets ${p_state}"]];
+
+  stream := edge( monitor @io.home-assistant.door.state()) on (state == enum(open))
+  #_[utterances=["when my door opens",
+                "when I open the door",
+                "the moment I open the door",
+                "once I leave the door open",
+                "when someone opens the door",
+                "whoever opens the door",
+                "once anyone opens the door"]];
+
+  stream := edge( monitor @io.home-assistant.door.state()) on (state == enum(closed))
+  #_[utterances=["when my door closes",
+                "when I close the door",
+                "the moment I close the door",
+                "once I leave the door closed",
+                "when someone closes the door",
+                "whoever closes the door",
+                "once anyone closes the door"]];
+
+  program (p_name : String) := now => @io.home-assistant.door(name=p_name).state() => notify
+  #_[utterances=["is my ${p_name} door open?",
+                 "is my ${p_name} door closed?",
+                 "check whether my ${p_name} door is open or closed",
+                 "is the ${p_name} door ajar?",
+                 "did I leave the ${p_name} door open?",
+                 "did I forget to close my ${p_name} door?",
+                 "did somebody open the ${p_name} door?",
+                 "did anyone close the ${p_name} door",
+                 "was the ${p_name} door shut?"]];
+
+  query (p_name : String) := @io.home-assistant.door(name=p_name).state()
+  #_[utterances=["if the ${p_name} door is open or closed",
+                 "whether the ${p_name} door is open or closed"]];
+
+  stream (p_name : String) := monitor @io.home-assistant.door(name=p_name).state()
+  #_[utterances=["when the ${p_name} door is opened or closed"]];
+
+  stream (p_name : String, p_state : Enum(open, closed)) := edge( monitor @io.home-assistant.door(name=p_name).state()) on (state == p_state)
+  #_[utterances=["when the ${p_name} door is ${p_state}",
+                "when my ${p_name} door gets ${p_state}"]];
+
+  stream (p_name : String) := edge( monitor @io.home-assistant.door(name=p_name).state()) on (state == enum(open))
+  #_[utterances=["when my ${p_name} door opens",
+                "when I open the ${p_name} door",
+                "the moment I open the ${p_name} door",
+                "once I leave the ${p_name} door open",
+                "when someone opens the ${p_name} door",
+                "whoever opens the ${p_name} door",
+                "once anyone opens the ${p_name} door"]];
+
+  stream (p_name : String) := edge( monitor @io.home-assistant.door(name=p_name).state()) on (state == enum(closed))
+  #_[utterances=["when my ${p_name} door closes",
+                "when I close the ${p_name} door",
+                "the moment I close the ${p_name} door",
+                "once I leave the ${p_name} door closed",
+                "when someone closes the ${p_name} door",
+                "whoever closes the ${p_name} door",
+                "once anyone closes the ${p_name} door"]];
+}

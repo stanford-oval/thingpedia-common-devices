@@ -1,0 +1,92 @@
+dataset @io.home-assistant.window language "en" {
+
+  program := now => @io.home-assistant.window.state() => notify
+  #_[utterances=["is my window open?",
+                 "is my window closed?",
+                 "check if my window is opened",
+                 "did I close the window?",
+                 "did anyone open the window?",
+                 "did somebody shut the window?"]];
+
+  query := @io.home-assistant.window.state()
+  #_[utterances=["if my window is open or closed",
+                 "whether my window is open or closed",
+                 "if I opened the window",
+                 "whether the window is shut",
+                 "whether anyone closed the window"]];
+
+  stream := monitor @io.home-assistant.window.state()
+  #_[utterances=["when the state of the window changes"]];
+
+  stream (p_state : Enum(open, closed)) := edge( monitor @io.home-assistant.window.state()) on (state == p_state)
+  #_[utterances=["when the window is ${p_state}",
+                "when my window gets ${p_state}"]];
+
+  stream := edge( monitor @io.home-assistant.window.state()) on (state == enum(open))
+  #_[utterances=["when my window is open",
+                 "when anyone opens the window",
+                 "once somebody opens the window"]];
+
+  stream := edge( monitor @io.home-assistant.window.state()) on (state == enum(closed))
+  #_[utterances=["when my window closes",
+                 "when anyone shuts the window",
+                 "once somebody closes the window",
+                 "the moment the window gets shut"]];
+
+  action (p_state :Enum(open,close)) := @io.home-assistant.window.set_openclose(state=p_state)
+  #_[utterances=["${p_state} my window",
+                 "${p_state} the window"]];
+
+  action := @io.home-assistant.window.set_openclose(state=enum(open))
+  #_[utterances=["open my window for me",
+                "help me open the window"]];
+
+  action := @io.home-assistant.window.set_openclose(state=enum(close))
+  #_[utterances=["close my window",
+                "shut the window"]];
+
+  program (p_name : String) := now => @io.home-assistant.window(name=p_name).state() => notify
+  #_[utterances=["is my ${p_name} window open?",
+                 "is my ${p_name} window closed?",
+                 "check if my ${p_name} window is opened",
+                 "did I close the ${p_name} window?",
+                 "did anyone open the ${p_name} window?",
+                 "did somebody shut the ${p_name} window?"]];
+
+  query (p_name : String) := @io.home-assistant.window(name=p_name).state()
+  #_[utterances=["if my ${p_name} window is open or closed",
+                 "whether my ${p_name} window is open or closed",
+                 "if I opened the ${p_name} window",
+                 "whether the ${p_name} window is shut",
+                 "whether anyone closed the ${p_name} window"]];
+
+  stream (p_name : String) := monitor @io.home-assistant.window(name=p_name).state()
+  #_[utterances=["when the ${p_name} window is opened or closed"]];
+
+  stream (p_name : String, p_state : Enum(open, closed)) := edge( monitor @io.home-assistant.window(name=p_name).state()) on (state == p_state)
+  #_[utterances=["when the ${p_name} window is ${p_state}",
+                "when my ${p_name} window gets ${p_state}"]];
+
+  stream (p_name : String) := edge( monitor @io.home-assistant.window(name=p_name).state()) on (state == enum(open))
+  #_[utterances=["when my ${p_name} window is open",
+                 "when anyone opens the ${p_name} window",
+                 "once somebody opens the ${p_name} window"]];
+
+  stream (p_name : String) := edge( monitor @io.home-assistant.window(name=p_name).state()) on (state == enum(closed))
+  #_[utterances=["when my ${p_name} window closes",
+                 "when anyone shuts the ${p_name} window",
+                 "once somebody closes the ${p_name} window",
+                 "the moment the ${p_name} window gets shut"]];
+
+  action (p_name : String, p_state :Enum(open,close)) := @io.home-assistant.window(name=p_name).set_openclose(state=p_state)
+  #_[utterances=["${p_state} my ${p_name} window",
+                 "${p_state} the ${p_name} window"]];
+
+  action (p_name : String) := @io.home-assistant.window(name=p_name).set_openclose(state=enum(open))
+  #_[utterances=["open my ${p_name} window for me",
+                "help me open the ${p_name} window"]];
+
+  action (p_name : String) := @io.home-assistant.window(name=p_name).set_openclose(state=enum(close))
+  #_[utterances=["close my ${p_name} window",
+                "shut the ${p_name} window"]];
+}
