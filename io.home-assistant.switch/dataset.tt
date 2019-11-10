@@ -34,7 +34,7 @@ dataset @io.home-assistant.switch language "en" {
   stream := edge( monitor @io.home-assistant.switch.state()) on (state == enum(off))
   #_[utterances=["when the switch is turned off",
                 "once my switch is off",
-                "when I turn off my switch"
+                "when I turn off my switch",
                 "if my switch gets switched off"]];
 
   action (p_power :Enum(on,off))  := @io.home-assistant.switch.set_power(power=p_power)
@@ -87,7 +87,7 @@ dataset @io.home-assistant.switch language "en" {
   stream (p_name : String) := edge( monitor @io.home-assistant.switch(name=p_name).state()) on (state == enum(off))
   #_[utterances=["when the ${p_name} switch is turned off",
                 "once my ${p_name} switch is off",
-                "when I turn off my ${p_name} switch"
+                "when I turn off my ${p_name} switch",
                 "if my ${p_name} switch gets switched off"]];
 
   action (p_name : String, p_power :Enum(on,off))  := @io.home-assistant.switch(name=p_name).set_power(power=p_power)

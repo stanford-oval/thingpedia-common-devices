@@ -51,7 +51,7 @@ dataset @io.home-assistant.light language "en" {
                 "when the ${p_name} light sensor changes to ${p_state} light"]];
 
   stream (p_name : String) := edge( monitor @io.home-assistant.light(name=p_name).state()) on (state == enum(detecting))
-  #_[utterances=["when the light sensor starts detecting light",
+  #_[utterances=["when the ${p_name} light sensor starts detecting light",
                 "if the ${p_name} light sensor senses light",
                 "when the ${p_name} light sensor sees any light",
                 "when the ${p_name} light sensor receives any light",

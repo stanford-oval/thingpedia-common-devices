@@ -37,12 +37,12 @@ dataset @io.home-assistant.temperature language "en" {
   stream (p_temperature :Measure(C)) := edge (monitor (@io.home-assistant.temperature.state())) on value >= p_temperature
   #_[utterances=["when the sensor 's room temperature is hotter than $p_temperature",
                    "if the room temperature  of the sensor is higher than $p_temperature",
-                   "when the room temperature of the sensor goes above $p_temperature"]]
+                   "when the room temperature of the sensor goes above $p_temperature"]];
 
   stream (p_temperature :Measure(C)) := edge (monitor (@io.home-assistant.temperature.state())) on value <= p_temperature
   #_[utterances=["when the sensor 's room temperature is colder than $p_temperature",
                    "if the room temperature of the sensor is lower than $p_temperature",
-                   "when the inside temperature of the sensor goes below $p_temperature"]]
+                   "when the inside temperature of the sensor goes below $p_temperature"]];
 
   program (p_name : String) := now => @io.home-assistant.temperature(name=p_name).state() => notify
   #_[utterances=["what does the ${p_name} indoor temperature sensor say?"]];
@@ -72,10 +72,10 @@ dataset @io.home-assistant.temperature language "en" {
   stream (p_name : String, p_temperature :Measure(C)) := edge ( monitor (@io.home-assistant.temperature(name=p_name).state())) on value >= p_temperature
   #_[utterances=["when the ${p_name} sensor 's room temperature is hotter than $p_temperature",
                    "if the temperature inside of the ${p_name} sensor is higher than $p_temperature",
-                   "when the temperature inside of the ${p_name} sensor goes above $p_temperature"]]
+                   "when the temperature inside of the ${p_name} sensor goes above $p_temperature"]];
 
   stream (p_name : String, p_temperature :Measure(C)) := edge ( monitor (@io.home-assistant.temperature(name=p_name).state())) on value <= p_temperature
   #_[utterances=["when the ${p_name} sensor 's indoor temperature is colder than $p_temperature",
                    "if the temperature of the ${p_name} room sensor is lower than $p_temperature",
-                   "when the temperature of the ${p_name} home sensor goes below $p_temperature"]]
+                   "when the temperature of the ${p_name} home sensor goes below $p_temperature"]];
 }

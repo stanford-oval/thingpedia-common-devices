@@ -77,9 +77,9 @@ dataset @io.home-assistant.air language "en" {
                  "when the ${p_name} smoke sensor starts or stops detecting smoke"]];
 
   stream (p_name : String, p_state : Enum(gas,smoke,nothing)) := edge( monitor @io.home-assistant.air.state()) on (state == p_state)
-  #_[utterances=["when my sensor starts detecting ${p_state}",
-                "when my detector is detecting ${p_state}",
-                "the moment my sensor detects ${p_state}"]];
+  #_[utterances=["when my ${p_name} sensor starts detecting ${p_state}",
+                "when my ${p_name} detector is detecting ${p_state}",
+                "the moment my ${p_name} sensor detects ${p_state}"]];
 
   stream (p_name : String) := edge( monitor @io.home-assistant.air(name=p_name).state()) on (state == enum(gas))
   #_[utterances=["when gas is detected by the ${p_name} sensor",

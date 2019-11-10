@@ -18,16 +18,16 @@ dataset @io.home-assistant.window language "en" {
   stream := monitor @io.home-assistant.window.state()
   #_[utterances=["when the state of the window changes"]];
 
-  stream (p_state : Enum(open, closed)) := edge( @io.home-assistant.window.state()) on (state == p_state)
+  stream (p_state : Enum(open, closed)) := edge( monitor @io.home-assistant.window.state()) on (state == p_state)
   #_[utterances=["when the window is ${p_state}",
                 "when my window gets ${p_state}"]];
 
-  stream := edge( @io.home-assistant.window.state()) on (state == enum(open))
+  stream := edge( monitor @io.home-assistant.window.state()) on (state == enum(open))
   #_[utterances=["when my window is open",
                  "when anyone opens the window",
                  "once somebody opens the window"]];
 
-  stream := edge( @io.home-assistant.window.state()) on (state == enum(closed))
+  stream := edge( monitor @io.home-assistant.window.state()) on (state == enum(closed))
   #_[utterances=["when my window closes",
                  "when anyone shuts the window",
                  "once somebody closes the window",
@@ -63,16 +63,16 @@ dataset @io.home-assistant.window language "en" {
   stream (p_name : String) := monitor @io.home-assistant.window(name=p_name).state()
   #_[utterances=["when the ${p_name} window is opened or closed"]];
 
-  stream (p_name : String, p_state : Enum(open, closed)) := edge( @io.home-assistant.window(name=p_name).state()) on (state == p_state)
+  stream (p_name : String, p_state : Enum(open, closed)) := edge( monitor @io.home-assistant.window(name=p_name).state()) on (state == p_state)
   #_[utterances=["when the ${p_name} window is ${p_state}",
                 "when my ${p_name} window gets ${p_state}"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.window(name=p_name).state()) on (state == enum(open))
+  stream (p_name : String) := edge( monitor @io.home-assistant.window(name=p_name).state()) on (state == enum(open))
   #_[utterances=["when my ${p_name} window is open",
                  "when anyone opens the ${p_name} window",
                  "once somebody opens the ${p_name} window"]];
 
-  stream (p_name : String) := edge( @io.home-assistant.window(name=p_name).state()) on (state == enum(closed))
+  stream (p_name : String) := edge( monitor @io.home-assistant.window(name=p_name).state()) on (state == enum(closed))
   #_[utterances=["when my ${p_name} window closes",
                  "when anyone shuts the ${p_name} window",
                  "once somebody closes the ${p_name} window",
@@ -88,5 +88,5 @@ dataset @io.home-assistant.window language "en" {
 
   action (p_name : String) := @io.home-assistant.window(name=p_name).set_openclose(state=enum(close))
   #_[utterances=["close my ${p_name} window",
-                "shut the ${name} window"]];
+                "shut the ${p_name} window"]];
 }

@@ -34,11 +34,11 @@ dataset @io.home-assistant.humidity language "en" {
 
   stream (p_humidity : Number) := edge (monitor (@io.home-assistant.humidity.state())) on value >= p_humidity
   #_[utterances=["when the room 's humidity is higher than $p_humidity percent",
-                 "if the humidity goes above $p_humidity percent"]]
+                 "if the humidity goes above $p_humidity percent"]];
 
   stream (p_humidity : Number) := edge (monitor (@io.home-assistant.humidity.state())) on value <= p_humidity
   #_[utterances=["when the humidity inside is lower than $p_humidity",
-                 "if the humidity in the area goes below $p_humidity"]]              
+                 "if the humidity in the area goes below $p_humidity"]];           
 
   program (p_name : String) := now => @io.home-assistant.humidity(name=p_name).state() => notify
   #_[utterances=["check if my ${p_name} humidity sensor says it is humid",
@@ -64,9 +64,9 @@ dataset @io.home-assistant.humidity language "en" {
 
   stream (p_name : String, p_humidity : Number) := edge (monitor (@io.home-assistant.humidity(name=p_name).state())) on value >= p_humidity
   #_[utterances=["when the room 's humidity is higher than ${p_humidity} percent according to my ${p_name} sensor",
-                 "if the humidity detected by my ${p_name} sensor goes above ${p_humidity} percent"]]
+                 "if the humidity detected by my ${p_name} sensor goes above ${p_humidity} percent"]];
 
   stream (p_name : String, p_humidity : Number) := edge (monitor (@io.home-assistant.humidity(name=p_name).state())) on value <= p_humidity
   #_[utterances=["when the humidity inside is lower than ${p_humidity} according to my ${p_name} sensor",
-                 "if the humidity in the area detected by my ${p_name} sensor goes above ${p_humidity} percent"]] 
+                 "if the humidity in the area detected by my ${p_name} sensor goes above ${p_humidity} percent"]];
 }

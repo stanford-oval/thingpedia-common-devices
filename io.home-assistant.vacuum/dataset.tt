@@ -4,7 +4,7 @@ dataset @io.home-assistant.vacuum language "en" {
   #_[utterances=["is my vacuum on?",
                 "check if my vacuum is on",
                 "is the vacuum turned on?",
-                "is the vacuum switched on?"
+                "is the vacuum switched on?",
                 "check if my vacuum is turned on or off",
                 "is my vacuum switched on or switched off?",
                 "is the vacuum cleaning?",
@@ -24,7 +24,7 @@ dataset @io.home-assistant.vacuum language "en" {
 
   stream := monitor @io.home-assistant.vacuum.state()
   #_[utterances=["when my vacuum turns on or off",
-                 "when my vacuum starts or stops cleaning",]];
+                 "when my vacuum starts or stops cleaning"]];
 
   stream (p_state : Enum(on, off, docked)) := edge( monitor @io.home-assistant.vacuum.state()) on (state == p_state)
   #_[utterances=["when my vacuum is ${p_state}",
@@ -53,7 +53,7 @@ dataset @io.home-assistant.vacuum language "en" {
                 "when I dock the vacuum",
                 "when my vacuum goes back to base"]];
 
-  action (p_power :Enum(on,off))  := @io.home-assistant.vacuum.set_power(power=p_power)
+  action (p_power :Enum(on,off)) := @io.home-assistant.vacuum.set_power(power=p_power)
   #_[utterances=["turn ${p_power} my vacuum",
                  "switch ${p_power} the vacuum",
                  "${p_power} the vacuum"]];
@@ -97,10 +97,10 @@ dataset @io.home-assistant.vacuum language "en" {
                  "ask my vacuum to stop cleaning"]];
 
   program (p_name : String) := now => @io.home-assistant.vacuum(name=p_name).state() => notify
-  #_[utterances=["is my vacuum on?",
+  #_[utterances=["is my ${p_name} vacuum on?",
                 "check if my ${p_name} vacuum is on",
                 "is the ${p_name} vacuum turned on?",
-                "is the ${p_name} vacuum switched on?"
+                "is the ${p_name} vacuum switched on?",
                 "check if my ${p_name} vacuum is turned on or off",
                 "is my ${p_name} vacuum switched on or switched off?",
                 "is the ${p_name} vacuum cleaning?",
@@ -110,7 +110,7 @@ dataset @io.home-assistant.vacuum language "en" {
                 "what is my ${p_name} vacuum up to?"]];
 
   query (p_name : String) := @io.home-assistant.vacuum(name=p_name).state()
-  #_[utterances=["if the vacuum is on or off",
+  #_[utterances=["if the ${p_name} vacuum is on or off",
                 "whether my ${p_name} vacuum is on or off",
                 "if the ${p_name} vacuum is turned on or off",
                 "whether my ${p_name} vacuum is switched on or switched off",
@@ -120,7 +120,7 @@ dataset @io.home-assistant.vacuum language "en" {
 
   stream (p_name : String) := monitor @io.home-assistant.vacuum(name=p_name).state()
   #_[utterances=["when my ${p_name} vacuum turns on or off",
-                 "when my ${p_name} vacuum starts or stops cleaning",]];
+                 "when my ${p_name} vacuum starts or stops cleaning"]];
 
   stream (p_name : String, p_state : Enum(on, off, docked)) := edge( monitor @io.home-assistant.vacuum(name=p_name).state()) on (state == p_state)
   #_[utterances=["when my ${p_name} vacuum is ${p_state}",
@@ -149,7 +149,7 @@ dataset @io.home-assistant.vacuum language "en" {
                 "when I dock the ${p_name} vacuum",
                 "when my ${p_name} vacuum goes back to base"]];
 
-  action (p_name: String, p_power :Enum(on,off)) := monitor @io.home-assistant.vacuum(name=p_name).set_power(power=p_power)
+  action (p_name : String, p_power :Enum(on,off)) := @io.home-assistant.vacuum(name=p_name).set_power(power=p_power)
   #_[utterances=["turn ${p_power} my ${p_name} vacuum",
                  "switch ${p_power} the ${p_name} vacuum",
                  "${p_power} the ${p_name} vacuum"]];
@@ -167,8 +167,8 @@ dataset @io.home-assistant.vacuum language "en" {
                 "off the ${p_name} vacuum"]];
 
   action (p_name : String) := @io.home-assistant.vacuum(name=p_name).return_to_base()
-  #_[utterances=["dock my vacuum",
-                 "charge the vacuum",
+  #_[utterances=["dock my ${p_name} vacuum",
+                 "charge the ${p_name} vacuum",
                  "return my ${p_name} vacuum to base",
                  "tell the ${p_name} vacuum to return to base",
                  "ask my ${p_name} vacuum to return to base"]];

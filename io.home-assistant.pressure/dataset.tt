@@ -34,12 +34,12 @@ dataset @io.home-assistant.pressure language "en" {
   stream (p_pressure :Measure(Pa)) := edge (monitor (@io.home-assistant.pressure.state())) on value >= p_pressure
   #_[utterances=["when the sensor 's pressure is higher than $p_pressure",
                    "if the pressure of the sensor is greater than $p_pressure",
-                   "when the pressure of the sensor goes above $p_pressure"]]
+                   "when the pressure of the sensor goes above $p_pressure"]];
 
   stream (p_pressure :Measure(Pa)) := edge (monitor (@io.home-assistant.pressure.state())) on value <= p_pressure
   #_[utterances=["when the sensor 's pressure is lower than $p_pressure",
                    "if the pressure of the sensor is smaller than $p_pressure",
-                   "when the pressure of the sensor goes below $p_pressure"]]
+                   "when the pressure of the sensor goes below $p_pressure"]];
 
   program (p_name : String) := now => @io.home-assistant.pressure(name=p_name).state() => notify
   #_[utterances=["what does my ${p_name} pressure sensor say?",
@@ -72,10 +72,10 @@ dataset @io.home-assistant.pressure language "en" {
   stream (p_name : String, p_pressure :Measure(Pa)) := edge (monitor (@io.home-assistant.pressure(name=p_name).state())) on value >= p_pressure
   #_[utterances=["when the ${p_name} sensor 's pressure is higher than $p_pressure",
                    "if the pressure of the ${p_name} sensor is greater than $p_pressure",
-                   "when the pressure of the ${p_name} sensor goes above $p_pressure"]]
+                   "when the pressure of the ${p_name} sensor goes above $p_pressure"]];
 
   stream (p_name : String, p_pressure :Measure(Pa)) := edge (monitor (@io.home-assistant.pressure(name=p_name).state())) on value <= p_pressure
   #_[utterances=["when the ${p_name} sensor 's pressure is lower than $p_pressure",
                    "if the pressure of the ${p_name} sensor is smaller than $p_pressure",
-                   "when the pressure of the ${p_name} sensor goes below $p_pressure"]]
+                   "when the pressure of the ${p_name} sensor goes below $p_pressure"]];
 }

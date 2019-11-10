@@ -19,7 +19,7 @@ dataset @io.home-assistant.fan language "en" {
 
   stream := monitor @io.home-assistant.fan.state()
   #_[utterances=["when my fan turns on or off",
-                 "when the fan switches on or off",]];
+                 "when the fan switches on or off"]];
 
   stream (p_state : Enum(on, off)) := edge( monitor @io.home-assistant.fan.state()) on (state == p_state)
   #_[utterances=["when the fan turns ${p_state}",
@@ -35,7 +35,7 @@ dataset @io.home-assistant.fan language "en" {
 
   stream := edge( monitor @io.home-assistant.fan.state()) on (state == enum(off))
   #_[utterances=["when my fan turns off",
-                "if the fan switches off"
+                "if the fan switches off",
                 "when my fan gets switched off",
                 "when the fan is off",
                 "if I switch off my fan"]];
@@ -66,7 +66,7 @@ dataset @io.home-assistant.fan language "en" {
 
   stream := edge( monitor @io.home-assistant.fan.oscillation()) on (state == enum(not_oscillating))
   #_[utterances=["when my fan stops oscillating",
-                "when the fan stops swinging"
+                "when the fan stops swinging",
                 "when the fan oscillation stops"]];
 
   action (p_power :Enum(on,off))  := @io.home-assistant.fan.set_power(power=p_power)
@@ -128,7 +128,7 @@ dataset @io.home-assistant.fan language "en" {
                 "when my ${p_name} fan is ${p_state}",
                 "when the ${p_name} fan changes to ${p_state}",
                 "if my ${p_name} fan switches ${p_state}",
-                "if my ${p_name} fan becomes ${p_state}""]];
+                "if my ${p_name} fan becomes ${p_state}"]];
 
   stream (p_name : String) := edge( monitor @io.home-assistant.fan(name=p_name).state()) on (state == enum(on))
   #_[utterances=["when my ${p_name} fan gets turned on",
@@ -137,7 +137,7 @@ dataset @io.home-assistant.fan language "en" {
 
   stream (p_name : String) := edge( monitor @io.home-assistant.fan(name=p_name).state()) on (state == enum(off))
   #_[utterances=["when my ${p_name} fan turns off",
-                "if the ${p_name} fan switches off"
+                "if the ${p_name} fan switches off",
                 "when my ${p_name} fan gets switched off",
                 "when the ${p_name} fan is off",
                 "if I switch off my ${p_name} fan"]];
@@ -168,10 +168,10 @@ dataset @io.home-assistant.fan language "en" {
 
   stream (p_name : String) := edge( monitor @io.home-assistant.fan(name=p_name).oscillation()) on (state == enum(not_oscillating))
   #_[utterances=["when my ${p_name} fan stops oscillating",
-                "when the ${p_name} fan stops swinging"
+                "when the ${p_name} fan stops swinging",
                 "when the ${p_name} fan oscillation stops"]];
 
-  action (p_name : String) (p_power :Enum(on,off))  := @io.home-assistant.fan(name=p_name).set_power(power=p_power)
+  action (p_name : String, p_power :Enum(on,off))  := @io.home-assistant.fan(name=p_name).set_power(power=p_power)
   #_[utterances=["turn ${p_power} my ${p_name} fan",
                  "switch ${p_power} the ${p_name} fan",
                  "${p_power} the ${p_name} fan"]];
