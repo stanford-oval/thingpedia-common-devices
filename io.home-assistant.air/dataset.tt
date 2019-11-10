@@ -1,0 +1,86 @@
+dataset @io.home-assistant.air language "en" {
+
+  program := now => @io.home-assistant.air.state() => notify
+  #_[utterances=["is there any smoke?",
+                 "check if there is any smoke",
+                 "check whether smoke is detected",
+                 "is there any gas?",
+                 "check if the sensor is detecting any gas",
+                 "check if gas is leaking",
+                 "do you smell smoke?",
+                 "is there a CO leak?",
+                 "is there carbon monoxide?"]];
+
+  query := @io.home-assistant.air.state()
+  #_[utterances=["if the sensor is detecting any smoke",
+                 "whether the sensor is detecting smoke",
+                 "if the smoke detector is catching any smoke",
+                 "if the gas sensor is detecting gas",
+                 "whether the gas sensor is detecting any gas",
+                 "whether there is any smoke",
+                 "if there is gas leaking",
+                 "whether there is carbon monoxide"]];
+
+  stream := monitor @io.home-assistant.air.state()
+  #_[utterances=["when the smoke detector starts or stops detecting smoke",
+                 "when the gas detector starts or stops detecting gas",
+                 "when the smoke sensor starts or stops detecting smoke"]];
+
+  stream (p_state : Enum(detecting, not_detecting)) := edge( monitor @io.home-assistant.air.state()) on (state == p_state)
+  #_[utterances=["when my smoke sensor starts ${p_state} smoke",
+                "when my smoke detector is ${p_state} smoke",
+                "when the gas sensor is ${p_state} gas"]];
+
+  stream := edge( monitor @io.home-assistant.air.state()) on (state == enum(detecting))
+  #_[utterances=["when smoke is detected",
+                "when there is smoke",
+                "when a gas leak is detected",
+                "when there is a gas leak",
+                "when carbon monoxide is detected"]];
+
+  stream := edge( monitor @io.home-assistant.air.state()) on (state == enum(not_detecting))
+  #_[utterances=["when smoke is not detected anymore",
+                "when gas is not detected anymore",
+                "when there is no more gas",
+                "when there is no smoke",
+                "when the smoke clears",
+                "when there is no more carbon monoxide"]];
+
+  program (p_name : String) := now => @io.home-assistant.air(name=p_name).state() => notify
+  #_[utterances=["is there any smoke detected by the ${p_name} sensor?",
+                 "check if there is any smoke detected by the ${p_name} sensor",
+                 "check whether smoke is detected by my ${p_name} sensor",
+                 "is there any gas being detected by my ${p_name} sensor?",
+                 "check if the ${p_name} sensor is detecting any gas"]];
+
+  query (p_name : String) := @io.home-assistant.air(name=p_name).state()
+  #_[utterances=["if the ${p_name} sensor is detecting any smoke",
+                 "whether the ${p_name} sensor is detecting smoke",
+                 "if the ${p_name} smoke detector is catching any smoke",
+                 "if the ${p_name} gas sensor is detecting gas",
+                 "whether the ${p_name} gas sensor is detecting any gas"]];
+
+  stream (p_name : String) := monitor @io.home-assistant.air(name=p_name).state()
+  #_[utterances=["when the ${p_name} smoke detector starts or stops detecting smoke",
+                 "when the ${p_name} gas detector starts or stops detecting gas",
+                 "when the ${p_name} smoke sensor starts or stops detecting smoke"]];
+
+  stream (p_name : String, p_state : Enum(detecting, not_detecting)) := edge( monitor @io.home-assistant.air(name=p_name).state()) on (state == p_state)
+  #_[utterances=["when my ${p_name} smoke sensor starts ${p_state} smoke",
+                "when my ${p_name} smoke detector is ${p_state} smoke",
+                "when the ${p_name} gas sensor is ${p_state} gas"]];
+
+  stream (p_name : String) := edge( monitor @io.home-assistant.air(name=p_name).state()) on (state == enum(detecting))
+  #_[utterances=["when smoke is detected by the ${p_name} detector",
+                "when there is smoke detected by my ${p_name} sensor",
+                "when a gas leak is detected by the ${p_name} sensor",
+                "when there is a gas leak found by the ${p_name} sensor",
+                "when carbon monoxide is detected by the ${p_name} sensor"]];
+
+  stream (p_name : String) := edge( monitor @io.home-assistant.air(name=p_name).state()) on (state == enum(not_detecting))
+  #_[utterances=["when smoke is not detected anymore by the ${p_name} detector",
+                "when gas is not detected anymore by the ${p_name} sensor",
+                "when there is no more gas detected by the ${p_name} sensor",
+                "when there is no smoke detected by the ${p_name} sensor",
+                "when there is no more carbon monoxide found by the ${p_name} sensor"]];
+}

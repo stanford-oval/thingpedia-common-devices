@@ -29,12 +29,12 @@ const DOMAIN_TO_TP_KIND = {
     'fan': 'io.home-assistant.fan',
     'switch': 'io.home-assistant.switch',
     'vacuum': 'io.home-assistant.vacuum',
+    'sensor_air': 'io.home-assistant.air',
     'sensor_battery': 'io.home-assistant.battery',
     'sensor_cold': 'io.home-assistant.cold',
     'sensor_connectivity': 'io.home-assistant.connectivity',
     'sensor_door': 'io.home-assistant.door',
     'sensor_garage_door': 'io.home-assistant.garage-door',
-    'sensor_gas': 'io.home-assistant.gas',
     'sensor_heat': 'io.home-assistant.heat',
     'sensor_humidity': 'io.home-assistant.humidity',
     'sensor_illuminance': 'io.home-assistant.illuminance',
@@ -52,7 +52,6 @@ const DOMAIN_TO_TP_KIND = {
     // 'sensor_problem': 'io.home-assistant.problem',
     // 'sensor_safety': 'io.home-assistant.safety',
     'sensor_signal_strength': 'io.home-assistant.signal_strength',
-    'sensor_smoke': 'io.home-assistant.smoke',
     'sensor_sound': 'io.home-assistant.sound',
     'sensor_temperature': 'io.home-assistant.temperature',
     // 'sensor_timestamp': 'io.home-assistant.timestamp',
@@ -101,6 +100,8 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
         let kind = undefined;
         if (domain === 'cover' && attributes.device_class === 'window') {
             kind = DOMAIN_TO_TP_KIND['window'];
+        } else if (domain === 'binary_sensor' && ['smoke', 'gas'].includes(attributes.device_class)) {
+            kind = DOMAIN_TO_TP_KIND['sensor_air']
         } else if ((domain === 'sensor') || (domain === 'binary_sensor') || ((domain === 'cover' && attributes.device_class === 'door'))) {
             kind = DOMAIN_TO_TP_KIND[`sensor_${attributes.device_class}`];
         } else if (domain === 'cover' && attributes.device_class === 'garage') {
