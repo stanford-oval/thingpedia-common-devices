@@ -10,6 +10,11 @@
 const HomeAssistantDevice = require('./base');
 
 module.exports = class HomeAssistantCover extends HomeAssistantDevice {
+    constructor(engine, state, master, entityId) {
+        super(engine, state, master, entityId);
+        const [domain,] = entityId.split('.');
+        this.domain = domain;
+    }
     async get_state() {
         return [{ state: this.state.state }];
     }
@@ -20,9 +25,14 @@ module.exports = class HomeAssistantCover extends HomeAssistantDevice {
         });
     }
     async do_set_openclose({ state }) {
-        if (state === 'open')
-            await this._callService("cover", "open_cover");
-        else
-            await this._callService("cover", "close_cover");
+        if (this.domain === 'cover') {
+            if (state === 'open')
+                await this._callService("cover", "open_cover");
+            else
+                await this._callService("cover", "close_cover");
+        } else {
+            // For Binary Sensor - Window
+            throw new Error(`I regret to inform you that your device does not have an automated ${state} function. You have to open it yourself.`);
+        }
     }
 };

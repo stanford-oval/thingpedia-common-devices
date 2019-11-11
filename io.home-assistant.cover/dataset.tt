@@ -30,7 +30,13 @@ dataset @io.home-assistant.cover language "en" {
                  "are my shutters open?",
                  "are my shutters closed?",
                  "check if my shutters are opened",
-                 "did I close the shutters?"]];
+                 "did I close the shutters?",
+                 "is my window open?",
+                 "is my window closed?",
+                 "check if my window is opened",
+                 "did I close the window?",
+                 "did anyone open the window?",
+                 "did somebody shut the window?"]];
 
   query := @io.home-assistant.cover.state()
   #_[utterances=["if my curtains are open or closed",
@@ -51,7 +57,12 @@ dataset @io.home-assistant.cover language "en" {
                  "whether the shades are raised or lowered",
                  "if my shutters are open or closed",
                  "whether my shutters are open or closed",
-                 "if I opened the shutters"]];
+                 "if I opened the shutters",
+                 "if my window is open or closed",
+                 "whether my window is open or closed",
+                 "if I opened the window",
+                 "whether the window is shut",
+                 "whether anyone closed the window"]];
 
   stream := monitor @io.home-assistant.cover.state()
   #_[utterances=["when the curtains open or close",
@@ -59,21 +70,24 @@ dataset @io.home-assistant.cover language "en" {
                  "when the blinds are raised or lowered",
                  "when the damper is opened or closed",
                  "when my shades are opened or closed",
-                 "when the shutters are opened or closed"]];
+                 "when the shutters are opened or closed",
+                 "when the window is opened or closed"]];
 
   stream (p_state : Enum(open, closed)) := edge( monitor @io.home-assistant.cover.state()) on (state == p_state)
   #_[utterances=["when the curtains are ${p_state}",
-                "if my curtains gets ${p_state}",
-                "when my awning becomes ${p_state}",
-                "if my awning gets ${p_state}",
+                "when my curtains gets ${p_state}",
+                "when my awning is ${p_state}",
+                "when my awning gets ${p_state}",
                 "when the blinds are ${p_state}",
-                "if my blinds gets ${p_state}",
+                "when my blinds gets ${p_state}",
                 "when the damper is ${p_state}",
-                "if my damper gets ${p_state}",
+                "when my damper gets ${p_state}",
                 "when the shades are ${p_state}",
-                "if my shades gets ${p_state}",
+                "when my shades gets ${p_state}",
                 "when the shutters are ${p_state}",
-                "if my shutters gets ${p_state}"]];
+                "when my shutters gets ${p_state}",
+                "when the window is ${p_state}",
+                "when my window gets ${p_state}"]];
 
   stream := edge( monitor @io.home-assistant.cover.state()) on (state == enum(open))
   #_[utterances=["when my curtains are raised",
@@ -91,7 +105,10 @@ dataset @io.home-assistant.cover language "en" {
                 "the moment my shades are raised",
                 "when the shades are put up",
                 "when I bring up my shades",
-                "when my shutters are open"]];
+                "when my shutters are open",
+                "when my window is open",
+                "when anyone opens the window",
+                "once somebody opens the window"]];
 
   stream := edge( monitor @io.home-assistant.cover.state()) on (state == enum(closed))
   #_[utterances=["when my curtains lower",
@@ -112,7 +129,11 @@ dataset @io.home-assistant.cover language "en" {
                 "when the shades get lowered",
                 "the moment the shades get put down",
                 "when the shades finish lowering",
-                "when my shutters close"]];
+                "when my shutters close",
+                "when my window closes",
+                "when anyone shuts the window",
+                "once somebody closes the window",
+                "the moment the window gets shut"]];
 
   action := @io.home-assistant.cover.set_openclose()
   #_[utterances=["draw my curtains",
@@ -125,7 +146,9 @@ dataset @io.home-assistant.cover language "en" {
                  "${p_state} my blinds",
                  "${p_state} the damper",
                  "${p_state} my shades",
-                 "${p_state} the shutters"]];
+                 "${p_state} the shutters",
+                 "${p_state} my window",
+                 "${p_state} the window"]];
 
   action := @io.home-assistant.cover.set_openclose(state=enum(open))
   #_[utterances=["keep my curtains",
@@ -146,7 +169,9 @@ dataset @io.home-assistant.cover language "en" {
                 "raise the shades",
                 "put the shades up",
                 "open my shutters for me",
-                "help me open the shutters"]];
+                "help me open the shutters",
+                "open my window for me",
+                "help me open the window"]];
 
   action := @io.home-assistant.cover.set_openclose(state=enum(close))
   #_[utterances=["pull the curtains close",
@@ -165,7 +190,9 @@ dataset @io.home-assistant.cover language "en" {
                 "lower the shades",
                 "put the shades down",
                 "close my shutters",
-                "bring in the shutters"]];
+                "bring in the shutters",
+                "close my window",
+                "shut the window"]];
 
   program (p_name : String) := now => @io.home-assistant.cover(name=p_name).state() => notify
   #_[utterances=["are my ${p_name} curtains open?",
@@ -199,7 +226,13 @@ dataset @io.home-assistant.cover language "en" {
                  "are my ${p_name} shutters open?",
                  "are my ${p_name} shutters closed?",
                  "check if my ${p_name} shutters are opened",
-                 "did I close the ${p_name} shutters?"]];
+                 "did I close the ${p_name} shutters?",
+                 "is my ${p_name} window open?",
+                 "is my ${p_name} window closed?",
+                 "check if my ${p_name} window is opened",
+                 "did I close the ${p_name} window?",
+                 "did anyone open the ${p_name} window?",
+                 "did somebody shut the ${p_name} window?"]];
 
   query (p_name : String) := @io.home-assistant.cover(name=p_name).state()
   #_[utterances=["if my ${p_name} curtains are open or closed",
@@ -220,7 +253,12 @@ dataset @io.home-assistant.cover language "en" {
                  "whether the ${p_name} shades is raised or lowered",
                  "if my ${p_name} shutters are open or closed",
                  "whether my ${p_name} shutters are open or closed",
-                 "if I opened the ${p_name} shutters"]];
+                 "if I opened the ${p_name} shutters",
+                 "if my ${p_name} window is open or closed",
+                 "whether my ${p_name} window is open or closed",
+                 "if I opened the ${p_name} window",
+                 "whether the ${p_name} window is shut",
+                 "whether anyone closed the ${p_name} window"]];
 
   stream (p_name : String) := monitor @io.home-assistant.cover(name=p_name).state()
   #_[utterances=["when the ${p_name} curtains open or close",
@@ -228,50 +266,60 @@ dataset @io.home-assistant.cover language "en" {
                  "when the ${p_name} blinds are raised or lowered",
                  "when the ${p_name} damper is opened or closed",
                  "when the ${p_name} shades are raised or lowered",
-                 "when the state of the ${p_name} shutters change"]];
+                 "when the ${p_name} shutters are opened or closed",
+                 "when the ${p_name} window is opened or closed"]];
 
   stream (p_name : String, p_state : Enum(open, closed)) := edge( monitor @io.home-assistant.cover(name=p_name).state()) on (state == p_state)
   #_[utterances=["when the ${p_name} curtains are ${p_state}",
-                "if my ${p_name} curtains gets ${p_state}",
+                "when my ${p_name} curtains gets ${p_state}",
                 "when the ${p_name} blinds are ${p_state}",
-                "if my ${p_name} blinds gets ${p_state}",
+                "when my ${p_name} blinds gets ${p_state}",
                 "when the ${p_name} damper is ${p_state}",
-                "if my ${p_name} damper gets ${p_state}",
+                "when my ${p_name} damper gets ${p_state}",
                 "when the ${p_name} shades are ${p_state}",
-                "if my ${p_name} shades gets ${p_state}",
+                "when my ${p_name} shades gets ${p_state}",
                 "when the ${p_name} shutters are ${p_state}",
-                "if my ${p_name} shutters gets ${p_state}"]];
+                "when my ${p_name} shutters gets ${p_state}",
+                "when the ${p_name} window is ${p_state}",
+                "when my ${p_name} window gets ${p_state}"]];
 
   stream (p_name : String) := edge( monitor @io.home-assistant.cover(name=p_name).state()) on (state == enum(open))
-  #_[utterances=["if my ${p_name} curtains are raised",
+  #_[utterances=["when my ${p_name} curtains are raised",
                 "when the ${p_name} curtains are put up",
-                "when I bring up my ${p_name} curtains",
-                "if my ${p_name} blinds are raised",
+                "once I bring up my ${p_name} curtains",
+                "when my ${p_name} blinds are raised",
                 "when the ${p_name} blinds are put up",
                 "when I bring up my ${p_name} blinds",
-                "if my ${p_name} damper is raised",
+                "when my ${p_name} damper is raised",
                 "when the ${p_name} damper raises",
-                "if my ${p_name} shades are raised",
+                "when my ${p_name} shades are raised",
                 "when the ${p_name} shades are put up",
                 "when I bring up my ${p_name} shades",
-                "if my ${p_name} shutters are open"]];
+                "when my ${p_name} shutters are open",
+                "when my ${p_name} window is open",
+                "when anyone opens the ${p_name} window",
+                "once somebody opens the ${p_name} window"]];
 
   stream (p_name : String) := edge( monitor @io.home-assistant.cover(name=p_name).state()) on (state == enum(closed))
   #_[utterances=["when my ${p_name} curtains lower",
-                "if the ${p_name} curtains get lowered",
+                "when the ${p_name} curtains get lowered",
                 "the moment the ${p_name} curtains get put down",
                 "when the ${p_name} curtains finish lowering",
                 "when my ${p_name} blinds lower",
-                "if the ${p_name} blinds get lowered",
+                "when the ${p_name} blinds get lowered",
                 "the moment the ${p_name} blinds get put down",
                 "when the ${p_name} blinds finish lowering",
-                "if the ${p_name} damper is lowered",
+                "when the ${p_name} damper is lowered",
                 "when my ${p_name} damper lowers",
                 "when my ${p_name} shades lower",
-                "if the ${p_name} shades get lowered",
+                "once the ${p_name} shades get lowered",
                 "the moment the ${p_name} shades get put down",
                 "when the ${p_name} shades finish lowering",
-                "when my ${p_name} shutters close"]];
+                "when my ${p_name} shutters close",
+                "when my ${p_name} window closes",
+                "when anyone shuts the ${p_name} window",
+                "once somebody closes the ${p_name} window",
+                "the moment the ${p_name} window gets shut"]];
 
   action (p_name : String) := @io.home-assistant.cover(name=p_name).set_openclose()
   #_[utterances=["draw my ${p_name} curtains",
@@ -284,7 +332,9 @@ dataset @io.home-assistant.cover language "en" {
                  "${p_state} the ${p_name} blinds",
                  "${p_state} my ${p_name} damper",
                  "${p_state} the ${p_name} shades",
-                 "${p_state} the ${p_name} shutters"]];
+                 "${p_state} the ${p_name} shutters",
+                 "${p_state} my ${p_name} window",
+                 "${p_state} the ${p_name} window"]];
 
   action (p_name : String) := @io.home-assistant.cover(name=p_name).set_openclose(state=enum(open))
   #_[utterances=["keep my ${p_name} curtains",
@@ -302,7 +352,9 @@ dataset @io.home-assistant.cover language "en" {
                 "raise the ${p_name} shades",
                 "put the ${p_name} shades up",
                 "open my ${p_name} shutters for me",
-                "help me open the ${p_name} shutters"]];
+                "help me open the ${p_name} shutters",
+                "open my ${p_name} window for me",
+                "help me open the ${p_name} window"]];
 
   action (p_name : String) := @io.home-assistant.cover(name=p_name).set_openclose(state=enum(close))
   #_[utterances=["pull the ${p_name} curtains close",
@@ -319,5 +371,7 @@ dataset @io.home-assistant.cover language "en" {
                 "lower the ${p_name} shades",
                 "put the ${p_name} shades down",
                 "close my ${p_name} shutters",
-                "bring in the ${p_name} shutters"]];
+                "bring in the ${p_name} shutters",
+                "close my ${p_name} window",
+                "shut the ${p_name} window"]];
 }
