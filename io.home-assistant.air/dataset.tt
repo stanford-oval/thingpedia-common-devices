@@ -99,13 +99,6 @@ dataset @io.home-assistant.air language "en" {
     #[id=54300121]
     #[name="MonitorState1"];
 
-    stream (p_name :String, p_state :Enum(gas,smoke,nothing))  := edge (monitor (@io.home-assistant.air.state())) on state == p_state
-    #_[utterances=["when my ${p_name} sensor starts detecting ${p_state}",
-                   "when my ${p_name} detector is detecting ${p_state}",
-                   "the moment my ${p_name} sensor detects ${p_state}"]]
-    #[id=54300124]
-    #[name="MonitorStateByState1"];
-
     stream (p_name :String)  := edge (monitor (@io.home-assistant.air(name=p_name).state())) on state == enum(gas)
     #_[utterances=["when gas is detected by the ${p_name} sensor",
                    "when there is gas detected by the ${p_name} sensor",
@@ -136,5 +129,12 @@ dataset @io.home-assistant.air language "en" {
                    "when there is no more carbon monoxide detected by the ${p_name} sensor"]]
     #[id=54300136]
     #[name="MonitorStateByStateNothing1"];
+
+    stream (p_name :String, p_state :Enum(gas,smoke,nothing))  := edge (monitor (@io.home-assistant.air(name=p_name).state())) on state == p_state
+    #_[utterances=["when my ${p_name} sensor starts detecting ${p_state}",
+                   "when my ${p_name} detector is detecting ${p_state}",
+                   "the moment my ${p_name} sensor detects ${p_state}"]]
+    #[id=54948396]
+    #[name="MonitorStateByState1"];
 
 }

@@ -69,11 +69,6 @@ dataset @io.home-assistant.motion language "en" {
     #[id=54332156]
     #[name="MonitorState1"];
 
-    stream (p_name :String, p_state :Enum(detecting,not_detecting))  := edge (monitor (@io.home-assistant.motion.state())) on state == p_state
-    #_[utterances=["when the ${p_name} motion sensor starts ${p_state} movement"]]
-    #[id=54332157]
-    #[name="MonitorStateByState1"];
-
     stream (p_name :String)  := edge (monitor (@io.home-assistant.motion(name=p_name).state())) on state == enum(detecting)
     #_[utterances=["when the ${p_name} motion sensor sees something move",
                    "once the ${p_name} motion sensor detects movement",
@@ -94,5 +89,10 @@ dataset @io.home-assistant.motion language "en" {
                    "when my ${p_name} motion sensor is not detecting anything"]]
     #[id=54332166]
     #[name="MonitorStateByStateNotDetecting1"];
+
+    stream (p_name :String, p_state :Enum(detecting,not_detecting))  := edge (monitor (@io.home-assistant.motion(name=p_name).state())) on state == p_state
+    #_[utterances=["when the ${p_name} motion sensor starts ${p_state} movement"]]
+    #[id=54955134]
+    #[name="MonitorStateByState1"];
 
 }

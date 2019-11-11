@@ -90,14 +90,6 @@ dataset @io.home-assistant.battery language "en" {
     #[id=54300188]
     #[name="MonitorState1"];
 
-    stream (p_name :String, p_state :Enum(low,normal))  := edge (monitor (@io.home-assistant.battery.state())) on state == p_state
-    #_[utterances=["when the ${p_name} battery becomes ${p_state}",
-                   "if the ${p_name} battery is ${p_state}",
-                   "when my ${p_name} battery turns ${p_state}",
-                   "if my ${p_name} battery changes to ${p_state}"]]
-    #[id=54300189]
-    #[name="MonitorStateByState1"];
-
     stream (p_name :String)  := edge (monitor (@io.home-assistant.battery(name=p_name).state())) on state == enum(low)
     #_[utterances=["when I am low on ${p_name} battery",
                    "if my ${p_name} battery is finishing",
@@ -126,5 +118,13 @@ dataset @io.home-assistant.battery language "en" {
                    "if the ${p_name} battery sensor level goes below $p_charge percent"]]
     #[id=54300204]
     #[name="MonitorStateByValueLessThan1"];
+
+    stream (p_name :String, p_state :Enum(low,normal))  := edge (monitor (@io.home-assistant.battery(name=p_name).state())) on state == p_state
+    #_[utterances=["when the ${p_name} battery becomes ${p_state}",
+                   "if the ${p_name} battery is ${p_state}",
+                   "when my ${p_name} battery turns ${p_state}",
+                   "if my ${p_name} battery changes to ${p_state}"]]
+    #[id=54952061]
+    #[name="MonitorStateByState1"];
 
 }
