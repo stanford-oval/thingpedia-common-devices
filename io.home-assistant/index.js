@@ -17,7 +17,6 @@ const HomeAssistantCover = require('./cover');
 const HomeAssistantFan = require('./fan');
 const HomeAssistantSwitch = require('./switch');
 const HomeAssistantVacuum = require('./vacuum');
-const HomeAssistantWindow = require('./window');
 
 // FIXME make configurable
 const HASS_URL = 'http://hassio.local:8123';
@@ -25,7 +24,6 @@ const HASS_URL = 'http://hassio.local:8123';
 const DOMAIN_TO_TP_KIND = {
     'light': 'light-bulb',
     'cover_active': 'io.home-assistant.cover',
-    'window': 'io.home-assistant.window',
     'fan': 'io.home-assistant.fan',
     'switch': 'io.home-assistant.switch',
     'vacuum': 'io.home-assistant.vacuum',
@@ -42,7 +40,6 @@ const DOMAIN_TO_TP_KIND = {
 const SUBDEVICES = {
     'light-bulb': HomeAssistantLightbulbDevice,
     'io.home-assistant.cover': HomeAssistantCover,
-    'io.home-assistant.window': HomeAssistantWindow,
     'io.home-assistant.fan': HomeAssistantFan,
     'io.home-assistant.switch': HomeAssistantSwitch,
     'io.home-assistant.vacuum': HomeAssistantVacuum
@@ -74,12 +71,12 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
 
         const [domain,] = entityId.split('.');
         let kind = undefined;
-        if (attributes.device_class === 'window')
-            kind = DOMAIN_TO_TP_KIND['window'];
-        else if (domain === 'binary_sensor' && ['smoke', 'gas'].includes(attributes.device_class))
+        if (domain === 'binary_sensor' && ['smoke', 'gas'].includes(attributes.device_class))
             kind = DOMAIN_TO_TP_KIND['sensor_air'];
         else if (domain === 'binary_sensor' && ['heat', 'cold'].includes(attributes.device_class))
             kind = DOMAIN_TO_TP_KIND['sensor_heat'];
+        else if (domain === 'binary_sensor' && attributes.device_class === 'window')
+            kind = DOMAIN_TO_TP_KIND['cover_active'];
         else if ((domain === 'sensor') || (domain === 'binary_sensor') || (domain === 'cover' && attributes.device_class === 'door'))
             kind = DOMAIN_TO_TP_KIND[`sensor_${attributes.device_class}`];
         else if (domain === 'cover')
