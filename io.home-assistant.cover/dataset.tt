@@ -1,4 +1,39 @@
 dataset @io.home-assistant.cover language "en" {
+    program  := {
+  now => @io.home-assistant.cover.state() => notify;
+}
+    #_[utterances=["is my curtain open?",
+                   "are my curtains closed?",
+                   "check if my curtain is raised",
+                   "are my curtains put down?",
+                   "did I raise the curtains?",
+                   "check whether the curtains are lowered",
+                   "is my awning open?",
+                   "are my awnings closed?",
+                   "check if my awning is extended",
+                   "are the awnings out?",
+                   "did I retract the awnings?",
+                   "check whether the awnings are retracted",
+                   "are my blinds open?",
+                   "are my blinds closed?",
+                   "check if my blinds are raised",
+                   "are my blinds put down?",
+                   "did I raise the blinds?",
+                   "check whether the blinds are lowered",
+                   "is my damper open?",
+                   "is my damper closed?",
+                   "are my shades open?",
+                   "are my shades closed?",
+                   "check if my shades are raised",
+                   "are my shades put down?",
+                   "did I raise the shades?",
+                   "check whether the shades are lowered",
+                   "are my shutters open?",
+                   "are my shutters closed?",
+                   "check if my shutters are opened",
+                   "did I close the shutters?"]]
+    #[id=54308273]
+    #[name="StateThenNotify"];
 
   program := now => @io.home-assistant.cover.state() => notify
   #_[utterances=["is my curtain open?",
@@ -135,10 +170,15 @@ dataset @io.home-assistant.cover language "en" {
                 "once somebody closes the window",
                 "the moment the window gets shut"]];
 
-  action := @io.home-assistant.cover.set_openclose()
-  #_[utterances=["draw my curtains",
-                 "draw my blinds",
-                 "draw my shades"]];
+    action (p_state :Enum(open,close))  := @io.home-assistant.cover.set_openclose(state=p_state)
+    #_[utterances=["${p_state} my curtains",
+                   "${p_state} the awning",
+                   "${p_state} my blinds",
+                   "${p_state} the damper",
+                   "${p_state} my shades",
+                   "${p_state} the shutters"]]
+    #[id=54308378]
+    #[name="SetOpencloseWithState"];
 
   action (p_state :Enum(open,close)) := @io.home-assistant.cover.set_openclose(state=p_state)
   #_[utterances=["${p_state} my curtains",
@@ -321,10 +361,15 @@ dataset @io.home-assistant.cover language "en" {
                 "once somebody closes the ${p_name} window",
                 "the moment the ${p_name} window gets shut"]];
 
-  action (p_name : String) := @io.home-assistant.cover(name=p_name).set_openclose()
-  #_[utterances=["draw my ${p_name} curtains",
-                 "draw my ${p_name} blinds",
-                 "draw my ${p_name} shades"]];
+    action (p_name :String, p_state :Enum(open,close))  := @io.home-assistant.cover(name=p_name).set_openclose(state=p_state)
+    #_[utterances=["${p_state} my ${p_name} curtains",
+                   "${p_state} my ${p_name} awnings",
+                   "${p_state} the ${p_name} blinds",
+                   "${p_state} my ${p_name} damper",
+                   "${p_state} the ${p_name} shades",
+                   "${p_state} the ${p_name} shutters"]]
+    #[id=54308517]
+    #[name="SetOpencloseWithState1"];
 
   action (p_name : String, p_state :Enum(open,close)) := @io.home-assistant.cover(name=p_name).set_openclose(state=p_state)
   #_[utterances=["${p_state} my ${p_name} curtains",
