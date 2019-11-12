@@ -12,7 +12,6 @@ dataset @light-bulb language "en" {
                    "is my light-bulb on or off?",
                    "is my lightbulb on?",
                    "check if my lightbulb is on",
-                   "check that my lights are on",
                    "check if my lights are off",
                    "check if the lights are on or off",
                    "is my light bulb on?"]]
@@ -28,37 +27,41 @@ dataset @light-bulb language "en" {
 
     stream  := monitor (@light-bulb.power())
     #_[utterances=["when the state of my lights changes",
-                   "when I switch on or off my ligths"]]
+                   "whenever the state of my lights has changed",
+                   "when the state of the lights changes"]]
     #[id=52298575]
     #[name="MonitorLightBulbPowerState"];
 
     stream (p_power :Enum(on,off))  := edge (monitor (@light-bulb.power())) on power == p_power
     #_[utterances=["when my lights turn ${p_power}",
+                   "when my lights are ${p_power}",
                    "when I turn ${p_power} the lights",
                    "when somebody turns ${p_power} my lights",
                    "when my lights are switched ${p_power}",
-                   "when I switch ${p_power} my ligths"]]
+                   "when I switch ${p_power} my lights"]]
     #[id=52298577]
     #[name="MonitorLightBulbPowerStateByPower"];
 
     action (p_power :Enum(on,off))  := @light-bulb.set_power(power=p_power)
-    #_[utterances=["set $p_power the lights",
-                   "turn $p_power my light bulb",
-                   "turn $p_power the light",
-                   "turn $p_power the lights"]]
+    #_[utterances=["set ${p_power} the lights",
+                   "turn ${p_power} my light bulb",
+                   "turn ${p_power} the light",
+                   "turn ${p_power} the lights"]]
     #[id=52298582]
     #[name="SetPowerOnLightBulbWithPower"];
 
     action  := @light-bulb.color_loop()
     #_[utterances=["start disco lights",
                    "color loop the lights",
-                   "loop the color in my light bulb"]]
+                   "loop the color in my light bulb",
+                   "loop the color of the light bulb"]]
     #[id=52298586]
     #[name="ColorLoopLightsOnLightBulb"];
 
     action  := @light-bulb.alert_long()
     #_[utterances=["alert me by flashing the lights",
-                   "flash the lights"]]
+                   "flash the lights",
+                   "flash the lights as alerts"]]
     #[id=52298589]
     #[name="FlashAlertLightsOnLightBulb"];
 
@@ -69,7 +72,7 @@ dataset @light-bulb language "en" {
                    "is my ${p_name} light-bulb on or off?",
                    "is my ${p_name} lightbulb on?",
                    "check if my ${p_name} lightbulb is on",
-                   "check that my ${p_name} lights are on",
+                   "check if my ${p_name} lights are on",
                    "check if my ${p_name} lights are off",
                    "check if the ${p_name} lights are on or off",
                    "is my ${p_name} light bulb on?",
@@ -85,7 +88,7 @@ dataset @light-bulb language "en" {
     #[name="Power"];
 
     stream (p_name :String)  := monitor (@light-bulb(name=p_name).power())
-    #_[utterances=["when I switch on or off my ${p_name} ligths",
+    #_[utterances=["when I switch on or off my ${p_name} lights",
                    "when the state of my ${p_name} lights changes"]]
     #[id=54033626]
     #[name="MonitorPower"];
@@ -94,18 +97,18 @@ dataset @light-bulb language "en" {
     #_[utterances=["when I turn ${p_power} the ${p_name} lights",
                    "when somebody turns ${p_power} my ${p_name} lights",
                    "when my ${p_name} lights are switched ${p_power}",
-                   "when I switch ${p_power} my ${p_name} ligths",
+                   "when I switch ${p_power} my ${p_name} lights",
                    "when my ${p_name} lights turn ${p_power}"]]
     #[id=54033628]
     #[name="MonitorPowerByPower"];
 
     action (p_name :String, p_power :Enum(on,off))  := @light-bulb(name=p_name).set_power(power=p_power)
-    #_[utterances=["turn $p_power my ${p_name} light bulb",
-                   "turn $p_power the ${p_name} light",
-                   "turn $p_power the ${p_name} lights",
-                   "turn $p_power the lights called ${p_name}",
-                   "turn $p_power the lights in the ${p_name}",
-                   "set $p_power the ${p_name} lights"]]
+    #_[utterances=["turn ${p_power} my ${p_name} light bulb",
+                   "turn ${p_power} the ${p_name} light",
+                   "turn ${p_power} the ${p_name} lights",
+                   "turn ${p_power} the lights called ${p_name}",
+                   "turn ${p_power} the lights in the ${p_name}",
+                   "set ${p_power} the ${p_name} lights"]]
     #[id=54033633]
     #[name="SetPowerWithPower"];
 

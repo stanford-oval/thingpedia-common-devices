@@ -15,7 +15,7 @@ dataset @io.home-assistant.connectivity language "en" {
     query  := @io.home-assistant.connectivity.state()
     #_[utterances=["the state of the router",
                    "if the router is connected or disconnected",
-                   "whether the router is connected or disconnected"]]
+                   "whether the router is connected or not"]]
     #[id=54300213]
     #[name="State"];
 
@@ -26,6 +26,7 @@ dataset @io.home-assistant.connectivity language "en" {
 
     stream (p_state :Enum(connected,disconnected))  := edge (monitor (@io.home-assistant.connectivity.state())) on state == p_state
     #_[utterances=["when my router becomes ${p_state}",
+                   "once my router becomes ${p_state}",
                    "when the router is ${p_state}",
                    "when the internet is ${p_state}",
                    "when the modem is ${p_state}"]]
@@ -35,6 +36,7 @@ dataset @io.home-assistant.connectivity language "en" {
     stream  := edge (monitor (@io.home-assistant.connectivity.state())) on state == enum(connected)
     #_[utterances=["when the router gets connected",
                    "when the connection is up",
+                   "once the connection is up",
                    "once the connection is running smoothly",
                    "once there is a connection",
                    "when I have connectivity"]]
