@@ -65,10 +65,10 @@ dataset @io.home-assistant.vacuum language "en" {
                 "turn on my vacuum cleaner for me"]];
 
   action := @io.home-assistant.vacuum.set_power(power=enum(off))
-  #_[utterances=["off the vacuum cleaner",
+  #_[utterances=["switch off the vacuum cleaner",
                 "turn off my vacuum cleaner",
                 "switch off my vacuum for me",
-                "off the vacuum"]];
+                "switch off the vacuum"]];
 
   action := @io.home-assistant.vacuum.return_to_base()
   #_[utterances=["dock my vacuum",
@@ -92,6 +92,8 @@ dataset @io.home-assistant.vacuum language "en" {
 
   action := @io.home-assistant.vacuum.stop()
   #_[utterances=["stop the vacuum cleaner",
+                 "stop the vacuum",
+                 "make the vacuum stop",
                  "make my vacuum stop cleaning",
                  "tell my vacuum cleaner to stop",
                  "ask my vacuum to stop cleaning"]];
@@ -155,16 +157,16 @@ dataset @io.home-assistant.vacuum language "en" {
                  "${p_power} the ${p_name} vacuum"]];
 
   action (p_name : String) := @io.home-assistant.vacuum(name=p_name).set_power(power=enum(on))
-  #_[utterances=["on my ${p_name} vacuum",
+  #_[utterances=["turn on my ${p_name} vacuum",
                 "switch on the ${p_name} vacuum cleaner",
                 "help me switch on my ${p_name} vacuum",
                 "turn on my ${p_name} vacuum cleaner for me"]];
 
   action (p_name : String) := @io.home-assistant.vacuum(name=p_name).set_power(power=enum(off))
-  #_[utterances=["off the ${p_name} vacuum cleaner",
+  #_[utterances=["switch off the ${p_name} vacuum cleaner",
                 "turn off my ${p_name} vacuum cleaner",
                 "switch off my ${p_name} vacuum for me",
-                "off the ${p_name} vacuum"]];
+                "switch off the ${p_name} vacuum"]];
 
   action (p_name : String) := @io.home-assistant.vacuum(name=p_name).return_to_base()
   #_[utterances=["dock my ${p_name} vacuum",

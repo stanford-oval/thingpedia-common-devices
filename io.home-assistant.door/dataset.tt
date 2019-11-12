@@ -21,6 +21,7 @@ dataset @io.home-assistant.door language "en" {
 
   stream (p_state : Enum(open, closed)) := edge( monitor @io.home-assistant.door.state()) on (state == p_state)
   #_[utterances=["when the door is ${p_state}",
+                "once the door is ${p_state}",
                 "when my door gets ${p_state}"]];
 
   stream := edge( monitor @io.home-assistant.door.state()) on (state == enum(open))
@@ -53,7 +54,8 @@ dataset @io.home-assistant.door language "en" {
                  "was the ${p_name} door shut?"]];
 
   query (p_name : String) := @io.home-assistant.door(name=p_name).state()
-  #_[utterances=["if the ${p_name} door is open or closed",
+  #_[utterances=["if the ${p_name} door is open or not",
+                 "if the ${p_name} door is open",
                  "whether the ${p_name} door is open or closed"]];
 
   stream (p_name : String) := monitor @io.home-assistant.door(name=p_name).state()

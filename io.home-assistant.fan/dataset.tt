@@ -54,7 +54,8 @@ dataset @io.home-assistant.fan language "en" {
                 "if my fan is oscillating or stationary"]];
 
   stream := monitor @io.home-assistant.fan.oscillation()
-  #_[utterances=["when my fan starts or stops oscillating"]];
+  #_[utterances=["when my fan starts or stops oscillating",
+                 "once my fan starts or stops oscillating"]];
 
   stream (p_state : Enum(oscillating, not_oscillating)) := edge( monitor @io.home-assistant.fan.oscillation()) on (state == p_state)
   #_[utterances=["when the fan is ${p_state}"]];
@@ -121,6 +122,7 @@ dataset @io.home-assistant.fan language "en" {
 
   stream (p_name : String) := monitor @io.home-assistant.fan(name=p_name).state()
   #_[utterances=["when my ${p_name} fan turns on or off",
+                 "once my ${p_name} fan turns on or off",
                  "when the ${p_name} fan switches on or off"]];
 
   stream (p_name : String, p_state : Enum(on, off)) := edge( monitor @io.home-assistant.fan(name=p_name).state()) on (state == p_state)
@@ -147,6 +149,7 @@ dataset @io.home-assistant.fan language "en" {
                 "check if my ${p_name} fan is swinging",
                 "is the ${p_name} fan moving?",
                 "check if my ${p_name} fan is oscillating",
+                "whether my ${p_name} fan is oscillating or not",
                 "did the ${p_name} fan stop oscillating?",
                 "did the ${p_name} fan stop swinging?"]];
 

@@ -15,7 +15,8 @@ dataset @io.home-assistant.motion language "en" {
   #_[utterances=["when the motion sensor detects or stops detecting movement"]];
 
   stream (p_state : Enum(detecting, not_detecting)) := edge( monitor @io.home-assistant.motion.state()) on (state == p_state)
-  #_[utterances=["when the motion sensor starts ${p_state} movement"]];
+  #_[utterances=["when the motion sensor starts ${p_state} movement",
+                 "once the motion sensor starts ${p_state} movement"]];
 
   stream := edge( monitor @io.home-assistant.motion.state()) on (state == enum(detecting))
   #_[utterances=["when the motion sensor sees something move",
