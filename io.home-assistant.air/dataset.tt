@@ -64,6 +64,7 @@ dataset @io.home-assistant.air language "en" {
                    "when smoke is not detected anymore",
                    "when gas is not detected anymore",
                    "when there is no more gas",
+                   "when there is no gas",
                    "when there is no smoke",
                    "when the smoke clears",
                    "when the smoke goes away",
@@ -94,6 +95,7 @@ dataset @io.home-assistant.air language "en" {
 
     stream (p_name :String)  := monitor (@io.home-assistant.air(name=p_name).state())
     #_[utterances=["when the ${p_name} smoke detector starts or stops detecting smoke",
+                   "whenever the ${p_name} gas detector starts or stops detecting gas",
                    "when the ${p_name} gas detector starts or stops detecting gas",
                    "when the ${p_name} smoke sensor starts or stops detecting smoke"]]
     #[id=54300121]
@@ -133,6 +135,7 @@ dataset @io.home-assistant.air language "en" {
     stream (p_name :String, p_state :Enum(gas,smoke,nothing))  := edge (monitor (@io.home-assistant.air(name=p_name).state())) on state == p_state
     #_[utterances=["when my ${p_name} sensor starts detecting ${p_state}",
                    "when my ${p_name} detector is detecting ${p_state}",
+                   "once my ${p_name} detector is detecting ${p_state}",
                    "the moment my ${p_name} sensor detects ${p_state}"]]
     #[id=54948396]
     #[name="MonitorStateByState1"];

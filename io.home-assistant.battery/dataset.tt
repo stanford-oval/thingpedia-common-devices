@@ -52,14 +52,14 @@ dataset @io.home-assistant.battery language "en" {
     #[name="MonitorStateByStateNormal"];
 
     stream (p_charge :Number)  := edge (monitor (@io.home-assistant.battery.state())) on value >= p_charge
-    #_[utterances=["when the battery is higher than $p_charge percent",
-                   "if the battery level goes above $p_charge percent"]]
+    #_[utterances=["when the battery is higher than ${p_charge} percent",
+                   "if the battery level goes above ${p_charge} percent"]]
     #[id=54300172]
     #[name="MonitorStateByValueGreaterThan"];
 
     stream (p_charge :Number)  := edge (monitor (@io.home-assistant.battery.state())) on value <= p_charge
-    #_[utterances=["when the battery is lower than $p_charge percent",
-                   "if the battery level goes below $p_charge percent"]]
+    #_[utterances=["when the battery is lower than ${p_charge} percent",
+                   "if the battery level goes below ${p_charge} percent"]]
     #[id=54300174]
     #[name="MonitorStateByValueLessThan"];
 
@@ -108,19 +108,20 @@ dataset @io.home-assistant.battery language "en" {
     #[name="MonitorStateByStateNormal1"];
 
     stream (p_name :String, p_charge :Number)  := edge (monitor (@io.home-assistant.battery(name=p_name).state())) on value >= p_charge
-    #_[utterances=["when the ${p_name} battery sensor is higher than $p_charge percent",
-                   "if the ${p_name} battery sensor level goes above $p_charge percent"]]
+    #_[utterances=["when the ${p_name} battery sensor is higher than ${p_charge} percent",
+                   "if the ${p_name} battery sensor level goes above ${p_charge} percent"]]
     #[id=54300202]
     #[name="MonitorStateByValueGreaterThan1"];
 
     stream (p_name :String, p_charge :Number)  := edge (monitor (@io.home-assistant.battery(name=p_name).state())) on value <= p_charge
-    #_[utterances=["when the ${p_name} battery sensor is lower than $p_charge percent",
-                   "if the ${p_name} battery sensor level goes below $p_charge percent"]]
+    #_[utterances=["when the ${p_name} battery sensor is lower than ${p_charge} percent",
+                   "if the ${p_name} battery sensor level goes below ${p_charge} percent"]]
     #[id=54300204]
     #[name="MonitorStateByValueLessThan1"];
 
     stream (p_name :String, p_state :Enum(low,normal))  := edge (monitor (@io.home-assistant.battery(name=p_name).state())) on state == p_state
     #_[utterances=["when the ${p_name} battery becomes ${p_state}",
+                   "once my ${p_name} battery becomes ${p_state}",
                    "if the ${p_name} battery is ${p_state}",
                    "when my ${p_name} battery turns ${p_state}",
                    "if my ${p_name} battery changes to ${p_state}"]]
