@@ -168,13 +168,32 @@ module.exports = class HomeAssistantGateway extends Tp.BaseDevice {
         return this._connection;
     }
 
+    // note: updateState is not async, we must have the new .state property
+    // by the time this returns
+    updateState(newState) {
+        const oldAccessToken = this.state.accessToken;
+        super.updateState(newState);
+
+        // reconnect asynchronously, ignore errors
+        if (oldAccessToken !== this.state.accessToken)
+            this._reconnect();
+    }
+
+    async _reconnect() {
+        try {
+            await this._connection.setSocket(await this._createSocket({ setupRetry: 10}));
+        } catch(e) {
+            console.error(`Failed to reconnect to Home Assistant: ` + e);
+        }
+    }
+
     async updateOAuth2Token(accessToken, refreshToken, extraData) {
         this.state.accessToken = accessToken;
         // if the refresh token is single use, we will get a new one when we use it
         if (refreshToken)
             this.state.refreshToken = refreshToken;
         this.state.accessTokenExpires = extraData.expires_in * 1000 + Date.now();
-        await this._connection.setSocket(await this._createSocket({ setupRetry: 10}));
+        await this._reconnect();
 
         this.stateChanged();
     }
