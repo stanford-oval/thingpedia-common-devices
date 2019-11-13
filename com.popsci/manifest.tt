@@ -1,0 +1,18 @@
+class @com.popsci
+#_[name="Popular Science RSS"]
+#_[description="RSS feed for Popular Science"]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="media"]{
+  import loader from @org.thingpedia.rss();
+  import config from @org.thingpedia.config.none();
+
+  monitorable list query articles(out title: String #_[canonical="title"] #[string_values="tt:news_title"],
+                                  out link: Entity(tt:url) #_[canonical="link"],
+                                  out updated: Date #_[canonical="updated"])
+  #_[canonical="popular science articles"]
+  #_[confirmation="articles on popular science"]
+  #_[formatted=[{type="rdl",webCallback="${link}",displayTitle="${title}"}]]
+  #[url="https://www.popsci.com/arcio/rss/"]
+  #[poll_interval=1h];
+}
