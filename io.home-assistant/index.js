@@ -139,6 +139,13 @@ module.exports = class HomeAssistantGateway extends Tp.BaseDevice {
         // FIXME i18n
         this.name = `Home Assistant Gateway at ${state.hassUrl}`;
         this._subdevices = new HomeAssistantDeviceSet(this);
+
+        // if this device was configured through hassio, mark it as transient
+        // (not stored on disk) because the access token will expire the next
+        // time the addon or hass.io is restarted
+        // no matter what, at the next restart the addon setup code will create
+        // the new device with the new good token
+        this.isTransient = !!state.isHassio;
     }
 
     static async loadFromOAuth2(engine, accessToken, refreshToken, extraData) {
