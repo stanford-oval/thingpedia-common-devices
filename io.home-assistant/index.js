@@ -23,26 +23,26 @@ const HASS_URL = 'http://hassio.local:8123';
 
 const DOMAIN_TO_TP_KIND = {
     'light': 'light-bulb',
-    'cover_active': 'io.home-assistant.cover',
-    'fan': 'io.home-assistant.fan',
-    'switch': 'io.home-assistant.switch',
-    'vacuum': 'io.home-assistant.vacuum',
-    'sensor_air': 'io.home-assistant.air',
-    'sensor_battery': 'io.home-assistant.battery',
-    'sensor_connectivity': 'io.home-assistant.connectivity',
-    'sensor_door': 'io.home-assistant.door',
-    'sensor_heat': 'io.home-assistant.heat',
-    'sensor_motion': 'io.home-assistant.motion',
-    'sensor_occupancy': 'io.home-assistant.occupancy',
-    'sensor_plug': 'io.home-assistant.plug',
-    'sensor_sound': 'io.home-assistant.sound'
+    'cover_active': 'org.thingpedia.iot.cover',
+    'fan': 'org.thingpedia.iot.fan',
+    'switch': 'org.thingpedia.iot.switch',
+    'vacuum': 'org.thingpedia.iot.vacuum',
+    'sensor_air': 'org.thingpedia.iot.air',
+    'sensor_battery': 'org.thingpedia.iot.battery',
+    'sensor_connectivity': 'org.thingpedia.iot.connectivity',
+    'sensor_door': 'org.thingpedia.iot.door',
+    'sensor_heat': 'org.thingpedia.iot.heat',
+    'sensor_motion': 'org.thingpedia.iot.motion',
+    'sensor_occupancy': 'org.thingpedia.iot.occupancy',
+    'sensor_plug': 'org.thingpedia.iot.plug',
+    'sensor_sound': 'org.thingpedia.iot.sound'
 };
 const SUBDEVICES = {
     'light-bulb': HomeAssistantLightbulbDevice,
-    'io.home-assistant.cover': HomeAssistantCover,
-    'io.home-assistant.fan': HomeAssistantFan,
-    'io.home-assistant.switch': HomeAssistantSwitch,
-    'io.home-assistant.vacuum': HomeAssistantVacuum
+    'org.thingpedia.iot.cover': HomeAssistantCover,
+    'org.thingpedia.iot.fan': HomeAssistantFan,
+    'org.thingpedia.iot.switch': HomeAssistantSwitch,
+    'org.thingpedia.iot.vacuum': HomeAssistantVacuum
 };
 
 Object.entries(DOMAIN_TO_TP_KIND).forEach(([key,value]) => {

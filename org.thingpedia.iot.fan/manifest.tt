@@ -1,0 +1,28 @@
+abstract class @org.thingpedia.iot.fan
+#_[thingpedia_name="Fan"]
+#_[thingpedia_description="Interface for Fan."]
+#_[description="Interface for Fan."]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="home"]
+{
+  monitorable query state(out state : Enum(on,off))
+  #_[canonical="fan state"]
+  #_[confirmation="the state of $__device"]
+  #_[formatted=["The fan is $state"]];
+
+  action set_power(in req power: Enum(on,off) #_[prompt="Do you want to turn it on or off?"] #_[canonical="power"])
+  #_[canonical="set power on fan"]
+  #_[confirmation="turn $power $__device"]
+  #[confirm=true];
+
+  monitorable query oscillation(out state : Enum(oscillating,not_oscillating))
+  #_[canonical="fan oscillation state"]
+  #_[confirmation="the oscillation of $__device"]
+  #_[formatted=["The fan is ${state:enum}"]];
+
+  action set_oscillation(in req oscillation: Enum(on,off) #_[prompt="Do you want to turn oscillation on or off?"] #_[canonical="oscillation"])
+  #_[canonical="set oscillation on fan"]
+  #_[confirmation="turn $oscillation oscillation for $__device"]
+  #[confirm=true];
+}

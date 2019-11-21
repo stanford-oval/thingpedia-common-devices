@@ -1,0 +1,131 @@
+dataset @org.thingpedia.iot.battery language "en" {
+    program  := {
+  now => @org.thingpedia.iot.battery.state() => notify;
+}
+    #_[utterances=["is my battery low?",
+                   "check if my battery is low",
+                   "check if the battery too low",
+                   "is the battery charged?",
+                   "do I have enough battery left?",
+                   "how much battery do I have left?",
+                   "what is my battery level?"]]
+    #[id=54300146]
+    #[name="StateThenNotify"];
+
+    query  := @org.thingpedia.iot.battery.state()
+    #_[utterances=["the state of my battery",
+                   "if the battery is low or normal",
+                   "whether the battery is too low or normal",
+                   "if my battery has power",
+                   "whether I have enough battery"]]
+    #[id=54300153]
+    #[name="State"];
+
+    stream  := monitor (@org.thingpedia.iot.battery.state())
+    #_[utterances=["when the state of my battery changes"]]
+    #[id=54300158]
+    #[name="MonitorState"];
+
+    stream (p_state :Enum(low,normal))  := edge (monitor (@org.thingpedia.iot.battery.state())) on state == p_state
+    #_[utterances=["when the battery becomes ${p_state}",
+                   "if the battery is ${p_state}",
+                   "when my battery turns ${p_state}",
+                   "if my battery changes to ${p_state}"]]
+    #[id=54300159]
+    #[name="MonitorStateByState"];
+
+    stream  := edge (monitor (@org.thingpedia.iot.battery.state())) on state == enum(low)
+    #_[utterances=["when I am low on battery",
+                   "if my battery is finishing",
+                   "when the battery is running low",
+                   "if my battery starts running out",
+                   "when my battery has no juice"]]
+    #[id=54300163]
+    #[name="MonitorStateByStateLow"];
+
+    stream  := edge (monitor (@org.thingpedia.iot.battery.state())) on state == enum(normal)
+    #_[utterances=["when I have enough battery",
+                   "when my battery is charged",
+                   "if the battery is topped up",
+                   "when the battery has finished charging"]]
+    #[id=54300168]
+    #[name="MonitorStateByStateNormal"];
+
+    stream (p_charge :Number)  := edge (monitor (@org.thingpedia.iot.battery.state())) on value >= p_charge
+    #_[utterances=["when the battery is higher than ${p_charge} percent",
+                   "if the battery level goes above ${p_charge} percent"]]
+    #[id=54300172]
+    #[name="MonitorStateByValueGreaterThan"];
+
+    stream (p_charge :Number)  := edge (monitor (@org.thingpedia.iot.battery.state())) on value <= p_charge
+    #_[utterances=["when the battery is lower than ${p_charge} percent",
+                   "if the battery level goes below ${p_charge} percent"]]
+    #[id=54300174]
+    #[name="MonitorStateByValueLessThan"];
+
+    program (p_name :String)  := {
+  now => @org.thingpedia.iot.battery(name=p_name).state() => notify;
+}
+    #_[utterances=["is my ${p_name} battery low?",
+                   "check if my ${p_name} battery is low",
+                   "check if the ${p_name} battery too low",
+                   "is the ${p_name} battery charged?",
+                   "do I have enough ${p_name} battery left?",
+                   "how much ${p_name} battery do I have left?",
+                   "what is my ${p_name} battery level?"]]
+    #[id=54300176]
+    #[name="StateThenNotify1"];
+
+    query (p_name :String)  := @org.thingpedia.iot.battery(name=p_name).state()
+    #_[utterances=["the state of my ${p_name} battery",
+                   "if the ${p_name} battery is low or normal",
+                   "whether the ${p_name} battery is too low or normal",
+                   "if my ${p_name} battery has power",
+                   "whether I have enough ${p_name} battery"]]
+    #[id=54300183]
+    #[name="State1"];
+
+    stream (p_name :String)  := monitor (@org.thingpedia.iot.battery(name=p_name).state())
+    #_[utterances=["when the state of my ${p_name} battery changes"]]
+    #[id=54300188]
+    #[name="MonitorState1"];
+
+    stream (p_name :String)  := edge (monitor (@org.thingpedia.iot.battery(name=p_name).state())) on state == enum(low)
+    #_[utterances=["when I am low on ${p_name} battery",
+                   "if my ${p_name} battery is finishing",
+                   "when the ${p_name} battery is running low",
+                   "if my ${p_name} battery starts running out",
+                   "when my ${p_name} battery has no juice"]]
+    #[id=54300193]
+    #[name="MonitorStateByStateLow1"];
+
+    stream (p_name :String)  := edge (monitor (@org.thingpedia.iot.battery(name=p_name).state())) on state == enum(normal)
+    #_[utterances=["when I have enough ${p_name} battery",
+                   "when my ${p_name} battery is charged",
+                   "if the ${p_name} battery is topped up",
+                   "when the ${p_name} battery has finished charging"]]
+    #[id=54300198]
+    #[name="MonitorStateByStateNormal1"];
+
+    stream (p_name :String, p_charge :Number)  := edge (monitor (@org.thingpedia.iot.battery(name=p_name).state())) on value >= p_charge
+    #_[utterances=["when the ${p_name} battery sensor is higher than ${p_charge} percent",
+                   "if the ${p_name} battery sensor level goes above ${p_charge} percent"]]
+    #[id=54300202]
+    #[name="MonitorStateByValueGreaterThan1"];
+
+    stream (p_name :String, p_charge :Number)  := edge (monitor (@org.thingpedia.iot.battery(name=p_name).state())) on value <= p_charge
+    #_[utterances=["when the ${p_name} battery sensor is lower than ${p_charge} percent",
+                   "if the ${p_name} battery sensor level goes below ${p_charge} percent"]]
+    #[id=54300204]
+    #[name="MonitorStateByValueLessThan1"];
+
+    stream (p_name :String, p_state :Enum(low,normal))  := edge (monitor (@org.thingpedia.iot.battery(name=p_name).state())) on state == p_state
+    #_[utterances=["when the ${p_name} battery becomes ${p_state}",
+                   "once my ${p_name} battery becomes ${p_state}",
+                   "if the ${p_name} battery is ${p_state}",
+                   "when my ${p_name} battery turns ${p_state}",
+                   "if my ${p_name} battery changes to ${p_state}"]]
+    #[id=54952061]
+    #[name="MonitorStateByState1"];
+
+}
