@@ -246,20 +246,11 @@ module.exports = class TwitterAccountDevice extends Tp.BaseDevice {
         });
     }
 
-    get_search(params, filters, count) {
-        let query = '';
-        /*if (false) {
-            // FIXME filter on username or in_reply_to
-            let from = filters[5];
-            if (from !== undefined && from !== null)
-                query += ' from:' + from;
-            let inReplyTo = filters[6];
-            if (inReplyTo !== undefined && inReplyTo !== null)
-                query += ' to:' + inReplyTo;
-        }*/
-        query = query.trim();
+    get_search(params) {
+        if (params !== undefined)
+            return this._doSearch(params.query, params.count);
 
-        return this._doSearch(query, count);
+        return this._doSearch();
     }
 
     do_post({ status }) {
@@ -439,4 +430,3 @@ module.exports = class TwitterAccountDevice extends Tp.BaseDevice {
         });
     }
 };
-
