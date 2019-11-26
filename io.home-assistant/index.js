@@ -15,6 +15,7 @@ const HomeAssistantLightbulbDevice = require('./light-bulb');
 const HomeAssistantSensor = require('./sensor');
 const HomeAssistantCover = require('./cover');
 const HomeAssistantFan = require('./fan');
+const HomeAssistantLock = require('./lock');
 const HomeAssistantMediaPlayer = require('./media-player');
 const HomeAssistantSwitch = require('./switch');
 const HomeAssistantVacuum = require('./vacuum');
@@ -26,6 +27,7 @@ const DOMAIN_TO_TP_KIND = {
     'light': 'light-bulb',
     'cover_active': 'org.thingpedia.iot.cover',
     'fan': 'org.thingpedia.iot.fan',
+    'lock': 'org.thingpedia.iot.lock',
     'switch': 'org.thingpedia.iot.switch',
     'vacuum': 'org.thingpedia.iot.vacuum',
     'sensor_air': 'org.thingpedia.iot.air',
@@ -46,6 +48,7 @@ const SUBDEVICES = {
     'light-bulb': HomeAssistantLightbulbDevice,
     'org.thingpedia.iot.cover': HomeAssistantCover,
     'org.thingpedia.iot.fan': HomeAssistantFan,
+    'org.thingpedia.iot.lock': HomeAssistantLock,
     'org.thingpedia.iot.speaker': HomeAssistantMediaPlayer,
     'org.thingpedia.iot.switch': HomeAssistantSwitch,
     'org.thingpedia.iot.tv': HomeAssistantMediaPlayer,
@@ -80,6 +83,8 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
         let kind = undefined;
         if (domain === 'binary_sensor' && ['smoke', 'gas'].includes(attributes.device_class))
             kind = DOMAIN_TO_TP_KIND['sensor_air'];
+        else if (domain === 'lock' || attributes.device_class === 'lock')
+            kind = DOMAIN_TO_TP_KIND['lock'];
         else if (domain === 'binary_sensor' && ['heat', 'cold'].includes(attributes.device_class))
             kind = DOMAIN_TO_TP_KIND['sensor_heat'];
         else if (domain === 'binary_sensor' && attributes.device_class === 'window')

@@ -33,6 +33,14 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
                     on: 'open',
                     off: 'closed'
                 },
+                garage: {
+                    on: 'open',
+                    off: 'closed'
+                },
+                garage_door: {
+                    on: 'open',
+                    off: 'closed'
+                },
                 gas: {
                     on: 'detecting',
                     off: 'not_detecting'
@@ -40,6 +48,10 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
                 heat: {
                     on: 'hot',
                     off: 'normal'
+                },
+                moisture: {
+                    on: 'wet',
+                    off: 'dry'
                 },
                 motion: {
                     on: 'detecting',
