@@ -1,0 +1,78 @@
+dataset @org.thingpedia.iot.garage-door language "en" {
+
+  program := now => @org.thingpedia.iot.garage-door.state() => notify
+  #_[utterances=["is my garage door open?",
+                 "is my garage door closed?",
+                 "check whether my garage door is open or closed",
+                 "did I leave the garage door open?",
+                 "did I forget to close my garage door?"]];
+
+  query := @org.thingpedia.iot.garage-door.state()
+  #_[utterances=["if the garage door is open or closed",
+                 "whether the garage door is open or closed"]];
+
+  stream := monitor @org.thingpedia.iot.garage-door.state()
+  #_[utterances=["when the state of the garage door changes"]];
+
+  stream (p_state : Enum(open, closed)) := edge( monitor @org.thingpedia.iot.garage-door.state()) on (state == p_state)
+  #_[utterances=["when the garage door becomes ${p_state}",
+                "if the garage door is ${p_state}",
+                "when my garage door gets ${p_state}",
+                "if my garage door changes to ${p_state}"]];
+
+  stream := edge( monitor @org.thingpedia.iot.garage-door.state()) on (state == enum(open))
+  #_[utterances=["when my garage door opens",
+                "when I open the garage door",
+                "the moment I open the garage door",
+                "if I leave the garage door open",
+                "when someone opens the garage door",
+                "whoever opens the garage door",
+                "if anyone opens the garage door"]];
+
+  stream := edge( monitor @org.thingpedia.iot.garage-door.state()) on (state == enum(closed))
+  #_[utterances=["when my garage door closes",
+                "when I close the garage door",
+                "the moment I close the garage door",
+                "if I leave the garage door closed",
+                "when someone closes the garage door",
+                "whoever closes the garage door",
+                "if anyone closes the garage door"]];
+
+  program (p_name : String) := now => @org.thingpedia.iot.garage-door(name=p_name).state() => notify
+  #_[utterances=["is my ${p_name} garage door open?",
+                 "is my ${p_name} garage door closed?",
+                 "check whether my ${p_name} garage door is open or closed",
+                 "did I leave the ${p_name} garage door open?",
+                 "did I forget to close my ${p_name} garage door?"]];
+
+  query (p_name : String) := @org.thingpedia.iot.garage-door(name=p_name).state()
+  #_[utterances=["if the ${p_name} garage door is open or closed",
+                 "whether the ${p_name} garage door is open or closed"]];
+
+  stream (p_name : String) := monitor @org.thingpedia.iot.garage-door(name=p_name).state()
+  #_[utterances=["when the state of the ${p_name} garage door changes"]];
+
+  stream (p_name : String, p_state : Enum(open, closed)) := edge( monitor @org.thingpedia.iot.garage-door(name=p_name).state()) on (state == p_state)
+  #_[utterances=["when the ${p_name} garage door becomes ${p_state}",
+                "if the ${p_name} garage door is ${p_state}",
+                "when my ${p_name} garage door gets ${p_state}",
+                "if my ${p_name} garage door changes to ${p_state}"]];
+
+  stream (p_name : String) := edge( monitor @org.thingpedia.iot.garage-door(name=p_name).state()) on (state == enum(open))
+  #_[utterances=["when my ${p_name} garage door opens",
+                "when I open the ${p_name} garage door",
+                "the moment I open the ${p_name} garage door",
+                "if I leave the ${p_name} garage door open",
+                "when someone opens the ${p_name} garage door",
+                "whoever opens the ${p_name} garage door",
+                "if anyone opens the ${p_name} garage door"]];
+
+  stream (p_name : String) := edge( monitor @org.thingpedia.iot.garage-door(name=p_name).state()) on (state == enum(closed))
+  #_[utterances=["when my ${p_name} garage door closes",
+                "when I close the ${p_name} garage door",
+                "the moment I close the ${p_name} garage door",
+                "if I leave the ${p_name} garage door closed",
+                "when someone closes the ${p_name} garage door",
+                "whoever closes the ${p_name} garage door",
+                "if anyone closes the ${p_name} garage door"]];
+}

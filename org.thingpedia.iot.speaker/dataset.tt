@@ -1,0 +1,198 @@
+dataset @org.thingpedia.iot.speaker language "en" {
+
+  program := now => @org.thingpedia.iot.speaker.state() => notify
+  #_[utterances=["is my speaker on?",
+                "check if my speaker is off",
+                "is the speaker turned on?",
+                "check if my speaker is switched off",
+                "check if my speaker is turned on or off",
+                "check if my speaker is switched on or switched off"]];
+
+  query := @org.thingpedia.iot.speaker.state()
+  #_[utterances=["if my speaker is on or off",
+                 "whether my speaker is switched on or switched off"]];
+
+  stream := monitor @org.thingpedia.iot.speaker.state()
+  #_[utterances=["when my speaker changes state"]];
+
+  stream (p_state : Enum(on, off)) := edge( monitor @org.thingpedia.iot.speaker.state()) on (state == p_state)
+  #_[utterances=["when my speaker turns ${p_state}",
+                "if my speaker switches ${p_state}",
+                "when the speaker becomes ${p_state}",
+                "if my speaker is ${p_state}",
+                "when my speaker changes to ${p_state}"]];
+
+  stream := edge( monitor @org.thingpedia.iot.speaker.state()) on (state == enum(on))
+  #_[utterances=["when my speaker turns on",
+                "when I switch on the speaker",
+                "if the speaker becomes on",
+                "when my speaker gets switched to on",
+                "if my speaker is on",
+                "when my speaker is turned on",
+                "the moment my speaker is switched on"]];
+
+  stream := edge( monitor @org.thingpedia.iot.speaker.state()) on (state == enum(off))
+  #_[utterances=["when my speaker is turned off",
+                "if my speaker switches off",
+                "the moment my speaker becomes off",
+                "if my speaker is off",
+                "when my speaker gets turned off"]];
+
+  action (p_power :Enum(on,off)) := @org.thingpedia.iot.speaker.set_power(power=p_power)
+  #_[utterances=["turn ${p_power} my speaker",
+                 "switch ${p_power} the speaker",
+                 "${p_power} the speaker"]];
+
+  action := @org.thingpedia.iot.speaker.set_power(power=enum(on))
+  #_[utterances=["on my speaker",
+                "turn on the speaker",
+                "switch on my speaker",
+                "help me turn on the speaker",
+                "switch on the speaker for me"]];
+
+  action := @org.thingpedia.iot.speaker.set_power(power=enum(off))
+  #_[utterances=["turn off my speaker",
+                "switch off the speaker",
+                "off the speaker",
+                "turn off the speaker",
+                "help to off the speaker"]];
+
+  action := @org.thingpedia.iot.speaker.volume_up()
+  #_[utterances=["increase the volume of the speaker",
+                 "increase my speaker 's volume",
+                 "make the speaker louder"]];
+
+  action := @org.thingpedia.iot.speaker.volume_down()
+  #_[utterances=["decrease the volume of my speaker",
+                 "decrease my speaker 's volume",
+                 "reduce the volume of the speaker",
+                 "reduce my speaker 's volume",
+                 "make the speaker softer"]];
+
+  action := @org.thingpedia.iot.speaker.volume_mute()
+  #_[utterances=["mute my speaker",
+                 "silence my speaker 's volume",
+                 "turn off the volume of the speaker",
+                 "switch off the sound for my speaker",
+                 "mute my speaker 's sound",
+                 "make my speaker silent"]];
+
+  action := @org.thingpedia.iot.speaker.volume_unmute()
+  #_[utterances=["unmute my speaker",
+                 "unmute the speaker 's volume",
+                 "unmute my speaker 's sound",
+                 "turn on the speaker sound",
+                 "stop muting my speaker"]];
+
+  action (p_volume : Number) := @org.thingpedia.iot.speaker.volume_set(volume=p_volume)
+  #_[utterances=["turn my speaker sound to ${p_volume}",
+                 "set the speaker 's volume to ${p_volume}"]];
+
+  action  := @org.thingpedia.iot.speaker.set_sink()
+  #_[utterances=["set my bluetooth speaker as default",
+                 "set my speaker as default",
+                 "set my speaker as sink"]];
+
+  action  := @org.thingpedia.iot.speaker.play_music()
+    #_[utterances=["play something on my bluetooth speaker",
+                   "play music on my speaker",
+                   "play something on my speaker"]];
+
+  program (p_name : String) := now => @org.thingpedia.iot.speaker(name=p_name).state() => notify
+  #_[utterances=["is my ${p_name} speaker on?",
+                "check if my ${p_name} speaker is off",
+                "is the ${p_name} speaker turned on?",
+                "check if my ${p_name} speaker is switched off",
+                "check if my ${p_name} speaker is turned on or off",
+                "check if my ${p_name} speaker is switched on or switched off"]];
+
+  query (p_name : String) := @org.thingpedia.iot.speaker(name=p_name).state()
+  #_[utterances=["if my ${p_name} speaker is on or off",
+                 "whether my ${p_name} speaker is switched on or switched off"]];
+
+  stream (p_name : String) := monitor @org.thingpedia.iot.speaker(name=p_name).state()
+  #_[utterances=["when my ${p_name} speaker changes state"]];
+
+  stream (p_name : String, p_state : Enum(on, off)) := edge( monitor @org.thingpedia.iot.speaker(name=p_name).state()) on (state == p_state)
+  #_[utterances=["when my ${p_name} speaker turns ${p_state}",
+                "if my ${p_name} speaker switches ${p_state}",
+                "when the ${p_name} speaker becomes ${p_state}",
+                "if my ${p_name} speaker is ${p_state}",
+                "when my ${p_name} speaker changes to ${p_state}"]];
+
+  stream (p_name : String) := edge( monitor @org.thingpedia.iot.speaker(name=p_name).state()) on (state == enum(on))
+  #_[utterances=["when my ${p_name} speaker turns on",
+                "when I switch on the ${p_name} speaker",
+                "if the ${p_name} speaker becomes on",
+                "when my ${p_name} speaker gets switched to on",
+                "if my ${p_name} speaker is on",
+                "when my ${p_name} speaker is turned on",
+                "the moment my ${p_name} speaker is switched on"]];
+
+  stream (p_name : String) := edge( monitor @org.thingpedia.iot.speaker(name=p_name).state()) on (state == enum(off))
+  #_[utterances=["when my ${p_name} speaker is turned off",
+                "if my ${p_name} speaker switches off",
+                "the moment my ${p_name} speaker becomes off",
+                "if my ${p_name} speaker is off",
+                "when my ${p_name} speaker gets turned off"]];
+
+  action (p_name : String, p_power :Enum(on,off)) := @org.thingpedia.iot.speaker(name=p_name).set_power(power=p_power)
+  #_[utterances=["turn ${p_power} my ${p_name} speaker",
+                 "switch ${p_power} the ${p_name} speaker",
+                 "${p_power} the ${p_name} speaker"]];
+
+  action (p_name : String) := @org.thingpedia.iot.speaker(name=p_name).set_power(power=enum(on))
+  #_[utterances=["on my ${p_name} speaker",
+                "turn on the ${p_name} speaker",
+                "switch on my ${p_name} speaker",
+                "help me turn on the ${p_name} speaker",
+                "switch on the ${p_name} speaker for me"]];
+
+  action (p_name : String) := @org.thingpedia.iot.speaker(name=p_name).set_power(power=enum(off))
+  #_[utterances=["turn off my ${p_name} speaker",
+                "switch off the ${p_name} speaker",
+                "off the ${p_name} speaker",
+                "turn off the ${p_name} speaker",
+                "help to off the ${p_name} speaker"]];
+
+  action (p_name : String) := @org.thingpedia.iot.speaker(name=p_name).volume_up()
+  #_[utterances=["increase the volume of the ${p_name} speaker",
+                 "increase my ${p_name} speaker 's volume",
+                 "make the ${p_name} speaker louder"]];
+
+  action (p_name : String) := @org.thingpedia.iot.speaker(name=p_name).volume_down()
+  #_[utterances=["decrease the volume of my ${p_name} speaker",
+                 "decrease my ${p_name} speaker 's volume",
+                 "reduce the volume of the ${p_name} speaker",
+                 "reduce my ${p_name} speaker 's volume",
+                 "make the ${p_name} speaker softer"]];
+
+  action (p_name : String) := @org.thingpedia.iot.speaker(name=p_name).volume_mute()
+  #_[utterances=["mute my ${p_name} speaker",
+                 "silence my ${p_name} speaker 's volume",
+                 "turn off the volume of the ${p_name} speaker",
+                 "switch off the sound for my ${p_name} speaker",
+                 "mute my ${p_name} speaker 's sound",
+                 "make my ${p_name} speaker silent"]];
+
+  action (p_name : String) := @org.thingpedia.iot.speaker(name=p_name).volume_unmute()
+  #_[utterances=["unmute my ${p_name} speaker",
+                 "unmute the ${p_name} speaker 's volume",
+                 "unmute my ${p_name} speaker 's sound",
+                 "turn on the ${p_name} speaker sound",
+                 "stop muting my ${p_name} speaker"]];
+
+  action (p_name : String, p_volume : Number) := @org.thingpedia.iot.speaker(name=p_name).volume_set(volume=p_volume)
+  #_[utterances=["turn my ${p_name} speaker sound to ${p_volume}",
+                 "set the ${p_name} speaker 's volume to ${p_volume}"]];
+
+  action (p_name : String) := @org.thingpedia.iot.speaker(name=p_name).set_sink()
+  #_[utterances=["set my ${p_name} bluetooth speaker as default",
+                 "set my ${p_name} speaker as default",
+                 "set my ${p_name} speaker as sink"]];
+
+  action (p_name : String) := @org.thingpedia.iot.speaker(name=p_name).play_music()
+    #_[utterances=["play something on my ${p_name} bluetooth speaker",
+                   "play music on my ${p_name} speaker",
+                   "play something on ${p_name} my speaker"]];
+}
