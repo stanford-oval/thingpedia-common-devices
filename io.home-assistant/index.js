@@ -20,6 +20,7 @@ const HomeAssistantMediaPlayer = require('./media-player');
 const HomeAssistantSwitch = require('./switch');
 const HomeAssistantThermostat = require('./thermostat');
 const HomeAssistantVacuum = require('./vacuum');
+const HomeAssistantSecurityCamera = require('./security-camera');
 
 // FIXME make configurable
 const HASS_URL = 'http://hassio.local:8123';
@@ -29,6 +30,7 @@ const DOMAIN_TO_TP_KIND = {
     'cover_active': 'org.thingpedia.iot.cover',
     'fan': 'org.thingpedia.iot.fan',
     'lock': 'org.thingpedia.iot.lock',
+    'security_camera': 'org.thingpedia.iot.security-camera',
     'switch': 'org.thingpedia.iot.switch',
     'climate': 'org.thingpedia.iot.thermostat',
     'vacuum': 'org.thingpedia.iot.vacuum',
@@ -51,6 +53,7 @@ const SUBDEVICES = {
     'org.thingpedia.iot.cover': HomeAssistantCover,
     'org.thingpedia.iot.fan': HomeAssistantFan,
     'org.thingpedia.iot.lock': HomeAssistantLock,
+    'org.thingpedia.iot.security-camera': HomeAssistantSecurityCamera,
     'org.thingpedia.iot.speaker': HomeAssistantMediaPlayer,
     'org.thingpedia.iot.switch': HomeAssistantSwitch,
     'org.thingpedia.iot.thermostat': HomeAssistantThermostat,
@@ -94,6 +97,8 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
             kind = DOMAIN_TO_TP_KIND['sensor_heat'];
         else if (domain === 'binary_sensor' && attributes.device_class === 'window')
             kind = DOMAIN_TO_TP_KIND['cover_active'];
+        else if ((domain === 'sensor') && attributes.device_class === 'motion')
+            kind = DOMAIN_TO_TP_KIND['security_camera'];
         else if ((domain === 'sensor') || (domain === 'binary_sensor') || (domain === 'cover' && attributes.device_class === 'door'))
             kind = DOMAIN_TO_TP_KIND[`sensor_${attributes.device_class}`];
         else if (domain === 'cover' && attributes.device_class === 'garage')

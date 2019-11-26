@@ -59,6 +59,10 @@ const CameraDevice = class NestCameraDevice extends Tp.BaseDevice {
         return stream;
     }
 
+    get_state() {
+        throw new Error ('Sorry! Your device doesn\'t support querying the state.');
+    }
+
     get_current_event() {
         return new Promise((resolve, reject) => {
             let firebase = this.master.refFirebaseClient().child(this.url);
