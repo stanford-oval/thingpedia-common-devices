@@ -102,7 +102,7 @@ module.exports = class HomeAssistantThermostat extends HomeAssistantDevice {
             throw new Error ('Sorry! Your device doesn\'t support checking temperature.');
     }
     
-    get_hvac_state() {
+    async get_hvac_state() {
         if (this.domain === 'climate') {
             let mode = this.state.hvac_mode;
             let state = this.state.hvac_action;
@@ -125,21 +125,21 @@ module.exports = class HomeAssistantThermostat extends HomeAssistantDevice {
             throw new Error ('Sorry! Your device doesn\'t support querying HVAC state.');
     }
 
-    do_set_hvac_mode({ mode }) {
+    async do_set_hvac_mode({ mode }) {
         if (this.domain === 'climate')
             await this._callService('climate', 'set_hvac_mode', {hvac_mode: mode});
         else
             throw new Error ('Sorry! Your device doesn\'t support setting HVAC mode.');
     }
 
-    do_set_minmax_temperature({ low, high }) {
+    async do_set_minmax_temperature({ low, high }) {
         if (this.domain === 'climate')
             await this._callService('climate', 'set_temperature', {target_temp_high: high, target_temp_low: low});
         else
             throw new Error ('Sorry! Your device doesn\'t support setting min or max temperature.');
     }
 
-    do_set_target_temperature({ value }) {
+    async do_set_target_temperature({ value }) {
         if (this.domain === 'climate')
             await this._callService('climate', 'set_temperature', {temperature: value});
         else
