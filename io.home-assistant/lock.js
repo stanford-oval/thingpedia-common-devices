@@ -23,8 +23,9 @@ module.exports = class HomeAssistantLock extends HomeAssistantDevice {
     }
     // note: subscribe_ must NOT be async, or an ImplementationError will occur at runtime
     subscribe_state() {
-        if (this.domain === 'lock')
+        if (this.domain === 'lock') {
             throw new Error('Sorry! Your lock doesn\'t seem to support querying.');
+        }
         else {
             return this._subscribeState(() => {
                 return { state: this.state.state };

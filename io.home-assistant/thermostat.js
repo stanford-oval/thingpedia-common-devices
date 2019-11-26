@@ -37,14 +37,16 @@ module.exports = class HomeAssistantThermostat extends HomeAssistantDevice {
         }
     }
     async get_humidity() {
-        if (['binary_sensor', 'sensor'].includes(this.domain) && this.device_class === 'humidity')
+        if (['binary_sensor', 'sensor'].includes(this.domain) && this.device_class === 'humidity') {
             return this._get_state();
+        }
         else if (this.domain === 'climate') {
             let value = parseFloat(this.state.current_humidity);
             return [{state: undefined, value: value}];
         }
-        else 
+        else {
             throw new Error ('Sorry! Your device doesn\'t support checking humidity.');
+        }
     }
     // note: subscribe_ must NOT be async, or an ImplementationError will occur at runtime
     subscribe_humidity() {
@@ -68,18 +70,21 @@ module.exports = class HomeAssistantThermostat extends HomeAssistantDevice {
                 return {state: undefined, value: value};
             });
         }
-        else
+        else {
             throw new Error ('Sorry! Your device doesn\'t support checking humidity.');
+        }
     }
     async get_temperature() {
-        if (['binary_sensor', 'sensor'].includes(this.domain) && this.device_class === 'temperature')
+        if (['binary_sensor', 'sensor'].includes(this.domain) && this.device_class === 'temperature') {
             return this._get_state();
+        }
         else if (this.domain === 'climate') {
             let value = parseFloat(this.state.current_temperature);
             return [{state: undefined, value: value}];
         }
-        else 
+        else {
             throw new Error ('Sorry! Your device doesn\'t support checking temperature.');
+        }
     }
     // note: subscribe_ must NOT be async, or an ImplementationError will occur at runtime
     subscribe_temperature() {
@@ -98,8 +103,9 @@ module.exports = class HomeAssistantThermostat extends HomeAssistantDevice {
                 return {state: undefined, value: value};
             });
         }
-        else
+        else {
             throw new Error ('Sorry! Your device doesn\'t support checking temperature.');
+        }
     }
     
     async get_hvac_state() {
@@ -108,8 +114,9 @@ module.exports = class HomeAssistantThermostat extends HomeAssistantDevice {
             let state = this.state.hvac_action;
             return [{mode: mode, state: state}];
         }
-        else
+        else {
             throw new Error ('Sorry! Your device doesn\'t support querying HVAC state.');
+        }
     }
 
     // note: subscribe_ must NOT be async, or an ImplementationError will occur at runtime
@@ -121,8 +128,9 @@ module.exports = class HomeAssistantThermostat extends HomeAssistantDevice {
                 return {mode: mode, state: state};
             });
         }
-        else
+        else {
             throw new Error ('Sorry! Your device doesn\'t support querying HVAC state.');
+        }
     }
 
     async do_set_hvac_mode({ mode }) {

@@ -10,8 +10,8 @@
 const HomeAssistantDevice = require('./base');
 
 module.exports = class HomeAssistantMediaPlayer extends HomeAssistantDevice {
-	async get_state() {
-    	return [{ state: this.state.state }];
+    async get_state() {
+        return [{ state: this.state.state }];
     }
     // note: subscribe_ must NOT be async, or an ImplementationError will occur at runtime
     subscribe_state() {
@@ -26,10 +26,10 @@ module.exports = class HomeAssistantMediaPlayer extends HomeAssistantDevice {
             await this._callService('media_player', 'turn_off');
     }
     async do_raise_volume() {
-    	await this._callService("media_player", "volume_up");
+        await this._callService("media_player", "volume_up");
     }
     async do_lower_volume() {
-    	await this._callService("media_player", "volume_down");
+        await this._callService("media_player", "volume_down");
     }
     async do_mute() {
         await this._callService("media_player", "volume_mute", {is_volume_muted: true});
