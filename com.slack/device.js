@@ -38,7 +38,7 @@ module.exports = class SlackClass extends Tp.BaseDevice {
 
     constructor(engine, state) {
         super(engine, state);
-        this.uniqueId = 'com.slack-' + this.state.user;
+        this.uniqueId = 'com.slack-' + this.state.user_id;
         this.name = "Slack %s".format(this.state.user);
         this.description = "This is Slack owned by %s"
             .format(this.state.user);
