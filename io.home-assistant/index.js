@@ -38,7 +38,6 @@ const DOMAIN_TO_TP_KIND = {
     'sensor_battery': 'org.thingpedia.iot.battery',
     'sensor_connectivity': 'org.thingpedia.iot.connectivity',
     'sensor_door': 'org.thingpedia.iot.door',
-    'sensor_garage_door': 'org.thingpedia.iot.garage-door',
     'sensor_heat': 'org.thingpedia.iot.heat',
     'sensor_moisture': 'org.thingpedia.iot.moisture',
     'sensor_motion': 'org.thingpedia.iot.motion',
@@ -99,10 +98,10 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
             kind = DOMAIN_TO_TP_KIND['cover_active'];
         else if ((domain === 'sensor') && attributes.device_class === 'motion')
             kind = DOMAIN_TO_TP_KIND['security_camera'];
+        else if ((domain === 'cover' && attributes.device_class === 'garage') || domain === 'binary_sensor' && attributes.device_class === 'garage_door')
+            kind = DOMAIN_TO_TP_KIND['sensor_door'];
         else if ((domain === 'sensor') || (domain === 'binary_sensor') || (domain === 'cover' && attributes.device_class === 'door'))
             kind = DOMAIN_TO_TP_KIND[`sensor_${attributes.device_class}`];
-        else if (domain === 'cover' && attributes.device_class === 'garage')
-            kind = DOMAIN_TO_TP_KIND['sensor_garage_door'];
         else if (domain === 'cover')
             kind = DOMAIN_TO_TP_KIND['cover_active'];
         else if (domain === 'media_player')

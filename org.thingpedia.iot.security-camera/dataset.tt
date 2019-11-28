@@ -4,19 +4,19 @@ dataset @org.thingpedia.iot.security-camera language "en" {
     #_[utterances=["is the motion sensor detecting movement?",
                    "check if the motion sensor is detecting anything",
                    "is there anything moving in front of the motion sensor",
-                   "check whether the motion sensor has detected any movement"]]
+                   "check whether the motion sensor has detected any movement"]];
     
     query  := @org.thingpedia.iot.security-camera.state()
     #_[utterances=["the state of the motion sensor",
                    "if the motion sensor is detecting movement or not",
-                   "whether the motion sensor is detecting any movement"]]
+                   "whether the motion sensor is detecting any movement"]];
     
     stream  := monitor (@org.thingpedia.iot.security-camera.state())
-    #_[utterances=["when the motion sensor detects or stops detecting movement"]]
+    #_[utterances=["when the motion sensor detects or stops detecting movement"]];
     
     stream (p_state :Enum(detecting,not_detecting))  := edge (monitor (@org.thingpedia.iot.security-camera.state())) on state == p_state
     #_[utterances=["when the motion sensor starts ${p_state} movement",
-                   "once the motion sensor starts ${p_state} movement"]]
+                   "once the motion sensor starts ${p_state} movement"]];
     
     stream  := edge (monitor (@org.thingpedia.iot.security-camera.state())) on state == enum(detecting)
     #_[utterances=["when the motion sensor sees something move",
@@ -26,74 +26,74 @@ dataset @org.thingpedia.iot.security-camera language "en" {
                    "when something is detected by my motion sensor",
                    "when something moves in front of my motion sensor",
                    "when my motion sensor detects someone",
-                   "when the motion sensor detects a person"]]
+                   "when the motion sensor detects a person"]];
     
     stream  := edge (monitor (@org.thingpedia.iot.security-camera.state())) on state == enum(not_detecting)
     #_[utterances=["when the motion sensor stops detecting movement",
                    "once the motion sensor does not detect any movement",
                    "when nothing is detected by my motion sensor",
                    "when nothing moves in front of my motion sensor",
-                   "when my motion sensor is not detecting anything"]]
+                   "when my motion sensor is not detecting anything"]];
     
     action (p_power :Enum(on,off))  := @org.thingpedia.iot.security-camera.set_power(power=p_power)
     #_[utterances=["turn ${p_power} my security camera",
-                   "set the power on my security camera to ${p_power}"]]
+                   "set the power on my security camera to ${p_power}"]];
     
     query  := @org.thingpedia.iot.security-camera.current_event()
     #_[utterances=["my security camera live feed",
                    "a snapshot of my security camera",
                    "my security camera",
-                   "the last event detected by my security camera"]]
+                   "the last event detected by my security camera"]];
     
     stream  := monitor (@org.thingpedia.iot.security-camera.current_event())
     #_[utterances=["when there is a new event detected on my security camera",
                    "if something happens on my security camera",
-                   "when something is detected by my security camera"]]
+                   "when something is detected by my security camera"]];
     
     stream  := monitor ((@org.thingpedia.iot.security-camera.current_event()), has_person == true)
     #_[utterances=["when my security camera detects a person",
                    "when there is a person in front of my security camera",
-                   "when a person is detected by my security camera"]]
+                   "when a person is detected by my security camera"]];
     
     stream  := monitor ((@org.thingpedia.iot.security-camera.current_event()), has_person == false)
-    #_[utterances=["when my security camera detects no person"]]
+    #_[utterances=["when my security camera detects no person"]];
     
     stream  := monitor ((@org.thingpedia.iot.security-camera.current_event()), has_motion == true)
     #_[utterances=["when my security camera detects motion",
-                   "when something moves in front of my security camera"]]
+                   "when something moves in front of my security camera"]];
     
     stream  := monitor ((@org.thingpedia.iot.security-camera.current_event()), has_motion == false)
-    #_[utterances=["when my security camera does not detect motion"]]
+    #_[utterances=["when my security camera does not detect motion"]];
     
     stream  := monitor ((@org.thingpedia.iot.security-camera.current_event()), has_sound == true)
-    #_[utterances=["when my security camera hears sound"]]
+    #_[utterances=["when my security camera hears sound"]];
     
     action  := @org.thingpedia.iot.security-camera.set_power(power=enum(off))
     #_[utterances=["shut down my security camera",
                    "disable my security camera",
-                   "make my security camera stop recording"]]
+                   "make my security camera stop recording"]];
     
     action  := @org.thingpedia.iot.security-camera.set_power(power=enum(on))
     #_[utterances=["enable my security camera",
-                   "have my security camera start recording"]]
+                   "have my security camera start recording"]];
     
     program (p_name : String) := { now => @org.thingpedia.iot.security-camera(name=p_name).state() => notify;}
     #_[utterances=["is the ${p_name} motion sensor detecting movement?",
                    "check if the ${p_name} motion sensor is detecting anything",
                    "is there anything moving in front of the ${p_name} motion sensor",
-                   "check whether the ${p_name} motion sensor has detected any movement"]]
+                   "check whether the ${p_name} motion sensor has detected any movement"]];
     
     query (p_name : String) := @org.thingpedia.iot.security-camera(name=p_name).state()
     #_[utterances=["the state of the ${p_name} motion sensor",
                    "if the ${p_name} motion sensor is detecting movement or not",
-                   "whether the ${p_name} motion sensor is detecting any movement"]]
+                   "whether the ${p_name} motion sensor is detecting any movement"]];
     
     stream (p_name : String) := monitor (@org.thingpedia.iot.security-camera(name=p_name).state())
-    #_[utterances=["when the ${p_name} motion sensor detects or stops detecting movement"]]
+    #_[utterances=["when the ${p_name} motion sensor detects or stops detecting movement"]];
     
     stream (p_name : String, p_state :Enum(detecting,not_detecting))  := edge (monitor (@org.thingpedia.iot.security-camera(name=p_name).state())) on state == p_state
     #_[utterances=["when the ${p_name} motion sensor starts ${p_state} movement",
-                   "once the ${p_name} motion sensor starts ${p_state} movement"]]
+                   "once the ${p_name} motion sensor starts ${p_state} movement"]];
     
     stream (p_name : String) := edge (monitor (@org.thingpedia.iot.security-camera(name=p_name).state())) on state == enum(detecting)
     #_[utterances=["when the ${p_name} motion sensor sees something move",
@@ -103,55 +103,55 @@ dataset @org.thingpedia.iot.security-camera language "en" {
                    "when something is detected by my ${p_name} motion sensor",
                    "when something moves in front of my ${p_name} motion sensor",
                    "when my ${p_name} motion sensor detects someone",
-                   "when the ${p_name} motion sensor detects a person"]]
+                   "when the ${p_name} motion sensor detects a person"]];
     
     stream (p_name : String) := edge (monitor (@org.thingpedia.iot.security-camera(name=p_name).state())) on state == enum(not_detecting)
     #_[utterances=["when the ${p_name} motion sensor stops detecting movement",
                    "once the ${p_name} motion sensor does not detect any movement",
                    "when nothing is detected by my ${p_name} motion sensor",
                    "when nothing moves in front of my ${p_name} motion sensor",
-                   "when my ${p_name} motion sensor is not detecting anything"]]
+                   "when my ${p_name} motion sensor is not detecting anything"]];
     
     action (p_name : String, p_power :Enum(on,off))  := @org.thingpedia.iot.security-camera(name=p_name).set_power(power=p_power)
     #_[utterances=["turn ${p_power} my ${p_name} security camera",
-                   "set the power on my ${p_name} security camera to ${p_power}"]]
+                   "set the power on my ${p_name} security camera to ${p_power}"]];
     
     query (p_name : String) := @org.thingpedia.iot.security-camera(name=p_name).current_event()
     #_[utterances=["my ${p_name} security camera live feed",
                    "a snapshot of my ${p_name} security camera",
                    "my ${p_name} security camera",
-                   "the last event detected by my ${p_name} security camera"]]
+                   "the last event detected by my ${p_name} security camera"]];
     
     stream (p_name : String) := monitor (@org.thingpedia.iot.security-camera(name=p_name).current_event())
     #_[utterances=["when there is a new event detected on my ${p_name} security camera",
                    "if something happens on my ${p_name} security camera",
-                   "when something is detected by my ${p_name} security camera"]]
+                   "when something is detected by my ${p_name} security camera"]];
     
     stream (p_name : String) := monitor ((@org.thingpedia.iot.security-camera(name=p_name).current_event()), has_person == true)
     #_[utterances=["when my ${p_name} security camera detects a person",
                    "when there is a person in front of my ${p_name} security camera",
-                   "when a person is detected by my ${p_name} security camera"]]
+                   "when a person is detected by my ${p_name} security camera"]];
     
     stream (p_name : String) := monitor ((@org.thingpedia.iot.security-camera(name=p_name).current_event()), has_person == false)
-    #_[utterances=["when my ${p_name} security camera detects no person"]]
+    #_[utterances=["when my ${p_name} security camera detects no person"]];
     
     stream (p_name : String) := monitor ((@org.thingpedia.iot.security-camera(name=p_name).current_event()), has_motion == true)
     #_[utterances=["when my ${p_name} security camera detects motion",
-                   "when something moves in front of my ${p_name} security camera"]]
+                   "when something moves in front of my ${p_name} security camera"]];
     
     stream (p_name : String) := monitor ((@org.thingpedia.iot.security-camera(name=p_name).current_event()), has_motion == false)
-    #_[utterances=["when my ${p_name} security camera does not detect motion"]]
+    #_[utterances=["when my ${p_name} security camera does not detect motion"]];
     
     stream (p_name : String) := monitor ((@org.thingpedia.iot.security-camera(name=p_name).current_event()), has_sound == true)
-    #_[utterances=["when my ${p_name} security camera hears sound"]]
+    #_[utterances=["when my ${p_name} security camera hears sound"]];
     
     action (p_name : String) := @org.thingpedia.iot.security-camera(name=p_name).set_power(power=enum(off))
     #_[utterances=["shut down my ${p_name} security camera",
                    "disable my ${p_name} security camera",
-                   "make my ${p_name} security camera stop recording"]]
+                   "make my ${p_name} security camera stop recording"]];
     
     action (p_name : String) := @org.thingpedia.iot.security-camera(name=p_name).set_power(power=enum(on))
     #_[utterances=["enable my ${p_name} security camera",
-                   "have my ${p_name} security camera start recording"]]
+                   "have my ${p_name} security camera start recording"]];
     
 }

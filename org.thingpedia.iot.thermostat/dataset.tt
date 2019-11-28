@@ -80,17 +80,17 @@ dataset @org.thingpedia.iot.thermostat language "en" {
     stream (p_value :Measure(C)) := edge (monitor (@org.thingpedia.iot.thermostat.temperature())) on value >= p_value
     #_[utterances=["when the temperature on my thermostat becomes greater than ${p_value}",
                    "when the temperature on my thermostat goes above ${p_value}",
-                   "when the sensor measures a temperature hotter than $p_temperature",
-                   "if the room temperature is higher than $p_temperature",
-                   "when the indoor temperature goes above $p_temperature"]]
+                   "when the sensor measures a temperature hotter than ${p_value}",
+                   "if the room temperature is higher than ${p_value}",
+                   "when the indoor temperature goes above ${p_value}"]]
     #[name="MonitorGetTemperatureOnThermostatByValueGreaterThan"];
 
     stream (p_value :Measure(C)) := edge (monitor (@org.thingpedia.iot.thermostat.temperature())) on value <= p_value
     #_[utterances=["when the temperature on my thermostat becomes lower than ${p_value}",
                    "when the temperature on my thermostat goes below ${p_value}",
-                   "when the sensor measures a temperature colder than $p_temperature",
-                   "if the room temperature is lower than $p_temperature",
-                   "when the indoor temperature goes below $p_temperature"]]
+                   "when the sensor measures a temperature colder than ${p_value}",
+                   "if the room temperature is lower than ${p_value}",
+                   "when the indoor temperature goes below ${p_value}"]]
     #[name="MonitorGetTemperatureOnThermostatByValueLessThan"];
 
     action := @org.thingpedia.iot.thermostat.set_hvac_mode(mode=enum(off))

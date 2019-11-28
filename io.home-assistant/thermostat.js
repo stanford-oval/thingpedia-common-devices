@@ -90,17 +90,15 @@ module.exports = class HomeAssistantThermostat extends HomeAssistantDevice {
     subscribe_temperature() {
         if (['binary_sensor', 'sensor'].includes(this.domain) && this.device_class === 'temperature') {
             if (this.domain === 'sensor') {
-                let value = parseFloat(this.state.state);
                 return this._subscribeState(() => {
-                    return {state: undefined, value: value};
+                    return {state: undefined, value: parseFloat(this.state.state)};
                 });
             } else {
                 throw new Error (`Unexpected Home Assistant domain ${this.domain}`);
             }
         } else if (this.domain === 'climate') {
-            let value = parseFloat(this.state.current_temperature);
             return this._subscribeState(() => {
-                return {state: undefined, value: value};
+                return {state: undefined, value: parseFloat(this.state.current_temperature)};
             });
         }
         else {
@@ -122,10 +120,8 @@ module.exports = class HomeAssistantThermostat extends HomeAssistantDevice {
     // note: subscribe_ must NOT be async, or an ImplementationError will occur at runtime
     subscribe_hvac_state() {
         if (this.domain === 'climate') {
-            let mode = this.state.hvac_mode;
-            let state = this.state.hvac_action;
             return this._subscribeState(() => {
-                return {mode: mode, state: state};
+                return {mode: this.state.hvac_mode, state: this.state.hvac_action};
             });
         }
         else {

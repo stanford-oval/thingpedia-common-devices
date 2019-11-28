@@ -10,26 +10,37 @@ dataset @org.thingpedia.iot.door language "en" {
                    "did I forget to close my door?",
                    "did somebody open the door?",
                    "did anyone close the door",
-                   "was the door shut?"]]
+                   "was the door shut?",
+                   "is my garage door open?",
+                   "is my garage door closed?",
+                   "check whether my garage door is open or closed",
+                   "did I leave the garage door open?",
+                   "did I forget to close my garage door?"]]
     #[id=54308554]
     #[name="StateThenNotify"];
 
     query  := @org.thingpedia.iot.door.state()
     #_[utterances=["if the door is open or closed",
                    "whether the door is open or closed",
-                   "whether anyone opened the door"]]
+                   "whether anyone opened the door",
+                   "if the garage door is open or closed",
+                   "whether the garage door is open or closed"]]
     #[id=54308563]
     #[name="State"];
 
     stream  := monitor (@org.thingpedia.iot.door.state())
-    #_[utterances=["when the door is opened or closed"]]
+    #_[utterances=["when the door is opened or closed",
+                   "when the garage door is opened or closed"]]
     #[id=54308566]
     #[name="MonitorState"];
 
     stream (p_state :Enum(open,closed))  := edge (monitor (@org.thingpedia.iot.door.state())) on state == p_state
     #_[utterances=["when the door is ${p_state}",
                    "once the door is ${p_state}",
-                   "when my door gets ${p_state}"]]
+                   "when my door gets ${p_state}",
+                   "when the garage door becomes ${p_state}",
+                   "if the garage door is ${p_state}",
+                   "when my garage door gets ${p_state}"]]
     #[id=54308567]
     #[name="MonitorStateByState"];
 
@@ -40,7 +51,14 @@ dataset @org.thingpedia.iot.door language "en" {
                    "once I leave the door open",
                    "when someone opens the door",
                    "whoever opens the door",
-                   "once anyone opens the door"]]
+                   "once anyone opens the door",
+                   "when my garage door opens",
+                   "when I open the garage door",
+                   "the moment I open the garage door",
+                   "if I leave the garage door open",
+                   "when someone opens the garage door",
+                   "whoever opens the garage door",
+                   "if anyone opens the garage door"]]
     #[id=54308569]
     #[name="MonitorStateByStateOpen"];
 
@@ -51,7 +69,14 @@ dataset @org.thingpedia.iot.door language "en" {
                    "once I leave the door closed",
                    "when someone closes the door",
                    "whoever closes the door",
-                   "once anyone closes the door"]]
+                   "once anyone closes the door",
+                   "when my garage door closes",
+                   "when I close the garage door",
+                   "the moment I close the garage door",
+                   "if I leave the garage door closed",
+                   "when someone closes the garage door",
+                   "whoever closes the garage door",
+                   "if anyone closes the garage door"]]
     #[id=54308576]
     #[name="MonitorStateByStateClosed"];
 
@@ -66,25 +91,37 @@ dataset @org.thingpedia.iot.door language "en" {
                    "did I forget to close my ${p_name} door?",
                    "did somebody open the ${p_name} door?",
                    "did anyone close the ${p_name} door",
-                   "was the ${p_name} door shut?"]]
+                   "was the ${p_name} door shut?",
+                   "is my ${p_name} garage door open?",
+                   "is my ${p_name} garage door closed?",
+                   "check whether my ${p_name} garage door is open or closed",
+                   "did I leave the ${p_name} garage door open?",
+                   "did I forget to close my ${p_name} garage door?"]]
     #[id=54308583]
     #[name="StateThenNotify1"];
 
     query (p_name :String)  := @org.thingpedia.iot.door(name=p_name).state()
     #_[utterances=["if the ${p_name} door is open or not",
                    "if the ${p_name} door is open",
-                   "whether the ${p_name} door is open or closed"]]
+                   "whether the ${p_name} door is open or closed",
+                   "if the ${p_name} garage door is open or closed",
+                   "whether the ${p_name} garage door is open or closed"]]
     #[id=54308592]
     #[name="State1"];
 
     stream (p_name :String)  := monitor (@org.thingpedia.iot.door(name=p_name).state())
-    #_[utterances=["when the ${p_name} door is opened or closed"]]
+    #_[utterances=["when the ${p_name} door is opened or closed",
+                   "when the ${p_name} garage door is opened or closed"]]
     #[id=54308594]
     #[name="MonitorState1"];
 
     stream (p_name :String, p_state :Enum(open,closed))  := edge (monitor (@org.thingpedia.iot.door(name=p_name).state())) on state == p_state
     #_[utterances=["when the ${p_name} door is ${p_state}",
-                   "when my ${p_name} door gets ${p_state}"]]
+                   "when my ${p_name} door gets ${p_state}",
+                   "when the ${p_name} garage door becomes ${p_state}",
+                   "if the ${p_name} garage door is ${p_state}",
+                   "when my ${p_name} garage door gets ${p_state}",
+                   "if my ${p_name} garage door changes to ${p_state}"]]
     #[id=54308595]
     #[name="MonitorStateByState1"];
 
@@ -95,7 +132,14 @@ dataset @org.thingpedia.iot.door language "en" {
                    "once I leave the ${p_name} door open",
                    "when someone opens the ${p_name} door",
                    "whoever opens the ${p_name} door",
-                   "once anyone opens the ${p_name} door"]]
+                   "once anyone opens the ${p_name} door",
+                   "when my ${p_name} garage door opens",
+                   "when I open the ${p_name} garage door",
+                   "the moment I open the ${p_name} garage door",
+                   "if I leave the ${p_name} garage door open",
+                   "when someone opens the ${p_name} garage door",
+                   "whoever opens the ${p_name} garage door",
+                   "if anyone opens the ${p_name} garage door"]]
     #[id=54308597]
     #[name="MonitorStateByStateOpen1"];
 
@@ -106,7 +150,14 @@ dataset @org.thingpedia.iot.door language "en" {
                    "once I leave the ${p_name} door closed",
                    "when someone closes the ${p_name} door",
                    "whoever closes the ${p_name} door",
-                   "once anyone closes the ${p_name} door"]]
+                   "once anyone closes the ${p_name} door",
+                   "when my ${p_name} garage door closes",
+                   "when I close the ${p_name} garage door",
+                   "the moment I close the ${p_name} garage door",
+                   "if I leave the ${p_name} garage door closed",
+                   "when someone closes the ${p_name} garage door",
+                   "whoever closes the ${p_name} garage door",
+                   "if anyone closes the ${p_name} garage door"]]
     #[id=54308604]
     #[name="MonitorStateByStateClosed1"];
 

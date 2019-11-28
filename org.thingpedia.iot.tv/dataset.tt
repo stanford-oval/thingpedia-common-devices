@@ -107,7 +107,7 @@ dataset @org.thingpedia.iot.tv language "en" {
     #_[utterances=["play link ${p_url:const} on my tv",
                    "play ${p_url} on my tv"]];
 
-    program (p_name : String) = now => @org.thingpedia.iot.tv(name=p_name).state() => notify
+    program (p_name : String) := now => @org.thingpedia.iot.tv(name=p_name).state() => notify
     #_[utterances=["is my ${p_name} tv on?",
                    "check if my ${p_name} television is off",
                    "is the ${p_name} tv turned on?",
@@ -185,7 +185,7 @@ dataset @org.thingpedia.iot.tv language "en" {
                    "make my ${p_name} tv quieter"]];
 
     action (p_name : String) := @org.thingpedia.iot.tv(name=p_name).mute()
-    #_[utterances=["mute my tv",
+    #_[utterances=["mute my ${p_name} tv",
                    "silence my ${p_name} television 's volume",
                    "turn off the volume of the ${p_name} tv",
                    "switch off the sound for my ${p_name} tv",

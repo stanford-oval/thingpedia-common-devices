@@ -36,9 +36,8 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
     // note: subscribe_ must NOT be async, or an ImplementationError will occur at runtime
     subscribe_state() {
         if (this.domain === 'binary_sensor') {
-            let state = this.deviceStateMapping[this.state.state];
             return this._subscribeState(() => {
-                return {state: state, value: undefined};
+                return {state: this.deviceStateMapping[this.state.state], value: undefined};
             });
         } else {
             throw new Error (`Unexpected Home Assistant domain ${this.domain}`);

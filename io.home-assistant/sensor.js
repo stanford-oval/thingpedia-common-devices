@@ -89,15 +89,14 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
     // note: subscribe_ must NOT be async, or an ImplementationError will occur at runtime
     subscribe_state() {
         if (this.domain === 'sensor') {
-            let value = parseFloat(this.state.state);
             return this._subscribeState(() => {
-                return {state: undefined, value: value};
+                return {state: undefined, value: parseFloat(this.state.state)};
             });
         } else if (this.domain === 'binary_sensor') {
-            let state = this.deviceStateMapping[this.state.state];
-            if (['gas', 'smoke'].includes(this.device_class))
-                state = state === 'detecting' ? this.device_class : 'nothing';
             return this._subscribeState(() => {
+                let state = this.deviceStateMapping[this.state.state];
+                if (['gas', 'smoke'].includes(this.device_class))
+                    state = state === 'detecting' ? this.device_class : 'nothing';
                 return {state: state, value: undefined};
             });
         } else {
