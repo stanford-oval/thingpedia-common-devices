@@ -51,13 +51,13 @@ const DOMAIN_TO_TP_KIND = {
 };
 const SUBDEVICES = {
     'light-bulb': HomeAssistantLightbulbDevice,
+    'io.home-assistant.climate': HomeAssistantClimate,
     'org.thingpedia.iot.cover': HomeAssistantCover,
     'org.thingpedia.iot.fan': HomeAssistantFan,
     'org.thingpedia.iot.lock': HomeAssistantLock,
     'org.thingpedia.iot.security-camera': HomeAssistantSecurityCamera,
     'org.thingpedia.iot.speaker': HomeAssistantMediaPlayer,
     'org.thingpedia.iot.switch': HomeAssistantSwitch,
-    'org.thingpedia.iot.thermostat': HomeAssistantThermostat,
     'org.thingpedia.iot.tv': HomeAssistantMediaPlayer,
     'org.thingpedia.iot.vacuum': HomeAssistantVacuum
 };

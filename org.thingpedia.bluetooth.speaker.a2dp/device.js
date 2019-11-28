@@ -107,17 +107,14 @@ module.exports = class BluetoothA2dpSinkDevice extends Tp.BaseDevice {
         const audioRouter = this.engine.platform.getCapability('audio-router');
         return audioRouter.setAudioRouteBluetooth(this.hwAddress);
     }
-    async get_state() {
-        // TODO
-        throw new Error(`Sorry! Querying the state of the speaker is not supported yet.`);
+    async get_power() {
+        throw new Error(`Sorry! Querying the state of the speaker is not supported.`);
     }
-    subscribe_state() {
-        // TODO
-        throw new Error(`Sorry! Querying the state of the speaker is not supported yet.`);
+    subscribe_power() {
+        throw new Error(`Sorry! Querying the state of the speaker is not supported.`);
     }
     async do_set_power({ power }) {
-        // TODO
-        throw new Error(`Sorry! Remotely turning the speaker on or off is not supported yet.`);
+        throw new Error(`Sorry! Remotely turning the speaker on or off is not supported.`);
     }
     
 };

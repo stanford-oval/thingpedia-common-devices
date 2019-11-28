@@ -10,11 +10,11 @@
 const HomeAssistantDevice = require('./base');
 
 module.exports = class HomeAssistantMediaPlayer extends HomeAssistantDevice {
-    async get_state() {
+    async get_power() {
         return [{ state: this.state.state }];
     }
     // note: subscribe_ must NOT be async, or an ImplementationError will occur at runtime
-    subscribe_state() {
+    subscribe_power() {
         return this._subscribeState(() => {
             return { state: this.state.state };
         });
