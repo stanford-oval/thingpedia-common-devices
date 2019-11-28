@@ -12,39 +12,16 @@ dataset @thermostat language "en" {
     #[id=52300683]
     #[name="SetMinimumMaximumTemperatureOnThermostatWithLowWithHigh"];
 
-    action (p_mode :Enum(heat,cool,heat_cool,off)) := @thermostat.set_hvac_mode(mode=p_mode)
+    action (p_mode :Enum(heat,cool,heat_cool,off,auto,dry,fan_only)) := @thermostat.set_hvac_mode(mode=p_mode)
     #_[utterances=["set my hvac to $p_mode"]]
     #[id=52300685]
     #[name="SetHvacModeOnThermostatWithMode"];
-
-    query := @thermostat.get_temperature()
-    #_[utterances=["the temperature on my thermostat",
-                   "the temperature in the room"]]
-    #[id=52300686]
-    #[name="GetTemperatureOnThermostat"];
-
-    query := @thermostat.get_humidity()
-    #_[utterances=["the humidity reported by thermostat"]]
-    #[id=52300688]
-    #[name="GetHumidityOnThermostat"];
 
     query := @thermostat.get_hvac_state()
     #_[utterances=["the state of my hvac",
                    "the state of my heater"]]
     #[id=52300689]
     #[name="GetHvacStateOnThermostat"];
-
-    stream (p_value :Measure(C)) := edge (monitor (@thermostat.get_temperature())) on value >= p_value
-    #_[utterances=["when the temperature on my thermostat becomes greater than ${p_value}",
-                   "when the temperature on my thermostat goes above ${p_value}"]]
-    #[id=52300691]
-    #[name="MonitorGetTemperatureOnThermostatByValueGreaterThan"];
-
-    stream (p_value :Measure(C)) := edge (monitor (@thermostat.get_temperature())) on value <= p_value
-    #_[utterances=["when the temperature on my thermostat becomes lower than ${p_value}",
-                   "when the temperature on my thermostat goes below ${p_value}"]]
-    #[id=52300693]
-    #[name="MonitorGetTemperatureOnThermostatByValueLessThan"];
 
     action := @thermostat.set_hvac_mode(mode=enum(off))
     #_[utterances=["turn the heating off"]]
@@ -61,17 +38,6 @@ dataset @thermostat language "en" {
                    "turn the cooling system on"]]
     #[id=52300697]
     #[name="SetHvacModeOnThermostatWithModeCool"];
-
-    stream (p_value :Number) := edge (monitor (@thermostat.get_humidity())) on value >= p_value
-    #_[utterances=["when the humidity in the room becomes greater than ${p_value}"]]
-    #[id=52300699]
-    #[name="MonitorGetHumidityOnThermostatByValueGreaterThan"];
-
-    stream (p_value :Number) := edge (monitor (@thermostat.get_humidity())) on value <= p_value
-    #_[utterances=["when the humidity in the room goes below ${p_value}",
-                   "when the humidity in the room decreases below ${p_value}"]]
-    #[id=52300700]
-    #[name="MonitorGetHumidityOnThermostatByValueLessThan"];
 
     action := @thermostat.set_target_temperature(value=$?)
     #_[utterances=["change the temperature on my thermostat"]]
