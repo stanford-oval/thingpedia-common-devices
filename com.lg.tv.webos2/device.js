@@ -342,12 +342,12 @@ module.exports = class LgTvDevice extends Tp.BaseDevice {
         });
     }
 
-    get_state() {
+    get_power() {
         // TODO
         throw new Error(`Sorry! Querying the state of the LG SmartTV is not supported yet.`);
     }
     
-    subscribe_state() {
+    subscribe_power() {
         // TODO
         throw new Error(`Sorry! Querying the state of the LG SmartTV is not supported yet.`);
     }
