@@ -18,7 +18,7 @@ const HomeAssistantFan = require('./fan');
 const HomeAssistantLock = require('./lock');
 const HomeAssistantMediaPlayer = require('./media-player');
 const HomeAssistantSwitch = require('./switch');
-const HomeAssistantThermostat = require('./thermostat');
+const HomeAssistantClimate = require('./climate');
 const HomeAssistantVacuum = require('./vacuum');
 const HomeAssistantSecurityCamera = require('./security-camera');
 
@@ -32,18 +32,20 @@ const DOMAIN_TO_TP_KIND = {
     'lock': 'org.thingpedia.iot.lock',
     'security_camera': 'org.thingpedia.iot.security-camera',
     'switch': 'org.thingpedia.iot.switch',
-    'climate': 'org.thingpedia.iot.thermostat',
+    'climate': 'io.home-assistant.climate',
     'vacuum': 'org.thingpedia.iot.vacuum',
     'sensor_air': 'org.thingpedia.iot.air',
     'sensor_battery': 'org.thingpedia.iot.battery',
     'sensor_connectivity': 'org.thingpedia.iot.connectivity',
     'sensor_door': 'org.thingpedia.iot.door',
     'sensor_heat': 'org.thingpedia.iot.heat',
+    'sensor_humidity': 'org.thingpedia.iot.humidity',
     'sensor_moisture': 'org.thingpedia.iot.moisture',
     'sensor_motion': 'org.thingpedia.iot.motion',
     'sensor_occupancy': 'org.thingpedia.iot.occupancy',
     'sensor_plug': 'org.thingpedia.iot.plug',
     'sensor_sound': 'org.thingpedia.iot.sound',
+    'sensor_temperature': 'org.thingpedia.iot.temperature',
     'media_player_speaker': 'org.thingpedia.iot.speaker',
     'media_player_tv': 'org.thingpedia.iot.tv'
 };
@@ -86,9 +88,7 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
 
         const [domain,] = entityId.split('.');
         let kind = undefined;
-        if (['humidity', 'temperature'].includes(attributes.device_class))
-            kind = DOMAIN_TO_TP_KIND['climate'];
-        else if (domain === 'binary_sensor' && ['smoke', 'gas'].includes(attributes.device_class))
+        if (domain === 'binary_sensor' && ['smoke', 'gas'].includes(attributes.device_class))
             kind = DOMAIN_TO_TP_KIND['sensor_air'];
         else if (domain === 'lock' || attributes.device_class === 'lock')
             kind = DOMAIN_TO_TP_KIND['lock'];

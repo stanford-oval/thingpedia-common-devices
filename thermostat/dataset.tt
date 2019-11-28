@@ -1,0 +1,86 @@
+dataset @thermostat language "en" {
+    action (p_value :Measure(C)) := @thermostat.set_target_temperature(value=p_value)
+    #_[utterances=["set temperature on my thermostat to $p_value",
+                   "set my thermostat to ${p_value:const}",
+                   "set the temperature to ${p_value:const} on my thermostat"]]
+    #[id=52300680]
+    #[name="SetTargetTemperatureOnThermostatWithValue"];
+
+    action (p_low :Measure(C), p_high :Measure(C)) := @thermostat.set_minmax_temperature(low=p_low, high=p_high)
+    #_[utterances=["set the temperature between ${p_low:const} and ${p_high:const} on my thermostat",
+                   "set the low temperature to $p_low on my thermostat , and the high to $p_high"]]
+    #[id=52300683]
+    #[name="SetMinimumMaximumTemperatureOnThermostatWithLowWithHigh"];
+
+    action (p_mode :Enum(heat,cool,heat_cool,off)) := @thermostat.set_hvac_mode(mode=p_mode)
+    #_[utterances=["set my hvac to $p_mode"]]
+    #[id=52300685]
+    #[name="SetHvacModeOnThermostatWithMode"];
+
+    query := @thermostat.get_temperature()
+    #_[utterances=["the temperature on my thermostat",
+                   "the temperature in the room"]]
+    #[id=52300686]
+    #[name="GetTemperatureOnThermostat"];
+
+    query := @thermostat.get_humidity()
+    #_[utterances=["the humidity reported by thermostat"]]
+    #[id=52300688]
+    #[name="GetHumidityOnThermostat"];
+
+    query := @thermostat.get_hvac_state()
+    #_[utterances=["the state of my hvac",
+                   "the state of my heater"]]
+    #[id=52300689]
+    #[name="GetHvacStateOnThermostat"];
+
+    stream (p_value :Measure(C)) := edge (monitor (@thermostat.get_temperature())) on value >= p_value
+    #_[utterances=["when the temperature on my thermostat becomes greater than ${p_value}",
+                   "when the temperature on my thermostat goes above ${p_value}"]]
+    #[id=52300691]
+    #[name="MonitorGetTemperatureOnThermostatByValueGreaterThan"];
+
+    stream (p_value :Measure(C)) := edge (monitor (@thermostat.get_temperature())) on value <= p_value
+    #_[utterances=["when the temperature on my thermostat becomes lower than ${p_value}",
+                   "when the temperature on my thermostat goes below ${p_value}"]]
+    #[id=52300693]
+    #[name="MonitorGetTemperatureOnThermostatByValueLessThan"];
+
+    action := @thermostat.set_hvac_mode(mode=enum(off))
+    #_[utterances=["turn the heating off"]]
+    #[id=52300695]
+    #[name="SetHvacModeOnThermostatWithModeOff"];
+
+    action := @thermostat.set_hvac_mode(mode=enum(heat))
+    #_[utterances=["turn the heating on"]]
+    #[id=52300696]
+    #[name="SetHvacModeOnThermostatWithModeHeat"];
+
+    action := @thermostat.set_hvac_mode(mode=enum(cool))
+    #_[utterances=["turn the ac on",
+                   "turn the cooling system on"]]
+    #[id=52300697]
+    #[name="SetHvacModeOnThermostatWithModeCool"];
+
+    stream (p_value :Number) := edge (monitor (@thermostat.get_humidity())) on value >= p_value
+    #_[utterances=["when the humidity in the room becomes greater than ${p_value}"]]
+    #[id=52300699]
+    #[name="MonitorGetHumidityOnThermostatByValueGreaterThan"];
+
+    stream (p_value :Number) := edge (monitor (@thermostat.get_humidity())) on value <= p_value
+    #_[utterances=["when the humidity in the room goes below ${p_value}",
+                   "when the humidity in the room decreases below ${p_value}"]]
+    #[id=52300700]
+    #[name="MonitorGetHumidityOnThermostatByValueLessThan"];
+
+    action := @thermostat.set_target_temperature(value=$?)
+    #_[utterances=["change the temperature on my thermostat"]]
+    #[id=52300702]
+    #[name="SetTargetTemperatureOnThermostat"];
+
+    action := @thermostat.set_minmax_temperature(low=$?, high=$?)
+    #_[utterances=["change the minimum and maximum temperatures on my thermostat"]]
+    #[id=52300703]
+    #[name="SetMinimumMaximumTemperatureOnThermostat"];
+
+}
