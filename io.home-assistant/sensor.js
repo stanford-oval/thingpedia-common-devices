@@ -53,6 +53,10 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
                     on: 'wet',
                     off: 'dry'
                 },
+                motion: {
+                    on: 'detecting',
+                    off: 'not_detecting'
+                },
                 occupancy: {
                     on: 'occupied',
                     off: 'unoccupied'
