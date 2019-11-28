@@ -98,6 +98,8 @@ const ThermostatDevice = class NestThermostatDevice extends Tp.BaseDevice {
     }
 
     do_set_hvac_mode({ mode }) {
+        if (!['heat','cool','heat_cool','off'].includes(mode))
+            throw new Error(`Setting your device to ${mode} mode is not supported.`);
         let firebase = this.master.refFirebaseClient().child(this.device.url);
         firebase.update({ hvac_state: mode.replace('_', '-') });
         this.master.unrefFirebaseClient();

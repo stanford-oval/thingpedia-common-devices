@@ -36,7 +36,6 @@ const DOMAIN_TO_TP_KIND = {
     'media_player_tv': 'org.thingpedia.iot.tv',
     'sensor_air': 'org.thingpedia.iot.air',
     'sensor_battery': 'org.thingpedia.iot.battery',
-    'sensor_connectivity': 'org.thingpedia.iot.connectivity',
     'sensor_door': 'org.thingpedia.iot.door',
     'sensor_heat': 'org.thingpedia.iot.heat',
     'sensor_humidity': 'org.thingpedia.iot.humidity',
