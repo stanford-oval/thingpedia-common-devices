@@ -58,8 +58,8 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
                     off: 'not_detecting'
                 },
                 occupancy: {
-                    on: 'occupied',
-                    off: 'unoccupied'
+                    on: 'detecting',
+                    off: 'not_detecting'
                 },
                 plug: {
                     on: 'plugged',
@@ -106,5 +106,24 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
         } else {
             throw new Error (`Unexpected Home Assistant domain ${this.domain}`);
         }
+    }
+    // Specific query methods for motion, occupancy and sound
+    async get_motion() {
+        return this.get_state();
+    }
+    subscribe_motion() {
+        return this.subscribe_state();
+    }
+    async get_occupancy() {
+        return this.get_state();
+    }
+    subscribe_occupancy() {
+        return this.subscribe_state();
+    }
+    async get_sound() {
+        return this.get_state();
+    }
+    subscribe_sound() {
+        return this.subscribe_state();
     }
 };
