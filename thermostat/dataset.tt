@@ -2,51 +2,59 @@ dataset @thermostat language "en" {
     action (p_value :Measure(C)) := @thermostat.set_target_temperature(value=p_value)
     #_[utterances=["set temperature on my thermostat to $p_value",
                    "set my thermostat to ${p_value:const}",
-                   "set the temperature to ${p_value:const} on my thermostat"]]
-    #[id=52300680]
-    #[name="SetTargetTemperatureOnThermostatWithValue"];
+                   "set the temperature to ${p_value:const} on my thermostat"]];
 
     action (p_low :Measure(C), p_high :Measure(C)) := @thermostat.set_minmax_temperature(low=p_low, high=p_high)
     #_[utterances=["set the temperature between ${p_low:const} and ${p_high:const} on my thermostat",
-                   "set the low temperature to $p_low on my thermostat , and the high to $p_high"]]
-    #[id=52300683]
-    #[name="SetMinimumMaximumTemperatureOnThermostatWithLowWithHigh"];
+                   "set the low temperature to $p_low on my thermostat , and the high to $p_high"]];
 
     action (p_mode :Enum(heat,cool,heat_cool,off,auto,dry,fan_only)) := @thermostat.set_hvac_mode(mode=p_mode)
-    #_[utterances=["set my hvac to $p_mode"]]
-    #[id=52300685]
-    #[name="SetHvacModeOnThermostatWithMode"];
+    #_[utterances=["set my hvac to $p_mode"]];
 
     query := @thermostat.get_hvac_state()
     #_[utterances=["the state of my hvac",
-                   "the state of my heater"]]
-    #[id=52300689]
-    #[name="GetHvacStateOnThermostat"];
+                   "the state of my heater"]];
 
     action := @thermostat.set_hvac_mode(mode=enum(off))
-    #_[utterances=["turn the heating off"]]
-    #[id=52300695]
-    #[name="SetHvacModeOnThermostatWithModeOff"];
+    #_[utterances=["turn the heating off",
+                   "turn off the heater",
+                   "turn off the ac",
+                   "switch off the heater",
+                   "switch the aircon off"]];
 
     action := @thermostat.set_hvac_mode(mode=enum(heat))
-    #_[utterances=["turn the heating on"]]
-    #[id=52300696]
-    #[name="SetHvacModeOnThermostatWithModeHeat"];
+    #_[utterances=["turn the heating on",
+                   "turn on the heater"]];
 
     action := @thermostat.set_hvac_mode(mode=enum(cool))
     #_[utterances=["turn the ac on",
-                   "turn the cooling system on"]]
-    #[id=52300697]
-    #[name="SetHvacModeOnThermostatWithModeCool"];
+                   "turn on the ac",
+                   "turn on the aircon",
+                   "turn the air conditioning on",
+                   "turn the cooling system on"]];
 
     action := @thermostat.set_target_temperature(value=$?)
-    #_[utterances=["change the temperature on my thermostat"]]
-    #[id=52300702]
-    #[name="SetTargetTemperatureOnThermostat"];
+    #_[utterances=["change the temperature on my thermostat"]];
 
     action := @thermostat.set_minmax_temperature(low=$?, high=$?)
-    #_[utterances=["change the minimum and maximum temperatures on my thermostat"]]
-    #[id=52300703]
-    #[name="SetMinimumMaximumTemperatureOnThermostat"];
+    #_[utterances=["change the minimum and maximum temperatures on my thermostat"]];
+
+    action (p_name : String, p_value :Measure(C)) := @thermostat(name=p_name).set_target_temperature(value=p_value)
+    #_[utterances=["set temperature on my ${p_name} thermostat to $p_value",
+                   "set my ${p_name} thermostat to ${p_value:const}",
+                   "set the temperature to ${p_value:const} on my ${p_name} thermostat"]];
+
+    action (p_name : String, p_low :Measure(C), p_high :Measure(C)) := @thermostat(name=p_name).set_minmax_temperature(low=p_low, high=p_high)
+    #_[utterances=["set the temperature between ${p_low:const} and ${p_high:const} on my ${p_name} thermostat",
+                   "set the low temperature to $p_low on my ${p_name} thermostat , and the high to $p_high"]];
+
+    action (p_name : String, p_mode :Enum(heat,cool,heat_cool,off,auto,dry,fan_only)) := @thermostat(name=p_name).set_hvac_mode(mode=p_mode)
+    #_[utterances=["set my ${p_name} thermostat to $p_mode"]];
+
+    action (p_name : String) := @thermostat(name=p_name).set_target_temperature(value=$?)
+    #_[utterances=["change the temperature on my ${p_name} thermostat"]];
+
+    action (p_name : String) := @thermostat(name=p_name).set_minmax_temperature(low=$?, high=$?)
+    #_[utterances=["change the minimum and maximum temperatures on my ${p_name} thermostat"]];
 
 }
