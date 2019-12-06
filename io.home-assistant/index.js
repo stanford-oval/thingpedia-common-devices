@@ -146,6 +146,10 @@ module.exports = class HomeAssistantGateway extends Tp.BaseDevice {
         // no matter what, at the next restart the addon setup code will create
         // the new device with the new good token
         this.isTransient = !!state.isHassio;
+
+        if (!Tp.Helpers.Content.isPubliclyAccessible(state.hassUrl) &&
+            this.platform.type === 'cloud')
+            throw new Error(`Web Almond can only connect to publicly accessible Home Assistant instances`);
     }
 
     static async loadFromOAuth2(engine, accessToken, refreshToken, extraData) {
