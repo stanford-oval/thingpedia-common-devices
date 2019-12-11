@@ -1,0 +1,82 @@
+dataset @org.thingpedia.iot.occupancy language "en" {
+    program  := {
+  now => @org.thingpedia.iot.occupancy.occupancy() => notify;
+}
+    #_[utterances=["is the room occupied?",
+                   "check if living room is occupied or empty",
+                   "is the bedroom empty?",
+                   "is the toilet being used?",
+                   "is the occupancy sensor detecting anyone?"]];
+
+    query  := @org.thingpedia.iot.occupancy.occupancy()
+    #_[utterances=["if the room is occupied",
+                   "whether the bedroom is occupied or empty",
+                   "whether the living room is occupied or empty",
+                   "if the toilet is being used"]];
+
+    stream  := monitor (@org.thingpedia.iot.occupancy.occupancy())
+    #_[utterances=["when the room gets occupied or becomes empty",
+                   "when the toilet gets occupied or becomes empty",
+                   "when the bedroom gets occupied or becomes empty",
+                   "when the living room becomes occupied or empty",
+                   "when the corridor becomes occupied or empty"]];
+
+    stream (p_state :Enum(detecting,not_detecting))  := edge (monitor (@org.thingpedia.iot.occupancy.occupancy())) on state == p_state
+    #_[utterances=["when the occupancy sensor is ${p_state} people"]];
+
+    stream  := edge (monitor (@org.thingpedia.iot.occupancy.occupancy())) on state == enum(detecting)
+    #_[utterances=["when there is somebody in the room",
+                   "when someone is in the living room",
+                   "once somebody is using the toilet",
+                   "when there are people in the corridor",
+                   "when the toilet is being used",
+                   "once people enter the room"]];
+
+    stream  := edge (monitor (@org.thingpedia.iot.occupancy.occupancy())) on state == enum(not_detecting)
+    #_[utterances=["when there is nobody in the room",
+                   "when nobody is in the living room",
+                   "when nobody is using the toilet",
+                   "when there is no one in the corridor",
+                   "once the toilet is not being used",
+                   "when people leave the room",
+                   "when the space is vacated",
+                   "once the room has been cleared",
+                   "when everyone leaves the room",
+                   "when there is no one left in the living room",
+                   "once everyone leaves the room"]];
+
+    program (p_name :String)  := {
+  now => @org.thingpedia.iot.occupancy(name=p_name).occupancy() => notify;
+}
+    #_[utterances=["does the ${p_name} sensor say the room occupied?",
+                   "check if ${p_name} says the living room is occupied or empty",
+                   "is the bedroom empty according to my ${p_name} sensor?",
+                   "is the ${p_name} occupancy sensor detecting anyone?"]];
+
+    query (p_name :String)  := @org.thingpedia.iot.occupancy(name=p_name).occupancy()
+    #_[utterances=["if the room is occupied according to my ${p_name} sensor",
+                   "whether my ${p_name} sensor says the bedroom is occupied or empty",
+                   "whether the living room is detected as occupied or empty by my ${p_name} sensor"]];
+
+    stream (p_name :String)  := monitor (@org.thingpedia.iot.occupancy(name=p_name).occupancy())
+    #_[utterances=["when my ${p_name} sensor says the room is occupied or becomes empty",
+                   "when the room becomes empty according to my ${p_name} sensor"]];
+
+    stream (p_name :String, p_state :Enum(detecting,not_detecting))  := edge (monitor (@org.thingpedia.iot.occupancy(name=p_name).occupancy())) on state == p_state
+    #_[utterances=["when my ${p_name} sensor is ${p_state} people"]];
+
+    stream (p_name :String)  := edge (monitor (@org.thingpedia.iot.occupancy(name=p_name).occupancy())) on state == enum(detecting)
+    #_[utterances=["when there is somebody in the room according to my ${p_name} sensor",
+                   "when my ${p_name} sensor detects someone in the living room",
+                   "when my ${p_name} sensor detects somebody in the toilet",
+                   "when there are people in the corridor according to my ${p_name} sensor",
+                   "when my ${p_name} sensor detects people entering the room"]];
+
+    stream (p_name :String)  := edge (monitor (@org.thingpedia.iot.occupancy(name=p_name).occupancy())) on state == enum(not_detecting)
+    #_[utterances=["when my ${p_name} sensor detects nobody in the room",
+                   "when nobody is detected by my ${p_name} sensor in the living room",
+                   "when there is no one in the corridor according to my ${p_name} sensor",
+                   "when my ${p_name} sensor detects people leaving the room",
+                   "when my ${p_name} sensor detects that the space is vacated"]];
+
+}

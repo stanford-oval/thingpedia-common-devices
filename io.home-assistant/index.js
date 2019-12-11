@@ -11,10 +11,15 @@ const Tp = require('thingpedia');
 const WebSocket = require('ws');
 const HomeAssistant = require('home-assistant-js-websocket');
 
-const HomeAssistantLightbulbDevice = require('./light-bulb');
-const HomeAssistantSensor = require('./sensor');
+const HomeAssistantClimate = require('./climate');
 const HomeAssistantCover = require('./cover');
 const HomeAssistantFan = require('./fan');
+const HomeAssistantLightbulbDevice = require('./light-bulb');
+const HomeAssistantLock = require('./lock');
+const HomeAssistantMediaPlayer = require('./media-player');
+const HomeAssistantSensor = require('./sensor');
+const HomeAssistantSensorHumidity = require('./humidity');
+const HomeAssistantSensorTemperature = require('./temperature');
 const HomeAssistantSwitch = require('./switch');
 const HomeAssistantVacuum = require('./vacuum');
 
@@ -22,31 +27,43 @@ const HomeAssistantVacuum = require('./vacuum');
 const HASS_URL = 'http://hassio.local:8123';
 
 const DOMAIN_TO_TP_KIND = {
+    'climate': 'io.home-assistant.climate',
+    'cover_active': 'org.thingpedia.iot.cover',
+    'fan': 'org.thingpedia.iot.fan',
     'light': 'light-bulb',
-    'cover_active': 'io.home-assistant.cover',
-    'fan': 'io.home-assistant.fan',
-    'switch': 'io.home-assistant.switch',
-    'vacuum': 'io.home-assistant.vacuum',
-    'sensor_air': 'io.home-assistant.air',
-    'sensor_battery': 'io.home-assistant.battery',
-    'sensor_connectivity': 'io.home-assistant.connectivity',
-    'sensor_door': 'io.home-assistant.door',
-    'sensor_heat': 'io.home-assistant.heat',
-    'sensor_motion': 'io.home-assistant.motion',
-    'sensor_occupancy': 'io.home-assistant.occupancy',
-    'sensor_plug': 'io.home-assistant.plug',
-    'sensor_sound': 'io.home-assistant.sound'
+    'lock': 'org.thingpedia.iot.lock',
+    'media_player_speaker': 'org.thingpedia.iot.speaker',
+    'media_player_tv': 'org.thingpedia.iot.tv',
+    'sensor_air': 'org.thingpedia.iot.air',
+    'sensor_battery': 'org.thingpedia.iot.battery',
+    'sensor_door': 'org.thingpedia.iot.door',
+    'sensor_heat': 'org.thingpedia.iot.heat',
+    'sensor_humidity': 'org.thingpedia.iot.humidity',
+    'sensor_moisture': 'org.thingpedia.iot.moisture',
+    'sensor_motion': 'org.thingpedia.iot.motion',
+    'sensor_occupancy': 'org.thingpedia.iot.occupancy',
+    'sensor_plug': 'org.thingpedia.iot.plug',
+    'sensor_sound': 'org.thingpedia.iot.sound',
+    'sensor_temperature': 'org.thingpedia.iot.temperature',
+    'switch': 'org.thingpedia.iot.switch',
+    'vacuum': 'org.thingpedia.iot.vacuum'
 };
 const SUBDEVICES = {
+    'io.home-assistant.climate': HomeAssistantClimate,
     'light-bulb': HomeAssistantLightbulbDevice,
-    'io.home-assistant.cover': HomeAssistantCover,
-    'io.home-assistant.fan': HomeAssistantFan,
-    'io.home-assistant.switch': HomeAssistantSwitch,
-    'io.home-assistant.vacuum': HomeAssistantVacuum
+    'org.thingpedia.iot.cover': HomeAssistantCover,
+    'org.thingpedia.iot.fan': HomeAssistantFan,
+    'org.thingpedia.iot.humidity': HomeAssistantSensorHumidity,
+    'org.thingpedia.iot.lock': HomeAssistantLock,
+    'org.thingpedia.iot.speaker': HomeAssistantMediaPlayer,
+    'org.thingpedia.iot.switch': HomeAssistantSwitch,
+    'org.thingpedia.iot.temperature': HomeAssistantSensorTemperature,
+    'org.thingpedia.iot.tv': HomeAssistantMediaPlayer,
+    'org.thingpedia.iot.vacuum': HomeAssistantVacuum
 };
 
 Object.entries(DOMAIN_TO_TP_KIND).forEach(([key,value]) => {
-    if (key.includes('sensor'))
+    if (key.includes('sensor') && !(value in SUBDEVICES))
         SUBDEVICES[value] = class extends HomeAssistantSensor {};
 });
 
@@ -73,14 +90,20 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
         let kind = undefined;
         if (domain === 'binary_sensor' && ['smoke', 'gas'].includes(attributes.device_class))
             kind = DOMAIN_TO_TP_KIND['sensor_air'];
+        else if (domain === 'lock' || attributes.device_class === 'lock')
+            kind = DOMAIN_TO_TP_KIND['lock'];
         else if (domain === 'binary_sensor' && ['heat', 'cold'].includes(attributes.device_class))
             kind = DOMAIN_TO_TP_KIND['sensor_heat'];
         else if (domain === 'binary_sensor' && attributes.device_class === 'window')
             kind = DOMAIN_TO_TP_KIND['cover_active'];
+        else if ((domain === 'cover' && attributes.device_class === 'garage') || domain === 'binary_sensor' && attributes.device_class === 'garage_door')
+            kind = DOMAIN_TO_TP_KIND['sensor_door'];
         else if ((domain === 'sensor') || (domain === 'binary_sensor') || (domain === 'cover' && attributes.device_class === 'door'))
             kind = DOMAIN_TO_TP_KIND[`sensor_${attributes.device_class}`];
         else if (domain === 'cover')
             kind = DOMAIN_TO_TP_KIND['cover_active'];
+        else if (domain === 'media_player')
+            kind = DOMAIN_TO_TP_KIND[`media_player_${attributes.device_class}`];
         else
             kind = DOMAIN_TO_TP_KIND[domain];
 

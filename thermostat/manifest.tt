@@ -1,0 +1,30 @@
+abstract class @thermostat
+#_[thingpedia_name="Thermostat"]
+#_[thingpedia_description="Interface for Thermostat."]
+#_[description="Interface for Thermostat."]
+#[license="CC-0"]
+#[license_gplcompatible=true]
+#[subcategory="home"]
+{
+  monitorable query get_hvac_state(out mode: Enum(heat,cool,heat_cool,off,auto,dry,fan_only) #_[canonical="mode"],
+                                   out state: Enum(heating,cooling,off,drying,idle,fan) #_[canonical="state"])
+  #_[canonical="get hvac state on thermostat"]
+  #_[confirmation="the state of your heating system"]
+  #[confirm=false];
+
+  action set_hvac_mode(in req mode: Enum(heat,cool,heat_cool,off,auto,dry,fan_only) #_[prompt="What mode do you want to set?"] #_[canonical="mode"])
+  #_[canonical="set hvac mode on thermostat"]
+  #_[confirmation="set your HVAC to $mode"]
+  #[confirm=true];
+
+  action set_minmax_temperature(in req low: Measure(C) #_[prompt="What low temperature do you want to set?"] #_[canonical="low"],
+                                in req high: Measure(C) #_[prompt="What high temperature do you want to set?"] #_[canonical="high"])
+  #_[canonical="set minimum maximum temperature on thermostat"]
+  #_[confirmation="set your thermostat between $low and $high"]
+  #[confirm=true];
+
+  action set_target_temperature(in req value: Measure(C) #_[prompt="What temperature do you want to set?"] #_[canonical="value"])
+  #_[canonical="set target temperature on thermostat"]
+  #_[confirmation="set your thermostat to $value"]
+  #[confirm=true];
+}

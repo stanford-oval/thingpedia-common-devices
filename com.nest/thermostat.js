@@ -60,7 +60,7 @@ const ThermostatDevice = class NestThermostatDevice extends Tp.BaseDevice {
         });
     }
 
-    get_get_humidity() {
+    get_humidity() {
         return [{ value: this.state.humidity }];
     }
 
@@ -70,7 +70,7 @@ const ThermostatDevice = class NestThermostatDevice extends Tp.BaseDevice {
         });
     }
 
-    get_get_hvac_state() {
+    get_hvac_state() {
         return [{ mode: this.state.hvac_mode, state: this.state.hvac_state }];
     }
 
@@ -80,7 +80,7 @@ const ThermostatDevice = class NestThermostatDevice extends Tp.BaseDevice {
         });
     }
 
-    get_get_temperature() {
+    get_temperature() {
         return [{ value: this.state.ambient_temperature_c }];
     }
 
@@ -98,6 +98,8 @@ const ThermostatDevice = class NestThermostatDevice extends Tp.BaseDevice {
     }
 
     do_set_hvac_mode({ mode }) {
+        if (!['heat','cool','heat_cool','off'].includes(mode))
+            throw new Error(`Setting your device to ${mode} mode is not supported.`);
         let firebase = this.master.refFirebaseClient().child(this.device.url);
         firebase.update({ hvac_state: mode.replace('_', '-') });
         this.master.unrefFirebaseClient();

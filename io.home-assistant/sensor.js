@@ -33,6 +33,14 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
                     on: 'open',
                     off: 'closed'
                 },
+                garage: {
+                    on: 'open',
+                    off: 'closed'
+                },
+                garage_door: {
+                    on: 'open',
+                    off: 'closed'
+                },
                 gas: {
                     on: 'detecting',
                     off: 'not_detecting'
@@ -41,13 +49,17 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
                     on: 'hot',
                     off: 'normal'
                 },
+                moisture: {
+                    on: 'wet',
+                    off: 'dry'
+                },
                 motion: {
                     on: 'detecting',
                     off: 'not_detecting'
                 },
                 occupancy: {
-                    on: 'occupied',
-                    off: 'unoccupied'
+                    on: 'detecting',
+                    off: 'not_detecting'
                 },
                 plug: {
                     on: 'plugged',
@@ -81,19 +93,37 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
     // note: subscribe_ must NOT be async, or an ImplementationError will occur at runtime
     subscribe_state() {
         if (this.domain === 'sensor') {
-            let value = parseFloat(this.state.state);
             return this._subscribeState(() => {
-                return {state: undefined, value: value};
+                return {state: undefined, value: parseFloat(this.state.state)};
             });
         } else if (this.domain === 'binary_sensor') {
-            let state = this.deviceStateMapping[this.state.state];
-            if (['gas', 'smoke'].includes(this.device_class))
-                state = state === 'detecting' ? this.device_class : 'nothing';
             return this._subscribeState(() => {
+                let state = this.deviceStateMapping[this.state.state];
+                if (['gas', 'smoke'].includes(this.device_class))
+                    state = state === 'detecting' ? this.device_class : 'nothing';
                 return {state: state, value: undefined};
             });
         } else {
             throw new Error (`Unexpected Home Assistant domain ${this.domain}`);
         }
+    }
+    // Specific query methods for motion, occupancy and sound
+    async get_motion() {
+        return this.get_state();
+    }
+    subscribe_motion() {
+        return this.subscribe_state();
+    }
+    async get_occupancy() {
+        return this.get_state();
+    }
+    subscribe_occupancy() {
+        return this.subscribe_state();
+    }
+    async get_sound() {
+        return this.get_state();
+    }
+    subscribe_sound() {
+        return this.subscribe_state();
     }
 };
