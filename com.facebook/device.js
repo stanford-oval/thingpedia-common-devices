@@ -8,7 +8,7 @@
 const Tp = require('thingpedia');
 //const FormData = require('form-data');
 
-module.exports = class FacebokDevice extends Tp.BaseDevice {
+module.exports = class FacebookDevice extends Tp.BaseDevice {
     constructor(engine, state) {
         super(engine, state);
 
