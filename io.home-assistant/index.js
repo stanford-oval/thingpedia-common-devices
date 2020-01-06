@@ -110,7 +110,7 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
 
         if (kind === undefined) {
             if (!this._warned.has(entityId)) {
-                console.log(`Unhandled Home Assistant entity ${entityId} with domain ${domain}`);
+                console.log(`Unhandled Home Assistant entity ${entityId} with domain ${domain} and device class ${attributes.device_class}`);
                 this._warned.add(entityId);
             }
             return;
