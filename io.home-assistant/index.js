@@ -72,6 +72,7 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
         super();
         this.master = master;
         this._devices = new Map;
+        this._warned = new Set;
 
         this._unsubscribe = null;
     }
@@ -108,7 +109,10 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
             kind = DOMAIN_TO_TP_KIND[domain];
 
         if (kind === undefined) {
-            console.log(`Unhandled Home Assistant entity ${entityId} with domain ${domain}`);
+            if (!this._warned.has(entityId)) {
+                console.log(`Unhandled Home Assistant entity ${entityId} with domain ${domain} and device class ${attributes.device_class}`);
+                this._warned.add(entityId);
+            }
             return;
         }
         const deviceClass = SUBDEVICES[kind];
