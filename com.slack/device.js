@@ -5,7 +5,7 @@
 
 const Tp = require('thingpedia');
 
-module.exports = class InstagramClass extends Tp.BaseDevice {
+module.exports = class SlackClass extends Tp.BaseDevice {
     static get runOAuth2() {
         return Tp.Helpers.OAuth2({
             kind: 'com.slack',
@@ -39,7 +39,7 @@ module.exports = class InstagramClass extends Tp.BaseDevice {
     constructor(engine, state) {
         super(engine, state);
         this.uniqueId = 'com.slack-' + this.state.user_id;
-        this.name = "Slack %s".format(this.state.user_id);
+        this.name = "Slack %s".format(this.state.user);
         this.description = "This is Slack owned by %s"
             .format(this.state.user);
 
@@ -108,31 +108,31 @@ module.exports = class InstagramClass extends Tp.BaseDevice {
 
     async get_channel_history({channel, date, sender, message}) {
         let token = this.accessToken;
-        const response = Tp.Helpers.Http.post('https://slack.com/api/channels.list',
+        const response = JSON.parse(await Tp.Helpers.Http.post('https://slack.com/api/channels.list',
             'token=' + token +
             '&exclude_archived=' + encodeURIComponent(1), {
                 dataContentType: 'application/x-www-form-urlencoded'
-        });
-        let parsed = JSON.parse(response);
-        if (!parsed.ok) {
+        }));
+
+        if (!response.ok) {
             console.log('[ERROR] invalid response from http POST for channel list');
             return [];
         }
-        const messageLists = await Promise.all(parsed.channels.map(async (channel) => {
+        const messageLists = await Promise.all(response.channels.map(async (channel) => {
             // Check the 5 latest messages
-            const response = await Tp.Helpers.Http.post('https://slack.com/api/channels.history',
+            const response = JSON.parse(await Tp.Helpers.Http.post('https://slack.com/api/channels.history',
                 'token=' + token +
                 '&channel=' + encodeURIComponent(channel.id) +
                 '&count=' + encodeURIComponent('5'), {
                     dataContentType: 'application/x-www-form-urlencoded'
                 }
-            );
-            let parsed = JSON.parse(response);
-            if (!parsed.ok) {
+            ));
+
+            if (!response.ok) {
                 console.log('[ERROR] invalid response from http POST (channel.history)');
                 throw new Error("Channels.History returned status of NOT OK.");
             }
-            return Promise.all(parsed.messages.map(async (msg) => {
+            return Promise.all(response.messages.map(async (msg) => {
                 const username = await this.get_username(msg.user);
                 return {
                     channel: channel.name,
@@ -163,9 +163,9 @@ module.exports = class InstagramClass extends Tp.BaseDevice {
                 console.log('[info] Got a valid response to our POST?');
                 console.log('[info] Response: ', String(response));
                 let parsed = JSON.parse(response);
-                if (!parsed.ok) 
+                if (!parsed.ok)
                     console.log('[ERROR] invalid response from http POST');
-                
+
             }, (reason) => {
                 console.log('[info] Reason: ', String(reason));
                 console.log('[ERROR] Unable to send message to Slack.');
@@ -190,9 +190,9 @@ module.exports = class InstagramClass extends Tp.BaseDevice {
                 console.log('[info] Got a valid response to our POST?');
                 console.log('[info] Response: ', String(response));
                 let parsed = JSON.parse(response);
-                if (!parsed.ok) 
+                if (!parsed.ok)
                     console.log('[ERROR] invalid response from http POST');
-                
+
             }, (reason) => {
                 console.log('[info] Reason: ', String(reason));
                 console.log('[ERROR] Unable to send message to Slack.');
@@ -213,9 +213,9 @@ module.exports = class InstagramClass extends Tp.BaseDevice {
             ).then((response) => {
                 console.log('[info] Response: ', String(response));
                 let parsed = JSON.parse(response);
-                if (!parsed.ok) 
+                if (!parsed.ok)
                     console.log('[ERROR] invalid response from http POST');
-                
+
             }, (reason) => {
                 console.log('[info] Reason: ', String(reason));
                 console.log('[ERROR] Unable to send message to Slack.');
@@ -236,7 +236,7 @@ module.exports = class InstagramClass extends Tp.BaseDevice {
             ).then((response) => {
                 console.log('[info] Response: ', String(response));
                 let parsed = JSON.parse(response);
-                if (!parsed.ok) 
+                if (!parsed.ok)
                     console.log('[ERROR] invalid response from http POST');
 
             }, (reason) => {
@@ -253,9 +253,9 @@ module.exports = class InstagramClass extends Tp.BaseDevice {
                 dataContentType: 'application/x-www-form-urlencoded'
             }).then((response) => {
             let parsed = JSON.parse(response);
-            if (!parsed.ok) 
+            if (!parsed.ok)
                 console.log('[ERROR] invalid response from http POST');
-            
+
         }, (reason) => {
             console.log('[info] Reason: ', String(reason));
             console.log('[ERROR] Unable to set presence');
