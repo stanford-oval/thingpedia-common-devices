@@ -7,19 +7,20 @@
 
 const Tp = require('thingpedia');
 
-const PROFILE_URL = 'https://api.linkedin.com/v1/people/~:(id,formatted-name,headline,industry,specialties,positions,picture-url)?format=json';
-const SHARE_URL = 'https://api.linkedin.com/v1/people/~/shares?format=json';
+const PROFILE_URL = 'https://api.linkedin.com/v2/me';
+const SHARE_URL = 'https://api.linkedin.com/v2/ugcPosts';
 
 module.exports = class LinkedinDevice extends Tp.BaseDevice {
     static get runOAuth2() {
         return Tp.Helpers.OAuth2({
-            authorize: 'https://www.linkedin.com/uas/oauth2/authorization',
-            get_access_token: 'https://www.linkedin.com/uas/oauth2/accessToken',
+            scope: ['r_emailaddress','r_liteprofile','w_member_social'],
+            authorize: 'https://www.linkedin.com/oauth/v2/authorization',
+            get_access_token: 'https://www.linkedin.com/oauth/v2/accessToken',
             set_state: true,
 
             callback(engine, accessToken, refreshToken) {
                 const auth = 'Bearer ' + accessToken;
-                return Tp.Helpers.Http.get('https://api.linkedin.com/v1/people/~:(id,formatted-name)?format=json',
+                return Tp.Helpers.Http.get('https://api.linkedin.com/v2/me',
                                            { auth: auth,
                                              accept: 'application/json' }).then((response) => {
                     const parsed = JSON.parse(response);
@@ -60,20 +61,24 @@ module.exports = class LinkedinDevice extends Tp.BaseDevice {
             accept: 'application/json' }).then((response) => {
             const parsed = JSON.parse(response);
 
-            return [{ formatted_name: parsed.formattedName,
-                      headline: parsed.headline || '',
-                      industry: parsed.industry || '',
-                      specialties: parsed.specialties || '',
-                      positions: ('values' in parsed) ? parsed.positions.values.map((p) => p.summary) : [],
-                      profile_picture: parsed.pictureUrl || '' }];
+            return [{ formatted_name: parsed.localizedFirstName + ' ' + parsed.localizedLastName }];
         });
     }
 
     do_share({ status }) {
         return Tp.Helpers.Http.post(SHARE_URL, JSON.stringify({
-            comment: status,
-            visibility: {
-                code: 'anyone'
+            'author': 'urn:li:person:' + this.state.userId,
+            'lifecycleState': 'PUBLISHED',
+            'specificContent': {
+                'com.linkedin.ugc.ShareContent': {
+                    'shareCommentary': {
+                        'text': status
+                    },
+                    'shareMediaCategory': 'NONE'
+                }
+            },
+            'visibility': {
+                'com.linkedin.ugc.MemberNetworkVisibility': 'PUBLIC'
             }
         }), {
             useOAuth2: this,
