@@ -20,7 +20,7 @@ module.exports = class LinkedinDevice extends Tp.BaseDevice {
 
             callback(engine, accessToken, refreshToken) {
                 const auth = 'Bearer ' + accessToken;
-                return Tp.Helpers.Http.get('https://api.linkedin.com/v2/me',
+                return Tp.Helpers.Http.get(PROFILE_URL,
                                            { auth: auth,
                                              accept: 'application/json' }).then((response) => {
                     const parsed = JSON.parse(response);
@@ -53,16 +53,6 @@ module.exports = class LinkedinDevice extends Tp.BaseDevice {
 
     checkAvailable() {
         return Tp.Availability.AVAILABLE;
-    }
-
-    get_get_profile() {
-        return Tp.Helpers.Http.get(PROFILE_URL, {
-            useOAuth2: this,
-            accept: 'application/json' }).then((response) => {
-            const parsed = JSON.parse(response);
-
-            return [{ formatted_name: parsed.localizedFirstName + ' ' + parsed.localizedLastName }];
-        });
     }
 
     do_share({ status }) {
