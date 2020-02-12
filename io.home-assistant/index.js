@@ -88,9 +88,9 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
         }
         
         // Do not add entities without a friendly name.
-        if (!attributes.friendly_name) {
+        if (!attributes.friendly_name)
             return;
-        }
+        
 
         const [domain,] = entityId.split('.');
         let kind = undefined;
