@@ -1,0 +1,15 @@
+class @live.ncov2019
+#_[name="Live data update for coronavirus"]
+#_[description="Retrieve information of the coronavirus based on data from ncov2019.live"] {
+  import loader from @org.thingpedia.v2();
+  import config from @org.thingpedia.config.none();
+
+  monitorable list query stats(out country: Entity(tt:country),
+                               out confirmed: Number,
+                               out death: Number)
+  #_[canonical="live data of coronavirus"]
+  #_[confirmation="coronavirus live data"]
+  #_[formatted=[{type="text",text="${country}: ${confirmed} confirmed cases, ${death} died."}]]
+  #[poll_interval=60min]
+  #[doc="live data of coronavirus from ncov2019.live"];
+}

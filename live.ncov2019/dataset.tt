@@ -1,0 +1,22 @@
+dataset @live.ncov2019 language "en" {
+    query () := @live.ncov2019.stats()
+    #_[utterances=["coronavirus updates", "coronavirus statistics", "wuhan virus updates", "wuhan virus statistics"]];
+
+    query (p_country :Entity(tt:country))  := @live.ncov2019.stats(), country == p_country
+    #_[utterances=[
+    	"conronavirus statistics in ${p_country}",
+    	", what's the status of the coronavirus in ${p_country}"
+    ]];
+
+    query (p_country :Entity(tt:country))  := [death] of (@live.ncov2019.stats(), country == p_country)
+    #_[utterances=[
+    	"number of death caused by conronavirus in ${p_country}",
+    	", how many people died because of coronavirus in ${p_country}"
+    ]];
+
+    query (p_country :Entity(tt:country))  := [confirmed] of (@live.ncov2019.stats(), country == p_country)
+    #_[utterances=[
+    	"number of confirmed cases in ${p_country}",
+    	", how many people got coronavirus in ${p_country}"
+    ]];
+}
