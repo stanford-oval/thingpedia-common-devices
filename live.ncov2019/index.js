@@ -29,7 +29,7 @@ module.exports = class NCov2019 extends Tp.BaseDevice {
             const $ = cheerio.load(res);
 
             // load data outside china
-            const international = $('p:contains("International")').next();
+            const international = $('p:contains("🌎 International")').next();
             let deathOutsideChina = 0;
             international.find('td').each((i, td) => {
                 let children = $(td).contents();
@@ -37,10 +37,9 @@ module.exports = class NCov2019 extends Tp.BaseDevice {
                 let data = {};
                 children.each((i, child) => {
                     let current = $(child).text().trim();
-                    if (previous === null) {
-                        let country_code = getCode(current);
-                        if (country_code)
-                            data.country = { value: country_code.toLowerCase(), display: current };
+                    let country_code = getCode(current.replace(/\W/g, ''));
+                    if (country_code) {
+                        data.country = new Tp.Value.Entity(country_code.toLowerCase(), current.replace(/\W/g, ''));
                     } else if (previous === 'Confirmed:') {
                         data.confirmed = parseInt(current.replace(/,/g, ''));
                     } else if (previous === 'Dead:') {
@@ -74,8 +73,7 @@ module.exports = class NCov2019 extends Tp.BaseDevice {
                     previous = current;
                 });
             });
-            result.unshift({ country: { value: 'cn', display: 'China' } , confirmed, death });
-
+            result.unshift({ country: new Tp.Value.Entity('cn', 'China') , confirmed, death });
 
             return result;
         });
