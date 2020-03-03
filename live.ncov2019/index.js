@@ -29,20 +29,20 @@ module.exports = class NCov2019 extends Tp.BaseDevice {
             const $ = cheerio.load(res);
 
             // load data outside china
-            const international = $('p:contains("🌎 International")').next();
+            const international = $('p:contains("International")').next();
             let deathOutsideChina = 0;
             international.find('td').each((i, td) => {
                 let children = $(td).contents();
-                let previous = null;
+                let previous = '';
                 let data = {};
                 children.each((i, child) => {
                     let current = $(child).text().trim();
                     let country_code = getCode(current.replace(/\W/g, ''));
                     if (country_code) {
                         data.country = new Tp.Value.Entity(country_code.toLowerCase(), current.replace(/\W/g, ''));
-                    } else if (previous === 'Confirmed:') {
+                    } else if (previous.includes('Confirmed')) {
                         data.confirmed = parseInt(current.replace(/,/g, ''));
-                    } else if (previous === 'Dead:') {
+                    } else if (previous.includes('Dead')) {
                         data.death = parseInt(current.replace(/,/g, ''));
                         deathOutsideChina += data.death;
                     }

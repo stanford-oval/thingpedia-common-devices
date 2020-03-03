@@ -10,6 +10,7 @@ const Tp = require('thingpedia');
 
 module.exports = [
     ['query', 'stats', {}, (results) => {
+        assert(results.length > 48);
         for (let result of results) {
             assert(result.country instanceof Tp.Value.Entity);
             assert.strictEqual(typeof result.confirmed, 'number');
