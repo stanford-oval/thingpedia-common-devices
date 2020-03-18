@@ -58,7 +58,7 @@ module.exports = class MastodonClass extends Tp.BaseDevice {
         text = text.replace(/<li>/ig, '  *  ');
         text = text.replace(/<\/ul>/ig, '\n');
         text = text.replace(/<\/p>/ig, '\n');
-        text = text.replace(/<br\s*[\/]?>/gi, "\n");
+        text = text.replace(/<br\s*[/]?>/gi, "\n");
         text = text.replace(/<[^>]+>/ig, '');
 
         return text;
