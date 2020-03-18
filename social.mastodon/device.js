@@ -64,10 +64,10 @@ module.exports = class MastodonClass extends Tp.BaseDevice {
         return text;
     }
 
-    get_favorites(count) {
+    get_favorites({ count }) {
 
-        count = count.count || 5;
-        const url = 'https://mastodon.social/api/v1/favourites?limit=5';
+        count = count || 5;
+        const url = `https://mastodon.social/api/v1/favourites?limit=${count}`;
 
         return Tp.Helpers.Http.get(url, { useOAuth2: this }).then((response) => {
             const parsed = JSON.parse(response);
@@ -77,7 +77,7 @@ module.exports = class MastodonClass extends Tp.BaseDevice {
 
                 return {
                     caption,
-                    author: post.account.username,
+                    author: post.reblog ? post.reblog.account.username : post.account.username,
                     url: post.media_attachments[0] ? post.media_attachments[0].url : null
                 };
             });
@@ -85,9 +85,9 @@ module.exports = class MastodonClass extends Tp.BaseDevice {
         });
     }
 
-    get_home_timeline(count) {
+    get_home_timeline({ count }) {
 
-        count = count.count || 5;
+        count = count || 5;
         const url = `https://mastodon.social/api/v1/timelines/home?limit=${count}`;
 
         return Tp.Helpers.Http.get(url, { useOAuth2: this }).then((response) => {
@@ -98,7 +98,7 @@ module.exports = class MastodonClass extends Tp.BaseDevice {
 
                 return {
                     caption,
-                    author: post.account.username,
+                    author: post.reblog ? post.reblog.account.username : post.account.username,
                     url: post.reblog ? (post.reblog.media_attachments[0] ? post.reblog
                         .media_attachments[0].url : null) : null
                 };
@@ -106,11 +106,9 @@ module.exports = class MastodonClass extends Tp.BaseDevice {
         });
     }
 
-    get_search(query, count) {
+    get_search({ query, count }) {
 
-        count = count.count || 5;
-        query = query.query;
-
+        count = count || 5;
         const url = `https://mastodon.social/api/v2/search?q=${query}&limit=${count}`;
 
         return Tp.Helpers.Http.get(url, { useOAuth2: this }).then((response) => {
@@ -129,9 +127,8 @@ module.exports = class MastodonClass extends Tp.BaseDevice {
 
     }
 
-    do_post(status) {
+    do_post({ status }) {
 
-        status = status.status;
         const url = 'https://mastodon.social/api/v1/statuses';
         var postData = querystring.stringify({
             "status": status
