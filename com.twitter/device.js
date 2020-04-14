@@ -246,11 +246,23 @@ module.exports = class TwitterAccountDevice extends Tp.BaseDevice {
         });
     }
 
-    get_search(params) {
-        if (params !== undefined)
-            return this._doSearch(params.query, params.count);
+    get_search(params, hints) {
 
-        return this._doSearch();
+        let query = '';
+        if (hints && hints.filter) {
+            let [pname, op, value] = hints.filter[0];
+            if (pname === 'query' && (op === '==' || op === '=~')) {
+                    if (value instanceof Tp.Value.Entity)
+                        query = value.display;
+                    else
+                        query = value;
+            }
+        }
+
+        if (params !== undefined)
+            return this._doSearch(query, params.count);
+
+        return this._doSearch(query);
     }
 
     do_post({ status }) {
