@@ -121,7 +121,7 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
         }
         const deviceClass = SUBDEVICES[kind];
         const device = new deviceClass(
-            this.engine, { kind, state, attributes }, this.master, entityId);
+            this.master.engine, { kind, state, attributes }, this.master, entityId);
         this._devices.set(entityId, device);
         this.objectAdded(device);
     }
