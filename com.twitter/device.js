@@ -216,7 +216,7 @@ module.exports = class TwitterAccountDevice extends Tp.BaseDevice {
         return this._pollDirectMessages(undefined);
     }
 
-    _doSearch(query, count) {
+    _doSearch(query, author, count) {
         // twitter default is 15, which is a lot
         // let's default to 5 instead
         count = count || 5;
@@ -230,39 +230,45 @@ module.exports = class TwitterAccountDevice extends Tp.BaseDevice {
             let tweets = JSON.parse(response);
             if (tweets.statuses)
                 tweets = tweets.statuses;
-            return tweets.map((tweet) => {
+            return tweets.filter((tweet) => (!author || author === tweet.user.screen_name.toLowerCase())).map((tweet) => {
                 const hashtags = tweet.entities.hashtags.map((h) => h.text.toLowerCase());
                 const urls = tweet.entities.urls.map((u) => u.expanded_url);
-
-                return {
-                    query, count,
-                    text: tweet.text,
-                    author: tweet.user.screen_name.toLowerCase(),
-                    hashtags, urls,
-                    in_reply_to: tweet.in_reply_to_screen_name ? tweet.in_reply_to_screen_name.toLowerCase() : null,
-                    tweet_id: tweet.id_str,
-                 };
+                  return {
+                      query, count,
+                      text: tweet.text,
+                      author: tweet.user.screen_name.toLowerCase(),
+                      hashtags, urls,
+                      in_reply_to: tweet.in_reply_to_screen_name ? tweet.in_reply_to_screen_name.toLowerCase() : null,
+                      tweet_id: tweet.id_str,
+                   };
             });
         });
     }
 
     get_search(params, hints) {
 
-        let query = '';
+        let query;
+        let author;
         if (hints && hints.filter) {
-            let [pname, op, value] = hints.filter[0];
-            if (pname === 'query' && (op === '==' || op === '=~')) {
-                    if (value instanceof Tp.Value.Entity)
-                        query = value.display;
-                    else
-                        query = value;
-            }
+            for (let [pname, op, value] of hints.filter) {
+              if (pname === 'text' && (op === '==' || op === '=~')) {
+                      if (value instanceof Tp.Value.Entity)
+                          query = value.display;
+                      else
+                          query = value;
+              } else if (pname === "author" && (op === '==' || op === '=~')) {
+                      if (value instanceof Tp.Value.Entity)
+                          author = value.display;
+                      else
+                          author = value;
+              }
+           }
         }
 
         if (params !== undefined)
-            return this._doSearch(query, params.count);
+            return this._doSearch(query, author, params.count);
 
-        return this._doSearch(query);
+        return this._doSearch(query, author);
     }
 
     do_post({ status }) {
