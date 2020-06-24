@@ -1,0 +1,54 @@
+dataset @co.alphavantage language "en" {
+    query := @co.alphavantage.get_price(company=$?)
+    #_[utterances=["stock price"]]
+    #[id=32439211]
+    #[name=""];
+
+    stream := monitor (@co.alphavantage.get_price(company=$?))
+    #_[utterances=["when stock price changes"]]
+    #[id=32439212]
+    #[name=""];
+
+    query (p_company :Entity(tt:stock_id)) := @co.alphavantage.get_price(company=p_company)
+    #_[utterances=["stock price of ${p_company}"]]
+    #[id=32439213]
+    #[name=""];
+
+    stream (p_company :Entity(tt:stock_id)) := monitor (@co.alphavantage.get_price(company=p_company))
+    #_[utterances=["when the stock price of ${p_company} changes"]]
+    #[id=32439214]
+    #[name=""];
+
+    stream (p_company :Entity(tt:stock_id), p_change :Number) := edge (monitor (@co.alphavantage.get_price(company=p_company))) on change >= p_change
+    #_[utterances=["when the stock price of ${p_company} increases more than ${p_change} percent",
+                   "when the stock price of ${p_company} goes up more than ${p_change} percent",
+                   "when the stock price of ${p_company} increases by ${p_change} percent",
+                   "when the stock price of ${p_company} goes up ${p_change} percent",
+                   "when the stock price of ${p_company} grows more than ${p_change} percent",
+                   "when the stock price of ${p_company} rises more than ${p_change} percent",
+                   "when the stock price of ${p_company} increases more than ${p_change} %",
+                   "when the stock price of ${p_company} goes up more than ${p_change} %",
+                   "when the stock price of ${p_company} increases by ${p_change} %",
+                   "when the stock price of ${p_company} goes up ${p_change} %",
+                   "when the stock price of ${p_company} grows more than ${p_change} %",
+                   "when the stock price of ${p_company} rises more than ${p_change} %"]]
+    #[id=32439215]
+    #[name=""];
+
+    stream (p_company :Entity(tt:stock_id), p_change :Number) := edge (monitor (@co.alphavantage.get_price(company=p_company))) on change <= p_change
+    #_[utterances=["when the stock price of ${p_company} descreses more than ${p_change} percent",
+                   "when the stock price of ${p_company} goes down more than ${p_change} percent",
+                   "when the stock price of ${p_company} decreases by ${p_change} percent",
+                   "when the stock price of ${p_company} goes down ${p_change} percent",
+                   "when the stock price of ${p_company} drops more than ${p_change} percent",
+                   "when the stock price of ${p_company} shrinks more than ${p_change} percent",
+                   "when the stock price of ${p_company} descreses more than ${p_change} %",
+                   "when the stock price of ${p_company} goes down more than ${p_change} %",
+                   "when the stock price of ${p_company} decreases by ${p_change} %",
+                   "when the stock price of ${p_company} goes down ${p_change} %",
+                   "when the stock price of ${p_company} drops more than ${p_change} %",
+                   "when the stock price of ${p_company} shrinks more than ${p_change} %"]]
+    #[id=32439227]
+    #[name=""];
+
+}

@@ -1,0 +1,23 @@
+class @co.alphavantage 
+#_[thingpedia_name="Alpha Vantage"]
+#_[thingpedia_description="Alpha Vantage APIs for stock data"]
+#[subcategory="media"]
+#[license="MIT"]
+#[license_gplcompatible=true]
+#[website="https://www.alphavantage.co"]
+#[source_repository="https://github.com/stanford-oval/thingpedia-common-devices"]
+#[issue_tracker="https://github.com/stanford-oval/thingpedia-common-devices/issues"]
+{
+  import loader from @org.thingpedia.generic_rest.v1();
+  import config from @org.thingpedia.config.none();
+
+  monitorable query get_price(in req company: Entity(tt:stock_id) #_[prompt="What company do you want to check?"],
+                              out price: Currency #[json_key="Global Quote.05\\. price"],
+                              out change: Number #[json_key="Global Quote.10\\. change percent"])
+  #_[canonical="get stock price"]
+  #_[confirmation="stock price of ${company}"]
+  #_[formatted=[{type="text",text="The current stock price of ${company} is ${price}."}]]
+  #[poll_interval=300000ms]
+  #[doc="Get stock price"]
+  #[url="https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${company}&apikey=YSJ85UP97PPSL4LQ"];
+}
