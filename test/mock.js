@@ -10,27 +10,6 @@
 "use strict";
 
 const assert = require('assert');
-if (!assert.rejects) {
-    // added in node 9.*, we still support (and mostly use) 8.*
-
-    assert.rejects = async function rejects(promise, error, message) {
-        if (typeof promise === 'function')
-            promise = promise();
-
-        try {
-            await promise;
-            try {
-                assert.fail("Expected a rejected promise");
-            } catch(e) {
-                return Promise.reject(e);
-            }
-        } catch(e) {
-            assert.throws(() => { throw e; }, error, message);
-        }
-        return Promise.resolve();
-    };
-}
-
 const path = require('path');
 const child_process = require('child_process');
 const os = require('os');
@@ -82,13 +61,18 @@ class ThingpediaClient extends Tp.HttpClient {
         super(platform, 'https://thingpedia.stanford.edu/thingpedia');
 
         this._cachedManifests = new Map;
+        this._release = 'main';
+    }
+
+    setRelease(release) {
+        this._release = release;
     }
 
     async getDeviceManifest(deviceKind) {
         if (this._cachedManifests.has(deviceKind))
             return this._cachedManifests.get(deviceKind);
 
-        const manifestPath = path.resolve(path.dirname(module.filename), '../' + deviceKind + '/manifest.tt');
+        const manifestPath = path.resolve(path.dirname(module.filename), '../' + this._release + '/' + deviceKind + '/manifest.tt');
         const ourMetadata = (await util.promisify(fs.readFile)(manifestPath)).toString();
         const ourParsed = ThingTalk.Grammar.parse(ourMetadata);
         ourParsed.classes[0].annotations.version = new ThingTalk.Ast.Value.Number(-1);
@@ -128,7 +112,7 @@ class ThingpediaClient extends Tp.HttpClient {
     }
 
     async getModuleLocation(id) {
-        return 'file://' + path.resolve(path.dirname(module.filename), '../' + id);
+        return 'file://' + path.resolve(path.dirname(module.filename), '../' + this._release + '/' + id);
     }
 }
 
@@ -146,13 +130,56 @@ function getGitConfig(key, _default) {
     }
 }
 
+
+class MemoryPreferences extends Tp.Preferences {
+    constructor() {
+        super();
+        this._prefs = {};
+    }
+
+    keys() {
+        return Object.keys(this._prefs);
+    }
+
+    get(name) {
+        return this._prefs[name];
+    }
+
+    set(name, value) {
+        let changed = this._prefs[name] !== value;
+        this._prefs[name] = value;
+        if (changed)
+            this.emit('changed', name);
+        return value;
+    }
+
+    delete(name) {
+        delete this._prefs[name];
+        this.emit('changed', name);
+    }
+
+    changed(name = null) {
+        this.emit('changed', name);
+    }
+
+    flush() {
+        return Promise.resolve();
+    }
+
+    saveCopy(to) {
+        return Promise.resolve();
+    }
+}
+
 class TestPlatform extends Tp.BasePlatform {
     constructor() {
         super();
 
         this._thingpedia = new ThingpediaClient(this);
+        this._prefs = new MemoryPreferences();
 
-        this._developerKey = getGitConfig('thingpedia.developer-key', process.env.THINGENGINE_DEVELOPER_KEY || null);
+        this._developerKey = getGitConfig('thingpedia.developer-key', process.env.THINGENGINE_DEVELOPER_KEY || undefined);
+        this._prefs.set('developer-key', this._developerKey);
     }
 
     getDeveloperKey() {
@@ -166,6 +193,10 @@ class TestPlatform extends Tp.BasePlatform {
     }
     get timezone() {
         return 'America/Los_Angeles';
+    }
+
+    getSharedPreferences() {
+        return this._prefs;
     }
 
     getCacheDir() {
