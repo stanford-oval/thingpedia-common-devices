@@ -77,6 +77,7 @@ developer_key ?= invalid
 
 s3_bucket ?=
 genie_k8s_project ?=
+genie_k8s_owner ?=
 
 .PRECIOUS: %/node_modules
 .PHONY: all clean lint
