@@ -44,9 +44,9 @@ Each device is in a folder named after the device ID. The folder contains:
 - `manifest.tt`: the Thingpedia device definition
 - `dataset.tt`: additional primitive templates for the Thingpedia device
 - `icon.png`: the icon in Thingpedia
-- `eval/`: evaluation data
-- `eval/input.txt`: bare dialogues between user and agent
-- `eval/annotated.txt`: annotated dialogues
+- `eval/`: evaluation data (one folder for dev and one for test)
+- `eval/*/input.txt`: bare dialogues between user and agent
+- `eval/*/annotated.txt`: annotated dialogues
 - `paraphrase/`: (optional) paraphrase data
 - `package.json` and `yarn.lock`: node package definition and dependency list for the Thingpedia device, if the device needs custom JS code
 - `*.js`: custom JS code used by the Thingpedia device

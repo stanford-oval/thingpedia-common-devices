@@ -14,8 +14,6 @@ const path = require('path');
 const child_process = require('child_process');
 const os = require('os');
 const fs = require('fs');
-const util = require('util');
-const ThingTalk = require('thingtalk');
 const Tp = require('thingpedia');
 
 const _unzipApi = {
@@ -59,60 +57,18 @@ const _contentApi = {
 class ThingpediaClient extends Tp.HttpClient {
     constructor(platform) {
         super(platform, 'https://thingpedia.stanford.edu/thingpedia');
-
-        this._cachedManifests = new Map;
-        this._release = 'main';
     }
 
-    setRelease(release) {
-        this._release = release;
-    }
+    async _getLocalDeviceManifest(manifestPath, deviceKind) {
+        const classDef = await super._getLocalDeviceManifest(manifestPath, deviceKind);
 
-    async getDeviceManifest(deviceKind) {
-        if (this._cachedManifests.has(deviceKind))
-            return this._cachedManifests.get(deviceKind);
+        // copy some metadata that is required by the tests and would be provided by Thingpedia
+        if (!classDef.metadata.name)
+            classDef.metadata.name = classDef.metadata.thingpedia_name;
+        if (!classDef.metadata.description)
+            classDef.metadata.description = classDef.metadata.thingpedia_description;
 
-        const manifestPath = path.resolve(path.dirname(module.filename), '../' + this._release + '/' + deviceKind + '/manifest.tt');
-        const ourMetadata = (await util.promisify(fs.readFile)(manifestPath)).toString();
-        const ourParsed = ThingTalk.Grammar.parse(ourMetadata);
-        ourParsed.classes[0].annotations.version = new ThingTalk.Ast.Value.Number(-1);
-
-        if (!ourParsed.classes[0].is_abstract) {
-            try {
-                // ourMetadata might lack some of the fields that are in the
-                // real metadata, such as api keys and OAuth secrets
-                // for that reason we fetch the metadata for thingpedia as well,
-                // and fill in any missing parameter
-                const officialMetadata = await super.getDeviceCode(deviceKind);
-                const officialParsed = ThingTalk.Grammar.parse(officialMetadata);
-
-                const ourConfig = ourParsed.classes[0].config;
-
-                ourConfig.in_params = ourConfig.in_params.filter((ip) => !ip.value.isUndefined);
-                const ourConfigParams = new Set(ourConfig.in_params.map((ip) => ip.name));
-                const officialConfig = officialParsed.classes[0].config;
-
-                for (let in_param of officialConfig.in_params) {
-                    if (!ourConfigParams.has(in_param.name))
-                        ourConfig.in_params.push(in_param);
-                }
-
-            } catch(e) {
-                if (e.code !== 404)
-                    throw e;
-            }
-        }
-
-        this._cachedManifests.set(deviceKind, ourParsed.classes[0]);
-        return ourParsed.classes[0];
-    }
-
-    async getDeviceCode(deviceKind) {
-        return (await this.getDeviceManifest(deviceKind)).prettyprint();
-    }
-
-    async getModuleLocation(id) {
-        return 'file://' + path.resolve(path.dirname(module.filename), '../' + this._release + '/' + id);
+        return classDef;
     }
 }
 
@@ -129,7 +85,6 @@ function getGitConfig(key, _default) {
         return _default;
     }
 }
-
 
 class MemoryPreferences extends Tp.Preferences {
     constructor() {
@@ -178,8 +133,14 @@ class TestPlatform extends Tp.BasePlatform {
         this._thingpedia = new ThingpediaClient(this);
         this._prefs = new MemoryPreferences();
 
+
         this._developerKey = getGitConfig('thingpedia.developer-key', process.env.THINGENGINE_DEVELOPER_KEY || undefined);
         this._prefs.set('developer-key', this._developerKey);
+        this.setRelease('main');
+    }
+
+    setRelease(release) {
+        this._prefs.set('developer-dir', path.resolve(path.dirname(module.filename), '..', release));
     }
 
     getDeveloperKey() {

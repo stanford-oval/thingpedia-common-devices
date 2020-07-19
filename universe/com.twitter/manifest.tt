@@ -1,89 +1,256 @@
-class @com.twitter {
+// Copyright 2016-2020 The Board of Trustees of the Leland Stanford Junior University
+//
+// Redistribution and use in source and binary forms, with or
+// without modification, are permitted provided that the following
+// conditions are met:
+//
+// 1. Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+// 2. Redistributions in binary form must reproduce the above
+//    copyright notice, this list of conditions and the following
+//    disclaimer in the documentation and/or other materials
+//    provided with the distribution.
+// 3. Neither the name of the copyright holder nor the names of its
+//    contributors may be used to endorse or promote products derived
+//    from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+// OF THE POSSIBILITY OF SUCH DAMAGE.
+
+class @com.twitter
+#_[thingpedia_name="Twitter"]
+#_[thingpedia_description="Connect your Almond with Twitter"]
+#_[canonical="twitter"]
+#_[name="Twitter Account ${screenName}"]
+#_[description="This is your Twitter Account. You can use it to be updated on the status of your friends, and update them with your thoughts."]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="social-network"]
+{
   import loader from @org.thingpedia.v2();
   import config from @org.thingpedia.config.oauth2();
 
-  monitorable list query search(in opt count: Number #_[prompt="How many tweets do you want?"],
-                                out text: String #[string_values="tt:long_free_text"],
-                                out hashtags: Array(Entity(tt:hashtag)) #[string_values="com.twitter:hashtag"],
-                                out urls: Array(Entity(tt:url)),
-                                out author: Entity(tt:username) #_[prompt="From which user do you want tweets?"] #[string_values="com.twitter:username"],
-                                out in_reply_to: Entity(tt:username) #_[prompt="In reply to which user do you want tweets?"] #[string_values="com.twitter:username"],
-                                out tweet_id: Entity(com.twitter:id))
-  #_[canonical="search on twitter"]
-  #_[confirmation="recent tweets"]
+  entity tweet #_[description="Twitter Tweet ID"] #[has_ner=false];
+
+  monitorable list query tweet(out id : Entity(com.twitter:tweet)
+                               #[unique=true]
+                               #_[canonical={
+                                  base=["id", "tweet id"],
+                               }],
+
+                               out text: String
+                               #_[canonical={
+                                  base=["text", "content"],
+                                  verb=["contain #", "say #", "talk about #"],
+                                  passive_verb=["matching #", "containing #", "saying #"],
+                                  preposition=["about #"]
+                               }]
+                               #[string_values="tt:long_free_text"],
+
+                               out hashtags: Array(Entity(tt:hashtag))
+                               #_[canonical={
+                                 base=["hashtags"],
+                                 property=["hashtag #", "# hashtag"],
+                               }]
+                               #[string_values="com.twitter:hashtag"],
+
+                               out urls: Array(Entity(tt:url))
+                               #_[canonical="urls"],
+
+                               out author: Entity(tt:username)
+                               #_[prompt="from which user do you want tweets"]
+                               #_[canonical={
+                                  base=["author", "user"],
+                                  passive_verb=["authored by #", "written by #"],
+                                  preposition=["from #", "by #"]
+                               }]
+                               #[string_values="com.twitter:username"],
+
+                               out from_self : Boolean
+                               #_[canonical={ preposition_true=["from me"], adjective_true=["my"] }],
+
+                               out in_reply_to: Entity(tt:username)
+                               #_[prompt="in reply to which user do you want tweets?"]
+                               #_[canonical={
+                                  base=["mentioned user", "mention"],
+                                  passive_verb=["replying to #"],
+                                  verb=["reply to #"],
+                                  preposition=["in reply to #"]
+                               }]
+                               #[string_values="com.twitter:username"]
+                               )
+  #_[canonical=["tweet", "recent tweet"]]
+  #_[result=["${author} tweeted : ${text}"]]
   #_[formatted=[{type="text",text="@${author} tweeted: ${text}"}]]
+  #_[confirmation="recent tweets"]
+  #[related=["com.twitter:home_timeline"]]
   #[poll_interval=600000ms]
   #[doc="search recent tweets; default is 5"];
 
-  monitorable list query home_timeline(out text: String #[string_values="tt:long_free_text"],
-                                       out hashtags: Array(Entity(tt:hashtag)) #[string_values="com.twitter:hashtag"],
-                                       out urls: Array(Entity(tt:url)),
-                                       out author: Entity(tt:username) #[string_values="com.twitter:username"],
-                                       out in_reply_to: Entity(tt:username) #[string_values="com.twitter:username"],
-                                       out tweet_id: Entity(com.twitter:id))
-  #_[canonical="twitter home timeline"]
+  monitorable list query home_timeline(out id: Entity(com.twitter:tweet)
+                                       #[unique=true]
+                                       #_[canonical={
+                                          base=["id", "tweet id"],
+                                       }],
+
+                                       out text: String
+                                       #_[canonical={
+                                          base=["text", "content"],
+                                          verb=["contain #", "say #", "talk about #"],
+                                          passive_verb=["matching #", "containing #", "saying #"],
+                                          preposition=["about #"]
+                                       }]
+                                       #[string_values="tt:long_free_text"],
+
+                                       out hashtags: Array(Entity(tt:hashtag))
+                                       #_[canonical={
+                                         base=["hashtags"],
+                                         property=["hashtag #", "# hashtag"],
+                                       }]
+                                       #[string_values="com.twitter:hashtag"],
+
+                                       out urls: Array(Entity(tt:url))
+                                       #_[canonical="urls"],
+
+                                       out author: Entity(tt:username)
+                                       #_[prompt="from which user do you want tweets"]
+                                       #_[canonical={
+                                          base=["author", "user"],
+                                          passive_verb=["authored by #", "written by #"],
+                                          preposition=["from #", "by #"]
+                                       }]
+                                       #[string_values="com.twitter:username"],
+
+                                       out from_self : Boolean
+                                       #_[canonical={ preposition_true=["from me"], adjective_true=["my"] }],
+
+                                       out in_reply_to: Entity(tt:username)
+                                       #_[prompt="in reply to which user do you want tweets?"]
+                                       #_[canonical={
+                                          base=["mentioned user", "mention"],
+                                          passive_verb=["replying to #"],
+                                          verb=["reply to #"],
+                                          preposition=["in reply to #"]
+                                       }]
+                                       #[string_values="com.twitter:username"]
+                                       )
+  #_[canonical=["my twitter home timeline", "tweet in my timeline", "tweet from anyone i follow", "tweet from people i follow"]]
+  #_[result=["${author} tweeted : ${text}"]]
   #_[confirmation="tweets from anyone you follow"]
-  #_[confirmation_remote="tweets from anyone $__person's follow"]
   #_[formatted=[{type="text",text="@${author} tweeted: ${text}"}]]
   #[poll_interval=600000ms]
   #[doc="shows your Twitter timeline (the home page of Twitter)"];
 
-  monitorable list query my_tweets(out text: String #[string_values="tt:long_free_text"],
-                                   out hashtags: Array(Entity(tt:hashtag)) #[string_values="com.twitter:hashtag"],
-                                   out urls: Array(Entity(tt:url)),
-                                   out in_reply_to: Entity(tt:username) #[string_values="com.twitter:username"],
-                                   out tweet_id: Entity(com.twitter:id))
-  #_[canonical="my tweets on twitter"]
-  #_[confirmation="tweets from you"]
-  #_[confirmation_remote="tweets from $__person"]
-  #_[formatted=[{type="text",text="You tweeted: ${text}"}]]
-  #[poll_interval=600000ms]
-  #[doc="get your recent tweets"];
-
-  monitorable list query direct_messages(out sender: Entity(tt:username) #[string_values="com.twitter:username"],
-                                         out message: String #[string_values="tt:message"])
-  #_[canonical="twitter direct messages"]
+  monitorable list query direct_messages(out sender: Entity(tt:username)
+                                         #_[canonical={
+                                            base=["sender", "author", "user"],
+                                            passive_verb=["written by #"],
+                                            preposition=["from #", "by #"]
+                                         }]
+                                         #[string_values="com.twitter:username"],
+                                         out message: String
+                                         #_[canonical={
+                                           base=["text", "message", "content"],
+                                           verb=["contain #", "say #", "talk about #"],
+                                           passive_verb=["matching #", "containing #", "saying #"],
+                                           preposition=["about #"]
+                                         }]
+                                         #[string_values="tt:long_free_text"]
+                                         )
+  #_[canonical=["twitter direct messages",
+                "twitter dms",
+                "my twitter direct messages",
+                "the direct messages i received on twitter",
+                "the messages i got on twitter",
+                "my twitter messages",
+                "my twitter dms"]]
   #_[confirmation="direct messages you received on Twitter"]
-  #_[confirmation_remote="direct messages $__person received on Twitter"]
   #_[formatted=[{type="text",text="@${sender}: ${message}"}]]
   #[poll_interval=600000ms]
   #[doc="get recent direct messages you received"];
 
-  action send_direct_message(in req to: Entity(tt:username) #_[prompt="Who do you want to send the message to?"] #[string_values="com.twitter:username"],
-                             in req message: String #_[prompt="What message do you want to send?"] #[string_values="tt:message"])
+  action send_direct_message(in req to: Entity(tt:username)
+                             #_[prompt="who do you want to send the message to"]
+                             #_[canonical={
+                               base=["recipient"],
+                               preposition=["to #"]
+                             }]
+                             #[string_values="com.twitter:username"],
+                             in req message: String
+                             #_[prompt="what message do you want to send"]
+                             #_[canonical={
+                               base=["message", "text", "content"],
+                               preposition=["saying #"]
+                             }]
+                             #[string_values="tt:message"])
   #_[canonical="send dm on twitter"]
   #_[confirmation="send a direct message on Twitter to $to saying $message"]
-  #_[confirmation_remote="send a direct message on $__person's Twitter to $to saying $message"]
   #[doc="send a direct message"];
 
-  action post_picture(in req caption: String #_[prompt="What caption do you want?"] #[string_values="com.instagram:caption"],
-                      in req picture_url: Entity(tt:picture) #_[prompt="Upload the picture now."])
-  #_[canonical="post picture on twitter"]
-  #_[confirmation="tweet $caption with an attached picture"]
-  #_[confirmation_remote="post $caption and a picture on $__person's Twitter"]
-  #[doc="post a tweet with a picture"];
-
-  action follow(in req user_name: Entity(tt:username) #_[prompt="What user do you want to follow?"] #[string_values="com.twitter:username"])
-  #_[canonical="follow on twitter"]
-  #_[confirmation="follow $user_name on Twitter"]
-  #_[confirmation_remote="follow $user_name with $__person's Twitter"]
-  #[doc="follow the named user"];
-
-  action unfollow(in req user_name: Entity(tt:username) #_[prompt="What user do you want to unfollow?"] #[string_values="com.twitter:username"])
-  #_[canonical="unfollow on twitter"]
-  #_[confirmation="unfollow $user_name on Twitter"]
-  #_[confirmation_remote="unfollow $user_name from $__person's Twitter"]
-  #[doc="stop following the named user; this call succeeds even if the user was already followed before"];
-
-  action post(in req status: String #_[prompt="What do you want to tweet?"] #[string_values="tt:long_free_text"])
-  #_[canonical="post on twitter"]
+  action post(in req status: String
+              #_[prompt=["what do you want to tweet", "what do you want to post"]]
+              #_[canonical={
+                 base=["status", "text", "content"],
+                 preposition=["saying #"]
+              }]
+              #[string_values="tt:long_free_text"]
+              )
+  #_[canonical=["tweet something",
+                "make a tweet",
+                "make a twitter post",
+                "post on twitter"]]
   #_[confirmation="tweet $status"]
-  #_[confirmation_remote="post $status on $__person's Twitter"]
   #[doc="post a tweet; use # to include a hashtag and @ to reply"];
 
-  action retweet(in req tweet_id: Entity(com.twitter:id) #_[prompt="What tweet do you want to retweet?"])
+  action post_picture(in req caption: String
+                      #_[canonical={
+                         base=["caption", "message", "description"],
+                         preposition=["saying #"]
+                      }]
+                      #[string_values="com.instagram:caption"],
+                      in req picture_url: Entity(tt:picture)
+                      #_[prompt="upload the picture now"]
+                      #_[canonical={
+                         base=["picture", "image", "photo"],
+                      }])
+  #_[canonical="post picture on twitter"]
+  #_[confirmation="tweet $caption with an attached picture"]
+  #[doc="post a tweet with a picture"];
+
+  action follow(in req user_name: Entity(tt:username)
+                #_[prompt=["what user do you want to follow", "who do you want to follow"]]
+                #_[canonical={
+                   base=["user name", "user", "account"],
+                }]
+                #[string_values="com.twitter:username"])
+  #_[canonical="follow on twitter"]
+  #_[confirmation="follow $user_name on Twitter"]
+  #[doc="follow the named user"];
+
+  action unfollow(in req user_name: Entity(tt:username)
+                  #_[prompt=["what user do you want to follow", "who do you want to follow"]]
+                  #_[canonical={
+                     base=["user name", "user", "account"],
+                  }]
+                  #[string_values="com.twitter:username"])
+  #_[canonical="unfollow on twitter"]
+  #_[confirmation="unfollow $user_name on Twitter"]
+  #[doc="stop following the named user; this call succeeds even if the user was already followed before"];
+
+  action retweet(in req tweet_id: Entity(com.twitter:id) #_[prompt="What tweet do you want to retweet?"] #_[canonical="tweet id"])
   #_[canonical="retweet"]
   #_[confirmation="retween $tweet_id"]
   #_[confirmation_remote="retweet $tweet_id on $__person's Twitter Account"]
   #[doc="retweet a given tweet, by id"];
 }
+

@@ -93,9 +93,9 @@ async function testOne(release, deviceKind) {
     // (which will initialize the device class with stuff like
     // the OAuth helpers and the polling implementation of subscribe_*)
 
-    _engine.thingpedia.setRelease(release);
-    const manifest = await _engine.thingpedia.getDeviceManifest(deviceKind);
+    _engine.platform.setRelease(release);
     const devClass = await _tpFactory.getDeviceClass(deviceKind);
+    const manifest = devClass.manifest;
 
     // require the device once fully (to get complete code coverage)
     if (manifest.loader.module === 'org.thingpedia.v2')

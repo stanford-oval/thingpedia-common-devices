@@ -25,14 +25,6 @@ function dateDiff(date1, date2) {
 }
 
 module.exports = class WeatherAPIDevice extends Tp.BaseDevice {
-    constructor(engine, state) {
-        super(engine, state);
-
-        this.name = "Weather";
-        this.description = "Weather forecasts and information provided by met.no";
-        this.uniqueId = 'org.thingpedia.weather';
-    }
-
     async _sunrise_data(location, date) {
         const url = SUNRISE_URL.format(location.y, location.x, date.getFullYear(), date.getMonth()+1, date.getDate());
         console.log('Loading sunrise data from ' + url);

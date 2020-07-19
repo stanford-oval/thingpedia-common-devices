@@ -1,56 +1,166 @@
-class @org.thingpedia.weather {
+// Copyright 2016 Andrei Bajenov, Darshan Kapashi
+//           2016-2020 The Board of Trustees of the Leland Stanford Junior University
+//
+// Redistribution and use in source and binary forms, with or
+// without modification, are permitted provided that the following
+// conditions are met:
+//
+// 1. Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+// 2. Redistributions in binary form must reproduce the above
+//    copyright notice, this list of conditions and the following
+//    disclaimer in the documentation and/or other materials
+//    provided with the distribution.
+// 3. Neither the name of the copyright holder nor the names of its
+//    contributors may be used to endorse or promote products derived
+//    from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+// OF THE POSSIBILITY OF SUCH DAMAGE.
+
+class @org.thingpedia.weather
+#_[thingpedia_name="Weather"]
+#_[thingpedia_description="Weather forecasts and information provided by met.no"]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="service"]
+{
   import loader from @org.thingpedia.v2();
   import config from @org.thingpedia.config.none();
 
-  monitorable query sunrise(in req location: Location #_[prompt="What location do you want sun time info for?"],
-                            in opt date: Date #_[prompt="What day are you interested in?"],
-                            out sunrise_time: Time,
-                            out sunset_time: Time,
-                            out sunset: Boolean,
-                            out sunrisen: Boolean)
-  #_[canonical="get sunrise on weatherapi"]
+  monitorable query sunrise(in req location: Location
+                            #_[prompt="what location do you want sun time info for?"]
+                            #_[canonical={
+                              default="preposition",
+                              base=["location", "position", "place"],
+                              property=[],
+                              preposition=["in #", "at #", "around #", "for location #", "for #"]
+                            }],
+                            in opt date: Date
+                            #_[canonical={
+                              default="preposition",
+                              default=["date"],
+                              preposition=["on #"]
+                            }],
+                            out sunrise_time: Time
+                            #_[canonical="sunrise time"],
+                            out sunset_time: Time
+                            #_[canonical="sunset time"],
+                            // TODO what to do of these?
+                            out sunset: Boolean
+                            #_[canonical="sunset"],
+                            out sunrisen: Boolean
+                            #_[canonical="sunrisen"])
+  #_[result=["in ${location} , the sun rises at ${sunrise_time} and sets at ${sunset_time}",
+             "on ${date} the sun rises at ${sunrise_time} and sets at ${sunset_time} in ${location}",
+             "on ${date} the sun rises at ${sunrise_time}",
+             "on ${date} the sun sets at ${sunset_time}"]]
+  #_[canonical=["sunrise and sunset time", "sunrise time", "sunset time"]]
   #_[confirmation="the sunrise and sunset time for location $location"]
   #_[formatted=[{type="text",text="Sun times on ${date:date} for ${location}: rises at ${sunrise_time}, sets at ${sunset_time}"}]]
   #[poll_interval=86400000ms]
   #[doc="Information about sunrise and sunset"];
 
-  monitorable query moon(in req location: Location #_[prompt="What location do you want moon time info for?"],
-                         in opt date: Date #_[prompt="What day are you interested in?"],
-                         out phase: Enum(new_moon,waxing_crescent,first_quarter,waxing_gibbous,full_moon,waning_gibbous,third_quarter,waning_crescent))
-  #_[canonical="get moon phase on weatherapi"]
+  monitorable query moon(in req location: Location
+                         #_[prompt="what location do you want moon time info for"]
+                         #_[canonical={
+                            default="preposition",
+                            base=["location", "position", "place"],
+                            property=[],
+                            preposition=["in #", "at #", "around #", "for location #", "for #"]
+                          }],
+                         in opt date: Date
+                         #_[canonical={
+                            default="preposition",
+                            default=["date"],
+                            preposition=["on #"]
+                         }],
+                         out phase: Enum(new_moon,waxing_crescent,first_quarter,waxing_gibbous,full_moon,waning_gibbous,third_quarter,waning_crescent)
+                         #_[canonical=["phase", "moon phase"]]
+                         )
+  #_[result=["in ${location} the moon is ${phase}",
+             "in ${location} the moon phase is ${phase}",
+             "on ${date} the moon is ${phase} in ${location}",
+             "the moon is ${phase}"]]
+  #_[canonical=["moon phase", "phase of the moon"]]
   #_[confirmation="the moon phase for $location"]
   #_[formatted=[{type="text",text="Moon phase on ${date:date} for ${location}: ${phase}."}]]
   #[poll_interval=86400000ms]
-  #[doc="Information about moon times and moon phase"];
+  #[doc="Information about moon times and moon phase"]
+  #[confirm=false];
 
-  monitorable query current(in req location: Location #_[prompt="What location do you want the current weather for?"],
-                            out temperature: Measure(C),
-                            out wind_speed: Measure(mps),
-                            out humidity: Number,
-                            out cloudiness: Number,
-                            out fog: Number,
-                            out status: Enum(raining,cloudy,sunny,snowy,sleety,drizzling,windy),
-                            out icon: Entity(tt:picture))
-  #_[canonical="get current weather on weatherapi"]
+  monitorable query current(in req location: Location
+                            #_[prompt="what location do you want the current weather for?"]
+                            #_[canonical={
+                              default="preposition",
+                              base=["location", "position", "place"],
+                              property=[],
+                              preposition=["in #", "at #", "around #", "for location #", "for #"]
+                            }],
+                            out temperature: Measure(C)
+                            #_[canonical="temperature"]
+                            // from the coldest artic to the death valley, in one filter
+                            #[min_number=-10C]
+                            #[max_number=50C],
+                            out wind_speed: Measure(mps)
+                            #_[canonical="wind speed"]
+                            #[min_number=0kmph]
+                            #[max_number=150kmph],
+                            out humidity: Number
+                            #_[canonical="humidity"]
+                            #[min_number=0]
+                            #[max_number=100],
+                            out cloudiness: Number
+                            #_[canonical="cloudiness"]
+                            #[min_number=0]
+                            #[max_number=100],
+                            out fog: Number
+                            #_[canonical="fog"]
+                            #[min_number=0]
+                            #[max_number=100],
+                            out status: Enum(raining,cloudy,sunny,snowy,sleety,drizzling,windy)
+                            #_[canonical="status"],
+                            out icon: Entity(tt:picture)
+                            #_[canonical="icon"])
+  #_[result=["the current weather in ${location} is ${status} . the temperature is ${temperature} and the humidity is ${humidity} % .",
+             "the current weather in ${location} is ${status}",
+             "the weather in ${location} is ${status}",
+             "it is ${status} today in ${location} and the temperature is ${temperature}"]]
+  #_[canonical=["current weather", "weather", "weather outside"]]
   #_[confirmation="the current weather for $location"]
   #_[formatted=[{type="text",text="Current weather for ${location}: ${status}, temperature ${temperature:C} C, wind speed ${wind_speed:mps} m/s, humidity ${humidity}%, cloudiness ${cloudiness}%, fog ${fog}%."}]]
   #[poll_interval=3600000ms]
-  #[doc="Information about current weather"];
+  #[doc="Information about current weather"]
+  #[confirm=false];
 
-
-  monitorable query forecast(in req location: Location #_[prompt="What location do you want the current weather for?"],
-                             out date: Date,
-                             out temperature: Measure(C),
-                             out wind_speed: Measure(mps),
-                             out humidity: Number,
-                             out cloudiness: Number,
-                             out fog: Number,
-                             out status: Enum(raining,cloudy,sunny,snowy,sleety,drizzling,windy),
-                             out icon: Entity(tt:picture))
+  /** TODO forecast? should it be a list of days?
+   should date be an optional input parameter of current()?
+  monitorable query forecast(in req location: Location #_[prompt="What location do you want the weather forecast for?"] #_[canonical="location"],
+                             out date: Date #_[canonical="date"],
+                             out temperature: Measure(C) #_[canonical="temperature"],
+                             out wind_speed: Measure(mps) #_[canonical="wind speed"],
+                             out humidity: Number #_[canonical="humidity"],
+                             out cloudiness: Number #_[canonical="cloudiness"],
+                             out fog: Number #_[canonical="fog"],
+                             out status: Enum(raining,cloudy,sunny,snowy,sleety,drizzling,windy) #_[canonical="status"],
+                             out icon: Entity(tt:picture) #_[canonical="icon"])
   #_[canonical="get weather forecast on weatherapi"]
   #_[confirmation="the weather forecast for $location"]
   #_[formatted=[{type="text",text="Weather for ${location} on ${date:date}: ${status}, temperature ${temperature:C} C, wind speed ${wind_speed:mps} m/s, humidity ${humidity}%, cloudiness ${cloudiness}%, fog ${fog}%."}]]
+  #_[confirmation_remote="the weather forecast for $location"]
   #[poll_interval=3600000ms]
-  #[doc="Information about future weather"];
+  #[doc="Information about future weather"]
+  #[confirm=false];
+  */
 }
 

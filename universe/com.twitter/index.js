@@ -116,8 +116,6 @@ module.exports = class TwitterAccountDevice extends Tp.BaseDevice {
         // hope
         // please do not follow this example
         this.uniqueId = 'twitter-account-' + this.userId;
-        this.name = "Twitter Account %s".format(this.screenName);
-        this.description = "This is your Twitter Account. You can use it to be updated on the status of your friends, and update them with your thoughts.";
     }
 
     get screenName() {
