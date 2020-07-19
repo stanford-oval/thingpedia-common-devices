@@ -1,0 +1,46 @@
+class @social.mastodon {
+  import loader from @org.thingpedia.v2();
+  import config from @org.thingpedia.config.oauth2(client_id=$undefined, client_secret=$undefined);
+
+  monitorable list query favorites(in opt count: Number #_[prompt="How many posts do you want?"] #_[canonical="count"],
+    				       out caption: String #[string_values="tt:long_free_text"],
+                                       out author: Entity(tt:username) #[string_values="com.twitter:username"],
+                                       out url: Entity(tt:url))
+  #_[canonical="user favorite posts"]
+  #_[confirmation="your favorited posts"]
+  #_[confirmation_remote="your favorited posts"]
+  #_[formatted=[{type="text",text="@${author} tweeted: ${caption}"},  {type="picture",url="${url}"}]]
+  #[poll_interval=600000ms]
+  #[doc="shows your Mastodon favorite posts"];
+
+  monitorable list query home_timeline(in opt count: Number #_[prompt="How many posts do you want?"] #_[canonical="count"],
+    				       out caption: String #[string_values="tt:long_free_text"],
+                                       out author: Entity(tt:username) #[string_values="com.twitter:username"],
+                                       out url: Entity(tt:url))
+  #_[canonical="user home timeline"]
+  #_[confirmation="posts from your home timeline"]
+  #_[confirmation_remote="posts from your home timeline"]
+  #_[formatted=[{type="text",text="@${author} tweeted: ${caption}"},  {type="picture",url="${url}"}]]
+  #[poll_interval=600000ms]
+  #[doc="shows your Mastodon home timeline"];
+
+  monitorable list query search(in req query: String #_[prompt="Please enter a search query to find Mastodon accounts?"] #_[canonical="query"],
+    				       in opt count: Number #_[prompt="How many accounts do you want?"] #_[canonical="count"],
+    				       out note: String #[string_values="tt:long_free_text"],
+                                       out author: Entity(tt:username) #[string_values="com.twitter:username"],
+                                       out url: Entity(tt:url))
+  #_[canonical="search Mastodon for accounts"]
+  #_[confirmation="search for ${query}"]
+  #_[confirmation_remote="search for ${query}"]
+  #_[formatted=[{type="text",text="@${author} ${note}"}, {type="picture",url="${url}"}]]
+  #[poll_interval=600000ms]
+  #[doc="search Mastodon for accounts matching a query"];
+
+  action post(in req status: String #_[prompt="What do you want to tweet?"] #_[canonical="status"] #[string_values="tt:long_free_text"])
+  #_[canonical="post on twitter"]
+  #_[confirmation="tweet $status"]
+  #_[confirmation_remote="post $status on $__person's Twitter"]
+  #[doc="post a tweet; use # to include a hashtag and @ to reply"]
+  #[confirm=true];
+
+}

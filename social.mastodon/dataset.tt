@@ -1,0 +1,47 @@
+dataset @social.mastodon language "en" {
+
+    query := @social.mastodon.favorites()
+    #_[utterances=["favorite posts",
+                   "favorite toots"]]
+    #[id=28017028]
+    #[name=""];
+
+    query (p_count :Number) := @social.mastodon.favorites(count=p_count)
+    #_[utterances=["${p_count} favorite posts",
+                   "${p_count} favorite toots"]]
+    #[id=28017028]
+    #[name=""];
+
+   query := @social.mastodon.home_timeline()
+    #_[utterances=["home timeline",
+                   "home page"]]
+    #[id=28017028]
+    #[name=""];
+
+   query (p_count :Number) := @social.mastodon.home_timeline(count=p_count)
+    #_[utterances=["${p_count} toots from home timeline",
+                   "${p_count} toots from home page"]]
+    #[id=28017028]
+    #[name=""];
+
+   query (p_query :String):= @social.mastodon.search(query=p_query)
+    #_[utterances=["search for ${p_query} on Mastodon",
+                   "toots with ${p_query) on Mastodon"]]
+    #[id=28017028]
+    #[name=""];
+
+   query (p_count :Number, p_query :String):= @social.mastodon.search(count=p_count, query=p_query)
+    #_[utterances=["${p_count} toots with ${p_query) on Mastodon"]]
+    #[id=28017028]
+    #[name=""];
+
+   action  := @social.mastodon.post(status=$?)
+    #_[utterances=["post a status",
+                   "new toot"]]
+    #[id=28017056]
+    #[name=""];
+
+
+
+
+}
