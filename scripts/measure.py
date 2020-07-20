@@ -38,8 +38,6 @@ def measure(corpus):
     total_bigrams = np.sum(bigrams)
     nonzero_bigrams = bigrams[bigrams != 0].flatten().astype(np.float32)
     nonzero_bigrams /= total_bigrams
-    num_bigrams = len(nonzero_bigrams)
-
     bigram_entropy = - np.sum(nonzero_bigrams * np.log(nonzero_bigrams))
     return bigram_entropy
 
