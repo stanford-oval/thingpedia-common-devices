@@ -1,0 +1,118 @@
+// Copyright 2018 Gabby Wright, Hemanth Kini
+//           2018-2020 The Board of Trustees of the Leland Stanford Junior University
+//           2020 Ryan Cheng
+//
+// Redistribution and use in source and binary forms, with or
+// without modification, are permitted provided that the following
+// conditions are met:
+//
+// 1. Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+// 2. Redistributions in binary form must reproduce the above
+//    copyright notice, this list of conditions and the following
+//    disclaimer in the documentation and/or other materials
+//    provided with the distribution.
+// 3. Neither the name of the copyright holder nor the names of its
+//    contributors may be used to endorse or promote products derived
+//    from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+// OF THE POSSIBILITY OF SUCH DAMAGE.
+
+class @com.spotify
+#_[thingpedia_name="Spotify"]
+#_[thingpedia_description="Play music on Spotify"]
+#_[canonical="spotify"]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="media"]
+{
+
+  import loader from @org.thingpedia.v2();
+  import config from @org.thingpedia.config.none();
+
+  entity song #_[description="Songs on Spotify"];
+  entity artist #_[description="Artists on Spotify"];
+
+  list query song(out id: Entity(com.spotify:song)
+                  #[string_values="tt:song_name"]
+                  #[unique=true]
+                  #_[canonical={
+                    default="base",
+                    base=["name"],
+                    passive_verb=["named #", "called #"],
+                    property=["name #"]
+                  }],
+                  out artists: Array(Entity(com.spotify:artist))
+                  #[string_values="tt:song_artist"]
+                  #_[canonical={
+                    default="preposition",
+                    base=["artist", "song writer"],
+                    property=["artist #", "song writer #"],
+                    preposition=["by #"],
+                    passive_verb=["written by #", "released by #", "produced by #"],
+                    verb = ["# wrote", "# released", "# produced"]
+                  }],
+                  out release_date : Date
+                  #_[canonical={
+                    default="preposition",
+                    base=["date", "release date"],
+                    property=["release date #"],
+                    preposition=["from #", "in #"],
+                    passive_verb=["released in #", "published in #"]
+                  }],
+                  out popularity: Number
+                  #[min_number=0]
+                  #[max_number=100]
+                  #_[canonical={
+                    default="base",
+                    base=["popularity", "average popularity"],
+                    passive_verb=["rated # popularity"],
+                    property=["# popularity"]
+                  }],
+                  out energy : Number
+                  #[min_number=0]
+                  #[max_number=100]
+                  #[filterable=false]
+                  #_[canonical={
+                    default="base",
+                    base=["energy"]
+                  }],
+                  out danceability : Number
+                  #[min_number=0]
+                  #[max_number=100]
+                  #[filterable=false]
+                  #_[canonical={
+                    default="base",
+                    base=["danceability"]
+                  }])
+  #_[canonical="song"]
+  #_[confirmation="songs on Spotify"]
+  #[minimal_projection=["id"]]
+  #_[formatted=[{type="text",text="${id} by ${artists}"}]]
+  #[doc="search for songs on Spotify"]
+  #[confirm=false];
+
+  action play_songs (in req toPlay: Array(Entity(com.spotify:song))
+                    #[string_values="tt:song_name"]
+                    #_[prompt=["What song do you want to play"]]
+                    #_[canonical={
+                      default="base",
+                      base=["name"],
+                      passive_verb=["named #", "called #"],
+                      property=["name #"]
+                    }])
+  #_[confirmation="play the song(s) $toPlay"]
+  #[confirm=false];
+
+}

@@ -77,13 +77,13 @@ function assertNonEmptyString(what) {
 }
 
 let _anyFailed = false;
-async function testOne(deviceKind) {
+async function testOne(release, deviceKind) {
     // load the test class first
     let testsuite;
     try {
-        testsuite = require('./' + deviceKind);
+        testsuite = require('./' + release + '/' + deviceKind);
     } catch(e) {
-        console.log('No tests found for ' + deviceKind);
+        console.log('No tests found for ' + release + '/' +     deviceKind);
         // exit with no error and without loading the device
         // class (which would pollute code coverage statistics)
         return;
@@ -93,51 +93,55 @@ async function testOne(deviceKind) {
     // (which will initialize the device class with stuff like
     // the OAuth helpers and the polling implementation of subscribe_*)
 
-    const manifest = await _engine.thingpedia.getDeviceManifest(deviceKind);
+    _engine.platform.setRelease(release);
     const devClass = await _tpFactory.getDeviceClass(deviceKind);
+    const manifest = devClass.manifest;
 
     // require the device once fully (to get complete code coverage)
     if (manifest.loader.module === 'org.thingpedia.v2')
-        require('../' + deviceKind);
+        require('../' + release + '/' + deviceKind);
 
-    if (typeof testsuite === 'function') {
-        // if the testsuite is a function, we're done here
-        await testsuite(devClass);
-        return;
-    }
-
-    let instance = null;
-    if (!Array.isArray(testsuite)) {
-        const meta = testsuite;
-        testsuite = meta.tests;
-        if (meta.setUp)
-            instance = await meta.setUp(devClass);
-    }
-    if (instance === null)
-        instance = await createDeviceInstance(deviceKind, manifest, devClass);
-    if (instance === null) {
-        console.log('FAILED: skipped tests for ' + deviceKind + ': missing credentials');
-        _anyFailed = true;
-        return;
-    }
-
-    assertNonEmptyString(instance.name);
-    assertNonEmptyString(instance.description);
-    assertNonEmptyString(instance.uniqueId);
-
-    console.log('# Starting tests for ' + deviceKind);
-    for (let i = 0; i < testsuite.length; i++) {
-        console.log(`## Test ${i+1}/${testsuite.length}`);
-        const test = testsuite[i];
-        try {
-            await runTest(instance, test);
-        } catch(e) {
-            console.log('## FAILED: ' + e.message);
-            console.log(e.stack);
-            _anyFailed = true;
+    console.log('# Starting tests for ' + release + '/' + deviceKind);
+    try {
+        if (typeof testsuite === 'function') {
+            // if the testsuite is a function, we're done here
+            await testsuite(devClass);
+            return;
         }
+
+        let instance = null;
+        if (!Array.isArray(testsuite)) {
+            const meta = testsuite;
+            testsuite = meta.tests;
+            if (meta.setUp)
+                instance = await meta.setUp(devClass);
+        }
+        if (instance === null)
+            instance = await createDeviceInstance(deviceKind, manifest, devClass);
+        if (instance === null) {
+            console.log('FAILED: skipped tests for ' + release + '/' + deviceKind + ': missing credentials');
+            _anyFailed = true;
+            return;
+        }
+
+        assertNonEmptyString(instance.name);
+        assertNonEmptyString(instance.description);
+        assertNonEmptyString(instance.uniqueId);
+
+        for (let i = 0; i < testsuite.length; i++) {
+            console.log(`## Test ${i+1}/${testsuite.length}`);
+            const test = testsuite[i];
+            try {
+                await runTest(instance, test);
+            } catch(e) {
+                console.log('## FAILED: ' + e.message);
+                console.log(e.stack);
+                _anyFailed = true;
+            }
+        }
+    } finally {
+        console.log('# Completed tests for ' + release + '/' + deviceKind);
     }
-    console.log('# Completed tests for ' + deviceKind);
 }
 
 async function existsSafe(path) {
@@ -153,64 +157,29 @@ async function existsSafe(path) {
     }
 }
 
-function deviceChanged(fileChanged) {
-    if (fileChanged.startsWith('test/') && fileChanged.endsWith('.js')) {
-        let maybeDevice = fileChanged.substring('test/'.length, fileChanged.length - '.js'.length);
-        let fullPath = path.resolve(path.dirname(module.filename), '..', maybeDevice);
-        if (fs.existsSync(fullPath) && fs.lstatSync(fullPath).isDirectory())
-            return maybeDevice;
-        else
-            return null;
-    } else if (fileChanged.includes('/')) {
-        let maybeDevice = fileChanged.substring(0, fileChanged.indexOf('/'));
-        let fullPath = path.resolve(path.dirname(module.filename), '..', maybeDevice);
-        if (fs.existsSync(fullPath) && fs.lstatSync(fullPath).isDirectory())
-            return maybeDevice;
-        else
-            return null;
-    } else {
-        return null;
-    }
-}
-
 async function toTest(argv) {
     let devices = new Set();
 
-    if (argv.length > 2) {
-        const filesChanged = argv.slice(2);
-        for (let file of filesChanged) {
-            let fullPath = path.resolve(path.dirname(module.filename), '..', file);
-            if (fs.existsSync(fullPath) && fs.lstatSync(fullPath).isDirectory()) {
-                // if it's a device name, add it directly
-                devices.add(file);
-            } else {
-                // if it's a path to a file, try to get the device name out of it
-                // if we failed to get the device name, test all
-                const maybeDevice = deviceChanged(file);
-                if (maybeDevice) {
-                    devices.add(maybeDevice);
-                } else {
-                    devices.clear();
-                    break;
-                }
-            }
+    for (let arg of argv.slice(2)) {
+        if (arg.indexOf('/') >= 0) {
+            devices.add(arg);
+        } else {
+            for (let kind of await util.promisify(fs.readdir)(path.resolve(path.dirname(module.filename), '..', arg)))
+                devices.add(arg + '/' + kind);
         }
     }
 
-    if (devices.size === 0)
-        return await util.promisify(fs.readdir)(path.resolve(path.dirname(module.filename), '..'));
-    else
-        return devices;
+    return devices;
 }
 
 async function main() {
-    // takes either (1) device names to test, or (2) changed files
-    for (let name of await toTest(process.argv)) {
-        if (!await existsSafe(name + '/manifest.tt')) //'
+    // takes either (1) device names to test, or (2) release channel to test
+    for (let device of await toTest(process.argv)) {
+        let [release, kind] = device.split('/');
+        if (!await existsSafe(release + '/' + kind + '/manifest.tt')) //'
             continue;
 
-        console.log(name);
-        await testOne(name);
+        await testOne(release, kind);
     }
 
     if (_anyFailed)
