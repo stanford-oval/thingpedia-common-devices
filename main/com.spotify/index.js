@@ -333,13 +333,13 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if(hints && hints.filter) {
             for(let [pname, op, value] of hints.filter) {
                 if(pname === "id" && (op === "==" || op === "=~")) {
-                    if(value instanceof Tp.Value.Entity) idFilter = `track:${value.display} `;
-                    else idFilter = `track:${value} `;
+                    if(value instanceof Tp.Value.Entity) idFilter = `track:"${value.display}" `;
+                    else idFilter = `track:"${value}" `;
                 }
                 if(pname === "artists" && (op === "contains" || op === "contains~")) {
                     if(value instanceof Tp.Value.Entity) artists.push(value.display.toLowerCase());
                     else artists.push(value.toLowerCase());
-                    artistFilter = `artist: ${artists[0]}`;
+                    artistFilter = `artist: ${artists[0]} `;
                 } else if(pname === "release_date" && (op === "==")) {
                     yearFilter = `year:${value.getFullYear()} `;
                 } else if(pname === "release_date" && (op === ">=")) {
@@ -363,7 +363,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             }
         } else if(hints && hints.sort && hints.sort[0] === "release_date" && artists.length > 0) {
             return this.songs_by_artist(artists, hints.sort[1]);
-        } else if(artists && artists.length > 1) {
+        } else if(artists.length > 1) {
             return this.songs_by_artist(artists);
         } else {
             const query = (yearFilter + artistFilter).trim() || `year:${new Date().getFullYear()} `;
@@ -412,13 +412,13 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if(hints && hints.filter) {
             for(let [pname, op, value] of hints.filter) {
                 if(pname === "id" && (op === "==" || op === "=~")) {
-                    if(value instanceof Tp.Value.Entity) idFilter = `track:${value.display} `;
-                    else idFilter = `track:${value} `;
+                    if(value instanceof Tp.Value.Entity) idFilter = `album:"${value.display}" `;
+                    else idFilter = `album:"${value}" `;
                 }
                 if(pname === "artists" && (op === "contains" || op === "contains~")) {
                     if(value instanceof Tp.Value.Entity) artists.push(value.display.toLowerCase());
                     else artists.push(value.toLowerCase());
-                    artistFilter = `artist: ${artists[0]}`;
+                    artistFilter = `artist: ${artists[0]} `;
                 } else if(pname === "release_date" && (op === "==")) {
                     yearFilter = `year:${value.getFullYear()} `;
                 } else if(pname === "release_date" && (op === ">=")) {
