@@ -14,20 +14,20 @@ jobs:
       - travis_retry yarn
       script:
       - yarn lint
-      - TZ="America/Los_Angeles" yarn nyc ./test/unit main universe
+      - TZ="America/Los_Angeles" yarn nyc node ./test/unit main universe
       after_success: yarn run coverage
     -
       name: "Scenario Tests"
       install:
       - travis_retry yarn
       script:
-      - TZ="America/Los_Angeles" yarn nyc ./test/scenarios -r universe builtin main universe
+      - TZ="America/Los_Angeles" yarn nyc node ./test/scenarios -r universe builtin main universe
       after_success: yarn run coverage
     -
       name: "Dataset Generation"
       install:
       - travis_retry yarn
-      - pyenv global 3.7
+      - pyenv global 3.6.7
       - pip3 install --user numpy
       script:
       - ./travis/test-dataset.sh
