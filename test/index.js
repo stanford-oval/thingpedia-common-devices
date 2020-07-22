@@ -19,6 +19,9 @@ const _engine = require('./mock');
 const _tpFactory = new Tp.DeviceFactory(_engine, _engine.thingpedia, {});
 
 async function createDeviceInstance(deviceKind, manifest, devClass) {
+    if (!manifest) // FIXME
+        return new devClass(_engine, { kind: deviceKind });
+
     const config = manifest.config;
     if (config.module === 'org.thingpedia.config.none')
         return new devClass(_engine, { kind: deviceKind });
@@ -98,7 +101,7 @@ async function testOne(release, deviceKind) {
     const manifest = devClass.manifest;
 
     // require the device once fully (to get complete code coverage)
-    if (manifest.loader.module === 'org.thingpedia.v2')
+    if (manifest && manifest.loader.module === 'org.thingpedia.v2')
         require('../' + release + '/' + deviceKind);
 
     console.log('# Starting tests for ' + release + '/' + deviceKind);
