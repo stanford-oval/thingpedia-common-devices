@@ -32,7 +32,8 @@
 // OF THE POSSIBILITY OF SUCH DAMAGE.
 "use strict";
 const Tp = require("thingpedia");
-const USER_URL = "https://api.spotify.com/v1/me";
+const querystring = require("querystring");
+
 const PLAY_URL = "https://api.spotify.com/v1/me/player/play";
 const SEARCH_URL = "https://api.spotify.com/v1/search?";
 const AVAILABLE_DEVICES_URL = "https://api.spotify.com/v1/me/player/devices";
@@ -40,48 +41,12 @@ const ARTIST_ALBUM_URL = "https://api.spotify.com/v1/artists/{id}/albums?";
 const AUDIO_FEATURES_URL = 'https://api.spotify.com/v1/audio-features/?';
 const ALBUM_URL = 'https://api.spotify.com/v1/albums?';
 const TRACK_URL = 'https://api.spotify.com/v1/tracks?';
-const querystring = require("querystring");
+
 module.exports = class SpotifyDevice extends Tp.BaseDevice {
-    static get runOAuth2() {
-        return Tp.Helpers.OAuth2({
-            kind: "com.spotify",
-            scope: ["streaming", "playlist-read-collaborative", "playlist-modify-private", "playlist-read-private", "playlist-modify-public", "user-read-email", "user-read-private", "user-read-playback-state", "user-read-currently-playing", "user-modify-playback-state", "user-read-recently-played", "user-top-read", "user-follow-read", "user-follow-modify", "user-library-read", "user-library-modify"],
-            authorize: "https://accounts.spotify.com/authorize",
-            get_access_token: "https://accounts.spotify.com/api/token",
-            callback: function(engine, accessToken, refreshToken) {
-                return Tp.Helpers.Http.get(USER_URL, {
-                    accept: "application/json",
-                    extraHeaders: {
-                        Authorization: "Bearer " + accessToken,
-                        useOAuth2: this,
-                    },
-                }).then((response) => {
-                    const parsed = JSON.parse(response);
-                    return engine.devices.loadOneDevice({
-                        kind: "com.spotify",
-                        accessToken: accessToken,
-                        refreshToken: refreshToken,
-                        userId: parsed.id,
-                        userName: parsed.display_name
-                    }, true);
-                });
-            },
-        });
-    }
 
     constructor(engine, state) {
         super(engine, state);
-        this.uniqueId = "com.spotify-" + this.userId;
-        this.name = "Spotify Account of %s".format(this.userName);
-        this.description = "This is your Spotify Account";
-    }
-
-    get userId() {
-        return this.state.userId;
-    }
-
-    get userName() {
-        return this.state.userName;
+        this.uniqueId = "com.spotify-" + this.state.profile.id;
     }
 
     http_get(url) {
@@ -107,14 +72,14 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     }
 
     async set_active_device(devices) {
-        if(devices.length === 0) {
+        if (devices.length === 0) {
             console.log("no available devices");
             return false;
         }
         // device already active
-        for(let i = 0; i < devices.length; i++) {
+        for (let i = 0; i < devices.length; i++) {
             console.log(devices[i].is_active);
-            if(devices[i].is_active) {
+            if (devices[i].is_active) {
                 console.log("found an active device");
                 return true;
             }
@@ -205,13 +170,13 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         const ids = tracks.map((track) => track.id);
         const audioFeatures = await this.audio_features_get_by_id(ids);
         var songs = [];
-        for(var i = 0; i < tracks.length; i++) {
+        for (var i = 0; i < tracks.length; i++) {
             const release_date = new Date(tracks[i].album.release_date);
             const artists = tracks[i].artists.map((artist) => new Tp.Value.Entity(artist.uri, artist.name));
             //You can't get the audio features for some songs, so we're setting 0.5 as a default value
             var energy = 0.5;
             var danceability = 0.5;
-            if(audioFeatures[i]) {
+            if (audioFeatures[i]) {
                 energy = audioFeatures[i].energy;
                 danceability = audioFeatures[i].danceability;
             }
@@ -230,36 +195,36 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
     async songs_by_search(query, artistURI) {
         const searchResults = await this.search(query, "track", 50);
-        if(!Object.prototype.hasOwnProperty.call(searchResults, "tracks") || searchResults.tracks.total === 0) throw new Error(`Query ${query} failed`);
+        if (!Object.prototype.hasOwnProperty.call(searchResults, "tracks") || searchResults.tracks.total === 0) throw new Error(`Query ${query} failed`);
         return this.parse_tracks(searchResults.tracks.items);
     }
 
     async songs_by_artist(artists, sortDirection) {
         const searchResults = await this.search(artists[0], "artist", 1);
-        if(!Object.prototype.hasOwnProperty.call(searchResults, 'artists') || searchResults.artists.total === 0) throw new Error(`Artist ${artists[0]} not found`);
+        if (!Object.prototype.hasOwnProperty.call(searchResults, 'artists') || searchResults.artists.total === 0) throw new Error(`Artist ${artists[0]} not found`);
         const artistID = searchResults.artists.items[0].id;
         var albums = await this.albums_get_by_artist_id(artistID, "album,single");
         albums = albums.sort((album1, album2) => {
             var releaseDate1 = new Date(album1.release_date).getTime();
             var releaseDate2 = new Date(album2.release_date).getTime();
-            if(sortDirection === "asc") return releaseDate1 - releaseDate2;
+            if (sortDirection === "asc") return releaseDate1 - releaseDate2;
             else return releaseDate2 - releaseDate1;
         });
         albums = albums.filter((album) => {
             const albumArtists = album.artists;
             const intersection = albumArtists.filter((artist) => artists.includes(artist.name.toLowerCase()) || artistID === artist.id);
-            if(intersection.length === artists.length) return true;
+            if (intersection.length === artists.length) return true;
             return false;
         });
         var totalSongs = 0;
         var albumIds = [];
-        for(const album of albums) {
+        for (const album of albums) {
             //Only getting up to 50 songs because spotify can only handle 50 songs per api call
             totalSongs += album.total_tracks;
-            if(totalSongs > 50) break;
+            if (totalSongs > 50) break;
             albumIds.push(album.id);
         }
-        if(albumIds.length === 0) throw new Error("No songs found");
+        if (albumIds.length === 0) throw new Error("No songs found");
         const albumItems = (await this.albums_get_by_id(albumIds)).albums;
         const songIds = albumItems.map((album) => album.tracks.items.map((track) => track.id));
         const trackItems = await this.tracks_get_by_id(songIds);
@@ -268,11 +233,11 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
     async albums_by_search(query, artistURI) {
         const searchResults = await this.search(query, "album", 20);
-        if(!Object.prototype.hasOwnProperty.call(searchResults, "albums") || searchResults.albums.total === 0) throw new Error(`Query ${query} failed`);
+        if (!Object.prototype.hasOwnProperty.call(searchResults, "albums") || searchResults.albums.total === 0) throw new Error(`Query ${query} failed`);
         const ids = searchResults.albums.items.map((album) => album.id);
         const albumItems = (await this.albums_get_by_id(ids)).albums;
         var albums = [];
-        for(var i = 0; i < albumItems.length; i++) {
+        for (var i = 0; i < albumItems.length; i++) {
             const release_date = new Date(albumItems[i].release_date);
             const artists = albumItems[i].artists.map((artist) => new Tp.Value.Entity(artist.uri, artist.name));
             const albumObj = {
@@ -288,28 +253,28 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
     async albums_by_artist(artists, sortDirection) {
         const searchResults = await this.search(artists[0], "artist", 1);
-        if(!Object.prototype.hasOwnProperty.call(searchResults, 'artists') || searchResults.artists.total === 0) throw new Error(`Artist ${artists[0]} not found`);
+        if (!Object.prototype.hasOwnProperty.call(searchResults, 'artists') || searchResults.artists.total === 0) throw new Error(`Artist ${artists[0]} not found`);
         const artistID = searchResults.artists.items[0].id;
         var artistAlbums = await this.albums_get_by_artist_id(artistID, "album");
         artistAlbums = artistAlbums.sort((album1, album2) => {
             var releaseDate1 = new Date(album1.release_date).getTime();
             var releaseDate2 = new Date(album2.release_date).getTime();
-            if(sortDirection === "asc") return releaseDate1 - releaseDate2;
+            if (sortDirection === "asc") return releaseDate1 - releaseDate2;
             else return releaseDate2 - releaseDate1;
         });
         artistAlbums = artistAlbums.filter((album) => {
             const albumArtists = album.artists;
             const intersection = albumArtists.filter((artist) => artists.includes(artist.name.toLowerCase()) || artistID === artist.id);
-            if(intersection.length === artists.length) return true;
+            if (intersection.length === artists.length) return true;
             return false;
         });
         var ids = artistAlbums.map((album) => album.id);
-        if(ids.length === 0) throw new Error("No songs found");
+        if (ids.length === 0) throw new Error("No songs found");
         //20 is the maximum amount of albums that you can query at once
-        if(ids.length > 20) ids.length = 20;
+        if (ids.length > 20) ids.length = 20;
         var albumItems = (await this.albums_get_by_id(ids)).albums;
         var albums = [];
-        for(var i = 0; i < albumItems.length; i++) {
+        for (var i = 0; i < albumItems.length; i++) {
             const release_date = new Date(albumItems[i].release_date);
             const artists = albumItems[i].artists.map((artist) => new Tp.Value.Entity(artist.uri, artist.name));
             const albumObj = {
@@ -330,22 +295,22 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         var artists = [];
         var yearLowerBound = 0;
         var yearUpperBound = new Date().getFullYear();
-        if(hints && hints.filter) {
-            for(let [pname, op, value] of hints.filter) {
-                if(pname === "id" && (op === "==" || op === "=~")) {
-                    if(value instanceof Tp.Value.Entity) idFilter = `track:"${value.display}" `;
+        if (hints && hints.filter) {
+            for (let [pname, op, value] of hints.filter) {
+                if (pname === "id" && (op === "==" || op === "=~")) {
+                    if (value instanceof Tp.Value.Entity) idFilter = `track:"${value.display}" `;
                     else idFilter = `track:"${value}" `;
                 }
-                if(pname === "artists" && (op === "contains" || op === "contains~")) {
-                    if(value instanceof Tp.Value.Entity) artists.push(value.display.toLowerCase());
+                if (pname === "artists" && (op === "contains" || op === "contains~")) {
+                    if (value instanceof Tp.Value.Entity) artists.push(value.display.toLowerCase());
                     else artists.push(value.toLowerCase());
                     artistFilter = `artist: ${artists[0]} `;
-                } else if(pname === "release_date" && (op === "==")) {
+                } else if (pname === "release_date" && (op === "==")) {
                     yearFilter = `year:${value.getFullYear()} `;
-                } else if(pname === "release_date" && (op === ">=")) {
+                } else if (pname === "release_date" && (op === ">=")) {
                     yearFilter = `year:${value.getFullYear()}-${yearUpperBound} `;
                     yearLowerBound = value.getFullYear();
-                } else if(pname === "release_date" && (op === "<=")) {
+                } else if (pname === "release_date" && (op === "<=")) {
                     yearFilter = `year:${yearLowerBound}-${value.getFullYear()} `;
                     yearUpperBound = value.getFullYear();
                 }
@@ -353,17 +318,17 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         }
         //you can't search for multiple artists because when searching by artist spotify only returns songs where the input artist is the main artist
         //so if you search for a song where an artist is featured or there are multiple artists then there will problems.
-        if(idFilter) {
-            if(artists.length > 1) {
+        if (idFilter) {
+            if (artists.length > 1) {
                 let query = (idFilter + yearFilter).trim();
                 return this.songs_by_search(query);
             } else {
                 let query = (idFilter + yearFilter + artistFilter).trim();
                 return this.songs_by_search(query);
             }
-        } else if(hints && hints.sort && hints.sort[0] === "release_date" && artists.length > 0) {
+        } else if (hints && hints.sort && hints.sort[0] === "release_date" && artists.length > 0) {
             return this.songs_by_artist(artists, hints.sort[1]);
-        } else if(artists.length > 1) {
+        } else if (artists.length > 1) {
             return this.songs_by_artist(artists);
         } else {
             const query = (yearFilter + artistFilter).trim() || `year:${new Date().getFullYear()} `;
@@ -374,12 +339,12 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     async get_artist(params, hints, env) {
         var idFilter = '';
         var genreFilter = '';
-        if(hints && hints.filter) {
-            for(let [pname, op, value] of hints.filter) {
-                if(pname === "id" && (op === "==" || op === "=~")) {
-                    if(value instanceof Tp.Value.Entity) idFilter = `artist:${value.display} `;
+        if (hints && hints.filter) {
+            for (let [pname, op, value] of hints.filter) {
+                if (pname === "id" && (op === "==" || op === "=~")) {
+                    if (value instanceof Tp.Value.Entity) idFilter = `artist:${value.display} `;
                     else idFilter = `artist:${value} `;
-                } else if(pname === "genres" && (op === "contains" || op === "contains~")) {
+                } else if (pname === "genres" && (op === "contains" || op === "contains~")) {
                     genreFilter = `genre:"${value}" `;
                 }
             }
@@ -387,9 +352,9 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         //default query will be to just get the most popular artists right now
         const query = (idFilter + genreFilter).trim() || `year:${new Date().getFullYear()}`;
         const searchResults = await this.search(query, "artist", 20);
-        if(!Object.prototype.hasOwnProperty.call(searchResults, 'artists') || searchResults.artists.total === 0) throw new Error(`Query ${query} failed`);
+        if (!Object.prototype.hasOwnProperty.call(searchResults, 'artists') || searchResults.artists.total === 0) throw new Error(`Query ${query} failed`);
         var artists = [];
-        for(const artist of searchResults.artists.items) {
+        for (const artist of searchResults.artists.items) {
             const id = new Tp.Value.Entity(artist.uri, artist.name);
             const artistObj = {
                 id,
@@ -409,38 +374,38 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         var artists = [];
         var yearLowerBound = 0;
         var yearUpperBound = new Date().getFullYear();
-        if(hints && hints.filter) {
-            for(let [pname, op, value] of hints.filter) {
-                if(pname === "id" && (op === "==" || op === "=~")) {
-                    if(value instanceof Tp.Value.Entity) idFilter = `album:"${value.display}" `;
+        if (hints && hints.filter) {
+            for (let [pname, op, value] of hints.filter) {
+                if (pname === "id" && (op === "==" || op === "=~")) {
+                    if (value instanceof Tp.Value.Entity) idFilter = `album:"${value.display}" `;
                     else idFilter = `album:"${value}" `;
                 }
-                if(pname === "artists" && (op === "contains" || op === "contains~")) {
-                    if(value instanceof Tp.Value.Entity) artists.push(value.display.toLowerCase());
+                if (pname === "artists" && (op === "contains" || op === "contains~")) {
+                    if (value instanceof Tp.Value.Entity) artists.push(value.display.toLowerCase());
                     else artists.push(value.toLowerCase());
                     artistFilter = `artist: ${artists[0]} `;
-                } else if(pname === "release_date" && (op === "==")) {
+                } else if (pname === "release_date" && (op === "==")) {
                     yearFilter = `year:${value.getFullYear()} `;
-                } else if(pname === "release_date" && (op === ">=")) {
+                } else if (pname === "release_date" && (op === ">=")) {
                     yearFilter = `year:${value.getFullYear()}-${yearUpperBound} `;
                     yearLowerBound = value.getFullYear();
-                } else if(pname === "release_date" && (op === "<=")) {
+                } else if (pname === "release_date" && (op === "<=")) {
                     yearFilter = `year:${yearLowerBound}-${value.getFullYear()} `;
                     yearUpperBound = value.getFullYear();
                 }
             }
         }
-        if(idFilter) {
-            if(artists.length > 1) {
+        if (idFilter) {
+            if (artists.length > 1) {
                 let query = (idFilter + yearFilter).trim();
                 return this.albums_by_search(query);
             } else {
                 let query = (idFilter + yearFilter + artistFilter).trim();
                 return this.albums_by_search(query);
             }
-        } else if(hints && hints.sort && hints.sort[0] === "release_date" && artists.length > 0) {
+        } else if (hints && hints.sort && hints.sort[0] === "release_date" && artists.length > 0) {
             return this.albums_by_artist(artists, hints.sort[1]);
-        } else if(artists.length > 0) {
+        } else if (artists.length > 0) {
             return this.albums_by_artist(artists);
         } else {
             const query = yearFilter || `year:${new Date().getFullYear()} `;
@@ -480,7 +445,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         let devices = await this.get_get_available_devices();
         let canPlay = await this.set_active_device(devices);
         console.log("CAN PLAY: " + canPlay);
-        if(typeof canPlay === 'boolean' && canPlay) return this.http_put(PLAY_URL, data, options);
+        if (typeof canPlay === 'boolean' && canPlay) return this.http_put(PLAY_URL, data, options);
         else return this.http_put(PLAY_URL + `?device_id=${canPlay}`, data, options);
     }
 };
