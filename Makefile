@@ -30,6 +30,7 @@ dataset_file ?= eval/$(release)/dataset.tt
 schema_file ?= eval/$(release)/schema.tt
 paraphrases_user ?= $(wildcard $(release)/*/paraphrase/*.tsv)
 eval_files ?= eval/$(release)/$(eval_set)/annotated.txt $(foreach d,$($(release)_devices),$(d)/eval/$(eval_set)/annotated.txt)
+fewshot_train_files ?= eval/$(release)/train/annotated.txt $(foreach d,$($(release)_devices),$(d)/eval/train/annotated.txt)
 
 synthetic_flags ?= \
 	dialogues \
@@ -184,6 +185,13 @@ eval/$(release)/$(eval_set)/user.tsv : $(eval_files) $(schema_file)
 	  -o $@.tmp $(eval_files)
 	mv $@.tmp $@
 
+eval/$(release)/train/user.tsv : $(fewshot_train_files) $(schema_file)
+	$(genie) dialog-to-contextual \
+	  --locale en-US --target-language thingtalk --no-tokenized \
+	  --thingpedia $(schema_file) --side user \
+	  -o $@.tmp $(fewshot_train_files)
+	mv $@.tmp $@
+
 eval/$(release)/$(eval_set)/%.dialogue.results: eval/$(release)/models/%/best.pth $(eval_files) $(schema_file) eval/$(release)/database-map.tsv parameter-datasets.tsv
 	mkdir -p eval/$(release)/$(eval_set)/$(dir $*)
 	$(genie) evaluate-dialog \
@@ -212,7 +220,12 @@ datadir/user: eval/$(release)/synthetic.user.tsv eval/$(release)/augmented.user.
 	cp eval/$(release)/dev/user.tsv $@/eval.tsv ; \
 	touch $@
 
-datadir: datadir/agent datadir/user $(foreach v,$(subdataset_ids),eval/$(release)/synthetic-$(v).txt)
+datadir/fewshot: eval/$(release)/train/user.tsv eval/$(release)/dev/user.tsv
+	mkdir -p $@/user
+	cp eval/$(release)/train/user.tsv $@/user/train.tsv
+	cp eval/$(release)/dev/user.tsv $@/user/eval.tsv
+
+datadir: datadir/agent datadir/user datadir/fewshot $(foreach v,$(subdataset_ids),eval/$(release)/synthetic-$(v).txt)
 	cat eval/$(release)/synthetic-*.txt > $@/synthetic.txt
 	python3 ./scripts/measure.py $@ > $@/stats
 	touch $@
