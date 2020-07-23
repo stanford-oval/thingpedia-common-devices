@@ -1,6 +1,7 @@
 // -*- mode: js; indent-tabs-mode: nil; js-basic-offset: 4 -*-
 //
 // Copyright 2018 Google LLC
+//           2018-2020 The Board of Trustees of the Leland Stanford Junior University
 //
 // See LICENSE for details
 "use strict";
@@ -19,6 +20,9 @@ const _engine = require('./mock');
 const _tpFactory = new Tp.DeviceFactory(_engine, _engine.thingpedia, {});
 
 async function createDeviceInstance(deviceKind, manifest, devClass) {
+    if (!manifest) // FIXME
+        return new devClass(_engine, { kind: deviceKind });
+
     const config = manifest.config;
     if (config.module === 'org.thingpedia.config.none')
         return new devClass(_engine, { kind: deviceKind });
@@ -98,8 +102,8 @@ async function testOne(release, deviceKind) {
     const manifest = devClass.manifest;
 
     // require the device once fully (to get complete code coverage)
-    if (manifest.loader.module === 'org.thingpedia.v2')
-        require('../' + release + '/' + deviceKind);
+    if (manifest && manifest.loader.module === 'org.thingpedia.v2')
+        require('../../' + release + '/' + deviceKind);
 
     console.log('# Starting tests for ' + release + '/' + deviceKind);
     try {
@@ -164,7 +168,7 @@ async function toTest(argv) {
         if (arg.indexOf('/') >= 0) {
             devices.add(arg);
         } else {
-            for (let kind of await util.promisify(fs.readdir)(path.resolve(path.dirname(module.filename), '..', arg)))
+            for (let kind of await util.promisify(fs.readdir)(path.resolve(path.dirname(module.filename), '../..', arg)))
                 devices.add(arg + '/' + kind);
         }
     }

@@ -1,7 +1,5 @@
 // -*- mode: js; indent-tabs-mode: nil; js-basic-offset: 4 -*-
 //
-// This file is part of ThingEngine
-//
 // Copyright 2018 The Board of Trustees of the Leland Stanford Junior University
 //
 // Author: Giovanni Campagna <gcampagn@cs.stanford.edu>
@@ -140,7 +138,7 @@ class TestPlatform extends Tp.BasePlatform {
     }
 
     setRelease(release) {
-        this._prefs.set('developer-dir', path.resolve(path.dirname(module.filename), '..', release));
+        this._prefs.set('developer-dir', path.resolve(path.dirname(module.filename), '../..', release));
     }
 
     getDeveloperKey() {

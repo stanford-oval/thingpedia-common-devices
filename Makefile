@@ -16,7 +16,8 @@ devices_fn = $(foreach d,$(wildcard $(1)/*/manifest.tt),$(patsubst %/manifest.tt
 pkgfiles_fn = $(wildcard $(1)/*/package.json)
 
 # *_devices is the devices in this release, and all devices in a "more stable" release
-main_devices := $(call devices_fn,main)
+builtin_devices := $(call devices_fn,builtin)
+main_devices := $(builtin_devices) $(call devices_fn,main)
 universe_devices := $(main_devices) $(call devices_fn,universe)
 staging_devices := $(universe_devices) $(call devices_fn,staging)
 main_pkgfiles := $(call pkgfiles_fn,main)
@@ -231,6 +232,8 @@ eval/$(release)/models/%/best.pth:
 
 syncup:
 	aws s3 sync --delete --exclude 'node_modules/*' --exclude '*/node_modules/*' --exclude '.embeddings/*' --exclude '*/models/*' --exclude '*/datasets/*' --exclude 'datadir/*' --exclude '*/synthetic*' --exclude '*/augmented*' --exclude '.git/*' --exclude '.nyc_output/*' --no-follow-symlinks . s3://$(s3_bucket)/$(genie_k8s_owner)/workdir/$(genie_k8s_project)/
+	# HACK: sync the builtin folder separately with --follow-symlinks
+	aws s3 sync --delete --exclude 'node_modules/*' --exclude '*/node_modules/*' --exclude '.embeddings/*' --exclude '*/models/*' --exclude '*/datasets/*' --exclude 'datadir/*' --exclude '*/synthetic*' --exclude '*/augmented*' --exclude '.git/*' --exclude '.nyc_output/*' --follow-symlinks builtin/ s3://$(s3_bucket)/$(genie_k8s_owner)/workdir/$(genie_k8s_project)/builtin/
 
 syncdown:
 	aws s3 sync s3://$(s3_bucket)/$(genie_k8s_owner)/workdir/$(genie_k8s_project)/ .

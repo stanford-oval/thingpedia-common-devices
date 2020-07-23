@@ -27,10 +27,10 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 // OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class @com.cryptonator
-#_[thingpedia_name="Cryptonator"]
-#_[thingpedia_description="Cryptocurrencies exchange rates"]
-#_[canonical="cryptonator"]
+class @com.forismatic.quotes
+#_[thingpedia_name="Forismatic Quotes"]
+#_[thingpedia_description="Quotes and expressions. The most inspiring expressions of mankind. Provided by Forismatic"]
+#_[canonical="forismatic quotes"]
 #[license="BSD-3-Clause"]
 #[license_gplcompatible=true]
 #[subcategory="service"]
@@ -38,23 +38,25 @@ class @com.cryptonator
   import loader from @org.thingpedia.generic_rest.v1();
   import config from @org.thingpedia.config.none();
 
-  monitorable query get_price(in req currency: Entity(tt:cryptocurrency_code)
-                              #_[canonical={
-                                 default="preposition",
-                                 base=["currency", "currency code", "cryptocurrency"],
-                                 preposition=["of"]
-                              }]
-                              #_[prompt="What crypto currency do you want to check?"],
-                              out price: Currency
-                              #_[canonical={
-                                 base=["price", "exchange rate", "value"],
-                              }]
-                              #[json_key="ticker.price"])
-  #_[result=["1 ${currency} is worth ${price}", "the price of ${currency} is ${price}"]]
-  #_[canonical=["cryptocurrency price", "crypto currency price"]]
-  #_[confirmation="price of ${currency}"]
-  #_[formatted=[{type="text",text="The price of ${currency} is ${price}."}]]
-  #[poll_interval=300000ms]
-  #[doc="Get crypto currency price"]
-  #[url="https://api.cryptonator.com/api/ticker/${currency:url}-usd"];
+  query get(out text: String
+            #_[canonical={
+               base=["text", "content"],
+               verb=["say #"],
+               passive_verb=["saying #"],
+            }]
+            #[json_key="quoteText"],
+            out author: String
+            #_[canonical={
+               base=["author"],
+               passive_verb=["authored by #", "written by #"],
+               preposition=["by #"],
+            }]
+            #[json_key="quoteAuthor"])
+  #_[thingpedia_result=["${text} . by ${author}", "${author} wrote : ${text}"]]
+  #_[canonical=["quote", "random quote", "quote", "aphorism",
+                "random piece of wisdom"]]
+  #_[confirmation="a quote"]
+  #_[formatted=[{type="text",text="${text} By ${author}."}]]
+  #[doc="get a random quote"]
+  #[url="http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en"];
 }
