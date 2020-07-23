@@ -51,6 +51,9 @@ max_turns ?= 5
 max_depth ?= 8
 debug_level ?= 1
 update_canonical_flags ?= --algorithm bert,adj,bart --paraphraser-model ./models/paraphraser-bart
+synthetic_expand_factor ?= 5
+paraphrase_expand_factor ?= 10
+quoted_fraction ?= 0.05
 
 generate_flags ?= $(foreach v,$(synthetic_flags),--set-flag $(v)) --target-pruning-size $(target_pruning_size) --max-turns $(max_turns) --maxdepth $(max_depth)
 custom_gen_flags ?=
@@ -156,9 +159,14 @@ eval/$(release)/synthetic.agent.tsv: $(foreach v,$(subdataset_ids),eval/$(releas
 
 eval/$(release)/augmented.user.tsv : eval/$(release)/synthetic.user.tsv $(schema_file) $(paraphrases_user) parameter-datasets.tsv
 	$(genie) augment -o $@.tmp \
-	  --locale en-US --target-language thingtalk --contextual \
-	  --thingpedia $(schema_file) --parameter-datasets parameter-datasets.tsv \
-	  --synthetic-expand-factor 2 --quoted-paraphrasing-expand-factor 60 --no-quote-paraphrasing-expand-factor 20 --quoted-fraction 0.0 \
+	  --locale en-US \
+	  --target-language thingtalk --contextual \
+	  --thingpedia $(schema_file) \
+	  --parameter-datasets parameter-datasets.tsv \
+	  --synthetic-expand-factor $(synthetic_expand_factor) \
+	  --quoted-paraphrasing-expand-factor $(paraphrase_expand_factor) \
+	  --no-quote-paraphrasing-expand-factor $(paraphrase_expand_factor) \
+	  --quoted-fraction $(quoted_fraction) \
 	  --no-debug $(paraphrases_user) $< --parallelize $(parallel)
 	mv $@.tmp $@
 
