@@ -1,0 +1,60 @@
+====
+# online/agg-24
+U: what is the maximum size file in my dropbox?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => aggregate max file_size of (@com.dropbox.list_folder(folder_name=$?)) => notify;
+====
+# online/ep65
+U: list the dropbox files in / foo
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.dropbox.list_folder(folder_name="foo") => notify;
+====
+# online/120707
+U: list files in my documents smaller than 13 mb
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.dropbox.list_folder(folder_name="my documents")), file_size <= 13MB => notify;
+====
+# online/120743
+U: list files smaller than 13 mb
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.dropbox.list_folder(folder_name=$?)), file_size <= 13MB => notify;
+====
+# online/121342
+U: am i using 13 mb on dropbox?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.dropbox.get_space_usage()), used_space == 13MB => notify;
+====
+# online/1510928
+U: what's my dropbox quota
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.dropbox.get_space_usage() => notify;
+====
+# online/1515072
+U: get str:PATH_NAME::0: from dropbox
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.dropbox.open(file_name="str:PATH_NAME::0:"^^tt:path_name) => notify;
+====
+# online/120512
+U: ls root
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.dropbox.list_folder(folder_name="root") => notify;
+====
+# online/120833
+U: do i have more than 13 mb free on dropbox
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.dropbox.get_space_usage()), total_space >= 13MB => notify;
+====
+# online/121386
+U: get space available on dropbox if used 13 mb
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.dropbox.get_space_usage()), used_space == 13MB => notify;
+====
+# online/337947
+U: open dropbox
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.dropbox.open(file_name=$?) => notify;
+====
+# online/1511117
+U: see all the files in my pictures folder in dropbox
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.dropbox.list_folder(folder_name="pictures") => notify;

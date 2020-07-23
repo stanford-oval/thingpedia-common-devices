@@ -1,0 +1,25 @@
+====
+# online/120576
+U: comment on issue on github
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.github.comment_issue(repo_name=$?, issue_number=$?, body=$?);
+====
+# online/120641
+U: comment on github issue 13 in repo str:PATH_NAME::0:
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.github.comment_issue(issue_number=13, repo_name="str:PATH_NAME::0:"^^tt:path_name, body=$?);
+====
+# online/121419
+U: comment on issue 13 in str:QUOTED_STRING::0: on github
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.github.comment_issue(issue_number=13, repo_name="str:QUOTED_STRING::0:", body=$?);
+====
+# online/1668412
+U: get commit to repo almond by gcampax
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.github.get_commit(repo_name="almond")), user == "gcampax"^^tt:username => notify;
+====
+# online/1668417
+U: get commits to github repository tensorflow by bob
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.github.get_commit(repo_name="tensorflow")), user == "bob"^^tt:username => notify;

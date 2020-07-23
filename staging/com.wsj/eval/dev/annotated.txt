@@ -1,0 +1,50 @@
+====
+# online/ep27
+U: show me wall street journal world news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.wsj.get(section=enum(world_news)) => notify;
+====
+# online/ep28
+U: what's happening in the world today according to the wall street journal?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.wsj.get(section=enum(world_news))), updated >= start_of(day) => notify;
+====
+# online/1473987
+U: get wall street journal opinions
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.wsj.get(section=enum(opinions)) => notify;
+====
+# online/1511146
+U: read a wall street journal article
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.wsj.get(section=$?) => notify;
+====
+# online/27838536
+U: get wsj
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.wsj.get(section=$?) => notify;
+====
+# online/61554004
+U: ask wall street journal for economics news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.wsj.get(section=enum(markets)) => notify;
+====
+# online/count-27
+U: show me the number of wall street journal articles that were posted today.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => aggregate count of ((@com.wsj.get(section=$?)), updated >= start_of(day)) => notify;
+====
+# online/1475522
+U: get wsj opinions
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.wsj.get(section=enum(opinions)) => notify;
+====
+# online/1475685
+U: get wsj news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.wsj.get(section=$?) => notify;
+====
+# online/32513058
+U: get a wall street journal about trump
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.wsj.get(section=$?)), title =~ "trump" => notify;

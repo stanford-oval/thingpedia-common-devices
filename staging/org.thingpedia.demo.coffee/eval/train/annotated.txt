@@ -1,0 +1,40 @@
+====
+# online/ep16
+U: order an iced mocha
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @org.thingpedia.demo.coffee.order(beverage=enum(mocha), iced=true, delivery_location=$?, size=$?);
+====
+# online/ep17
+U: get me a large coffee here
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @org.thingpedia.demo.coffee.order(beverage=enum(drip_coffee), delivery_location=$context.location.current_location, size=enum(large));
+====
+# online/1507254
+U: order a large espresso
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @org.thingpedia.demo.coffee.order(beverage=enum(espresso), size=enum(large), delivery_location=$?);
+====
+# online/1507256
+U: order a large caramel mocha
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @org.thingpedia.demo.coffee.order(beverage=enum(caramel_mocha), size=enum(large), delivery_location=$?);
+====
+# online/1647249
+U: get me a venti caramel macchiato with extra sugar
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @org.thingpedia.demo.coffee.order(beverage=enum(caramel_macchiato), extras=enum(sugar), size=enum(large), delivery_location=$?);
+====
+# online/1647257
+U: i need a coffee with room for milk
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @org.thingpedia.demo.coffee.order(beverage=enum(drip_coffee), extras=enum(milk), delivery_location=$?, size=$?);
+====
+# online/1647554
+U: send a latte to home
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @org.thingpedia.demo.coffee.order(beverage=enum(latte), delivery_location=$context.location.home, size=$?);
+====
+# online/1519448
+U: get an iced latte
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @org.thingpedia.demo.coffee.order(beverage=enum(latte), iced=true, delivery_location=$?, size=$?);

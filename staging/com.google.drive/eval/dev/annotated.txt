@@ -1,0 +1,80 @@
+====
+# online/agg-65
+U: how many starred google drive files do i have?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => aggregate count of ((@com.google.drive.list_drive_files()), starred == true) => notify;
+====
+# online/agg-66
+U: what is the average size of my google drive files modified today?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => aggregate avg file_size of ((@com.google.drive.list_drive_files()), modified_time >= start_of(day)) => notify;
+====
+# online/agg-67
+U: how many of my google drive files were modified this week?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => aggregate count of ((@com.google.drive.list_drive_files()), modified_time >= start_of(week)) => notify;
+====
+# online/agg-70
+U: what is the maximum file size in my google drive?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => aggregate max file_size of (@com.google.drive.list_drive_files()) => notify;
+====
+# online/agg-73
+U: what is the sum of all my google drive files?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => aggregate count of (@com.google.drive.list_drive_files()) => notify;
+====
+# online/agg-75
+U: how many google drive files have i modified this week?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => aggregate count of ((@com.google.drive.list_drive_files()), modified_time >= start_of(week)) => notify;
+====
+# online/agg-99
+U: what is the total size of all my files on google drive?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => aggregate sum file_size of (@com.google.drive.list_drive_files()) => notify;
+====
+# online/count-1
+U: how many files do i have in google drive?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => aggregate count of (@com.google.drive.list_drive_files()) => notify;
+====
+# online/count-4
+U: what is the total number of google drive files i've modified this week?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => aggregate count of ((@com.google.drive.list_drive_files()), modified_time >= start_of(week)) => notify;
+====
+# online/ep59
+U: sort my google drive files by name
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.google.drive.list_drive_files(order_by=enum(name_increasing)) => notify;
+====
+# online/15252545
+U: what's the size of the largest file in my google drive
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => aggregate max file_size of (@com.google.drive.list_drive_files()) => notify;
+====
+# online/ac12
+U: create a file with name / str:PATH_NAME::0: in my google drive
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.google.drive.create_new_drive_file(file_name="str:PATH_NAME::0:"^^tt:path_name);
+====
+# online/ep57
+U: list my files from google drive
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.google.drive.list_drive_files() => notify;
+====
+# online/ep58
+U: list my files in google drive
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.google.drive.list_drive_files() => notify;
+====
+# online/ep61
+U: show me my google drive files created since monday
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.google.drive.list_drive_files(order_by=enum(created_time_decreasing))), created_time >= start_of(week) => notify;
+====
+# online/15252546
+U: what's the size of the smallest file in my google drive
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => aggregate min file_size of (@com.google.drive.list_drive_files()) => notify;
