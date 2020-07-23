@@ -113,3 +113,13 @@ UT: now => @org.thingpedia.icalendar.list_events() => notify;
 U: list events in my calendar
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => @org.thingpedia.icalendar.list_events() => notify;
+====
+# online/121270
+U: list events containing "str:QUOTED_STRING::0:"
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@org.thingpedia.icalendar.list_events()), summary =~ "str:QUOTED_STRING::0:" => notify;
+====
+# online/62745178
+U: list upcoming zoom meetings
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@org.thingpedia.icalendar.list_events()), start_date >= start_of(day) => notify;

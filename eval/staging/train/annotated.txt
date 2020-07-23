@@ -10,3 +10,9 @@ U: get xkcd and post on twitter
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => @com.xkcd.get_comic() => notify;
 UT: now => @com.twitter.post(status=$?);
+====
+# online/135922
+U: if there is a file in "str:QUOTED_STRING::0:" in my dropbox which is not a folder and was last modified on 1/2/2018 and is smaller than 13 kbs then post a picture on twitter
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.dropbox.list_folder(folder_name="str:QUOTED_STRING::0:")), ((file_size <= 13KB && is_folder == false) && modified_time == new Date("2018-01-02T08:00:00.000Z")) => notify;
+UT: now => @com.twitter.post_picture(caption=$?, picture_url=$?);

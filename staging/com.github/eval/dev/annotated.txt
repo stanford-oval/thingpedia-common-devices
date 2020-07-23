@@ -28,3 +28,13 @@ UT: now => (@com.github.get_commit(repo_name="almond")), user == "gcampax"^^tt:u
 U: get commit to github repository tensorflow by bob
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => (@com.github.get_commit(repo_name="tensorflow")), user == "bob"^^tt:username => notify;
+====
+# online/1666346
+U: get link of "str:QUOTED_STRING::0:" in github repository "str:QUOTED_STRING::1:"
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.github.get_file(file_name="str:QUOTED_STRING::0:", repo_name="str:QUOTED_STRING::1:") => notify;
+====
+# online/1668468
+U: share me a link of file "str:QUOTED_STRING::0:" in repository "str:QUOTED_STRING::1:"
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.github.get_file(file_name="str:QUOTED_STRING::0:", repo_name="str:QUOTED_STRING::1:") => notify;

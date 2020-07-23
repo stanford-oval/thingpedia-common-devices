@@ -53,3 +53,18 @@ UT: now => @com.imgflip.list() => notify;
 U: generate meme
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => @com.imgflip.generate(template=$?, text_top=$?, text_bottom=$?) => notify;
+====
+# online/121465
+U: list memes whose name contains "str:QUOTED_STRING::0:"
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.imgflip.list()), name =~ "str:QUOTED_STRING::0:" => notify;
+====
+# online/121467
+U: list memes with "str:QUOTED_STRING::0:" in the name
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.imgflip.list()), name =~ "str:QUOTED_STRING::0:" => notify;
+====
+# online/27740974
+U: make a socially awesome awkward penguin meme
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.imgflip.generate(template=null^^imgflip:meme_id("socially awesome awkward penguin"), text_top=$?, text_bottom=$?) => notify;

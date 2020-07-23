@@ -63,3 +63,18 @@ UT: now => (@com.imgflip.list()), name =~ "futurama" => notify;
 U: what is your name?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => @com.imgflip.list() => notify;
+====
+# online/120983
+U: generate a str:ENTITY_imgflip:meme_id::0: meme
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.imgflip.generate(template="str:ENTITY_imgflip:meme_id::0:"^^imgflip:meme_id, text_top=$?, text_bottom=$?) => notify;
+====
+# online/121469
+U: list "str:QUOTED_STRING::0:" memes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.imgflip.list()), name =~ "str:QUOTED_STRING::0:" => notify;
+====
+# online/1648906
+U: generate meme on template "str:QUOTED_STRING::0:" with text "str:QUOTED_STRING::1:" at the top and text "str:QUOTED_STRING::2:" at the bottom
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.imgflip.generate(template="str:QUOTED_STRING::0:", text_bottom="str:QUOTED_STRING::2:", text_top="str:QUOTED_STRING::1:") => notify;

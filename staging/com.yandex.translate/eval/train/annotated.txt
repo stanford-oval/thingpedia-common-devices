@@ -13,3 +13,18 @@ UT: now => @com.yandex.translate.translate(target_language=null^^tt:iso_lang_cod
 U: translate to hill mari
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => @com.yandex.translate.translate(target_language=null^^tt:iso_lang_code("hill mari"), text=$?) => notify;
+====
+# online/120704
+U: translate "str:QUOTED_STRING::0:" to str:ENTITY_tt:iso_lang_code::0:
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.yandex.translate.translate(target_language="str:ENTITY_tt:iso_lang_code::0:"^^tt:iso_lang_code, text="str:QUOTED_STRING::0:") => notify;
+====
+# online/1479495
+U: detect the language of "str:QUOTED_STRING::0:"
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.yandex.translate.detect_language(text="str:QUOTED_STRING::0:") => notify;
+====
+# online/16085080
+U: translate turtle to chinese
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.yandex.translate.translate(target_language=null^^tt:iso_lang_code("chinese"), text="turtle") => notify;

@@ -173,3 +173,18 @@ UT: now => @org.thingpedia.weather.current(location=$?) => notify;
 U: what's the weather at stanford
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => @org.thingpedia.weather.current(location=new Location("stanford")) => notify;
+====
+# online/1475521
+U: what's the weather tomorrow?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @org.thingpedia.weather.current(location=$?) => notify;
+====
+# online/62728039
+U: tell me what the weather will be like this afternoon.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @org.thingpedia.weather.current(location=$context.location.current_location) => notify;
+====
+# online/62745189
+U: what time does the sunset today in montreal?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @org.thingpedia.weather.sunrise(date=start_of(day), location=new Location("montreal")) => notify;

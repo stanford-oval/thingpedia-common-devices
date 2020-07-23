@@ -13,3 +13,13 @@ UT: now => @com.cryptonator.get_price(currency=null^^tt:cryptocurrency_code("bit
 U: bitcoin price
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => @com.cryptonator.get_price(currency=null^^tt:cryptocurrency_code("bitcoin")) => return;
+====
+# online/1683806
+U: get str:ENTITY_tt:cryptocurrency_code::0: price
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.cryptonator.get_price(currency="str:ENTITY_tt:cryptocurrency_code::0:"^^tt:cryptocurrency_code) => notify;
+====
+# online/62728037
+U: show me price of btc
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.cryptonator.get_price(currency=null^^tt:cryptocurrency_code("btc")) => notify;

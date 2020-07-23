@@ -73,3 +73,13 @@ UT: now => @org.thingpedia.weather.current(location=new Location("palo alto")) =
 U: whats the weather here
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => @org.thingpedia.weather.current(location=$context.location.current_location) => notify;
+====
+# online/62745188
+U: what is the weather in montreal?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @org.thingpedia.weather.current(location=new Location("montreal")) => notify;
+====
+# online/62767540
+U: what's the weather?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @org.thingpedia.weather.current(location=$?) => notify;

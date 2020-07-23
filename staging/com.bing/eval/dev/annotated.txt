@@ -178,3 +178,23 @@ UT: now => @com.bing.image_search(query="koala") => notify;
 U: ask bing to search for cats
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => @com.bing.web_search(query="cats") => notify;
+====
+# online/121247
+U: bing "str:QUOTED_STRING::0:"
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.bing.web_search(query="str:QUOTED_STRING::0:") => notify;
+====
+# online/1472069
+U: search for "str:QUOTED_STRING::0:" on bing
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.bing.web_search(query="str:QUOTED_STRING::0:") => notify;
+====
+# online/1475310
+U: search for almond on bing
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.bing.image_search(query=$?) => notify;
+====
+# online/9597116
+U: what is jeopardy
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.bing.web_search(query="jeopardy") => notify;

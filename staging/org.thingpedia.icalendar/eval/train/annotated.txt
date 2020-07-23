@@ -23,3 +23,8 @@ UT: now => @org.thingpedia.icalendar.list_events() => notify;
 U: check my calendar
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => @org.thingpedia.icalendar.list_events() => notify;
+====
+# online/120980
+U: when is "str:QUOTED_STRING::0:" listed on my calendar
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@org.thingpedia.icalendar.list_events()), summary =~ "str:QUOTED_STRING::0:" => notify;
