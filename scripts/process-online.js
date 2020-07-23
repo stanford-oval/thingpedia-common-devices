@@ -199,6 +199,10 @@ class Processor extends stream.Writable {
                     token = entities[token].value + ' ' + entities[token].unit;
                 else if (token.startsWith('CURRENCY_'))
                     token = '$' + entities[token].value;
+                else if (token.startsWith('LOCATION_'))
+                    token = entities[token].display;
+                else if (token.startsWith('QUOTED_STRING_'))
+                    token = '"' + entities[token] + '"';
                 else
                     token = String(entities[token]);
             }
