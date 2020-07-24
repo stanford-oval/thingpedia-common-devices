@@ -101,6 +101,22 @@ function adjustStatementsForInitialRequest(stmt, idQueries) {
                                     query),
                                 query), [notifyAction()]));
                         }
+                    } else if (param.value.isEntity) {
+                        const type = action.invocation.schema.getArgType(param.name);
+                        if (type.isEntity && idQueries.has(type.type)) {
+                            const query = idQueries.get(type.type);
+                            const invtable = new Ast.Table.Invocation(null,
+                                new Ast.Invocation(null,
+                                    new Ast.Selector.Device(null, query.class.name, null, null),
+                                    query.name,
+                                    [],
+                                    query),
+                                query);
+                            const filtertable = new Ast.Table.Filter(null, invtable, new Ast.BooleanExpression.Atom(null,
+                                'id', '=~', new Ast.Value.String(param.value.display)), query);
+                            newStatements.push(new Ast.Statement.Command(null, filtertable, [notifyAction()]));
+                            param.value = new Ast.Value.Undefined();
+                        }
                     }
                 }
             }

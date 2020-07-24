@@ -332,14 +332,12 @@ async function main() {
         description: "Import a single-sentence paraphrase or manually annotated dataset."
     });
     parser.addArgument(['-t', '--type'], {
-        nargs: 1,
         defaultValue: 'manual',
         required: false,
         help: 'Type of dataset to import',
         choices: ['paraphrase', 'manual']
     });
     parser.addArgument('--random-seed', {
-        nargs: 1,
         defaultValue: 'almond is awesome',
         required: false,
     });
