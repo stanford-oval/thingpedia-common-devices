@@ -28,7 +28,7 @@ staging_pkgfiles := $(universe_pkgfiles) $(call pkgfiles_fn,staging)
 template_file ?= thingtalk/en/dialogue.genie
 dataset_file ?= eval/$(release)/dataset.tt
 schema_file ?= eval/$(release)/schema.tt
-paraphrases_user ?= $(wildcard $(release)/*/paraphrase/*.tsv)
+paraphrases_user ?= eval/$(release)/paraphrase.tsv $(foreach d,$($(release)_devices),$(d)/eval/paraphrase.tsv)
 eval_files ?= eval/$(release)/$(eval_set)/annotated.txt $(foreach d,$($(release)_devices),$(d)/eval/$(eval_set)/annotated.txt)
 fewshot_train_files ?= eval/$(release)/train/annotated.txt $(foreach d,$($(release)_devices),$(d)/eval/train/annotated.txt)
 
@@ -168,7 +168,9 @@ eval/$(release)/augmented.user.tsv : eval/$(release)/synthetic.user.tsv $(schema
 	  --quoted-paraphrasing-expand-factor $(paraphrase_expand_factor) \
 	  --no-quote-paraphrasing-expand-factor $(paraphrase_expand_factor) \
 	  --quoted-fraction $(quoted_fraction) \
-	  --no-debug $(paraphrases_user) $< --parallelize $(parallel)
+	  --no-debug \
+	  --parallelize $(parallel) \
+	  $(paraphrases_user) $<
 	mv $@.tmp $@
 
 eval/$(release)/$(eval_set)/agent.tsv : $(eval_files) $(schema_file)
