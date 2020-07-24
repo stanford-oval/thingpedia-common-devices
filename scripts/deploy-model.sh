@@ -3,8 +3,10 @@
 set -e
 set -x
 
-model="$1"
-release=universe
+srcdir=`dirname $0`
+. $srcdir/lib.sh
+parse_args "$0" "release model" "$@"
+shift $n
 
 make "release=${release}" "eval/${release}/models/${model}/best.pth"
 
