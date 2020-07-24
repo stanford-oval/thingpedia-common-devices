@@ -36,6 +36,7 @@ const path = require('path');
 const fs = require('fs');
 const pfs = require('fs').promises;
 const seedrandom = require('seedrandom');
+const argparse = require('argparse');
 
 const Genie = require('genie-toolkit');
 const Tp = require('thingpedia');
@@ -68,8 +69,10 @@ async function existsSafe(path) {
 
 
 class Processor extends stream.Writable {
-    constructor(schemas, rng) {
+    constructor(type, schemas, rng) {
         super({ objectMode: true });
+
+        this._type = type;
 
         this._existingDataset = new Set;
         this._devices = new Map;
@@ -86,8 +89,9 @@ class Processor extends stream.Writable {
             return;
 
         const existingDataset = this._existingDataset;
+
         await StreamUtils.waitFinish(readAllLines([filename])
-            .pipe(new Genie.DialogueParser())
+            .pipe(this._type === 'manual' ? new Genie.DialogueParser() : new Genie.DatasetParser())
             .pipe(new stream.Writable({
                 objectMode: true,
 
@@ -101,8 +105,12 @@ class Processor extends stream.Writable {
     async init() {
         // load all existing datasets
         for (const r of RELEASES) {
-            await this._tryLoadExistingDataset(path.resolve('eval', r, 'dev/annotated.txt'));
-            await this._tryLoadExistingDataset(path.resolve('eval', r, 'train/annotated.txt'));
+            if (this._type === 'manual') {
+                await this._tryLoadExistingDataset(path.resolve('eval', r, 'dev/annotated.txt'));
+                await this._tryLoadExistingDataset(path.resolve('eval', r, 'train/annotated.txt'));
+            } else {
+                await this._tryLoadExistingDataset(path.resolve('eval', r, 'paraphrase.tsv'));
+            }
 
             for (const d of await pfs.readdir(path.resolve(r))) {
                 if (!await existsSafe(path.resolve(r, d, 'manifest.tt')))
@@ -111,8 +119,12 @@ class Processor extends stream.Writable {
 
                 this._devices.set(d, r);
 
-                await this._tryLoadExistingDataset(path.resolve(r, d, 'eval/dev/annotated.txt'));
-                await this._tryLoadExistingDataset(path.resolve(r, d, 'eval/train/annotated.txt'));
+                if (this._type === 'manual') {
+                    await this._tryLoadExistingDataset(path.resolve(r, d, 'eval/dev/annotated.txt'));
+                    await this._tryLoadExistingDataset(path.resolve(r, d, 'eval/train/annotated.txt'));
+                } else {
+                    await this._tryLoadExistingDataset(path.resolve('eval', r, 'paraphrase.tsv'));
+                }
 
                 try {
                     const classDef = await this._schemas.getFullMeta(d);
@@ -142,11 +154,39 @@ class Processor extends stream.Writable {
     }
 
     _final(callback) {
-        for (let [f1, f2] of this._outputs.values()) {
-            f1.end();
-            f2.end();
+        if (this._type === 'manual') {
+            for (let [f1, f2] of this._outputs.values()) {
+                f1.end();
+                f2.end();
+            }
+        } else {
+            for (let f of this._outputs.values())
+                f.end();
         }
         callback();
+    }
+
+    async _getManualFile(key, directory) {
+        await pfs.mkdir(path.resolve(directory, 'dev'), { recursive: true });
+        await pfs.mkdir(path.resolve(directory, 'train'), { recursive: true });
+
+        const dev = new Genie.DialogueSerializer();
+        dev.pipe(fs.createWriteStream(path.resolve(directory, 'dev/annotated.txt'), { flags: 'a' }));
+        const train = new Genie.DialogueSerializer();
+        train.pipe(fs.createWriteStream(path.resolve(directory, 'train/annotated.txt'), { flags: 'a' }));
+
+        this._outputs.set(key, [dev, train]);
+        return [dev, train];
+    }
+
+    async _getParaphraseFile(key, directory) {
+        await pfs.mkdir(path.resolve(directory), { recursive: true });
+
+        const out = new Genie.DatasetStringifier();
+        out.pipe(fs.createWriteStream(path.resolve(directory, 'paraphrase.tsv'), { flags: 'a' }));
+
+        this._outputs.set(key, out);
+        return out;
     }
 
     async _getFile(device) {
@@ -156,31 +196,20 @@ class Processor extends stream.Writable {
 
         if (RELEASES.indexOf(device) >= 0) {
             const release = device;
-            await pfs.mkdir(path.resolve('eval', release, 'dev'), { recursive: true });
-            await pfs.mkdir(path.resolve('eval', release, 'train'), { recursive: true });
 
-            const dev = new Genie.DialogueSerializer();
-            dev.pipe(fs.createWriteStream(path.resolve('eval', release, 'dev/annotated.txt'), { flags: 'a' }));
-            const train = new Genie.DialogueSerializer();
-            train.pipe(fs.createWriteStream(path.resolve('eval',  release, 'train/annotated.txt'), { flags: 'a' }));
-
-            this._outputs.set(device, [dev, train]);
-            return [dev, train];
+            if (this._type === 'manual')
+                return this._getManualFile(device, path.resolve('eval', release));
+            else
+                return this._getParaphraseFile(device, path.resolve('eval', release));
         } else {
             const release = this._devices.get(device);
             if (!release)
                 throw new Error(`Cannot find device ${device} in repo`);
 
-            await pfs.mkdir(path.resolve(release, device, 'eval/dev'), { recursive: true });
-            await pfs.mkdir(path.resolve(release, device, 'eval/train'), { recursive: true });
-
-            const dev = new Genie.DialogueSerializer();
-            dev.pipe(fs.createWriteStream(path.resolve(release, device, 'eval/dev/annotated.txt'), { flags: 'a' }));
-            const train = new Genie.DialogueSerializer();
-            train.pipe(fs.createWriteStream(path.resolve(release, device, 'eval/train/annotated.txt'), { flags: 'a' }));
-
-            this._outputs.set(device, [dev, train]);
-            return [dev, train];
+            if (this._type === 'manual')
+                return this._getManualFile(device, path.resolve(release, device, 'eval'));
+            else
+                return this._getParaphraseFile(device, path.resolve(release, device, 'eval'));
         }
     }
 
@@ -263,37 +292,72 @@ class Processor extends stream.Writable {
         }
         const device = this._getDevice(dialoguestate);
 
-        const [dev, train] = await this._getFile(device);
-        const out = coin(FEW_SHOT_TRAIN_PROBABILITY, this._rng) ? train : dev;
+        let out;
+        if (this._type === 'manual') {
+            const [dev, train] = await this._getFile(device);
+            out = coin(FEW_SHOT_TRAIN_PROBABILITY, this._rng) ? train : dev;
 
-        const utterance = this._detokenize(ex.preprocessed, entities);
-        const code = dialoguestate.prettyprint();
+            const utterance = this._detokenize(ex.preprocessed, entities);
+            const code = dialoguestate.prettyprint();
 
-        out.write({
-            id: 'online/' + ex.id,
-            turns: [{
-                context: '',
-                agent: '',
-                agent_target: '',
-                user: utterance,
-                user_target: code
-            }]
-        });
+            out.write({
+                id: 'online/' + ex.id,
+                turns: [{
+                    context: '',
+                    agent: '',
+                    agent_target: '',
+                    user: utterance,
+                    user_target: code
+                }]
+            });
+        } else {
+            out = await this._getFile(device);
+
+            const code = ThingTalk.NNSyntax.toNN(dialoguestate, ex.preprocessed, entities, { typeAnnotations: false }).join(' ');
+            out.write({
+                id: 'turking/' + ex.id,
+                context: 'null',
+                preprocessed: ex.preprocessed,
+                target_code: code
+            });
+        }
     }
 }
 
 
 
 async function main() {
+    const parser = new argparse.ArgumentParser({
+        addHelp: true,
+        description: "Import a single-sentence paraphrase or manually annotated dataset."
+    });
+    parser.addArgument(['-t', '--type'], {
+        nargs: 1,
+        defaultValue: 'manual',
+        required: false,
+        help: 'Type of dataset to import',
+        choices: ['paraphrase', 'manual']
+    });
+    parser.addArgument('--random-seed', {
+        nargs: 1,
+        defaultValue: 'almond is awesome',
+        required: false,
+    });
+    parser.addArgument('input_file', {
+        nargs: '+',
+        help: 'Input files to process. Use - for standard input.'
+    });
+    const args = parser.parseArgs();
+
     const platform = new Platform();
     platform.getSharedPreferences().set('developer-dir', RELEASES.map((r) => path.resolve(r)));
 
     const tpClient = new Tp.HttpClient(platform, 'https://almond-dev.stanford.edu/thingpedia');
     const schemas = new ThingTalk.SchemaRetriever(tpClient, null, false);
 
-    const input = readAllLines(process.argv.slice(2));
-    const rng = seedrandom.alea('almond is awesome');
-    const processor = new Processor(schemas, rng);
+    const input = readAllLines(args.input_file);
+    const rng = seedrandom.alea(args.random_seed);
+    const processor = new Processor(args.type, schemas, rng);
     await processor.init();
 
     const out = input
