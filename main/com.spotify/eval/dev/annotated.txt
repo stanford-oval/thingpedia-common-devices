@@ -1,6 +1,227 @@
 ====
 # online/spotify-0
-U: play the artist st. vincent.
+U: add fast slow disco to my playlist.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@com.spotify.artist()), id =~ "st. vincent" => notify;
-UT: now => @com.spotify.play_artist(artist=$?);
+UT: now => @com.spotify.add_songs_to_playlist(toAdd=[null^^com.spotify:song("fast slow disco")], playlist=$?);
+====
+# online/spotify-1
+U: turn off repeat.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.player_repeat(repeat=enum(off));
+====
+# online/spotify-103
+U: play funky tunes playlist
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.play_my_playlist(toPlay="funky tunes");
+====
+# online/spotify-132
+U: add this song to my driving playlist.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.add_this_song_to_playlist(playlist="driving");
+====
+# online/spotify-147
+U: add back in black to my playlist gym.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.add_songs_to_playlist(playlist="gym", toAdd=[null^^com.spotify:song("back in black")]);
+====
+# online/spotify-218
+U: add this song to my playlist
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.add_this_song_to_playlist(playlist=$?);
+====
+# online/spotify-221
+U: play the next song on a spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.player_next();
+====
+# online/spotify-228
+U: begin playing the album dirty computer by janelle monae
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.play_album(toPlay="dirty computer by janelle monae");
+====
+# online/spotify-238
+U: play the newest red hot chili peppers album in its entirety, please.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.play_album(toPlay="red hot chili peppers");
+====
+# online/spotify-245
+U: add fear to my fast playlist
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.add_songs_to_playlist(playlist="fast", toAdd=[null^^com.spotify:song("fear")]);
+====
+# online/spotify-26
+U: play tequila by dan and shay
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.play_songs(toPlay=[null^^com.spotify:song("tequila")]);
+====
+# online/spotify-32
+U: go back to the song that just finished playing.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.player_previous();
+====
+# online/spotify-49
+U: get the currently playing song and add it to my playlist favorites.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.add_this_song_to_playlist(playlist="favorites");
+====
+# online/spotify-57
+U: play my kenshi yonezu playlist
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.play_my_playlist(toPlay="kenshi yonezu");
+====
+# online/spotify-68
+U: play the album magic mystery tour
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.play_album(toPlay="magic mystery tour");
+====
+# online/spotify-72
+U: add i drove all night to my playlist
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.add_songs_to_playlist(toAdd=[null^^com.spotify:song("i drove all night")], playlist=$?);
+====
+# online/1675048
+U: play yesterday
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.play_artist(toPlay="yesterday");
+====
+# online/spotify-100
+U: add the current song to my favorites playlist
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.add_this_song_to_playlist(playlist="favorites");
+====
+# online/spotify-11
+U: add am i wrong to my at work playlist.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.add_songs_to_playlist(playlist="at work", toAdd=[null^^com.spotify:song("am i wrong")]);
+====
+# online/spotify-113
+U: repeat the current track on spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.player_repeat(repeat=enum(track));
+====
+# online/spotify-114
+U: what track is currently playing on spotify?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.get_currently_playing() => notify;
+====
+# online/spotify-125
+U: play simon and garfunkle
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.play_artist(toPlay="simon and garfunkle");
+====
+# online/spotify-129
+U: play the album rubber soul by the beatles
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.play_album(toPlay="rubber soul by the beatles");
+====
+# online/spotify-133
+U: play that last song again.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.player_previous();
+====
+# online/spotify-137
+U: play ice on the dune from empire of the sun.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.play_songs(toPlay=[null^^com.spotify:song("ice on the dune")]);
+====
+# online/spotify-14
+U: play songs by artist smash mouth.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.play_artist(toPlay="smash mouth");
+====
+# online/spotify-15
+U: play my playlist that is named metal songs.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.play_my_playlist(toPlay="metal songs");
+====
+# online/spotify-159
+U: get my top tracks and add them to my favorite songs playlist.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.get_user_top_tracks() => notify;
+UT: now => @com.spotify.add_songs_to_playlist(playlist="favorite songs", toAdd=[song]);
+====
+# online/spotify-16
+U: i want to listen to the artist dream theater.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.play_artist(toPlay="dream theater");
+====
+# online/spotify-167
+U: add the current song to my playlist.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.add_this_song_to_playlist(playlist=$?);
+====
+# online/spotify-177
+U: please add the song currently playing to my relax playlist.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.add_this_song_to_playlist(playlist="relax");
+====
+# online/spotify-181
+U: play the song black hole sun from my spotify account.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.play_songs(toPlay=[null^^com.spotify:song("black hole sun")]);
+====
+# online/spotify-239
+U: add the space jam theme song to my hype playlist.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.add_songs_to_playlist(playlist="hype", toAdd=[null^^com.spotify:song("space jam theme song")]);
+====
+# online/spotify-33
+U: add someone's looking at you by the boomtown rats to my playlist new wave.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.add_songs_to_playlist(playlist="new wave", toAdd=[null^^com.spotify:song("someone 's looking at you")]);
+====
+# online/spotify-35
+U: play something by the smashing pumpkins
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.play_artist(toPlay="smashing pumpkins");
+====
+# online/spotify-45
+U: add ya hey to my playlist today-ish.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.add_songs_to_playlist(playlist="today-ish", toAdd=[null^^com.spotify:song("ya hey")]);
+====
+# online/spotify-6
+U: play the song all i need by the green.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.play_songs(toPlay=[null^^com.spotify:song("all i need")]);
+====
+# online/spotify-74
+U: add i can only imagine to my playlist
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.add_songs_to_playlist(toAdd=[null^^com.spotify:song("i can only imagine")], playlist=$?);
+====
+# online/1674421
+U: play artist taylor swift
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.artist() => notify;
+UT: now => @com.spotify.play_artist(toPlay=$?);
+====
+# online/1675046
+U: play artist taylor swift
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.play_artist(toPlay="taylor swift");
+====
+# online/1675050
+U: play songs by the beatles
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.play_artist(toPlay="the beatles");
+====
+# online/1676748
+U: play song destination calabria
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.play_songs(toPlay=[null^^com.spotify:song("destination calabria")]);
+====
+# online/1678056
+U: set shuffle on
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.player_shuffle(shuffle=enum(on));
+====
+# online/16013786
+U: find me songs of kanye west
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.play_artist(toPlay="kanye west");
+====
+# online/32582189
+U: play the song not afraid
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.play_songs(toPlay=[null^^com.spotify:song("not afraid")]);
