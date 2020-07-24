@@ -247,7 +247,11 @@ lint:
 	done
 
 evaluate: eval/$(release)/$(eval_set)/$(model).dialogue.results
-	for f in $^ ; do echo $$f ; cat $$f ; done
+	echo $<
+	cat $<
+
+evaluate-all:
+	for m in $($(release)_eval_$(eval_set)_models) ; do make model=$$m evaluate ; done
 
 eval/$(release)/models/%/best.pth:
 	mkdir -p eval/$(release)/models/$(if $(findstring /,$*),$(dir $*),)
