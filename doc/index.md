@@ -1,11 +1,11 @@
 # Documentation Index
 
 ## General documentation
-- [install.md](Installation instructions)
-- [device-layout.md](Layout of a device folder)
+- [Installation instructions](install.md)
+- [Layout of a device folder](device-layout.md)
 
 ## Workflows and Guides
-- [training.md](Training a model)
-- [adding-new-device.md](Adding a new device)
-- [maintainer.md](Maintainer guide)
+- [Training a model](training.md)
+- [Adding a new device](adding-new-device.md)
+- [Maintainer guide](maintainer.md)
 
