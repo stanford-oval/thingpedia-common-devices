@@ -293,19 +293,17 @@ async function main() {
     const prefs = platform.getSharedPreferences();
     prefs.set('developer-dir', RELEASE_INHERITANCE[args.release].map((r) => path.resolve(r)));
 
-    const engine = new Genie.AssistantEngine(platform, { thingpediaUrl: THINGPEDIA_URL });
+    let nluModelUrl;
+    if (args.nlu_model)
+        nluModelUrl = 'file://' + path.resolve('eval/' + args.release + '/models/' + args.nlu_model);
+    else
+        nluModelUrl = 'https://nlp-staging.almond.stanford.edu';
+    const engine = new Genie.AssistantEngine(platform, { thingpediaUrl: THINGPEDIA_URL, nluModelUrl });
 
     await engine.open();
     try {
-        let nluServerUrl;
-        if (args.nlu_model)
-            nluServerUrl = 'file://' + path.resolve('eval/' + args.release + '/models/' + args.nlu_model);
-        else
-            nluServerUrl = 'https://nlp-staging.almond.stanford.edu';
 
         const conversation = await engine.assistant.getOrOpenConversation('test', new TestUser, {
-            nluServerUrl,
-            nlgServerUrl: null,
             debug: true,
             testMode: false,
             showWelcome: false,
