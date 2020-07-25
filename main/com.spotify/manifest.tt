@@ -239,17 +239,6 @@ class @com.spotify
     #[poll_interval=3600000ms]
     #[doc="get user's top tracks in the last 4 weeks"];
 
-    action add_this_song_to_playlist(in req playlist: String
-                                     #_[prompt="What playlist would you like to add to?"]
-                                     #[string_values="com.spotify:playlist"]
-                                     #_[canonical={
-                                       base=["playlist"],
-                                       preposition=["to #"]
-                                     }])
-    #_[canonical="add this song to playlist"]
-    #_[confirmation="add this song to the playlist $playlist"]
-    #[doc="add this song to a playlist"];
-
     action play_my_playlist(in req playlist: String
                             #_[prompt="Which one of your playlists do you want to play?"]
                             #[string_values="com.spotify:playlist"]
@@ -261,24 +250,35 @@ class @com.spotify
     #_[confirmation="play your playlist $playlist"]
     #[doc="play your playlist"];
 
+    action add_this_song_to_playlist(in req playlist: String
+                                     #_[prompt="What playlist would you like to add to?"]
+                                     #[string_values="com.spotify:playlist"]
+                                     #_[canonical={
+                                       base=["playlist"],
+                                       preposition=["to #"]
+                                     }])
+    #_[canonical="add this song to playlist"]
+    #_[confirmation="add this song to the playlist $playlist"]
+    #[doc="add this song to a playlist"];
 
-    action add_songs_to_playlist(in req song: Entity(com.spotify:song)
-                                 #_[prompt="What songs would you like to add?"]
-                                 #[string_values="com.spotify:song"]
+
+    action add_song_to_playlist(in req song: Entity(com.spotify:song)
+                                 #_[prompt="What song would you like to add?"]
+                                 #[string_values="tt:song_name"]
                                  #_[canonical={
-                                   base=["songs"],
+                                   base=["song"],
                                    verb=["add #"]
                                  }],
                                  in req playlist: String
                                  #_[prompt="What playlist would you like to add to?"]
-                                 #[string_values="com.spotify:playlist"]
+                                 #[string_values="tt:song_name"]
                                  #_[canonical={
                                    base=["playlist"],
                                    verb=["play #"]
                                  }])
-    #_[canonical="add songs to a playlist"]
-    #_[confirmation="add the songs $song to the playlist $playlist"]
-    #[doc="add songs to a playlist"];
+    #_[canonical="add song to a playlist"]
+    #_[confirmation="add the song $song to the playlist $playlist"]
+    #[doc="add song to a playlist"];
 
     action player_next()
     #_[canonical="go to the next song"]
