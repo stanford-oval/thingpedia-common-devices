@@ -1,0 +1,85 @@
+====
+# online/1511175
+U: get new york times
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.nytimes.get_front_page() => notify;
+====
+# online/1516978
+U: read a nyt article
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.nytimes.get_front_page() => notify;
+====
+# online/1642812
+U: show me news articles published in the last 2 ms from new york times
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.nytimes.get_front_page()), updated >= new Date() - 2ms => notify;
+====
+# online/15252540
+U: how many new york times articles today
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => aggregate count of ((@com.nytimes.get_front_page()), updated >= start_of(day)) => notify;
+====
+# online/32513047
+U: show me the new york times
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.nytimes.get_front_page() => notify;
+====
+# online/32513048
+U: show me new york times articles about trump
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.nytimes.get_front_page()), title =~ "trump" => notify;
+====
+# online/ac52
+U: what are today's news from the new york times
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.nytimes.get_front_page()), updated >= start_of(day) => notify;
+====
+# online/count-7
+U: how many new york times articles have been published this week?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => aggregate count of ((@com.nytimes.get_front_page()), updated >= start_of(week)) => notify;
+====
+# online/ep29
+U: what's happening in the world today according to the new york times?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.nytimes.get_front_page()), updated >= start_of(day) => notify;
+====
+# online/1659094
+U: show me new york times articles that have trump is wrong in the title
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.nytimes.get_front_page()), title =~ "trump is wrong" => notify;
+====
+# online/1679880
+U: get me some new york times articles about trump
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.nytimes.get_front_page()), title =~ "trump" => notify;
+====
+# online/27838537
+U: get nyt articles
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.nytimes.get_front_page() => notify;
+====
+# online/27838569
+U: get nyt articles with health care in the title
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.nytimes.get_front_page()), title =~ "health care" => notify;
+====
+# online/32450695
+U: get nyt business
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.nytimes.get_section_page(section=enum(business)) => notify;
+====
+# online/32513057
+U: get a new york times article on trump
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.nytimes.get_front_page()), description =~ "trump" => notify;
+====
+# online/61554003
+U: ask new york times for the news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.nytimes.get_front_page() => notify;
+====
+# online/27838570
+U: get nyt articles with health in the title
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.nytimes.get_front_page()), title =~ "health" => notify;

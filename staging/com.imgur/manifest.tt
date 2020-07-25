@@ -1,10 +1,9 @@
 class @com.imgur {
     import loader from @org.thingpedia.v2();
-    import config from @org.thingpedia.config.oauth2(client_id=$undefined,
-                                                     client_secret=$undefined);
+    import config from @org.thingpedia.config.oauth2(client_id=$?, client_secret=$?);
 
     monitorable list query gallery(in opt section : Enum(hot,user),
-                                   in opt sort : Enum(viral,rising),
+                                   in opt order_by : Enum(viral,rising),
                                    out title : String #[string_values="tt:news_title"],
                                    out author : Entity(tt:username) #[string_values="com.twitter:username"],
                                    out date : Date,
@@ -13,7 +12,7 @@ class @com.imgur {
                                    out points : Number,
                                    out width : Number,
                                    out height : Number,
-                                   out hashtags : Array(Entity(tt:hashtag)) #[string_values="com.giphy:tag"],
+                                   out hashtags : Array(Entity(tt:hashtag)) #[string_values="com.twitter:hashtag"],
                                    out is_album : Boolean,
                                    out is_mature : Boolean,
     				   out album_id : Entity(com.imgur:album_id))
@@ -32,7 +31,7 @@ class @com.imgur {
                                    out points : Number,
                                    out width : Number,
                                    out height : Number,
-                                   out hashtags : Array(Entity(tt:hashtag)) #[string_values="com.giphy:tag"],
+                                   out hashtags : Array(Entity(tt:hashtag)) #[string_values="com.twitter:hashtag"],
                                    out is_album : Boolean,
                                    out is_mature : Boolean,
     				   out album_id : Entity(com.imgur:album_id))
@@ -68,7 +67,7 @@ class @com.imgur {
     		  in req title : String #[string_values="com.instagram:caption"] #[prompt="What should be the title of the picture?"],
     		  in opt body : String #[prompt="What should be the description of the picture?"],
     		  in opt is_mature : Boolean #[prompt="Should I mark this picture as mature?"],
-    		  in opt hashtags : Array(Entity(tt:hashtag)) #[string_values="com.giphy:tag"],
+    		  in opt hashtags : Array(Entity(tt:hashtag)) #[string_values="com.twitter:hashtag"],
                   in req to_gallery : Boolean #[prompt="Do you want to share this picture to the gallery?"])
     #_[confirmation="upload an image to Imgur with title ${title}"];
 }

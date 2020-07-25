@@ -1,0 +1,115 @@
+====
+# online/cheat1435863
+U: send email to
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.gmail.send_email(to=$?, subject=$?, message=$?);
+====
+# online/count-34
+U: how many emails arrived today?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => aggregate count of ((@com.gmail.inbox()), date >= start_of(day)) => notify;
+====
+# online/count-66
+U: how many emails have i received today on gmail?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => aggregate count of ((@com.gmail.inbox()), date >= start_of(day)) => notify;
+====
+# online/count-96
+U: show me how many emails i have labelled work.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => aggregate count of ((@com.gmail.inbox()), contains(labels, "work")) => notify;
+====
+# online/1435452
+U: check my email
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.gmail.inbox() => notify;
+====
+# online/1441249
+U: what was my last email
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.gmail.inbox() => notify;
+====
+# online/1448782
+U: list emails
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.gmail.inbox() => notify;
+====
+# online/1475313
+U: get my mail
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.gmail.inbox() => notify;
+====
+# online/1642177
+U: show me my latest email from gmail
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.gmail.inbox() => notify;
+====
+# online/1642180
+U: show me my latest email from str:EMAIL_ADDRESS::0:
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.gmail.inbox()), sender_address == "str:EMAIL_ADDRESS::0:"^^tt:email_address => notify;
+====
+# online/1642370
+U: get my latest emails from str:EMAIL_ADDRESS::0:
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.gmail.inbox()), sender_address == "str:EMAIL_ADDRESS::0:"^^tt:email_address => notify;
+====
+# online/1642538
+U: get my emails
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.gmail.inbox() => notify;
+====
+# online/1647215
+U: send francise an email
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.gmail.send_email(to="francise"^^tt:username, subject=$?, message=$?);
+====
+# online/61553999
+U: ask gmail for my emails
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.gmail.inbox() => notify;
+====
+# online/cheat1435869
+U: open my latest email
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.gmail.inbox() => notify;
+====
+# online/count-19
+U: how many important emails arrived yesterday?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => aggregate count of ((@com.gmail.inbox(is_important=true)), (date >= start_of(day) - 1day && date <= start_of(day))) => notify;
+====
+# online/count-57
+U: tell me how many emails from work are in my inbox.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => aggregate count of ((@com.gmail.inbox()), contains(labels, "work")) => notify;
+====
+# online/120546
+U: get latest gmail
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.gmail.inbox() => notify;
+====
+# online/128821
+U: get latest email with label travel
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.gmail.inbox()), contains(labels, "travel") => notify;
+====
+# online/135864
+U: send picture on fucking gmail
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.gmail.send_picture(to=$?, subject=$?, message=$?, picture_url=$?);
+====
+# online/1439689
+U: get email
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.gmail.inbox() => notify;
+====
+# online/1470578
+U: email
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.gmail.send_email(to=$?, subject=$?, message=$?);
+====
+# online/61554001
+U: ask gmail to send a picture to bob
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.gmail.send_picture(to="bob"^^tt:username, subject=$?, message=$?, picture_url=$?);

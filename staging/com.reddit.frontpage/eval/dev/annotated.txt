@@ -1,0 +1,10 @@
+====
+# online/count-94
+U: how many posts on reddit front page had the word cat in them this week?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => aggregate count of ((@com.reddit.frontpage.get()), (title ~= "cat" && updated >= start_of(week))) => notify;
+====
+# online/32513070
+U: get reddit
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.reddit.frontpage.get() => notify;

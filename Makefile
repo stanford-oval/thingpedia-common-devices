@@ -28,8 +28,9 @@ staging_pkgfiles := $(universe_pkgfiles) $(call pkgfiles_fn,staging)
 template_file ?= thingtalk/en/dialogue.genie
 dataset_file ?= eval/$(release)/dataset.tt
 schema_file ?= eval/$(release)/schema.tt
-paraphrases_user ?= $(wildcard $(release)/*/paraphrase/*.tsv)
+paraphrases_user ?= eval/$(release)/paraphrase.tsv $(foreach d,$($(release)_devices),$(d)/eval/paraphrase.tsv)
 eval_files ?= eval/$(release)/$(eval_set)/annotated.txt $(foreach d,$($(release)_devices),$(d)/eval/$(eval_set)/annotated.txt)
+fewshot_train_files ?= eval/$(release)/train/annotated.txt $(foreach d,$($(release)_devices),$(d)/eval/train/annotated.txt)
 
 synthetic_flags ?= \
 	dialogues \
@@ -51,6 +52,9 @@ max_turns ?= 5
 max_depth ?= 8
 debug_level ?= 1
 update_canonical_flags ?= --algorithm bert,adj,bart --paraphraser-model ./models/paraphraser-bart
+synthetic_expand_factor ?= 5
+paraphrase_expand_factor ?= 10
+quoted_fraction ?= 0.05
 
 generate_flags ?= $(foreach v,$(synthetic_flags),--set-flag $(v)) --target-pruning-size $(target_pruning_size) --max-turns $(max_turns) --maxdepth $(max_depth)
 custom_gen_flags ?=
@@ -156,10 +160,17 @@ eval/$(release)/synthetic.agent.tsv: $(foreach v,$(subdataset_ids),eval/$(releas
 
 eval/$(release)/augmented.user.tsv : eval/$(release)/synthetic.user.tsv $(schema_file) $(paraphrases_user) parameter-datasets.tsv
 	$(genie) augment -o $@.tmp \
-	  --locale en-US --target-language thingtalk --contextual \
-	  --thingpedia $(schema_file) --parameter-datasets parameter-datasets.tsv \
-	  --synthetic-expand-factor 2 --quoted-paraphrasing-expand-factor 60 --no-quote-paraphrasing-expand-factor 20 --quoted-fraction 0.0 \
-	  --no-debug $(paraphrases_user) $< --parallelize $(parallel)
+	  --locale en-US \
+	  --target-language thingtalk --contextual \
+	  --thingpedia $(schema_file) \
+	  --parameter-datasets parameter-datasets.tsv \
+	  --synthetic-expand-factor $(synthetic_expand_factor) \
+	  --quoted-paraphrasing-expand-factor $(paraphrase_expand_factor) \
+	  --no-quote-paraphrasing-expand-factor $(paraphrase_expand_factor) \
+	  --quoted-fraction $(quoted_fraction) \
+	  --no-debug \
+	  --parallelize $(parallel) \
+	  $(paraphrases_user) $<
 	mv $@.tmp $@
 
 eval/$(release)/$(eval_set)/agent.tsv : $(eval_files) $(schema_file)
@@ -174,6 +185,13 @@ eval/$(release)/$(eval_set)/user.tsv : $(eval_files) $(schema_file)
 	  --locale en-US --target-language thingtalk --no-tokenized \
 	  --thingpedia $(schema_file) --side user --flags E \
 	  -o $@.tmp $(eval_files)
+	mv $@.tmp $@
+
+eval/$(release)/train/user.tsv : $(fewshot_train_files) $(schema_file)
+	$(genie) dialog-to-contextual \
+	  --locale en-US --target-language thingtalk --no-tokenized \
+	  --thingpedia $(schema_file) --side user \
+	  -o $@.tmp $(fewshot_train_files)
 	mv $@.tmp $@
 
 eval/$(release)/$(eval_set)/%.dialogue.results: eval/$(release)/models/%/best.pth $(eval_files) $(schema_file) eval/$(release)/database-map.tsv parameter-datasets.tsv
@@ -204,7 +222,12 @@ datadir/user: eval/$(release)/synthetic.user.tsv eval/$(release)/augmented.user.
 	cp eval/$(release)/dev/user.tsv $@/eval.tsv ; \
 	touch $@
 
-datadir: datadir/agent datadir/user $(foreach v,$(subdataset_ids),eval/$(release)/synthetic-$(v).txt)
+datadir/fewshot: eval/$(release)/train/user.tsv eval/$(release)/dev/user.tsv
+	mkdir -p $@/user
+	cp eval/$(release)/train/user.tsv $@/user/train.tsv
+	cp eval/$(release)/dev/user.tsv $@/user/eval.tsv
+
+datadir: datadir/agent datadir/user datadir/fewshot $(foreach v,$(subdataset_ids),eval/$(release)/synthetic-$(v).txt)
 	cat eval/$(release)/synthetic-*.txt > $@/synthetic.txt
 	python3 ./scripts/measure.py $@ > $@/stats
 	touch $@
@@ -224,7 +247,11 @@ lint:
 	done
 
 evaluate: eval/$(release)/$(eval_set)/$(model).dialogue.results
-	for f in $^ ; do echo $$f ; cat $$f ; done
+	echo $<
+	cat $<
+
+evaluate-all:
+	for m in $($(release)_eval_$(eval_set)_models) ; do make model=$$m evaluate ; done
 
 eval/$(release)/models/%/best.pth:
 	mkdir -p eval/$(release)/models/$(if $(findstring /,$*),$(dir $*),)

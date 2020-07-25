@@ -2,12 +2,14 @@ class @com.instagram {
   import loader from @org.thingpedia.v2();
   import config from @org.thingpedia.config.oauth2();
 
+  entity filter_ #_[description="Instagram Filter"] #[has_ner=true];
+
   monitorable query get_pictures(in opt count: Number #_[prompt="How many pictures do you want?"],
                                  out media_id: Entity(instagram:media_id),
                                  out picture_url: Entity(tt:picture),
                                  out caption: String #[string_values="com.instagram:caption"],
                                  out link: Entity(tt:url),
-                                 out filter: Entity(com.instagram:filter) #_[prompt="With what filters do you want pictures?"],
+                                 out filter_: Entity(com.instagram:filter_) #_[prompt="With what filters do you want pictures?"],
                                  out hashtags: Array(Entity(tt:hashtag)) #[string_values="com.instagram:hashtag"],
                                  out location: Location)
   #_[canonical="get pictures on instagram"]

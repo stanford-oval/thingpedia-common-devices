@@ -8,16 +8,15 @@ Thingpedia is the open, crowdsourced knowledge base for virtual assistants.
 Anyone can contribute the interface code to access any device or
 web service to Thingpedia.
 
-This repository contains a subset of the interfaces hosted
-on Thingpedia, that are maintained by the Thingpedia authors.
+This repository contains the interfaces hosted on Thingpedia that are
+maintained collaboratively by the Thingpedia authors and various contributors.
 
 These interfaces cannot be used alone: each interface must be packaged
 and uploaded separately to Thingpedia, to be used by some installation
 of the Almond virtual assistant.
 While a package.json is present at the top of this repository, its purpose
-is only to declare dependencies used in automatic testing. Directly importing
-this package, or any of the Thingpedia interfaces, is likely to fail without
-the necessary surrounding code.
+is only to declare dependencies used to train dialogue models and test
+the devices. You cannot import this package directly.
 
 Thingpedia is part of Almond, a research project led by
 prof. Monica Lam, from Stanford University.  You can find more
@@ -39,45 +38,19 @@ on their development maturity:
   wide use; staging devices are not regularly tested and might have out-of-date
   dependencies or security vulnerabilities; use `staging` devices at your own risk.
   
-Each device is in a folder named after the device ID. The folder contains:
+## Documentation
 
-- `manifest.tt`: the Thingpedia device definition
-- `dataset.tt`: additional primitive templates for the Thingpedia device
-- `icon.png`: the icon in Thingpedia
-- `eval/`: evaluation data (one folder for dev and one for test)
-- `eval/*/input.txt`: bare dialogues between user and agent
-- `eval/*/annotated.txt`: annotated dialogues
-- `paraphrase/`: (optional) paraphrase data
-- `package.json` and `yarn.lock`: node package definition and dependency list for the Thingpedia device, if the device needs custom JS code
-- `*.js`: custom JS code used by the Thingpedia device
-- `node_modules/`: (optional, generated) NPM dependencies for the device
+See [doc/index.md](doc/index.md) for all the documentation associated with this
+repository, including the layout of each device, and the developer workflow.
 
-## Test your device
-This repository also provides a simple test framework for devices 
-that require no authentication or username-password style 
-[basic authentication](https://almond.stanford.edu/thingpedia/developers/thingpedia-device-intro-auth-n-discovery.md#username-and-password). 
+## License
 
-Once your device has been created, you can add the test under directory `test/`. 
-A couple examples have been added for your reference. 
-For example, if you want to test your device named `com.xxx`, 
-first create a test file `com.xxx.js`, and `com.xxx.cred.json` containing
-the username and password (for basic authentication only) under directory `test`, 
-and then run `yarn test com.xxx` (or `node test/index.js com.xxx` if you are not a fan of `yarn`).
+The scripts in this repository are generally under 3-Clause BSD license, with
+a few exceptions in Apache 2.0, indicated at the top of each file.
 
-Make sure your device either (1) has name and description annotation in `manifest.tt`
-(see `com.wikicfp/manifest.tt` as an example) or (2) has a constructor
-in the JavaScript class defining the name and description (see `com.bing` as an example).
+Each Thingpedia device is copyright of the respective author, and has a copyright
+notice at the top of the file, as well as a `#[license]` annotation in SPDX format
+in the `manifest.tt` file.
 
-## Prepare the package and upload to Thingpedia
-Once you are ready, you can pack your interface and submit it to Thingpedia. 
-If the device only has one JavaScript file and no dependencies (i.e., `node_modules`), 
-you can go ahead and upload the JavaScript file at <https://almond.stanford.edu/thingpedia/upload/create>.
-Otherwise, you will need to upload a zip file containing all the files and dependencies.
-You can create the zip file by running `make com.xxx.zip`.
-
-## Add your device to this repository
-Create a pull request if you want to add your device to this repository.
-If the device uses basic authentication and comes with a test, i.e., requires a `.cred.json` file,
-run `travis encrypt-file test/com.xxx.cred.json --add`.
-This will create a file named `com.xxx.cred.json.enc` and update `.travis.yml`.
-Commit both files before your pull request. 
+Datasets that are not in the public domain or covered by the repository license
+have their license indicated in the same folder.

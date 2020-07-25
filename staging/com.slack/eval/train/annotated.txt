@@ -1,0 +1,15 @@
+====
+# online/count-31
+U: how many slack messages in finance have i received in the last hour?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => aggregate count of ((@com.slack.channel_history()), (channel == "finance"^^tt:hashtag && date >= start_of(h))) => notify;
+====
+# online/120637
+U: send message on slack to hyperacusia saying
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.slack.send(channel="hyperacusia"^^tt:hashtag, message=$?);
+====
+# online/121155
+U: send message on slack saying meeting today
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.slack.send(message="meeting today", channel=$?);
