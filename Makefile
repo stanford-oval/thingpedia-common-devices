@@ -43,13 +43,13 @@ synthetic_flags ?= \
 	undefined_filter \
 	$(NULL)
 
-target_pruning_size ?= 125
+target_pruning_size ?= 100
 minibatch_size ?= 300
 target_size ?= 1
 subdatasets ?= 6
 subdataset_ids := $(shell seq 1 $(subdatasets))
-max_turns ?= 5
-max_depth ?= 8
+max_turns ?= 4
+max_depth ?= 10
 debug_level ?= 1
 update_canonical_flags ?= --algorithm bert,adj,bart --paraphraser-model ./models/paraphraser-bart
 synthetic_expand_factor ?= 5
