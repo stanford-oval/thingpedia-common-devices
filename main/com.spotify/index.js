@@ -47,8 +47,6 @@ const PAUSE_URL = 'https://api.spotify.com/v1/me/player/pause';
 const NEXT_URL = 'https://api.spotify.com/v1/me/player/next';
 const PREVIOUS_URL = 'https://api.spotify.com/v1/me/player/previous';
 const REPEAT_URL = 'https://api.spotify.com/v1/me/player/repeat?';
-const USER_PLAYLISTS = 'https://api.spotify.com/v1/users/{username}/playlists?';
-const PER_SET = 50;
 
 module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
@@ -462,85 +460,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             });
         });
     }
-    getPageOfPlaylists(offset = 0) {
-        let set = USER_PLAYLISTS.replace(new RegExp('{username}', 'g'), this.state.userId.toString());
-        set = set + querystring.stringify({ offset: offset, limit: PER_SET });
-        console.log('user playlist search url is ' + set);
-        return Tp.Helpers.Http.get(set, {
-            accept: 'application/json',
-            useOAuth2: this
-        }).then((response) => {
-            return JSON.parse(response);
-        }).catch((e) => {
-            throw new Error(JSON.parse(e.detail).error.message);
-        });
-    }
-    async getUserPlaylists() {
-        let allPlaylists = [];
-        let nextSet = await this.getPageOfPlaylists();
-        allPlaylists = allPlaylists.concat(nextSet.items);
-        let size = nextSet.total;
-        for (let i = PER_SET; i < size; i += PER_SET) {
-            nextSet = await this.getPageOfPlaylists(i);
-            allPlaylists = allPlaylists.concat(nextSet.items);
-        }
-        return allPlaylists;
-    }
-    async find_my_playlist(playlist) {
-        let playlists = await this.getUserPlaylists();
-        //TODO: change to return error.
-        if (playlists.length === 0) throw new Error(`You don't have any playlist`); //'
-        return this.findBestPlaylistMatch(playlist, playlists);
-    }
-    async do_add_song_to_playlist({ song, playlist }) { //TODO: rename this later to _ "add songs ... "
-        let playListURI = await this.find_my_playlist(playlist);
-        playListURI = playListURI.substring(playListURI.indexOf("playlist:") + 9);
-        let data = { "uris": [song.value] };
-        return this.add_uris_to_playlist(playListURI, data);
-    }
-    async do_add_this_song_to_playlist({ playlist }) {
-        let song = await this.currently_playing_helper();
-        if (song === '' || song.length === 0)
-            throw new Error(`No song is playing`);
-        song = JSON.parse(song);
-        let data = { "uris": [song.item.uri] };
-        let playListURI = await this.find_my_playlist(playlist);
-        playListURI = playListURI.substring(playListURI.indexOf("playlist:") + 9);
-        return this.add_uris_to_playlist(playListURI, data);
-    }
-    async do_play_my_playlist({ playlist }) {
-        let matchedPlaylistURI = await this.find_my_playlist(playlist);
-        console.log("matched playlist is " + matchedPlaylistURI);
-        if (matchedPlaylistURI.length === 0) return;
-        console.log("best match is " + matchedPlaylistURI);
-        await this.player_play_helper(JSON.stringify({ 'context_uri': matchedPlaylistURI }));
-    }
-    add_uris_to_playlist(playlistURL, uris) {
-        let addingURL = `https://api.spotify.com/v1/users/${this.state.userId}/playlists/${playlistURL}/tracks`;
-        console.log("url is " + addingURL);
-        console.log(typeof addingURL);
-        console.log(JSON.stringify(uris));
-        return this.http_post_default_options(addingURL.toString(), JSON.stringify(uris));
-    }
-    findBestPlaylistMatch(query, allPlaylists) {
-        let bestMatch = { uri: '', score: '', name: '' };
-        bestMatch.uri = allPlaylists[0].uri;
-        bestMatch.name = allPlaylists[0].name.toLowerCase();
-        bestMatch.score = getEditDistance(query.toLowerCase(), bestMatch.name);
-        for (let i = 1; i < allPlaylists.length; i++) {
-            let name = allPlaylists[i].name.toLowerCase();
-            let score = getEditDistance(query.toLowerCase(), name);
-            if (score < bestMatch.score) {
-                bestMatch.score = score;
-                bestMatch.uri = allPlaylists[i].uri;
-                bestMatch.name = name;
-            }
-            if (bestMatch.score === 0) break;
-        }
-        if (bestMatch.uri === '' || bestMatch.score / Math.max(query.length, bestMatch.name.length) > 0.34)
-            throw new Error(`Playlist ${query} not found`);
-        return bestMatch.uri;
-    }
+
     get_get_currently_playing() {
         return this.currently_playing_helper().then((response) => {
             if (response === '' || response.length === 0)
@@ -583,32 +503,3 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         return this.http_put_default_options(REPEAT_URL + querystring.stringify({ state: repeat }), '');
     }
 };
-
-function getEditDistance(a, b) {
-    if (a.length === 0) return b.length;
-    if (b.length === 0) return a.length;
-    var matrix = [];
-    // increment along the first column of each row
-    var i;
-    for (i = 0; i <= b.length; i++)
-        matrix[i] = [i];
-
-    // increment each column in the first row
-    var j;
-    for (j = 0; j <= a.length; j++)
-        matrix[0][j] = j;
-
-    // Fill in the rest of the matrix
-    for (i = 1; i <= b.length; i++) {
-        for (j = 1; j <= a.length; j++) {
-            if (b.charAt(i - 1) === a.charAt(j - 1)) {
-                matrix[i][j] = matrix[i - 1][j - 1];
-            } else {
-                matrix[i][j] = Math.min(matrix[i - 1][j - 1] + 1, // substitution
-                    Math.min(matrix[i][j - 1] + 1, // insertion
-                        matrix[i - 1][j] + 1)); // deletion
-            }
-        }
-    }
-    return matrix[b.length][a.length];
-}
