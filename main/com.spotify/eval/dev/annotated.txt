@@ -1,35 +1,53 @@
-====# online/spotify-0U: add fast slow disco to my playlist.UT: $dialogue @org.thingpedia.dialogue.transaction.execute;UT: now => (@com.spotify.song()), id =~ "fast slow disco" => notify;UT: now => @com.spotify.add_songs_to_playlist(song=$?, playlist=$?);====# online/spotify-1U: turn off repeat.UT: $dialogue @org.thingpedia.dialogue.transaction.execute;UT: now => @com.spotify.player_repeat(repeat=enum(off));====# online/spotify-103U: play funky tunes playlistUT: $dialogue @org.thingpedia.dialogue.transaction.execute;UT: now => @com.spotify.play_my_playlist(playlist="funky tunes");====# online/spotify-110U: play the song stairway to heavenUT: $dialogue @org.thingpedia.dialogue.transaction.execute;UT: now => (@com.spotify.song()), id =~ "stairway to heaven" => notify;UT: now => @com.spotify.play_song(song=$?);====# online/spotify-114U: what track is currently playing on spotify?UT: $dialogue @org.thingpedia.dialogue.transaction.execute;UT: now => @com.spotify.get_currently_playing() => notify;====# online/spotify-177U: please add the song currently playing to my relax playlist.UT: $dialogue @org.thingpedia.dialogue.transaction.execute;UT: now => @com.spotify.add_this_song_to_playlist(playlist="relax");====# online/spotify-239U: add the space jam theme song to my hype playlist.UT: $dialogue @org.thingpedia.dialogue.transaction.execute;UT: now => (@com.spotify.song()), id =~ "space jam theme song" => notify;UT: now => @com.spotify.add_songs_to_playlist(playlist="hype", song=$?);====# online/spotify-35U: play something by the smashing pumpkinsUT: $dialogue @org.thingpedia.dialogue.transaction.execute;UT: now => (@com.spotify.artist()), id =~ "smashing pumpkins" => notify;UT: now => @com.spotify.play_artist(artist=$?);====# online/1674005U: resume my spotifyUT: $dialogue @org.thingpedia.dialogue.transaction.execute;UT: now => @com.spotify.player_play();====# online/1675050U: play songs by the beatlesUT: $dialogue @org.thingpedia.dialogue.transaction.execute;UT: now => (@com.spotify.artist()), id =~ "the beatles" => notify;UT: now => @com.spotify.play_artist(artist=$?);====# online/1678056U: set shuffle onUT: $dialogue @org.thingpedia.dialogue.transaction.execute;UT: now => @com.spotify.player_shuffle(shuffle=enum(on));====# online/16013786U: find me songs of kanye westUT: $dialogue @org.thingpedia.dialogue.transaction.execute;UT: now => (@com.spotify.artist()), id =~ "kanye west" => notify;UT: now => @com.spotify.play_artist(artist=$?);====# online/32582189U: play the song not afraidUT: $dialogue @org.thingpedia.dialogue.transaction.execute;UT: now => (@com.spotify.song()), id =~ "not afraid" => notify;UT: now => @com.spotify.play_song(song=$?);
 ====
-# 1
-U: play me the song hello .
+# online/spotify-1
+U: turn off repeat.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-A: there are many songs with this name . who is the artist of the song ?
-AT: $dialogue @org.thingpedia.dialogue.transaction.sys_search_question(artists);
-U: i don't remember , but the song was released in the 1980's .
-UT: $dialogue @org.thingpedia.dialogue.transation.execute;
-UT: now => (@com.spotify.song()), (id =~ "hello" && release_date >= new Date("1980-01-01T08:00:00.000Z") && release_date <= new Date("1989-12-31T08:00:00.000Z")) => notify;
-C: $dialogue @org.thingpedia.dialogue.transation.execute;
-C: now => (@com.spotify.song()), (id =~ "hello" && release_date >= new Date("1980-01-01T08:00:00.000Z") && release_date <= new Date("1989-12-31T08:00:00.000Z")) => notify
-C: #[results=[
-C:   { id="spotify:track:0mHyWYXmmCB9iQyK18m3FQ"^^com.spotify:song("Hello"), artists=["spotify:artist:3gMaNLQm7D9MornNILzdSl"^^com.spotify:artist("Lionel Richie")], release_date=new Date("1983-01-01T00:00:00.000Z"), popularity=59, energy=24, danceability=48 }
-C: ]];
-A: i found the song hello by lionel richie .
-AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
-U: yes, thats the one .
+UT: now => @com.spotify.player_repeat(repeat=enum(off));
+====
+# online/spotify-110
+U: play the song stairway to heaven
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: now => (@com.spotify.song()), (id =~ "hello" && release_date >= new Date("1980-01-01T08:00:00.000Z") && release_date <= new Date("1989-12-31T08:00:00.000Z")) => notify
-C: #[results=[
-C:   { id="spotify:track:0mHyWYXmmCB9iQyK18m3FQ"^^com.spotify:song("Hello"), artists=["spotify:artist:3gMaNLQm7D9MornNILzdSl"^^com.spotify:artist("Lionel Richie")], release_date=new Date("1983-01-01T00:00:00.000Z"), popularity=59, energy=24, danceability=48 }
-C: ]];
-A: would you like me to play hello by lionel richie .
-AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
-AT: now => @com.spotify.play_songs(toPlay=$?)
-AT: #[confirm=enum(proposed)];
-U: yes please . thanks .
+UT: now => (@com.spotify.song()), id =~ "stairway to heaven" => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# online/spotify-114
+U: what track is currently playing on spotify?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.spotify.play_songs(toPlay=["spotify:track:0mHyWYXmmCB9iQyK18m3FQ"^^com.spotify:song("Hello")]);
+UT: now => @com.spotify.get_currently_playing() => notify;
+====
+# online/spotify-35
+U: play something by the smashing pumpkins
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.spotify.artist()), id =~ "smashing pumpkins" => notify;
+UT: now => @com.spotify.play_artist(artist=$?);
+====
+# online/1674005
+U: resume my spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.player_play();
+====
+# online/1675050
+U: play songs by the beatles
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.spotify.artist()), id =~ "the beatles" => notify;
+UT: now => @com.spotify.play_artist(artist=$?);
+====
+# online/1678056
+U: set shuffle on
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.player_shuffle(shuffle=enum(on));
+====
+# online/16013786
+U: find me songs of kanye west
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.spotify.artist()), id =~ "kanye west" => notify;
+UT: now => @com.spotify.play_artist(artist=$?);
+====
+# online/32582189
+U: play the song not afraid
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.spotify.song()), id =~ "not afraid" => notify;
+UT: now => @com.spotify.play_song(song=$?);
 ====
 # 2
 U: what is drake's most popular song ?
@@ -52,7 +70,7 @@ C: ]]
 C: #[count=22];
 A: his most popular song right now is toosie slide . would you like to play this song ?
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
-AT: now => @com.spotify.play_songs(toPlay=$?)
+AT: now => @com.spotify.play_song(song=$?)
 AT: #[confirm=enum(proposed)];
 U: i don't know that song . when was it released ?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
@@ -82,138 +100,6 @@ AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
 U: ok thanks, goodbye .
 UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
 ====
-# 3
-U: play me some taylor swift songs .
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-A: there are many songs by taylor swift . what type of taylor swift song would you like ?
-AT: $dialogue @org.thingpedia.dialogue.transaction.sys_generic_search_question;
-U: i don't like her new songs , can you play her oldest songs .
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (sort release_date asc of (@com.spotify.song())), contains~(artists, "taylor swift") => notify;
-C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: now => (sort release_date asc of (@com.spotify.song())), contains~(artists, "taylor swift") => notify
-C: #[results=[
-C:   { id="spotify:track:15DeqWWQB4dcEWzJg15VrN"^^com.spotify:song("Our Song"), artists=["spotify:artist:06HL4z0CvFAxyc27GXpf02"^^com.spotify:artist("Taylor Swift")], release_date=new Date("2006-10-24T00:00:00.000Z"), popularity=65, energy=0.672, danceability=0.668 },
-C:   { id="spotify:track:1vrd6UOGamcKNGnSHJQlSt"^^com.spotify:song("Love Story"), artists=["spotify:artist:06HL4z0CvFAxyc27GXpf02"^^com.spotify:artist("Taylor Swift")], release_date=new Date("2008-11-11T00:00:00.000Z"), popularity=68, energy=0.741, danceability=0.618 },
-C:   { id="spotify:track:3GCL1PydwsLodcpv0Ll1ch"^^com.spotify:song("You Belong With Me"), artists=["spotify:artist:06HL4z0CvFAxyc27GXpf02"^^com.spotify:artist("Taylor Swift")], release_date=new Date("2008-11-11T00:00:00.000Z"), popularity=67, energy=0.783, danceability=0.687 },
-C:   { id="spotify:track:72jCZdH0Lhg93z6Z4hBjgj"^^com.spotify:song("I Knew You Were Trouble."), artists=["spotify:artist:06HL4z0CvFAxyc27GXpf02"^^com.spotify:artist("Taylor Swift")], release_date=new Date("2012-10-22T00:00:00.000Z"), popularity=66, energy=0.469, danceability=0.622 },
-C:   { id="spotify:track:1p80LdxRV74UKvL8gnD7ky"^^com.spotify:song("Blank Space"), artists=["spotify:artist:06HL4z0CvFAxyc27GXpf02"^^com.spotify:artist("Taylor Swift")], release_date=new Date("2014-10-27T00:00:00.000Z"), popularity=71, energy=0.678, danceability=0.752 },
-C:   { id="spotify:track:5xTtaWoae3wi06K5WfVUUH"^^com.spotify:song("Shake It Off"), artists=["spotify:artist:06HL4z0CvFAxyc27GXpf02"^^com.spotify:artist("Taylor Swift")], release_date=new Date("2014-10-27T00:00:00.000Z"), popularity=70, energy=0.785, danceability=0.648 },
-C:   { id="spotify:track:59HjlYCeBsxdI0fcm3zglw"^^com.spotify:song("Wildest Dreams"), artists=["spotify:artist:06HL4z0CvFAxyc27GXpf02"^^com.spotify:artist("Taylor Swift")], release_date=new Date("2014-10-27T00:00:00.000Z"), popularity=68, energy=0.664, danceability=0.553 },
-C:   { id="spotify:track:273dCMFseLcVsoSWx59IoE"^^com.spotify:song("Bad Blood"), artists=["spotify:artist:06HL4z0CvFAxyc27GXpf02"^^com.spotify:artist("Taylor Swift")], release_date=new Date("2014-10-27T00:00:00.000Z"), popularity=64, energy=0.802, danceability=0.652 },
-C:   { id="spotify:track:6NFyWDv5CjfwuzoCkw47Xf"^^com.spotify:song("Delicate"), artists=["spotify:artist:06HL4z0CvFAxyc27GXpf02"^^com.spotify:artist("Taylor Swift")], release_date=new Date("2017-11-10T00:00:00.000Z"), popularity=76, energy=0.404, danceability=0.75 },
-C:   { id="spotify:track:1P17dC1amhFzptugyAO7Il"^^com.spotify:song("Look What You Made Me Do"), artists=["spotify:artist:06HL4z0CvFAxyc27GXpf02"^^com.spotify:artist("Taylor Swift")], release_date=new Date("2017-11-10T00:00:00.000Z"), popularity=75, energy=0.709, danceability=0.766 }
-C: ]]
-C: #[count=20];
-A: i sorted taylor swift songs from oldest to newest . would you like me to play these songs ?
-AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
-AT: now => @com.spotify.play_songs(toPlay=$?);
-U: yes, thank you for your help.
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.spotify.play_songs(toPlay=["spotify:track:15DeqWWQB4dcEWzJg15VrN"^^com.spotify:song("Our Song"), "spotify:track:1vrd6UOGamcKNGnSHJQlSt"^^com.spotify:song("Love Story"), "spotify:track:3GCL1PydwsLodcpv0Ll1ch"^^com.spotify:song("You Belong With Me"), "spotify:track:72jCZdH0Lhg93z6Z4hBjgj"^^com.spotify:song("I Knew You Were Trouble."), "spotify:track:1p80LdxRV74UKvL8gnD7ky"^^com.spotify:song("Blank Space"), "spotify:track:5xTtaWoae3wi06K5WfVUUH"^^com.spotify:song("Shake It Off"), "spotify:track:59HjlYCeBsxdI0fcm3zglw"^^com.spotify:song("Wildest Dreams"), "spotify:track:273dCMFseLcVsoSWx59IoE"^^com.spotify:song("Bad Blood"), "spotify:track:6NFyWDv5CjfwuzoCkw47Xf"^^com.spotify:song("Delicate"), "spotify:track:1P17dC1amhFzptugyAO7Il"^^com.spotify:song("Look What You Made Me Do")]);
-====
-# 4
-U: hi, i want to play some music .
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.spotify.song() => notify;
-C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: now => @com.spotify.song() => notify
-C: #[results=[
-C:   { id="spotify:track:7qwt4xUIqQWCu1DJf96g2k"^^com.spotify:song("Hello?"), artists=["spotify:artist:3l0CmX0FuQjFxr8SK7Vqag"^^com.spotify:artist("Clairo"), "spotify:artist:3lLHpTOJ11tWiUNGYN14gt"^^com.spotify:artist("Rejjie Snow")], release_date=new Date("2018-05-25T00:00:00.000Z"), popularity=74, energy=47, danceability=83 },
-C:   { id="spotify:track:4sPmO7WMQUAf45kwMOtONw"^^com.spotify:song("Hello"), artists=["spotify:artist:4dpARuHxo51G3z768sgnrY"^^com.spotify:artist("Adele")], release_date=new Date("2016-06-24T00:00:00.000Z"), popularity=71, energy=45, danceability=48 },
-C:   { id="spotify:track:7a2IJHzw9WJjoknwdnCop0"^^com.spotify:song("hello!"), artists=["spotify:artist:1dy5WNgIKQU6ezkpZs4y8z"^^com.spotify:artist("ROLE MODEL")], release_date=new Date("2019-11-13T00:00:00.000Z"), popularity=63, energy=46, danceability=79 },
-C:   { id="spotify:track:2c62Xf5Po1YSa1N6LOjPHy"^^com.spotify:song("Hello My Old Heart"), artists=["spotify:artist:3Fe3pszR2t4TOBVz41B1WR"^^com.spotify:artist("The Oh Hellos")], release_date=new Date("2011-12-01T00:00:00.000Z"), popularity=64, energy=29, danceability=55 },
-C:   { id="spotify:track:1p61zyWNtBhbbAFzg4HUiq"^^com.spotify:song("Hello Beautiful"), artists=["spotify:artist:1qDDkysTxJvFandHwP9CMx"^^com.spotify:artist("Noah Schnacky")], release_date=new Date("2018-01-27T00:00:00.000Z"), popularity=63, energy=47, danceability=50 },
-C:   { id="spotify:track:0mHyWYXmmCB9iQyK18m3FQ"^^com.spotify:song("Hello"), artists=["spotify:artist:3gMaNLQm7D9MornNILzdSl"^^com.spotify:artist("Lionel Richie")], release_date=new Date("1983-01-01T00:00:00.000Z"), popularity=59, energy=24, danceability=48 },
-C:   { id="spotify:track:30Chv2SmIry70YwtmtaKnj"^^com.spotify:song("Hello"), artists=["spotify:artist:6l3HvQ5sa6mXTsMTB19rO5"^^com.spotify:artist("J. Cole")], release_date=new Date("2014-12-09T00:00:00.000Z"), popularity=59, energy=7, danceability=63 },
-C:   { id="spotify:track:6vmAgl2y9MpoZKrVUXrPe5"^^com.spotify:song("Hello Darlin'"), artists=["spotify:artist:7gi3jmwpUpNWdswT8eEprF"^^com.spotify:artist("Conway Twitty")], release_date=new Date("1970-03-23T00:00:00.000Z"), popularity=60, energy=23, danceability=27 },
-C:   { id="spotify:track:7bza6R254w7hZyNO9zaIxc"^^com.spotify:song("Hello"), artists=["spotify:artist:5jZeLexrrwGNUy6nv7tzdr"^^com.spotify:artist("C4C"), "spotify:artist:1uJZwuCV2hXbQDSdJvj198"^^com.spotify:artist("kokoro")], release_date=new Date("2020-02-14T00:00:00.000Z"), popularity=61, energy=21, danceability=64 },
-C:   { id="spotify:track:0vZ97gHhemKm6c64hTfJNA"^^com.spotify:song("Hello, Goodbye - Remastered 2009"), artists=["spotify:artist:3WrFJ7ztbogyGnTHbHJFl2"^^com.spotify:artist("The Beatles")], release_date=new Date("1967-11-27T00:00:00.000Z"), popularity=65, energy=73, danceability=47 }
-C: ]]
-C: #[count=50]
-C: #[more=true];
-A: what type of music would you like .
-AT: $dialogue @org.thingpedia.dialogue.transaction.sys_generic_search_question;
-U: do you have anything energetic , i'm feeling awfully tired this morning .
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => sort energy desc of (@com.spotify.song()) => notify;
-C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: now => @com.spotify.song() => notify
-C: #[results=[
-C:   { id="spotify:track:7qwt4xUIqQWCu1DJf96g2k"^^com.spotify:song("Hello?"), artists=["spotify:artist:3l0CmX0FuQjFxr8SK7Vqag"^^com.spotify:artist("Clairo"), "spotify:artist:3lLHpTOJ11tWiUNGYN14gt"^^com.spotify:artist("Rejjie Snow")], release_date=new Date("2018-05-25T00:00:00.000Z"), popularity=74, energy=47, danceability=83 },
-C:   { id="spotify:track:4sPmO7WMQUAf45kwMOtONw"^^com.spotify:song("Hello"), artists=["spotify:artist:4dpARuHxo51G3z768sgnrY"^^com.spotify:artist("Adele")], release_date=new Date("2016-06-24T00:00:00.000Z"), popularity=71, energy=45, danceability=48 },
-C:   { id="spotify:track:7a2IJHzw9WJjoknwdnCop0"^^com.spotify:song("hello!"), artists=["spotify:artist:1dy5WNgIKQU6ezkpZs4y8z"^^com.spotify:artist("ROLE MODEL")], release_date=new Date("2019-11-13T00:00:00.000Z"), popularity=63, energy=46, danceability=79 },
-C:   { id="spotify:track:2c62Xf5Po1YSa1N6LOjPHy"^^com.spotify:song("Hello My Old Heart"), artists=["spotify:artist:3Fe3pszR2t4TOBVz41B1WR"^^com.spotify:artist("The Oh Hellos")], release_date=new Date("2011-12-01T00:00:00.000Z"), popularity=64, energy=29, danceability=55 },
-C:   { id="spotify:track:1p61zyWNtBhbbAFzg4HUiq"^^com.spotify:song("Hello Beautiful"), artists=["spotify:artist:1qDDkysTxJvFandHwP9CMx"^^com.spotify:artist("Noah Schnacky")], release_date=new Date("2018-01-27T00:00:00.000Z"), popularity=63, energy=47, danceability=50 },
-C:   { id="spotify:track:0mHyWYXmmCB9iQyK18m3FQ"^^com.spotify:song("Hello"), artists=["spotify:artist:3gMaNLQm7D9MornNILzdSl"^^com.spotify:artist("Lionel Richie")], release_date=new Date("1983-01-01T00:00:00.000Z"), popularity=59, energy=24, danceability=48 },
-C:   { id="spotify:track:30Chv2SmIry70YwtmtaKnj"^^com.spotify:song("Hello"), artists=["spotify:artist:6l3HvQ5sa6mXTsMTB19rO5"^^com.spotify:artist("J. Cole")], release_date=new Date("2014-12-09T00:00:00.000Z"), popularity=59, energy=7, danceability=63 },
-C:   { id="spotify:track:6vmAgl2y9MpoZKrVUXrPe5"^^com.spotify:song("Hello Darlin'"), artists=["spotify:artist:7gi3jmwpUpNWdswT8eEprF"^^com.spotify:artist("Conway Twitty")], release_date=new Date("1970-03-23T00:00:00.000Z"), popularity=60, energy=23, danceability=27 },
-C:   { id="spotify:track:7bza6R254w7hZyNO9zaIxc"^^com.spotify:song("Hello"), artists=["spotify:artist:5jZeLexrrwGNUy6nv7tzdr"^^com.spotify:artist("C4C"), "spotify:artist:1uJZwuCV2hXbQDSdJvj198"^^com.spotify:artist("kokoro")], release_date=new Date("2020-02-14T00:00:00.000Z"), popularity=61, energy=21, danceability=64 },
-C:   { id="spotify:track:0vZ97gHhemKm6c64hTfJNA"^^com.spotify:song("Hello, Goodbye - Remastered 2009"), artists=["spotify:artist:3WrFJ7ztbogyGnTHbHJFl2"^^com.spotify:artist("The Beatles")], release_date=new Date("1967-11-27T00:00:00.000Z"), popularity=65, energy=73, danceability=47 }
-C: ]]
-C: #[count=50]
-C: #[more=true];
-C: now => sort energy desc of (@com.spotify.song()) => notify
-C: #[results=[
-C:   { id="spotify:track:0G21yYKMZoHa30cYVi1iA8"^^com.spotify:song("Welcome To The Jungle"), artists=["spotify:artist:3qm84nBOXUEQ2vnTfUTTFC"^^com.spotify:artist("Guns N' Roses")], release_date=new Date("1987-07-21T00:00:00.000Z"), popularity=72, energy=98, danceability=45 },
-C:   { id="spotify:track:7snQQk1zcKl8gZ92AnueZW"^^com.spotify:song("Sweet Child O' Mine"), artists=["spotify:artist:3qm84nBOXUEQ2vnTfUTTFC"^^com.spotify:artist("Guns N' Roses")], release_date=new Date("1987-07-21T00:00:00.000Z"), popularity=74, energy=95, danceability=44 },
-C:   { id="spotify:track:5zA8vzDGqPl2AzZkEYQGKh"^^com.spotify:song("Uptown Girl"), artists=["spotify:artist:6zFYqv1mOsgBRQbae3JJ9e"^^com.spotify:artist("Billy Joel")], release_date=new Date("1983-08-08T00:00:00.000Z"), popularity=77, energy=94, danceability=70 },
-C:   { id="spotify:track:4xh7W7tlNMIczFhupCPniY"^^com.spotify:song("Go Your Own Way - 2004 Remaster"), artists=["spotify:artist:08GQAI4eElDnROBrJRGE0X"^^com.spotify:artist("Fleetwood Mac")], release_date=new Date("1977-02-04T00:00:00.000Z"), popularity=74, energy=94, danceability=58 },
-C:   { id="spotify:track:0YEg2JfkMeJ1hTYqop4A5o"^^com.spotify:song("7 Rings"), artists=["spotify:artist:00YTqRClk82aMchQQpYMd5"^^com.spotify:artist("Our Last Night"), "spotify:artist:4gO25bbcu1eFNi8uDCvJFS"^^com.spotify:artist("Derek DiScanio")], release_date=new Date("2019-03-26T00:00:00.000Z"), popularity=50, energy=92, danceability=59 },
-C:   { id="spotify:track:5QTxFnGygVM4jFQiBovmRo"^^com.spotify:song("(Don't Fear) The Reaper"), artists=["spotify:artist:00tVTdpEhQQw1bqdu8RCx2"^^com.spotify:artist("Blue Öyster Cult")], release_date=new Date("1976-01-01T00:00:00.000Z"), popularity=75, energy=92, danceability=33 },
-C:   { id="spotify:track:7oK9VyNzrYvRFo7nQEYkWN"^^com.spotify:song("Mr. Brightside"), artists=["spotify:artist:0C0XlULifJtAgn6ZNCW2eu"^^com.spotify:artist("The Killers")], release_date=new Date("2004-06-15T00:00:00.000Z"), popularity=78, energy=92, danceability=35 },
-C:   { id="spotify:track:2zYzyRzz6pRmhPzyfMEC8s"^^com.spotify:song("Highway to Hell"), artists=["spotify:artist:711MCceyCBcFnzjGY4Q7Un"^^com.spotify:artist("AC/DC")], release_date=new Date("1979-07-27T00:00:00.000Z"), popularity=82, energy=91, danceability=57 },
-C:   { id="spotify:track:3CA9pLiwRIGtUBiMjbZmRw"^^com.spotify:song("Nice For What"), artists=["spotify:artist:3TVXtAsR1Inumwj472S9r4"^^com.spotify:artist("Drake")], release_date=new Date("2018-06-29T00:00:00.000Z"), popularity=79, energy=90, danceability=58 },
-C:   { id="spotify:track:2WfaOiMkCvy7F5fcp2zZ8L"^^com.spotify:song("Take on Me"), artists=["spotify:artist:2jzc5TC5TVFLXQlBNiIUzE"^^com.spotify:artist("a-ha")], release_date=new Date("1985-06-01T00:00:00.000Z"), popularity=83, energy=90, danceability=57 }
-C: ]]
-C: #[count=50]
-C: #[more=true];
-A: sure , i can play you songs with high energy . is there a particular artist you would like ?
-AT: $dialogue @org.thingpedia.dialogue.transaction.sys_search_question(artists);
-U: no, just play me anything .
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.spotify.play_songs(toPlay=$?);
-C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: now => @com.spotify.song() => notify
-C: #[results=[
-C:   { id="spotify:track:7qwt4xUIqQWCu1DJf96g2k"^^com.spotify:song("Hello?"), artists=["spotify:artist:3l0CmX0FuQjFxr8SK7Vqag"^^com.spotify:artist("Clairo"), "spotify:artist:3lLHpTOJ11tWiUNGYN14gt"^^com.spotify:artist("Rejjie Snow")], release_date=new Date("2018-05-25T00:00:00.000Z"), popularity=74, energy=47, danceability=83 },
-C:   { id="spotify:track:4sPmO7WMQUAf45kwMOtONw"^^com.spotify:song("Hello"), artists=["spotify:artist:4dpARuHxo51G3z768sgnrY"^^com.spotify:artist("Adele")], release_date=new Date("2016-06-24T00:00:00.000Z"), popularity=71, energy=45, danceability=48 },
-C:   { id="spotify:track:7a2IJHzw9WJjoknwdnCop0"^^com.spotify:song("hello!"), artists=["spotify:artist:1dy5WNgIKQU6ezkpZs4y8z"^^com.spotify:artist("ROLE MODEL")], release_date=new Date("2019-11-13T00:00:00.000Z"), popularity=63, energy=46, danceability=79 },
-C:   { id="spotify:track:2c62Xf5Po1YSa1N6LOjPHy"^^com.spotify:song("Hello My Old Heart"), artists=["spotify:artist:3Fe3pszR2t4TOBVz41B1WR"^^com.spotify:artist("The Oh Hellos")], release_date=new Date("2011-12-01T00:00:00.000Z"), popularity=64, energy=29, danceability=55 },
-C:   { id="spotify:track:1p61zyWNtBhbbAFzg4HUiq"^^com.spotify:song("Hello Beautiful"), artists=["spotify:artist:1qDDkysTxJvFandHwP9CMx"^^com.spotify:artist("Noah Schnacky")], release_date=new Date("2018-01-27T00:00:00.000Z"), popularity=63, energy=47, danceability=50 },
-C:   { id="spotify:track:0mHyWYXmmCB9iQyK18m3FQ"^^com.spotify:song("Hello"), artists=["spotify:artist:3gMaNLQm7D9MornNILzdSl"^^com.spotify:artist("Lionel Richie")], release_date=new Date("1983-01-01T00:00:00.000Z"), popularity=59, energy=24, danceability=48 },
-C:   { id="spotify:track:30Chv2SmIry70YwtmtaKnj"^^com.spotify:song("Hello"), artists=["spotify:artist:6l3HvQ5sa6mXTsMTB19rO5"^^com.spotify:artist("J. Cole")], release_date=new Date("2014-12-09T00:00:00.000Z"), popularity=59, energy=7, danceability=63 },
-C:   { id="spotify:track:6vmAgl2y9MpoZKrVUXrPe5"^^com.spotify:song("Hello Darlin'"), artists=["spotify:artist:7gi3jmwpUpNWdswT8eEprF"^^com.spotify:artist("Conway Twitty")], release_date=new Date("1970-03-23T00:00:00.000Z"), popularity=60, energy=23, danceability=27 },
-C:   { id="spotify:track:7bza6R254w7hZyNO9zaIxc"^^com.spotify:song("Hello"), artists=["spotify:artist:5jZeLexrrwGNUy6nv7tzdr"^^com.spotify:artist("C4C"), "spotify:artist:1uJZwuCV2hXbQDSdJvj198"^^com.spotify:artist("kokoro")], release_date=new Date("2020-02-14T00:00:00.000Z"), popularity=61, energy=21, danceability=64 },
-C:   { id="spotify:track:0vZ97gHhemKm6c64hTfJNA"^^com.spotify:song("Hello, Goodbye - Remastered 2009"), artists=["spotify:artist:3WrFJ7ztbogyGnTHbHJFl2"^^com.spotify:artist("The Beatles")], release_date=new Date("1967-11-27T00:00:00.000Z"), popularity=65, energy=73, danceability=47 }
-C: ]]
-C: #[count=50]
-C: #[more=true];
-C: now => sort energy desc of (@com.spotify.song()) => notify
-C: #[results=[
-C:   { id="spotify:track:0G21yYKMZoHa30cYVi1iA8"^^com.spotify:song("Welcome To The Jungle"), artists=["spotify:artist:3qm84nBOXUEQ2vnTfUTTFC"^^com.spotify:artist("Guns N' Roses")], release_date=new Date("1987-07-21T00:00:00.000Z"), popularity=72, energy=98, danceability=45 },
-C:   { id="spotify:track:7snQQk1zcKl8gZ92AnueZW"^^com.spotify:song("Sweet Child O' Mine"), artists=["spotify:artist:3qm84nBOXUEQ2vnTfUTTFC"^^com.spotify:artist("Guns N' Roses")], release_date=new Date("1987-07-21T00:00:00.000Z"), popularity=74, energy=95, danceability=44 },
-C:   { id="spotify:track:5zA8vzDGqPl2AzZkEYQGKh"^^com.spotify:song("Uptown Girl"), artists=["spotify:artist:6zFYqv1mOsgBRQbae3JJ9e"^^com.spotify:artist("Billy Joel")], release_date=new Date("1983-08-08T00:00:00.000Z"), popularity=77, energy=94, danceability=70 },
-C:   { id="spotify:track:4xh7W7tlNMIczFhupCPniY"^^com.spotify:song("Go Your Own Way - 2004 Remaster"), artists=["spotify:artist:08GQAI4eElDnROBrJRGE0X"^^com.spotify:artist("Fleetwood Mac")], release_date=new Date("1977-02-04T00:00:00.000Z"), popularity=74, energy=94, danceability=58 },
-C:   { id="spotify:track:0YEg2JfkMeJ1hTYqop4A5o"^^com.spotify:song("7 Rings"), artists=["spotify:artist:00YTqRClk82aMchQQpYMd5"^^com.spotify:artist("Our Last Night"), "spotify:artist:4gO25bbcu1eFNi8uDCvJFS"^^com.spotify:artist("Derek DiScanio")], release_date=new Date("2019-03-26T00:00:00.000Z"), popularity=50, energy=92, danceability=59 },
-C:   { id="spotify:track:5QTxFnGygVM4jFQiBovmRo"^^com.spotify:song("(Don't Fear) The Reaper"), artists=["spotify:artist:00tVTdpEhQQw1bqdu8RCx2"^^com.spotify:artist("Blue Öyster Cult")], release_date=new Date("1976-01-01T00:00:00.000Z"), popularity=75, energy=92, danceability=33 },
-C:   { id="spotify:track:7oK9VyNzrYvRFo7nQEYkWN"^^com.spotify:song("Mr. Brightside"), artists=["spotify:artist:0C0XlULifJtAgn6ZNCW2eu"^^com.spotify:artist("The Killers")], release_date=new Date("2004-06-15T00:00:00.000Z"), popularity=78, energy=92, danceability=35 },
-C:   { id="spotify:track:2zYzyRzz6pRmhPzyfMEC8s"^^com.spotify:song("Highway to Hell"), artists=["spotify:artist:711MCceyCBcFnzjGY4Q7Un"^^com.spotify:artist("AC/DC")], release_date=new Date("1979-07-27T00:00:00.000Z"), popularity=82, energy=91, danceability=57 },
-C:   { id="spotify:track:3CA9pLiwRIGtUBiMjbZmRw"^^com.spotify:song("Nice For What"), artists=["spotify:artist:3TVXtAsR1Inumwj472S9r4"^^com.spotify:artist("Drake")], release_date=new Date("2018-06-29T00:00:00.000Z"), popularity=79, energy=90, danceability=58 },
-C:   { id="spotify:track:2WfaOiMkCvy7F5fcp2zZ8L"^^com.spotify:song("Take on Me"), artists=["spotify:artist:2jzc5TC5TVFLXQlBNiIUzE"^^com.spotify:artist("a-ha")], release_date=new Date("1985-06-01T00:00:00.000Z"), popularity=83, energy=90, danceability=57 }
-C: ]]
-C: #[count=50]
-C: #[more=true];
-C: now => @com.spotify.play_songs(toPlay=$?);
-A: i sorted songs from most to least energy . would you like me to play them ?
-AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
-AT: now => @com.spotify.play_songs(toPlay=$?)
-AT: #[confirm=enum(proposed)];
-U: yes , have a good day .
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.spotify.play_songs(toPlay=["spotify:track:0G21yYKMZoHa30cYVi1iA8"^^com.spotify:song("Welcome To The Jungle"), "spotify:track:7snQQk1zcKl8gZ92AnueZW"^^com.spotify:song("Sweet Child O' Mine"), "spotify:track:5zA8vzDGqPl2AzZkEYQGKh"^^com.spotify:song("Uptown Girl"), "spotify:track:4xh7W7tlNMIczFhupCPniY"^^com.spotify:song("Go Your Own Way - 2004 Remaster"), "spotify:track:0YEg2JfkMeJ1hTYqop4A5o"^^com.spotify:song("7 Rings"), "spotify:track:5QTxFnGygVM4jFQiBovmRo"^^com.spotify:song("(Don't Fear) The Reaper"), "spotify:track:7oK9VyNzrYvRFo7nQEYkWN"^^com.spotify:song("Mr. Brightside"), "spotify:track:2zYzyRzz6pRmhPzyfMEC8s"^^com.spotify:song("Highway to Hell"), "spotify:track:3CA9pLiwRIGtUBiMjbZmRw"^^com.spotify:song("Nice For What"), "spotify:track:2WfaOiMkCvy7F5fcp2zZ8L"^^com.spotify:song("Take on Me")]);
-====
 # 5
 U: hi, i'm having a party later would the song despacito be good for dancing .
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
@@ -232,7 +118,7 @@ C:   { id="spotify:track:6habFhsOp2NvshLv26DqMb"^^com.spotify:song("Despacito"),
 C: ]];
 A: the danceability is 65 out of 100 . would you like me to play this song ?
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
-AT: now => @com.spotify.play_songs(toPlay=["spotify:track:6habFhsOp2NvshLv26DqMb"^^com.spotify:song("Despacito")])
+AT: now => @com.spotify.play_song(song="spotify:track:6habFhsOp2NvshLv26DqMb"^^com.spotify:song("Despacito"))
 AT: #[confirm=enum(proposed)];
 U: no thank you, maybe later .
 UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
@@ -253,7 +139,7 @@ C:   { id="spotify:track:6AyI8UGx8Y4peb7pLOy2pf"^^com.spotify:song("7 rings (fea
 C: ]];
 A: 7 rings was written by ariana grande . would you like me to play this song ?
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
-AT: now => @com.spotify.play_songs(toPlay=["spotify:track:6ocbgoVGwYJhOv1GgI9NsF"^^com.spotify:song("7 rings")])
+AT: now => @com.spotify.play_song(song="spotify:track:6ocbgoVGwYJhOv1GgI9NsF"^^com.spotify:song("7 rings"))
 AT: #[confirm=enum(proposed)];
 U: no thank you . what other songs has she released ?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
@@ -329,274 +215,4 @@ A: stuck with u(with justin bieber) is the most popular . is there anything else
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
 U: nope, bye .
 UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
-====
-# 7
-U: i'm feeling nostalgic. play me a song from the 1980s .
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@com.spotify.song()), (release_date >= new Date("1980-01-01T08:00:00.000Z") && release_date <= new Date("1989-12-31T08:00:00.000Z")) => notify;
-C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: now => (@com.spotify.song()), (release_date >= new Date("1980-01-01T08:00:00.000Z") && release_date <= new Date("1989-12-31T08:00:00.000Z")) => notify
-C: #[results=[
-C:   { id="spotify:track:2374M0fQpWi3dLnB54qaLX"^^com.spotify:song("Africa"), artists=["spotify:artist:0PFtn5NtBbbUNbU9EAmIWF"^^com.spotify:artist("TOTO")], release_date=new Date("1982-04-08T00:00:00.000Z"), popularity=83, energy=37, danceability=67 },
-C:   { id="spotify:track:0mHyWYXmmCB9iQyK18m3FQ"^^com.spotify:song("Hello"), artists=["spotify:artist:3gMaNLQm7D9MornNILzdSl"^^com.spotify:artist("Lionel Richie")], release_date=new Date("1983-01-01T00:00:00.000Z"), popularity=59, energy=24, danceability=48 },
-C:   { id="spotify:track:5tVA6TkbaAH9QMITTQRrNv"^^com.spotify:song("Free Fallin'"), artists=["spotify:artist:2UZMlIwnkgAEDBsw1Rejkn"^^com.spotify:artist("Tom Petty")], release_date=new Date("1989-01-01T00:00:00.000Z"), popularity=78, energy=44, danceability=62 },
-C:   { id="spotify:track:4RvWPyQ5RL0ao9LPZeSouE"^^com.spotify:song("Everybody Wants To Rule The World"), artists=["spotify:artist:4bthk9UfsYUYdcFyqxmSUU"^^com.spotify:artist("Tears For Fears")], release_date=new Date("1985-02-25T00:00:00.000Z"), popularity=81, energy=79, danceability=64 },
-C:   { id="spotify:track:2tUBqZG2AbRi7Q0BIrVrEj"^^com.spotify:song("I Wanna Dance with Somebody (Who Loves Me)"), artists=["spotify:artist:6XpaIBNiVzIetEPCWDvAFP"^^com.spotify:artist("Whitney Houston")], release_date=new Date("1987-06-02T00:00:00.000Z"), popularity=81, energy=82, danceability=70 },
-C:   { id="spotify:track:4bHsxqR3GMrXTxEPLuK5ue"^^com.spotify:song("Don't Stop Believin'"), artists=["spotify:artist:0rvjqX7ttXeg3mTy8Xscbt"^^com.spotify:artist("Journey")], release_date=new Date("1981-01-01T00:00:00.000Z"), popularity=80, energy=74, danceability=5 },
-C:   { id="spotify:track:37ZJ0p5Jm13JPevGcx4SkF"^^com.spotify:song("Livin' On A Prayer"), artists=["spotify:artist:58lV9VcRSjABbAbfWS6skp"^^com.spotify:artist("Bon Jovi")], release_date=new Date("1986-08-16T00:00:00.000Z"), popularity=82, energy=88, danceability=53 },
-C:   { id="spotify:track:08mG3Y1vljYA6bvDt4Wqkj"^^com.spotify:song("Back In Black"), artists=["spotify:artist:711MCceyCBcFnzjGY4Q7Un"^^com.spotify:artist("AC/DC")], release_date=new Date("1980-07-25T00:00:00.000Z"), popularity=82, energy=7, danceability=31 },
-C:   { id="spotify:track:7snQQk1zcKl8gZ92AnueZW"^^com.spotify:song("Sweet Child O' Mine"), artists=["spotify:artist:3qm84nBOXUEQ2vnTfUTTFC"^^com.spotify:artist("Guns N' Roses")], release_date=new Date("1987-07-21T00:00:00.000Z"), popularity=74, energy=95, danceability=44 },
-C:   { id="spotify:track:43btz2xjMKpcmjkuRsvxyg"^^com.spotify:song("Jack & Diane"), artists=["spotify:artist:3lPQ2Fk5JOwGWAF3ORFCqH"^^com.spotify:artist("John Mellencamp")], release_date=new Date("1982-01-01T00:00:00.000Z"), popularity=75, energy=41, danceability=81 }
-C: ]]
-C: #[count=20];
-A: i found africa by toto . would you like me to play this song ?
-AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
-AT: now => @com.spotify.play_songs(toPlay=["spotify:track:2374M0fQpWi3dLnB54qaLX"^^com.spotify:song("Africa")])
-AT: #[confirm=enum(proposed)];
-U: actually, why don't we try the '70s instead .
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@com.spotify.song()), (release_date >= new Date("1970-01-01T08:00:00.000Z") && release_date <= new Date("1979-12-31T08:00:00.000Z")) => notify;
-C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: now => (@com.spotify.song()), (release_date >= new Date("1980-01-01T08:00:00.000Z") && release_date <= new Date("1989-12-31T08:00:00.000Z")) => notify
-C: #[results=[
-C:   { id="spotify:track:2374M0fQpWi3dLnB54qaLX"^^com.spotify:song("Africa"), artists=["spotify:artist:0PFtn5NtBbbUNbU9EAmIWF"^^com.spotify:artist("TOTO")], release_date=new Date("1982-04-08T00:00:00.000Z"), popularity=83, energy=37, danceability=67 },
-C:   { id="spotify:track:0mHyWYXmmCB9iQyK18m3FQ"^^com.spotify:song("Hello"), artists=["spotify:artist:3gMaNLQm7D9MornNILzdSl"^^com.spotify:artist("Lionel Richie")], release_date=new Date("1983-01-01T00:00:00.000Z"), popularity=59, energy=24, danceability=48 },
-C:   { id="spotify:track:5tVA6TkbaAH9QMITTQRrNv"^^com.spotify:song("Free Fallin'"), artists=["spotify:artist:2UZMlIwnkgAEDBsw1Rejkn"^^com.spotify:artist("Tom Petty")], release_date=new Date("1989-01-01T00:00:00.000Z"), popularity=78, energy=44, danceability=62 },
-C:   { id="spotify:track:4RvWPyQ5RL0ao9LPZeSouE"^^com.spotify:song("Everybody Wants To Rule The World"), artists=["spotify:artist:4bthk9UfsYUYdcFyqxmSUU"^^com.spotify:artist("Tears For Fears")], release_date=new Date("1985-02-25T00:00:00.000Z"), popularity=81, energy=79, danceability=64 },
-C:   { id="spotify:track:2tUBqZG2AbRi7Q0BIrVrEj"^^com.spotify:song("I Wanna Dance with Somebody (Who Loves Me)"), artists=["spotify:artist:6XpaIBNiVzIetEPCWDvAFP"^^com.spotify:artist("Whitney Houston")], release_date=new Date("1987-06-02T00:00:00.000Z"), popularity=81, energy=82, danceability=70 },
-C:   { id="spotify:track:4bHsxqR3GMrXTxEPLuK5ue"^^com.spotify:song("Don't Stop Believin'"), artists=["spotify:artist:0rvjqX7ttXeg3mTy8Xscbt"^^com.spotify:artist("Journey")], release_date=new Date("1981-01-01T00:00:00.000Z"), popularity=80, energy=74, danceability=5 },
-C:   { id="spotify:track:37ZJ0p5Jm13JPevGcx4SkF"^^com.spotify:song("Livin' On A Prayer"), artists=["spotify:artist:58lV9VcRSjABbAbfWS6skp"^^com.spotify:artist("Bon Jovi")], release_date=new Date("1986-08-16T00:00:00.000Z"), popularity=82, energy=88, danceability=53 },
-C:   { id="spotify:track:08mG3Y1vljYA6bvDt4Wqkj"^^com.spotify:song("Back In Black"), artists=["spotify:artist:711MCceyCBcFnzjGY4Q7Un"^^com.spotify:artist("AC/DC")], release_date=new Date("1980-07-25T00:00:00.000Z"), popularity=82, energy=7, danceability=31 },
-C:   { id="spotify:track:7snQQk1zcKl8gZ92AnueZW"^^com.spotify:song("Sweet Child O' Mine"), artists=["spotify:artist:3qm84nBOXUEQ2vnTfUTTFC"^^com.spotify:artist("Guns N' Roses")], release_date=new Date("1987-07-21T00:00:00.000Z"), popularity=74, energy=95, danceability=44 },
-C:   { id="spotify:track:43btz2xjMKpcmjkuRsvxyg"^^com.spotify:song("Jack & Diane"), artists=["spotify:artist:3lPQ2Fk5JOwGWAF3ORFCqH"^^com.spotify:artist("John Mellencamp")], release_date=new Date("1982-01-01T00:00:00.000Z"), popularity=75, energy=41, danceability=81 }
-C: ]]
-C: #[count=20];
-C: now => (@com.spotify.song()), (release_date >= new Date("1970-01-01T08:00:00.000Z") && release_date <= new Date("1979-12-31T08:00:00.000Z")) => notify
-C: #[results=[
-C:   { id="spotify:track:6vmAgl2y9MpoZKrVUXrPe5"^^com.spotify:song("Hello Darlin'"), artists=["spotify:artist:7gi3jmwpUpNWdswT8eEprF"^^com.spotify:artist("Conway Twitty")], release_date=new Date("1970-03-23T00:00:00.000Z"), popularity=60, energy=23, danceability=27 },
-C:   { id="spotify:track:0ofHAoxe9vBkTCp2UQIavz"^^com.spotify:song("Dreams - 2004 Remaster"), artists=["spotify:artist:08GQAI4eElDnROBrJRGE0X"^^com.spotify:artist("Fleetwood Mac")], release_date=new Date("1977-02-04T00:00:00.000Z"), popularity=80, energy=49, danceability=82 },
-C:   { id="spotify:track:7e89621JPkKaeDSTQ3avtg"^^com.spotify:song("Sweet Home Alabama"), artists=["spotify:artist:4MVyzYMgTwdP7Z49wAZHx0"^^com.spotify:artist("Lynyrd Skynyrd")], release_date=new Date("1974-04-15T00:00:00.000Z"), popularity=82, energy=60, danceability=59 },
-C:   { id="spotify:track:2RlgNHKcydI9sayD2Df2xp"^^com.spotify:song("Mr. Blue Sky"), artists=["spotify:artist:7jefIIksOi1EazgRTfW2Pk"^^com.spotify:artist("Electric Light Orchestra")], release_date=new Date("1977-01-01T00:00:00.000Z"), popularity=81, energy=33, danceability=38 },
-C:   { id="spotify:track:3gdewACMIVMEWVbyb8O9sY"^^com.spotify:song("Rocket Man (I Think It's Going To Be A Long, Long Time)"), artists=["spotify:artist:3PhoLpVuITZKcymswpck5b"^^com.spotify:artist("Elton John")], release_date=new Date("1972-05-19T00:00:00.000Z"), popularity=81, energy=53, danceability=60 },
-C:   { id="spotify:track:7tFiyTwD0nx5a1eklYtX2J"^^com.spotify:song("Bohemian Rhapsody - 2011 Mix"), artists=["spotify:artist:1dfeR4HaWDbWqFHLkxsg1d"^^com.spotify:artist("Queen")], release_date=new Date("1975-11-21T00:00:00.000Z"), popularity=74, energy=40, danceability=39 },
-C:   { id="spotify:track:40riOy7x9W7GXjyGp4pjAv"^^com.spotify:song("Hotel California - 2013 Remaster"), artists=["spotify:artist:0ECwFtbIWEVNwjlrfc6xoL"^^com.spotify:artist("Eagles")], release_date=new Date("1976-12-08T00:00:00.000Z"), popularity=82, energy=50, danceability=57 },
-C:   { id="spotify:track:7hQJA50XrCWABAu5v6QZ4i"^^com.spotify:song("Don't Stop Me Now - 2011 Mix"), artists=["spotify:artist:1dfeR4HaWDbWqFHLkxsg1d"^^com.spotify:artist("Queen")], release_date=new Date("1978-11-10T00:00:00.000Z"), popularity=74, energy=86, danceability=56 },
-C:   { id="spotify:track:1bp2IO61zbQrbWNmKKxg3f"^^com.spotify:song("The Joker"), artists=["spotify:artist:6QtGlUje9TIkLrgPZrESuk"^^com.spotify:artist("Steve Miller Band")], release_date=new Date("1973-01-01T00:00:00.000Z"), popularity=77, energy=44, danceability=59 },
-C:   { id="spotify:track:2TVxnKdb3tqe1nhQWwwZCO"^^com.spotify:song("Tiny Dancer"), artists=["spotify:artist:3PhoLpVuITZKcymswpck5b"^^com.spotify:artist("Elton John")], release_date=new Date("1971-11-05T00:00:00.000Z"), popularity=79, energy=42, danceability=41 }
-C: ]]
-C: #[count=21];
-A: i found dreams by fleetwood mac . should i play this instead ?
-AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
-AT: now => @com.spotify.play_songs(toPlay=["spotify:track:0ofHAoxe9vBkTCp2UQIavz"^^com.spotify:song("Dreams - 2004 Remaster")])
-AT: #[confirm=enum(proposed)];
-U: absolutely, i love this song .
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.spotify.play_songs(toPlay=["spotify:track:0ofHAoxe9vBkTCp2UQIavz"^^com.spotify:song("Dreams - 2004 Remaster")]);
-====
-# 8
-U: can you play me songs by justin beiber ?
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@com.spotify.song()), contains~(artists, "justin bieber") => notify;
-C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: now => (@com.spotify.song()), contains~(artists, "justin bieber") => notify
-C: #[results=[
-C:   { id="spotify:track:6rPO02ozF3bM7NnOV4h6s2"^^com.spotify:song("Despacito - Remix"), artists=["spotify:artist:4V8Sr092TqfHkfAA5fXXqG"^^com.spotify:artist("Luis Fonsi"), "spotify:artist:4VMYDCV2IEDYJArk749S6m"^^com.spotify:artist("Daddy Yankee"), "spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber")], release_date=new Date("2017-04-17T00:00:00.000Z"), popularity=74, energy=0.816, danceability=0.653 },
-C:   { id="spotify:track:4HBZA5flZLE435QTztThqH"^^com.spotify:song("Stuck with U (with Justin Bieber)"), artists=["spotify:artist:66CXWjxzNUsdJxJ2JdwvnR"^^com.spotify:artist("Ariana Grande"), "spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber")], release_date=new Date("2020-05-08T00:00:00.000Z"), popularity=93, energy=0.45, danceability=0.597 },
-C:   { id="spotify:track:364dI1bYnvamSnBJ8JcNzN"^^com.spotify:song("Intentions"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber"), "spotify:artist:0VRj0yCOv2FXJNP47XQnx5"^^com.spotify:artist("Quavo")], release_date=new Date("2020-02-07T00:00:00.000Z"), popularity=88, energy=0.553, danceability=0.811 },
-C:   { id="spotify:track:4umIPjkehX1r7uhmGvXiSV"^^com.spotify:song("Intentions (feat. Quavo)"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber"), "spotify:artist:0VRj0yCOv2FXJNP47XQnx5"^^com.spotify:artist("Quavo")], release_date=new Date("2020-02-14T00:00:00.000Z"), popularity=87, energy=0.546, danceability=0.806 },
-C:   { id="spotify:track:1seMsoFYW4dFqTyHgrJeGv"^^com.spotify:song("Sorry"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber")], release_date=new Date("2020-07-17T00:00:00.000Z"), popularity=0, energy=0.764, danceability=0.637 },
-C:   { id="spotify:track:0d8jkyht5OV1G5qK1XSOMS"^^com.spotify:song("Baby"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber"), "spotify:artist:3ipn9JLAPI5GUEo4y4jcoi"^^com.spotify:artist("Ludacris")], release_date=new Date("2020-07-17T00:00:00.000Z"), popularity=0, energy=0.879, danceability=0.724 },
-C:   { id="spotify:track:3jUwj7q1UWu7o87J4E45Zt"^^com.spotify:song("Purpose"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber")], release_date=new Date("2020-07-17T00:00:00.000Z"), popularity=0, energy=0.285, danceability=0.481 },
-C:   { id="spotify:track:0j8bKhH7fPCugmewmn5Q9r"^^com.spotify:song("Love Yourself"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber")], release_date=new Date("2020-07-17T00:00:00.000Z"), popularity=0, energy=0.434, danceability=0.786 },
-C:   { id="spotify:track:0F99UB5OmeXdzau8srky0h"^^com.spotify:song("Sorry"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber")], release_date=new Date("2020-07-17T00:00:00.000Z"), popularity=0, energy=0.764, danceability=0.637 },
-C:   { id="spotify:track:2ZlCGeK30BLRNSPC832pNZ"^^com.spotify:song("Forever (feat. Post Malone & Clever)"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber"), "spotify:artist:246dkjvS1zLTtiykXe5h60"^^com.spotify:artist("Post Malone"), "spotify:artist:5yy76ufVriyvidNSvXlRU1"^^com.spotify:artist("Clever")], release_date=new Date("2020-02-14T00:00:00.000Z"), popularity=78, energy=0.483, danceability=0.825 }
-C: ]]
-C: #[count=23];
-A: i found a lot of songs . could you be a little bit more specific ?
-AT: $dialogue @org.thingpedia.dialogue.transaction.sys_generic_search_question;
-U: i haven't listened to him in a while, so can you play his new songs first ?
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (sort release_date desc of (@com.spotify.song())), contains(artists, "spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber")) => notify;
-C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: now => (@com.spotify.song()), contains~(artists, "justin bieber") => notify
-C: #[results=[
-C:   { id="spotify:track:6rPO02ozF3bM7NnOV4h6s2"^^com.spotify:song("Despacito - Remix"), artists=["spotify:artist:4V8Sr092TqfHkfAA5fXXqG"^^com.spotify:artist("Luis Fonsi"), "spotify:artist:4VMYDCV2IEDYJArk749S6m"^^com.spotify:artist("Daddy Yankee"), "spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber")], release_date=new Date("2017-04-17T00:00:00.000Z"), popularity=74, energy=0.816, danceability=0.653 },
-C:   { id="spotify:track:4HBZA5flZLE435QTztThqH"^^com.spotify:song("Stuck with U (with Justin Bieber)"), artists=["spotify:artist:66CXWjxzNUsdJxJ2JdwvnR"^^com.spotify:artist("Ariana Grande"), "spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber")], release_date=new Date("2020-05-08T00:00:00.000Z"), popularity=93, energy=0.45, danceability=0.597 },
-C:   { id="spotify:track:364dI1bYnvamSnBJ8JcNzN"^^com.spotify:song("Intentions"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber"), "spotify:artist:0VRj0yCOv2FXJNP47XQnx5"^^com.spotify:artist("Quavo")], release_date=new Date("2020-02-07T00:00:00.000Z"), popularity=88, energy=0.553, danceability=0.811 },
-C:   { id="spotify:track:4umIPjkehX1r7uhmGvXiSV"^^com.spotify:song("Intentions (feat. Quavo)"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber"), "spotify:artist:0VRj0yCOv2FXJNP47XQnx5"^^com.spotify:artist("Quavo")], release_date=new Date("2020-02-14T00:00:00.000Z"), popularity=87, energy=0.546, danceability=0.806 },
-C:   { id="spotify:track:1seMsoFYW4dFqTyHgrJeGv"^^com.spotify:song("Sorry"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber")], release_date=new Date("2020-07-17T00:00:00.000Z"), popularity=0, energy=0.764, danceability=0.637 },
-C:   { id="spotify:track:0d8jkyht5OV1G5qK1XSOMS"^^com.spotify:song("Baby"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber"), "spotify:artist:3ipn9JLAPI5GUEo4y4jcoi"^^com.spotify:artist("Ludacris")], release_date=new Date("2020-07-17T00:00:00.000Z"), popularity=0, energy=0.879, danceability=0.724 },
-C:   { id="spotify:track:3jUwj7q1UWu7o87J4E45Zt"^^com.spotify:song("Purpose"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber")], release_date=new Date("2020-07-17T00:00:00.000Z"), popularity=0, energy=0.285, danceability=0.481 },
-C:   { id="spotify:track:0j8bKhH7fPCugmewmn5Q9r"^^com.spotify:song("Love Yourself"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber")], release_date=new Date("2020-07-17T00:00:00.000Z"), popularity=0, energy=0.434, danceability=0.786 },
-C:   { id="spotify:track:0F99UB5OmeXdzau8srky0h"^^com.spotify:song("Sorry"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber")], release_date=new Date("2020-07-17T00:00:00.000Z"), popularity=0, energy=0.764, danceability=0.637 },
-C:   { id="spotify:track:2ZlCGeK30BLRNSPC832pNZ"^^com.spotify:song("Forever (feat. Post Malone & Clever)"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber"), "spotify:artist:246dkjvS1zLTtiykXe5h60"^^com.spotify:artist("Post Malone"), "spotify:artist:5yy76ufVriyvidNSvXlRU1"^^com.spotify:artist("Clever")], release_date=new Date("2020-02-14T00:00:00.000Z"), popularity=78, energy=0.483, danceability=0.825 }
-C: ]]
-C: #[count=23];
-C: now => (sort release_date desc of (@com.spotify.song())), contains(artists, "spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber")) => notify
-C: #[results=[
-C:   { id="spotify:track:1seMsoFYW4dFqTyHgrJeGv"^^com.spotify:song("Sorry"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber")], release_date=new Date("2020-07-17T00:00:00.000Z"), popularity=0, energy=0.764, danceability=0.637 },
-C:   { id="spotify:track:0d8jkyht5OV1G5qK1XSOMS"^^com.spotify:song("Baby"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber"), "spotify:artist:3ipn9JLAPI5GUEo4y4jcoi"^^com.spotify:artist("Ludacris")], release_date=new Date("2020-07-17T00:00:00.000Z"), popularity=0, energy=0.879, danceability=0.724 },
-C:   { id="spotify:track:3jUwj7q1UWu7o87J4E45Zt"^^com.spotify:song("Purpose"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber")], release_date=new Date("2020-07-17T00:00:00.000Z"), popularity=0, energy=0.285, danceability=0.481 },
-C:   { id="spotify:track:0j8bKhH7fPCugmewmn5Q9r"^^com.spotify:song("Love Yourself"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber")], release_date=new Date("2020-07-17T00:00:00.000Z"), popularity=0, energy=0.434, danceability=0.786 },
-C:   { id="spotify:track:0F99UB5OmeXdzau8srky0h"^^com.spotify:song("Sorry"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber")], release_date=new Date("2020-07-17T00:00:00.000Z"), popularity=0, energy=0.764, danceability=0.637 },
-C:   { id="spotify:track:4HBZA5flZLE435QTztThqH"^^com.spotify:song("Stuck with U (with Justin Bieber)"), artists=["spotify:artist:66CXWjxzNUsdJxJ2JdwvnR"^^com.spotify:artist("Ariana Grande"), "spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber")], release_date=new Date("2020-05-08T00:00:00.000Z"), popularity=93, energy=0.45, danceability=0.597 },
-C:   { id="spotify:track:4HBZA5flZLE435QTztThqH"^^com.spotify:song("Stuck with U (with Justin Bieber)"), artists=["spotify:artist:66CXWjxzNUsdJxJ2JdwvnR"^^com.spotify:artist("Ariana Grande"), "spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber")], release_date=new Date("2020-05-08T00:00:00.000Z"), popularity=93, energy=0.45, danceability=0.597 },
-C:   { id="spotify:track:4umIPjkehX1r7uhmGvXiSV"^^com.spotify:song("Intentions (feat. Quavo)"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber"), "spotify:artist:0VRj0yCOv2FXJNP47XQnx5"^^com.spotify:artist("Quavo")], release_date=new Date("2020-02-14T00:00:00.000Z"), popularity=87, energy=0.546, danceability=0.806 },
-C:   { id="spotify:track:2ZlCGeK30BLRNSPC832pNZ"^^com.spotify:song("Forever (feat. Post Malone & Clever)"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber"), "spotify:artist:246dkjvS1zLTtiykXe5h60"^^com.spotify:artist("Post Malone"), "spotify:artist:5yy76ufVriyvidNSvXlRU1"^^com.spotify:artist("Clever")], release_date=new Date("2020-02-14T00:00:00.000Z"), popularity=78, energy=0.483, danceability=0.825 },
-C:   { id="spotify:track:16wAOAZ2OkqoIDN7TpChjR"^^com.spotify:song("Yummy"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber")], release_date=new Date("2020-02-14T00:00:00.000Z"), popularity=78, energy=0.506, danceability=0.676 }
-C: ]]
-C: #[count=23];
-A: i sorted songs by justin beiber from newest to oldest. would you like me to play these songs ?
-AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
-AT: now => @com.spotify.play_songs(toPlay=$?)
-AT: #[confirm=enum(proposed)];
-U: actually, on second thought i rather listen to maroon 5 . can you also play the newest songs first ?
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (sort release_date desc of (@com.spotify.song())), contains~(artists, "maroon 5") => notify;
-C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: now => (@com.spotify.song()), contains~(artists, "justin bieber") => notify
-C: #[results=[
-C:   { id="spotify:track:6rPO02ozF3bM7NnOV4h6s2"^^com.spotify:song("Despacito - Remix"), artists=["spotify:artist:4V8Sr092TqfHkfAA5fXXqG"^^com.spotify:artist("Luis Fonsi"), "spotify:artist:4VMYDCV2IEDYJArk749S6m"^^com.spotify:artist("Daddy Yankee"), "spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber")], release_date=new Date("2017-04-17T00:00:00.000Z"), popularity=74, energy=0.816, danceability=0.653 },
-C:   { id="spotify:track:4HBZA5flZLE435QTztThqH"^^com.spotify:song("Stuck with U (with Justin Bieber)"), artists=["spotify:artist:66CXWjxzNUsdJxJ2JdwvnR"^^com.spotify:artist("Ariana Grande"), "spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber")], release_date=new Date("2020-05-08T00:00:00.000Z"), popularity=93, energy=0.45, danceability=0.597 },
-C:   { id="spotify:track:364dI1bYnvamSnBJ8JcNzN"^^com.spotify:song("Intentions"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber"), "spotify:artist:0VRj0yCOv2FXJNP47XQnx5"^^com.spotify:artist("Quavo")], release_date=new Date("2020-02-07T00:00:00.000Z"), popularity=88, energy=0.553, danceability=0.811 },
-C:   { id="spotify:track:4umIPjkehX1r7uhmGvXiSV"^^com.spotify:song("Intentions (feat. Quavo)"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber"), "spotify:artist:0VRj0yCOv2FXJNP47XQnx5"^^com.spotify:artist("Quavo")], release_date=new Date("2020-02-14T00:00:00.000Z"), popularity=87, energy=0.546, danceability=0.806 },
-C:   { id="spotify:track:1seMsoFYW4dFqTyHgrJeGv"^^com.spotify:song("Sorry"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber")], release_date=new Date("2020-07-17T00:00:00.000Z"), popularity=0, energy=0.764, danceability=0.637 },
-C:   { id="spotify:track:0d8jkyht5OV1G5qK1XSOMS"^^com.spotify:song("Baby"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber"), "spotify:artist:3ipn9JLAPI5GUEo4y4jcoi"^^com.spotify:artist("Ludacris")], release_date=new Date("2020-07-17T00:00:00.000Z"), popularity=0, energy=0.879, danceability=0.724 },
-C:   { id="spotify:track:3jUwj7q1UWu7o87J4E45Zt"^^com.spotify:song("Purpose"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber")], release_date=new Date("2020-07-17T00:00:00.000Z"), popularity=0, energy=0.285, danceability=0.481 },
-C:   { id="spotify:track:0j8bKhH7fPCugmewmn5Q9r"^^com.spotify:song("Love Yourself"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber")], release_date=new Date("2020-07-17T00:00:00.000Z"), popularity=0, energy=0.434, danceability=0.786 },
-C:   { id="spotify:track:0F99UB5OmeXdzau8srky0h"^^com.spotify:song("Sorry"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber")], release_date=new Date("2020-07-17T00:00:00.000Z"), popularity=0, energy=0.764, danceability=0.637 },
-C:   { id="spotify:track:2ZlCGeK30BLRNSPC832pNZ"^^com.spotify:song("Forever (feat. Post Malone & Clever)"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber"), "spotify:artist:246dkjvS1zLTtiykXe5h60"^^com.spotify:artist("Post Malone"), "spotify:artist:5yy76ufVriyvidNSvXlRU1"^^com.spotify:artist("Clever")], release_date=new Date("2020-02-14T00:00:00.000Z"), popularity=78, energy=0.483, danceability=0.825 }
-C: ]]
-C: #[count=23];
-C: now => (sort release_date desc of (@com.spotify.song())), contains(artists, "spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber")) => notify
-C: #[results=[
-C:   { id="spotify:track:1seMsoFYW4dFqTyHgrJeGv"^^com.spotify:song("Sorry"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber")], release_date=new Date("2020-07-17T00:00:00.000Z"), popularity=0, energy=0.764, danceability=0.637 },
-C:   { id="spotify:track:0d8jkyht5OV1G5qK1XSOMS"^^com.spotify:song("Baby"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber"), "spotify:artist:3ipn9JLAPI5GUEo4y4jcoi"^^com.spotify:artist("Ludacris")], release_date=new Date("2020-07-17T00:00:00.000Z"), popularity=0, energy=0.879, danceability=0.724 },
-C:   { id="spotify:track:3jUwj7q1UWu7o87J4E45Zt"^^com.spotify:song("Purpose"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber")], release_date=new Date("2020-07-17T00:00:00.000Z"), popularity=0, energy=0.285, danceability=0.481 },
-C:   { id="spotify:track:0j8bKhH7fPCugmewmn5Q9r"^^com.spotify:song("Love Yourself"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber")], release_date=new Date("2020-07-17T00:00:00.000Z"), popularity=0, energy=0.434, danceability=0.786 },
-C:   { id="spotify:track:0F99UB5OmeXdzau8srky0h"^^com.spotify:song("Sorry"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber")], release_date=new Date("2020-07-17T00:00:00.000Z"), popularity=0, energy=0.764, danceability=0.637 },
-C:   { id="spotify:track:4HBZA5flZLE435QTztThqH"^^com.spotify:song("Stuck with U (with Justin Bieber)"), artists=["spotify:artist:66CXWjxzNUsdJxJ2JdwvnR"^^com.spotify:artist("Ariana Grande"), "spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber")], release_date=new Date("2020-05-08T00:00:00.000Z"), popularity=93, energy=0.45, danceability=0.597 },
-C:   { id="spotify:track:4HBZA5flZLE435QTztThqH"^^com.spotify:song("Stuck with U (with Justin Bieber)"), artists=["spotify:artist:66CXWjxzNUsdJxJ2JdwvnR"^^com.spotify:artist("Ariana Grande"), "spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber")], release_date=new Date("2020-05-08T00:00:00.000Z"), popularity=93, energy=0.45, danceability=0.597 },
-C:   { id="spotify:track:4umIPjkehX1r7uhmGvXiSV"^^com.spotify:song("Intentions (feat. Quavo)"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber"), "spotify:artist:0VRj0yCOv2FXJNP47XQnx5"^^com.spotify:artist("Quavo")], release_date=new Date("2020-02-14T00:00:00.000Z"), popularity=87, energy=0.546, danceability=0.806 },
-C:   { id="spotify:track:2ZlCGeK30BLRNSPC832pNZ"^^com.spotify:song("Forever (feat. Post Malone & Clever)"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber"), "spotify:artist:246dkjvS1zLTtiykXe5h60"^^com.spotify:artist("Post Malone"), "spotify:artist:5yy76ufVriyvidNSvXlRU1"^^com.spotify:artist("Clever")], release_date=new Date("2020-02-14T00:00:00.000Z"), popularity=78, energy=0.483, danceability=0.825 },
-C:   { id="spotify:track:16wAOAZ2OkqoIDN7TpChjR"^^com.spotify:song("Yummy"), artists=["spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber")], release_date=new Date("2020-02-14T00:00:00.000Z"), popularity=78, energy=0.506, danceability=0.676 }
-C: ]]
-C: #[count=23];
-C: now => (sort release_date desc of (@com.spotify.song())), contains~(artists, "maroon 5") => notify
-C: #[results=[
-C:   { id="spotify:track:1TyL2CELRDqnQzJ1yTuyvO"^^com.spotify:song("She Will Be Loved - Acoustic"), artists=["spotify:artist:04gDigrS5kc9YWfZHwBETP"^^com.spotify:artist("Maroon 5")], release_date=new Date("2020-07-17T00:00:00.000Z"), popularity=0, energy=0.491, danceability=0.629 },
-C:   { id="spotify:track:4efvJPxZZYEKGA2ZmRmLDv"^^com.spotify:song("Sunday Morning"), artists=["spotify:artist:04gDigrS5kc9YWfZHwBETP"^^com.spotify:artist("Maroon 5")], release_date=new Date("2020-07-17T00:00:00.000Z"), popularity=0, energy=0.795, danceability=0.604 },
-C:   { id="spotify:track:4jozyHBAidza5MDJ8rywp3"^^com.spotify:song("Daylight"), artists=["spotify:artist:04gDigrS5kc9YWfZHwBETP"^^com.spotify:artist("Maroon 5")], release_date=new Date("2020-07-17T00:00:00.000Z"), popularity=0, energy=0.75, danceability=0.619 },
-C:   { id="spotify:track:0hVyF73LaBblBp1jbJ4gMA"^^com.spotify:song("What Lovers Do"), artists=["spotify:artist:04gDigrS5kc9YWfZHwBETP"^^com.spotify:artist("Maroon 5"), "spotify:artist:7tYKF4w9nC0nq9CsPZTHyP"^^com.spotify:artist("SZA")], release_date=new Date("2020-07-17T00:00:00.000Z"), popularity=0, energy=0.682, danceability=0.768 },
-C:   { id="spotify:track:2f2w98DPhjvYRfnVC8fIT5"^^com.spotify:song("Sunday Morning"), artists=["spotify:artist:04gDigrS5kc9YWfZHwBETP"^^com.spotify:artist("Maroon 5")], release_date=new Date("2020-07-17T00:00:00.000Z"), popularity=0, energy=0.795, danceability=0.604 },
-C:   { id="spotify:track:7H9EvxwRcKncjiELAQ73pw"^^com.spotify:song("What Lovers Do"), artists=["spotify:artist:04gDigrS5kc9YWfZHwBETP"^^com.spotify:artist("Maroon 5"), "spotify:artist:7tYKF4w9nC0nq9CsPZTHyP"^^com.spotify:artist("SZA")], release_date=new Date("2020-07-17T00:00:00.000Z"), popularity=0, energy=0.682, danceability=0.768 },
-C:   { id="spotify:track:0EM3LtLVtIKTzMWvdupOB6"^^com.spotify:song("Animals"), artists=["spotify:artist:04gDigrS5kc9YWfZHwBETP"^^com.spotify:artist("Maroon 5")], release_date=new Date("2020-07-17T00:00:00.000Z"), popularity=0, energy=0.836, danceability=0.398 },
-C:   { id="spotify:track:0POXKg1EB7oxAGHuBMPKeV"^^com.spotify:song("Moves Like Jagger - Radio Edit"), artists=["spotify:artist:04gDigrS5kc9YWfZHwBETP"^^com.spotify:artist("Maroon 5"), "spotify:artist:1l7ZsJRRS8wlW3WfJfPfNS"^^com.spotify:artist("Christina Aguilera")], release_date=new Date("2020-07-17T00:00:00.000Z"), popularity=0, energy=0.79, danceability=0.701 },
-C:   { id="spotify:track:6hzRL8BkBGtYPyjAa6H08c"^^com.spotify:song("Makes Me Wonder"), artists=["spotify:artist:04gDigrS5kc9YWfZHwBETP"^^com.spotify:artist("Maroon 5")], release_date=new Date("2020-07-17T00:00:00.000Z"), popularity=0, energy=0.856, danceability=0.799 },
-C:   { id="spotify:track:0I1Hc8me7loZAGDqq7aPX0"^^com.spotify:song("Girls Like You - Cardi B Version"), artists=["spotify:artist:04gDigrS5kc9YWfZHwBETP"^^com.spotify:artist("Maroon 5"), "spotify:artist:4kYSro6naA4h99UJvo89HB"^^com.spotify:artist("Cardi B")], release_date=new Date("2020-07-17T00:00:00.000Z"), popularity=0, energy=0.581, danceability=0.776 }
-C: ]]
-C: #[count=20];
-A: sure, i've sorted maroon 5's from newest to oldest . should i play these songs ?
-AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
-AT: now => @com.spotify.play_songs(toPlay=$?)
-AT: #[confirm=enum(proposed)];
-U: yes, that was very helpful . thanks a lot .
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.spotify.play_songs(toPlay=["spotify:track:2b8fOow8UzyDFAE27YhOZM"^^com.spotify:song("Memories"), "spotify:track:6V1bu6o1Yo5ZXnsCJU8Ovk"^^com.spotify:song("Girls Like You (feat. Cardi B)"), "spotify:track:2j5hsQvApottzvTn4pFJWF"^^com.spotify:song("What Lovers Do (feat. SZA)"), "spotify:track:1nueTG77MzNkJTKQ0ZdGzT"^^com.spotify:song("Don't Wanna Know (feat. Kendrick Lamar)"), "spotify:track:6AvfZXpbb6r35DfF7gHPRq"^^com.spotify:song("Wait"), "spotify:track:6OEHjJJvdkk1Ln0p0AZdyz"^^com.spotify:song("Girls Like You"), "spotify:track:7gwLQ4tZ5UdZ7qNcDyJ8wr"^^com.spotify:song("Cold (feat. Future)"), "spotify:track:6FRLCMO5TUHTexlWo8ym1W"^^com.spotify:song("Girls Like You (feat. Cardi B)"), "spotify:track:2iuZJX9X9P0GKaE93xcPjk"^^com.spotify:song("Sugar"), "spotify:track:4gbVRS8gloEluzf0GzDOFc"^^com.spotify:song("Maps")]);
-====
-# 9
-U: can you get the songs that are best to dance to from 2000 to 2005 ?
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (sort danceability desc of (@com.spotify.song())), (release_date >= new Date("2000-01-01T08:00:00.000Z") && release_date <= new Date("2005-12-31T08:00:00.000Z")) => notify;
-C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: now => (sort danceability desc of (@com.spotify.song())), (release_date >= new Date("2000-01-01T08:00:00.000Z") && release_date <= new Date("2005-12-31T08:00:00.000Z")) => notify
-C: #[results=[
-C:   { id="spotify:track:7lQ8MOhq6IN2w8EYcFNSUk"^^com.spotify:song("Without Me"), artists=["spotify:artist:7dGJo4pcD2V6oG8kP0tJRR"^^com.spotify:artist("Eminem")], release_date=new Date("2002-05-26T00:00:00.000Z"), popularity=82, energy=0.669, danceability=0.908 },
-C:   { id="spotify:track:5rb9QrpfcKFHM1EUbSIurX"^^com.spotify:song("Yeah! (feat. Lil Jon & Ludacris)"), artists=["spotify:artist:23zg3TcAtWQy7J6upgbUnj"^^com.spotify:artist("Usher"), "spotify:artist:7sfl4Xt5KmfyDs2T3SVSMK"^^com.spotify:artist("Lil Jon"), "spotify:artist:3ipn9JLAPI5GUEo4y4jcoi"^^com.spotify:artist("Ludacris")], release_date=new Date("2004-03-23T00:00:00.000Z"), popularity=80, energy=0.791, danceability=0.894 },
-C:   { id="spotify:track:0I3q5fE6wg7LIfHGngUTnV"^^com.spotify:song("Ms. Jackson"), artists=["spotify:artist:1G9G7WwrXka3Z1r7aIDjI7"^^com.spotify:artist("OutKast")], release_date=new Date("2000-10-31T00:00:00.000Z"), popularity=79, energy=0.805, danceability=0.843 },
-C:   { id="spotify:track:0d28khcov6AiegSCpG5TuT"^^com.spotify:song("Feel Good Inc."), artists=["spotify:artist:3AA28KZvwAUcZuOKwyblJQ"^^com.spotify:artist("Gorillaz")], release_date=new Date("2005-05-23T00:00:00.000Z"), popularity=80, energy=0.705, danceability=0.818 },
-C:   { id="spotify:track:3ZFTkvIE7kyPt6Nu3PEa7V"^^com.spotify:song("Hips Don't Lie (feat. Wyclef Jean)"), artists=["spotify:artist:0EmeFodog0BfCgMzAIvKQp"^^com.spotify:artist("Shakira"), "spotify:artist:7aBzpmFXB4WWpPl2F7RjBe"^^com.spotify:artist("Wyclef Jean")], release_date=new Date("2005-11-28T00:00:00.000Z"), popularity=82, energy=0.824, danceability=0.778 },
-C:   { id="spotify:track:7i6r9KotUPQg3ozKKgEPIN"^^com.spotify:song("Seven Nation Army"), artists=["spotify:artist:4F84IBURUo98rz4r61KF70"^^com.spotify:artist("The White Stripes")], release_date=new Date("2003-04-01T00:00:00.000Z"), popularity=73, energy=0.463, danceability=0.737 },
-C:   { id="spotify:track:2PpruBYCo4H7WOBJ7Q2EwM"^^com.spotify:song("Hey Ya! - Radio Mix"), artists=["spotify:artist:1G9G7WwrXka3Z1r7aIDjI7"^^com.spotify:artist("OutKast")], release_date=new Date("2003-01-01T00:00:00.000Z"), popularity=79, energy=0.974, danceability=0.728 },
-C:   { id="spotify:track:6ECp64rv50XVz93WvxXMGF"^^com.spotify:song("This Love"), artists=["spotify:artist:04gDigrS5kc9YWfZHwBETP"^^com.spotify:artist("Maroon 5")], release_date=new Date("2002-01-01T00:00:00.000Z"), popularity=77, energy=0.862, danceability=0.712 },
-C:   { id="spotify:track:4RCWB3V8V0dignt99LZ8vH"^^com.spotify:song("Hey There Delilah"), artists=["spotify:artist:1g1yxsNVPhMUl9GrMjEb2o"^^com.spotify:artist("Plain White T's")], release_date=new Date("2005-01-01T00:00:00.000Z"), popularity=79, energy=0.291, danceability=0.656 },
-C:   { id="spotify:track:2MLHyLy5z5l5YRp7momlgw"^^com.spotify:song("Island In The Sun"), artists=["spotify:artist:3jOstUTkEu2JkjvRdBA5Gu"^^com.spotify:artist("Weezer")], release_date=new Date("2001-05-15T00:00:00.000Z"), popularity=77, energy=0.81, danceability=0.654 }
-C: ]]
-C: #[count=21];
-A: i found songs from 2000 to 2005 and then sorted by danceability . should i play these songs ?
-AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
-AT: now => @com.spotify.play_songs(toPlay=$?)
-AT: #[confirm=enum(proposed)];
-U: no , but can you list like 3 of them out .
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (sort danceability desc of (@com.spotify.song())), (release_date >= new Date("2000-01-01T08:00:00.000Z") && release_date <= new Date("2005-12-31T08:00:00.000Z")) => notify;
-C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: now => (sort danceability desc of (@com.spotify.song())), (release_date >= new Date("2000-01-01T08:00:00.000Z") && release_date <= new Date("2005-12-31T08:00:00.000Z")) => notify
-C: #[results=[
-C:   { id="spotify:track:7lQ8MOhq6IN2w8EYcFNSUk"^^com.spotify:song("Without Me"), artists=["spotify:artist:7dGJo4pcD2V6oG8kP0tJRR"^^com.spotify:artist("Eminem")], release_date=new Date("2002-05-26T00:00:00.000Z"), popularity=82, energy=0.669, danceability=0.908 },
-C:   { id="spotify:track:5rb9QrpfcKFHM1EUbSIurX"^^com.spotify:song("Yeah! (feat. Lil Jon & Ludacris)"), artists=["spotify:artist:23zg3TcAtWQy7J6upgbUnj"^^com.spotify:artist("Usher"), "spotify:artist:7sfl4Xt5KmfyDs2T3SVSMK"^^com.spotify:artist("Lil Jon"), "spotify:artist:3ipn9JLAPI5GUEo4y4jcoi"^^com.spotify:artist("Ludacris")], release_date=new Date("2004-03-23T00:00:00.000Z"), popularity=80, energy=0.791, danceability=0.894 },
-C:   { id="spotify:track:0I3q5fE6wg7LIfHGngUTnV"^^com.spotify:song("Ms. Jackson"), artists=["spotify:artist:1G9G7WwrXka3Z1r7aIDjI7"^^com.spotify:artist("OutKast")], release_date=new Date("2000-10-31T00:00:00.000Z"), popularity=79, energy=0.805, danceability=0.843 },
-C:   { id="spotify:track:0d28khcov6AiegSCpG5TuT"^^com.spotify:song("Feel Good Inc."), artists=["spotify:artist:3AA28KZvwAUcZuOKwyblJQ"^^com.spotify:artist("Gorillaz")], release_date=new Date("2005-05-23T00:00:00.000Z"), popularity=80, energy=0.705, danceability=0.818 },
-C:   { id="spotify:track:3ZFTkvIE7kyPt6Nu3PEa7V"^^com.spotify:song("Hips Don't Lie (feat. Wyclef Jean)"), artists=["spotify:artist:0EmeFodog0BfCgMzAIvKQp"^^com.spotify:artist("Shakira"), "spotify:artist:7aBzpmFXB4WWpPl2F7RjBe"^^com.spotify:artist("Wyclef Jean")], release_date=new Date("2005-11-28T00:00:00.000Z"), popularity=82, energy=0.824, danceability=0.778 },
-C:   { id="spotify:track:7i6r9KotUPQg3ozKKgEPIN"^^com.spotify:song("Seven Nation Army"), artists=["spotify:artist:4F84IBURUo98rz4r61KF70"^^com.spotify:artist("The White Stripes")], release_date=new Date("2003-04-01T00:00:00.000Z"), popularity=73, energy=0.463, danceability=0.737 },
-C:   { id="spotify:track:2PpruBYCo4H7WOBJ7Q2EwM"^^com.spotify:song("Hey Ya! - Radio Mix"), artists=["spotify:artist:1G9G7WwrXka3Z1r7aIDjI7"^^com.spotify:artist("OutKast")], release_date=new Date("2003-01-01T00:00:00.000Z"), popularity=79, energy=0.974, danceability=0.728 },
-C:   { id="spotify:track:6ECp64rv50XVz93WvxXMGF"^^com.spotify:song("This Love"), artists=["spotify:artist:04gDigrS5kc9YWfZHwBETP"^^com.spotify:artist("Maroon 5")], release_date=new Date("2002-01-01T00:00:00.000Z"), popularity=77, energy=0.862, danceability=0.712 },
-C:   { id="spotify:track:4RCWB3V8V0dignt99LZ8vH"^^com.spotify:song("Hey There Delilah"), artists=["spotify:artist:1g1yxsNVPhMUl9GrMjEb2o"^^com.spotify:artist("Plain White T's")], release_date=new Date("2005-01-01T00:00:00.000Z"), popularity=79, energy=0.291, danceability=0.656 },
-C:   { id="spotify:track:2MLHyLy5z5l5YRp7momlgw"^^com.spotify:song("Island In The Sun"), artists=["spotify:artist:3jOstUTkEu2JkjvRdBA5Gu"^^com.spotify:artist("Weezer")], release_date=new Date("2001-05-15T00:00:00.000Z"), popularity=77, energy=0.81, danceability=0.654 }
-C: ]]
-C: #[count=21];
-C: now => (sort danceability desc of (@com.spotify.song())), (release_date >= new Date("2000-01-01T08:00:00.000Z") && release_date <= new Date("2005-12-31T08:00:00.000Z")) => notify
-C: #[results=[
-C:   { id="spotify:track:7lQ8MOhq6IN2w8EYcFNSUk"^^com.spotify:song("Without Me"), artists=["spotify:artist:7dGJo4pcD2V6oG8kP0tJRR"^^com.spotify:artist("Eminem")], release_date=new Date("2002-05-26T00:00:00.000Z"), popularity=82, energy=0.669, danceability=0.908 },
-C:   { id="spotify:track:5rb9QrpfcKFHM1EUbSIurX"^^com.spotify:song("Yeah! (feat. Lil Jon & Ludacris)"), artists=["spotify:artist:23zg3TcAtWQy7J6upgbUnj"^^com.spotify:artist("Usher"), "spotify:artist:7sfl4Xt5KmfyDs2T3SVSMK"^^com.spotify:artist("Lil Jon"), "spotify:artist:3ipn9JLAPI5GUEo4y4jcoi"^^com.spotify:artist("Ludacris")], release_date=new Date("2004-03-23T00:00:00.000Z"), popularity=80, energy=0.791, danceability=0.894 },
-C:   { id="spotify:track:0I3q5fE6wg7LIfHGngUTnV"^^com.spotify:song("Ms. Jackson"), artists=["spotify:artist:1G9G7WwrXka3Z1r7aIDjI7"^^com.spotify:artist("OutKast")], release_date=new Date("2000-10-31T00:00:00.000Z"), popularity=79, energy=0.805, danceability=0.843 },
-C:   { id="spotify:track:0d28khcov6AiegSCpG5TuT"^^com.spotify:song("Feel Good Inc."), artists=["spotify:artist:3AA28KZvwAUcZuOKwyblJQ"^^com.spotify:artist("Gorillaz")], release_date=new Date("2005-05-23T00:00:00.000Z"), popularity=80, energy=0.705, danceability=0.818 },
-C:   { id="spotify:track:3ZFTkvIE7kyPt6Nu3PEa7V"^^com.spotify:song("Hips Don't Lie (feat. Wyclef Jean)"), artists=["spotify:artist:0EmeFodog0BfCgMzAIvKQp"^^com.spotify:artist("Shakira"), "spotify:artist:7aBzpmFXB4WWpPl2F7RjBe"^^com.spotify:artist("Wyclef Jean")], release_date=new Date("2005-11-28T00:00:00.000Z"), popularity=82, energy=0.824, danceability=0.778 },
-C:   { id="spotify:track:7i6r9KotUPQg3ozKKgEPIN"^^com.spotify:song("Seven Nation Army"), artists=["spotify:artist:4F84IBURUo98rz4r61KF70"^^com.spotify:artist("The White Stripes")], release_date=new Date("2003-04-01T00:00:00.000Z"), popularity=73, energy=0.463, danceability=0.737 },
-C:   { id="spotify:track:2PpruBYCo4H7WOBJ7Q2EwM"^^com.spotify:song("Hey Ya! - Radio Mix"), artists=["spotify:artist:1G9G7WwrXka3Z1r7aIDjI7"^^com.spotify:artist("OutKast")], release_date=new Date("2003-01-01T00:00:00.000Z"), popularity=79, energy=0.974, danceability=0.728 },
-C:   { id="spotify:track:6ECp64rv50XVz93WvxXMGF"^^com.spotify:song("This Love"), artists=["spotify:artist:04gDigrS5kc9YWfZHwBETP"^^com.spotify:artist("Maroon 5")], release_date=new Date("2002-01-01T00:00:00.000Z"), popularity=77, energy=0.862, danceability=0.712 },
-C:   { id="spotify:track:4RCWB3V8V0dignt99LZ8vH"^^com.spotify:song("Hey There Delilah"), artists=["spotify:artist:1g1yxsNVPhMUl9GrMjEb2o"^^com.spotify:artist("Plain White T's")], release_date=new Date("2005-01-01T00:00:00.000Z"), popularity=79, energy=0.291, danceability=0.656 },
-C:   { id="spotify:track:2MLHyLy5z5l5YRp7momlgw"^^com.spotify:song("Island In The Sun"), artists=["spotify:artist:3jOstUTkEu2JkjvRdBA5Gu"^^com.spotify:artist("Weezer")], release_date=new Date("2001-05-15T00:00:00.000Z"), popularity=77, energy=0.81, danceability=0.654 }
-C: ]]
-C: #[count=21];
-A: i found without me by eminem, yeah! (feat. lil jon & ludacris) by usher, lil jon, and ludacris, and ms. jackson by outkast . is there anything else i can help you with ?
-AT: $dialogue @org.thingpedia.dialogue.transaction.sys_anything_else;
-U: can you play without me by eminem .
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.spotify.play_songs(toPlay=["spotify:track:7lQ8MOhq6IN2w8EYcFNSUk"^^com.spotify:song("Without Me")]);
-C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: now => (sort danceability desc of (@com.spotify.song())), (release_date >= new Date("2000-01-01T08:00:00.000Z") && release_date <= new Date("2005-12-31T08:00:00.000Z")) => notify
-C: #[results=[
-C:   { id="spotify:track:7lQ8MOhq6IN2w8EYcFNSUk"^^com.spotify:song("Without Me"), artists=["spotify:artist:7dGJo4pcD2V6oG8kP0tJRR"^^com.spotify:artist("Eminem")], release_date=new Date("2002-05-26T00:00:00.000Z"), popularity=82, energy=0.669, danceability=0.908 },
-C:   { id="spotify:track:5rb9QrpfcKFHM1EUbSIurX"^^com.spotify:song("Yeah! (feat. Lil Jon & Ludacris)"), artists=["spotify:artist:23zg3TcAtWQy7J6upgbUnj"^^com.spotify:artist("Usher"), "spotify:artist:7sfl4Xt5KmfyDs2T3SVSMK"^^com.spotify:artist("Lil Jon"), "spotify:artist:3ipn9JLAPI5GUEo4y4jcoi"^^com.spotify:artist("Ludacris")], release_date=new Date("2004-03-23T00:00:00.000Z"), popularity=80, energy=0.791, danceability=0.894 },
-C:   { id="spotify:track:0I3q5fE6wg7LIfHGngUTnV"^^com.spotify:song("Ms. Jackson"), artists=["spotify:artist:1G9G7WwrXka3Z1r7aIDjI7"^^com.spotify:artist("OutKast")], release_date=new Date("2000-10-31T00:00:00.000Z"), popularity=79, energy=0.805, danceability=0.843 },
-C:   { id="spotify:track:0d28khcov6AiegSCpG5TuT"^^com.spotify:song("Feel Good Inc."), artists=["spotify:artist:3AA28KZvwAUcZuOKwyblJQ"^^com.spotify:artist("Gorillaz")], release_date=new Date("2005-05-23T00:00:00.000Z"), popularity=80, energy=0.705, danceability=0.818 },
-C:   { id="spotify:track:3ZFTkvIE7kyPt6Nu3PEa7V"^^com.spotify:song("Hips Don't Lie (feat. Wyclef Jean)"), artists=["spotify:artist:0EmeFodog0BfCgMzAIvKQp"^^com.spotify:artist("Shakira"), "spotify:artist:7aBzpmFXB4WWpPl2F7RjBe"^^com.spotify:artist("Wyclef Jean")], release_date=new Date("2005-11-28T00:00:00.000Z"), popularity=82, energy=0.824, danceability=0.778 },
-C:   { id="spotify:track:7i6r9KotUPQg3ozKKgEPIN"^^com.spotify:song("Seven Nation Army"), artists=["spotify:artist:4F84IBURUo98rz4r61KF70"^^com.spotify:artist("The White Stripes")], release_date=new Date("2003-04-01T00:00:00.000Z"), popularity=73, energy=0.463, danceability=0.737 },
-C:   { id="spotify:track:2PpruBYCo4H7WOBJ7Q2EwM"^^com.spotify:song("Hey Ya! - Radio Mix"), artists=["spotify:artist:1G9G7WwrXka3Z1r7aIDjI7"^^com.spotify:artist("OutKast")], release_date=new Date("2003-01-01T00:00:00.000Z"), popularity=79, energy=0.974, danceability=0.728 },
-C:   { id="spotify:track:6ECp64rv50XVz93WvxXMGF"^^com.spotify:song("This Love"), artists=["spotify:artist:04gDigrS5kc9YWfZHwBETP"^^com.spotify:artist("Maroon 5")], release_date=new Date("2002-01-01T00:00:00.000Z"), popularity=77, energy=0.862, danceability=0.712 },
-C:   { id="spotify:track:4RCWB3V8V0dignt99LZ8vH"^^com.spotify:song("Hey There Delilah"), artists=["spotify:artist:1g1yxsNVPhMUl9GrMjEb2o"^^com.spotify:artist("Plain White T's")], release_date=new Date("2005-01-01T00:00:00.000Z"), popularity=79, energy=0.291, danceability=0.656 },
-C:   { id="spotify:track:2MLHyLy5z5l5YRp7momlgw"^^com.spotify:song("Island In The Sun"), artists=["spotify:artist:3jOstUTkEu2JkjvRdBA5Gu"^^com.spotify:artist("Weezer")], release_date=new Date("2001-05-15T00:00:00.000Z"), popularity=77, energy=0.81, danceability=0.654 }
-C: ]]
-C: #[count=21];
-C: now => (sort danceability desc of (@com.spotify.song())), (release_date >= new Date("2000-01-01T08:00:00.000Z") && release_date <= new Date("2005-12-31T08:00:00.000Z")) => notify
-C: #[results=[
-C:   { id="spotify:track:7lQ8MOhq6IN2w8EYcFNSUk"^^com.spotify:song("Without Me"), artists=["spotify:artist:7dGJo4pcD2V6oG8kP0tJRR"^^com.spotify:artist("Eminem")], release_date=new Date("2002-05-26T00:00:00.000Z"), popularity=82, energy=0.669, danceability=0.908 },
-C:   { id="spotify:track:5rb9QrpfcKFHM1EUbSIurX"^^com.spotify:song("Yeah! (feat. Lil Jon & Ludacris)"), artists=["spotify:artist:23zg3TcAtWQy7J6upgbUnj"^^com.spotify:artist("Usher"), "spotify:artist:7sfl4Xt5KmfyDs2T3SVSMK"^^com.spotify:artist("Lil Jon"), "spotify:artist:3ipn9JLAPI5GUEo4y4jcoi"^^com.spotify:artist("Ludacris")], release_date=new Date("2004-03-23T00:00:00.000Z"), popularity=80, energy=0.791, danceability=0.894 },
-C:   { id="spotify:track:0I3q5fE6wg7LIfHGngUTnV"^^com.spotify:song("Ms. Jackson"), artists=["spotify:artist:1G9G7WwrXka3Z1r7aIDjI7"^^com.spotify:artist("OutKast")], release_date=new Date("2000-10-31T00:00:00.000Z"), popularity=79, energy=0.805, danceability=0.843 },
-C:   { id="spotify:track:0d28khcov6AiegSCpG5TuT"^^com.spotify:song("Feel Good Inc."), artists=["spotify:artist:3AA28KZvwAUcZuOKwyblJQ"^^com.spotify:artist("Gorillaz")], release_date=new Date("2005-05-23T00:00:00.000Z"), popularity=80, energy=0.705, danceability=0.818 },
-C:   { id="spotify:track:3ZFTkvIE7kyPt6Nu3PEa7V"^^com.spotify:song("Hips Don't Lie (feat. Wyclef Jean)"), artists=["spotify:artist:0EmeFodog0BfCgMzAIvKQp"^^com.spotify:artist("Shakira"), "spotify:artist:7aBzpmFXB4WWpPl2F7RjBe"^^com.spotify:artist("Wyclef Jean")], release_date=new Date("2005-11-28T00:00:00.000Z"), popularity=82, energy=0.824, danceability=0.778 },
-C:   { id="spotify:track:7i6r9KotUPQg3ozKKgEPIN"^^com.spotify:song("Seven Nation Army"), artists=["spotify:artist:4F84IBURUo98rz4r61KF70"^^com.spotify:artist("The White Stripes")], release_date=new Date("2003-04-01T00:00:00.000Z"), popularity=73, energy=0.463, danceability=0.737 },
-C:   { id="spotify:track:2PpruBYCo4H7WOBJ7Q2EwM"^^com.spotify:song("Hey Ya! - Radio Mix"), artists=["spotify:artist:1G9G7WwrXka3Z1r7aIDjI7"^^com.spotify:artist("OutKast")], release_date=new Date("2003-01-01T00:00:00.000Z"), popularity=79, energy=0.974, danceability=0.728 },
-C:   { id="spotify:track:6ECp64rv50XVz93WvxXMGF"^^com.spotify:song("This Love"), artists=["spotify:artist:04gDigrS5kc9YWfZHwBETP"^^com.spotify:artist("Maroon 5")], release_date=new Date("2002-01-01T00:00:00.000Z"), popularity=77, energy=0.862, danceability=0.712 },
-C:   { id="spotify:track:4RCWB3V8V0dignt99LZ8vH"^^com.spotify:song("Hey There Delilah"), artists=["spotify:artist:1g1yxsNVPhMUl9GrMjEb2o"^^com.spotify:artist("Plain White T's")], release_date=new Date("2005-01-01T00:00:00.000Z"), popularity=79, energy=0.291, danceability=0.656 },
-C:   { id="spotify:track:2MLHyLy5z5l5YRp7momlgw"^^com.spotify:song("Island In The Sun"), artists=["spotify:artist:3jOstUTkEu2JkjvRdBA5Gu"^^com.spotify:artist("Weezer")], release_date=new Date("2001-05-15T00:00:00.000Z"), popularity=77, energy=0.81, danceability=0.654 }
-C: ]]
-C: #[count=21];
-C: now => @com.spotify.play_songs(toPlay=["spotify:track:7lQ8MOhq6IN2w8EYcFNSUk"^^com.spotify:song("Without Me")])
-C: #[results=[
-C: ]];
-A: sure, consider that done .
-AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
-U: alright, thanks .
-UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+
