@@ -237,6 +237,7 @@ datadir/fewshot: eval/$(release)/train/user.tsv eval/$(release)/dev/user.tsv
 	mkdir -p $@/user
 	cp eval/$(release)/train/user.tsv $@/user/train.tsv
 	cp eval/$(release)/dev/user.tsv $@/user/eval.tsv
+	touch $@
 
 datadir: datadir/agent datadir/user datadir/fewshot $(foreach v,$(subdataset_ids),eval/$(release)/synthetic-$(v).txt)
 	cat eval/$(release)/synthetic-*.txt > $@/synthetic.txt
