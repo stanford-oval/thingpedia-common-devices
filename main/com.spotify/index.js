@@ -37,10 +37,16 @@ const querystring = require("querystring");
 const PLAY_URL = "https://api.spotify.com/v1/me/player/play";
 const SEARCH_URL = "https://api.spotify.com/v1/search?";
 const AVAILABLE_DEVICES_URL = "https://api.spotify.com/v1/me/player/devices";
+const CURRENTLY_PLAYING_URL = 'https://api.spotify.com/v1/me/player/currently-playing';
 const ARTIST_ALBUM_URL = "https://api.spotify.com/v1/artists/{id}/albums?";
 const AUDIO_FEATURES_URL = 'https://api.spotify.com/v1/audio-features/?';
 const ALBUM_URL = 'https://api.spotify.com/v1/albums?';
 const TRACK_URL = 'https://api.spotify.com/v1/tracks?';
+const SHUFFLE_URL = 'https://api.spotify.com/v1/me/player/shuffle?';
+const PAUSE_URL = 'https://api.spotify.com/v1/me/player/pause';
+const NEXT_URL = 'https://api.spotify.com/v1/me/player/next';
+const PREVIOUS_URL = 'https://api.spotify.com/v1/me/player/previous';
+const REPEAT_URL = 'https://api.spotify.com/v1/me/player/repeat?';
 
 module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
@@ -57,20 +63,28 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             throw new Error(JSON.parse(e.detail).error.message);
         });
     }
-
     http_put(url, data, options) {
         return Tp.Helpers.Http.request(url, "PUT", data, options).catch(
             (e) => {
                 throw new Error(JSON.parse(e.detail).error.message);
             });
     }
-
+    http_post_default_options(url, data) {
+        console.log("post url is " + url);
+        console.log(data);
+        return Tp.Helpers.Http.post(url, data, {
+            useOAuth2: this,
+            dataContentType: 'application/json',
+            accept: 'application/json'
+        }).catch((e) => {
+            throw new Error(JSON.parse(e.detail).error.message);
+        });
+    }
     get_get_available_devices() {
         return this.http_get(AVAILABLE_DEVICES_URL).then((response) => {
             return JSON.parse(response).devices;
         });
     }
-
     async set_active_device(devices) {
         if (devices.length === 0) {
             console.log("no available devices");
@@ -87,7 +101,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         console.log("setting active device");
         return devices[0].id;
     }
-
     search(query, types, limit) {
         let searchURL = SEARCH_URL + querystring.stringify({
             q: query.toString(),
@@ -106,7 +119,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             throw new Error(JSON.parse(e.detail).error.message);
         });
     }
-
     albums_get_by_artist_id(artistID, groups) {
         let url = ARTIST_ALBUM_URL.replace("{id}", artistID) + querystring.stringify({
             include_groups: groups,
@@ -122,7 +134,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             throw new Error(JSON.parse(e.detail).error.message);
         });
     }
-
     audio_features_get_by_id(ids) {
         const url = AUDIO_FEATURES_URL + querystring.stringify({
             ids: ids.join()
@@ -136,7 +147,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             throw new Error(JSON.parse(e.detail).error.message);
         });
     }
-
     tracks_get_by_id(ids) {
         const url = TRACK_URL + querystring.stringify({
             ids: ids.join()
@@ -150,7 +160,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             throw new Error(JSON.parse(e.detail).error.message);
         });
     }
-
     albums_get_by_id(ids) {
         const url = ALBUM_URL + querystring.stringify({
             ids: ids.join()
@@ -164,7 +173,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             throw new Error(JSON.parse(e.detail).error.message);
         });
     }
-
     async parse_tracks(tracks) {
         //const ids = tracks.map((track) => new Tp.Value.Entity(track.id, track.name));
         const ids = tracks.map((track) => track.id);
@@ -192,13 +200,11 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         }
         return songs;
     }
-
     async songs_by_search(query, artistURI) {
         const searchResults = await this.search(query, "track", 50);
         if (!Object.prototype.hasOwnProperty.call(searchResults, "tracks") || searchResults.tracks.total === 0) throw new Error(`Query ${query} failed`);
         return this.parse_tracks(searchResults.tracks.items);
     }
-
     async songs_by_artist(artists, sortDirection) {
         const searchResults = await this.search(artists[0], "artist", 1);
         if (!Object.prototype.hasOwnProperty.call(searchResults, 'artists') || searchResults.artists.total === 0) throw new Error(`Artist ${artists[0]} not found`);
@@ -230,7 +236,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         const trackItems = await this.tracks_get_by_id(songIds);
         return this.parse_tracks(trackItems.tracks);
     }
-
     async albums_by_search(query, artistURI) {
         const searchResults = await this.search(query, "album", 20);
         if (!Object.prototype.hasOwnProperty.call(searchResults, "albums") || searchResults.albums.total === 0) throw new Error(`Query ${query} failed`);
@@ -250,7 +255,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         }
         return albums;
     }
-
     async albums_by_artist(artists, sortDirection) {
         const searchResults = await this.search(artists[0], "artist", 1);
         if (!Object.prototype.hasOwnProperty.call(searchResults, 'artists') || searchResults.artists.total === 0) throw new Error(`Artist ${artists[0]} not found`);
@@ -287,7 +291,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         }
         return albums;
     }
-
     async get_song(params, hints, env) {
         var idFilter = '';
         var yearFilter = '';
@@ -335,7 +338,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             return this.songs_by_search(query);
         }
     }
-
     async get_artist(params, hints, env) {
         var idFilter = '';
         var genreFilter = '';
@@ -365,7 +367,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         }
         return artists;
     }
-
     async get_album(params, hints, env) {
         //get_album works essentially the same as get_song.
         var idFilter = '';
@@ -412,31 +413,26 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             return this.albums_by_search(query);
         }
     }
-
-    do_play_songs({ toPlay }) {
-        const uris = toPlay.map((song) => song.value);
-        console.log('uris are ' + JSON.stringify(uris));
-        return this.player_play_helper(JSON.stringify({ uris }));
+    do_play_song({ song }) {
+        const uris = [song.value];
+        return this.player_play_helper(JSON.stringify({ 'uris': uris }));
     }
-
-    do_play_artist({ toPlay }) {
-        const uri = toPlay.value;
+    do_play_artist({ artist }) {
+        const uri = artist.value;
         let data = {
             context_uri: uri,
         };
         console.log("data is " + JSON.stringify(data));
         return this.player_play_helper(JSON.stringify(data));
     }
-
-    do_play_album({ toPlay }) {
-        const uri = toPlay.value;
+    do_play_album({ album }) {
+        const uri = album.value;
         let data = {
             context_uri: uri,
         };
         console.log("data is " + JSON.stringify(data));
         return this.player_play_helper(JSON.stringify(data));
     }
-
     async player_play_helper(data = '', options = {
         useOAuth2: this,
         dataContentType: 'application/json',
@@ -447,5 +443,63 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         console.log("CAN PLAY: " + canPlay);
         if (typeof canPlay === 'boolean' && canPlay) return this.http_put(PLAY_URL, data, options);
         else return this.http_put(PLAY_URL + `?device_id=${canPlay}`, data, options);
+    }
+    async currently_playing_helper() {
+        return Tp.Helpers.Http.get(CURRENTLY_PLAYING_URL, {
+            accept: 'application/json',
+            useOAuth2: this
+        }).catch((e) => {
+            throw new Error(JSON.parse(e.detail).error.message);
+        });
+    }
+    get_get_user_top_tracks() {
+        return this.http_get(`https://api.spotify.com/v1/me/top/tracks?limit=20&time_range=short_term`).then((response) => {
+            let parsed = JSON.parse(response);
+            return parsed.items.map((track) => {
+                return { song: new Tp.Value.Entity(track.uri, track.name) };
+            });
+        });
+    }
+
+    get_get_currently_playing() {
+        return this.currently_playing_helper().then((response) => {
+            if (response === '' || response.length === 0)
+                return [];
+
+            const parsed = JSON.parse(response);
+            if (parsed.is_playing === false)
+                return [];
+
+            return [{ song: new Tp.Value.Entity(parsed.item.uri, parsed.item.name) }];
+        });
+    }
+    do_player_pause() {
+        return this.http_put_default_options(PAUSE_URL, '');
+    }
+
+    do_player_play() {
+        console.log("Playing music...");
+        return this.player_play_helper();
+    }
+
+    do_player_next() {
+        return this.http_post_default_options(NEXT_URL, '');
+    }
+
+    do_player_previous() {
+        return this.http_post_default_options(PREVIOUS_URL, '');
+    }
+
+    do_player_shuffle({ shuffle }) {
+        shuffle = shuffle === 'on' ? 'true' : 'false';
+        console.log("setting shuffle: " + shuffle);
+        let shuffleURL = SHUFFLE_URL + querystring.stringify({ state: shuffle });
+        console.log(shuffleURL);
+        return this.http_put_default_options(shuffleURL, '');
+    }
+
+    do_player_repeat({ repeat }) {
+        console.log("repeat: " + repeat);
+        return this.http_put_default_options(REPEAT_URL + querystring.stringify({ state: repeat }), '');
     }
 };
