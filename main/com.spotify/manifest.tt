@@ -243,23 +243,27 @@ class @com.spotify
     action player_next()
     #_[canonical="go to the next song"]
     #_[confirmation="go to the next song"]
-    #[doc="go to the next song"];
+    #[doc="go to the next song"]
+    #[confirm=false];
 
     action player_previous()
-    #_[canonical="go to the next song"]
-    #_[confirmation="go to the next song"]
-    #[doc="go to the next song"];
+    #_[canonical="go to the previous song"]
+    #_[confirmation="go to the previous song"]
+    #[doc="go to the previous song"]
+    #[confirm=false];
 
     action player_play()
-    #_[canonical="go to the next song"]
-    #_[confirmation="go to the next song"]
-    #[doc="go to the next song"];
+    #_[canonical=["resume playing", "start playing", "resume playback"]]
+    #_[confirmation="resume playing"]
+    #[doc="resume playback"]
+    #[confirm=false];
 
     action player_pause()
     #_[canonical="pause playback"]
     #_[confirmation="pause playback"]
     #_[confirmation_remote="pause $_person's playback"]
-    #[doc="pause playback"];
+    #[doc="pause playback"]
+    #[confirm=false];
 
     action player_shuffle(in req shuffle: Enum(on,off)
                           #_[prompt="Should we set the shuffle state to 'on' or 'off'?"]
@@ -269,7 +273,8 @@ class @com.spotify
     #_[canonical="set the shuffle state"]
     #_[confirmation="set the shuffle state"]
     #_[confirmation_remote="set the shuffle state"]
-    #[doc="set the shuffle state"];
+    #[doc="set the shuffle state"]
+    #[confirm=false];
 
     action player_repeat(in req repeat: Enum(track,context,off)
                          #_[prompt="Should we set the repeat state to 'track', 'context', or 'off'?"]
@@ -279,7 +284,8 @@ class @com.spotify
     #_[canonical="set the repeat state"]
     #_[confirmation="set the repeat state"]
     #_[confirmation_remote="set the repeat state"]
-    #[doc="set the repeat state"];
+    #[doc="set the repeat state"]
+    #[confirm=false];
 
 
 }
