@@ -265,9 +265,9 @@ syncup:
 syncdown:
 	aws s3 sync s3://$(s3_bucket)/$(genie_k8s_owner)/workdir/$(genie_k8s_project)/ .
 
-$(release)/datasets/%/stats:
+eval/$(release)/datasets/%/stats:
 	aws s3 cp s3://$(s3_bucket)/$(if $(findstring /,$*),$(dir $*),$(genie_k8s_owner)/)dataset/$(genie_k8s_project)/$(release)/$(notdir $*)/stats $@ || true
-	sed -i 's|datadir|'$(release)/datasets/$*'|g' $@
+	sed -i 's|datadir|'$(release)/$*'|g' $@
 
-training-set-statistics: $(foreach v,$($(release)_training_sets),$(release)/datasets/$(v)/stats)
-	cat $(foreach v,$($(release)_training_sets),$(release)/datasets/$(v)/stats)
+training-set-statistics: $(foreach v,$($(release)_training_sets),eval/$(release)/datasets/$(v)/stats)
+	cat $^
