@@ -119,9 +119,11 @@ class @com.spotify
                       #_[canonical={
                         default="base",
                         base=["name"],
-                        passive_verb=["named #", "called #"],
+                        // FIXME: actions must use "preposition" not "passive_verb"
+                        preposition=["named #", "called #"],
                         property=["name #"]
                       }])
+    #_[canonical=["play a song", "play the song"]]
     #_[confirmation="play the song $song"]
     #[confirm=false];
 
@@ -164,9 +166,10 @@ class @com.spotify
                       #_[canonical={
                         default="base",
                         base=["name"],
-                        passive_verb=["named #", "called #"],
+                        preposition=["named #", "called #"],
                         property=["name #"]
                       }])
+    #_[canonical=["play an artist", "play the artist"]]
     #_[confirmation="play the artist $artist"]
     #[confirm=false];
 
@@ -218,48 +221,58 @@ class @com.spotify
                       #_[canonical={
                         default="base",
                         base=["name"],
-                        passive_verb=["named #", "called #"],
+                        preposition=["named #", "called #"],
                         property=["name #"]
                       }])
+    #_[canonical=["play an album", "play the album"]]
     #_[confirmation="play the album $album"]
     #[confirm=false];
 
     monitorable query get_currently_playing(out song: Entity(com.spotify:song)
                                             #[string_values="tt:song_name"])
-    #_[canonical="get currently playing track name"]
+    #_[canonical=["the currently playing track name", "the currently playing song",
+                  "the song currently playing"]]
     #_[confirmation="the currently playing track name"]
+    #_[result=["currently playing ${song}", "the currently playing track is ${song}"]]
+    #_[on_error={
+      no_song_playing=["no song is currently playing", "nothing is currently playing"]
+    }]
     #_[formatted=[{type="text",text="The current playing song is ${song}."}]]
     #[poll_interval=60000ms]
     #[doc="retrieve the currently playing track name"];
 
     monitorable list query get_user_top_tracks(out song: Entity(com.spotify:song)
                                                #[string_values="tt:song_name"])
-    #_[canonical="spotify top tracks"]
+    #_[canonical=["spotify top tracks", "my favorite songs",
+                  "my top tracks"]]
     #_[confirmation="my top tracks in Spotify"]
     #_[formatted=[{type="text",text="${song}"}]]
     #[poll_interval=3600000ms]
     #[doc="get user's top tracks in the last 4 weeks"];
 
     action player_next()
-    #_[canonical="go to the next song"]
+    #_[canonical=["play the next song", "go to the next song", "skip this song"]]
     #_[confirmation="go to the next song"]
     #[doc="go to the next song"]
     #[confirm=false];
 
     action player_previous()
-    #_[canonical="go to the previous song"]
+    #_[canonical=["play the previous song", "go back",
+                  "play the last song",
+                  "go back to the last song",
+                  "go to the previous song"]]
     #_[confirmation="go to the previous song"]
     #[doc="go to the previous song"]
     #[confirm=false];
 
     action player_play()
-    #_[canonical=["resume playing", "start playing", "resume playback"]]
+    #_[canonical=["resume playing", "start playing", "resume playback", "play my spotify"]]
     #_[confirmation="resume playing"]
     #[doc="resume playback"]
     #[confirm=false];
 
     action player_pause()
-    #_[canonical="pause playback"]
+    #_[canonical=["pause playback", "pause my spotify"]]
     #_[confirmation="pause playback"]
     #_[confirmation_remote="pause $_person's playback"]
     #[doc="pause playback"]
@@ -268,7 +281,8 @@ class @com.spotify
     action player_shuffle(in req shuffle: Enum(on,off)
                           #_[prompt="Should we set the shuffle state to 'on' or 'off'?"]
                           #_[canonical={
-                            base=["shuffle"]
+                            base=["shuffle"],
+                            preposition=["to"]
                           }])
     #_[canonical="set the shuffle state"]
     #_[confirmation="set the shuffle state"]
@@ -279,7 +293,8 @@ class @com.spotify
     action player_repeat(in req repeat: Enum(track,context,off)
                          #_[prompt="Should we set the repeat state to 'track', 'context', or 'off'?"]
                          #_[canonical={
-                           base=["repeat"]
+                           base=["repeat"],
+                           preposition=["to"]
                          }])
     #_[canonical="set the repeat state"]
     #_[confirmation="set the repeat state"]
