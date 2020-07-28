@@ -454,3 +454,1966 @@ AT: #[confirm=enum(proposed)];
 U: yes , have a good day .
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => @com.spotify.play_songs(toPlay=["spotify:track:0G21yYKMZoHa30cYVi1iA8"^^com.spotify:song("Welcome To The Jungle"), "spotify:track:7snQQk1zcKl8gZ92AnueZW"^^com.spotify:song("Sweet Child O' Mine"), "spotify:track:5zA8vzDGqPl2AzZkEYQGKh"^^com.spotify:song("Uptown Girl"), "spotify:track:4xh7W7tlNMIczFhupCPniY"^^com.spotify:song("Go Your Own Way - 2004 Remaster"), "spotify:track:0YEg2JfkMeJ1hTYqop4A5o"^^com.spotify:song("7 Rings"), "spotify:track:5QTxFnGygVM4jFQiBovmRo"^^com.spotify:song("(Don't Fear) The Reaper"), "spotify:track:7oK9VyNzrYvRFo7nQEYkWN"^^com.spotify:song("Mr. Brightside"), "spotify:track:2zYzyRzz6pRmhPzyfMEC8s"^^com.spotify:song("Highway to Hell"), "spotify:track:3CA9pLiwRIGtUBiMjbZmRw"^^com.spotify:song("Nice For What"), "spotify:track:2WfaOiMkCvy7F5fcp2zZ8L"^^com.spotify:song("Take on Me")]);
+====
+# nlu/spotify-4
+U: Play Magic Sam from the thirties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "magic sam") && release_date >= makeDate(1930, 1, 1) && release_date <= makeDate(1939, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-6
+U: Play music by blowfly from the seventies
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "blowfly") && release_date >= makeDate(1970, 1, 1) && release_date <= makeDate(1979, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-8
+U: play a tune by Syreeta Wright from twenties from the top
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort popularity desc of @com.spotify.song(), contains~(artists, "syreeta wright") && release_date >= makeDate(1920, 1, 1) && release_date <= makeDate(1929, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-13
+U: Play some sixties music.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1960, 1, 1) && release_date <= makeDate(1969, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-19
+U: Play me some music by Prince Alla from the twenties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "prince alla") && release_date >= makeDate(1920, 1, 1) && release_date <= makeDate(1929, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-34
+U: play laura love songs from 1959
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "laura love") && release_date >= makeDate(1959, 1, 1) && release_date <= makeDate(1959, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-62
+U: PLay some fourties music from Erin Harkes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1940, 1, 1) && release_date <= makeDate(1949, 12, 31) && contains~(artists, "erin harkes") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-71
+U: Play music from 2002
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(2002, 1, 1) && release_date <= makeDate(2002, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-78
+U: Play me a song from the fourties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1940, 1, 1) && release_date <= makeDate(1949, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-86
+U: I want to hear Papa Mali's songs from the fifties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "papa mali") && release_date >= makeDate(1950, 1, 1) && release_date <= makeDate(1959, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-92
+U: Play a song from the seventies by Pepe Aguilar
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1970, 1, 1) && release_date <= makeDate(1979, 12, 31) && contains~(artists, "pepe aguilar") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-96
+U: play songs from the sixties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1960, 1, 1) && release_date <= makeDate(1969, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-110
+U: play a 1994 tune by Lena Horne
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1994, 1, 1) && release_date <= makeDate(1994, 12, 31) && contains~(artists, "lena horne") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-112
+U: Play a top fifty track from the twenties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort popularity desc of @com.spotify.song(), release_date >= makeDate(1920, 1, 1) && release_date <= makeDate(1929, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-117
+U: play something from 1981
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1981, 1, 1) && release_date <= makeDate(1981, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-122
+U: Play some songs from the fifties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1950, 1, 1) && release_date <= makeDate(1959, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-138
+U: Play Niko from the fourties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "niko") && release_date >= makeDate(1940, 1, 1) && release_date <= makeDate(1949, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-141
+U: play some nineties music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1990, 1, 1) && release_date <= makeDate(1999, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-144
+U: Play music from 2015
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(2015, 1, 1) && release_date <= makeDate(2015, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-145
+U: Play music from 1964
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1964, 1, 1) && release_date <= makeDate(1964, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-152
+U: Play me a nineties song by Joseph Genaro
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1990, 1, 1) && release_date <= makeDate(1999, 12, 31) && contains~(artists, "joseph genaro") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-156
+U: Play some Rockwell from around 1996
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "rockwell") && release_date >= makeDate(1996, 1, 1) && release_date <= makeDate(1996, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-158
+U: play something from the twenties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1920, 1, 1) && release_date <= makeDate(1929, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-160
+U: play some 1991 Dave Barker
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1991, 1, 1) && release_date <= makeDate(1991, 12, 31) && contains~(artists, "dave barker") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-168
+U: Play any song from 2001
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(2001, 1, 1) && release_date <= makeDate(2001, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-175
+U: play music from 1981
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1981, 1, 1) && release_date <= makeDate(1981, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-183
+U: Play Barbra Streisand music from 1997.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "barbra streisand") && release_date >= makeDate(1997, 1, 1) && release_date <= makeDate(1997, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-193
+U: Play music from the seventies for me. 
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1970, 1, 1) && release_date <= makeDate(1979, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-198
+U: Play music from 2007.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(2007, 1, 1) && release_date <= makeDate(2007, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-199
+U: Play me a song from the sixties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1960, 1, 1) && release_date <= makeDate(1969, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-209
+U: Play eighties music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1980, 1, 1) && release_date <= makeDate(1989, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-219
+U: play music from the sixties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1960, 1, 1) && release_date <= makeDate(1969, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-220
+U: I want to hear Somi's songs from the twenties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "somi") && release_date >= makeDate(1920, 1, 1) && release_date <= makeDate(1929, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-221
+U: play Tom Jones album from the twenties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.album(), contains~(artists, "tom jones") && release_date >= makeDate(1920, 1, 1) && release_date <= makeDate(1929, 12, 31) => notify;
+UT: now => @com.spotify.play_album(album=$?);
+====
+# nlu/spotify-235
+U: play 1970 trunes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1970, 1, 1) && release_date <= makeDate(1970, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-237
+U: Play a track from 1985.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1985, 1, 1) && release_date <= makeDate(1985, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-270
+U: Play Trace Adkins' music from the thirties.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "trace adkins") && release_date >= makeDate(1930, 1, 1) && release_date <= makeDate(1939, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-280
+U: play Abhijeet Bhattacharya from 1986
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "abhijeet bhattacharya") && release_date >= makeDate(1986, 1, 1) && release_date <= makeDate(1986, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-284
+U: Play Dj Drama from the 1976
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "dj drama") && release_date >= makeDate(1976, 1, 1) && release_date <= makeDate(1976, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-288
+U: Play some music from the fourties.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1940, 1, 1) && release_date <= makeDate(1949, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-292
+U: play fourties tunes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1940, 1, 1) && release_date <= makeDate(1949, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-300
+U: Play eighties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1980, 1, 1) && release_date <= makeDate(1989, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-304
+U: Play some music from 1995
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1995, 1, 1) && release_date <= makeDate(1995, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-317
+U: play a top 50  tune from the twenties by Willi Williams
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort popularity desc of @com.spotify.song(), release_date >= makeDate(1920, 1, 1) && release_date <= makeDate(1929, 12, 31) && contains~(artists, "willi williams") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-318
+U: play fifties track music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1950, 1, 1) && release_date <= makeDate(1959, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-324
+U: Play Hasan Saltik from 2004
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "hasan saltik") && release_date >= makeDate(2004, 1, 1) && release_date <= makeDate(2004, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-327
+U: play wendy james from the fifties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "wendy james") && release_date >= makeDate(1950, 1, 1) && release_date <= makeDate(1959, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-333
+U: Play me a song from 1976 by Bennie Moten
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1976, 1, 1) && release_date <= makeDate(1976, 12, 31) && contains~(artists, "bennie moten") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-344
+U: play Richard Thompson from the thirties song book
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "richard thompson") && release_date >= makeDate(1930, 1, 1) && release_date <= makeDate(1939, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-348
+U: Play a sixties song.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1960, 1, 1) && release_date <= makeDate(1969, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-357
+U: Lets hear some 2009 music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(2009, 1, 1) && release_date <= makeDate(2009, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-363
+U: Play some eighties music.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1980, 1, 1) && release_date <= makeDate(1989, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-367
+U: Play some music from the thirties.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1930, 1, 1) && release_date <= makeDate(1939, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-371
+U: Play a track from 1959.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1959, 1, 1) && release_date <= makeDate(1959, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-387
+U: Play me a song from the twenties by Randy Bachman
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1920, 1, 1) && release_date <= makeDate(1929, 12, 31) && contains~(artists, "randy bachman") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-399
+U: Play music from 2011.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(2011, 1, 1) && release_date <= makeDate(2011, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-402
+U: play an eighties track 
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1980, 1, 1) && release_date <= makeDate(1989, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-403
+U: Can you play me some eighties music by Adele
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1980, 1, 1) && release_date <= makeDate(1989, 12, 31) && contains~(artists, "adele") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-420
+U: Please play some music from 1996
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1996, 1, 1) && release_date <= makeDate(1996, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-424
+U: play some Kyle Ward from the seventies
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "kyle ward") && release_date >= makeDate(1970, 1, 1) && release_date <= makeDate(1979, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-435
+U: Play music from 2010 by Jason Donovan
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(2010, 1, 1) && release_date <= makeDate(2010, 12, 31) && contains~(artists, "jason donovan") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-437
+U: Play Giovanni Battista Guadagnini's 1982 tracks.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "giovanni battista guadagnini") && release_date >= makeDate(1982, 1, 1) && release_date <= makeDate(1982, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-439
+U: Play Greg Raposo songs from the thirties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "greg raposo") && release_date >= makeDate(1930, 1, 1) && release_date <= makeDate(1939, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-444
+U: Play that new song from 1970
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort release_date desc of @com.spotify.song(), release_date >= makeDate(1970, 1, 1) && release_date <= makeDate(1970, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-449
+U: I want to hear some of David Gilmour's music from 1973
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "david gilmour") && release_date >= makeDate(1973, 1, 1) && release_date <= makeDate(1973, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-479
+U: play some eighties by Amirbai Karnataki
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1980, 1, 1) && release_date <= makeDate(1989, 12, 31) && contains~(artists, "amirbai karnataki") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-489
+U: Play the best songs of 2016
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort popularity desc of @com.spotify.song(), release_date >= makeDate(2016, 1, 1) && release_date <= makeDate(2016, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-493
+U: Play an album from the fourties, new first.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort release_date desc of @com.spotify.album(), release_date >= makeDate(1940, 1, 1) && release_date <= makeDate(1949, 12, 31) => notify;
+UT: now => @com.spotify.play_album(album=$?);
+====
+# nlu/spotify-504
+U: Play fifties music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1950, 1, 1) && release_date <= makeDate(1959, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-520
+U: play Robert Stoddard from 1988
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "robert stoddard") && release_date >= makeDate(1988, 1, 1) && release_date <= makeDate(1988, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-527
+U: Play some music from the thirties.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1930, 1, 1) && release_date <= makeDate(1939, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-528
+U: Play 2011 music 
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(2011, 1, 1) && release_date <= makeDate(2011, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-536
+U: Play me a 2003 song by Charles Neidich
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(2003, 1, 1) && release_date <= makeDate(2003, 12, 31) && contains~(artists, "charles neidich") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-537
+U: I want to hear some songs from the twenties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1920, 1, 1) && release_date <= makeDate(1929, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-552
+U: Play an album from 1987.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.album(), release_date >= makeDate(1987, 1, 1) && release_date <= makeDate(1987, 12, 31) => notify;
+UT: now => @com.spotify.play_album(album=$?);
+====
+# nlu/spotify-553
+U: Play music from 1960
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1960, 1, 1) && release_date <= makeDate(1960, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-562
+U: play something from the twenties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1920, 1, 1) && release_date <= makeDate(1929, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-565
+U: Play music from the year 1964
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1964, 1, 1) && release_date <= makeDate(1964, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-581
+U: Play an Asha Bhosle song from around 1964
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "asha bhosle") && release_date >= makeDate(1964, 1, 1) && release_date <= makeDate(1964, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-582
+U: Play music from the twenties.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1920, 1, 1) && release_date <= makeDate(1929, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-590
+U: Play some good music from 2012.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort popularity desc of @com.spotify.song(), release_date >= makeDate(2012, 1, 1) && release_date <= makeDate(2012, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-592
+U: Play the top hits of 2016
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort popularity desc of @com.spotify.song(), release_date >= makeDate(2016, 1, 1) && release_date <= makeDate(2016, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-598
+U: play a track from the thirties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1930, 1, 1) && release_date <= makeDate(1939, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-612
+U: play the 2014 album from la lupe
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.album(), release_date >= makeDate(2014, 1, 1) && release_date <= makeDate(2014, 12, 31) && contains~(artists, "la lupe") => notify;
+UT: now => @com.spotify.play_album(album=$?);
+====
+# nlu/spotify-637
+U: Play me a nineties sound track
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1990, 1, 1) && release_date <= makeDate(1999, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-640
+U: play music from the twenties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1920, 1, 1) && release_date <= makeDate(1929, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-646
+U: Will you play me the most popular sound track from 2006
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort popularity desc of @com.spotify.song(), release_date >= makeDate(2006, 1, 1) && release_date <= makeDate(2006, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-648
+U: Play new track from the fifties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort release_date desc of @com.spotify.song(), release_date >= makeDate(1950, 1, 1) && release_date <= makeDate(1959, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-656
+U: Play some fifties music by Origa.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1950, 1, 1) && release_date <= makeDate(1959, 12, 31) && contains~(artists, "origa") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-667
+U: play Solange 2016 album 
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.album(), release_date >= makeDate(2016, 1, 1) && release_date <= makeDate(2016, 12, 31) => notify;
+UT: now => @com.spotify.play_album(album=$?);
+====
+# nlu/spotify-685
+U: Play the top 1991 sound track
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort popularity desc of @com.spotify.song(), release_date >= makeDate(1991, 1, 1) && release_date <= makeDate(1991, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-688
+U: Play a sixties song by Classified
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1960, 1, 1) && release_date <= makeDate(1969, 12, 31) && contains~(artists, "classified") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-693
+U: Play top-ten eighties song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort popularity desc of @com.spotify.song(), release_date >= makeDate(1980, 1, 1) && release_date <= makeDate(1989, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-696
+U: play dj kentaro from the year 1994
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "dj kentaro") && release_date >= makeDate(1994, 1, 1) && release_date <= makeDate(1994, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-697
+U: play a twenties song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1920, 1, 1) && release_date <= makeDate(1929, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-698
+U: Can you play me a track from the nineties?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1990, 1, 1) && release_date <= makeDate(1999, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-702
+U: Play the newest released song from 1951
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort release_date desc of @com.spotify.song(), release_date >= makeDate(1951, 1, 1) && release_date <= makeDate(1951, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-708
+U: play anything from the twenties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1920, 1, 1) && release_date <= makeDate(1929, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-718
+U: play a tune from 1962
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1962, 1, 1) && release_date <= makeDate(1962, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-721
+U: Play music from 2005 by Justin Broadrick
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(2005, 1, 1) && release_date <= makeDate(2005, 12, 31) && contains~(artists, "justin broadrick") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-722
+U: Play the best 1981 sound track from Ric Fierabracci
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort popularity desc of @com.spotify.song(), release_date >= makeDate(1981, 1, 1) && release_date <= makeDate(1981, 12, 31) && contains~(artists, "ric fierabracci") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-729
+U: Play fifties from Sirusho Harutyunyan
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1950, 1, 1) && release_date <= makeDate(1959, 12, 31) && contains~(artists, "sirusho harutyunyan") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-735
+U: Play twenties from Ken Floyd
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1920, 1, 1) && release_date <= makeDate(1929, 12, 31) && contains~(artists, "ken floyd") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-757
+U: Play any album from the twenties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.album(), release_date >= makeDate(1920, 1, 1) && release_date <= makeDate(1929, 12, 31) => notify;
+UT: now => @com.spotify.play_album(album=$?);
+====
+# nlu/spotify-764
+U: I want to hear a good song from 2016
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort popularity desc of @com.spotify.song(), release_date >= makeDate(2016, 1, 1) && release_date <= makeDate(2016, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-772
+U: Play a Wendy Carlos song from 2002
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "wendy carlos") && release_date >= makeDate(2002, 1, 1) && release_date <= makeDate(2002, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-773
+U: Play a new song form the eighties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort release_date desc of @com.spotify.song(), release_date >= makeDate(1980, 1, 1) && release_date <= makeDate(1989, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-779
+U: Play sound track  music from the twenties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1920, 1, 1) && release_date <= makeDate(1929, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-782
+U: I'd like to listen to Diana Vickers best tune from the twenties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort popularity desc of @com.spotify.song(), contains~(artists, "diana vickers") && release_date >= makeDate(1920, 1, 1) && release_date <= makeDate(1929, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-789
+U: Play an album from the fourties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.album(), release_date >= makeDate(1940, 1, 1) && release_date <= makeDate(1949, 12, 31) => notify;
+UT: now => @com.spotify.play_album(album=$?);
+====
+# nlu/spotify-791
+U: play soem nineties Charles Thompson
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1990, 1, 1) && release_date <= makeDate(1999, 12, 31) && contains~(artists, "charles thompson") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-793
+U: Let's hear some tunes from the thirties.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1930, 1, 1) && release_date <= makeDate(1939, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-817
+U: Play me a twenties song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1920, 1, 1) && release_date <= makeDate(1929, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-825
+U: Play me a fifties song by Chingy
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1950, 1, 1) && release_date <= makeDate(1959, 12, 31) && contains~(artists, "chingy") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-830
+U: Give me an album from 1972 to listen to.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.album(), release_date >= makeDate(1972, 1, 1) && release_date <= makeDate(1972, 12, 31) => notify;
+UT: now => @com.spotify.play_album(album=$?);
+====
+# nlu/spotify-838
+U: Play some sister rosetta tharpe songs from the eighties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "sister rosetta tharpe") && release_date >= makeDate(1980, 1, 1) && release_date <= makeDate(1989, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-840
+U: Play a twenties tune by Jodie Aysha.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1920, 1, 1) && release_date <= makeDate(1929, 12, 31) && contains~(artists, "jodie aysha") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-844
+U: Play music by Paulinho Da Viola from 1965
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "paulinho da viola") && release_date >= makeDate(1965, 1, 1) && release_date <= makeDate(1965, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-851
+U: Play Tina Cousins from 1956
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "tina cousins") && release_date >= makeDate(1956, 1, 1) && release_date <= makeDate(1956, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-853
+U: Play me songs from 1955
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1955, 1, 1) && release_date <= makeDate(1955, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-858
+U: play music from 2014
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(2014, 1, 1) && release_date <= makeDate(2014, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-866
+U: I want to hear music from carman from the 1966 album
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.album(), contains~(artists, "carman") && release_date >= makeDate(1966, 1, 1) && release_date <= makeDate(1966, 12, 31) => notify;
+UT: now => @com.spotify.play_album(album=$?);
+====
+# nlu/spotify-869
+U: Play Vic Ruggiero music from 2007
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "vic ruggiero") && release_date >= makeDate(2007, 1, 1) && release_date <= makeDate(2007, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-872
+U: Play fifties music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1950, 1, 1) && release_date <= makeDate(1959, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-873
+U: Play some nineties Eliza Carthy
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1990, 1, 1) && release_date <= makeDate(1999, 12, 31) && contains~(artists, "eliza carthy") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-882
+U: Play Igor Nikolayev music from the fourties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "igor nikolayev") && release_date >= makeDate(1940, 1, 1) && release_date <= makeDate(1949, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-887
+U: Play fifties music by Ahmed Abdul Malik
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1950, 1, 1) && release_date <= makeDate(1959, 12, 31) && contains~(artists, "ahmed abdul malik") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-916
+U: Play music from 1958.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1958, 1, 1) && release_date <= makeDate(1958, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-926
+U: Play some 1987 Edie Brickell.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1987, 1, 1) && release_date <= makeDate(1987, 12, 31) && contains~(artists, "edie brickell") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-933
+U: play caitlin cary from the fourties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "caitlin cary") && release_date >= makeDate(1940, 1, 1) && release_date <= makeDate(1949, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-942
+U: play any sixties song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1960, 1, 1) && release_date <= makeDate(1969, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-954
+U: Play some Paulinho Da Viola from 1965.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "paulinho da viola") && release_date >= makeDate(1965, 1, 1) && release_date <= makeDate(1965, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-966
+U: Play me a song from 2008
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(2008, 1, 1) && release_date <= makeDate(2008, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-986
+U: play Paula Campbell music from 1993
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "paula campbell") && release_date >= makeDate(1993, 1, 1) && release_date <= makeDate(1993, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-988
+U: Play some fifties music by Chris Brown.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1950, 1, 1) && release_date <= makeDate(1959, 12, 31) && contains~(artists, "chris brown") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-995
+U: Play a song from 2003
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(2003, 1, 1) && release_date <= makeDate(2003, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-997
+U: Can I hear tod ashley music from 1953?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "tod ashley") && release_date >= makeDate(1953, 1, 1) && release_date <= makeDate(1953, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1001
+U: Please play an album from 1987
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.album(), release_date >= makeDate(1987, 1, 1) && release_date <= makeDate(1987, 12, 31) => notify;
+UT: now => @com.spotify.play_album(album=$?);
+====
+# nlu/spotify-1005
+U: Play me Sun Ra songs from the fifties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "sun ra") && release_date >= makeDate(1950, 1, 1) && release_date <= makeDate(1959, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1010
+U: I want to hear the latest twenties album from Kyle Riabko
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort release_date desc of @com.spotify.album(), release_date >= makeDate(1920, 1, 1) && release_date <= makeDate(1929, 12, 31) && contains~(artists, "kyle riabko") => notify;
+UT: now => @com.spotify.play_album(album=$?);
+====
+# nlu/spotify-1017
+U: Can you play some eighties music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1980, 1, 1) && release_date <= makeDate(1989, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1021
+U: play some seventies Dj Colette
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1970, 1, 1) && release_date <= makeDate(1979, 12, 31) && contains~(artists, "dj colette") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1022
+U: play music from 1950
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1950, 1, 1) && release_date <= makeDate(1950, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1030
+U: I want to hear that tune from 2010
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(2010, 1, 1) && release_date <= makeDate(2010, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1047
+U: Play the greatest 1966 album out there
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort popularity desc of @com.spotify.album(), release_date >= makeDate(1966, 1, 1) && release_date <= makeDate(1966, 12, 31) => notify;
+UT: now => @com.spotify.play_album(album=$?);
+====
+# nlu/spotify-1049
+U: Play 1958 music
+
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1958, 1, 1) && release_date <= makeDate(1958, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1077
+U: I want to hear Steven Harwell from the thirties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "steven harwell") && release_date >= makeDate(1930, 1, 1) && release_date <= makeDate(1939, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1079
+U: Play 1958 by wayne petti
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1958, 1, 1) && release_date <= makeDate(1958, 12, 31) && contains~(artists, "wayne petti") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1080
+U: Play something from 1985 by Billy Werner
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1985, 1, 1) && release_date <= makeDate(1985, 12, 31) && contains~(artists, "billy werner") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1088
+U: Play music from the seventies
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1970, 1, 1) && release_date <= makeDate(1979, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1092
+U: Play me an eighties song by Wes Dakus
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1980, 1, 1) && release_date <= makeDate(1989, 12, 31) && contains~(artists, "wes dakus") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1097
+U: I want to hear any tune from the twenties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1920, 1, 1) && release_date <= makeDate(1929, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1098
+U: Play Jono El Grande from the thirties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "jono el grande") && release_date >= makeDate(1930, 1, 1) && release_date <= makeDate(1939, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1104
+U: Play some music from the twenties.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1920, 1, 1) && release_date <= makeDate(1929, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1108
+U: Play me a song from 1972 by Sweet Emma Barrett
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1972, 1, 1) && release_date <= makeDate(1972, 12, 31) && contains~(artists, "sweet emma barrett") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1117
+U: I want to hear Nokko's songs from the twenties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "nokko") && release_date >= makeDate(1920, 1, 1) && release_date <= makeDate(1929, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1124
+U: Play the latest 1973 album by Peter Derose.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort release_date desc of @com.spotify.album(), release_date >= makeDate(1973, 1, 1) && release_date <= makeDate(1973, 12, 31) && contains~(artists, "peter derose") => notify;
+UT: now => @com.spotify.play_album(album=$?);
+====
+# nlu/spotify-1125
+U: Play some Sabah from the eighties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "sabah") && release_date >= makeDate(1980, 1, 1) && release_date <= makeDate(1989, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1129
+U: Play a sound track from 1952.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1952, 1, 1) && release_date <= makeDate(1952, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1138
+U: Play me a song by Avispa Music from 1965
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "avispa music") && release_date >= makeDate(1965, 1, 1) && release_date <= makeDate(1965, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1157
+U: play an eighties song by Ler Lalonde
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1980, 1, 1) && release_date <= makeDate(1989, 12, 31) && contains~(artists, "ler lalonde") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1164
+U: I want to hear some twenties music from Billy Sheehan
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1920, 1, 1) && release_date <= makeDate(1929, 12, 31) && contains~(artists, "billy sheehan") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1165
+U: Play some songs from 1958
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1958, 1, 1) && release_date <= makeDate(1958, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1180
+U: Can you play a sound track from 1963?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1963, 1, 1) && release_date <= makeDate(1963, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1196
+U: play a sixties song by George Sanger
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1960, 1, 1) && release_date <= makeDate(1969, 12, 31) && contains~(artists, "george sanger") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1200
+U: Play a song by Alasdair Roberts from 1996
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "alasdair roberts") && release_date >= makeDate(1996, 1, 1) && release_date <= makeDate(1996, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1207
+U: Play Eddie Meduza from the thirties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "eddie meduza") && release_date >= makeDate(1930, 1, 1) && release_date <= makeDate(1939, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1211
+U: play Vivian Stanshall from 1962
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "vivian stanshall") && release_date >= makeDate(1962, 1, 1) && release_date <= makeDate(1962, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1213
+U: Play music from 1977
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1977, 1, 1) && release_date <= makeDate(1977, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1224
+U: play the album by Paul Barker playing the greatest from 1978
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort popularity desc of @com.spotify.album(), contains~(artists, "paul barker") && release_date >= makeDate(1978, 1, 1) && release_date <= makeDate(1978, 12, 31) => notify;
+UT: now => @com.spotify.play_album(album=$?);
+====
+# nlu/spotify-1230
+U: Play Henrie Mutuku album from 1957
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.album(), contains~(artists, "henrie mutuku") && release_date >= makeDate(1957, 1, 1) && release_date <= makeDate(1957, 12, 31) => notify;
+UT: now => @com.spotify.play_album(album=$?);
+====
+# nlu/spotify-1232
+U: play some 2002 music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(2002, 1, 1) && release_date <= makeDate(2002, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1233
+U: I want to hear that track from 1991
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1991, 1, 1) && release_date <= makeDate(1991, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1249
+U: play top-twenty song from 2015
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort popularity desc of @com.spotify.song(), release_date >= makeDate(2015, 1, 1) && release_date <= makeDate(2015, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1256
+U: Play music from Clark Kent in the year 1987
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "clark kent") && release_date >= makeDate(1987, 1, 1) && release_date <= makeDate(1987, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1261
+U: Play some music from 1985 by Rolf Harris
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1985, 1, 1) && release_date <= makeDate(1985, 12, 31) && contains~(artists, "rolf harris") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1268
+U: play a track from 2004
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(2004, 1, 1) && release_date <= makeDate(2004, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1273
+U: Play some Mark Tremonti from the thirties.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "mark tremonti") && release_date >= makeDate(1930, 1, 1) && release_date <= makeDate(1939, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1274
+U: play the greatest 1972 album by Wes Dakus
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort popularity desc of @com.spotify.album(), release_date >= makeDate(1972, 1, 1) && release_date <= makeDate(1972, 12, 31) && contains~(artists, "wes dakus") => notify;
+UT: now => @com.spotify.play_album(album=$?);
+====
+# nlu/spotify-1281
+U: Play me the greatest track of 1966
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort popularity desc of @com.spotify.song(), release_date >= makeDate(1966, 1, 1) && release_date <= makeDate(1966, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1307
+U: Play the last sound track by Soko from around 1975
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort release_date desc of @com.spotify.song(), contains~(artists, "soko") && release_date >= makeDate(1975, 1, 1) && release_date <= makeDate(1975, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1311
+U: Play a song from 1973.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1973, 1, 1) && release_date <= makeDate(1973, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1314
+U: Play a new song from 1976.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort release_date desc of @com.spotify.song(), release_date >= makeDate(1976, 1, 1) && release_date <= makeDate(1976, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1321
+U: Play me a song from 2016
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(2016, 1, 1) && release_date <= makeDate(2016, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1326
+U: I want to hear music from 1975
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1975, 1, 1) && release_date <= makeDate(1975, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1329
+U: play a top-fifty 1965 album by Ski
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort popularity desc of @com.spotify.album(), release_date >= makeDate(1965, 1, 1) && release_date <= makeDate(1965, 12, 31) && contains~(artists, "ski") => notify;
+UT: now => @com.spotify.play_album(album=$?);
+====
+# nlu/spotify-1330
+U: Play  music from the thirties.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1930, 1, 1) && release_date <= makeDate(1939, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1332
+U: Ply best 1973 sound track
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort popularity desc of @com.spotify.song(), release_date >= makeDate(1973, 1, 1) && release_date <= makeDate(1973, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1334
+U: I would like to hear music from 1993
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1993, 1, 1) && release_date <= makeDate(1993, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1337
+U: I want to hear Major Harris's songs from the fifties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "major harris") && release_date >= makeDate(1950, 1, 1) && release_date <= makeDate(1959, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1350
+U: Can you play a song from the fourties by George Martin
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1940, 1, 1) && release_date <= makeDate(1949, 12, 31) && contains~(artists, "george martin") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1358
+U: Play the most popular sound track from the 2006
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort popularity desc of @com.spotify.song(), release_date >= makeDate(2006, 1, 1) && release_date <= makeDate(2006, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1362
+U: Play nineties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1990, 1, 1) && release_date <= makeDate(1999, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1379
+U: Play some music from the sixties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1960, 1, 1) && release_date <= makeDate(1969, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1384
+U: Play a song from 2013.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(2013, 1, 1) && release_date <= makeDate(2013, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1385
+U: play 1951 tunes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1951, 1, 1) && release_date <= makeDate(1951, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1387
+U: Play any nineties music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1990, 1, 1) && release_date <= makeDate(1999, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1406
+U: Play some Oleg Anofriyev from 1960.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "oleg anofriyev") && release_date >= makeDate(1960, 1, 1) && release_date <= makeDate(1960, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1412
+U: Play some Antony Harding songs from the eighties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "antony harding") && release_date >= makeDate(1980, 1, 1) && release_date <= makeDate(1989, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1414
+U: Play music from the seventies
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1970, 1, 1) && release_date <= makeDate(1979, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1425
+U: play something from 1971 by John Bonham
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1971, 1, 1) && release_date <= makeDate(1971, 12, 31) && contains~(artists, "john bonham") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1429
+U: play 1977 good track tunes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort popularity desc of @com.spotify.song(), release_date >= makeDate(1977, 1, 1) && release_date <= makeDate(1977, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1445
+U: Play any song from 2006
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(2006, 1, 1) && release_date <= makeDate(2006, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1446
+U: Play some Sonu Niigaam from the fifties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "sonu niigaam") && release_date >= makeDate(1950, 1, 1) && release_date <= makeDate(1959, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1459
+U: Play music from 1999
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1999, 1, 1) && release_date <= makeDate(1999, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1462
+U: I wish to listen to some fifties music.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1950, 1, 1) && release_date <= makeDate(1959, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1486
+U: Play some music from 1962 from Adeyto
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1962, 1, 1) && release_date <= makeDate(1962, 12, 31) && contains~(artists, "adeyto") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1488
+U: Play any song from the eighties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1980, 1, 1) && release_date <= makeDate(1989, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1499
+U: Play me a 1990 sound track
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1990, 1, 1) && release_date <= makeDate(1990, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1503
+U: play Barry Manilow from the twenties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "barry manilow") && release_date >= makeDate(1920, 1, 1) && release_date <= makeDate(1929, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1514
+U: play the best album from the seventies
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort popularity desc of @com.spotify.album(), release_date >= makeDate(1970, 1, 1) && release_date <= makeDate(1979, 12, 31) => notify;
+UT: now => @com.spotify.play_album(album=$?);
+====
+# nlu/spotify-1515
+U: Play music from 2016.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(2016, 1, 1) && release_date <= makeDate(2016, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1525
+U: I want to listen to seventies music.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1970, 1, 1) && release_date <= makeDate(1979, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1533
+U: Play music from the sixties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1960, 1, 1) && release_date <= makeDate(1969, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1537
+U: Play sixties music by giovanni battista guadagnini.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1960, 1, 1) && release_date <= makeDate(1969, 12, 31) && contains~(artists, "giovanni battista guadagnini") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1563
+U: play some songs from the fourties by yoshiki fukuyama
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1940, 1, 1) && release_date <= makeDate(1949, 12, 31) && contains~(artists, "yoshiki fukuyama") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1567
+U: play music by Charlie Adams from 1954
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "charlie adams") && release_date >= makeDate(1954, 1, 1) && release_date <= makeDate(1954, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1571
+U: Play a 2001 tune
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(2001, 1, 1) && release_date <= makeDate(2001, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1601
+U: play some fifties tunes by Mike Mccready
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1950, 1, 1) && release_date <= makeDate(1959, 12, 31) && contains~(artists, "mike mccready") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1609
+U: Play Gary Chapman music from the fifties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "gary chapman") && release_date >= makeDate(1950, 1, 1) && release_date <= makeDate(1959, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1610
+U: Play some Armik from the fourties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "armik") && release_date >= makeDate(1940, 1, 1) && release_date <= makeDate(1949, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1611
+U: play a popular sort of fifties tune music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort popularity desc of @com.spotify.song(), release_date >= makeDate(1950, 1, 1) && release_date <= makeDate(1959, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1613
+U: Play music from 1989 by Maya.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1989, 1, 1) && release_date <= makeDate(1989, 12, 31) && contains~(artists, "maya") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1618
+U: Play Arif music from the fourties.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "arif") && release_date >= makeDate(1940, 1, 1) && release_date <= makeDate(1949, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1623
+U: Play paul ortiz music from 1990
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "paul ortiz") && release_date >= makeDate(1990, 1, 1) && release_date <= makeDate(1990, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1631
+U: Proceed with music from 2003.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(2003, 1, 1) && release_date <= makeDate(2003, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1632
+U: Play Elkie Brooks seventies sound track
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "elkie brooks") && release_date >= makeDate(1970, 1, 1) && release_date <= makeDate(1979, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1640
+U: Play some caribou from the sixties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "caribou") && release_date >= makeDate(1960, 1, 1) && release_date <= makeDate(1969, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1650
+U: Play all music Alan released in 1997
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "alan") && release_date >= makeDate(1997, 1, 1) && release_date <= makeDate(1997, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1655
+U: play some sixties music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1960, 1, 1) && release_date <= makeDate(1969, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1657
+U: Play music year 2016 by artist Michiru Yamane
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(2016, 1, 1) && release_date <= makeDate(2016, 12, 31) && contains~(artists, "michiru yamane") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1673
+U: play eighties track
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1980, 1, 1) && release_date <= makeDate(1989, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1674
+U: Wish to hear music from the year 1996
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1996, 1, 1) && release_date <= makeDate(1996, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1685
+U: Play some Paul Stookey from the sixties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "paul stookey") && release_date >= makeDate(1960, 1, 1) && release_date <= makeDate(1969, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1692
+U: I want to hear a track from the fourties.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1940, 1, 1) && release_date <= makeDate(1949, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1709
+U: Play some seventies track from top Rie Tomosaka
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort popularity desc of @com.spotify.song(), release_date >= makeDate(1970, 1, 1) && release_date <= makeDate(1979, 12, 31) && contains~(artists, "rie tomosaka") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1714
+U: Please play a song for me from 1959
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1959, 1, 1) && release_date <= makeDate(1959, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1718
+U: Play me a fifties song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1950, 1, 1) && release_date <= makeDate(1959, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1746
+U: I wish to listen to eighties music by Mike Dean.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1980, 1, 1) && release_date <= makeDate(1989, 12, 31) && contains~(artists, "mike dean") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1751
+U: Play a 1991 song by Anila Mirza
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1991, 1, 1) && release_date <= makeDate(1991, 12, 31) && contains~(artists, "anila mirza") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1758
+U: Play some 2011 music by Dan Healy.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(2011, 1, 1) && release_date <= makeDate(2011, 12, 31) && contains~(artists, "dan healy") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1761
+U: Listen to music from 1975
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1975, 1, 1) && release_date <= makeDate(1975, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1764
+U: play a tune from 2000 by Bronislau Kaper
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(2000, 1, 1) && release_date <= makeDate(2000, 12, 31) && contains~(artists, "bronislau kaper") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1765
+U: Play a song from 1994.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1994, 1, 1) && release_date <= makeDate(1994, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1773
+U: Play a top-50 tune from 1982.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort popularity desc of @com.spotify.song(), release_date >= makeDate(1982, 1, 1) && release_date <= makeDate(1982, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1777
+U: play the music track of 1998
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1998, 1, 1) && release_date <= makeDate(1998, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1778
+U: Play some music by Jody Williams from 2001
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "jody williams") && release_date >= makeDate(2001, 1, 1) && release_date <= makeDate(2001, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1787
+U: I'm looking for the last track by Fei Yu Ching from the fourties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort release_date desc of @com.spotify.song(), contains~(artists, "fei yu ching") && release_date >= makeDate(1940, 1, 1) && release_date <= makeDate(1949, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1793
+U: Play a song from 1950
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1950, 1, 1) && release_date <= makeDate(1950, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1795
+U: play a new song from the seventies
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort release_date desc of @com.spotify.song(), release_date >= makeDate(1970, 1, 1) && release_date <= makeDate(1979, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1803
+U: Play some ivy anderson from around 1967
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "ivy anderson") && release_date >= makeDate(1967, 1, 1) && release_date <= makeDate(1967, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1804
+U: play the newest sound track from the thirties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort release_date desc of @com.spotify.song(), release_date >= makeDate(1930, 1, 1) && release_date <= makeDate(1939, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1808
+U: play some sad songs from the fifties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1950, 1, 1) && release_date <= makeDate(1959, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1816
+U: play twenties tunes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1920, 1, 1) && release_date <= makeDate(1929, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1823
+U: Play music from 1958
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1958, 1, 1) && release_date <= makeDate(1958, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1828
+U: Play music from 1964.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1964, 1, 1) && release_date <= makeDate(1964, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1847
+U: Play a 2007 track from Adam Jones
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(2007, 1, 1) && release_date <= makeDate(2007, 12, 31) && contains~(artists, "adam jones") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1856
+U: Can you play some fifties music by lavern baker
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1950, 1, 1) && release_date <= makeDate(1959, 12, 31) && contains~(artists, "lavern baker") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1858
+U: play anything from 1970
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1970, 1, 1) && release_date <= makeDate(1970, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1859
+U: I wish to enjoy some fifties music by Johnny Paycheck.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1950, 1, 1) && release_date <= makeDate(1959, 12, 31) && contains~(artists, "johnny paycheck") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1861
+U: Play me a seventies song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1970, 1, 1) && release_date <= makeDate(1979, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1869
+U: Play best fourties from david izquierdo on album
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort popularity desc of @com.spotify.album(), release_date >= makeDate(1940, 1, 1) && release_date <= makeDate(1949, 12, 31) && contains~(artists, "david izquierdo") => notify;
+UT: now => @com.spotify.play_album(album=$?);
+====
+# nlu/spotify-1885
+U: Play music from 2015
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(2015, 1, 1) && release_date <= makeDate(2015, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1887
+U: Play me a song by Carol Arnauld from 2003
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "carol arnauld") && release_date >= makeDate(2003, 1, 1) && release_date <= makeDate(2003, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1890
+U: Please play me a popular track from 1984.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort popularity desc of @com.spotify.song(), release_date >= makeDate(1984, 1, 1) && release_date <= makeDate(1984, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1905
+U: Can you play some music from 1999
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1999, 1, 1) && release_date <= makeDate(1999, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1907
+U: play some King Tubby from the eighties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "king tubby") && release_date >= makeDate(1980, 1, 1) && release_date <= makeDate(1989, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1909
+U: Play Randy Castillo's music from 1952.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "randy castillo") && release_date >= makeDate(1952, 1, 1) && release_date <= makeDate(1952, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1920
+U: Play me a 1986 Jim Root
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1986, 1, 1) && release_date <= makeDate(1986, 12, 31) && contains~(artists, "jim root") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1927
+U: play a tune from 1973
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1973, 1, 1) && release_date <= makeDate(1973, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1933
+U: play Yusef Lateef songs from the fifties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "yusef lateef") && release_date >= makeDate(1950, 1, 1) && release_date <= makeDate(1959, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1951
+U: I want to hear music from the sixties.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1960, 1, 1) && release_date <= makeDate(1969, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1958
+U: Play me some music from 1999
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1999, 1, 1) && release_date <= makeDate(1999, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1963
+U: play the last song from the thirties by Airto Moreira
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort release_date desc of @com.spotify.song(), release_date >= makeDate(1930, 1, 1) && release_date <= makeDate(1939, 12, 31) && contains~(artists, "airto moreira") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1968
+U: play Luis Alfonzo Larrain from 1995
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "luis alfonzo larrain") && release_date >= makeDate(1995, 1, 1) && release_date <= makeDate(1995, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1972
+U: play some music from the thirties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1930, 1, 1) && release_date <= makeDate(1939, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1983
+U: Play some music from 1989 by Sanjeev Abhyankar.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1989, 1, 1) && release_date <= makeDate(1989, 12, 31) && contains~(artists, "sanjeev abhyankar") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1986
+U: play music from the year 1979
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1979, 1, 1) && release_date <= makeDate(1979, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1993
+U: Play music from 1954
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1954, 1, 1) && release_date <= makeDate(1954, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-1997
+U: play 2007 tunes by Bunny Berigan
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(2007, 1, 1) && release_date <= makeDate(2007, 12, 31) && contains~(artists, "bunny berigan") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2005
+U: Song from Brian Chase in 2004
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "brian chase") && release_date >= makeDate(2004, 1, 1) && release_date <= makeDate(2004, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2006
+U: give me something from the fifties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1950, 1, 1) && release_date <= makeDate(1959, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2015
+U: Play music from Sleepy John Estes from 2002.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "sleepy john estes") && release_date >= makeDate(2002, 1, 1) && release_date <= makeDate(2002, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2016
+U: Play a sound track from 1952.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1952, 1, 1) && release_date <= makeDate(1952, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2028
+U: I wish to listen to some fifties music.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1950, 1, 1) && release_date <= makeDate(1959, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2037
+U: Play music from the thirties by Swjatoslaw Wakartschuk.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1930, 1, 1) && release_date <= makeDate(1939, 12, 31) && contains~(artists, "swjatoslaw wakartschuk") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2040
+U: Can you play nineties music from Paul Kelly?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1990, 1, 1) && release_date <= makeDate(1999, 12, 31) && contains~(artists, "paul kelly") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2044
+U: Play a tune from 2007.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(2007, 1, 1) && release_date <= makeDate(2007, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2049
+U: Play some 1988 Harry T. Burleigh
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1988, 1, 1) && release_date <= makeDate(1988, 12, 31) && contains~(artists, "harry t. burleigh") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2052
+U: Please play a track from the nineties by any artist
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1990, 1, 1) && release_date <= makeDate(1999, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2054
+U: let's listen to the 1986 sound track by Mike Park
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1986, 1, 1) && release_date <= makeDate(1986, 12, 31) && contains~(artists, "mike park") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2065
+U: play music from 1974
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1974, 1, 1) && release_date <= makeDate(1974, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2078
+U: I would like to hear music from 1993
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1993, 1, 1) && release_date <= makeDate(1993, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2090
+U: Play some nineties stuff from Clem Burke.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1990, 1, 1) && release_date <= makeDate(1999, 12, 31) && contains~(artists, "clem burke") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2102
+U: Play a song from 1994.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1994, 1, 1) && release_date <= makeDate(1994, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2105
+U: Please play something from the fifties by Roscoe
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1950, 1, 1) && release_date <= makeDate(1959, 12, 31) && contains~(artists, "roscoe") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2130
+U: Please play some nineties music by Tommy Johnson.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1990, 1, 1) && release_date <= makeDate(1999, 12, 31) && contains~(artists, "tommy johnson") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2133
+U: Play something by the artist Jenifer from 2003
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "jenifer") && release_date >= makeDate(2003, 1, 1) && release_date <= makeDate(2003, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2136
+U: Play music from Stacy Ferguson from the fourties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "stacy ferguson") && release_date >= makeDate(1940, 1, 1) && release_date <= makeDate(1949, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2146
+U: I want to hear an album from 2010
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.album(), release_date >= makeDate(2010, 1, 1) && release_date <= makeDate(2010, 12, 31) => notify;
+UT: now => @com.spotify.play_album(album=$?);
+====
+# nlu/spotify-2152
+U: I want to hear music from carman from the 1966 album
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.album(), contains~(artists, "carman") && release_date >= makeDate(1966, 1, 1) && release_date <= makeDate(1966, 12, 31) => notify;
+UT: now => @com.spotify.play_album(album=$?);
+====
+# nlu/spotify-2153
+U: Play some twenties music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1920, 1, 1) && release_date <= makeDate(1929, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2154
+U: Play some 1983 Jon Brooks
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1983, 1, 1) && release_date <= makeDate(1983, 12, 31) && contains~(artists, "jon brooks") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2164
+U: Play a tune from 1973.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1973, 1, 1) && release_date <= makeDate(1973, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2165
+U: Play Arif music from the fourties.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "arif") && release_date >= makeDate(1940, 1, 1) && release_date <= makeDate(1949, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2168
+U: I'm looking for the last track by Fei Yu Ching from the fourties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => sort release_date desc of @com.spotify.song(), contains~(artists, "fei yu ching") && release_date >= makeDate(1940, 1, 1) && release_date <= makeDate(1949, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2171
+U: Play me a track from the sixties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1960, 1, 1) && release_date <= makeDate(1969, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2176
+U: play me something from the fifties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1950, 1, 1) && release_date <= makeDate(1959, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2187
+U: Play nineties music.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1990, 1, 1) && release_date <= makeDate(1999, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2188
+U: Play a song from the thirties by Bruno Pelletier
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1930, 1, 1) && release_date <= makeDate(1939, 12, 31) && contains~(artists, "bruno pelletier") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2190
+U: We want to listen to nineties music from mike burkett.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1990, 1, 1) && release_date <= makeDate(1999, 12, 31) && contains~(artists, "mike burkett") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2192
+U: Please play some nineties music album.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.album(), release_date >= makeDate(1990, 1, 1) && release_date <= makeDate(1999, 12, 31) => notify;
+UT: now => @com.spotify.play_album(album=$?);
+====
+# nlu/spotify-2194
+U: I want to hear music from the sixties.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1960, 1, 1) && release_date <= makeDate(1969, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2196
+U: play some music from the thirties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1930, 1, 1) && release_date <= makeDate(1939, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2209
+U: I wish to enjoy some fifties music by Johnny Paycheck.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1950, 1, 1) && release_date <= makeDate(1959, 12, 31) && contains~(artists, "johnny paycheck") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2213
+U: Something by Danielle Polanco in 1986
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "danielle polanco") && release_date >= makeDate(1986, 1, 1) && release_date <= makeDate(1986, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2222
+U: I want to hear Eddi Reader from the twenties.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "eddi reader") && release_date >= makeDate(1920, 1, 1) && release_date <= makeDate(1929, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2239
+U: play something from 1971 by John Bonham
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1971, 1, 1) && release_date <= makeDate(1971, 12, 31) && contains~(artists, "john bonham") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2266
+U: Play music from the thirties.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1930, 1, 1) && release_date <= makeDate(1939, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2269
+U: An interesting piece from 1991 please
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1991, 1, 1) && release_date <= makeDate(1991, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2271
+U: Play Device music from the fourties.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "device") && release_date >= makeDate(1940, 1, 1) && release_date <= makeDate(1949, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2284
+U: I want to listen to martina mcbride music from 1995
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "martina mcbride") && release_date >= makeDate(1995, 1, 1) && release_date <= makeDate(1995, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2290
+U: Start playing anything Mike Muir made in the thirties
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), contains~(artists, "mike muir") && release_date >= makeDate(1930, 1, 1) && release_date <= makeDate(1939, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2291
+U: Play some thirties Frank Wildhorn
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1930, 1, 1) && release_date <= makeDate(1939, 12, 31) && contains~(artists, "frank wildhorn") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2293
+U: Play music from 1972
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1972, 1, 1) && release_date <= makeDate(1972, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2294
+U: I want to play a song from the nineties by Roddy Woomble
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1990, 1, 1) && release_date <= makeDate(1999, 12, 31) && contains~(artists, "roddy woomble") => notify;
+UT: now => @com.spotify.play_song(song=$?);
+====
+# nlu/spotify-2297
+U: Play music from the eighties.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.song(), release_date >= makeDate(1980, 1, 1) && release_date <= makeDate(1989, 12, 31) => notify;
+UT: now => @com.spotify.play_song(song=$?);
