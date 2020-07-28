@@ -196,11 +196,12 @@ async function roundtrip(testRunner, input, expected) {
 }
 
 function parseScenarioID(dlgId) {
-    let [, id, reqs] = /^(.*)\s*(?:\(\s*req\s*=\s*([a-z0-9\.-]+(?:,[a-z0-9\.-]+)*)\s*\)\s*)?$/.exec(dlgId);
+    let [, id, reqs] = /^(.*?)\s*(?:\(\s*req\s*=\s*([a-z0-9.-]+(?:,[a-z0-9.-]+)*)\s*\)\s*)?$/.exec(dlgId);
     if (reqs)
         reqs = reqs.split(',');
     else
         reqs = [];
+
     return [id, reqs];
 }
 
