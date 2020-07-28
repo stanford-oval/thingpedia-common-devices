@@ -207,6 +207,17 @@ eval/$(release)/$(eval_set)/%.dialogue.results: eval/$(release)/models/%/best.pt
 	mv eval/$(release)/$(eval_set)/$*.dialogue.debug.tmp eval/$(release)/$(eval_set)/$*.dialogue.debug
 	mv $@.tmp $@
 
+eval/$(release)/$(eval_set)/%.nlu.results: eval/$(release)/models/%/best.pth eval/$(release)/$(eval_set)/user.tsv $(schema_file)
+	$(genie) evaluate-server \
+	  --url "file://$(abspath $(dir $<))" \
+	  --thingpedia $(schema_file) -l en-US \
+	  --contextual \
+	  --split-by-device --complexity-metric turn_number --max-complexity 3 \
+	  --debug --csv-prefix $(eval_set) --csv $(evalflags) \
+	  -o $@.tmp eval/$(release)/$(eval_set)/user.tsv > eval/$(release)/$(eval_set)/$*.nlu.debug.tmp
+	mv eval/$(release)/$(eval_set)/$*.nlu.debug.tmp eval/$(release)/$(eval_set)/$*.nlu.debug
+	mv $@.tmp $@
+
 # NOTE: there is no augmentation of agent sentences! The agent networks (policy & NLG) operate with QUOTED tokens exclusively
 datadir/agent: eval/$(release)/synthetic.agent.tsv eval/$(release)/dev/agent.tsv
 	mkdir -p $@
@@ -246,9 +257,11 @@ lint:
 		test ! -f $$d/package.json || $(eslint) $$d/*.js ; \
 	done
 
-evaluate: eval/$(release)/$(eval_set)/$(model).dialogue.results
-	echo $<
-	cat $<
+evaluate: eval/$(release)/$(eval_set)/$(model).dialogue.results eval/$(release)/$(eval_set)/$(model).nlu.results
+	for f in $^ ; do \
+		echo $$f ; \
+		cat $$f ; \
+	done
 
 evaluate-all:
 	for m in $($(release)_eval_$(eval_set)_models) ; do make model=$$m evaluate ; done
