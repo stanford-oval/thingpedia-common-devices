@@ -85,8 +85,8 @@ class Processor extends stream.Writable {
     }
 
     async _tryLoadExistingDataset(filename) {
-        if (!await existsSafe(filename))
-            return;
+        //if (!await existsSafe(filename))
+        //    return;
 
         const existingDataset = this._existingDataset;
 
@@ -123,7 +123,7 @@ class Processor extends stream.Writable {
                     await this._tryLoadExistingDataset(path.resolve(r, d, 'eval/dev/annotated.txt'));
                     await this._tryLoadExistingDataset(path.resolve(r, d, 'eval/train/annotated.txt'));
                 } else {
-                    await this._tryLoadExistingDataset(path.resolve('eval', r, 'paraphrase.tsv'));
+                    await this._tryLoadExistingDataset(path.resolve(r, d, 'eval/paraphrase.tsv'));
                 }
 
                 try {
@@ -278,7 +278,8 @@ class Processor extends stream.Writable {
     }
 
     async _process(ex) {
-        if (this._existingDataset.has('online/' + ex.id))
+        const prefix = this._type === 'manual' ? 'online/' : 'turking/';
+        if (this._existingDataset.has(prefix + ex.id))
             return;
 
         const entities = Genie.EntityUtils.makeDummyEntities(ex.preprocessed);
@@ -301,7 +302,7 @@ class Processor extends stream.Writable {
             const code = dialoguestate.prettyprint();
 
             out.write({
-                id: 'online/' + ex.id,
+                id: prefix + ex.id,
                 turns: [{
                     context: '',
                     agent: '',
@@ -315,7 +316,7 @@ class Processor extends stream.Writable {
 
             const code = ThingTalk.NNSyntax.toNN(dialoguestate, ex.preprocessed, entities, { typeAnnotations: false }).join(' ');
             out.write({
-                id: 'turking/' + ex.id,
+                id: prefix + ex.id,
                 context: 'null',
                 preprocessed: ex.preprocessed,
                 target_code: code
