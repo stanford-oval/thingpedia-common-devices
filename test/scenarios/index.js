@@ -243,12 +243,11 @@ async function execProcess(command, ...args) {
     });
 }
 
-const RELEASE_INHERITANCE = {
-    'builtin': ['builtin'],
-    'main': ['builtin', 'main'],
-    'universe': ['builtin', 'main', 'universe'],
-    'staging': ['builtin', 'main', 'universe', 'staging'],
-};
+async function sleep(timeout) {
+    return new Promise((resolve, reject) => {
+        setTimeout(resolve, timeout);
+    });
+}
 
 async function main() {
     const parser = new argparse.ArgumentParser({
@@ -288,17 +287,26 @@ async function main() {
         await execProcess('make', 'eval/' + args.release + '/models/' + args.nlu_model + '/best.pth');
 
     const platform = new Platform();
-    const prefs = platform.getSharedPreferences();
-    prefs.set('developer-dir', RELEASE_INHERITANCE[args.release].map((r) => path.resolve(r)));
 
     let nluModelUrl;
     if (args.nlu_model)
         nluModelUrl = 'file://' + path.resolve('eval/' + args.release + '/models/' + args.nlu_model);
     else
         nluModelUrl = 'https://nlp-staging.almond.stanford.edu';
-    const engine = new Genie.AssistantEngine(platform, { nluModelUrl });
+    const engine = new Genie.AssistantEngine(platform, {
+        nluModelUrl,
+        cloudSyncUrl: 'https://almond-dev.stanford.edu'
+    });
 
     await engine.open();
+    // if cloud sync is set up, we'll download the credentials of the devices to
+    // test from almond-dev
+    // sleep for 30 seconds while that happens
+    if (platform.getCloudId()) {
+        console.log('Waiting for cloud sync to complete...');
+        await sleep(30000);
+    }
+
     try {
 
         const conversation = await engine.assistant.getOrOpenConversation('test', new TestUser, {

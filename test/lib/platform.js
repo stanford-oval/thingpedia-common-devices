@@ -163,10 +163,17 @@ class Platform extends Tp.BasePlatform {
         this._cacheDir = 'workdir/cache';
 
         this._thingpedia = new ThingpediaClient(this);
-        this._prefs = new MemoryPreferences();
 
         this._developerKey = getGitConfig('thingpedia.developer-key', process.env.THINGENGINE_DEVELOPER_KEY || undefined);
         this._prefs.set('developer-key', this._developerKey);
+        this._prefs.set('developer-dir', ['main', 'universe', 'staging'].map((r) => path.resolve(r)));
+
+        // set a fix device ID for cloud sync
+        this._prefs.set('cloud-sync-device-id', 'abcdef0123456789');
+        // credentials to talk to the cloud
+        this._prefs.set('cloud-id', process.env.THINGENGINE_CLOUD_SYNC_ID);
+        this._prefs.set('auth-token', process.env.THINGENGINE_CLOUD_SYNC_TOKEN);
+
         safeMkdirSync(this._cacheDir);
         try {
             // wipe the database and start fresh
@@ -252,7 +259,8 @@ class Platform extends Tp.BasePlatform {
     }
 
     setDeveloperKey(key) {
-        return this._prefs.set('developer-key', key);
+        // ignore
+        return false;
     }
 
     getOrigin() {
@@ -269,19 +277,9 @@ class Platform extends Tp.BasePlatform {
         return this._prefs.get('auth-token');
     }
 
-    setAuthToken(authToken) {
-        var oldAuthToken = this._prefs.get('auth-token');
-        if (oldAuthToken !== undefined && authToken !== oldAuthToken)
-            return false;
-        this._prefs.set('auth-token', authToken);
-        return true;
-    }
-
-    loadContext(info) {
-        if (info === "selection")
-            return "Selected text";
-        else
-            return "Undefined context";
+    setAuthToken() {
+        // ignore
+        return false;
     }
 }
 

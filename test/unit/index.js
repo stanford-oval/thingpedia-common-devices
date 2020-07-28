@@ -36,16 +36,32 @@ async function existsSafe(path) {
     }
 }
 
+async function sleep(timeout) {
+    return new Promise((resolve, reject) => {
+        setTimeout(resolve, timeout);
+    });
+}
+
 class TestRunner {
     constructor() {
         this._platform = new Platform();
-        this._engine = new Genie.AssistantEngine(this._platform);
+        this._engine = new Genie.AssistantEngine(this._platform, {
+            cloudSyncUrl: 'https://almond-dev.stanford.edu'
+        });
 
         this.anyFailed = false;
     }
 
-    start() {
-        return this._engine.open();
+    async start() {
+        await this._engine.open();
+
+        // if cloud sync is set up, we'll download the credentials of the devices to
+        // test from almond-dev
+        // sleep for 30 seconds while that happens
+        if (this._platform.getCloudId()) {
+            console.log('Waiting for cloud sync to complete...');
+            await sleep(30000);
+        }
     }
     stop() {
         return this._engine.close();
