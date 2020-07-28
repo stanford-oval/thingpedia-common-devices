@@ -195,14 +195,32 @@ async function roundtrip(testRunner, input, expected) {
     return true;
 }
 
+function parseScenarioID(dlgId) {
+    let [, id, reqs] = /^(.*)\s*(?:\(\s*req\s*=\s*([a-z0-9\.-]+(?:,[a-z0-9\.-]+)*)\s*\)\s*)?$/.exec(dlgId);
+    if (reqs)
+        reqs = reqs.split(',');
+    else
+        reqs = [];
+    return [id, reqs];
+}
+
 async function test(testRunner, dlg, i) {
-    console.log(`Scenario #${i+1}: ${dlg.id}`);
+    const [id, reqs] = parseScenarioID(dlg.id);
+
+    console.log(`Scenario #${i+1}: ${id}`);
 
     testRunner.reset();
 
     // reset the conversation
     if (i > 0)
         await roundtrip(testRunner, '\\r bookkeeping special special:stop', null);
+
+    for (let req of reqs) {
+        if (testRunner.engine.devices.getAllDevicesOfKind(req).length === 0) {
+            console.log(`SKIPPED (missing credentials for ${req})`);
+            return;
+        }
+    }
 
     for (let turn of dlg) {
         if (!await roundtrip(testRunner, turn.user, turn.agent))
@@ -297,6 +315,7 @@ async function main() {
         nluModelUrl,
         cloudSyncUrl: 'https://almond-dev.stanford.edu'
     });
+    testRunner.engine = engine;
 
     await engine.open();
     // if cloud sync is set up, we'll download the credentials of the devices to
