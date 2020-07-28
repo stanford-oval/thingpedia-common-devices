@@ -93,13 +93,13 @@ class TestRunner {
         return null;
     }
 
-    async _testQuery(instance, functionName, input, expected) {
+    async _testQuery(instance, functionName, input, hints, expected) {
         if (typeof input === 'function')
             input = input(instance);
 
-        const result = await instance['get_' + functionName](input);
+        const result = await instance['get_' + functionName](input, hints);
         if (typeof expected === 'function') {
-            expected(result, input, instance);
+            expected(result, input, hints, instance);
             return;
         }
 
@@ -115,11 +115,15 @@ class TestRunner {
             return;
         }
 
-        let [testType, functionName, input, expected] = test;
+        let testType, functionName, input, hints, expected;
+        if (test.length >= 5)
+            [testType, functionName, input, hints, expected] = test;
+        else
+            [testType, functionName, input, expected] = test;
 
         switch (testType) {
         case 'query':
-            await this._testQuery(instance, functionName, input, expected);
+            await this._testQuery(instance, functionName, input, hints, expected);
             break;
         case 'monitor':
             // do something
