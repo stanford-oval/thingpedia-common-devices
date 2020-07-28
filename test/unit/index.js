@@ -13,140 +13,15 @@ const assert = require('assert');
 const util = require('util');
 const fs = require('fs');
 const path = require('path');
+const Genie = require('genie-toolkit');
 
-const Tp = require('thingpedia');
 
-const _engine = require('./mock');
-const _tpFactory = new Tp.DeviceFactory(_engine, _engine.thingpedia, {});
-
-async function createDeviceInstance(deviceKind, manifest, devClass) {
-    if (!manifest) // FIXME
-        return new devClass(_engine, { kind: deviceKind });
-
-    const config = manifest.config;
-    if (config.module === 'org.thingpedia.config.none')
-        return new devClass(_engine, { kind: deviceKind });
-    if (config.module === 'org.thingpedia.config.basic_auth' ||
-        config.module === 'org.thingpedia.config.form') {
-        // credentials are stored in test/[DEVICE ID].cred.json
-        const credentialsPath = path.resolve('./test', deviceKind + '.cred.json');
-        const args = require(credentialsPath);
-        args.kind = deviceKind;
-        return new devClass(_engine, args);
-    }
-
-    // otherwise do something else...
-    return null;
-}
-
-async function testQuery(instance, functionName, input, expected) {
-    if (typeof input === 'function')
-        input = input(instance);
-
-    const result = await instance['get_' + functionName](input);
-    if (typeof expected === 'function') {
-        expected(result, input, instance);
-        return;
-    }
-
-    if (!Array.isArray(expected))
-        expected = [expected];
-
-    assert.deepStrictEqual(result, expected);
-}
-
-async function runTest(instance, test) {
-    if (typeof test === 'function') {
-        await test(instance);
-        return;
-    }
-
-    let [testType, functionName, input, expected] = test;
-
-    switch (testType) {
-    case 'query':
-        await testQuery(instance, functionName, input, expected);
-        break;
-    case 'monitor':
-        // do something
-        break;
-    case 'action':
-        // do something
-        break;
-    }
-}
+const Platform = require('../lib/platform');
 
 function assertNonEmptyString(what) {
     assert(typeof what === 'string' && what, 'Expected a non-empty string, got ' + what);
 }
 
-let _anyFailed = false;
-async function testOne(release, deviceKind) {
-    // load the test class first
-    let testsuite;
-    try {
-        testsuite = require('./' + release + '/' + deviceKind);
-    } catch(e) {
-        console.log('No tests found for ' + release + '/' +     deviceKind);
-        // exit with no error and without loading the device
-        // class (which would pollute code coverage statistics)
-        return;
-    }
-
-    // now load the device through the TpClient loader code
-    // (which will initialize the device class with stuff like
-    // the OAuth helpers and the polling implementation of subscribe_*)
-
-    _engine.platform.setRelease(release);
-    const devClass = await _tpFactory.getDeviceClass(deviceKind);
-    const manifest = devClass.manifest;
-
-    // require the device once fully (to get complete code coverage)
-    if (manifest && manifest.loader.module === 'org.thingpedia.v2')
-        require('../../' + release + '/' + deviceKind);
-
-    console.log('# Starting tests for ' + release + '/' + deviceKind);
-    try {
-        if (typeof testsuite === 'function') {
-            // if the testsuite is a function, we're done here
-            await testsuite(devClass);
-            return;
-        }
-
-        let instance = null;
-        if (!Array.isArray(testsuite)) {
-            const meta = testsuite;
-            testsuite = meta.tests;
-            if (meta.setUp)
-                instance = await meta.setUp(devClass);
-        }
-        if (instance === null)
-            instance = await createDeviceInstance(deviceKind, manifest, devClass);
-        if (instance === null) {
-            console.log('FAILED: skipped tests for ' + release + '/' + deviceKind + ': missing credentials');
-            _anyFailed = true;
-            return;
-        }
-
-        assertNonEmptyString(instance.name);
-        assertNonEmptyString(instance.description);
-        assertNonEmptyString(instance.uniqueId);
-
-        for (let i = 0; i < testsuite.length; i++) {
-            console.log(`## Test ${i+1}/${testsuite.length}`);
-            const test = testsuite[i];
-            try {
-                await runTest(instance, test);
-            } catch(e) {
-                console.log('## FAILED: ' + e.message);
-                console.log(e.stack);
-                _anyFailed = true;
-            }
-        }
-    } finally {
-        console.log('# Completed tests for ' + release + '/' + deviceKind);
-    }
-}
 
 async function existsSafe(path) {
     try {
@@ -161,32 +36,184 @@ async function existsSafe(path) {
     }
 }
 
-async function toTest(argv) {
-    let devices = new Set();
+class TestRunner {
+    constructor() {
+        this._platform = new Platform();
+        this._engine = new Genie.AssistantEngine(this._platform);
 
-    for (let arg of argv.slice(2)) {
-        if (arg.indexOf('/') >= 0) {
-            devices.add(arg);
-        } else {
-            for (let kind of await util.promisify(fs.readdir)(path.resolve(path.dirname(module.filename), '../..', arg)))
-                devices.add(arg + '/' + kind);
+        this.anyFailed = false;
+    }
+
+    start() {
+        return this._engine.open();
+    }
+    stop() {
+        return this._engine.close();
+    }
+
+    async _getOrCreateDeviceInstance(deviceKind, manifest, devClass) {
+        const existing = this._engine.devices.getAllDevicesOfKind(deviceKind);
+        if (existing.length > 0) {
+            assert(existing.some((d) => d.constructor === devClass));
+            return existing.find((d) => d.constructor === devClass);
+        }
+
+        if (!manifest) // FIXME
+            return this._engine.createSimpleDevice(deviceKind);
+
+        const config = manifest.config;
+        if (config.module === 'org.thingpedia.config.none')
+            return this._engine.createSimpleDevice(deviceKind);
+        if (config.module === 'org.thingpedia.config.basic_auth' ||
+            config.module === 'org.thingpedia.config.form') {
+            // credentials are stored in test/[DEVICE ID].cred.json
+            const credentialsPath = path.resolve('./test', deviceKind + '.cred.json');
+            const args = require(credentialsPath);
+            args.kind = deviceKind;
+            return this._engine.createDevice(args);
+        }
+
+        // otherwise do something else...
+        return null;
+    }
+
+    async _testQuery(instance, functionName, input, expected) {
+        if (typeof input === 'function')
+            input = input(instance);
+
+        const result = await instance['get_' + functionName](input);
+        if (typeof expected === 'function') {
+            expected(result, input, instance);
+            return;
+        }
+
+        if (!Array.isArray(expected))
+            expected = [expected];
+
+        assert.deepStrictEqual(result, expected);
+    }
+
+    async _runTest(instance, test) {
+        if (typeof test === 'function') {
+            await test(instance);
+            return;
+        }
+
+        let [testType, functionName, input, expected] = test;
+
+        switch (testType) {
+        case 'query':
+            await this._testQuery(instance, functionName, input, expected);
+            break;
+        case 'monitor':
+            // do something
+            break;
+        case 'action':
+            // do something
+            break;
         }
     }
 
-    return devices;
+    async testOne(release, deviceKind) {
+        // load the test class first
+        let testsuite;
+        try {
+            testsuite = require('./' + release + '/' + deviceKind);
+        } catch(e) {
+            console.log('No tests found for ' + release + '/' + deviceKind);
+            // exit with no error and without loading the device
+            // class (which would pollute code coverage statistics)
+            return;
+        }
+
+        // now load the device through the TpClient loader code
+        // (which will initialize the device class with stuff like
+        // the OAuth helpers and the polling implementation of subscribe_*)
+
+        const prefs = this._platform.getSharedPreferences();
+        prefs.set('developer-dir', path.resolve(release));
+        // FIXME don't access private properties
+        const devClass = await this._engine.devices._factory.getDeviceClass(deviceKind);
+        const manifest = devClass.manifest;
+
+        // require the device once fully (to get complete code coverage)
+        if (manifest && manifest.loader.module === 'org.thingpedia.v2')
+            require('../../' + release + '/' + deviceKind);
+
+        console.log('# Starting tests for ' + release + '/' + deviceKind);
+        try {
+            if (typeof testsuite === 'function') {
+                // if the testsuite is a function, we're done here
+                await testsuite(devClass);
+                return;
+            }
+
+            let instance = null;
+            if (!Array.isArray(testsuite)) {
+                const meta = testsuite;
+                testsuite = meta.tests;
+                if (meta.setUp)
+                    instance = await meta.setUp(devClass);
+            }
+            if (instance === null)
+                instance = await this._getOrCreateDeviceInstance(deviceKind, manifest, devClass);
+            if (instance === null) {
+                console.log('FAILED: skipped tests for ' + release + '/' + deviceKind + ': missing credentials');
+                this.anyFailed = true;
+                return;
+            }
+
+            assertNonEmptyString(instance.name);
+            assertNonEmptyString(instance.description);
+            assertNonEmptyString(instance.uniqueId);
+
+            for (let i = 0; i < testsuite.length; i++) {
+                console.log(`## Test ${i+1}/${testsuite.length}`);
+                const test = testsuite[i];
+                try {
+                    await this._runTest(instance, test);
+                } catch(e) {
+                    console.log('## FAILED: ' + e.message);
+                    console.log(e.stack);
+                    this.anyFailed = true;
+                }
+            }
+        } finally {
+            console.log('# Completed tests for ' + release + '/' + deviceKind);
+        }
+    }
+
+    async toTest(argv) {
+        let devices = new Set();
+
+        for (let arg of argv.slice(2)) {
+            if (arg.indexOf('/') >= 0) {
+                devices.add(arg);
+            } else {
+                for (let kind of await util.promisify(fs.readdir)(path.resolve(path.dirname(module.filename), '../..', arg)))
+                    devices.add(arg + '/' + kind);
+            }
+        }
+
+        return devices;
+    }
 }
 
 async function main() {
+    const runner = new TestRunner();
+    await runner.start();
+
     // takes either (1) device names to test, or (2) release channel to test
-    for (let device of await toTest(process.argv)) {
+    for (let device of await runner.toTest(process.argv)) {
         let [release, kind] = device.split('/');
         if (!await existsSafe(release + '/' + kind + '/manifest.tt')) //'
             continue;
 
-        await testOne(release, kind);
+        await runner.testOne(release, kind);
     }
 
-    if (_anyFailed)
+    await runner.stop();
+    if (runner.anyFailed)
         process.exit(1);
 }
 main();

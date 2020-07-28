@@ -45,9 +45,7 @@ const argparse = require('argparse');
 const Genie = require('genie-toolkit');
 
 const StreamUtils = require('../../scripts/lib/stream_utils');
-const Platform = require('./platform');
-
-const THINGPEDIA_URL = 'https://almond-dev.stanford.edu/thingpedia';
+const Platform = require('../lib/platform');
 
 let _anyFailed = false;
 
@@ -298,7 +296,7 @@ async function main() {
         nluModelUrl = 'file://' + path.resolve('eval/' + args.release + '/models/' + args.nlu_model);
     else
         nluModelUrl = 'https://nlp-staging.almond.stanford.edu';
-    const engine = new Genie.AssistantEngine(platform, { thingpediaUrl: THINGPEDIA_URL, nluModelUrl });
+    const engine = new Genie.AssistantEngine(platform, { nluModelUrl });
 
     await engine.open();
     try {
