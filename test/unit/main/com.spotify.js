@@ -22,8 +22,8 @@ module.exports = [
                 new Tp.Value.Entity('spotify:artist:4VMYDCV2IEDYJArk749S6m', 'Daddy Yankee'),
                 new Tp.Value.Entity('spotify:artist:1uNFoZAHBGtllmzznpCI3s', 'Justin Bieber')
             ],
-            danceability: 0.653,
-            energy: 0.816,
+            danceability: 65.3,
+            energy: 81.6,
             popularity: 74,
 
             id: new Tp.Value.Entity('spotify:track:6rPO02ozF3bM7NnOV4h6s2', 'Despacito - Remix'),

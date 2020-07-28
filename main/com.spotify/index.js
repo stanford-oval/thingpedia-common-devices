@@ -193,8 +193,8 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 artists,
                 release_date,
                 popularity: tracks[i].popularity,
-                energy,
-                danceability
+                energy: energy * 100,
+                danceability: danceability * 100,
             };
             songs.push(songObj);
         }
