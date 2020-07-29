@@ -284,4 +284,5 @@ eval/$(release)/datasets/%/stats:
 	sed -i 's|datadir|'$(release)/$*'|g' $@
 
 training-set-statistics: $(foreach v,$($(release)_training_sets),eval/$(release)/datasets/$(v)/stats)
-	cat $^
+	@echo "dataset	num_dlgs	num_synthetic	num_turns	ctx_entropy	utt_entropy	tgt_entropy	turns_per_dlgs	unique_ctxs"
+	@cat $^
