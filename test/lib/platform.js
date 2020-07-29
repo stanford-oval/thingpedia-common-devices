@@ -29,6 +29,8 @@ const path = require('path');
 const child_process = require('child_process');
 const Gettext = require('node-gettext');
 
+const THINGPEDIA_URL = 'https://almond-dev.stanford.edu/thingpedia';
+
 var _unzipApi = {
     unzip(zipPath, dir) {
         var args = ['-uo', zipPath, '-d', dir];
@@ -91,6 +93,59 @@ function safeMkdirSync(dir) {
     }
 }
 
+const _contentApi = {
+    getStream(url) {
+        return new Promise((resolve, reject) => {
+            if (url.startsWith('file:///')) {
+                const path = url.substring('file://'.length);
+                child_process.execFile('xdg-mime', ['query', 'filetype', path], (err, stdout, stderr) => {
+                    if (err) {
+                        reject(err);
+                        return;
+                    }
+                    let stream = fs.createReadStream(path);
+                    stream.contentType = String(stdout).trim();
+                    resolve(stream);
+                });
+            } else {
+                reject(new Error('Unsupported url ' + url));
+            }
+        });
+    }
+};
+
+class ThingpediaClient extends Tp.HttpClient {
+    constructor(platform) {
+        super(platform, THINGPEDIA_URL);
+    }
+
+    async _getLocalDeviceManifest(manifestPath, deviceKind) {
+        const classDef = await super._getLocalDeviceManifest(manifestPath, deviceKind);
+
+        // copy some metadata that is required by the tests and would be provided by Thingpedia
+        if (!classDef.metadata.name)
+            classDef.metadata.name = classDef.metadata.thingpedia_name;
+        if (!classDef.metadata.description)
+            classDef.metadata.description = classDef.metadata.thingpedia_description;
+
+        return classDef;
+    }
+}
+
+function getGitConfig(key, _default) {
+    try {
+        const args = ['config', '--get', '--default', _default || '', key];
+        const stdout = child_process.execFileSync('git', args);
+        return String(stdout).trim() || _default;
+    } catch(e) {
+        // ignore error if git is not installed
+        if (e.code !== 'ENOENT')
+            throw e;
+        // also ignore error if the key
+        return _default;
+    }
+}
+
 class Platform extends Tp.BasePlatform {
     // Initialize the platform code
     // Will be called before instantiating the engine
@@ -106,6 +161,19 @@ class Platform extends Tp.BasePlatform {
         this._timezone = 'America/Los_Angeles';
         this._prefs = new MemoryPreferences();
         this._cacheDir = 'workdir/cache';
+
+        this._thingpedia = new ThingpediaClient(this);
+
+        this._developerKey = getGitConfig('thingpedia.developer-key', process.env.THINGENGINE_DEVELOPER_KEY || undefined);
+        this._prefs.set('developer-key', this._developerKey);
+        this._prefs.set('developer-dir', ['main', 'universe', 'staging'].map((r) => path.resolve(r)));
+
+        // set a fix device ID for cloud sync
+        this._prefs.set('cloud-sync-device-id', 'abcdef0123456789');
+        // credentials to talk to the cloud
+        this._prefs.set('cloud-id', process.env.THINGENGINE_CLOUD_SYNC_ID);
+        this._prefs.set('auth-token', process.env.THINGENGINE_CLOUD_SYNC_TOKEN);
+
         safeMkdirSync(this._cacheDir);
         try {
             // wipe the database and start fresh
@@ -134,17 +202,13 @@ class Platform extends Tp.BasePlatform {
         return this._timezone;
     }
 
-    // TODO add any capability needed for the scenarios to test
     hasCapability(cap) {
-        switch(cap) {
+        switch (cap) {
         case 'code-download':
-            // If downloading code from the thingpedia server is allowed on
-            // this platform
-            return true;
-
+        case 'content-api':
+        case 'thingpedia-client':
         case 'gettext':
             return true;
-
         default:
             return false;
         }
@@ -154,9 +218,12 @@ class Platform extends Tp.BasePlatform {
         switch(cap) {
         case 'code-download':
             return _unzipApi;
-
         case 'gettext':
             return this._gettext;
+        case 'content-api':
+            return _contentApi;
+        case 'thingpedia-client':
+            return this._thingpedia;
 
         default:
             return null;
@@ -192,7 +259,8 @@ class Platform extends Tp.BasePlatform {
     }
 
     setDeveloperKey(key) {
-        return this._prefs.set('developer-key', key);
+        // ignore
+        return false;
     }
 
     getOrigin() {
@@ -209,19 +277,9 @@ class Platform extends Tp.BasePlatform {
         return this._prefs.get('auth-token');
     }
 
-    setAuthToken(authToken) {
-        var oldAuthToken = this._prefs.get('auth-token');
-        if (oldAuthToken !== undefined && authToken !== oldAuthToken)
-            return false;
-        this._prefs.set('auth-token', authToken);
-        return true;
-    }
-
-    loadContext(info) {
-        if (info === "selection")
-            return "Selected text";
-        else
-            return "Undefined context";
+    setAuthToken() {
+        // ignore
+        return false;
     }
 }
 

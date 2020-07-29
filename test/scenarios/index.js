@@ -45,9 +45,7 @@ const argparse = require('argparse');
 const Genie = require('genie-toolkit');
 
 const StreamUtils = require('../../scripts/lib/stream_utils');
-const Platform = require('./platform');
-
-const THINGPEDIA_URL = 'https://almond-dev.stanford.edu/thingpedia';
+const Platform = require('../lib/platform');
 
 let _anyFailed = false;
 
@@ -197,14 +195,33 @@ async function roundtrip(testRunner, input, expected) {
     return true;
 }
 
+function parseScenarioID(dlgId) {
+    let [, id, reqs] = /^(.*?)\s*(?:\(\s*req\s*=\s*([a-z0-9.-]+(?:,[a-z0-9.-]+)*)\s*\)\s*)?$/.exec(dlgId);
+    if (reqs)
+        reqs = reqs.split(',');
+    else
+        reqs = [];
+
+    return [id, reqs];
+}
+
 async function test(testRunner, dlg, i) {
-    console.log(`Scenario #${i+1}: ${dlg.id}`);
+    const [id, reqs] = parseScenarioID(dlg.id);
+
+    console.log(`Scenario #${i+1}: ${id}`);
 
     testRunner.reset();
 
     // reset the conversation
     if (i > 0)
         await roundtrip(testRunner, '\\r bookkeeping special special:stop', null);
+
+    for (let req of reqs) {
+        if (testRunner.engine.devices.getAllDevicesOfKind(req).length === 0) {
+            console.log(`SKIPPED (missing credentials for ${req})`);
+            return;
+        }
+    }
 
     for (let turn of dlg) {
         if (!await roundtrip(testRunner, turn.user, turn.agent))
@@ -245,12 +262,11 @@ async function execProcess(command, ...args) {
     });
 }
 
-const RELEASE_INHERITANCE = {
-    'builtin': ['builtin'],
-    'main': ['builtin', 'main'],
-    'universe': ['builtin', 'main', 'universe'],
-    'staging': ['builtin', 'main', 'universe', 'staging'],
-};
+async function sleep(timeout) {
+    return new Promise((resolve, reject) => {
+        setTimeout(resolve, timeout);
+    });
+}
 
 async function main() {
     const parser = new argparse.ArgumentParser({
@@ -290,17 +306,27 @@ async function main() {
         await execProcess('make', 'eval/' + args.release + '/models/' + args.nlu_model + '/best.pth');
 
     const platform = new Platform();
-    const prefs = platform.getSharedPreferences();
-    prefs.set('developer-dir', RELEASE_INHERITANCE[args.release].map((r) => path.resolve(r)));
 
     let nluModelUrl;
     if (args.nlu_model)
         nluModelUrl = 'file://' + path.resolve('eval/' + args.release + '/models/' + args.nlu_model);
     else
         nluModelUrl = 'https://nlp-staging.almond.stanford.edu';
-    const engine = new Genie.AssistantEngine(platform, { thingpediaUrl: THINGPEDIA_URL, nluModelUrl });
+    const engine = new Genie.AssistantEngine(platform, {
+        nluModelUrl,
+        cloudSyncUrl: 'https://almond-dev.stanford.edu'
+    });
+    testRunner.engine = engine;
 
     await engine.open();
+    // if cloud sync is set up, we'll download the credentials of the devices to
+    // test from almond-dev
+    // sleep for 30 seconds while that happens
+    if (platform.getCloudId()) {
+        console.log('Waiting for cloud sync to complete...');
+        await sleep(30000);
+    }
+
     try {
 
         const conversation = await engine.assistant.getOrOpenConversation('test', new TestUser, {
