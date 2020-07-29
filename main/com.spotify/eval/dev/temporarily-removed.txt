@@ -46,11 +46,11 @@ C:   { id="spotify:track:0mHyWYXmmCB9iQyK18m3FQ"^^com.spotify:song("Hello"), art
 C: ]];
 A: would you like me to play hello by lionel richie .
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
-AT: now => @com.spotify.play_songs(toPlay=$?)
+AT: now => @com.spotify.play_song(song=$?)
 AT: #[confirm=enum(proposed)];
 U: yes please . thanks .
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.spotify.play_songs(toPlay=["spotify:track:0mHyWYXmmCB9iQyK18m3FQ"^^com.spotify:song("Hello")]);
+UT: now => @com.spotify.play_song(song="spotify:track:0mHyWYXmmCB9iQyK18m3FQ"^^com.spotify:song("Hello"));
 ====
 # 7
 U: i'm feeling nostalgic. play me a song from the 1980s .
@@ -73,7 +73,7 @@ C: ]]
 C: #[count=20];
 A: i found africa by toto . would you like me to play this song ?
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
-AT: now => @com.spotify.play_songs(toPlay=["spotify:track:2374M0fQpWi3dLnB54qaLX"^^com.spotify:song("Africa")])
+AT: now => @com.spotify.play_song(song="spotify:track:2374M0fQpWi3dLnB54qaLX"^^com.spotify:song("Africa"))
 AT: #[confirm=enum(proposed)];
 U: actually, why don't we try the '70s instead .
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
@@ -109,11 +109,11 @@ C: ]]
 C: #[count=21];
 A: i found dreams by fleetwood mac . should i play this instead ?
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
-AT: now => @com.spotify.play_songs(toPlay=["spotify:track:0ofHAoxe9vBkTCp2UQIavz"^^com.spotify:song("Dreams - 2004 Remaster")])
+AT: now => @com.spotify.play_song(song="spotify:track:0ofHAoxe9vBkTCp2UQIavz"^^com.spotify:song("Dreams - 2004 Remaster"))
 AT: #[confirm=enum(proposed)];
 U: absolutely, i love this song .
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.spotify.play_songs(toPlay=["spotify:track:0ofHAoxe9vBkTCp2UQIavz"^^com.spotify:song("Dreams - 2004 Remaster")]);
+UT: now => @com.spotify.play_song(song="spotify:track:0ofHAoxe9vBkTCp2UQIavz"^^com.spotify:song("Dreams - 2004 Remaster"));
 ====
 # 8
 U: can you play me songs by justin beiber ?
@@ -170,7 +170,7 @@ C: ]]
 C: #[count=23];
 A: i sorted songs by justin beiber from newest to oldest. would you like me to play these songs ?
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
-AT: now => @com.spotify.play_song(toPlay=$?)
+AT: now => @com.spotify.play_song(song=$?)
 AT: #[confirm=enum(proposed)];
 U: actually, on second thought i rather listen to maroon 5 . can you also play the newest songs first ?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
@@ -220,7 +220,7 @@ C: ]]
 C: #[count=20];
 A: sure, i've sorted maroon 5's from newest to oldest . should i play these songs ?
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
-AT: now => @com.spotify.play_song(toPlay=$?)
+AT: now => @com.spotify.play_song(song=$?)
 AT: #[confirm=enum(proposed)];
 U: yes, that was very helpful . thanks a lot .
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
@@ -247,7 +247,7 @@ C: ]]
 C: #[count=21];
 A: i found songs from 2000 to 2005 and then sorted by danceability . should i play these songs ?
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
-AT: now => @com.spotify.play_songs(toPlay=$?)
+AT: now => @com.spotify.play_song(song=$?)
 AT: #[confirm=enum(proposed)];
 U: no , but can you list like 3 of them out .
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
@@ -285,7 +285,7 @@ A: i found without me by eminem, yeah! (feat. lil jon & ludacris) by usher, lil 
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_anything_else;
 U: can you play without me by eminem .
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.spotify.play_songs(toPlay=["spotify:track:7lQ8MOhq6IN2w8EYcFNSUk"^^com.spotify:song("Without Me")]);
+UT: now => @com.spotify.play_song(song="spotify:track:7lQ8MOhq6IN2w8EYcFNSUk"^^com.spotify:song("Without Me"));
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
 C: now => (sort danceability desc of (@com.spotify.song())), (release_date >= new Date("2000-01-01T08:00:00.000Z") && release_date <= new Date("2005-12-31T08:00:00.000Z")) => notify
 C: #[results=[
@@ -315,7 +315,7 @@ C:   { id="spotify:track:4RCWB3V8V0dignt99LZ8vH"^^com.spotify:song("Hey There De
 C:   { id="spotify:track:2MLHyLy5z5l5YRp7momlgw"^^com.spotify:song("Island In The Sun"), artists=["spotify:artist:3jOstUTkEu2JkjvRdBA5Gu"^^com.spotify:artist("Weezer")], release_date=new Date("2001-05-15T00:00:00.000Z"), popularity=77, energy=0.81, danceability=0.654 }
 C: ]]
 C: #[count=21];
-C: now => @com.spotify.play_songs(toPlay=["spotify:track:7lQ8MOhq6IN2w8EYcFNSUk"^^com.spotify:song("Without Me")])
+C: now => @com.spotify.play_song(song="spotify:track:7lQ8MOhq6IN2w8EYcFNSUk"^^com.spotify:song("Without Me"))
 C: #[results=[
 C: ]];
 A: sure, consider that done .
@@ -349,10 +349,10 @@ C: ]]
 C: #[count=20];
 A: i sorted taylor swift songs from oldest to newest . would you like me to play these songs ?
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
-AT: now => @com.spotify.play_songs(toPlay=$?);
+AT: now => @com.spotify.play_song(song=$?);
 U: yes, thank you for your help.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.spotify.play_songs(toPlay=["spotify:track:15DeqWWQB4dcEWzJg15VrN"^^com.spotify:song("Our Song"), "spotify:track:1vrd6UOGamcKNGnSHJQlSt"^^com.spotify:song("Love Story"), "spotify:track:3GCL1PydwsLodcpv0Ll1ch"^^com.spotify:song("You Belong With Me"), "spotify:track:72jCZdH0Lhg93z6Z4hBjgj"^^com.spotify:song("I Knew You Were Trouble."), "spotify:track:1p80LdxRV74UKvL8gnD7ky"^^com.spotify:song("Blank Space"), "spotify:track:5xTtaWoae3wi06K5WfVUUH"^^com.spotify:song("Shake It Off"), "spotify:track:59HjlYCeBsxdI0fcm3zglw"^^com.spotify:song("Wildest Dreams"), "spotify:track:273dCMFseLcVsoSWx59IoE"^^com.spotify:song("Bad Blood"), "spotify:track:6NFyWDv5CjfwuzoCkw47Xf"^^com.spotify:song("Delicate"), "spotify:track:1P17dC1amhFzptugyAO7Il"^^com.spotify:song("Look What You Made Me Do")]);
+UT: now => @com.spotify.play_song(song=["spotify:track:15DeqWWQB4dcEWzJg15VrN"^^com.spotify:song("Our Song"), "spotify:track:1vrd6UOGamcKNGnSHJQlSt"^^com.spotify:song("Love Story"), "spotify:track:3GCL1PydwsLodcpv0Ll1ch"^^com.spotify:song("You Belong With Me"), "spotify:track:72jCZdH0Lhg93z6Z4hBjgj"^^com.spotify:song("I Knew You Were Trouble."), "spotify:track:1p80LdxRV74UKvL8gnD7ky"^^com.spotify:song("Blank Space"), "spotify:track:5xTtaWoae3wi06K5WfVUUH"^^com.spotify:song("Shake It Off"), "spotify:track:59HjlYCeBsxdI0fcm3zglw"^^com.spotify:song("Wildest Dreams"), "spotify:track:273dCMFseLcVsoSWx59IoE"^^com.spotify:song("Bad Blood"), "spotify:track:6NFyWDv5CjfwuzoCkw47Xf"^^com.spotify:song("Delicate"), "spotify:track:1P17dC1amhFzptugyAO7Il"^^com.spotify:song("Look What You Made Me Do")]);
 ====
 # 4
 U: hi, i want to play some music .
@@ -414,7 +414,7 @@ A: sure , i can play you songs with high energy . is there a particular artist y
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_search_question(artists);
 U: no, just play me anything .
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.spotify.play_songs(toPlay=$?);
+UT: now => @com.spotify.play_song(song=$?);
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
 C: now => @com.spotify.song() => notify
 C: #[results=[
@@ -446,14 +446,14 @@ C:   { id="spotify:track:2WfaOiMkCvy7F5fcp2zZ8L"^^com.spotify:song("Take on Me")
 C: ]]
 C: #[count=50]
 C: #[more=true];
-C: now => @com.spotify.play_songs(toPlay=$?);
+C: now => @com.spotify.play_song(song=$?);
 A: i sorted songs from most to least energy . would you like me to play them ?
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
-AT: now => @com.spotify.play_songs(toPlay=$?)
+AT: now => @com.spotify.play_song(song=$?)
 AT: #[confirm=enum(proposed)];
 U: yes , have a good day .
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.spotify.play_songs(toPlay=["spotify:track:0G21yYKMZoHa30cYVi1iA8"^^com.spotify:song("Welcome To The Jungle"), "spotify:track:7snQQk1zcKl8gZ92AnueZW"^^com.spotify:song("Sweet Child O' Mine"), "spotify:track:5zA8vzDGqPl2AzZkEYQGKh"^^com.spotify:song("Uptown Girl"), "spotify:track:4xh7W7tlNMIczFhupCPniY"^^com.spotify:song("Go Your Own Way - 2004 Remaster"), "spotify:track:0YEg2JfkMeJ1hTYqop4A5o"^^com.spotify:song("7 Rings"), "spotify:track:5QTxFnGygVM4jFQiBovmRo"^^com.spotify:song("(Don't Fear) The Reaper"), "spotify:track:7oK9VyNzrYvRFo7nQEYkWN"^^com.spotify:song("Mr. Brightside"), "spotify:track:2zYzyRzz6pRmhPzyfMEC8s"^^com.spotify:song("Highway to Hell"), "spotify:track:3CA9pLiwRIGtUBiMjbZmRw"^^com.spotify:song("Nice For What"), "spotify:track:2WfaOiMkCvy7F5fcp2zZ8L"^^com.spotify:song("Take on Me")]);
+UT: now => @com.spotify.play_song(song=["spotify:track:0G21yYKMZoHa30cYVi1iA8"^^com.spotify:song("Welcome To The Jungle"), "spotify:track:7snQQk1zcKl8gZ92AnueZW"^^com.spotify:song("Sweet Child O' Mine"), "spotify:track:5zA8vzDGqPl2AzZkEYQGKh"^^com.spotify:song("Uptown Girl"), "spotify:track:4xh7W7tlNMIczFhupCPniY"^^com.spotify:song("Go Your Own Way - 2004 Remaster"), "spotify:track:0YEg2JfkMeJ1hTYqop4A5o"^^com.spotify:song("7 Rings"), "spotify:track:5QTxFnGygVM4jFQiBovmRo"^^com.spotify:song("(Don't Fear) The Reaper"), "spotify:track:7oK9VyNzrYvRFo7nQEYkWN"^^com.spotify:song("Mr. Brightside"), "spotify:track:2zYzyRzz6pRmhPzyfMEC8s"^^com.spotify:song("Highway to Hell"), "spotify:track:3CA9pLiwRIGtUBiMjbZmRw"^^com.spotify:song("Nice For What"), "spotify:track:2WfaOiMkCvy7F5fcp2zZ8L"^^com.spotify:song("Take on Me")]);
 ====
 # nlu/spotify-4
 U: Play Magic Sam from the thirties
