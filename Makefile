@@ -258,14 +258,16 @@ lint:
 		test ! -f $$d/package.json || $(eslint) $$d/*.js ; \
 	done
 
-evaluate: eval/$(release)/$(eval_set)/$(model).dialogue.results eval/$(release)/$(eval_set)/$(model).nlu.results
-	for f in $^ ; do \
-		echo $$f ; \
-		cat $$f ; \
-	done
+evaluate: eval/$(release)/$(eval_set)/$(model).dialogue.results
+	@echo $<
+	@cat $<
+
+evaluate-detailed: eval/$(release)/$(eval_set)/$(model).nlu.results
+	@echo $<
+	@cat $<
 
 evaluate-all:
-	for m in $($(release)_eval_$(eval_set)_models) ; do make model=$$m evaluate ; done
+	@for m in $($(release)_eval_$(eval_set)_models) ; do make --no-print-directory model=$$m evaluate ; done
 
 eval/$(release)/models/%/best.pth:
 	mkdir -p eval/$(release)/models/$(if $(findstring /,$*),$(dir $*),)
