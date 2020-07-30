@@ -320,8 +320,10 @@ async function main() {
     if (args.ids && args.ids.length)
         testRunner.ids = new Set(args.ids);
 
-    if (args.nlu_model)
-        await execProcess('make', 'eval/' + args.release + '/models/' + args.nlu_model + '/best.pth');
+    if (args.nlu_model) {
+        await execProcess('make', 'release=' + args.release,
+            'eval/' + args.release + '/models/' + args.nlu_model + '/best.pth');
+    }
 
     const platform = new Platform();
 
