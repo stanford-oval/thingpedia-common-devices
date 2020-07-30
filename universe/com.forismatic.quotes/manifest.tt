@@ -39,6 +39,7 @@ class @com.forismatic.quotes
   import config from @org.thingpedia.config.none();
 
   query get(out text: String
+            #[string_values="tt:long_free_text"]
             #_[canonical={
                base=["text", "content"],
                verb=["say #"],
@@ -46,13 +47,14 @@ class @com.forismatic.quotes
             }]
             #[json_key="quoteText"],
             out author: String
+            #[string_values="tt:person_full_name"]
             #_[canonical={
                base=["author"],
                passive_verb=["authored by #", "written by #"],
                preposition=["by #"],
             }]
             #[json_key="quoteAuthor"])
-  #_[thingpedia_result=["${text} . by ${author}", "${author} wrote : ${text}"]]
+  #_[result=["${author} wrote : ${text}", "${text} by ${author}"]]
   #_[canonical=["quote", "random quote", "quote", "aphorism",
                 "random piece of wisdom"]]
   #_[confirmation="a quote"]
