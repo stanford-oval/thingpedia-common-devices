@@ -85,22 +85,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             return JSON.parse(response).devices;
         });
     }
-    async set_active_device(devices) {
-        if (devices.length === 0) {
-            console.log("no available devices");
-            return false;
-        }
-        // device already active
-        for (let i = 0; i < devices.length; i++) {
-            console.log(devices[i].is_active);
-            if (devices[i].is_active) {
-                console.log("found an active device");
-                return true;
-            }
-        }
-        console.log("setting active device");
-        return devices[0].id;
-    }
     search(query, types, limit) {
         let searchURL = SEARCH_URL + querystring.stringify({
             q: query.toString(),
@@ -413,37 +397,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             return this.albums_by_search(query);
         }
     }
-    do_play_song({ song }) {
-        const uris = [song.value];
-        return this.player_play_helper(JSON.stringify({ 'uris': uris }));
-    }
-    do_play_artist({ artist }) {
-        const uri = artist.value;
-        let data = {
-            context_uri: uri,
-        };
-        console.log("data is " + JSON.stringify(data));
-        return this.player_play_helper(JSON.stringify(data));
-    }
-    do_play_album({ album }) {
-        const uri = album.value;
-        let data = {
-            context_uri: uri,
-        };
-        console.log("data is " + JSON.stringify(data));
-        return this.player_play_helper(JSON.stringify(data));
-    }
-    async player_play_helper(data = '', options = {
-        useOAuth2: this,
-        dataContentType: 'application/json',
-        accept: 'application/json'
-    }) {
-        let devices = await this.get_get_available_devices();
-        let canPlay = await this.set_active_device(devices);
-        console.log("CAN PLAY: " + canPlay);
-        if (typeof canPlay === 'boolean' && canPlay) return this.http_put(PLAY_URL, data, options);
-        else return this.http_put(PLAY_URL + `?device_id=${canPlay}`, data, options);
-    }
+
     async currently_playing_helper() {
         return Tp.Helpers.Http.get(CURRENTLY_PLAYING_URL, {
             accept: 'application/json',
@@ -473,33 +427,103 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             return [{ song: new Tp.Value.Entity(parsed.item.uri, parsed.item.name) }];
         });
     }
-    do_player_pause() {
-        return this.http_put_default_options(PAUSE_URL, '');
+
+    _testMode() {
+        return process.env.TEST_MODE === '1';
     }
 
-    do_player_play() {
+    _findActiveDevice(devices) {
+        if (devices.length === 0) {
+            console.log("no available devices");
+            return [null, null];
+        }
+        // device already active
+        for (let i = 0; i < devices.length; i++) {
+            console.log(devices[i].is_active);
+            if (devices[i].is_active) {
+                console.log("found an active device");
+                return [devices[0].id, devices[0].name];
+            }
+        }
+        console.log("setting active device");
+        return [devices[0].id, devices[0].name];
+    }
+    async player_play_helper(data = '', options = {
+        useOAuth2: this,
+        dataContentType: 'application/json',
+        accept: 'application/json'
+    }) {
+        let devices = await this.get_get_available_devices();
+        if (this._testMode())
+            return { device: new Tp.Value.Entity('mock', 'Coolest Computer') };
+        const [deviceId, deviceName] = this._findActiveDevice(devices);
+        console.log("CAN PLAY: " + deviceId !== null);
+
+        await this.http_put(PLAY_URL + `?device_id=${deviceId}`, data, options);
+        return { device: new Tp.Value.Entity(deviceId, deviceName) };
+    }
+
+    async do_play_song({ song }) {
+        const uris = [song.value];
+        return this.player_play_helper(JSON.stringify({ 'uris': uris }));
+    }
+    async do_play_artist({ artist }) {
+        const uri = artist.value;
+        let data = {
+            context_uri: uri,
+        };
+        console.log("data is " + JSON.stringify(data));
+        return this.player_play_helper(JSON.stringify(data));
+    }
+    async do_play_album({ album }) {
+        const uri = album.value;
+        let data = {
+            context_uri: uri,
+        };
+        console.log("data is " + JSON.stringify(data));
+        return this.player_play_helper(JSON.stringify(data));
+    }
+
+    async do_player_pause() {
+        if (this._testMode())
+            return;
+        await this.http_put_default_options(PAUSE_URL, '');
+    }
+
+    async do_player_play() {
         console.log("Playing music...");
-        return this.player_play_helper();
+        if (this._testMode())
+            return;
+
+        await this.player_play_helper();
     }
 
-    do_player_next() {
-        return this.http_post_default_options(NEXT_URL, '');
+    async do_player_next() {
+        if (this._testMode())
+            return;
+        await this.http_post_default_options(NEXT_URL, '');
     }
 
-    do_player_previous() {
-        return this.http_post_default_options(PREVIOUS_URL, '');
+    async do_player_previous() {
+        if (this._testMode())
+            return;
+        await this.http_post_default_options(PREVIOUS_URL, '');
     }
 
-    do_player_shuffle({ shuffle }) {
+    async do_player_shuffle({ shuffle }) {
         shuffle = shuffle === 'on' ? 'true' : 'false';
         console.log("setting shuffle: " + shuffle);
         let shuffleURL = SHUFFLE_URL + querystring.stringify({ state: shuffle });
         console.log(shuffleURL);
-        return this.http_put_default_options(shuffleURL, '');
+        if (this._testMode())
+            return;
+        await this.http_put_default_options(shuffleURL, '');
     }
 
-    do_player_repeat({ repeat }) {
+    async do_player_repeat({ repeat }) {
         console.log("repeat: " + repeat);
-        return this.http_put_default_options(REPEAT_URL + querystring.stringify({ state: repeat }), '');
+        if (this._testMode())
+            return;
+        await this.http_put_default_options(REPEAT_URL + querystring.stringify({ state: repeat }), '');
     }
 };
