@@ -496,7 +496,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (this._testMode())
             return { device: new Tp.Value.Entity('mock', 'Coolest Computer') };
         const [deviceId, deviceName] = this._findActiveDevice(devices);
-        console.log("CAN PLAY: " + deviceId !== null);
         if (deviceId === null) {
             const error = new Error(`No Spotify device is active`);
             error.code = 'no_active_device';
@@ -511,7 +510,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (this._testMode())
             return { device: new Tp.Value.Entity('mock', 'Coolest Computer') };
         const [deviceId, deviceName] = this._findActiveDevice(devices);
-        console.log("CAN PLAY: " + deviceId !== null);
         if (deviceId === null) {
             const error = new Error(`No Spotify device is active`);
             error.code = 'no_active_device';
