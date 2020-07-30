@@ -61,13 +61,32 @@ function tableUsesIDFilter(table) {
 
 function fix(target) {
     assert(target instanceof Ast.DialogueState);
+    if (target.history.length === 1) {
+        const stmt = target.history[0].stmt;
+
+        if (stmt.table && stmt.actions.some((a) => !a.isNotify)) {
+            let newTable = stmt.table;
+            // swap sort & filter (which is backwards in the snips-nlu annotations)
+            if (newTable.isFilter && newTable.table.isSort) {
+                newTable = new Ast.Table.Sort(null,
+                    new Ast.Table.Filter(null, newTable.table.table, newTable.filter, newTable.schema),
+                    newTable.table.field, newTable.table.direction, newTable.schema);
+            }
+            if ((tableUsesIDFilter(newTable) || newTable.isSort) && !newTable.isIndex)
+                newTable = new Ast.Table.Index(null, newTable, [new Ast.Value.Number(1)], newTable.schema);
+
+            stmt.table = newTable;
+        }
+        return;
+    }
+
     if (target.history.length !== 2)
         return;
 
     const first = target.history[0];
     const second = target.history[1];
     if (first.stmt.actions.some((a) => !a.isNotify) || second.stmt.table) {
-        console.error(`Do not know how to handle: ` + dlg[0].user_target);
+        console.error(`Do not know how to handle: ` + target.prettyprint());
         return;
     }
 
