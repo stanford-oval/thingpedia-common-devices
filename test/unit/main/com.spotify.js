@@ -13,7 +13,7 @@ const Tp = require('thingpedia');
 module.exports = [
     ['query', 'song', {}, {
         filter: [
-            [ 'id', '=~', 'despacito' ]
+            ['id', '=~', 'despacito']
         ]
     }, (result) => {
         assert.deepStrictEqual(result[0], {
@@ -22,6 +22,7 @@ module.exports = [
                 new Tp.Value.Entity('spotify:artist:4VMYDCV2IEDYJArk749S6m', 'Daddy Yankee'),
                 new Tp.Value.Entity('spotify:artist:1uNFoZAHBGtllmzznpCI3s', 'Justin Bieber')
             ],
+            genres: ['latin', 'latin pop', 'puerto rican pop', 'tropical'],
             danceability: 65.3,
             energy: 81.6,
             popularity: 74,
