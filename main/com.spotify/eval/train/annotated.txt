@@ -52,7 +52,7 @@ UT: now => ((@com.spotify.artist()), id =~ "bruce springsteen")[1] => @com.spoti
 # online/spotify-228
 U: begin playing the album dirty computer by janelle monae
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => ((@com.spotify.album()), id =~ "dirty computer by janelle monae")[1] => @com.spotify.play_album(album=id);
+UT: now => ((@com.spotify.album()), id =~ "dirty computer" && contains(artist, null^^com.spotify:artist("janelle monae")))[1] => @com.spotify.play_album(album=id);
 ====
 # online/spotify-238
 U: play the newest red hot chili peppers album in its entirety, please.
@@ -62,7 +62,7 @@ UT: now => ((@com.spotify.album()), id =~ "red hot chili peppers")[1] => @com.sp
 # online/spotify-26
 U: play tequila by dan and shay
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => ((@com.spotify.song()), id =~ "tequila")[1] => @com.spotify.play_song(song=id);
+UT: now => ((@com.spotify.song()), id =~ "tequila" && contains(artist, null^^com.spotify:artist("dan and shay")))[1] => @com.spotify.play_song(song=id);
 ====
 # online/spotify-32
 U: go back to the song that just finished playing.
@@ -82,7 +82,7 @@ UT: now => ((@com.spotify.artist()), id =~ "smash mouth")[1] => @com.spotify.pla
 # online/1674421
 U: play artist taylor swift
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.spotify.artist() => @com.spotify.play_artist(artist=id);
+UT: now => @com.spotify.artist(), id =~ "taylor swift" => @com.spotify.play_artist(artist=id);
 ====
 # online/1678058
 U: set repeat on
