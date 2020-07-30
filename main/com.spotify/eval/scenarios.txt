@@ -2,11 +2,11 @@
 # simple playing
 # (in \t format until our model behaves)
 
-# play bohemian rhapsody by the queen
+# play bohemian rhapsody
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: now => (@com.spotify.song(), id =~ "bohemian rhapsody" && contains~(artists, "queen"))[1] => @com.spotify.play_song(song=id);
+U: now => (@com.spotify.song(), id =~ "bohemian rhapsody")[1] => @com.spotify.play_song(song=id);
 
-A: Alright, I played Bohemian Rhapsody - 2011 Mix( on Spotify)?( on Coolest Computer)?.
+A: Alright, I played Bohemian Rhapsody - 2011 Mix( on Spotify)?( on (Coolest Computer|giovanni-xps15))?.
 A: >> expecting = null
 
 ====
@@ -16,6 +16,16 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.artist(), id =~ "taylor swift")[1] => @com.spotify.play_artist(artist=id);
 
-A: Alright, I played Taylor Swift( on Spotify)?( on Coolest Computer)?.
+A: Alright, I played Taylor Swift( on Spotify)?( on (Coolest Computer|giovanni-xps15))?.
 A: >> expecting = null
 
+====
+# 3-song-artist (req=com.spotify)
+# (in \t format until our model behaves)
+
+# play destination calabria by alex gaudino
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => (@com.spotify.song(), id =~ "destination calabria" && contains~(artists, "alex gaudino"))[1] => @com.spotify.play_song(song=id);
+
+A: Alright, I played Destination Calabria( - Radio Edit)?( on Spotify)?( on (Coolest Computer|giovanni-xps15))?.
+A: >> expecting = null

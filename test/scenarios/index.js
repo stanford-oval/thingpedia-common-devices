@@ -33,7 +33,6 @@
 // Scenario tests: as end-to-end as it gets
 
 process.on('unhandledRejection', (up) => { throw up; });
-process.env.TEST_MODE = '1';
 
 const util = require('util');
 const fs = require('fs');
@@ -286,6 +285,11 @@ async function main() {
         required: false,
         help: 'NLU model'
     });
+    parser.addArgument('--manual', {
+        nargs: 0,
+        action: 'storeTrue',
+        help: 'Run scenarios in manual mode (might trigger side-effects, and run additional scenarios)'
+    });
     parser.addArgument('--ids', {
         nargs: '+',
         required: false,
@@ -296,6 +300,10 @@ async function main() {
         help: 'Scenarios to test. This can be a release name or a release slash device name.'
     });
     const args = parser.parseArgs();
+
+    // set TEST_MODE if we're called without --manual
+    if (!args.manual)
+        process.env.TEST_MODE = '1';
 
     const testRunner = new TestRunner();
     const rng = testRunner.rng.makeRNG();
