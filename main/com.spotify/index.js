@@ -499,7 +499,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         console.log("CAN PLAY: " + canPlay);
         console.log(typeof canPlay);
         if (typeof canPlay === 'boolean' && canPlay) return this.http_post_default_options(QUEUE_URL + `?uri=${uri}`, '');
-        else return this.http_post_default_options(QUEUE_URL + `?uri=${uri}`, '');
+        else return this.http_post_default_options(QUEUE_URL + `?device_id=${canPlay}` + `?uri=${uri}`, '');
     }
 
     async currently_playing_helper() {

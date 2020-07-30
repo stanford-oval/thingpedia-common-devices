@@ -30,7 +30,10 @@ def construct_thingtalk(entities, sortObj):
         "sound track": "song",
         "album": "album",
     }
+
     if len(sortObj.keys()) > 0:
+        if "release_date" in sortObj.keys():
+            hasID = True
         sort_query = (
             "sort " + list(sortObj.keys())[0] + " " + list(sortObj.values())[0] + " of "
         )
@@ -99,9 +102,12 @@ def construct_thingtalk(entities, sortObj):
             return None
     query_type = query_type or "song"
 
-    query = "%s@com.spotify.%s()" % (sort_query, query_type)
+    query = "@com.spotify.%s()" % (query_type)
     if len(filters) > 0:
         query += (", " + "&& ".join(filters)).strip()
+
+    if sort_query:
+        query = "%s(%s)" % (sort_query, query)
 
     if hasID:
         query = "UT: now => (" + query + ")[1]"
