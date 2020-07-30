@@ -207,6 +207,8 @@ function parseScenarioID(dlgId) {
 
 async function test(testRunner, dlg, i) {
     const [id, reqs] = parseScenarioID(dlg.id);
+    if (testRunner.ids && !testRunner.ids.has(id))
+        return;
 
     console.log(`Scenario #${i+1}: ${id}`);
 
@@ -284,6 +286,11 @@ async function main() {
         required: false,
         help: 'NLU model'
     });
+    parser.addArgument('--ids', {
+        nargs: '+',
+        required: false,
+        help: 'Only run scenarios with these IDs'
+    });
     parser.addArgument('scenarios', {
         nargs: '+',
         help: 'Scenarios to test. This can be a release name or a release slash device name.'
@@ -297,10 +304,13 @@ async function main() {
     const files = await collectScenarioFiles(args.scenarios);
     for (let file of files)
         console.log('Loading scenario file ' + file + ' ...');
-    const scenarios = await readAllLines(files, '====')
+    let scenarios = await readAllLines(files, '====')
         .pipe(new Genie.DialogueParser({ withAnnotations: false, invertTurns: true }))
         .pipe(new StreamUtils.ArrayAccumulator())
         .read();
+
+    if (args.ids && args.ids.length)
+        testRunner.ids = new Set(args.ids);
 
     if (args.nlu_model)
         await execProcess('make', 'eval/' + args.release + '/models/' + args.nlu_model + '/best.pth');
