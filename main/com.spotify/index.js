@@ -91,23 +91,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         });
     }
 
-    async set_active_device(devices) {
-        if (devices.length === 0) {
-            console.log("no available devices");
-            return false;
-        }
-        // device already active
-        for (let i = 0; i < devices.length; i++) {
-            console.log(devices[i].is_active);
-            if (devices[i].is_active) {
-                console.log("found an active device");
-                return true;
-            }
-        }
-        console.log("setting active device");
-        return devices[0].id;
-    }
-
     search(query, types, limit) {
         let searchURL = SEARCH_URL + querystring.stringify({
             q: query.toString(),
@@ -453,55 +436,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         }
     }
 
-    do_play_song({ song }, env) {
-        if (this.state.previous_uuid === env.app.uniqueId) {
-            return this.player_queue_helper(song.value);
-        } else {
-            this.state.previous_uuid = env.app.uniqueId;
-            return this.player_play_helper(JSON.stringify({ 'uris': [song.value] }));
-        }
-
-    }
-
-    do_play_artist({ artist }) {
-        const uri = artist.value;
-        let data = {
-            context_uri: uri,
-        };
-        console.log("data is " + JSON.stringify(data));
-        return this.player_play_helper(JSON.stringify(data));
-    }
-
-    do_play_album({ album }) {
-        const uri = album.value;
-        let data = {
-            context_uri: uri,
-        };
-        console.log("data is " + JSON.stringify(data));
-        return this.player_play_helper(JSON.stringify(data));
-    }
-
-    async player_play_helper(data = '', options = {
-        useOAuth2: this,
-        dataContentType: 'application/json',
-        accept: 'application/json'
-    }) {
-        let devices = await this.get_get_available_devices();
-        let canPlay = await this.set_active_device(devices);
-        console.log("CAN PLAY: " + canPlay);
-        if (typeof canPlay === 'boolean' && canPlay) return this.http_put(PLAY_URL, data, options);
-        else return this.http_put(PLAY_URL + `?device_id=${canPlay}`, data, options);
-    }
-
-    async player_queue_helper(uri) {
-        let devices = await this.get_get_available_devices();
-        let canPlay = await this.set_active_device(devices);
-        console.log("CAN PLAY: " + canPlay);
-        console.log(typeof canPlay);
-        if (typeof canPlay === 'boolean' && canPlay) return this.http_post_default_options(QUEUE_URL + `?uri=${uri}`, '');
-        else return this.http_post_default_options(QUEUE_URL + `?device_id=${canPlay}` + `?uri=${uri}`, '');
-    }
-
     async currently_playing_helper() {
         return Tp.Helpers.Http.get(CURRENTLY_PLAYING_URL, {
             accept: 'application/json',
@@ -552,6 +486,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         console.log("setting active device");
         return [devices[0].id, devices[0].name];
     }
+
     async player_play_helper(data = '', options = {
         useOAuth2: this,
         dataContentType: 'application/json',
@@ -562,25 +497,49 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             return { device: new Tp.Value.Entity('mock', 'Coolest Computer') };
         const [deviceId, deviceName] = this._findActiveDevice(devices);
         console.log("CAN PLAY: " + deviceId !== null);
+        if (deviceId === null) {
+            const error = new Error(`No Spotify device is active`);
+            error.code = 'no_active_device';
+            throw error;
+        }
 
         await this.http_put(PLAY_URL + `?device_id=${deviceId}`, data, options);
         return { device: new Tp.Value.Entity(deviceId, deviceName) };
     }
+    async player_queue_helper(uri) {
+        let devices = await this.get_get_available_devices();
+        if (this._testMode())
+            return { device: new Tp.Value.Entity('mock', 'Coolest Computer') };
+        const [deviceId, deviceName] = this._findActiveDevice(devices);
+        console.log("CAN PLAY: " + deviceId !== null);
+        if (deviceId === null) {
+            const error = new Error(`No Spotify device is active`);
+            error.code = 'no_active_device';
+            throw error;
+        }
 
-    async do_play_song({ song }) {
-        const uris = [song.value];
-        return this.player_play_helper(JSON.stringify({ 'uris': uris }));
+        await this.http_post_default_options(QUEUE_URL + `?uri=${encodeURIComponent(uri)}&device_id=${deviceId}`, '');
+        return { device: new Tp.Value.Entity(deviceId, deviceName) };
     }
-    async do_play_artist({ artist }) {
-        const uri = artist.value;
+
+    async do_play_song({ song }, env) {
+        if (this.state.previous_uuid === env.app.uniqueId) {
+            return this.player_queue_helper(String(song));
+        } else {
+            this.state.previous_uuid = env.app.uniqueId;
+            return this.player_play_helper(JSON.stringify({ 'uris': [String(song)] }));
+        }
+    }
+    async do_play_artist({ artist }, env) {
+        const uri = String(artist);
         let data = {
             context_uri: uri,
         };
         console.log("data is " + JSON.stringify(data));
         return this.player_play_helper(JSON.stringify(data));
     }
-    async do_play_album({ album }) {
-        const uri = album.value;
+    async do_play_album({ album }, env) {
+        const uri = String(album);
         let data = {
             context_uri: uri,
         };
@@ -598,7 +557,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         console.log("Playing music...");
         if (this._testMode())
             return;
-
         await this.player_play_helper();
     }
 
