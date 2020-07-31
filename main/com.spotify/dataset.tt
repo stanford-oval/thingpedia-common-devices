@@ -37,7 +37,9 @@ dataset @com.spotify language "en" {
     #[id=27924859]
     #[name=""];
 
-    action (p_artist :Entity(com.spotify:artist)) := @com.spotify.play_artist(artist=p_artist)
+    // TODO: use "action" here so we can combine with streams
+    program (p_artist :Entity(com.spotify:artist)) :=
+      now => @com.spotify.song(), contains(artist, p_artist) => @com.spotify.play_song(song=id)
     #_[utterances=["play $p_artist"]]
     #[id=27924875]
     #[name=""];

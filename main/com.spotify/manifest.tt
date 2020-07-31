@@ -176,25 +176,6 @@ class @com.spotify
     #_[formatted=[{type="text",text="${id}"}]]
     #[doc="search for artists on Spotify"];
 
-    action play_artist (in req artist: Entity(com.spotify:artist)
-                        #[string_values="tt:song_artist"]
-                        #_[prompt=["what artist do you want to play"]]
-                        #_[canonical={
-                          default="base",
-                          base=["name"],
-                          preposition=["named #", "called #"],
-                          property=["name #"]
-                        }],
-                        out device : Entity(com.spotify:device)
-                        #_[canonical={
-                          default="preposition",
-                          base=["device", "player", "app"], // "can you tell me the app"?
-                          preposition=["on"]
-                        }])
-    #_[canonical=["play an artist", "play the artist"]]
-    #_[confirmation="play the artist $artist"]
-    #[confirm=enum(auto)];
-
     list query album(out id: Entity(com.spotify:album) #[string_values="tt:song_album"]
                     #[unique=true]
                     #_[canonical={
