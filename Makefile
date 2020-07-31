@@ -103,15 +103,18 @@ build/%.zip: % %/node_modules
 	touch $@
 
 $(schema_file): $(addsuffix /manifest.tt,$($(release)_devices))
-	cat $^ > $@
+	cat $^ > $@.tmp
+	if test -f $@ && cmp $@.tmp $@ ; then rm $@.tmp ; else mv $@.tmp $@ ; fi
 
 $(dataset_file): $(addsuffix /dataset.tt,$($(release)_devices))
-	cat $^ > $@
+	cat $^ > $@.tmp
+	if test -f $@ && cmp $@.tmp $@ ; then rm $@.tmp ; else mv $@.tmp $@ ; fi
 
 eval/$(release)/database-map.tsv: $(addsuffix /database-map.tsv,$($(release)_devices))
 	for f in $^ ; do \
-	  sed 's|\t|\t../../'`dirname $$f`'/|g' $$f >> $@ ; \
+	  sed 's|\t|\t../../'`dirname $$f`'/|g' $$f >> $@.tmp ; \
 	done
+	if test -f $@ && cmp $@.tmp $@ ; then rm $@.tmp ; else mv $@.tmp $@ ; fi
 
 entities.json:
 	$(thingpedia_cli) --url $(thingpedia_url) --developer-key $(developer_key) --access-token invalid \
@@ -185,14 +188,14 @@ eval/$(release)/$(eval_set)/user.tsv : $(eval_files) $(schema_file)
 	  --locale en-US --target-language thingtalk --no-tokenized \
 	  --thingpedia $(schema_file) --side user --flags E \
 	  -o $@.tmp $(eval_files)
-	mv $@.tmp $@
+	if test -f $@ && cmp $@.tmp $@ ; then rm $@.tmp ; else mv $@.tmp $@ ; fi
 
 eval/$(release)/train/user.tsv : $(fewshot_train_files) $(schema_file)
 	$(genie) dialog-to-contextual \
 	  --locale en-US --target-language thingtalk --no-tokenized \
 	  --thingpedia $(schema_file) --side user \
 	  -o $@.tmp $(fewshot_train_files)
-	mv $@.tmp $@
+	if test -f $@ && cmp $@.tmp $@ ; then rm $@.tmp ; else mv $@.tmp $@ ; fi
 
 eval/$(release)/$(eval_set)/%.dialogue.results: eval/$(release)/models/%/best.pth $(eval_files) $(schema_file) eval/$(release)/database-map.tsv parameter-datasets.tsv
 	mkdir -p eval/$(release)/$(eval_set)/$(dir $*)
