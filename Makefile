@@ -5,7 +5,7 @@ NULL =
 all_releases := main universe staging
 # this indirection is for the purpose of [genie-k8s](https://github.com/stanford-oval/genie-k8s),
 # which sets experiment=
-experiment ?= main
+experiment ?= universe
 release ?= $(experiment)
 # dev or test
 eval_set ?= dev
