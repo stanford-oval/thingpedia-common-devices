@@ -192,6 +192,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         for (var i = 0; i < tracks.length; i++) {
             const release_date = new Date(tracks[i].album.release_date);
             const artists = tracks[i].artists.map((artist) => new Tp.Value.Entity(artist.uri, artist.name));
+            const album = new Tp.Value.Entity(tracks[i].album.id, tracks[i].album.name);
             //You can't get the audio features for some songs, so we're setting 0.5 as a default value
             var energy = 0.5;
             var danceability = 0.5;
@@ -202,6 +203,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             const songObj = {
                 id: new Tp.Value.Entity(tracks[i].uri, tracks[i].name),
                 artists,
+                album,
                 genres: genres[i],
                 release_date,
                 popularity: tracks[i].popularity,
@@ -313,6 +315,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         var yearFilter = '';
         var artistFilter = '';
         var genreFilter = '';
+        var albumFilter = '';
         var artists = [];
         var yearLowerBound = 0;
         var yearUpperBound = new Date().getFullYear();
@@ -336,17 +339,20 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                     yearUpperBound = value.getFullYear();
                 } else if (pname === "genres" && (op === "contains" || op === "contains~")) {
                     genreFilter = `genre:"${value.toLowerCase()}" `;
+                } else if (pname === "album" && (op === "==" || op === "=~")) {
+                    albumFilter = `album:"${value.toLowerCase()}" `;
                 }
+
             }
         }
         //you can't search for multiple artists because when searching by artist spotify only returns songs where the input artist is the main artist
         //so if you search for a song where an artist is featured or there are multiple artists then there will problems.
         if (idFilter) {
             if (artists.length > 1) {
-                let query = (idFilter + yearFilter + genreFilter).trim();
+                let query = (idFilter + yearFilter + genreFilter + albumFilter).trim();
                 return this.songs_by_search(query);
             } else {
-                let query = (idFilter + yearFilter + artistFilter + genreFilter).trim();
+                let query = (idFilter + yearFilter + artistFilter + genreFilter + albumFilter).trim();
                 return this.songs_by_search(query);
             }
         } else if (hints && hints.sort && hints.sort[0] === "release_date" && artists.length > 0) {
@@ -354,7 +360,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         } else if (artists.length > 1) {
             return this.songs_by_artist(artists);
         } else {
-            const query = (yearFilter + artistFilter + genreFilter).trim() || `year:${new Date().getFullYear()} `;
+            const query = (yearFilter + artistFilter + genreFilter + albumFilter).trim() || `year:${new Date().getFullYear()} `;
             return this.songs_by_search(query);
         }
     }

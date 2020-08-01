@@ -74,6 +74,14 @@ class @com.spotify
                       passive_verb=["written by #", "released by #", "produced by #"],
                       verb = ["# wrote", "# released", "# produced"]
                     }],
+                    out album: Entity(com.spotify:album)
+                    #[string_values="tt:song_album"]
+                    #_[canonical={
+                      default="preposition",
+                      base=["album"],
+                      property=["album #"],
+                      preposition=["in the # album", "in #", "part of #"],
+                    }],
                     out genres: Array(String)
                     #[string_values="com.spotify:genre"]
                     #_[canonical={
@@ -81,8 +89,7 @@ class @com.spotify
                       base=["genres", "music", "type of genre", "type of music", "category"],
                       property=["# songs", "# music"],
                       adjective=["#"],
-                      preposition=["in the # genre", "in #"],
-                      passive_verb=["played # music", "played the # genre"]
+                      preposition=["in the # genre", "in #"]
                     }],
                     out release_date : Date
                     #_[canonical={
