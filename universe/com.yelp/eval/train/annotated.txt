@@ -1,0 +1,460 @@
+====
+# schemaorg/5
+U: show me the closest mcdonald's
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (sort distance asc of (compute (distance(geo, $context.location.current_location)) of ((@com.yelp.restaurant()), id =~ "mcdonald 's")))[1] => notify;
+====
+# schemaorg/8
+U: what is the phone number for noodle nirvana?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => [phone] of ((@com.yelp.restaurant()), id =~ "noodle nirvana") => notify;
+====
+# schemaorg/11
+U: search for vegetarian restaurants with 13 star reviews or better.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), (rating >= 13 && contains(cuisines, null^^com.yelp:restaurant_cuisine("vegetarian"))) => notify;
+====
+# schemaorg/12
+U: search for italian restaurants with at least 13 reviews.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), (review_count >= 13 && contains(cuisines, null^^com.yelp:restaurant_cuisine("italian"))) => notify;
+====
+# schemaorg/13
+U: list italian restaurants with higher ratings that 13 stars.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), (rating >= 13 && contains(cuisines, null^^com.yelp:restaurant_cuisine("italian"))) => notify;
+====
+# schemaorg/14
+U: look for a japanese restaurant that is the closest to me.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (sort distance asc of (compute (distance(geo, $context.location.current_location)) of ((@com.yelp.restaurant()), contains(cuisines, null^^com.yelp:restaurant_cuisine("japanese")))))[1] => notify;
+====
+# schemaorg/15
+U: what's the phone number of the arby's on sherman in muskegon, mi?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => [phone] of ((@com.yelp.restaurant()), (geo == new Location("sherman in muskegon , mi") && id =~ "arby 's")) => notify;
+====
+# schemaorg/38
+U: can you show me all the 13 star restaurants in the area?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), (rating == 13 && geo == $context.location.current_location) => notify;
+====
+# schemaorg/40
+U: what is the phone number for the nearest wendy's?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => [phone] of ((sort distance asc of (compute (distance(geo, $context.location.current_location)) of ((@com.yelp.restaurant()), id =~ "wendy 's")))[1]) => notify;
+====
+# schemaorg/44
+U: find mexican restaurants with at least 13 star rating.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), (rating >= 13 && contains(cuisines, null^^com.yelp:restaurant_cuisine("mexican"))) => notify;
+====
+# schemaorg/64
+U: where is the closest starbucks?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => [geo] of ((sort distance asc of (compute (distance(geo, $context.location.current_location)) of ((@com.yelp.restaurant()), id =~ "starbucks")))[1]) => notify;
+====
+# schemaorg/68
+U: can you tell me where the closest pizza hut is?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => [geo] of ((sort distance asc of (compute (distance(geo, $context.location.current_location)) of ((@com.yelp.restaurant()), id =~ "pizza hut")))[1]) => notify;
+====
+# schemaorg/77
+U: what is the phone number for the nearest chinese restaurant?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => [phone] of ((sort distance asc of (compute (distance(geo, $context.location.current_location)) of ((@com.yelp.restaurant()), contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese")))))[1]) => notify;
+====
+# schemaorg/82
+U: how close am i to art's deli or carnegie deli?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => [distance] of (compute (distance(geo, $context.location.current_location)) of ((@com.yelp.restaurant()), (id =~ "art 's deli" || id =~ "carnegie deli"))) => notify;
+====
+# schemaorg/95
+U: what is the address of the panda express in grand rapids, michigan?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => [geo] of ((@com.yelp.restaurant()), (geo == new Location("grand rapids , michigan") && id =~ "panda express")) => notify;
+====
+# schemaorg/sf2
+U: can you look for a restaurant with a rating of 13?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), rating == 13 => notify;
+====
+# schemaorg/sf5
+U: search for bayshore bean.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), id =~ "bayshore bean" => notify;
+====
+# schemaorg/sf8
+U: find all the bakeries.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), contains(cuisines, null^^com.yelp:restaurant_cuisine("bakeries")) => notify;
+====
+# schemaorg/sf9
+U: show me all restaurants rated with exactly 13 stars.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), rating == 13 => notify;
+====
+# schemaorg/sf11
+U: find thai restaurants.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), contains(cuisines, null^^com.yelp:restaurant_cuisine("thai")) => notify;
+====
+# schemaorg/sf12
+U: show me cook out.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), id =~ "cook out" => notify;
+====
+# schemaorg/sf14
+U: find restaurants with more than 13 reviews.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), review_count >= 13 => notify;
+====
+# schemaorg/sf17
+U: does the lone star steakhouse in dallas nc have a review yet?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => [review_count] of ((@com.yelp.restaurant()), (geo == new Location("dallas nc") && id =~ "lone star steakhouse")) => notify;
+====
+# schemaorg/sf21
+U: can you find the restaurant nearest to my location?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (sort distance asc of (compute (distance(geo, $context.location.current_location)) of (@com.yelp.restaurant())))[1] => notify;
+====
+# schemaorg/sf23
+U: find me a restaurant on main st. please.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), geo == new Location("main st.") => notify;
+====
+# schemaorg/sf30
+U: how many reviews does the place have?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => [review_count] of (@com.yelp.restaurant()) => notify;
+====
+# schemaorg/sf34
+U: give me all the italian places.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), contains(cuisines, null^^com.yelp:restaurant_cuisine("italian")) => notify;
+====
+# schemaorg/sf40
+U: is there a restaurant named china king?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), id =~ "china king" => notify;
+====
+# schemaorg/sf46
+U: what is the highest rated restaurant?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (sort rating desc of (@com.yelp.restaurant()))[1] => notify;
+====
+# schemaorg/sf52
+U: show me all 13 star restaurants
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), rating == 13 => notify;
+====
+# schemaorg/sf66
+U: show me a sushi restaurant.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), contains(cuisines, null^^com.yelp:restaurant_cuisine("sushi")) => notify;
+====
+# schemaorg/sf67
+U: find all 13 star bbq places.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), (rating == 13 && contains(cuisines, null^^com.yelp:restaurant_cuisine("bbq"))) => notify;
+====
+# schemaorg/sf68
+U: show me italian restaurants.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), contains(cuisines, null^^com.yelp:restaurant_cuisine("italian")) => notify;
+====
+# schemaorg/sf75
+U: show me restaurants with a rating of 13.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), rating == 13 => notify;
+====
+# schemaorg/sf77
+U: search for hamburger joints.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), contains(cuisines, null^^com.yelp:restaurant_cuisine("hamburger")) => notify;
+====
+# schemaorg/sf80
+U: look for american restaurants close by.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), (geo == $context.location.current_location && contains(cuisines, null^^com.yelp:restaurant_cuisine("american"))) => notify;
+====
+# schemaorg/sf82
+U: find all of the restaurants that have a rating about 13.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), rating == 13 => notify;
+====
+# schemaorg/sf86
+U: find all restaurants in my downtown area.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), geo == $context.location.current_location => notify;
+====
+# schemaorg/sf92
+U: show me sushi restaurants.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), contains(cuisines, null^^com.yelp:restaurant_cuisine("sushi")) => notify;
+====
+# schemaorg/sf95
+U: search for luby's cafeteria.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), id =~ "luby 's cafeteria" => notify;
+====
+# schemaorg/sf104
+U: display any restaurants with overall rating of 13 or above.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), rating >= 13 => notify;
+====
+# schemaorg/sf105
+U: i want to see some indian restaurants.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), contains(cuisines, null^^com.yelp:restaurant_cuisine("indian")) => notify;
+====
+# schemaorg/sf108
+U: search for burger king.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), id =~ "burger king" => notify;
+====
+# schemaorg/sf115
+U: i would like to find brenda's french soul food.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), id =~ "brenda 's french soul food" => notify;
+====
+# schemaorg/sf120
+U: look for mai lee.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), id =~ "mai lee" => notify;
+====
+# schemaorg/sf121
+U: find the vietnamese restaurants.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), contains(cuisines, null^^com.yelp:restaurant_cuisine("vietnamese")) => notify;
+====
+# schemaorg/sf127
+U: i want to see the top mexican restaurants.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (sort rating desc of ((@com.yelp.restaurant()), contains(cuisines, null^^com.yelp:restaurant_cuisine("mexican"))))[1] => notify;
+====
+# schemaorg/sf133
+U: look up restaurants in las vegas
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), geo == new Location("las vegas") => notify;
+====
+# schemaorg/sf136
+U: find restaurants with at least 13 reviews.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), review_count >= 13 => notify;
+====
+# schemaorg/sf143
+U: show me the restaurant with the most reviews
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (sort review_count desc of (@com.yelp.restaurant()))[1] => notify;
+====
+# schemaorg/sf150
+U: show me ethiopian restaurants.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), contains(cuisines, null^^com.yelp:restaurant_cuisine("ethiopian")) => notify;
+====
+# schemaorg/sf151
+U: show me restaurants with more than 13 reviews.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), review_count >= 13 => notify;
+====
+# schemaorg/sf152
+U: find all the restaurants rated higher than 13.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), rating >= 13 => notify;
+====
+# schemaorg/sf154
+U: show me mexican restaurants.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), contains(cuisines, null^^com.yelp:restaurant_cuisine("mexican")) => notify;
+====
+# schemaorg/sf156
+U: list all the restaurants with higher than 13 stars.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), rating >= 13 => notify;
+====
+# schemaorg/sf167
+U: how many reviews have been posted for old town doughnuts?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => [review_count] of ((@com.yelp.restaurant()), id =~ "old town doughnuts") => notify;
+====
+# schemaorg/sf168
+U: how many restaurants have an average rating above 13?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => aggregate count of ((@com.yelp.restaurant()), rating >= 13) => notify;
+====
+# schemaorg/sf172
+U: i'd like any food with more than 13 reviews.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), review_count >= 13 => notify;
+====
+# schemaorg/sf178
+U: show me los dos amigos
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), id =~ "los dos amigos" => notify;
+====
+# schemaorg/sf179
+U: show me restaurants with the most reviews.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (sort review_count desc of (@com.yelp.restaurant()))[1] => notify;
+====
+# schemaorg/sf180
+U: show me mexican restaurants.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), contains(cuisines, null^^com.yelp:restaurant_cuisine("mexican")) => notify;
+====
+# schemaorg/sf190
+U: search for dairy queen.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), id =~ "dairy queen" => notify;
+====
+# schemaorg/sf194
+U: show me restaurants with more than 13 posted reviews.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), review_count >= 13 => notify;
+====
+# schemaorg/rerun1f199
+U: find restaurants with more than 13 reviews.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), review_count >= 13 => notify;
+====
+# schemaorg/rerun1f19
+U: show me white castle
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), id =~ "white castle" => notify;
+====
+# schemaorg/rerun1f110
+U: show me mexican restaurants.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), contains(cuisines, null^^com.yelp:restaurant_cuisine("mexican")) => notify;
+====
+# schemaorg/rerun1f122
+U: i want to see restaurants with more than 13 reviews.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), review_count >= 13 => notify;
+====
+# schemaorg/rerun1f44
+U: show me the highest rated restaurant.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (sort rating desc of (@com.yelp.restaurant()))[1] => notify;
+====
+# schemaorg/rerun2f57
+U: where is the nearest mcdonald's?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => [geo] of ((sort distance asc of (compute (distance(geo, $context.location.current_location)) of ((@com.yelp.restaurant()), id =~ "mcdonald 's")))[1]) => notify;
+====
+# schemaorg/rerun1f2
+U: find all restaurants rated higher than 13
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), rating >= 13 => notify;
+====
+# schemaorg/rerun1f97
+U: what is ramen nagi's rating?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => [rating] of ((@com.yelp.restaurant()), id =~ "ramen nagi") => notify;
+====
+# schemaorg/rerun2f188
+U: show me italian restaurants nearby.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), (geo == $context.location.current_location && contains(cuisines, null^^com.yelp:restaurant_cuisine("italian"))) => notify;
+====
+# schemaorg/rerun2f11
+U: what is the phone number for sampan?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => [phone] of ((@com.yelp.restaurant()), id =~ "sampan") => notify;
+====
+# schemaorg/rerun1f163
+U: please tell me the location of dave's seafood shack.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => [geo] of ((@com.yelp.restaurant()), id =~ "dave 's seafood shack") => notify;
+====
+# schemaorg/rerun1f154
+U: show restaurants in san francisco.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), geo == new Location("san francisco") => notify;
+====
+# schemaorg/rerun1f180
+U: find all mexican restaurants.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), contains(cuisines, null^^com.yelp:restaurant_cuisine("mexican")) => notify;
+====
+# schemaorg/rerun1f13
+U: show me restaurants with the most reviews.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (sort review_count desc of (@com.yelp.restaurant()))[1] => notify;
+====
+# schemaorg/rerun2f182
+U: what is the phone number for ginger china?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => [phone] of ((@com.yelp.restaurant()), id =~ "ginger china") => notify;
+====
+# schemaorg/rerun1f35
+U: find me in-n-out burger.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), id =~ "in-n-out burger" => notify;
+====
+# schemaorg/rerun1f2
+U: find all restaurants rated higher than 13
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), rating >= 13 => notify;
+====
+# schemaorg/rerun1f193
+U: search for a mexican restaurant.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), contains(cuisines, null^^com.yelp:restaurant_cuisine("mexican")) => notify;
+====
+# schemaorg/rerun1f150
+U: show me all italian restaurants.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), contains(cuisines, null^^com.yelp:restaurant_cuisine("italian")) => notify;
+====
+# schemaorg/rerun2f55
+U: show me a chinese restaurant with a rating of 13.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), (rating == 13 && contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese"))) => notify;
+====
+# schemaorg/rerun2f77
+U: what is the price range for ramen nagi?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => [price] of ((@com.yelp.restaurant()), id =~ "ramen nagi") => notify;
+====
+# schemaorg/rerun2f105
+U: find italian restaurants with at least 13 reviews.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), (review_count >= 13 && contains(cuisines, null^^com.yelp:restaurant_cuisine("italian"))) => notify;
+====
+# schemaorg/rerun1f192
+U: find all restaurants in chicago.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), geo == new Location("chicago") => notify;
+====
+# schemaorg/rerun1f16
+U: i'm looking for armenian restaurants
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), contains(cuisines, null^^com.yelp:restaurant_cuisine("armenian")) => notify;
+====
+# schemaorg/rerun1f32
+U: show me all of the 13 star restaurants nearby.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), (rating == 13 && geo == $context.location.current_location) => notify;
+====
+# schemaorg/rerun2f133
+U: show me mexican restaurants with at least a 13 star rating.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), (rating >= 13 && contains(cuisines, null^^com.yelp:restaurant_cuisine("mexican"))) => notify;
+====
+# schemaorg/rerun2f115
+U: search for sushi king restaurant for me.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), id =~ "sushi king" => notify;
+====
+# schemaorg/rerun1f134
+U: show me restaurants on main street.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.yelp.restaurant()), geo == new Location("main street") => notify;
+====
+# schemaorg/rerun2f194
+U: what is the phone number of the nearest pizza hut?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => [phone] of ((sort distance asc of (compute (distance(geo, $context.location.current_location)) of ((@com.yelp.restaurant()), id =~ "pizza hut")))[1]) => notify;
