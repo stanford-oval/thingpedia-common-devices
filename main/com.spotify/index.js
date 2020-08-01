@@ -192,7 +192,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         for (var i = 0; i < tracks.length; i++) {
             const release_date = new Date(tracks[i].album.release_date);
             const artists = tracks[i].artists.map((artist) => new Tp.Value.Entity(artist.uri, artist.name));
-            const album = new Tp.Value.Entity(tracks[i].album.id, tracks[i].album.name);
+            const album = new Tp.Value.Entity(tracks[i].album.uri, tracks[i].album.name);
             //You can't get the audio features for some songs, so we're setting 0.5 as a default value
             var energy = 0.5;
             var danceability = 0.5;
