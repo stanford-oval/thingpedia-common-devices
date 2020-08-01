@@ -14,9 +14,10 @@ A: >> expecting = null
 
 # play taylor swift
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: now => (@com.spotify.artist(), id =~ "taylor swift")[1] => @com.spotify.play_artist(artist=id);
+U: now => (@com.spotify.song(), contains~(artists, "taylor swift")) => @com.spotify.play_song(song=id);
 
-A: Alright, I played Taylor Swift( on Spotify)?( on (Coolest Computer|giovanni-xps15))?.
+# FIXME this answer is awful. We need templates for talking about multiple action results.
+A: Alright, your request was completed successfully.
 A: >> expecting = null
 
 ====
@@ -27,5 +28,5 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.song(), id =~ "destination calabria" && contains~(artists, "alex gaudino"))[1] => @com.spotify.play_song(song=id);
 
-A: Alright, I played Destination Calabria( - Radio Edit)?( on Spotify)?( on (Coolest Computer|giovanni-xps15))?.
+A: Alright, I played Destination Calabria( - Radio Edit)?( on Spotify)?( on (Coolest Computer|giovanni-xps15))? ?.
 A: >> expecting = null
