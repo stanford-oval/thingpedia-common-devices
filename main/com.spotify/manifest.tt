@@ -68,11 +68,15 @@ class @com.spotify
                     #[string_values="tt:song_artist"]
                     #_[canonical={
                       default="preposition",
-                      base=["artist", "author", "song writer", "band", "artist name"],
+                      base=["artist", "author", "song writer", "band", "artist name",
+                            "singer", "composer"],
                       property=["artist #", "song writer #"],
                       preposition=["by #", "from #"],
-                      passive_verb=["written by #", "released by #", "produced by #"],
-                      verb = ["# wrote", "# released", "# produced"]
+                      adjective=["#"],
+                      passive_verb=["written by #", "released by #", "produced by #",
+                                    "composed by #", "recorded by #"],
+                      verb = ["# wrote", "# released", "# produced", "# composed",
+                              "# did", "# recorded", "# sang", "# made"]
                     }],
                     out album: Entity(com.spotify:album)
                     #[string_values="tt:song_album"]
@@ -80,7 +84,9 @@ class @com.spotify
                       default="preposition",
                       base=["album"],
                       property=["album #"],
-                      preposition=["in the # album", "in #", "part of #"],
+                      preposition=["in the # album", "in the # lp", "in the # cd",
+                                   "in #", "part of #", "from the # album",
+                                   "from #"],
                     }],
                     out genres: Array(String)
                     #[string_values="com.spotify:genre"]
@@ -89,12 +95,13 @@ class @com.spotify
                       base=["genres", "type of genre", "type of music", "category"],
                       property=["# songs", "# music"],
                       adjective=["#"],
-                      preposition=["in the # genre", "in #"]
+                      preposition=["in the # genre", "in #", "of the # genre",
+                                   "in the # style", "in the # category"],
                     }],
                     out release_date : Date
                     #_[canonical={
                       default="preposition",
-                      base=["date", "release date"],
+                      base=["date", "release date", "release year", "release day"],
                       property=["release date #"],
                       adjective=["#"],
                       preposition=["from #", "in #"],
@@ -166,11 +173,15 @@ class @com.spotify
                       #[string_values="com.spotify:genre"]
                       #_[canonical={
                         default="adjective",
-                        base=["genres", "music", "type of genre", "type of music", "category"],
+                        base=["genres", "type of genre", "type of music", "category"],
                         property=["# songs", "# music"],
                         adjective=["#"],
-                        preposition=["in the # genre", "in #"],
-                        verb=["plays # music", "plays the # genre"]
+                        preposition=["in the # genre", "in #", "of the # genre",
+                                     "in the # style", "in the # category"],
+                        verb=["plays # music", "plays the # genre", "does # music",
+                              "plays # songs", "does the # genre",
+                              "plays the # style", "belongs to the genre #",
+                              "belongs to the # genre", "plays #"]
                       }],
                       out popularity: Number
                       #[min_number=0]
@@ -199,20 +210,24 @@ class @com.spotify
                     #[string_values="tt:song_artist"]
                     #_[canonical={
                       default="preposition",
-                      base=["artist", "author", "song writer", "band", "artist name"],
+                      base=["artist", "author", "song writer", "band", "artist name",
+                            "singer", "composer"],
                       property=["artist #", "song writer #"],
                       preposition=["by #", "from #"],
-                      passive_verb=["written by #", "released by #", "produced by #"],
-                      verb = ["# wrote", "# released", "# produced"]
+                      adjective=["#"],
+                      passive_verb=["written by #", "released by #", "produced by #",
+                                    "composed by #", "recorded by #"],
+                      verb = ["# wrote", "# released", "# produced", "# composed",
+                              "# did", "# recorded", "# sang", "# made"]
                     }],
                     out release_date : Date
                     #_[canonical={
                       default="preposition",
-                      base=["date", "release date"],
+                      base=["date", "release date", "release year", "release day"],
                       property=["release date #"],
                       adjective=["#"],
                       preposition=["from #", "in #"],
-                      passive_verb=["released in #", "published in #"]
+                      passive_verb=["released in #", "released #", "published in #"]
                     }],
                     out popularity: Number
                     #[min_number=0]
@@ -280,7 +295,7 @@ class @com.spotify
     #[confirm=false];
 
     action player_shuffle(in req shuffle: Enum(on,off)
-                          #_[prompt="Should we set the shuffle state to 'on' or 'off'?"]
+                          #_[prompt="should we set the shuffle state to on or off"]
                           #_[canonical={
                             base=["shuffle"],
                             preposition=["to"]
@@ -292,7 +307,7 @@ class @com.spotify
     #[confirm=false];
 
     action player_repeat(in req repeat: Enum(track,context,off)
-                         #_[prompt="Should we set the repeat state to 'track', 'context', or 'off'?"]
+                         #_[prompt="should we set the repeat state to track, context, or off"]
                          #_[canonical={
                            base=["repeat"],
                            preposition=["to"]

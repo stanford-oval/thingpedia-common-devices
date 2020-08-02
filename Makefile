@@ -61,6 +61,7 @@ custom_gen_flags ?=
 
 auto_annotate_algorithm ?= bert,adj,bart
 auto_annotate_mlm_model ?= bert-large-uncased
+auto_annotate_custom_flags ?=
 
 template_deps = \
 	$(geniedir)/languages/thingtalk/*.js \
@@ -126,7 +127,8 @@ eval/$(release)/constants.tsv: $(schema_file) parameter-datasets.tsv
 	  --parameter-datasets parameter-datasets.tsv \
 	  --algorithm $(auto_annotate_algorithm) \
 	  --model $(auto_annotate_mlm_model) \
-	  --paraphraser-model .embeddings/paraphraser-bart
+	  --paraphraser-model .embeddings/paraphraser-bart \
+	  $(auto_annotate_custom_flags)
 	mv $@.tmp $@
 
 eval/$(release)/database-map.tsv: $(addsuffix /database-map.tsv,$($(release)_devices))
