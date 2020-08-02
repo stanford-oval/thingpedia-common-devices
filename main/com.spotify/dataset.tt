@@ -1,1 +1,63 @@
-dataset @com.spotify language "en" {}
+dataset @com.spotify language "en" {
+    program := now => @com.spotify.play_song(song=$?)
+    #[click_count=6]
+    #[like_count=0]
+    #_[utterances=["play some music on spotify",
+                   "open spotify and play some music",
+                   "use spotify to play some music"]]
+    #[id=27924738]
+    #[name=""];
+
+    action (p_song :Entity(com.spotify:song)) := @com.spotify.play_song(song=p_song)
+    #_[utterances=["play ${p_song} on spotify",
+                   "on spotify play ${p_song}",
+                   "play ${p_song}"]]
+    #[id=27924741]
+    #[name=""];
+
+    action (p_state :Enum(on,off)) := @com.spotify.player_shuffle(shuffle=p_state)
+    #_[utterances=["turn shuffle ${p_state}",
+                   "turn ${p_state} shuffle"]]
+    #[id=27924854]
+    #[name=""];
+
+    action := @com.spotify.player_shuffle(shuffle=enum(on))
+    #_[utterances=["shuffle my spotify"]]
+    #[id=27924856]
+    #[name=""];
+
+    action := @com.spotify.player_repeat(repeat=enum(track))
+    #_[utterances=["repeat this song",
+                   "turn on repeat"]]
+    #[id=27924857]
+    #[name=""];
+
+    action := @com.spotify.player_repeat(repeat=enum(off))
+    #_[utterances=["turn off repeat"]]
+    #[id=27924859]
+    #[name=""];
+
+    // TODO: use "action" here so we can combine with streams
+    program (p_artist :Entity(com.spotify:artist)) :=
+      now => @com.spotify.song(), contains(artists, p_artist) => @com.spotify.play_song(song=id)
+    #_[utterances=["play $p_artist"]]
+    #[id=27924875]
+    #[name=""];
+
+    program (p_album :Entity(com.spotify:album)) :=
+      now => @com.spotify.song(), album == p_album => @com.spotify.play_song(song=id)
+    #_[utterances=["play ${p_album}"]]
+    #[id=27924878]
+    #[name=""];
+
+    stream := monitor (@com.spotify.get_user_top_tracks())
+    #_[utterances=["when my top tracks changes",
+                   "when I have new favorite songs"]]
+    #[id=27924898]
+    #[name=""];
+
+    stream := monitor (@com.spotify.get_currently_playing())
+    #_[utterances=["when a song is playing"]]
+    #[id=27924900]
+    #[name=""];
+}

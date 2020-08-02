@@ -1,35 +1,32 @@
 # 1-basic (req=com.spotify)
-# simplest playing
+# simple playing
 # (in \t format until our model behaves)
 
-# play bohemian rhapsody by the queen
+# play bohemian rhapsody
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: now => @com.spotify.song(), id =~ "bohemian rhapsody" && contains~(artists, "queen") => notify;
-U: now => @com.spotify.play_song();
+U: now => (@com.spotify.song(), id =~ "bohemian rhapsody")[1] => @com.spotify.play_song(song=id);
 
-# not a great answer...
-A: I have found Bohemian Rhapsody - 2011 Mix, Bohemian Rhapsody or Bohemian Rhapsody - 2011 Mix\. Would you like to learn more about either of them\?
-A: >> expecting = command
-
-# let's play the first one
-# FIXME this doesn't work because:
-# (1) the agent replies with "sorry I did not understand that" (even though the
-# action succeeds)
-# (2) the action only succeed if I have the spotify app open
-#U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-#U: now => @com.spotify.play_song(song="spotify:track:7tFiyTwD0nx5a1eklYtX2J"^^com.spotify:song("Bohemian Rhapsody - 2011 Mix"));
-
-#A: Ok, I played Bohemian Rhapsody - 2011 Mix on Spotify for you. Do you need anything else\?
-#A: >> expecting = command
+A: Alright, I played Bohemian Rhapsody - 2011 Mix( on Spotify)?( on (Coolest Computer|giovanni-xps15))?.
+A: >> expecting = null
 
 ====
-# 1-by-artist (req=com.spotify)
+# 2-by-artist (req=com.spotify)
 
 # play taylor swift
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: now => @com.spotify.artist(), id =~ "taylor swift" => notify;
-U: now => @com.spotify.play_artist();
+U: now => (@com.spotify.song(), contains~(artists, "taylor swift")) => @com.spotify.play_song(song=id);
 
-A: I have found Taylor Swift or Taylor Swiftman\. Would you like to learn more about either of them\?
-A: >> expecting = command
+# FIXME this answer is awful. We need templates for talking about multiple action results.
+A: Alright, your request was completed successfully\.?
+A: >> expecting = null
 
+====
+# 3-song-artist (req=com.spotify)
+# (in \t format until our model behaves)
+
+# play destination calabria by alex gaudino
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => (@com.spotify.song(), id =~ "destination calabria" && contains~(artists, "alex gaudino"))[1] => @com.spotify.play_song(song=id);
+
+A: Alright, I played Destination Calabria( - Radio Edit)?( on Spotify)?( on (Coolest Computer|giovanni-xps15))? ?.
+A: >> expecting = null

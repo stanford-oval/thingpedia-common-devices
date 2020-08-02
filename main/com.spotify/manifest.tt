@@ -53,6 +53,7 @@ class @com.spotify
   entity song #_[description="Songs on Spotify"];
   entity artist #_[description="Artists on Spotify"];
   entity album #_[description="Albums on Spotify"];
+  entity device #_[description="Spotify Connect device ID"];
 
   list query song(out id: Entity(com.spotify:song)
                     #[string_values="tt:song_name"]
@@ -72,6 +73,23 @@ class @com.spotify
                       preposition=["by #"],
                       passive_verb=["written by #", "released by #", "produced by #"],
                       verb = ["# wrote", "# released", "# produced"]
+                    }],
+                    out album: Entity(com.spotify:album)
+                    #[string_values="tt:song_album"]
+                    #_[canonical={
+                      default="preposition",
+                      base=["album"],
+                      property=["album #"],
+                      preposition=["in the # album", "in #", "part of #"],
+                    }],
+                    out genres: Array(String)
+                    #[string_values="com.spotify:genre"]
+                    #_[canonical={
+                      default="adjective",
+                      base=["genres", "music", "type of genre", "type of music", "category"],
+                      property=["# songs", "# music"],
+                      adjective=["#"],
+                      preposition=["in the # genre", "in #"]
                     }],
                     out release_date : Date
                     #_[canonical={
@@ -110,8 +128,7 @@ class @com.spotify
     #_[confirmation="songs on Spotify"]
     #[minimal_projection=["id"]]
     #_[formatted=[{type="text",text="${id} by ${artists}"}]]
-    #[doc="search for songs on Spotify"]
-    #[confirm=false];
+    #[doc="search for songs on Spotify"];
 
     action play_song (in req song: Entity(com.spotify:song)
                       #[string_values="tt:song_name"]
@@ -119,167 +136,167 @@ class @com.spotify
                       #_[canonical={
                         default="base",
                         base=["name"],
-                        passive_verb=["named #", "called #"],
+                        // FIXME: actions must use "preposition" not "passive_verb"
+                        preposition=["named #", "called #"],
                         property=["name #"]
+                      }],
+                      out device : Entity(com.spotify:device)
+                      #_[canonical={
+                        default="preposition",
+                        base=["device", "player", "app"], // "can you tell me the app"?
+                        preposition=["on"]
                       }])
+    #_[canonical=["play a song", "play the song"]]
     #_[confirmation="play the song $song"]
-    #[confirm=false];
+    #[confirm=enum(auto)];
 
     list query artist(out id: Entity(com.spotify:artist) #[string_values="tt:song_artist"]
-                  #[unique=true]
-                  #_[canonical={
-                    default="base",
-                    base=["name"],
-                    passive_verb=["named #", "called #"],
-                    property=["name #"]
-                  }],
-                  out genres: Array(String)
-                  #_[canonical={
-                    default="adjective",
-                    base=["genres", "music", "type of genre", "type of music", "category"],
-                    property=["# songs", "# music"],
-                    adjective=["#"],
-                    preposition=["in the # genre", "in #"],
-                    passive_verb=["played # music", "played the # genre"]
-                  }],
-                  out popularity: Number
-                  #[min_number=0]
-                  #[max_number=100]
-                  #_[canonical={
-                    default="base",
-                    base=["popularity", "average popularity"],
-                    passive_verb=["rated # popularity"],
-                    property=["# popularity"]
-                  }])
+                      #[unique=true]
+                      #_[canonical={
+                        default="base",
+                        base=["name"],
+                        passive_verb=["named #", "called #"],
+                        property=["name #"]
+                      }],
+                      out genres: Array(String)
+                      #[string_values="com.spotify:genre"]
+                      #_[canonical={
+                        default="adjective",
+                        base=["genres", "music", "type of genre", "type of music", "category"],
+                        property=["# songs", "# music"],
+                        adjective=["#"],
+                        preposition=["in the # genre", "in #"],
+                        verb=["plays # music", "plays the # genre"]
+                      }],
+                      out popularity: Number
+                      #[min_number=0]
+                      #[max_number=100]
+                      #_[canonical={
+                        default="base",
+                        base=["popularity", "average popularity"],
+                        passive_verb=["rated # popularity"],
+                        property=["# popularity"]
+                      }])
     #_[canonical="artist"]
     #_[confirmation="artists on Spotify"]
     #[minimal_projection=["id"]]
     #_[formatted=[{type="text",text="${id}"}]]
-    #[doc="search for artists on Spotify"]
-    #[confirm=false];
-
-    action play_artist (in req artist: Entity(com.spotify:artist)
-                      #[string_values="tt:song_artist"]
-                      #_[prompt=["what artist do you want to play"]]
-                      #_[canonical={
-                        default="base",
-                        base=["name"],
-                        passive_verb=["named #", "called #"],
-                        property=["name #"]
-                      }])
-    #_[confirmation="play the artist $artist"]
-    #[confirm=false];
+    #[doc="search for artists on Spotify"];
 
     list query album(out id: Entity(com.spotify:album) #[string_values="tt:song_album"]
-                  #[unique=true]
-                  #_[canonical={
-                    default="base",
-                    base=["name"],
-                    passive_verb=["named #", "called #"],
-                    property=["name #"]
-                  }],
-                  out artists: Array(Entity(com.spotify:artist))
-                  #[string_values="tt:song_artist"]
-                  #_[canonical={
-                    default="preposition",
-                    base=["artist", "song writer"],
-                    property=["artist #", "song writer #"],
-                    preposition=["by #"],
-                    passive_verb=["written by #", "released by #", "produced by #"],
-                    verb = ["# wrote", "# released", "# produced"]
-                  }],
-                  out release_date : Date
-                  #_[canonical={
-                    default="preposition",
-                    base=["date", "release date"],
-                    property=["release date #"],
-                    preposition=["from #", "in #"],
-                    passive_verb=["released in #", "published in #"]
-                  }],
-                  out popularity: Number
-                  #[min_number=0]
-                  #[max_number=100]
-                  #_[canonical={
-                    default="base",
-                    base=["popularity", "average popularity"],
-                    passive_verb=["rated # popularity"],
-                    property=["# popularity"]
-                  }])
+                    #[unique=true]
+                    #_[canonical={
+                      default="base",
+                      base=["name"],
+                      passive_verb=["named #", "called #"],
+                      property=["name #"]
+                    }],
+                    out artists: Array(Entity(com.spotify:artist))
+                    #[string_values="tt:song_artist"]
+                    #_[canonical={
+                      default="preposition",
+                      base=["artist", "song writer"],
+                      property=["artist #", "song writer #"],
+                      preposition=["by #"],
+                      passive_verb=["written by #", "released by #", "produced by #"],
+                      verb = ["# wrote", "# released", "# produced"]
+                    }],
+                    out release_date : Date
+                    #_[canonical={
+                      default="preposition",
+                      base=["date", "release date"],
+                      property=["release date #"],
+                      preposition=["from #", "in #"],
+                      passive_verb=["released in #", "published in #"]
+                    }],
+                    out popularity: Number
+                    #[min_number=0]
+                    #[max_number=100]
+                    #_[canonical={
+                      default="base",
+                      base=["popularity", "average popularity"],
+                      passive_verb=["rated # popularity"],
+                      property=["# popularity"]
+                    }])
     #_[canonical="album"]
     #_[confirmation="album on Spotify"]
     #[minimal_projection=["id"]]
     #_[formatted=[{type="text",text="${id} by ${artists}"}]]
-    #[doc="search for albums on Spotify"]
-    #[confirm=false];
-
-    action play_album (in req album: Entity(com.spotify:album)
-                      #[string_values="tt:song_album"]
-                      #_[prompt=["what album do you want to play"]]
-                      #_[canonical={
-                        default="base",
-                        base=["name"],
-                        passive_verb=["named #", "called #"],
-                        property=["name #"]
-                      }])
-    #_[confirmation="play the album $album"]
-    #[confirm=false];
+    #[doc="search for albums on Spotify"];
 
     monitorable query get_currently_playing(out song: Entity(com.spotify:song)
                                             #[string_values="tt:song_name"])
-    #_[canonical="get currently playing track name"]
+    #_[canonical=["the currently playing track name", "the currently playing song",
+                  "the song currently playing"]]
     #_[confirmation="the currently playing track name"]
+    #_[result=["currently playing ${song}", "the currently playing track is ${song}"]]
+    #_[on_error={
+      no_song_playing=["no song is currently playing", "nothing is currently playing"]
+    }]
     #_[formatted=[{type="text",text="The current playing song is ${song}."}]]
     #[poll_interval=60000ms]
     #[doc="retrieve the currently playing track name"];
 
     monitorable list query get_user_top_tracks(out song: Entity(com.spotify:song)
                                                #[string_values="tt:song_name"])
-    #_[canonical="spotify top tracks"]
+    #_[canonical=["spotify top tracks", "my favorite songs",
+                  "my top tracks"]]
     #_[confirmation="my top tracks in Spotify"]
     #_[formatted=[{type="text",text="${song}"}]]
     #[poll_interval=3600000ms]
     #[doc="get user's top tracks in the last 4 weeks"];
 
     action player_next()
-    #_[canonical="go to the next song"]
+    #_[canonical=["play the next song", "go to the next song", "skip this song"]]
     #_[confirmation="go to the next song"]
-    #[doc="go to the next song"];
+    #[doc="go to the next song"]
+    #[confirm=false];
 
     action player_previous()
-    #_[canonical="go to the next song"]
-    #_[confirmation="go to the next song"]
-    #[doc="go to the next song"];
+    #_[canonical=["play the previous song", "go back",
+                  "play the last song",
+                  "go back to the last song",
+                  "go to the previous song"]]
+    #_[confirmation="go to the previous song"]
+    #[doc="go to the previous song"]
+    #[confirm=false];
 
     action player_play()
-    #_[canonical="go to the next song"]
-    #_[confirmation="go to the next song"]
-    #[doc="go to the next song"];
+    #_[canonical=["resume playing", "start playing", "resume playback", "play my spotify"]]
+    #_[confirmation="resume playing"]
+    #[doc="resume playback"]
+    #[confirm=false];
 
     action player_pause()
-    #_[canonical="pause playback"]
+    #_[canonical=["pause playback", "pause my spotify"]]
     #_[confirmation="pause playback"]
     #_[confirmation_remote="pause $_person's playback"]
-    #[doc="pause playback"];
+    #[doc="pause playback"]
+    #[confirm=false];
 
     action player_shuffle(in req shuffle: Enum(on,off)
                           #_[prompt="Should we set the shuffle state to 'on' or 'off'?"]
                           #_[canonical={
-                            base=["shuffle"]
+                            base=["shuffle"],
+                            preposition=["to"]
                           }])
     #_[canonical="set the shuffle state"]
     #_[confirmation="set the shuffle state"]
     #_[confirmation_remote="set the shuffle state"]
-    #[doc="set the shuffle state"];
+    #[doc="set the shuffle state"]
+    #[confirm=false];
 
     action player_repeat(in req repeat: Enum(track,context,off)
                          #_[prompt="Should we set the repeat state to 'track', 'context', or 'off'?"]
                          #_[canonical={
-                           base=["repeat"]
+                           base=["repeat"],
+                           preposition=["to"]
                          }])
     #_[canonical="set the repeat state"]
     #_[confirmation="set the repeat state"]
     #_[confirmation_remote="set the repeat state"]
-    #[doc="set the repeat state"];
+    #[doc="set the repeat state"]
+    #[confirm=false];
 
 
 }

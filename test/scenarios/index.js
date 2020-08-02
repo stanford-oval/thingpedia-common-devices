@@ -33,7 +33,6 @@
 // Scenario tests: as end-to-end as it gets
 
 process.on('unhandledRejection', (up) => { throw up; });
-process.env.TEST_MODE = '1';
 
 const util = require('util');
 const fs = require('fs');
@@ -207,6 +206,8 @@ function parseScenarioID(dlgId) {
 
 async function test(testRunner, dlg, i) {
     const [id, reqs] = parseScenarioID(dlg.id);
+    if (testRunner.ids && !testRunner.ids.has(id))
+        return;
 
     console.log(`Scenario #${i+1}: ${id}`);
 
@@ -284,11 +285,25 @@ async function main() {
         required: false,
         help: 'NLU model'
     });
+    parser.addArgument('--manual', {
+        nargs: 0,
+        action: 'storeTrue',
+        help: 'Run scenarios in manual mode (might trigger side-effects, and run additional scenarios)'
+    });
+    parser.addArgument('--ids', {
+        nargs: '+',
+        required: false,
+        help: 'Only run scenarios with these IDs'
+    });
     parser.addArgument('scenarios', {
         nargs: '+',
         help: 'Scenarios to test. This can be a release name or a release slash device name.'
     });
     const args = parser.parseArgs();
+
+    // set TEST_MODE if we're called without --manual
+    if (!args.manual)
+        process.env.TEST_MODE = '1';
 
     const testRunner = new TestRunner();
     const rng = testRunner.rng.makeRNG();
@@ -297,13 +312,18 @@ async function main() {
     const files = await collectScenarioFiles(args.scenarios);
     for (let file of files)
         console.log('Loading scenario file ' + file + ' ...');
-    const scenarios = await readAllLines(files, '====')
+    let scenarios = await readAllLines(files, '====')
         .pipe(new Genie.DialogueParser({ withAnnotations: false, invertTurns: true }))
         .pipe(new StreamUtils.ArrayAccumulator())
         .read();
 
-    if (args.nlu_model)
-        await execProcess('make', 'eval/' + args.release + '/models/' + args.nlu_model + '/best.pth');
+    if (args.ids && args.ids.length)
+        testRunner.ids = new Set(args.ids);
+
+    if (args.nlu_model) {
+        await execProcess('make', 'release=' + args.release,
+            'eval/' + args.release + '/models/' + args.nlu_model + '/best.pth');
+    }
 
     const platform = new Platform();
 

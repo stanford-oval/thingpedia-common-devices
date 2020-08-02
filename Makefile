@@ -5,7 +5,7 @@ NULL =
 all_releases := main universe staging
 # this indirection is for the purpose of [genie-k8s](https://github.com/stanford-oval/genie-k8s),
 # which sets experiment=
-experiment ?= main
+experiment ?= universe
 release ?= $(experiment)
 # dev or test
 eval_set ?= dev
@@ -43,12 +43,12 @@ synthetic_flags ?= \
 	undefined_filter \
 	$(NULL)
 
-target_pruning_size ?= 125
+target_pruning_size ?= 100
 minibatch_size ?= 300
 target_size ?= 1
 subdatasets ?= 6
 subdataset_ids := $(shell seq 1 $(subdatasets))
-max_turns ?= 5
+max_turns ?= 4
 max_depth ?= 8
 debug_level ?= 1
 update_canonical_flags ?= --algorithm bert,adj,bart --paraphraser-model ./models/paraphraser-bart
@@ -103,15 +103,18 @@ build/%.zip: % %/node_modules
 	touch $@
 
 $(schema_file): $(addsuffix /manifest.tt,$($(release)_devices))
-	cat $^ > $@
+	cat $^ > $@.tmp
+	if test -f $@ && cmp $@.tmp $@ ; then rm $@.tmp ; else mv $@.tmp $@ ; fi
 
 $(dataset_file): $(addsuffix /dataset.tt,$($(release)_devices))
-	cat $^ > $@
+	cat $^ > $@.tmp
+	if test -f $@ && cmp $@.tmp $@ ; then rm $@.tmp ; else mv $@.tmp $@ ; fi
 
 eval/$(release)/database-map.tsv: $(addsuffix /database-map.tsv,$($(release)_devices))
 	for f in $^ ; do \
-	  sed 's|\t|\t../../'`dirname $$f`'/|g' $$f >> $@ ; \
+	  sed 's|\t|\t../../'`dirname $$f`'/|g' $$f >> $@.tmp ; \
 	done
+	if test -f $@ && cmp $@.tmp $@ ; then rm $@.tmp ; else mv $@.tmp $@ ; fi
 
 entities.json:
 	$(thingpedia_cli) --url $(thingpedia_url) --developer-key $(developer_key) --access-token invalid \
@@ -185,14 +188,14 @@ eval/$(release)/$(eval_set)/user.tsv : $(eval_files) $(schema_file)
 	  --locale en-US --target-language thingtalk --no-tokenized \
 	  --thingpedia $(schema_file) --side user --flags E \
 	  -o $@.tmp $(eval_files)
-	mv $@.tmp $@
+	if test -f $@ && cmp $@.tmp $@ ; then rm $@.tmp ; else mv $@.tmp $@ ; fi
 
 eval/$(release)/train/user.tsv : $(fewshot_train_files) $(schema_file)
 	$(genie) dialog-to-contextual \
 	  --locale en-US --target-language thingtalk --no-tokenized \
 	  --thingpedia $(schema_file) --side user \
 	  -o $@.tmp $(fewshot_train_files)
-	mv $@.tmp $@
+	if test -f $@ && cmp $@.tmp $@ ; then rm $@.tmp ; else mv $@.tmp $@ ; fi
 
 eval/$(release)/$(eval_set)/%.dialogue.results: eval/$(release)/models/%/best.pth $(eval_files) $(schema_file) eval/$(release)/database-map.tsv parameter-datasets.tsv
 	mkdir -p eval/$(release)/$(eval_set)/$(dir $*)
@@ -237,6 +240,7 @@ datadir/fewshot: eval/$(release)/train/user.tsv eval/$(release)/dev/user.tsv
 	mkdir -p $@/user
 	cp eval/$(release)/train/user.tsv $@/user/train.tsv
 	cp eval/$(release)/dev/user.tsv $@/user/eval.tsv
+	touch $@
 
 datadir: datadir/agent datadir/user datadir/fewshot $(foreach v,$(subdataset_ids),eval/$(release)/synthetic-$(v).txt)
 	cat eval/$(release)/synthetic-*.txt > $@/synthetic.txt
@@ -257,14 +261,16 @@ lint:
 		test ! -f $$d/package.json || $(eslint) $$d/*.js ; \
 	done
 
-evaluate: eval/$(release)/$(eval_set)/$(model).dialogue.results eval/$(release)/$(eval_set)/$(model).nlu.results
-	for f in $^ ; do \
-		echo $$f ; \
-		cat $$f ; \
-	done
+evaluate: eval/$(release)/$(eval_set)/$(model).dialogue.results
+	@echo $<
+	@cat $<
+
+evaluate-detailed: eval/$(release)/$(eval_set)/$(model).nlu.results
+	@echo $<
+	@cat $<
 
 evaluate-all:
-	for m in $($(release)_eval_$(eval_set)_models) ; do make model=$$m evaluate ; done
+	@for m in $($(release)_eval_$(eval_set)_models) ; do make --no-print-directory model=$$m evaluate ; done
 
 eval/$(release)/models/%/best.pth:
 	mkdir -p eval/$(release)/models/$(if $(findstring /,$*),$(dir $*),)
@@ -283,4 +289,5 @@ eval/$(release)/datasets/%/stats:
 	sed -i 's|datadir|'$(release)/$*'|g' $@
 
 training-set-statistics: $(foreach v,$($(release)_training_sets),eval/$(release)/datasets/$(v)/stats)
-	cat $^
+	@echo "dataset	num_dlgs	num_synthetic	num_turns	ctx_entropy	utt_entropy	tgt_entropy	turns_per_dlgs	unique_ctxs"
+	@cat $^
