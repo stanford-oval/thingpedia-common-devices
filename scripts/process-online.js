@@ -69,10 +69,11 @@ async function existsSafe(path) {
 
 
 class Processor extends stream.Writable {
-    constructor(type, schemas, rng) {
+    constructor(type, prefix, schemas, rng) {
         super({ objectMode: true });
 
         this._type = type;
+        this._prefix = prefix;
 
         this._existingDataset = new Set;
         this._devices = new Map;
@@ -278,8 +279,7 @@ class Processor extends stream.Writable {
     }
 
     async _process(ex) {
-        const prefix = this._type === 'manual' ? 'online/' : 'turking/';
-        if (this._existingDataset.has(prefix + ex.id))
+        if (this._existingDataset.has(this._prefix + ex.id))
             return;
 
         const entities = Genie.EntityUtils.makeDummyEntities(ex.preprocessed);
@@ -302,7 +302,7 @@ class Processor extends stream.Writable {
             const code = dialoguestate.prettyprint();
 
             out.write({
-                id: prefix + ex.id,
+                id: this._prefix + ex.id,
                 turns: [{
                     context: '',
                     agent: '',
@@ -316,7 +316,7 @@ class Processor extends stream.Writable {
 
             const code = ThingTalk.NNSyntax.toNN(dialoguestate, ex.preprocessed, entities, { typeAnnotations: false }).join(' ');
             out.write({
-                id: prefix + ex.id,
+                id: this._prefix + ex.id,
                 context: 'null',
                 preprocessed: ex.preprocessed,
                 target_code: code
@@ -338,6 +338,10 @@ async function main() {
         help: 'Type of dataset to import',
         choices: ['paraphrase', 'manual']
     });
+    parser.addArgument('--prefix', {
+        required: false,
+        help: 'Prefix to add to IDs (defaults to "online" for manual datasets, and "turking" for paraphrase datasets)',
+    });
     parser.addArgument('--random-seed', {
         defaultValue: 'almond is awesome',
         required: false,
@@ -347,6 +351,7 @@ async function main() {
         help: 'Input files to process. Use - for standard input.'
     });
     const args = parser.parseArgs();
+    const prefix = (args.prefix || (args.type === 'manual' ? 'online' : 'turking')) + '/';
 
     const platform = new Platform();
     platform.getSharedPreferences().set('developer-dir', RELEASES.map((r) => path.resolve(r)));
@@ -356,7 +361,7 @@ async function main() {
 
     const input = readAllLines(args.input_file);
     const rng = seedrandom.alea(args.random_seed);
-    const processor = new Processor(args.type, schemas, rng);
+    const processor = new Processor(args.type, prefix, schemas, rng);
     await processor.init();
 
     const out = input

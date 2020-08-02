@@ -171,7 +171,7 @@ eval/$(release)/augmented.user.tsv : eval/$(release)/synthetic.user.tsv $(schema
 	  --quoted-paraphrasing-expand-factor $(paraphrase_expand_factor) \
 	  --no-quote-paraphrasing-expand-factor $(paraphrase_expand_factor) \
 	  --quoted-fraction $(quoted_fraction) \
-	  --no-debug \
+	  --debug \
 	  --parallelize $(parallel) \
 	  $(paraphrases_user) $<
 	mv $@.tmp $@
