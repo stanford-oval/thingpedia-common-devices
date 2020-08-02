@@ -59,6 +59,9 @@ quoted_fraction ?= 0.05
 generate_flags ?= $(foreach v,$(synthetic_flags),--set-flag $(v)) --target-pruning-size $(target_pruning_size) --max-turns $(max_turns) --maxdepth $(max_depth)
 custom_gen_flags ?=
 
+auto_annotate_algorithm ?= bert,adj,bart
+auto_annotate_mlm_model ?= bert-large-uncased
+
 template_deps = \
 	$(geniedir)/languages/thingtalk/*.js \
 	$(geniedir)/languages/thingtalk/dialogue_acts/*.js \
@@ -110,6 +113,22 @@ $(dataset_file): $(addsuffix /dataset.tt,$($(release)_devices))
 	cat $^ > $@.tmp
 	if test -f $@ && cmp $@.tmp $@ ; then rm $@.tmp ; else mv $@.tmp $@ ; fi
 
+eval/$(release)/constants.tsv: $(schema_file) parameter-datasets.tsv
+	$(genie) sample-constants -o $@.tmp \
+	  --thingpedia $(schema_file) \
+	  --parameter-datasets parameter-datasets.tsv
+	if test -f $@ && cmp $@.tmp $@ ; then rm $@.tmp ; else mv $@.tmp $@ ; fi
+
+%/manifest.auto.tt: %/manifest.tt eval/$(release)/constants.tsv parameter-datasets.tsv .embeddings/paraphraser-bart
+	$(genie) auto-annotate -o $@.tmp --thingpedia $< \
+	  --dataset custom \
+	  --constants eval/$(release)/constants.tsv \
+	  --parameter-datasets parameter-datasets.tsv \
+	  --algorithm $(auto_annotate_algorithm) \
+	  --model $(auto_annotate_mlm_model) \
+	  --paraphraser-model .embeddings/paraphraser-bart
+	mv $@.tmp $@
+
 eval/$(release)/database-map.tsv: $(addsuffix /database-map.tsv,$($(release)_devices))
 	for f in $^ ; do \
 	  sed 's|\t|\t../../'`dirname $$f`'/|g' $$f >> $@.tmp ; \
@@ -126,6 +145,11 @@ parameter-datasets.tsv:
 	$(thingpedia_cli) --url $(thingpedia_url) --developer-key $(developer_key) --access-token invalid \
 	  download-string-values --manifest $@.tmp --append-manifest -d parameter-datasets
 	mv $@.tmp $@
+
+.embeddings/paraphraser-bart:
+	mkdir -p .embeddings
+	wget -c --no-verbose https://almond-static.stanford.edu/test-data/paraphraser-bart.tar.xz
+	tar -C .embeddings -xvf paraphraser-bart.tar.xz
 
 eval/$(release)/synthetic-%.txt : $(schema_file) $(dataset_file) $(template_deps) entities.json
 	$(genie) generate-dialogs \
