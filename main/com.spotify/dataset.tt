@@ -11,7 +11,9 @@ dataset @com.spotify language "en" {
     action (p_song :Entity(com.spotify:song)) := @com.spotify.play_song(song=p_song)
     #_[utterances=["play ${p_song} on spotify",
                    "on spotify play ${p_song}",
-                   "play ${p_song}"]]
+                   "play ${p_song}",
+                   "i would like to hear ${p_song}",
+                   "i would like to listen to ${p_song}"]]
     #[id=27924741]
     #[name=""];
 
@@ -40,13 +42,17 @@ dataset @com.spotify language "en" {
     // TODO: use "action" here so we can combine with streams
     program (p_artist :Entity(com.spotify:artist)) :=
       now => @com.spotify.song(), contains(artists, p_artist) => @com.spotify.play_song(song=id)
-    #_[utterances=["play $p_artist"]]
+    #_[utterances=["play $p_artist",
+                   "i would like to hear ${p_artist}",
+                   "i would like to listen to ${p_artist}"]]
     #[id=27924875]
     #[name=""];
 
     program (p_album :Entity(com.spotify:album)) :=
       now => @com.spotify.song(), album == p_album => @com.spotify.play_song(song=id)
-    #_[utterances=["play ${p_album}"]]
+    #_[utterances=["play ${p_album}",
+                   "i would like to hear ${p_album}",
+                   "i would like to listen to ${p_album}"]]
     #[id=27924878]
     #[name=""];
 

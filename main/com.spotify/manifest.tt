@@ -60,17 +60,17 @@ class @com.spotify
                     #[unique=true]
                     #_[canonical={
                       default="base",
-                      base=["name"],
-                      passive_verb=["named #", "called #"],
-                      property=["name #"]
+                      base=["name", "title", "track name"],
+                      passive_verb=["named #", "called #", "titled #"],
+                      property=["name #", "title #"]
                     }],
                     out artists: Array(Entity(com.spotify:artist))
                     #[string_values="tt:song_artist"]
                     #_[canonical={
                       default="preposition",
-                      base=["artist", "song writer"],
+                      base=["artist", "author", "song writer", "band", "artist name"],
                       property=["artist #", "song writer #"],
-                      preposition=["by #"],
+                      preposition=["by #", "from #"],
                       passive_verb=["written by #", "released by #", "produced by #"],
                       verb = ["# wrote", "# released", "# produced"]
                     }],
@@ -86,7 +86,7 @@ class @com.spotify
                     #[string_values="com.spotify:genre"]
                     #_[canonical={
                       default="adjective",
-                      base=["genres", "music", "type of genre", "type of music", "category"],
+                      base=["genres", "type of genre", "type of music", "category"],
                       property=["# songs", "# music"],
                       adjective=["#"],
                       preposition=["in the # genre", "in #"]
@@ -96,8 +96,9 @@ class @com.spotify
                       default="preposition",
                       base=["date", "release date"],
                       property=["release date #"],
+                      adjective=["#"],
                       preposition=["from #", "in #"],
-                      passive_verb=["released in #", "published in #"]
+                      passive_verb=["released in #", "released #", "published in #"]
                     }],
                     out popularity: Number
                     #[min_number=0]
@@ -137,8 +138,8 @@ class @com.spotify
                         default="base",
                         base=["name"],
                         // FIXME: actions must use "preposition" not "passive_verb"
-                        preposition=["named #", "called #"],
-                        property=["name #"]
+                        preposition=["named #", "called #", "titled #"],
+                        property=["name #", "title #"]
                       }],
                       out device : Entity(com.spotify:device)
                       #_[canonical={
@@ -146,11 +147,14 @@ class @com.spotify
                         base=["device", "player", "app"], // "can you tell me the app"?
                         preposition=["on"]
                       }])
-    #_[canonical=["play a song", "play the song"]]
+    #_[canonical=["play a song", "play the song", "play a track", "play music",
+                  // i would like to...
+                  "listen to a song", "hear a song"]]
     #_[confirmation="play the song $song"]
     #[confirm=enum(auto)];
 
-    list query artist(out id: Entity(com.spotify:artist) #[string_values="tt:song_artist"]
+    list query artist(out id: Entity(com.spotify:artist)
+                      #[string_values="tt:song_artist"]
                       #[unique=true]
                       #_[canonical={
                         default="base",
@@ -177,7 +181,7 @@ class @com.spotify
                         passive_verb=["rated # popularity"],
                         property=["# popularity"]
                       }])
-    #_[canonical="artist"]
+    #_[canonical=["artist", "composer", "musician", "singer"]]
     #_[confirmation="artists on Spotify"]
     #[minimal_projection=["id"]]
     #_[formatted=[{type="text",text="${id}"}]]
@@ -188,16 +192,16 @@ class @com.spotify
                     #_[canonical={
                       default="base",
                       base=["name"],
-                      passive_verb=["named #", "called #"],
-                      property=["name #"]
+                      passive_verb=["named #", "called #", "titled #"],
+                      property=["name #", "title"]
                     }],
                     out artists: Array(Entity(com.spotify:artist))
                     #[string_values="tt:song_artist"]
                     #_[canonical={
                       default="preposition",
-                      base=["artist", "song writer"],
+                      base=["artist", "author", "song writer", "band", "artist name"],
                       property=["artist #", "song writer #"],
-                      preposition=["by #"],
+                      preposition=["by #", "from #"],
                       passive_verb=["written by #", "released by #", "produced by #"],
                       verb = ["# wrote", "# released", "# produced"]
                     }],
@@ -206,6 +210,7 @@ class @com.spotify
                       default="preposition",
                       base=["date", "release date"],
                       property=["release date #"],
+                      adjective=["#"],
                       preposition=["from #", "in #"],
                       passive_verb=["released in #", "published in #"]
                     }],
@@ -218,7 +223,7 @@ class @com.spotify
                       passive_verb=["rated # popularity"],
                       property=["# popularity"]
                     }])
-    #_[canonical="album"]
+    #_[canonical=["album", "music collection"]]
     #_[confirmation="album on Spotify"]
     #[minimal_projection=["id"]]
     #_[formatted=[{type="text",text="${id} by ${artists}"}]]
