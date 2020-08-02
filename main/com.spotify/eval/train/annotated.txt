@@ -50,14 +50,14 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => (@com.spotify.song(), contains(artists, null^^com.spotify:artist("bruce springsteen"))) => @com.spotify.play_song(song=id);
 ====
 # online/spotify-228
-U: begin playing the album dirty computer by janelle monae
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => ((@com.spotify.album()), id =~ "dirty computer" && contains(artists, null^^com.spotify:artist("janelle monae")))[1] => @com.spotify.play_album(album=id);
+#U: begin playing the album dirty computer by janelle monae
+#UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+#UT: now => ((@com.spotify.song()), id =~ "dirty computer" && contains(artists, null^^com.spotify:artist("janelle monae")))[1] => #@com.spotify.play_album(album=id);
 ====
 # online/spotify-238
-U: play the newest red hot chili peppers album in its entirety, please.
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => ((@com.spotify.album()), id =~ "red hot chili peppers")[1] => @com.spotify.play_album(album=id);
+#U: play the newest red hot chili peppers album in its entirety, please.
+#UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+#UT: now => ((@com.spotify.album()), id =~ "red hot chili peppers")[1] => @com.spotify.play_album(album=id);
 ====
 # online/spotify-26
 U: play tequila by dan and shay
@@ -97,7 +97,7 @@ UT: now => @com.spotify.player_next();
 # online/spotify-68
 U: play the album magic mystery tour
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => ((@com.spotify.album()), id =~ "magic mystery tour")[1] => @com.spotify.play_album(album=id);
+UT: now => ((@com.spotify.song()), album == null^^com.spotify:album("magic mystery tour")) => @com.spotify.play_song(song=id);
 ====
 # online/1675048
 U: play yesterday
@@ -107,7 +107,7 @@ UT: now => (@com.spotify.song(), contains(artists, null^^com.spotify:artist("yes
 # online/1675052
 U: play songs in the wall
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => ((@com.spotify.album()), id =~ "the wall")[1] => @com.spotify.play_album(album=id);
+UT: now => ((@com.spotify.song()), album == null^^com.spotify:album("the wall")) => @com.spotify.play_song(song=id);
 ====
 # online/spotify-6
 U: play the song all i need by the green.

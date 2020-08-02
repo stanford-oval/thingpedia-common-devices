@@ -44,7 +44,8 @@ dataset @com.spotify language "en" {
     #[id=27924875]
     #[name=""];
 
-    action (p_album :Entity(com.spotify:album)) := @com.spotify.play_album(album=p_album)
+    program (p_album :Entity(com.spotify:album)) :=
+      now => @com.spotify.song(), album == p_album => @com.spotify.play_song(song=id)
     #_[utterances=["play ${p_album}"]]
     #[id=27924878]
     #[name=""];

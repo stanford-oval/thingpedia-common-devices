@@ -224,25 +224,6 @@ class @com.spotify
     #_[formatted=[{type="text",text="${id} by ${artists}"}]]
     #[doc="search for albums on Spotify"];
 
-    action play_album (in req album: Entity(com.spotify:album)
-                       #[string_values="tt:song_album"]
-                       #_[prompt=["what album do you want to play"]]
-                       #_[canonical={
-                         default="base",
-                         base=["name"],
-                         preposition=["named #", "called #"],
-                         property=["name #"]
-                       }],
-                       out device : Entity(com.spotify:device)
-                       #_[canonical={
-                         default="preposition",
-                         base=["device", "player", "app"], // "can you tell me the app"?
-                         preposition=["on"]
-                       }])
-    #_[canonical=["play an album", "play the album"]]
-    #_[confirmation="play the album $album"]
-    #[confirm=enum(auto)];
-
     monitorable query get_currently_playing(out song: Entity(com.spotify:song)
                                             #[string_values="tt:song_name"])
     #_[canonical=["the currently playing track name", "the currently playing song",
