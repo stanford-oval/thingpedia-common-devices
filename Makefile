@@ -90,6 +90,7 @@ genie_k8s_owner ?=
 
 .PRECIOUS: %/node_modules
 .PHONY: all clean lint
+.SECONDARY:
 
 all: $($(release)_pkgfiles:%/package.json=build/%.zip)
 	@:
