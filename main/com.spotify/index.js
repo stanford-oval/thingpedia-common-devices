@@ -55,6 +55,8 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     constructor(engine, state) {
         super(engine, state);
         this.uniqueId = "com.spotify-" + this.state.profile.id;
+        this._state = new Map();
+        this._queryResults = new Map();
     }
 
     http_get(url) {
@@ -181,7 +183,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         });
     }
 
-    async parse_tracks(tracks) {
+    async parse_tracks(tracks, deviceID) {
         //const ids = tracks.map((track) => new Tp.Value.Entity(track.id, track.name));
         const ids = tracks.map((track) => track.id);
         const artistIds = tracks.map((track) => track.artists[0].id);
@@ -193,6 +195,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             const release_date = new Date(tracks[i].album.release_date);
             const artists = tracks[i].artists.map((artist) => new Tp.Value.Entity(artist.uri, artist.name));
             const album = new Tp.Value.Entity(tracks[i].album.uri, tracks[i].album.name);
+            const id = new Tp.Value.Entity(tracks[i].uri, tracks[i].name);
             //You can't get the audio features for some songs, so we're setting 0.5 as a default value
             var energy = 0.5;
             var danceability = 0.5;
@@ -201,7 +204,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 danceability = audioFeatures[i].danceability;
             }
             const songObj = {
-                id: new Tp.Value.Entity(tracks[i].uri, tracks[i].name),
+                id,
                 artists,
                 album,
                 genres: genres[i],
@@ -210,15 +213,26 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 energy: energy * 100,
                 danceability: danceability * 100,
             };
+            if (deviceID) {
+                let results = this._queryResults.get(deviceID);
+                if (!results) {
+                    this._queryResults.set(deviceID, {
+                        [String(id)]: songObj
+                    });
+                } else {
+                    results[String(id)] = songObj;
+                }
+            }
+
             songs.push(songObj);
         }
         return songs;
     }
 
-    async songs_by_search(query, artistURI) {
+    async songs_by_search(query, deviceID) {
         const searchResults = await this.search(query, "track", 50);
         if (!Object.prototype.hasOwnProperty.call(searchResults, "tracks") || searchResults.tracks.total === 0) throw new Error(`Query ${query} failed`);
-        return this.parse_tracks(searchResults.tracks.items);
+        return this.parse_tracks(searchResults.tracks.items, deviceID);
     }
 
     async songs_by_artist(artists, sortDirection) {
@@ -350,10 +364,10 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (idFilter) {
             if (artists.length > 1) {
                 let query = (idFilter + yearFilter + genreFilter + albumFilter).trim();
-                return this.songs_by_search(query);
+                return this.songs_by_search(query, env.app.uniqueId);
             } else {
                 let query = (idFilter + yearFilter + artistFilter + genreFilter + albumFilter).trim();
-                return this.songs_by_search(query);
+                return this.songs_by_search(query, env.app.uniqueId);
             }
         } else if (hints && hints.sort && hints.sort[0] === "release_date" && artists.length > 0) {
             return this.songs_by_artist(artists, hints.sort[1]);
@@ -361,7 +375,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             return this.songs_by_artist(artists);
         } else {
             const query = (yearFilter + artistFilter + genreFilter + albumFilter).trim() || `year:${new Date().getFullYear()} `;
-            return this.songs_by_search(query);
+            return this.songs_by_search(query, env.app.uniqueId);
         }
     }
 
@@ -527,13 +541,17 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     }
 
     async do_play_song({ song }, env) {
-        if (this.state.previous_uuid === env.app.uniqueId) {
-            return this.player_queue_helper(String(song));
+        let progstate = this._state.get(env.app.uniqueId);
+        if (!progstate) {
+            env.addExitProcedureHook(() => {
+                this._flushPlaySong(env);
+            });
+            this._state.set(env.app.uniqueId, [song]);
         } else {
-            this.state.previous_uuid = env.app.uniqueId;
-            return this.player_play_helper(JSON.stringify({ 'uris': [String(song)] }));
+            progstate.push(song);
         }
     }
+
     async do_play_artist({ artist }, env) {
         const uri = String(artist);
         let data = {
@@ -542,6 +560,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         console.log("data is " + JSON.stringify(data));
         return this.player_play_helper(JSON.stringify(data));
     }
+
     async do_play_album({ album }, env) {
         const uri = String(album);
         let data = {
@@ -549,6 +568,72 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         };
         console.log("data is " + JSON.stringify(data));
         return this.player_play_helper(JSON.stringify(data));
+    }
+
+    async _flushPlaySong(env) {
+        const songs = this._state.get(env.app.uniqueId);
+        const album = this._findCommonAlbum(songs, env);
+        const artist = this._findCommonArtist(songs, env);
+        if (album && songs.length > 1) {
+            let data = {
+                context_uri: album,
+            };
+            console.log(data);
+            return this.player_play_helper(JSON.stringify(data));
+        } else if (artist && songs.length > 1) {
+            let data = {
+                context_uri: artist,
+            };
+            console.log(data);
+            return this.player_play_helper(JSON.stringify(data));
+        } else {
+            const output = await this.player_play_helper(JSON.stringify({ 'uris': [String(songs[0])] }));
+            for (var i = 1; i < songs.length; i++)
+                await this.player_queue_helper(String(songs[i]));
+
+            return output;
+        }
+    }
+
+    _findCommonAlbum(songs, env) {
+        var album;
+        const songObjs = this._queryResults.get(env.app.uniqueId);
+        for (const song of songs) {
+            const result = songObjs[String(song)];
+            if (!result) {
+                return null;
+            } else {
+                if (!album)
+                    album = String(result.album);
+                else if (album !== String(result.album))
+                    return null;
+            }
+        }
+        return album;
+    }
+
+    _findCommonArtist(songs, env) {
+        var artists = [];
+        const songObjs = this._queryResults.get(env.app.uniqueId);
+        for (const song of songs) {
+            const result = songObjs[String(song)];
+            if (!result) {
+                return null;
+            } else {
+                if (artists.length === 0) {
+                    artists = result.artists.map((artist) => String(artist));
+                } else {
+                    const songArtists = result.artists.map((artist) => String(artist));
+                    artists = artists.filter((value) => songArtists.includes(value));
+                    if (artists.length === 0)
+                        return null;
+                }
+            }
+        }
+        if (artists.length !== 1)
+            return null;
+        else
+            return artists[0];
     }
 
     async do_player_pause() {
