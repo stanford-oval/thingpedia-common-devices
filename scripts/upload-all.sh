@@ -14,8 +14,17 @@ for d in "$release/"* ; do
 	kind=$(basename "$d")
 	if test -f "$d/package.json" ; then
 		make "build/$d.zip"
-		${THINGPEDIA_CLI} upload-device --zipfile "build/$d.zip" --icon "$d/icon.png" --manifest "$d/manifest.tt" --dataset "$d/dataset.tt" --approve
+		${THINGPEDIA_CLI} upload-device --approve \
+		  --zipfile "build/$d.zip" \
+		  --icon "$d/icon.png" \
+		  --manifest "$d/manifest.tt" \
+		  --dataset "$d/dataset.tt" \
+		  --secrets "$d/secrets.json"
 	else
-		${THINGPEDIA_CLI} upload-device --icon "$d/icon.png" --manifest "$d/manifest.tt" --dataset "$d/dataset.tt" --approve
+		${THINGPEDIA_CLI} upload-device --approve \
+		  --icon "$d/icon.png" \
+		  --manifest "$d/manifest.tt" \
+		  --dataset "$d/dataset.tt" \
+		  --secrets "$d/secrets.json"
 	fi
 done
