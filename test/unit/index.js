@@ -179,7 +179,6 @@ class TestRunner {
                 instance = await this._getOrCreateDeviceInstance(deviceKind, manifest, devClass);
             if (instance === null) {
                 console.log('FAILED: skipped tests for ' + release + '/' + deviceKind + ': missing credentials');
-                this.anyFailed = true;
                 return;
             }
 
