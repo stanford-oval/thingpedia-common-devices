@@ -34,6 +34,7 @@ fewshot_train_files ?= eval/$(release)/train/annotated.txt $(foreach d,$($(relea
 
 synthetic_flags ?= \
 	dialogues \
+	aggregation \
 	multifilters \
 	nostream \
 	notablejoin \
