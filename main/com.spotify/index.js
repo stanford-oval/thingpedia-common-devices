@@ -226,7 +226,11 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
             songs.push(songObj);
         }
-        return songs;
+        const filteredSongs = Array.from(new Set(songs.map((song) => String(song.id.display))))
+            .map((song_name) => {
+                return songs.find((song) => song.id.display === song_name);
+            });
+        return filteredSongs;
     }
 
     async songs_by_search(query, deviceID) {
