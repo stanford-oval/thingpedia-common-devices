@@ -52,29 +52,10 @@ async function loadErrorAnalysis(model) {
 }
 
 async function main() {
-    const m1 = await loadErrorAnalysis(process.argv[2]);
-    const m2 = await loadErrorAnalysis(process.argv[3]);
+    const data = await loadErrorAnalysis(process.argv[2]);
 
-    console.log();
-    console.log('-----');
-    console.log('LOST');
-    for (const id of m2.keys()) {
-        if (m1.has(id))
-            continue;
-        const { result, utterance, gold, prediction } = m2.get(id);
-        console.log(`${id}\t${result}\t${utterance}`);
-        console.log(gold);
-        console.log(prediction);
-        console.log();
-    }
-
-    console.log();
-    console.log('-----');
-    console.log('GAINED');
-    for (const id of m1.keys()) {
-        if (m2.has(id))
-            continue;
-        const { result, utterance, gold, prediction } = m1.get(id);
+    for (const id of data.keys()) {
+        const { result, utterance, gold, prediction } = data.get(id);
         console.log(`${id}\t${result}\t${utterance}`);
         console.log(gold);
         console.log(prediction);
