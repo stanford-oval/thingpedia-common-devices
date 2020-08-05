@@ -1,4 +1,9 @@
 dataset @com.spotify language "en" {
+    // this combination is so common it warrants its own primitive template...
+    query (p_song :String, p_artist :Entity(com.spotify:artist)) := @com.spotify.song(), id =~ p_song && contains(artists, p_artist)
+    #_[utterances=["${p_song} by ${p_artist}",
+                   "${p_song} from ${p_artist}"]];
+
     program := now => @com.spotify.play_song(song=$?)
     #[click_count=6]
     #[like_count=0]
@@ -43,6 +48,8 @@ dataset @com.spotify language "en" {
     program (p_artist :Entity(com.spotify:artist)) :=
       now => @com.spotify.song(), contains(artists, p_artist) => @com.spotify.play_song(song=id)
     #_[utterances=["play ${p_artist:no-undefined}",
+                   "play music by ${p_artist:no-undefined}",
+                   "play some ${p_artist:no-undefined}",
                    "play the artist ${p_artist:no-undefined}",
                    "i would like to hear ${p_artist:no-undefined}",
                    "i would like to listen to ${p_artist:no-undefined}",
