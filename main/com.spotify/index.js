@@ -360,18 +360,21 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 } else if (pname === "album" && (op === "==" || op === "=~")) {
                     albumFilter = `album:"${value.toLowerCase()}" `;
                 }
-
             }
         }
+        let deviceID;
+        if (!hints || !hints.sort)
+            deviceID = env.app.uniqueId;
+
         //you can't search for multiple artists because when searching by artist spotify only returns songs where the input artist is the main artist
         //so if you search for a song where an artist is featured or there are multiple artists then there will problems.
         if (idFilter) {
             if (artists.length > 1) {
                 let query = (idFilter + yearFilter + genreFilter + albumFilter).trim();
-                return this.songs_by_search(query, env.app.uniqueId);
+                return this.songs_by_search(query, deviceID);
             } else {
                 let query = (idFilter + yearFilter + artistFilter + genreFilter + albumFilter).trim();
-                return this.songs_by_search(query, env.app.uniqueId);
+                return this.songs_by_search(query, deviceID);
             }
         } else if (hints && hints.sort && hints.sort[0] === "release_date" && artists.length > 0) {
             return this.songs_by_artist(artists, hints.sort[1]);
@@ -379,7 +382,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             return this.songs_by_artist(artists);
         } else {
             const query = (yearFilter + artistFilter + genreFilter + albumFilter).trim() || `year:${new Date().getFullYear()} `;
-            return this.songs_by_search(query, env.app.uniqueId);
+            return this.songs_by_search(query, deviceID);
         }
     }
 
