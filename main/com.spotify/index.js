@@ -57,6 +57,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         this.uniqueId = "com.spotify-" + this.state.profile.id;
         this._state = new Map();
         this._queryResults = new Map();
+        this._deviceState = new Map();
     }
 
     http_get(url) {
@@ -551,16 +552,24 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         } else {
             progstate.push(song);
         }
-        let devices = await this.get_get_available_devices();
+
         if (this._testMode())
             return { device: new Tp.Value.Entity('mock', 'Coolest Computer') };
-        const [deviceId, deviceName] = this._findActiveDevice(devices);
-        if (deviceId === null) {
-            const error = new Error(`No Spotify device is active`);
-            error.code = 'no_active_device';
-            throw error;
+
+        let deviceState = this._deviceState.get(env.app.uniqueId);
+        if (!deviceState) {
+          let devices = await this.get_get_available_devices();
+          const [deviceId, deviceName] = this._findActiveDevice(devices);
+          if (deviceId === null) {
+              const error = new Error(`No Spotify device is active`);
+              error.code = 'no_active_device';
+              throw error;
+          }
+          this._deviceState.set(env.app.uniqueId, [deviceId, deviceName]);
+          return { device: new Tp.Value.Entity(deviceId, deviceName) };
+        }else{
+          return { device: new Tp.Value.Entity(deviceState[0], deviceState[1]) };
         }
-        return { device: new Tp.Value.Entity(deviceId, deviceName) };
     }
 
     async do_play_artist({ artist }, env) {
