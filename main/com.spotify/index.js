@@ -533,16 +533,9 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         await this.http_put(PLAY_URL + `?device_id=${deviceId}`, data, options);
         return { device: new Tp.Value.Entity(deviceId, deviceName) };
     }
-    async player_queue_helper(uri) {
-        let devices = await this.get_get_available_devices();
+    async player_queue_helper(uri, [deviceId, deviceName]) {
         if (this._testMode())
             return { device: new Tp.Value.Entity('mock', 'Coolest Computer') };
-        const [deviceId, deviceName] = this._findActiveDevice(devices);
-        if (deviceId === null) {
-            const error = new Error(`No Spotify device is active`);
-            error.code = 'no_active_device';
-            throw error;
-        }
 
         await this.http_post_default_options(QUEUE_URL + `?uri=${encodeURIComponent(uri)}&device_id=${deviceId}`, '');
         return { device: new Tp.Value.Entity(deviceId, deviceName) };
@@ -604,8 +597,15 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             return this.player_play_helper(JSON.stringify(data));
         } else {
             const output = await this.player_play_helper(JSON.stringify({ 'uris': [String(songs[0])] }));
+            let devices = await this.get_get_available_devices();
+            const [deviceId, deviceName] = this._findActiveDevice(devices);
+            if (deviceId === null && !this._testMode()) {
+                const error = new Error(`No Spotify device is active`);
+                error.code = 'no_active_device';
+                throw error;
+            }
             for (var i = 1; i < songs.length; i++)
-                await this.player_queue_helper(String(songs[i]));
+                await this.player_queue_helper(String(songs[i]), [deviceId, deviceName]);
 
             return output;
         }
