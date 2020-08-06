@@ -360,6 +360,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 } else if (pname === "album" && (op === "==" || op === "=~")) {
                     albumFilter = `album:"${value.toLowerCase()}" `;
                 }
+
             }
         }
         let deviceID;
@@ -557,6 +558,16 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         } else {
             progstate.push(song);
         }
+        let devices = await this.get_get_available_devices();
+        if (this._testMode())
+            return { device: new Tp.Value.Entity('mock', 'Coolest Computer') };
+        const [deviceId, deviceName] = this._findActiveDevice(devices);
+        if (deviceId === null) {
+            const error = new Error(`No Spotify device is active`);
+            error.code = 'no_active_device';
+            throw error;
+        }
+        return { device: new Tp.Value.Entity(deviceId, deviceName) };
     }
 
     async do_play_artist({ artist }, env) {
@@ -585,13 +596,11 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             let data = {
                 context_uri: album,
             };
-            console.log(data);
             return this.player_play_helper(JSON.stringify(data));
         } else if (artist && songs.length > 1) {
             let data = {
                 context_uri: artist,
             };
-            console.log(data);
             return this.player_play_helper(JSON.stringify(data));
         } else {
             const output = await this.player_play_helper(JSON.stringify({ 'uris': [String(songs[0])] }));
@@ -605,6 +614,9 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     _findCommonAlbum(songs, env) {
         var album;
         const songObjs = this._queryResults.get(env.app.uniqueId);
+        if (!songObjs)
+            return null;
+
         for (const song of songs) {
             const result = songObjs[String(song)];
             if (!result) {
@@ -622,6 +634,8 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     _findCommonArtist(songs, env) {
         var artists = [];
         const songObjs = this._queryResults.get(env.app.uniqueId);
+        if (!songObjs)
+            return null;
         for (const song of songs) {
             const result = songObjs[String(song)];
             if (!result) {

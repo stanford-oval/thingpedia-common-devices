@@ -30,3 +30,73 @@ U: now => (@com.spotify.song(), id =~ "destination calabria" && contains~(artist
 
 A: Alright, I played Destination Calabria( - Radio Edit)?( on Spotify)?( on (Coolest Computer|giovanni-xps15))? ?.
 A: >> expecting = null
+
+====
+# 4-from-album (req=com.spotify)
+
+# play songs from the album abbey road
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => (@com.spotify.song(), album =~ "abbey road") => @com.spotify.play_song(song=id);
+
+A: Alright, your request was completed successfully\.?
+A: >> expecting = null
+
+====
+# 5-from-album-artist (req=com.spotify)
+
+# play songs about jane by maroon 5
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => (@com.spotify.song(), album =~ "songs about jane" && contains~(artists, "maroon 5")) => @com.spotify.play_song(song=id);
+
+A: Alright, your request was completed successfully\.?
+A: >> expecting = null
+
+====
+# 6-sort-popularity-artist (req=com.spotify)
+
+# play the most popular songs by post malone
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => sort popularity desc of (@com.spotify.song(), contains~(artists, "post malone")) => @com.spotify.play_song(song=id);
+
+A: Alright, your request was completed successfully\.?
+A: >> expecting = null
+
+====
+# 7-sort-popularity-artist (req=com.spotify)
+
+# play the most popular songs by post malone
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => sort popularity desc of (@com.spotify.song(), contains~(artists, "post malone")) => @com.spotify.play_song(song=id);
+
+A: Alright, your request was completed successfully\.?
+A: >> expecting = null
+
+====
+# 8-sort-release-date-artist (req=com.spotify)
+
+# play the newest songs by bruno mars
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => sort release_date desc of (@com.spotify.song(), contains~(artists, "bruno mars")) => @com.spotify.play_song(song=id);
+
+A: Alright, your request was completed successfully\.?
+A: >> expecting = null
+
+====
+# 9-sort-energy (req=com.spotify)
+
+# play me energetic songs
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => sort energy desc of (@com.spotify.song()) => @com.spotify.play_song(song=id);
+
+A: Alright, your request was completed successfully\.?
+A: >> expecting = null
+
+====
+# 10-sort-danceability (req=com.spotify)
+
+# play me songs that are good for dancing
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => sort danceability desc of (@com.spotify.song()) => @com.spotify.play_song(song=id);
+
+A: Alright, your request was completed successfully\.?
+A: >> expecting = null
