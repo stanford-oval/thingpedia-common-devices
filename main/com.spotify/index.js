@@ -54,7 +54,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
     constructor(engine, state) {
         super(engine, state);
-        this.uniqueId = "com.spotify-" + this.state.profile.id;
+        this.uniqueId = "com.spotify-" + this.state.id;
         this._state = new Map();
         this._queryResults = new Map();
     }
