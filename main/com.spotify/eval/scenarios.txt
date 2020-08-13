@@ -4,9 +4,9 @@
 
 # play bohemian rhapsody
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: now => (@com.spotify.song(), id =~ "bohemian rhapsody")[1] => @com.spotify.play_song(song=id);
+U: now => (@com.spotify.song(), id =~ ("bohemian rhapsody"))[1] => @com.spotify.play_song(song=id);
 
-A: Alright, I played Bohemian Rhapsody - 2011 Mix( on Spotify)?( on (Coolest Computer|giovanni-xps15))? ?.
+A: Alright, I played Bohemian Rhapsody( on Spotify)?( on (Coolest Computer|giovanni-xps15))? ?.
 A: >> expecting = null
 
 ====
@@ -14,16 +14,16 @@ A: >> expecting = null
 
 # find me the song despacito
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: now => (@com.spotify.song(), id =~ "despacito")[1] => notify;
+U: now => (@com.spotify.song(), id =~ ("despacito"))[1] => notify;
 
-A: Despacito - Remix is a song by Luis Fonsi by Luis Fonsi by Luis Fonsi .
+A: Despacito is a song by Luis Fonsi by Luis Fonsi by Luis Fonsi .
 A: >> expecting = null
 
 ====
 # 3-by-artist (req=com.spotify)
 # play taylor swift
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: now => (@com.spotify.song(), contains~(artists, "taylor swift")) => @com.spotify.play_song(song=id);
+U: now => (@com.spotify.song(), contains(artists, null^^com.spotify:artist("taylor swift"))) => @com.spotify.play_song(song=id);
 
 # FIXME this answer is awful. We need templates for talking about multiple action results.
 A: Alright, your request was completed successfully\.?
@@ -33,9 +33,9 @@ A: >> expecting = null
 # 4-by-artist-search (req=com.spotify)
 # find me songs by britney spears
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: now => (@com.spotify.song(), contains~(artists, "britney spears")) => notify;
+U: now => (@com.spotify.song(), contains(artists, null^^com.spotify:artist("britney spears"))) => notify;
 
-A: I have Toxic, Oops!...I Did It Again and ...Baby One More Time. All of them are song by Britney Spears by Britney Spears by Britney Spears .
+A: I have Toxic, Oops!...I Did It Again or ...Baby One More Time. They are song by Britney Spears by Britney Spears by Britney Spears .
 A: >> expecting = command
 
 ====
@@ -44,7 +44,7 @@ A: >> expecting = command
 
 # play destination calabria by alex gaudino
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: now => (@com.spotify.song(), id =~ "destination calabria" && contains~(artists, "alex gaudino"))[1] => @com.spotify.play_song(song=id);
+U: now => (@com.spotify.song(), id =~ ("destination calabria") && contains(artists, null^^com.spotify:artist("alex gaudino")))[1] => @com.spotify.play_song(song=id);
 
 A: Alright, I played Destination Calabria( - Radio Edit)?( on Spotify)?( on (Coolest Computer|giovanni-xps15))? ?.
 A: >> expecting = null
@@ -54,7 +54,7 @@ A: >> expecting = null
 
 # find me the box by roddy ricch
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: now => (@com.spotify.song(), id =~ "the box" && contains~(artists, "roddy ricch"))[1] => notify;
+U: now => (@com.spotify.song(), id =~ ("the box") && contains(artists, null^^com.spotify:artist("roddy ricch")))[1] => notify;
 
 A: The Box is a song by Roddy Ricch by Roddy Ricch by Roddy Ricch .
 A: >> expecting = null
@@ -62,9 +62,9 @@ A: >> expecting = null
 ====
 # 7-from-album (req=com.spotify)
 
-# play songs from the album abbey road
+# play songs from the album american teen
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: now => (@com.spotify.song(), album =~ "abbey road") => @com.spotify.play_song(song=id);
+U: now => (@com.spotify.song(), album == null^^com.spotify:album("american teen")) => @com.spotify.play_song(song=id);
 
 A: Alright, your request was completed successfully\.?
 A: >> expecting = null
@@ -74,9 +74,9 @@ A: >> expecting = null
 
 # what songs are in the album the wall
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: now => (@com.spotify.song(), album =~ "the wall") => notify;
+U: now => (@com.spotify.song(), album == null^^com.spotify:album("the wall")) => notify;
 
-A: I have found Say My Name, Comfortably Numb and Another Brick in the Wall, Pt. 2. Would you like to play either one( on Spotify)? ?.
+A: I have Comfortably Numb or Another Brick in the Wall, Pt. 2. All of them are song by Pink Floyd by Pink Floyd by Pink Floyd .
 A: >> expecting = command
 
 ====
@@ -84,9 +84,9 @@ A: >> expecting = command
 
 # play songs about jane by maroon 5
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: now => (@com.spotify.song(), album =~ "songs about jane" && contains~(artists, "maroon 5")) => @com.spotify.play_song(song=id);
+U: now => (@com.spotify.song(), album == null^^com.spotify:album("songs about jane") && contains(artists, null^^com.spotify:artist("maroon 5"))) => @com.spotify.play_song(song=id);
 
-A: Alright, your request was completed successfully\.?
+A: Alright, I played She Will Be Loved( on Spotify)?( on (Coolest Computer|giovanni-xps15))? ?.
 A: >> expecting = null
 
 ====
@@ -94,9 +94,9 @@ A: >> expecting = null
 
 # what songs are in the album 21 by adele
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: now => (@com.spotify.song(), album =~ "21" && contains~(artists, "adele")) => notify;
+U: now => (@com.spotify.song(), album == null^^com.spotify:album("21") && contains(artists, null^^com.spotify:artist("adele"))) => notify;
 
-A: I see Someone Like You, Rolling in the Deep and Set Fire to the Rain. All of them are song by Adele by Adele by Adele .
+A: I see Someone Like You, Rolling in the Deep or Set Fire to the Rain. They're song by Adele by Adele by Adele .
 A: >> expecting = command
 
 ====
@@ -104,7 +104,7 @@ A: >> expecting = command
 
 # play the most popular song by post malone
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: now => sort popularity desc of (@com.spotify.song(), contains~(artists, "post malone"))[1] => @com.spotify.play_song(song=id);
+U: now => sort popularity desc of (@com.spotify.song(), contains(artists, null^^com.spotify:artist("post malone")))[1] => @com.spotify.play_song(song=id);
 
 A: Alright, I played Circles( on Spotify)?( on (Coolest Computer|giovanni-xps15))? ?.
 A: >> expecting = null
@@ -114,29 +114,29 @@ A: >> expecting = null
 
 # what is justin bieber's most popular song
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: now => sort popularity desc of (@com.spotify.song(), contains~(artists, "justin bieber"))[1] => notify;
+U: now => sort popularity desc of (@com.spotify.song(), contains(artists, null^^com.spotify:artist("justin bieber")))[1] => notify;
 
-A: I have one, it is Intentions. It is a song by Justin Bieber by Justin Bieber by Justin Bieber .
+A: I have Intentions. It's a song by Justin Bieber by Justin Bieber by Justin Bieber .
 A: >> expecting = null
 
 ====
 # 13-sort-release-date-artist (req=com.spotify)
 
-# play the newest song by bruno mars
+# play the newest song by john legend
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: now => sort release_date desc of (@com.spotify.song(), contains~(artists, "bruno mars"))[1] => @com.spotify.play_song(song=id);
+U: now => sort release_date desc of (@com.spotify.song(), contains(artists, null^^com.spotify:artist("john legend")))[1] => @com.spotify.play_song(song=id);
 
-A: Alright, I played BLOW (with Chris Stapleton & Bruno Mars)( on Spotify)?( on (Coolest Computer|giovanni-xps15))? ?.
+A: Alright, I played Bigger Love - Remix( on Spotify)?( on (Coolest Computer|giovanni-xps15))? ?.
 A: >> expecting = null
 
 ====
 # 14-sort-release-date-artist-search (req=com.spotify)
 
-# what is the newest song by john legend
+# what is the newest song by beyonce
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: now => sort release_date desc of (@com.spotify.song(), contains~(artists, "john legend"))[1] => notify;
+U: now => sort release_date desc of (@com.spotify.song(), contains(artists, null^^com.spotify:artist("beyonce")))[1] => notify;
 
-A: I have one, it is Bigger Love - Remix. It is a song by John Legend by John Legend by John Legend .
+A: I have one, it is BIGGER. It is a song by Beyoncé by Beyoncé by Beyoncé .
 A: >> expecting = null
 
 ====

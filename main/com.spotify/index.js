@@ -33,6 +33,7 @@
 "use strict";
 const Tp = require("thingpedia");
 const querystring = require("querystring");
+const assert = require('assert');
 
 const PLAY_URL = "https://api.spotify.com/v1/me/player/play";
 const SEARCH_URL = "https://api.spotify.com/v1/search?";
@@ -54,7 +55,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
     constructor(engine, state) {
         super(engine, state);
-        this.uniqueId = "com.spotify-" + this.state.profile.id;
+        this.uniqueId = "com.spotify-" + this.state.id;
         this._state = new Map();
         this._queryResults = new Map();
         this._deviceState = new Map();
@@ -227,6 +228,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
             songs.push(songObj);
         }
+
         const filteredSongs = Array.from(new Set(songs.map((song) => String(song.id.display))))
             .map((song_name) => {
                 return songs.find((song) => song.id.display === song_name);
@@ -235,7 +237,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     }
 
     async songs_by_search(query, deviceID) {
-        const searchResults = await this.search(query, "track", 50);
+        const searchResults = await this.search(query, "track", 5);
         if (!Object.prototype.hasOwnProperty.call(searchResults, "tracks") || searchResults.tracks.total === 0) throw new Error(`Query ${query} failed`);
         return this.parse_tracks(searchResults.tracks.items, deviceID);
     }
@@ -264,6 +266,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             totalSongs += album.total_tracks;
             if (totalSongs > 50) break;
             albumIds.push(album.id);
+            if (albumIds.length >= 20) break;
         }
         if (albumIds.length === 0) throw new Error("No songs found");
         const albumItems = (await this.albums_get_by_id(albumIds)).albums;
@@ -273,7 +276,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     }
 
     async albums_by_search(query, artistURI) {
-        const searchResults = await this.search(query, "album", 20);
+        const searchResults = await this.search(query, "album", 5);
         if (!Object.prototype.hasOwnProperty.call(searchResults, "albums") || searchResults.albums.total === 0) throw new Error(`Query ${query} failed`);
         const ids = searchResults.albums.items.map((album) => album.id);
         const albumItems = (await this.albums_get_by_id(ids)).albums;
@@ -341,8 +344,8 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (hints && hints.filter) {
             for (let [pname, op, value] of hints.filter) {
                 if (pname === "id" && (op === "==" || op === "=~")) {
-                    if (value instanceof Tp.Value.Entity) idFilter = `track:"${value.display}" `;
-                    else idFilter = `track:"${value}" `;
+                    if (value instanceof Tp.Value.Entity) idFilter = `track:"${value.display.toLowerCase()}" `;
+                    else idFilter = `track:"${value.toLowerCase()}" `;
                 }
                 if (pname === "artists" && (op === "contains" || op === "contains~")) {
                     if (value instanceof Tp.Value.Entity) artists.push(value.display.toLowerCase());
@@ -359,7 +362,9 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 } else if (pname === "genres" && (op === "contains" || op === "contains~")) {
                     genreFilter = `genre:"${value.toLowerCase()}" `;
                 } else if (pname === "album" && (op === "==" || op === "=~")) {
-                    albumFilter = `album:"${value.toLowerCase()}" `;
+                    if (value instanceof Tp.Value.Entity) albumFilter = `album:"${value.display.toLowerCase()}" `;
+                    else albumFilter = `album:"${value.toLowerCase()}" `;
+
                 }
 
             }
@@ -373,10 +378,20 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (idFilter) {
             if (artists.length > 1) {
                 let query = (idFilter + yearFilter + genreFilter + albumFilter).trim();
-                return this.songs_by_search(query, deviceID);
+                let songs = await this.songs_by_search(query, deviceID);
+                let searchTerm = idFilter.split("track:")[1].trim();
+                songs.sort((a,b)=> {
+                    return entityMatchScore(searchTerm, b.id.display.toLowerCase()) - entityMatchScore(searchTerm, a.id.display.toLowerCase());
+                });
+                return songs;
             } else {
                 let query = (idFilter + yearFilter + artistFilter + genreFilter + albumFilter).trim();
-                return this.songs_by_search(query, deviceID);
+                let songs = await this.songs_by_search(query, deviceID);
+                let searchTerm = idFilter.split("track:")[1].trim();
+                songs.sort((a,b)=> {
+                    return entityMatchScore(searchTerm, b.id.display.toLowerCase()) - entityMatchScore(searchTerm, a.id.display.toLowerCase());
+                });
+                return songs;
             }
         } else if (hints && hints.sort && hints.sort[0] === "release_date" && artists.length > 0) {
             return this.songs_by_artist(artists, hints.sort[1]);
@@ -403,7 +418,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         }
         //default query will be to just get the most popular artists right now
         const query = (idFilter + genreFilter).trim() || `year:${new Date().getFullYear()}`;
-        const searchResults = await this.search(query, "artist", 20);
+        const searchResults = await this.search(query, "artist", 5);
         if (!Object.prototype.hasOwnProperty.call(searchResults, 'artists') || searchResults.artists.total === 0) throw new Error(`Query ${query} failed`);
         var artists = [];
         for (const artist of searchResults.artists.items) {
@@ -558,17 +573,17 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
         let deviceState = this._deviceState.get(env.app.uniqueId);
         if (!deviceState) {
-          let devices = await this.get_get_available_devices();
-          const [deviceId, deviceName] = this._findActiveDevice(devices);
-          if (deviceId === null) {
-              const error = new Error(`No Spotify device is active`);
-              error.code = 'no_active_device';
-              throw error;
-          }
-          this._deviceState.set(env.app.uniqueId, [deviceId, deviceName]);
-          return { device: new Tp.Value.Entity(deviceId, deviceName) };
-        }else{
-          return { device: new Tp.Value.Entity(deviceState[0], deviceState[1]) };
+            let devices = await this.get_get_available_devices();
+            const [deviceId, deviceName] = this._findActiveDevice(devices);
+            if (deviceId === null) {
+                const error = new Error(`No Spotify device is active`);
+                error.code = 'no_active_device';
+                throw error;
+            }
+            this._deviceState.set(env.app.uniqueId, [deviceId, deviceName]);
+            return { device: new Tp.Value.Entity(deviceId, deviceName) };
+        } else {
+            return { device: new Tp.Value.Entity(deviceState[0], deviceState[1]) };
         }
     }
 
@@ -708,3 +723,72 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         await this.http_put_default_options(REPEAT_URL + querystring.stringify({ state: repeat }), '');
     }
 };
+
+function entityMatchScore(searchTerm, candidate) {
+
+    let searchTermTokens = searchTerm.split(' ');
+
+    let score = 0;
+    score -= 0.1 * editDistance(searchTerm, candidate);
+
+    let candTokens = candidate.split(' ');
+    candTokens = new Set(candTokens);
+
+    for (let candToken of candTokens) {
+        let found = false;
+        for (let token of searchTermTokens) {
+            if (editDistance(token, candToken) <= 1 ) {
+                score += 10;
+                found = true;
+            } else if (candToken.startsWith(token)) {
+                score += 0.5;
+            }
+        }
+
+        // give a small boost to ignorable tokens that are missing
+        // this offsets the char-level edit distance
+        if (!found && ['the', 'hotel', 'house', 'restaurant'].includes(candToken))
+            score += 1;
+
+    }
+
+    return score;
+}
+
+function editDistance(one, two) {
+    if (typeof one === 'string' && typeof two === 'string') {
+        if (one === two)
+            return 0;
+        if (one.indexOf(two) >= 0)
+            return one.length-two.length;
+        if (two.indexOf(one) >= 0)
+            return two.length-one.length;
+    }
+
+    const R = one.length+1;
+    const C = two.length+1;
+    const matrix = new Array(R*C);
+    function set(i, j, v) {
+        assert(i*C + j < R*C);
+        matrix[i*C + j] = v;
+    }
+    function get(i, j) {
+        assert(i*C + j < R*C);
+        return matrix[i*C + j];
+    }
+
+    for (let j = 0; j < C; j++)
+        set(0, j, j);
+    for (let i = 1; i < R; i++)
+        set(i, 0, i);
+    for (let i = 1; i <= one.length; i++) {
+        for (let j = 1; j <= two.length; j++) {
+            if (one[i-1] === two[j-1])
+                set(i, j, get(i-1, j-1));
+            else
+                set(i, j, 1 + Math.min(Math.min(get(i-1, j), get(i, j-1)), get(i-1, j-1)));
+        }
+    }
+
+    return get(one.length, two.length);
+}
