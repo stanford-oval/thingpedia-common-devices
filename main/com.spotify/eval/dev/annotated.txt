@@ -488,7 +488,7 @@ UT: now => @com.spotify.song(), contains(artists, null^^com.spotify:artist("daru
 # snips-nlu/spotify-213
 U: Play 2gether by Jade Puget
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.spotify.song(), album == null^^com.spotify:album("2gether") && contains(artists, null^^com.spotify:artist("jade puget")) => @com.spotify.play_song(song=id);
+UT: now => @com.spotify.song(), album == null^^com.spotify:album("2 gether") && contains(artists, null^^com.spotify:artist("jade puget")) => @com.spotify.play_song(song=id);
 ====
 # snips-nlu/spotify-214
 U: play Wow by Jon Theodore
@@ -2795,7 +2795,7 @@ UT: now => (@com.spotify.song(), id =~ "pocahontas" && contains(artists, null^^c
 # snips-nlu/spotify-1742
 U: play some popular bryan gregory songs
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => sort popularity desc of (@com.spotify.song(), contains(artists, null^^com.spotify:artist("bryan gregory"))) => @com.spotify.play_song(song=id);
+UT: now => (sort popularity desc of (@com.spotify.song(), contains(artists, null^^com.spotify:artist("bryan gregory"))))[1] => @com.spotify.play_song(song=id);
 ====
 # snips-nlu/spotify-1747
 U: Play some Techno

@@ -272,7 +272,7 @@ datadir/fewshot: eval/$(release)/train/user.tsv eval/$(release)/dev/user.tsv
 
 datadir: datadir/agent datadir/user datadir/fewshot $(foreach v,$(subdataset_ids),eval/$(release)/synthetic-$(v).txt)
 	cat eval/$(release)/synthetic-*.txt > $@/synthetic.txt
-	python3 ./scripts/measure.py $@ > $@/stats
+	$(genie) measure-training-set $@ > $@/stats
 	touch $@
 
 clean:
