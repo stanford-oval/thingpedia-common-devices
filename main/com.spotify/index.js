@@ -77,6 +77,14 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             });
     }
 
+    http_put_default_options(url, data) {
+        return this.http_put(url, data, {
+            useOAuth2: this,
+            dataContentType: 'application/json',
+            accept: 'application/json'
+        });
+    }
+
     http_post_default_options(url, data) {
         console.log("post url is " + url);
         console.log(data);
