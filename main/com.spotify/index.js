@@ -524,7 +524,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             console.log(devices[i].is_active);
             if (devices[i].is_active) {
                 console.log("found an active device");
-                return [devices[0].id, devices[0].name];
+                return [devices[i].id, devices[i].name];
             }
         }
         console.log("setting active device");
