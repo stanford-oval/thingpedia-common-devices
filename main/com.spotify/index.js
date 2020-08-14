@@ -238,13 +238,13 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
     async songs_by_search(query, deviceID) {
         const searchResults = await this.search(query, "track", 5);
-        if (!Object.prototype.hasOwnProperty.call(searchResults, "tracks") || searchResults.tracks.total === 0) throw new Error(`Query ${query} failed`);
+        if (!Object.prototype.hasOwnProperty.call(searchResults, "tracks") || searchResults.tracks.total === 0) return [];
         return this.parse_tracks(searchResults.tracks.items, deviceID);
     }
 
     async songs_by_artist(artists, sortDirection) {
         const searchResults = await this.search(artists[0], "artist", 1);
-        if (!Object.prototype.hasOwnProperty.call(searchResults, 'artists') || searchResults.artists.total === 0) throw new Error(`Artist ${artists[0]} not found`);
+        if (!Object.prototype.hasOwnProperty.call(searchResults, 'artists') || searchResults.artists.total === 0) return [];
         const artistID = searchResults.artists.items[0].id;
         var albums = await this.albums_get_by_artist_id(artistID, "album,single");
         albums = albums.sort((album1, album2) => {
@@ -268,7 +268,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             albumIds.push(album.id);
             if (albumIds.length >= 20) break;
         }
-        if (albumIds.length === 0) throw new Error("No songs found");
+        if (albumIds.length === 0) return [];
         const albumItems = (await this.albums_get_by_id(albumIds)).albums;
         const songIds = albumItems.map((album) => album.tracks.items.map((track) => track.id));
         const trackItems = await this.tracks_get_by_id(songIds);
@@ -277,7 +277,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
     async albums_by_search(query, artistURI) {
         const searchResults = await this.search(query, "album", 5);
-        if (!Object.prototype.hasOwnProperty.call(searchResults, "albums") || searchResults.albums.total === 0) throw new Error(`Query ${query} failed`);
+        if (!Object.prototype.hasOwnProperty.call(searchResults, "albums") || searchResults.albums.total === 0) return [];
         const ids = searchResults.albums.items.map((album) => album.id);
         const albumItems = (await this.albums_get_by_id(ids)).albums;
         var albums = [];
@@ -297,7 +297,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
     async albums_by_artist(artists, sortDirection) {
         const searchResults = await this.search(artists[0], "artist", 1);
-        if (!Object.prototype.hasOwnProperty.call(searchResults, 'artists') || searchResults.artists.total === 0) throw new Error(`Artist ${artists[0]} not found`);
+        if (!Object.prototype.hasOwnProperty.call(searchResults, 'artists') || searchResults.artists.total === 0) return [];
         const artistID = searchResults.artists.items[0].id;
         var artistAlbums = await this.albums_get_by_artist_id(artistID, "album");
         artistAlbums = artistAlbums.sort((album1, album2) => {
@@ -313,7 +313,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             return false;
         });
         var ids = artistAlbums.map((album) => album.id);
-        if (ids.length === 0) throw new Error("No songs found");
+        if (ids.length === 0) return [];
         //20 is the maximum amount of albums that you can query at once
         if (ids.length > 20) ids.length = 20;
         var albumItems = (await this.albums_get_by_id(ids)).albums;
@@ -380,15 +380,17 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 let query = (idFilter + yearFilter + genreFilter + albumFilter).trim();
                 let songs = await this.songs_by_search(query, deviceID);
                 let searchTerm = idFilter.split("track:")[1].trim();
-                songs.sort((a,b)=> {
+                songs.sort((a, b) => {
                     return entityMatchScore(searchTerm, b.id.display.toLowerCase()) - entityMatchScore(searchTerm, a.id.display.toLowerCase());
                 });
                 return songs;
             } else {
                 let query = (idFilter + yearFilter + artistFilter + genreFilter + albumFilter).trim();
                 let songs = await this.songs_by_search(query, deviceID);
+                if (songs.length === 0 && artists.length === 1)
+                    songs = await this.songs_by_artist(artists);
                 let searchTerm = idFilter.split("track:")[1].trim();
-                songs.sort((a,b)=> {
+                songs.sort((a, b) => {
                     return entityMatchScore(searchTerm, b.id.display.toLowerCase()) - entityMatchScore(searchTerm, a.id.display.toLowerCase());
                 });
                 return songs;
@@ -419,7 +421,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         //default query will be to just get the most popular artists right now
         const query = (idFilter + genreFilter).trim() || `year:${new Date().getFullYear()}`;
         const searchResults = await this.search(query, "artist", 5);
-        if (!Object.prototype.hasOwnProperty.call(searchResults, 'artists') || searchResults.artists.total === 0) throw new Error(`Query ${query} failed`);
+        if (!Object.prototype.hasOwnProperty.call(searchResults, 'artists') || searchResults.artists.total === 0) return [];
         var artists = [];
         for (const artist of searchResults.artists.items) {
             const id = new Tp.Value.Entity(artist.uri, artist.name);
@@ -468,7 +470,10 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 return this.albums_by_search(query);
             } else {
                 let query = (idFilter + yearFilter + artistFilter).trim();
-                return this.albums_by_search(query);
+                let albums = await this.albums_by_search(query);
+                if (albums.length === 0 && artists.length === 1)
+                    albums = await this.albums_by_artist(artists);
+                return albums;
             }
         } else if (hints && hints.sort && hints.sort[0] === "release_date" && artists.length > 0) {
             return this.albums_by_artist(artists, hints.sort[1]);
@@ -737,7 +742,7 @@ function entityMatchScore(searchTerm, candidate) {
     for (let candToken of candTokens) {
         let found = false;
         for (let token of searchTermTokens) {
-            if (editDistance(token, candToken) <= 1 ) {
+            if (editDistance(token, candToken) <= 1) {
                 score += 10;
                 found = true;
             } else if (candToken.startsWith(token)) {
@@ -760,21 +765,23 @@ function editDistance(one, two) {
         if (one === two)
             return 0;
         if (one.indexOf(two) >= 0)
-            return one.length-two.length;
+            return one.length - two.length;
         if (two.indexOf(one) >= 0)
-            return two.length-one.length;
+            return two.length - one.length;
     }
 
-    const R = one.length+1;
-    const C = two.length+1;
-    const matrix = new Array(R*C);
+    const R = one.length + 1;
+    const C = two.length + 1;
+    const matrix = new Array(R * C);
+
     function set(i, j, v) {
-        assert(i*C + j < R*C);
-        matrix[i*C + j] = v;
+        assert(i * C + j < R * C);
+        matrix[i * C + j] = v;
     }
+
     function get(i, j) {
-        assert(i*C + j < R*C);
-        return matrix[i*C + j];
+        assert(i * C + j < R * C);
+        return matrix[i * C + j];
     }
 
     for (let j = 0; j < C; j++)
@@ -783,10 +790,10 @@ function editDistance(one, two) {
         set(i, 0, i);
     for (let i = 1; i <= one.length; i++) {
         for (let j = 1; j <= two.length; j++) {
-            if (one[i-1] === two[j-1])
-                set(i, j, get(i-1, j-1));
+            if (one[i - 1] === two[j - 1])
+                set(i, j, get(i - 1, j - 1));
             else
-                set(i, j, 1 + Math.min(Math.min(get(i-1, j), get(i, j-1)), get(i-1, j-1)));
+                set(i, j, 1 + Math.min(Math.min(get(i - 1, j), get(i, j - 1)), get(i - 1, j - 1)));
         }
     }
 
