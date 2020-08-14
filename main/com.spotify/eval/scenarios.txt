@@ -200,11 +200,22 @@ A: Alright, your request was completed successfully\.?
 A: >> expecting = null
 
 ====
-# 21-player-previous (req=com.spotify)
+# 21-by-featured-artist (req=com.spotify)
 
-# play the previous song
+# play senorita by camila cabello
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: now => @com.spotify.player_previous();
+U: now => (@com.spotify.song(), id =~ ("senorita") && contains(artists, null^^com.spotify:artist("camila cabello")))[1] => @com.spotify.play_song(song=id);
 
-A: Alright, your request was completed successfully\.?
+A: Alright, I played Señorita( on Spotify)?( on (Coolest Computer|giovanni-xps15))? ?.
+A: >> expecting = null
+
+====
+# 22-song-failure (req=com.spotify)
+
+# play totally fake song
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => (@com.spotify.song(), id =~ ("totally fake song")) => @com.spotify.play_song(song=id);
+
+# FIXME this response needs to be fixed.
+A: Alright, I ied would like to listen to that.
 A: >> expecting = null
