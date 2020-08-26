@@ -44,8 +44,8 @@ synthetic_flags ?= \
 	undefined_filter \
 	$(NULL)
 
-target_pruning_size ?= 100
-minibatch_size ?= 300
+target_pruning_size ?= 200
+minibatch_size ?= 1000
 target_size ?= 1
 subdatasets ?= 6
 subdataset_ids := $(shell seq 1 $(subdatasets))
