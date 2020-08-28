@@ -34,6 +34,7 @@ fewshot_train_files ?= eval/$(release)/train/annotated.txt $(foreach d,$($(relea
 
 synthetic_flags ?= \
 	dialogues \
+	aggregation \
 	multifilters \
 	nostream \
 	notablejoin \
@@ -43,14 +44,15 @@ synthetic_flags ?= \
 	undefined_filter \
 	$(NULL)
 
-target_pruning_size ?= 100
-minibatch_size ?= 300
+target_pruning_size ?= 200
+minibatch_size ?= 1000
 target_size ?= 1
 subdatasets ?= 6
 subdataset_ids := $(shell seq 1 $(subdatasets))
 max_turns ?= 4
 max_depth ?= 8
 debug_level ?= 1
+subsample_thingpedia ?= 1
 update_canonical_flags ?= --algorithm bert,adj,bart --paraphraser-model ./models/paraphraser-bart
 synthetic_expand_factor ?= 5
 paraphrase_expand_factor ?= 10
@@ -58,6 +60,10 @@ quoted_fraction ?= 0.05
 
 generate_flags ?= $(foreach v,$(synthetic_flags),--set-flag $(v)) --target-pruning-size $(target_pruning_size) --max-turns $(max_turns) --maxdepth $(max_depth)
 custom_gen_flags ?=
+
+auto_annotate_algorithm ?= bert,adj,bart
+auto_annotate_mlm_model ?= bert-large-uncased
+auto_annotate_custom_flags ?=
 
 template_deps = \
 	$(geniedir)/languages/thingtalk/*.js \
@@ -86,13 +92,14 @@ genie_k8s_owner ?=
 
 .PRECIOUS: %/node_modules
 .PHONY: all clean lint
+.SECONDARY:
 
 all: $($(release)_pkgfiles:%/package.json=build/%.zip)
 	@:
 
 build/%.zip: % %/node_modules
 	mkdir -p `dirname $@`
-	cd $< ; zip -x '*.tt' '*.yml' 'node_modules/.bin/*' 'icon.png' 'eval/*' 'simulation/*' 'database-map.tsv' -r $(abspath $@) .
+	cd $< ; zip -x '*.tt' '*.yml' 'node_modules/.bin/*' 'icon.png' 'secrets.json' 'eval/*' 'simulation/*' 'database-map.tsv' -r $(abspath $@) .
 
 %/node_modules: %/package.json %/yarn.lock
 	mkdir -p $@
@@ -109,6 +116,23 @@ $(schema_file): $(addsuffix /manifest.tt,$($(release)_devices))
 $(dataset_file): $(addsuffix /dataset.tt,$($(release)_devices))
 	cat $^ > $@.tmp
 	if test -f $@ && cmp $@.tmp $@ ; then rm $@.tmp ; else mv $@.tmp $@ ; fi
+
+eval/$(release)/constants.tsv: $(schema_file) parameter-datasets.tsv
+	$(genie) sample-constants -o $@.tmp \
+	  --thingpedia $(schema_file) \
+	  --parameter-datasets parameter-datasets.tsv
+	if test -f $@ && cmp $@.tmp $@ ; then rm $@.tmp ; else mv $@.tmp $@ ; fi
+
+%/manifest.auto.tt: %/manifest.tt eval/$(release)/constants.tsv parameter-datasets.tsv .embeddings/paraphraser-bart
+	$(genie) auto-annotate -o $@.tmp --thingpedia $< \
+	  --dataset custom \
+	  --constants eval/$(release)/constants.tsv \
+	  --parameter-datasets parameter-datasets.tsv \
+	  --algorithm $(auto_annotate_algorithm) \
+	  --model $(auto_annotate_mlm_model) \
+	  --paraphraser-model .embeddings/paraphraser-bart \
+	  $(auto_annotate_custom_flags)
+	mv $@.tmp $@
 
 eval/$(release)/database-map.tsv: $(addsuffix /database-map.tsv,$($(release)_devices))
 	for f in $^ ; do \
@@ -127,11 +151,25 @@ parameter-datasets.tsv:
 	  download-string-values --manifest $@.tmp --append-manifest -d parameter-datasets
 	mv $@.tmp $@
 
+.embeddings/paraphraser-bart:
+	mkdir -p .embeddings
+	wget -c --no-verbose https://almond-static.stanford.edu/test-data/paraphraser-bart.tar.xz
+	tar -C .embeddings -xvf paraphraser-bart.tar.xz
+
 eval/$(release)/synthetic-%.txt : $(schema_file) $(dataset_file) $(template_deps) entities.json
+	if test $(subsample_thingpedia) = 1 ; then \
+	  cp $(schema_file) eval/$(release)/schema-$*.tt ; \
+	else \
+	  $(genie) subsample-thingpedia \
+	    -o eval/$(release)/schema-$*.tt \
+	    --fraction $(subsample_thingpedia) \
+	    --random-seed $@ \
+	    $(schema_file) ; \
+	fi
 	$(genie) generate-dialogs \
 	  --locale en-US --target-language thingtalk \
 	  --template $(geniedir)/languages/$(template_file) \
-	  --thingpedia $(schema_file) --entities entities.json --dataset $(dataset_file) \
+	  --thingpedia eval/$(release)/schema-$*.tt --entities entities.json --dataset $(dataset_file) \
 	  -o $@.tmp -f txt $(generate_flags) --debug $(debug_level) $(custom_gen_flags) --random-seed $@ \
 	  -n $(target_size) -B $(minibatch_size)
 	mv $@.tmp $@
@@ -244,7 +282,7 @@ datadir/fewshot: eval/$(release)/train/user.tsv eval/$(release)/dev/user.tsv
 
 datadir: datadir/agent datadir/user datadir/fewshot $(foreach v,$(subdataset_ids),eval/$(release)/synthetic-$(v).txt)
 	cat eval/$(release)/synthetic-*.txt > $@/synthetic.txt
-	python3 ./scripts/measure.py $@ > $@/stats
+	$(genie) measure-training-set $@ > $@/stats
 	touch $@
 
 clean:

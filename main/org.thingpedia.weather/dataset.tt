@@ -82,13 +82,13 @@ dataset @org.thingpedia.weather language "en" {
     #[id=53266933]
     #[name="MonitorGetCurrentWeatherOnWeatherapiWithLocationByTemperatureLessThan"];
 
-    stream (p_temperature :Measure(C)) := edge (monitor (@org.thingpedia.weather.current(location=$context.location.current_location))) on temperature >= p_temperature
+    stream (p_temperature :Measure(C)) := edge (monitor (@org.thingpedia.weather.current())) on temperature >= p_temperature
     #_[utterances=["when the temperature outside is above $p_temperature",
                    "when it 's hotter outside than $p_temperature"]]
     #[id=53266935]
     #[name="MonitorGetCurrentWeatherOnWeatherapiWithLocationByTemperatureGreaterThan1"];
 
-    stream (p_temperature :Measure(C)) := edge (monitor (@org.thingpedia.weather.current(location=$context.location.current_location))) on temperature <= p_temperature
+    stream (p_temperature :Measure(C)) := edge (monitor (@org.thingpedia.weather.current())) on temperature <= p_temperature
     #_[utterances=["when the temperature outside is below $p_temperature",
                    "when it 's colder outside than $p_temperature"]]
     #[id=53266937]
@@ -100,7 +100,7 @@ dataset @org.thingpedia.weather language "en" {
     #[id=53266939]
     #[name="MonitorGetCurrentWeatherOnWeatherapiWithLocationByHumidityGreaterThan"];
 
-    stream := edge (monitor (@org.thingpedia.weather.sunrise(location=$context.location.current_location))) on sunset == true
+    stream := edge (monitor (@org.thingpedia.weather.sunrise())) on sunset == true
     #_[utterances=["when sun goes down",
                    "after sunset",
                    "when sunset",
@@ -108,7 +108,7 @@ dataset @org.thingpedia.weather language "en" {
     #[id=53266945]
     #[name="MonitorGetSunriseOnWeatherapiWithLocationBySunset"];
 
-    stream := edge (monitor (@org.thingpedia.weather.sunrise(location=$context.location.current_location))) on sunrisen == true
+    stream := edge (monitor (@org.thingpedia.weather.sunrise())) on sunrisen == true
     #_[utterances=["when sun comes up",
                    "after sunrise",
                    "when sunrise",

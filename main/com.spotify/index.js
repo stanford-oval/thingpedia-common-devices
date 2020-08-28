@@ -33,6 +33,7 @@
 "use strict";
 const Tp = require("thingpedia");
 const querystring = require("querystring");
+const assert = require('assert');
 
 const PLAY_URL = "https://api.spotify.com/v1/me/player/play";
 const SEARCH_URL = "https://api.spotify.com/v1/search?";
@@ -54,7 +55,10 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
     constructor(engine, state) {
         super(engine, state);
-        this.uniqueId = "com.spotify-" + this.state.profile.id;
+        this.uniqueId = "com.spotify-" + this.state.id;
+        this._state = new Map();
+        this._queryResults = new Map();
+        this._deviceState = new Map();
     }
 
     http_get(url) {
@@ -71,6 +75,14 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             (e) => {
                 throw new Error(JSON.parse(e.detail).error.message);
             });
+    }
+
+    http_put_default_options(url, data) {
+        return this.http_put(url, data, {
+            useOAuth2: this,
+            dataContentType: 'application/json',
+            accept: 'application/json'
+        });
     }
 
     http_post_default_options(url, data) {
@@ -181,7 +193,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         });
     }
 
-    async parse_tracks(tracks) {
+    async parse_tracks(tracks, deviceID) {
         //const ids = tracks.map((track) => new Tp.Value.Entity(track.id, track.name));
         const ids = tracks.map((track) => track.id);
         const artistIds = tracks.map((track) => track.artists[0].id);
@@ -193,6 +205,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             const release_date = new Date(tracks[i].album.release_date);
             const artists = tracks[i].artists.map((artist) => new Tp.Value.Entity(artist.uri, artist.name));
             const album = new Tp.Value.Entity(tracks[i].album.uri, tracks[i].album.name);
+            const id = new Tp.Value.Entity(tracks[i].uri, tracks[i].name);
             //You can't get the audio features for some songs, so we're setting 0.5 as a default value
             var energy = 0.5;
             var danceability = 0.5;
@@ -201,7 +214,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 danceability = audioFeatures[i].danceability;
             }
             const songObj = {
-                id: new Tp.Value.Entity(tracks[i].uri, tracks[i].name),
+                id,
                 artists,
                 album,
                 genres: genres[i],
@@ -210,20 +223,36 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 energy: energy * 100,
                 danceability: danceability * 100,
             };
+            if (deviceID) {
+                let results = this._queryResults.get(deviceID);
+                if (!results) {
+                    this._queryResults.set(deviceID, {
+                        [String(id)]: songObj
+                    });
+                } else {
+                    results[String(id)] = songObj;
+                }
+            }
+
             songs.push(songObj);
         }
-        return songs;
+
+        const filteredSongs = Array.from(new Set(songs.map((song) => String(song.id.display))))
+            .map((song_name) => {
+                return songs.find((song) => song.id.display === song_name);
+            });
+        return filteredSongs;
     }
 
-    async songs_by_search(query, artistURI) {
-        const searchResults = await this.search(query, "track", 50);
-        if (!Object.prototype.hasOwnProperty.call(searchResults, "tracks") || searchResults.tracks.total === 0) throw new Error(`Query ${query} failed`);
-        return this.parse_tracks(searchResults.tracks.items);
+    async songs_by_search(query, deviceID) {
+        const searchResults = await this.search(query, "track", 5);
+        if (!Object.prototype.hasOwnProperty.call(searchResults, "tracks") || searchResults.tracks.total === 0) return [];
+        return this.parse_tracks(searchResults.tracks.items, deviceID);
     }
 
     async songs_by_artist(artists, sortDirection) {
         const searchResults = await this.search(artists[0], "artist", 1);
-        if (!Object.prototype.hasOwnProperty.call(searchResults, 'artists') || searchResults.artists.total === 0) throw new Error(`Artist ${artists[0]} not found`);
+        if (!Object.prototype.hasOwnProperty.call(searchResults, 'artists') || searchResults.artists.total === 0) return [];
         const artistID = searchResults.artists.items[0].id;
         var albums = await this.albums_get_by_artist_id(artistID, "album,single");
         albums = albums.sort((album1, album2) => {
@@ -245,8 +274,9 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             totalSongs += album.total_tracks;
             if (totalSongs > 50) break;
             albumIds.push(album.id);
+            if (albumIds.length >= 20) break;
         }
-        if (albumIds.length === 0) throw new Error("No songs found");
+        if (albumIds.length === 0) return [];
         const albumItems = (await this.albums_get_by_id(albumIds)).albums;
         const songIds = albumItems.map((album) => album.tracks.items.map((track) => track.id));
         const trackItems = await this.tracks_get_by_id(songIds);
@@ -254,8 +284,8 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     }
 
     async albums_by_search(query, artistURI) {
-        const searchResults = await this.search(query, "album", 20);
-        if (!Object.prototype.hasOwnProperty.call(searchResults, "albums") || searchResults.albums.total === 0) throw new Error(`Query ${query} failed`);
+        const searchResults = await this.search(query, "album", 5);
+        if (!Object.prototype.hasOwnProperty.call(searchResults, "albums") || searchResults.albums.total === 0) return [];
         const ids = searchResults.albums.items.map((album) => album.id);
         const albumItems = (await this.albums_get_by_id(ids)).albums;
         var albums = [];
@@ -275,7 +305,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
     async albums_by_artist(artists, sortDirection) {
         const searchResults = await this.search(artists[0], "artist", 1);
-        if (!Object.prototype.hasOwnProperty.call(searchResults, 'artists') || searchResults.artists.total === 0) throw new Error(`Artist ${artists[0]} not found`);
+        if (!Object.prototype.hasOwnProperty.call(searchResults, 'artists') || searchResults.artists.total === 0) return [];
         const artistID = searchResults.artists.items[0].id;
         var artistAlbums = await this.albums_get_by_artist_id(artistID, "album");
         artistAlbums = artistAlbums.sort((album1, album2) => {
@@ -291,7 +321,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             return false;
         });
         var ids = artistAlbums.map((album) => album.id);
-        if (ids.length === 0) throw new Error("No songs found");
+        if (ids.length === 0) return [];
         //20 is the maximum amount of albums that you can query at once
         if (ids.length > 20) ids.length = 20;
         var albumItems = (await this.albums_get_by_id(ids)).albums;
@@ -322,8 +352,8 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (hints && hints.filter) {
             for (let [pname, op, value] of hints.filter) {
                 if (pname === "id" && (op === "==" || op === "=~")) {
-                    if (value instanceof Tp.Value.Entity) idFilter = `track:"${value.display}" `;
-                    else idFilter = `track:"${value}" `;
+                    if (value instanceof Tp.Value.Entity) idFilter = `track:"${value.display.toLowerCase()}" `;
+                    else idFilter = `track:"${value.toLowerCase()}" `;
                 }
                 if (pname === "artists" && (op === "contains" || op === "contains~")) {
                     if (value instanceof Tp.Value.Entity) artists.push(value.display.toLowerCase());
@@ -340,20 +370,38 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 } else if (pname === "genres" && (op === "contains" || op === "contains~")) {
                     genreFilter = `genre:"${value.toLowerCase()}" `;
                 } else if (pname === "album" && (op === "==" || op === "=~")) {
-                    albumFilter = `album:"${value.toLowerCase()}" `;
+                    if (value instanceof Tp.Value.Entity) albumFilter = `album:"${value.display.toLowerCase()}" `;
+                    else albumFilter = `album:"${value.toLowerCase()}" `;
+
                 }
 
             }
         }
+        let deviceID;
+        if (!hints || !hints.sort)
+            deviceID = env.app.uniqueId;
+
         //you can't search for multiple artists because when searching by artist spotify only returns songs where the input artist is the main artist
         //so if you search for a song where an artist is featured or there are multiple artists then there will problems.
         if (idFilter) {
             if (artists.length > 1) {
                 let query = (idFilter + yearFilter + genreFilter + albumFilter).trim();
-                return this.songs_by_search(query);
+                let songs = await this.songs_by_search(query, deviceID);
+                let searchTerm = idFilter.split("track:")[1].trim();
+                songs.sort((a, b) => {
+                    return entityMatchScore(searchTerm, b.id.display.toLowerCase()) - entityMatchScore(searchTerm, a.id.display.toLowerCase());
+                });
+                return songs;
             } else {
                 let query = (idFilter + yearFilter + artistFilter + genreFilter + albumFilter).trim();
-                return this.songs_by_search(query);
+                let songs = await this.songs_by_search(query, deviceID);
+                if (songs.length === 0 && artists.length === 1)
+                    songs = await this.songs_by_artist(artists);
+                let searchTerm = idFilter.split("track:")[1].trim();
+                songs.sort((a, b) => {
+                    return entityMatchScore(searchTerm, b.id.display.toLowerCase()) - entityMatchScore(searchTerm, a.id.display.toLowerCase());
+                });
+                return songs;
             }
         } else if (hints && hints.sort && hints.sort[0] === "release_date" && artists.length > 0) {
             return this.songs_by_artist(artists, hints.sort[1]);
@@ -361,7 +409,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             return this.songs_by_artist(artists);
         } else {
             const query = (yearFilter + artistFilter + genreFilter + albumFilter).trim() || `year:${new Date().getFullYear()} `;
-            return this.songs_by_search(query);
+            return this.songs_by_search(query, deviceID);
         }
     }
 
@@ -380,8 +428,8 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         }
         //default query will be to just get the most popular artists right now
         const query = (idFilter + genreFilter).trim() || `year:${new Date().getFullYear()}`;
-        const searchResults = await this.search(query, "artist", 20);
-        if (!Object.prototype.hasOwnProperty.call(searchResults, 'artists') || searchResults.artists.total === 0) throw new Error(`Query ${query} failed`);
+        const searchResults = await this.search(query, "artist", 5);
+        if (!Object.prototype.hasOwnProperty.call(searchResults, 'artists') || searchResults.artists.total === 0) return [];
         var artists = [];
         for (const artist of searchResults.artists.items) {
             const id = new Tp.Value.Entity(artist.uri, artist.name);
@@ -430,7 +478,10 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 return this.albums_by_search(query);
             } else {
                 let query = (idFilter + yearFilter + artistFilter).trim();
-                return this.albums_by_search(query);
+                let albums = await this.albums_by_search(query);
+                if (albums.length === 0 && artists.length === 1)
+                    albums = await this.albums_by_artist(artists);
+                return albums;
             }
         } else if (hints && hints.sort && hints.sort[0] === "release_date" && artists.length > 0) {
             return this.albums_by_artist(artists, hints.sort[1]);
@@ -486,7 +537,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             console.log(devices[i].is_active);
             if (devices[i].is_active) {
                 console.log("found an active device");
-                return [devices[0].id, devices[0].name];
+                return [devices[i].id, devices[i].name];
             }
         }
         console.log("setting active device");
@@ -511,29 +562,44 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         await this.http_put(PLAY_URL + `?device_id=${deviceId}`, data, options);
         return { device: new Tp.Value.Entity(deviceId, deviceName) };
     }
-    async player_queue_helper(uri) {
-        let devices = await this.get_get_available_devices();
+    async player_queue_helper(uri, [deviceId, deviceName]) {
         if (this._testMode())
             return { device: new Tp.Value.Entity('mock', 'Coolest Computer') };
-        const [deviceId, deviceName] = this._findActiveDevice(devices);
-        if (deviceId === null) {
-            const error = new Error(`No Spotify device is active`);
-            error.code = 'no_active_device';
-            throw error;
-        }
 
         await this.http_post_default_options(QUEUE_URL + `?uri=${encodeURIComponent(uri)}&device_id=${deviceId}`, '');
         return { device: new Tp.Value.Entity(deviceId, deviceName) };
     }
 
     async do_play_song({ song }, env) {
-        if (this.state.previous_uuid === env.app.uniqueId) {
-            return this.player_queue_helper(String(song));
+        let progstate = this._state.get(env.app.uniqueId);
+        if (!progstate) {
+            env.addExitProcedureHook(() => {
+                this._flushPlaySong(env);
+            });
+            this._state.set(env.app.uniqueId, [song]);
         } else {
-            this.state.previous_uuid = env.app.uniqueId;
-            return this.player_play_helper(JSON.stringify({ 'uris': [String(song)] }));
+            progstate.push(song);
+        }
+
+        if (this._testMode())
+            return { device: new Tp.Value.Entity('mock', 'Coolest Computer') };
+
+        let deviceState = this._deviceState.get(env.app.uniqueId);
+        if (!deviceState) {
+            let devices = await this.get_get_available_devices();
+            const [deviceId, deviceName] = this._findActiveDevice(devices);
+            if (deviceId === null) {
+                const error = new Error(`No Spotify device is active`);
+                error.code = 'no_active_device';
+                throw error;
+            }
+            this._deviceState.set(env.app.uniqueId, [deviceId, deviceName]);
+            return { device: new Tp.Value.Entity(deviceId, deviceName) };
+        } else {
+            return { device: new Tp.Value.Entity(deviceState[0], deviceState[1]) };
         }
     }
+
     async do_play_artist({ artist }, env) {
         const uri = String(artist);
         let data = {
@@ -542,6 +608,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         console.log("data is " + JSON.stringify(data));
         return this.player_play_helper(JSON.stringify(data));
     }
+
     async do_play_album({ album }, env) {
         const uri = String(album);
         let data = {
@@ -549,6 +616,82 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         };
         console.log("data is " + JSON.stringify(data));
         return this.player_play_helper(JSON.stringify(data));
+    }
+
+    async _flushPlaySong(env) {
+        const songs = this._state.get(env.app.uniqueId);
+        const album = this._findCommonAlbum(songs, env);
+        const artist = this._findCommonArtist(songs, env);
+        if (album && songs.length > 1) {
+            let data = {
+                context_uri: album,
+            };
+            return this.player_play_helper(JSON.stringify(data));
+        } else if (artist && songs.length > 1) {
+            let data = {
+                context_uri: artist,
+            };
+            return this.player_play_helper(JSON.stringify(data));
+        } else {
+            const output = await this.player_play_helper(JSON.stringify({ 'uris': [String(songs[0])] }));
+            let devices = await this.get_get_available_devices();
+            const [deviceId, deviceName] = this._findActiveDevice(devices);
+            if (deviceId === null && !this._testMode()) {
+                const error = new Error(`No Spotify device is active`);
+                error.code = 'no_active_device';
+                throw error;
+            }
+            for (var i = 1; i < songs.length; i++)
+                await this.player_queue_helper(String(songs[i]), [deviceId, deviceName]);
+
+            return output;
+        }
+    }
+
+    _findCommonAlbum(songs, env) {
+        var album;
+        const songObjs = this._queryResults.get(env.app.uniqueId);
+        if (!songObjs)
+            return null;
+
+        for (const song of songs) {
+            const result = songObjs[String(song)];
+            if (!result) {
+                return null;
+            } else {
+                if (!album)
+                    album = String(result.album);
+                else if (album !== String(result.album))
+                    return null;
+            }
+        }
+        return album;
+    }
+
+    _findCommonArtist(songs, env) {
+        var artists = [];
+        const songObjs = this._queryResults.get(env.app.uniqueId);
+        if (!songObjs)
+            return null;
+        for (const song of songs) {
+            const result = songObjs[String(song)];
+            if (!result) {
+                return null;
+            } else {
+                if (artists.length === 0) {
+                    artists = result.artists.map((artist) => String(artist));
+                } else {
+                    const songArtists = result.artists.map((artist) => String(artist));
+                    artists = artists.filter((value) => songArtists.includes(value));
+                    if (artists.length === 0)
+                        return null;
+                }
+            }
+        }
+        if (artists.length !== 1)
+            return null;
+        else
+            return artists[0];
     }
 
     async do_player_pause() {
@@ -593,3 +736,74 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         await this.http_put_default_options(REPEAT_URL + querystring.stringify({ state: repeat }), '');
     }
 };
+
+function entityMatchScore(searchTerm, candidate) {
+
+    let searchTermTokens = searchTerm.split(' ');
+
+    let score = 0;
+    score -= 0.1 * editDistance(searchTerm, candidate);
+
+    let candTokens = candidate.split(' ');
+    candTokens = new Set(candTokens);
+
+    for (let candToken of candTokens) {
+        let found = false;
+        for (let token of searchTermTokens) {
+            if (editDistance(token, candToken) <= 1) {
+                score += 10;
+                found = true;
+            } else if (candToken.startsWith(token)) {
+                score += 0.5;
+            }
+        }
+
+        // give a small boost to ignorable tokens that are missing
+        // this offsets the char-level edit distance
+        if (!found && ['the', 'hotel', 'house', 'restaurant'].includes(candToken))
+            score += 1;
+
+    }
+
+    return score;
+}
+
+function editDistance(one, two) {
+    if (typeof one === 'string' && typeof two === 'string') {
+        if (one === two)
+            return 0;
+        if (one.indexOf(two) >= 0)
+            return one.length - two.length;
+        if (two.indexOf(one) >= 0)
+            return two.length - one.length;
+    }
+
+    const R = one.length + 1;
+    const C = two.length + 1;
+    const matrix = new Array(R * C);
+
+    function set(i, j, v) {
+        assert(i * C + j < R * C);
+        matrix[i * C + j] = v;
+    }
+
+    function get(i, j) {
+        assert(i * C + j < R * C);
+        return matrix[i * C + j];
+    }
+
+    for (let j = 0; j < C; j++)
+        set(0, j, j);
+    for (let i = 1; i < R; i++)
+        set(i, 0, i);
+    for (let i = 1; i <= one.length; i++) {
+        for (let j = 1; j <= two.length; j++) {
+            if (one[i - 1] === two[j - 1])
+                set(i, j, get(i - 1, j - 1));
+            else
+                set(i, j, 1 + Math.min(Math.min(get(i - 1, j), get(i, j - 1)), get(i - 1, j - 1)));
+        }
+    }
+
+    return get(one.length, two.length);
+}

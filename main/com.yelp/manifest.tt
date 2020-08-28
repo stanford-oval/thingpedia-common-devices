@@ -38,7 +38,7 @@ class @com.yelp
 #[subcategory="service"]
 {
   import loader from @org.thingpedia.v2();
-  import config from @org.thingpedia.config.none();
+  import config from @org.thingpedia.config.none(api_key=$?);
 
   entity restaurant #_[description="Restaurants on Yelp"];
   entity restaurant_cuisine #_[description="Cuisines in Yelp"];
@@ -46,7 +46,7 @@ class @com.yelp
   list query restaurant(out id: Entity(com.yelp:restaurant)
                         #[conflict_filter=["cuisines", "price_range"]]
                         #[unique=true]
-                        #[string_values="gov.data:restaurant_names"]
+                        #[string_values="org.openstreetmap:restaurant"]
                         #_[canonical={
                           default="base",
                           base=["name"],
@@ -69,33 +69,45 @@ class @com.yelp
                           property=["# food", "# cuisine", "# category"],
                           adjective=["#"],
                           verb=["serves # cuisine", "serves # food", "offer # cuisine", "offer # food", "serves", "offers"],
-                          preposition=["in the # category"]
+                          preposition=["in the # category"],
+                          base_projection=["food", "cuisine"],
+                          verb_projection=["serve", "offer", "have"],
                         }],
                         out price : Enum(cheap, moderate, expensive, luxury)
                         #[conflict_filter=["id"]]
                         #_[canonical={
                           default="adjective",
                           base=["price range", "price"],
-                          property=[],
+                          property=["# price"],
+                          preposition=["in the # price range"],
                           adjective=["#", "# -ly priced"],
-                          adjective_enum={ luxury=["upscale", "fine-dining"] }
+                          adjective_enum={
+                            cheap=["inexpensive"],
+                            luxury=["upscale", "fine-dining"]
+                          }
                         }],
                         out rating: Number
                         #[min_number=1]
                         #[max_number=5]
                         #_[canonical={
                           default="passive_verb",
-                          base=["rating", "average rating"],
+                          base=["rating", "overall rating", "average rating", "customer rating", "review rating"],
                           passive_verb=["rated # star"],
                           adjective=["# star"],
-                          property=["rating", "# star rating"]
+                          property=["rating", "# star rating"],
+                          adjective_argmax=["top rated", "top-rated", "highest rated", "best rated", "best"],
+                          adjective_argmin=["worst rated", "worst"],
+                          projection_pronoun=["how"],
+                          passive_verb_projection=["rated"]
                         }]
                         #_[counted_object="stars"],
                         out review_count: Number
                         #_[canonical={
                           default="property",
                           base=["review count"],
-                          property=["# reviews"]
+                          property=["# reviews"],
+                          adjective_argmax=["most reviewed"],
+                          adjective_argmin=["least reviewed"]
                         }]
                         #_[counted_object="reviews"],
                         out geo: Location

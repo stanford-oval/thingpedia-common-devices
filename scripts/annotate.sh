@@ -2,7 +2,7 @@
 
 srcdir=`dirname $0`
 . $srcdir/lib.sh
-parse_args "$0" "release device user_nlu_model agent_nlu_model eval_set file_suffix=None offset=1" "$@"
+parse_args "$0" "release=universe device user_nlu_model agent_nlu_model eval_set=dev file_suffix=None offset=1" "$@"
 shift $n
 
 if test "${file_suffix}" = "None" ; then
@@ -17,13 +17,13 @@ make release="${release}" \
 	"eval/${release}/models/${agent_nlu_model}/best.pth"
 exec genie manual-annotate-dialog \
   --locale en-US \
-  --annotated ${release}/${device}/eval/${eval_set}/annotated${file_suffix}.txt \
-  --dropped ${release}/${device}/eval/${eval_set}/dropped${file_suffix}.txt \
-  --user-nlu-server "file://"$(realpath "eval/${release}/models/${user_nlu_model}/best.pth") \
-  --agent-nlu-server "file://"$(realpath "eval/${release}/models/${user_nlu_model}/best.pth") \
+  --annotated ${device}/eval/${eval_set}/annotated${file_suffix}.txt \
+  --dropped ${device}/eval/${eval_set}/dropped${file_suffix}.txt \
+  --user-nlu-server "file://"$(realpath "eval/${release}/models/${user_nlu_model}") \
+  --agent-nlu-server "file://"$(realpath "eval/${release}/models/${user_nlu_model}") \
   --thingpedia "eval/${release}/schema.tt" \
-  --database-file ${release}/${device}/database-map.tsv \
-  ${release}/${device}/eval/${eval_set}/input${file_suffix}.txt \
-  --offset "${offset}" \
+  --database-file ${device}/database-map.tsv \
+  ${device}/eval/${eval_set}/input${file_suffix}.txt \
+  --offset "${offset}" --append \
   "$@"
 

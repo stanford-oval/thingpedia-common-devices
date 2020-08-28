@@ -120,11 +120,6 @@ U: send myself a notification for testing.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => @org.thingpedia.builtin.thingengine.builtin.say(message="testing");
 ====
-# online/120829
-U: show popup saying water up to 130
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.builtin.thingengine.builtin.say(message="water up to 130");
-====
 # online/121215
 U: hey almond what time is it
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
@@ -199,3 +194,19 @@ UT: now => (@org.thingpedia.builtin.thingengine.builtin.commands()), device == "
 U: throw dice
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => @org.thingpedia.builtin.thingengine.builtin.get_random_between() => notify;
+====
+# manual/1
+U: tell me a random number
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @org.thingpedia.builtin.thingengine.builtin.get_random_between() => notify;
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: now => @org.thingpedia.builtin.thingengine.builtin.get_random_between() => notify
+C: #[results=[
+C:   { random=1 }
+C:  ]];
+A: 1.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: another one
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @org.thingpedia.builtin.thingengine.builtin.get_random_between() => notify;
+
