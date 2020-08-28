@@ -738,7 +738,11 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 };
 
 function entityMatchScore(searchTerm, candidate) {
+    if (searchTerm === candidate)
+        return 1000;
 
+    candidate = removeParenthesis(candidate);
+    searchTerm = removeParenthesis(searchTerm);
     let searchTermTokens = searchTerm.split(' ');
 
     let score = 0;
@@ -750,7 +754,7 @@ function entityMatchScore(searchTerm, candidate) {
     for (let candToken of candTokens) {
         let found = false;
         for (let token of searchTermTokens) {
-            if (editDistance(token, candToken) <= 1) {
+            if (token === candToken || (editDistance(token, candToken) <= 1 && token.length > 1)) {
                 score += 10;
                 found = true;
             } else if (candToken.startsWith(token)) {
@@ -761,11 +765,14 @@ function entityMatchScore(searchTerm, candidate) {
         // give a small boost to ignorable tokens that are missing
         // this offsets the char-level edit distance
         if (!found && ['the', 'hotel', 'house', 'restaurant'].includes(candToken))
-            score += 1;
-
+            score += 0.1 * candToken.length;
     }
 
     return score;
+}
+
+function removeParenthesis(str) {
+    return str.replace(/ \(.*?\)/g, '');
 }
 
 function editDistance(one, two) {
