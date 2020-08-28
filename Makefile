@@ -52,6 +52,7 @@ subdataset_ids := $(shell seq 1 $(subdatasets))
 max_turns ?= 4
 max_depth ?= 8
 debug_level ?= 1
+subsample_thingpedia ?= 1
 update_canonical_flags ?= --algorithm bert,adj,bart --paraphraser-model ./models/paraphraser-bart
 synthetic_expand_factor ?= 5
 paraphrase_expand_factor ?= 10
@@ -156,10 +157,19 @@ parameter-datasets.tsv:
 	tar -C .embeddings -xvf paraphraser-bart.tar.xz
 
 eval/$(release)/synthetic-%.txt : $(schema_file) $(dataset_file) $(template_deps) entities.json
+	if test $(subsample_thingpedia) = 1 ; then \
+	  cp $(schema_file) eval/$(release)/schema-$*.tt ; \
+	else \
+	  $(genie) subsample-thingpedia \
+	    -o eval/$(release)/schema-$*.tt \
+	    --fraction $(subsample_thingpedia) \
+	    --random-seed $@ \
+	    $(schema_file) ; \
+	fi
 	$(genie) generate-dialogs \
 	  --locale en-US --target-language thingtalk \
 	  --template $(geniedir)/languages/$(template_file) \
-	  --thingpedia $(schema_file) --entities entities.json --dataset $(dataset_file) \
+	  --thingpedia eval/$(release)/schema-$*.tt --entities entities.json --dataset $(dataset_file) \
 	  -o $@.tmp -f txt $(generate_flags) --debug $(debug_level) $(custom_gen_flags) --random-seed $@ \
 	  -n $(target_size) -B $(minibatch_size)
 	mv $@.tmp $@
