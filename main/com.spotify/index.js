@@ -34,6 +34,8 @@
 const Tp = require("thingpedia");
 const querystring = require("querystring");
 const assert = require('assert');
+const crypto = require('crypto');
+const { exec } = require("child_process");
 
 const PLAY_URL = "https://api.spotify.com/v1/me/player/play";
 const SEARCH_URL = "https://api.spotify.com/v1/search?";
@@ -59,6 +61,14 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         this._state = new Map();
         this._queryResults = new Map();
         this._deviceState = new Map();
+
+        const code = `killall spotifyd; spotifyd --username ${this.state.profile.id} --device-name ${this.state.profile.id} --token ${this.accessToken}`;
+        let hasSpotifyd = true;
+        exec(code, (error, stdout, stderr) => {
+            if (error) hasSpotifyd = false;
+        });
+        if (hasSpotifyd)
+            this._deviceId = crypto.createHash('sha1').update(this.state.userId).digest('hex'); //same protocol spotifyd uses
     }
 
     http_get(url) {
@@ -523,22 +533,51 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         });
     }
 
+    async get_available_device_ids() {
+        return this.http_get(AVAILABLE_DEVICES_URL).then((response) => {
+            const devices = JSON.parse(response).devices;
+            return devices.map((available_device) => available_device.id);
+        });
+    }
+
     _testMode() {
         return process.env.TEST_MODE === '1';
     }
 
-    _findActiveDevice(devices) {
-        if (devices.length === 0) {
-            console.log("no available devices");
-            return [null, null];
-        }
+    async _findActiveDevice(devices) {
         // device already active
+        let spotifydActive = false;
         for (let i = 0; i < devices.length; i++) {
-            console.log(devices[i].is_active);
+            if (devices[i].id === this._deviceId)
+                spotifydActive = true;
+
             if (devices[i].is_active) {
                 console.log("found an active device");
                 return [devices[i].id, devices[i].name];
             }
+        }
+        if (spotifydActive) {
+            return [this._deviceId, this.userId];
+        } else if (this._deviceId) {
+            //this code attempts to restart a spotifyd instance
+            const code = `killall spotifyd; spotifyd --username ${this.state.profile.id} --device-name ${this.state.profile.id} --token ${this.accessToken}`;
+            exec(code, (error, stdout, stderr) => {
+                if (error) throw new Error(error);
+                if (stderr) throw new Error(stderr);
+            });
+            let deviceIds = await this.get_available_device_ids();
+            const startTime = new Date().getTime();
+            //it takes a couple seconds for spotify's api to detect the new device
+            while (new Date().getTime() - startTime < 10000) {
+                deviceIds = await this.get_available_device_ids();
+                if (deviceIds.indexOf(this.deviceId) > -1) break;
+            }
+            if (deviceIds.indexOf(this.deviceId) > -1) return [this._deviceId, this.userId];
+            console.log("spotifyd instance failed to start");
+        }
+        if (devices.length === 0) {
+            console.log("no available devices");
+            return [null, null];
         }
         console.log("setting active device");
         return [devices[0].id, devices[0].name];
