@@ -52,17 +52,11 @@ class @org.thingpedia.weather
                               default="preposition",
                               default=["date"],
                               preposition=["on #"]
-                            }]
-                            #[default=new Date()],
+                            }],
                             out sunrise_time: Time
                             #_[canonical="sunrise time"],
                             out sunset_time: Time
-                            #_[canonical="sunset time"],
-                            // TODO what to do of these?
-                            out sunset: Boolean
-                            #_[canonical="sunset"],
-                            out sunrisen: Boolean
-                            #_[canonical="sunrisen"])
+                            #_[canonical="sunset time"])
   #_[result=["in ${location} , the sun rises at ${sunrise_time} and sets at ${sunset_time}",
              "on ${date} the sun rises at ${sunrise_time} and sets at ${sunset_time} in ${location}",
              "on ${date} the sun rises at ${sunrise_time}",
@@ -70,6 +64,7 @@ class @org.thingpedia.weather
   #_[canonical=["sunrise and sunset time", "sunrise time", "sunset time"]]
   #_[confirmation="the sunrise and sunset time for location $location"]
   #_[formatted=[{type="text",text="Sun times on ${date:date} for ${location}: rises at ${sunrise_time}, sets at ${sunset_time}"}]]
+  #[minimal_projection=["sunrise_time", "sunset_time"]]
   #[poll_interval=86400000ms]
   #[doc="Information about sunrise and sunset"];
 
@@ -87,8 +82,7 @@ class @org.thingpedia.weather
                             default="preposition",
                             default=["date"],
                             preposition=["on #"]
-                         }]
-                         #[default=new Date()],
+                         }],
                          out phase: Enum(new_moon,waxing_crescent,first_quarter,waxing_gibbous,full_moon,waning_gibbous,third_quarter,waning_crescent)
                          #_[canonical=["phase", "moon phase"]]
                          )
