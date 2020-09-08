@@ -189,6 +189,8 @@ async function roundtrip(testRunner, input, expected) {
         console.error('Invalid reply: ' + testRunner.buffer.trim());
         console.error('\nExpected: ' + expected.trim());
         _anyFailed = true;
+        if (testRunner.stopOnError)
+            process.exit(1);
         return false;
     }
     return true;
@@ -290,6 +292,11 @@ async function main() {
         action: 'storeTrue',
         help: 'Run scenarios in manual mode (might trigger side-effects, and run additional scenarios)'
     });
+    parser.addArgument('--stop-on-error', {
+        nargs: 0,
+        action: 'storeTrue',
+        help: 'Stop on the first error'
+    });
     parser.addArgument('--ids', {
         nargs: '+',
         required: false,
@@ -306,6 +313,7 @@ async function main() {
         process.env.TEST_MODE = '1';
 
     const testRunner = new TestRunner();
+    testRunner.stopOnError = args.stop_on_error;
     const rng = testRunner.rng.makeRNG();
 
     // takes either (1) device names to test, or (2) release channel to test
@@ -367,9 +375,11 @@ async function main() {
         await engine.close();
     }
 
-    if (_anyFailed)
+    if (_anyFailed) {
+        console.log('Some tests failed');
         process.exit(1);
-    else
+    } else {
         process.exit(0);
+    }
 }
 main();
