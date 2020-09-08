@@ -299,16 +299,39 @@ lint:
 		test ! -f $$d/package.json || $(eslint) $$d/*.js ; \
 	done
 
-evaluate: eval/$(release)/$(eval_set)/$(model).dialogue.results
-	@echo $<
-	@cat $<
+evaluate: eval/$(release)/$(eval_set)/$(model).dialogue.results eval/$(release)/$(eval_set)/$(model).nlu.results
+	@echo eval/$(release)/$(eval_set)/$(model).dialogue.results
+	@cat eval/$(release)/$(eval_set)/$(model).dialogue.results
+	@echo eval/$(release)/$(eval_set)/$(model).nlu.results
+	@cat eval/$(release)/$(eval_set)/$(model).nlu.results
 
-evaluate-detailed: eval/$(release)/$(eval_set)/$(model).nlu.results
-	@echo $<
-	@cat $<
+evaluate-upload:
+	for f in {dialogue,nlu}.{results,debug} ; do \
+	  aws s3 cp eval/$(release)/$(eval_set)/$(model).$$f s3://$(s3_bucket)/$(genie_k8s_owner)/workdir/$(genie_k8s_project)/eval/$(release)/$(eval_set)/$(if $(findstring /,$(model)),$(dir $(model)),) ; \
+	done
+
+evaluate-download: eval/$(release)/$(eval_set)/user.tsv $(schema_file)
+	for f in {dialogue,nlu}.{results,debug} ; do \
+	  aws s3 cp s3://$(s3_bucket)/$(genie_k8s_owner)/workdir/$(genie_k8s_project)/eval/$(release)/$(eval_set)/$(model).$$f eval/$(release)/$(eval_set)/$(if $(findstring /,$(model)),$(dir $(model)),) ; \
+	  touch eval/$(release)/$(eval_set)/$(model).$$f ; \
+	done
+	@echo eval/$(release)/$(eval_set)/$(model).dialogue.results
+	@cat eval/$(release)/$(eval_set)/$(model).dialogue.results
+	@echo eval/$(release)/$(eval_set)/$(model).nlu.results
+	@cat eval/$(release)/$(eval_set)/$(model).nlu.results
 
 evaluate-all:
 	@for m in $($(release)_eval_$(eval_set)_models) ; do make --no-print-directory model=$$m evaluate ; done
+
+evaluate-all-remote: eval/$(release)/$(eval_set)/user.tsv $(schema_file)
+	make syncup
+	cd $(genie_k8s_dir) ; \
+	for m in $($(release)_eval_$(eval_set)_models) ; do \
+	  ./evaluate.sh --experiment $(release) --model `basename $$m` --model_owner `dirname $$m` --eval_set $(eval_set) ; \
+	done
+
+evaluate-all-download:
+	@for m in $($(release)_eval_$(eval_set)_models) ; do make --no-print-directory model=$$m evaluate-download ; done
 
 eval/$(release)/models/%/best.pth:
 	mkdir -p eval/$(release)/models/$(if $(findstring /,$*),$(dir $*),)
