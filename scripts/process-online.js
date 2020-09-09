@@ -329,28 +329,28 @@ class Processor extends stream.Writable {
 
 async function main() {
     const parser = new argparse.ArgumentParser({
-        addHelp: true,
+        add_help: true,
         description: "Import a single-sentence paraphrase or manually annotated dataset."
     });
-    parser.addArgument(['-t', '--type'], {
-        defaultValue: 'manual',
+    parser.add_argument(['-t', '--type'], {
+        default: 'manual',
         required: false,
         help: 'Type of dataset to import',
         choices: ['paraphrase', 'manual']
     });
-    parser.addArgument('--prefix', {
+    parser.add_argument('--prefix', {
         required: false,
         help: 'Prefix to add to IDs (defaults to "online" for manual datasets, and "turking" for paraphrase datasets)',
     });
-    parser.addArgument('--random-seed', {
-        defaultValue: 'almond is awesome',
+    parser.add_argument('--random-seed', {
+        default: 'almond is awesome',
         required: false,
     });
-    parser.addArgument('input_file', {
+    parser.add_argument('input_file', {
         nargs: '+',
         help: 'Input files to process. Use - for standard input.'
     });
-    const args = parser.parseArgs();
+    const args = parser.parse_args();
     const prefix = (args.prefix || (args.type === 'manual' ? 'online' : 'turking')) + '/';
 
     const platform = new Platform();
