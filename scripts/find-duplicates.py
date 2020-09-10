@@ -16,7 +16,8 @@ def main():
         if len(targets) <= 1:
             continue
         print()
-        print(key[-1], sep='\t')
+        print(key[0])
+        print(key[1], sep='\t')
         for target in targets:
             print(target)
 

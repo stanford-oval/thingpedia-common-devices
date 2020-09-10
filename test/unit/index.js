@@ -9,12 +9,12 @@
 process.on('unhandledRejection', (up) => { throw up; });
 process.env.TEST_MODE = '1';
 
+const uuid = require('uuid');
 const assert = require('assert');
 const util = require('util');
 const fs = require('fs');
 const path = require('path');
 const Genie = require('genie-toolkit');
-
 
 const Platform = require('../lib/platform');
 
@@ -40,6 +40,15 @@ async function sleep(timeout) {
     return new Promise((resolve, reject) => {
         setTimeout(resolve, timeout);
     });
+}
+
+// mock a subset of ExecEnvironment sufficient for testing
+class MockExecEnvironment {
+    constructor() {
+        this.app = {
+            uniqueId: 'uuid-' + uuid.v4()
+        };
+    }
 }
 
 class TestRunner {
@@ -97,7 +106,8 @@ class TestRunner {
         if (typeof input === 'function')
             input = input(instance);
 
-        const result = await instance['get_' + functionName](input, hints);
+        const env = new MockExecEnvironment();
+        const result = await instance['get_' + functionName](input, hints, env);
         if (typeof expected === 'function') {
             expected(result, input, hints, instance);
             return;

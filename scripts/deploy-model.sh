@@ -2,7 +2,7 @@
 
 srcdir=`dirname $0`
 . $srcdir/lib.sh
-parse_args "$0" "release model" "$@"
+parse_args "$0" "release=universe model" "$@"
 shift $n
 
 set -e
@@ -14,17 +14,13 @@ rm -fr export/
 genienlp export --path "eval/${release}/models/${model}/" -o export/
 
 version=2
-if test "${release}" = "main"; then
-	model_tag="org.thingpedia.models.contextual"
-elif test "${release}" = "universe" ; then
-	model_tag="org.thingpedia.models.developer.contextual"
-else
-	echo "Invalid release (staging models cannot be deployed)"
-fi
 
-AWS_PROFILE=oval aws s3 sync export/ "s3://almond-training/staging/inference/${model_tag}:en-v${version}/"
+for model_tag in org.thingpedia.models.contextual org.thingpedia.models.developer.contextual ; do
+	AWS_PROFILE=oval aws s3 sync export/ "s3://almond-training/staging/inference/${model_tag}:en-v${version}/"
 
-set +x
-ADMIN_TOKEN=$(secret-tool lookup almond.nlp_admin_token dev)
-curl -v -d '' "https://nlp-staging.almond.stanford.edu/admin/reload/@${model_tag}/en?admin_token=${ADMIN_TOKEN}"
-echo
+	set +x
+	ADMIN_TOKEN=$(secret-tool lookup almond.nlp_admin_token dev)
+	curl -v -d '' "https://nlp-staging.almond.stanford.edu/admin/reload/@${model_tag}/en?admin_token=${ADMIN_TOKEN}"
+	echo
+	set -x
+done

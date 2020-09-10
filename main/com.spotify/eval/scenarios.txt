@@ -18,7 +18,7 @@ U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.song(), id =~ ("despacito"))[1] => notify;
 
 # FIXME need a template for song by {artist 1} and {artist 2}
-A: Despacito is a song by Luis Fonsi by Daddy Yankee . Would you like to play it on Spotify?.
+A: Despacito is a song by Luis Fonsi from the album VIDA ?\. Would you like to play it on Spotify\?
 A: >> expecting = command
 
 ====
@@ -37,7 +37,8 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.song(), contains(artists, null^^com.spotify:artist("britney spears"))) => notify;
 
-A: I have found Toxic, Oops!...I Did It Again or ...Baby One More Time. All of them are tracks from Britney Spears that plays post-teen pop \.?
+# FIXME
+A: What album do you want\?
 A: >> expecting = command
 
 ====
@@ -58,7 +59,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.song(), id =~ ("the box") && contains(artists, null^^com.spotify:artist("roddy ricch")))[1] => notify;
 
-A: The Box is a song by Roddy Ricch from the album Please Excuse Me For Being Antisocial . Would you like to play it on Spotify?.
+A: The Box is a song by Roddy Ricch from the album Please Excuse Me For Being Antisocial . Would you like to play it on Spotify\?
 A: >> expecting = command
 
 ====
@@ -78,7 +79,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.song(), album == null^^com.spotify:album("the wall")) => notify;
 
-A: I have Comfortably Numb or Another Brick in the Wall, Pt. 2. They're song by Pink Floyd in The Wall ?.
+A: I have Comfortably Numb or Another Brick in the Wall, Pt. 2. (All of them are|They're) songs? by Pink Floyd in The Wall ?.
 A: >> expecting = command
 
 ====
@@ -98,7 +99,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.song(), album == null^^com.spotify:album("21") && contains(artists, null^^com.spotify:artist("adele"))) => notify;
 
-A: I have Someone Like You, Rolling in the Deep or Set Fire to the Rain. All of them are song by Adele in the album 21 ?.
+A:  I see Someone Like You, Set Fire to the Rain or Rolling in the Deep\. All of them are song by Adele in the album 21 ?.
 A: >> expecting = command
 
 ====
@@ -118,7 +119,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => sort popularity desc of (@com.spotify.song(), contains(artists, null^^com.spotify:artist("justin bieber")))[1] => notify;
 
-A: I have Intentions. It is a song by Justin Bieber in Intentions . Would you like to play it on Spotify?.
+A: I have( found)? Intentions\. It is a song by Justin Bieber in Intentions ?\. Would you like to play it on Spotify\?
 A: >> expecting = command
 
 ====
@@ -138,7 +139,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => sort release_date desc of (@com.spotify.song(), contains(artists, null^^com.spotify:artist("beyonce")))[1] => notify;
 
-A: I have one, it's BIGGER. It's a song by Beyoncé from the album The Lion King: The Gift [Deluxe Edition] . Would you like to play it on Spotify?.
+A: I have one, (it's|it is) BIGGER\. (It's|It is) a song by Beyoncé from the album The Lion King: The Gift \[Deluxe Edition\] ?\. Would you like to play it on Spotify\?
 A: >> expecting = command
 
 ====
@@ -188,7 +189,8 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => @com.spotify.player_next();
 
-A: Alright, I skipped this song\.?
+# FIXME
+A: (Alright, I skipped this song\.?|Alright, your request was completed successfully\.)
 A: >> expecting = null
 
 ====
@@ -208,7 +210,8 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => @com.spotify.player_shuffle(shuffle=enum(on));
 
-A: Alright, I turned on shuffle\.?
+# FIXME
+A: Alright, I (shuffled (my|your) Spotify|turned on shuffle)\.
 A: >> expecting = null
 
 ====
@@ -218,7 +221,8 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => @com.spotify.player_repeat(repeat=enum(track));
 
-A: Alright, I repeated this song for you.
+# FIXME
+A: Alright, (I repeated this song for you|your request was completed successfully)\.
 A: >> expecting = null
 
 ====
@@ -299,5 +303,5 @@ U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.song(), id =~ ("totally fake song")) => @com.spotify.play_song(song=id);
 
 # FIXME not detecting empty results from action
-A: Alright, I ied would like to listen to that\.?
+A: Alright, I played it on Spotify.
 A: >> expecting = null

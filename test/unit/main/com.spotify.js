@@ -20,16 +20,15 @@ module.exports = [
             artists: [
                 new Tp.Value.Entity('spotify:artist:4V8Sr092TqfHkfAA5fXXqG', 'Luis Fonsi'),
                 new Tp.Value.Entity('spotify:artist:4VMYDCV2IEDYJArk749S6m', 'Daddy Yankee'),
-                new Tp.Value.Entity('spotify:artist:1uNFoZAHBGtllmzznpCI3s', 'Justin Bieber')
             ],
-            album: new Tp.Value.Entity('spotify:album:3Gq2Dme9nesdgoqNNlcN8O', 'Despacito Feat. Justin Bieber (Remix)'),
+            album: new Tp.Value.Entity('spotify:album:5C0YLr4OoRGFDaqdMQmkeH', 'VIDA'),
             genres: ['latin', 'latin pop', 'puerto rican pop', 'tropical'],
-            danceability: 65.3,
-            energy: 81.6,
-            popularity: 74,
+            danceability: 65.5,
+            energy: 79.7,
+            popularity: 80,
 
-            id: new Tp.Value.Entity('spotify:track:6rPO02ozF3bM7NnOV4h6s2', 'Despacito - Remix'),
-            release_date: new Date('2017-04-17T00:00:00.000Z')
+            id: new Tp.Value.Entity('spotify:track:6habFhsOp2NvshLv26DqMb', 'Despacito'),
+            release_date: new Date('2019-02-01T00:00:00.000Z')
         });
     }]
 ];
