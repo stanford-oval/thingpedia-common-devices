@@ -193,7 +193,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         });
     }
 
-    async parse_tracks(tracks, deviceID) {
+    async parse_tracks(tracks, appID) {
         //const ids = tracks.map((track) => new Tp.Value.Entity(track.id, track.name));
         const ids = tracks.map((track) => track.id);
         const artistIds = tracks.map((track) => track.artists[0].id);
@@ -223,10 +223,10 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 energy: energy * 100,
                 danceability: danceability * 100,
             };
-            if (deviceID) {
-                let results = this._queryResults.get(deviceID);
+            if (appID) {
+                let results = this._queryResults.get(appID);
                 if (!results) {
-                    this._queryResults.set(deviceID, {
+                    this._queryResults.set(appID, {
                         [String(id)]: songObj
                     });
                 } else {
@@ -244,16 +244,24 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         return filteredSongs;
     }
 
-    async songs_by_search(query, deviceID) {
-        const searchResults = await this.search(query, "track", 5);
+    async songs_by_search(query, limit = 5, appID = '') {
+        const searchResults = await this.search(query, "track", limit);
         if (!Object.prototype.hasOwnProperty.call(searchResults, "tracks") || searchResults.tracks.total === 0) return [];
-        return this.parse_tracks(searchResults.tracks.items, deviceID);
+        return this.parse_tracks(searchResults.tracks.items, appID);
     }
 
     async songs_by_artist(artists, sortDirection) {
-        const searchResults = await this.search(artists[0], "artist", 1);
-        if (!Object.prototype.hasOwnProperty.call(searchResults, 'artists') || searchResults.artists.total === 0) return [];
-        const artistID = searchResults.artists.items[0].id;
+
+        let artistID;
+        if (artists[0] instanceof Tp.Value.Entity) {
+            artistID = String(artists[0]);
+            artistID = artistID.split("spotify:artist:")[1];
+        } else {
+            const searchResults = await this.search(artists[0], "artist", 1);
+            if (!Object.prototype.hasOwnProperty.call(searchResults, 'artists') || searchResults.artists.total === 0) return [];
+            artistID = searchResults.artists.items[0].id;
+        }
+
         var albums = await this.albums_get_by_artist_id(artistID, "album,single");
         albums = albums.sort((album1, album2) => {
             var releaseDate1 = new Date(album1.release_date).getTime();
@@ -281,6 +289,25 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         const songIds = albumItems.map((album) => album.tracks.items.map((track) => track.id));
         const trackItems = await this.tracks_get_by_id(songIds);
         return this.parse_tracks(trackItems.tracks);
+    }
+
+    async songs_by_album(album, query, appID) {
+        let albumId;
+        if (album instanceof Tp.Value.Entity) {
+            albumId = String(album);
+            albumId = albumId.split('spotify:album:')[1];
+        }
+
+        if (!albumId) {
+            const searchResults = await this.search(query, "album", 1);
+            if (!Object.prototype.hasOwnProperty.call(searchResults, "albums") || searchResults.albums.total === 0) return [];
+            albumId = searchResults.albums.items[0].id;
+        }
+        const albumItems = (await this.albums_get_by_id([albumId])).albums;
+        const songIds = albumItems.map((album) => album.tracks.items.map((track) => track.id));
+        const trackItems = await this.tracks_get_by_id(songIds);
+        let songs = await this.parse_tracks(trackItems.tracks);
+        return songs;
     }
 
     async albums_by_search(query, artistURI) {
@@ -346,6 +373,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         var artistFilter = '';
         var genreFilter = '';
         var albumFilter = '';
+        var album;
         var artists = [];
         var yearLowerBound = 0;
         var yearUpperBound = new Date().getFullYear();
@@ -356,15 +384,21 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                     else idFilter = `track:"${value.toLowerCase()}" `;
                 }
                 if (pname === "artists" && (op === "contains" || op === "contains~")) {
-                    if (value instanceof Tp.Value.Entity) artists.push(value.display.toLowerCase());
-                    else artists.push(value.toLowerCase());
-                    artistFilter = `artist:"${artists[0]}" `;
+                    artists.push(value);
+                    if (value instanceof Tp.Value.Entity)
+                        artistFilter = `artist:"${artists[0].display.toLowerCase()}" `;
+                    else
+                        artistFilter = `artist:"${artists[0].toLowerCase()}" `;
+
                 } else if (pname === "release_date" && (op === "==")) {
                     yearFilter = `year:${value.getFullYear()} `;
                 } else if (pname === "release_date" && (op === ">=")) {
                     yearFilter = `year:${value.getFullYear()}-${yearUpperBound} `;
                     yearLowerBound = value.getFullYear();
                 } else if (pname === "release_date" && (op === "<=")) {
+                    //Thingtalk generates songs from 2010 as release_date >= makeDate(2010,1,1), release_date <= makeDate(2010,1,1) + 1year
+                    //This includes one day in 2011. If we include that one day spotify will get all the songs from 2011, so we should subtract 1 day.
+                    value.setDate(value.getDate() - 1);
                     yearFilter = `year:${yearLowerBound}-${value.getFullYear()} `;
                     yearUpperBound = value.getFullYear();
                 } else if (pname === "genres" && (op === "contains" || op === "contains~")) {
@@ -372,21 +406,22 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 } else if (pname === "album" && (op === "==" || op === "=~")) {
                     if (value instanceof Tp.Value.Entity) albumFilter = `album:"${value.display.toLowerCase()}" `;
                     else albumFilter = `album:"${value.toLowerCase()}" `;
-
+                    album = value;
                 }
 
             }
         }
-        let deviceID;
+
+        let appID;
         if (!hints || !hints.sort)
-            deviceID = env.app.uniqueId;
+            appID = env.app.uniqueId;
 
         //you can't search for multiple artists because when searching by artist spotify only returns songs where the input artist is the main artist
         //so if you search for a song where an artist is featured or there are multiple artists then there will problems.
         if (idFilter) {
             if (artists.length > 1) {
                 let query = (idFilter + yearFilter + genreFilter + albumFilter).trim();
-                let songs = await this.songs_by_search(query, deviceID);
+                let songs = await this.songs_by_search(query, 5);
                 let searchTerm = idFilter.split("track:")[1].trim();
                 songs.sort((a, b) => {
                     return entityMatchScore(searchTerm, b.id.display.toLowerCase()) - entityMatchScore(searchTerm, a.id.display.toLowerCase());
@@ -394,7 +429,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 return songs;
             } else {
                 let query = (idFilter + yearFilter + artistFilter + genreFilter + albumFilter).trim();
-                let songs = await this.songs_by_search(query, deviceID);
+                let songs = await this.songs_by_search(query, 5);
                 if (songs.length === 0 && artists.length === 1)
                     songs = await this.songs_by_artist(artists);
                 let searchTerm = idFilter.split("track:")[1].trim();
@@ -406,10 +441,26 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         } else if (hints && hints.sort && hints.sort[0] === "release_date" && artists.length > 0) {
             return this.songs_by_artist(artists, hints.sort[1]);
         } else if (artists.length > 1) {
-            return this.songs_by_artist(artists);
+            let songs = await this.songs_by_artist(artists);
+            songs.sort((a, b) => {
+                return (b.popularity - a.popularity);
+            });
+            return songs;
+        } else if (album) {
+            let query = (yearFilter + artistFilter + genreFilter + albumFilter).trim();
+            return this.songs_by_album(album, query, appID);
         } else {
-            const query = (yearFilter + artistFilter + genreFilter + albumFilter).trim() || `year:${new Date().getFullYear()} `;
-            return this.songs_by_search(query, deviceID);
+            let query = (yearFilter + artistFilter + genreFilter).trim() || `year:${new Date().getFullYear()} `;
+            let songs;
+            if (yearFilter || genreFilter)
+                songs = await this.songs_by_search(query, 20);
+            else
+                songs = await this.songs_by_search(query, 20, appID);
+
+            songs.sort((a, b) => {
+                return (b.popularity - a.popularity);
+            });
+            return songs;
         }
     }
 
@@ -427,7 +478,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             }
         }
         //default query will be to just get the most popular artists right now
-        const query = (idFilter + genreFilter).trim() || `year:${new Date().getFullYear()}`;
+        let query = (idFilter + genreFilter).trim() || `year:${new Date().getFullYear()}`;
         const searchResults = await this.search(query, "artist", 5);
         if (!Object.prototype.hasOwnProperty.call(searchResults, 'artists') || searchResults.artists.total === 0) return [];
         var artists = [];
@@ -622,6 +673,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         const songs = this._state.get(env.app.uniqueId);
         const album = this._findCommonAlbum(songs, env);
         const artist = this._findCommonArtist(songs, env);
+        await this.do_player_shuffle("false");
         if (album && songs.length > 1) {
             let data = {
                 context_uri: album,
@@ -633,18 +685,8 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             };
             return this.player_play_helper(JSON.stringify(data));
         } else {
-            const output = await this.player_play_helper(JSON.stringify({ 'uris': [String(songs[0])] }));
-            let devices = await this.get_get_available_devices();
-            const [deviceId, deviceName] = this._findActiveDevice(devices);
-            if (deviceId === null && !this._testMode()) {
-                const error = new Error(`No Spotify device is active`);
-                error.code = 'no_active_device';
-                throw error;
-            }
-            for (var i = 1; i < songs.length; i++)
-                await this.player_queue_helper(String(songs[i]), [deviceId, deviceName]);
-
-            return output;
+            const song_uris = songs.map((song) => { return String(song); });
+            return this.player_play_helper(JSON.stringify({ 'uris': song_uris }));
         }
     }
 
@@ -722,10 +764,17 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     async do_player_shuffle({ shuffle }) {
         shuffle = shuffle === 'on' ? 'true' : 'false';
         console.log("setting shuffle: " + shuffle);
-        let shuffleURL = SHUFFLE_URL + querystring.stringify({ state: shuffle });
-        console.log(shuffleURL);
         if (this._testMode())
             return;
+        let devices = await this.get_get_available_devices();
+        const deviceId = this._findActiveDevice(devices)[0];
+        if (deviceId === null) {
+            const error = new Error(`No Spotify device is active`);
+            error.code = 'no_active_device';
+            throw error;
+        }
+        let shuffleURL = SHUFFLE_URL + querystring.stringify({ state: shuffle, device_id: deviceId });
+        console.log(shuffleURL);
         await this.http_put_default_options(shuffleURL, '');
     }
 
@@ -733,12 +782,24 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         console.log("repeat: " + repeat);
         if (this._testMode())
             return;
-        await this.http_put_default_options(REPEAT_URL + querystring.stringify({ state: repeat }), '');
+        let devices = await this.get_get_available_devices();
+        const deviceId = this._findActiveDevice(devices)[0];
+        if (deviceId === null) {
+            const error = new Error(`No Spotify device is active`);
+            error.code = 'no_active_device';
+            throw error;
+        }
+        let repeatURL = REPEAT_URL + querystring.stringify({ state: repeat, device_id: deviceId });
+        await this.http_put_default_options(repeatURL, '');
     }
 };
 
 function entityMatchScore(searchTerm, candidate) {
+    if (searchTerm === candidate)
+        return 1000;
 
+    candidate = removeParenthesis(candidate);
+    searchTerm = removeParenthesis(searchTerm);
     let searchTermTokens = searchTerm.split(' ');
 
     let score = 0;
@@ -750,7 +811,7 @@ function entityMatchScore(searchTerm, candidate) {
     for (let candToken of candTokens) {
         let found = false;
         for (let token of searchTermTokens) {
-            if (editDistance(token, candToken) <= 1) {
+            if (token === candToken || (editDistance(token, candToken) <= 1 && token.length > 1)) {
                 score += 10;
                 found = true;
             } else if (candToken.startsWith(token)) {
@@ -761,11 +822,14 @@ function entityMatchScore(searchTerm, candidate) {
         // give a small boost to ignorable tokens that are missing
         // this offsets the char-level edit distance
         if (!found && ['the', 'hotel', 'house', 'restaurant'].includes(candToken))
-            score += 1;
-
+            score += 0.1 * candToken.length;
     }
 
     return score;
+}
+
+function removeParenthesis(str) {
+    return str.replace(/ \(.*?\)/g, '');
 }
 
 function editDistance(one, two) {
