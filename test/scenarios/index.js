@@ -273,40 +273,36 @@ async function sleep(timeout) {
 
 async function main() {
     const parser = new argparse.ArgumentParser({
-        addHelp: true,
+        add_help: true,
         description: "Scenario testing script."
     });
-    parser.addArgument(['-r', '--release'], {
-        nargs: 1,
+    parser.add_argument('-r', '--release', {
         required: true,
         help: 'Release to work against',
         choices: ['builtin', 'main', 'universe', 'staging']
     });
-    parser.addArgument('--nlu-model', {
-        nargs: 1,
+    parser.add_argument('--nlu-model', {
         required: false,
         help: 'NLU model'
     });
-    parser.addArgument('--manual', {
-        nargs: 0,
-        action: 'storeTrue',
+    parser.add_argument('--manual', {
+        action: 'store_true',
         help: 'Run scenarios in manual mode (might trigger side-effects, and run additional scenarios)'
     });
-    parser.addArgument('--stop-on-error', {
-        nargs: 0,
-        action: 'storeTrue',
+    parser.add_argument('--stop-on-error', {
+        action: 'store_true',
         help: 'Stop on the first error'
     });
-    parser.addArgument('--ids', {
+    parser.add_argument('--ids', {
         nargs: '+',
         required: false,
         help: 'Only run scenarios with these IDs'
     });
-    parser.addArgument('scenarios', {
+    parser.add_argument('scenarios', {
         nargs: '+',
         help: 'Scenarios to test. This can be a release name or a release slash device name.'
     });
-    const args = parser.parseArgs();
+    const args = parser.parse_args();
 
     // set TEST_MODE if we're called without --manual
     if (!args.manual)
