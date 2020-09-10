@@ -11,5 +11,6 @@ module.exports = [
     ['query', 'get', {}, (result) => {
         assert(typeof result[0].text === 'string');
         assert(typeof result[0].author === 'string');
+        assert(typeof result[0].link === 'string');
     }]
 ];

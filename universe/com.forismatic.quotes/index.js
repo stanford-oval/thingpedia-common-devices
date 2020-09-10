@@ -1,4 +1,6 @@
-// Copyright 2019-2020 The Board of Trustees of the Leland Stanford Junior University
+// -*- mode: js; indent-tabs-mode: nil; js-basic-offset: 4 -*-
+//
+// Copyright 2020 The Board of Trustees of the Leland Stanford Junior University
 //
 // Redistribution and use in source and binary forms, with or
 // without modification, are permitted provided that the following
@@ -26,39 +28,23 @@
 // STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 // OF THE POSSIBILITY OF SUCH DAMAGE.
+"use strict";
 
-class @com.forismatic.quotes
-#_[thingpedia_name="Forismatic Quotes"]
-#_[thingpedia_description="Quotes and expressions. The most inspiring expressions of mankind. Provided by Forismatic"]
-#_[canonical="forismatic quotes"]
-#[license="BSD-3-Clause"]
-#[license_gplcompatible=true]
-#[subcategory="service"]
-{
-  import loader from @org.thingpedia.v2();
-  import config from @org.thingpedia.config.none();
+const Tp = require('thingpedia');
 
-  query get(out text: String
-            #[string_values="tt:long_free_text"]
-            #_[canonical={
-               base=["text", "content"],
-               verb=["say #"],
-               passive_verb=["saying #"],
-            }],
-            out author: String
-            #[string_values="tt:person_full_name"]
-            #_[canonical={
-               base=["author"],
-               passive_verb=["authored by #", "written by #"],
-               preposition=["by #"],
-            }],
-            out link: Entity(tt:url)
-            #_[canonical=["link", "url"]])
-  #_[result=["${author} wrote : ${text}", "${text} . by ${author}"]]
-  #_[canonical=["quote", "random quote", "quote", "aphorism",
-                "random piece of wisdom"]]
-  #_[confirmation="a quote"]
-  #_[formatted=[{type="text",text="${text} By ${author}."}]]
-  #[minimal_projection=["text"]]
-  #[doc="get a random quote"];
-}
+const URL = 'http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en';
+
+module.exports = class ForismaticDevice extends Tp.BaseDevice {
+    async get_get() {
+        let response = await Tp.Helpers.Http.get(URL);
+        // remove bogus \' escaping which trips up JSON.parse
+        response = response.replace(/\\'/g, "'");
+
+        const parsed = JSON.parse(response);
+        return [{
+            author: parsed.quoteAuthor,
+            text: parsed.quoteText,
+            link: parsed.quoteLink
+        }];
+    }
+};

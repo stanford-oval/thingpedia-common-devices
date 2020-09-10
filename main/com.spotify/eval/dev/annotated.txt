@@ -49,7 +49,7 @@ U: what is drake's most popular song ?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => (sort popularity desc of (@com.spotify.song(), contains(artists, null^^com.spotify:artist("drake"))))[1] => notify;
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: now => (sort popularity desc of (@com.spotify.song(), contains(artists,"spotify:artist:3TVXtAsR1Inumwj472S9r4"^^com.spotify:artist("Drake"))))[1] => notify
+C: now => (sort popularity desc of (@com.spotify(id="com.spotify-001").song(), contains(artists,"spotify:artist:3TVXtAsR1Inumwj472S9r4"^^com.spotify:artist("Drake"))))[1] => notify
 C: #[results=[
 C:   { id="spotify:track:127QTOFJsJQp5LbJbu3A1y"^^com.spotify:song("Toosie Slide"), artists=["spotify:artist:3TVXtAsR1Inumwj472S9r4"^^com.spotify:artist("Drake")], release_date=new Date("2020-04-03T00:00:00.000Z"), popularity=93, energy=45, danceability=83 }
 C: ]];
@@ -61,11 +61,11 @@ U: i don't know that song . when was it released ?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => [release_date] of (sort popularity desc of (@com.spotify.song(), id == "spotify:track:127QTOFJsJQp5LbJbu3A1y"^^com.spotify:song("Toosie Slide") && contains(artists,"spotify:artist:3TVXtAsR1Inumwj472S9r4"^^com.spotify:artist("Drake"))))[1] => notify;
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: now => (sort popularity desc of (@com.spotify.song(), contains(artists,"spotify:artist:3TVXtAsR1Inumwj472S9r4"^^com.spotify:artist("Drake"))))[1] => notify
+C: now => (sort popularity desc of (@com.spotify(id="com.spotify-001").song(), contains(artists,"spotify:artist:3TVXtAsR1Inumwj472S9r4"^^com.spotify:artist("Drake"))))[1] => notify
 C: #[results=[
 C:   { id="spotify:track:127QTOFJsJQp5LbJbu3A1y"^^com.spotify:song("Toosie Slide"), artists=["spotify:artist:3TVXtAsR1Inumwj472S9r4"^^com.spotify:artist("Drake")], release_date=new Date("2020-04-03T00:00:00.000Z"), popularity=93, energy=45, danceability=83 }
 C: ]];
-C: now => [release_date] of (sort popularity desc of (@com.spotify.song(), id == "spotify:track:127QTOFJsJQp5LbJbu3A1y"^^com.spotify:song("Toosie Slide") && contains(artists,"spotify:artist:3TVXtAsR1Inumwj472S9r4"^^com.spotify:artist("Drake"))))[1] => notify
+C: now => [release_date] of (sort popularity desc of (@com.spotify(id="com.spotify-001").song(), id == "spotify:track:127QTOFJsJQp5LbJbu3A1y"^^com.spotify:song("Toosie Slide") && contains(artists,"spotify:artist:3TVXtAsR1Inumwj472S9r4"^^com.spotify:artist("Drake"))))[1] => notify
 C: #[results=[
 C:   { id="spotify:track:127QTOFJsJQp5LbJbu3A1y"^^com.spotify:song("Toosie Slide"), release_date=new Date("2020-04-03T00:00:00.000Z") }
 C: ]];
@@ -79,7 +79,7 @@ U: hi, i'm having a party later would the song despacito be good for dancing .
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => [danceability] of (@com.spotify.song(), id =~ "despacito") => notify;
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: now => [danceability] of (@com.spotify.song(), id =~ "despacito") => notify
+C: now => [danceability] of (@com.spotify(id="com.spotify-001").song(), id =~ "despacito") => notify
 C: #[results=[
 C:   { id="spotify:track:6habFhsOp2NvshLv26DqMb"^^com.spotify:song("Despacito"), danceability=65 }
 C: ]];
@@ -95,7 +95,7 @@ U: who was the song 7 rings written by ?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => [artists] of ((@com.spotify.song()), id =~ "7 rings") => notify;
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: now => [artists] of ((@com.spotify.song()), id =~ "7 rings") => notify
+C: now => [artists] of ((@com.spotify(id="com.spotify-001").song()), id =~ "7 rings") => notify
 C: #[results=[
 C:   { id="spotify:track:6ocbgoVGwYJhOv1GgI9NsF"^^com.spotify:song("7 rings"), artists=["spotify:artist:66CXWjxzNUsdJxJ2JdwvnR"^^com.spotify:artist("Ariana Grande")] },
 C:   { id="spotify:track:0YEg2JfkMeJ1hTYqop4A5o"^^com.spotify:song("7 Rings"), artists=["spotify:artist:00YTqRClk82aMchQQpYMd5"^^com.spotify:artist("Our Last Night"), "spotify:artist:4gO25bbcu1eFNi8uDCvJFS"^^com.spotify:artist("Derek DiScanio")] },
@@ -112,7 +112,7 @@ U: no thank you . what other songs has she released ?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => (@com.spotify.song()), contains(artists, "spotify:artist:66CXWjxzNUsdJxJ2JdwvnR"^^com.spotify:artist("Ariana Grande")) => notify;
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: now => [artists] of ((@com.spotify.song()), id =~ "7 rings") => notify
+C: now => [artists] of ((@com.spotify(id="com.spotify-001").song()), id =~ "7 rings") => notify
 C: #[results=[
 C:   { id="spotify:track:6ocbgoVGwYJhOv1GgI9NsF"^^com.spotify:song("7 rings"), artists=["spotify:artist:66CXWjxzNUsdJxJ2JdwvnR"^^com.spotify:artist("Ariana Grande")] },
 C:   { id="spotify:track:0YEg2JfkMeJ1hTYqop4A5o"^^com.spotify:song("7 Rings"), artists=["spotify:artist:00YTqRClk82aMchQQpYMd5"^^com.spotify:artist("Our Last Night"), "spotify:artist:4gO25bbcu1eFNi8uDCvJFS"^^com.spotify:artist("Derek DiScanio")] },
@@ -121,7 +121,7 @@ C:   { id="spotify:track:6ocbgoVGwYJhOv1GgI9NsF"^^com.spotify:song("7 rings"), a
 C:   { id="spotify:track:6va6SjWz457IOZidBppAhz"^^com.spotify:song("7 rings - live"), artists=["spotify:artist:66CXWjxzNUsdJxJ2JdwvnR"^^com.spotify:artist("Ariana Grande")] },
 C:   { id="spotify:track:6AyI8UGx8Y4peb7pLOy2pf"^^com.spotify:song("7 rings (feat. 2 Chainz) - Remix"), artists=["spotify:artist:66CXWjxzNUsdJxJ2JdwvnR"^^com.spotify:artist("Ariana Grande"), "spotify:artist:17lzZA2AlOHwCwFALHttmp"^^com.spotify:artist("2 Chainz")] }
 C: ]];
-C: now => (@com.spotify.song()), contains(artists, "spotify:artist:66CXWjxzNUsdJxJ2JdwvnR"^^com.spotify:artist("Ariana Grande")) => notify
+C: now => (@com.spotify(id="com.spotify-001").song()), contains(artists, "spotify:artist:66CXWjxzNUsdJxJ2JdwvnR"^^com.spotify:artist("Ariana Grande")) => notify
 C: #[results=[
 C:   { id="spotify:track:2qT1uLXPVPzGgFOx4jtEuo"^^com.spotify:song("no tears left to cry"), artists=["spotify:artist:66CXWjxzNUsdJxJ2JdwvnR"^^com.spotify:artist("Ariana Grande")], release_date=new Date("2018-08-17T00:00:00.000Z"), popularity=81, energy=71, danceability=69 },
 C:   { id="spotify:track:3e9HZxeyfWwjeyPAMmWSSQ"^^com.spotify:song("thank u, next"), artists=["spotify:artist:66CXWjxzNUsdJxJ2JdwvnR"^^com.spotify:artist("Ariana Grande")], release_date=new Date("2019-02-08T00:00:00.000Z"), popularity=84, energy=65, danceability=71 },
@@ -141,7 +141,7 @@ U: no . out of those 3 songs which one is the most popular ?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => (sort popularity desc of (@com.spotify.song(), contains(artists, "spotify:artist:66CXWjxzNUsdJxJ2JdwvnR"^^com.spotify:artist("Ariana Grande"))))[1] => notify;
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: now => [artists] of ((@com.spotify.song()), id =~ "7 rings") => notify
+C: now => [artists] of ((@com.spotify(id="com.spotify-001").song()), id =~ "7 rings") => notify
 C: #[results=[
 C:   { id="spotify:track:6ocbgoVGwYJhOv1GgI9NsF"^^com.spotify:song("7 rings"), artists=["spotify:artist:66CXWjxzNUsdJxJ2JdwvnR"^^com.spotify:artist("Ariana Grande")] },
 C:   { id="spotify:track:0YEg2JfkMeJ1hTYqop4A5o"^^com.spotify:song("7 Rings"), artists=["spotify:artist:00YTqRClk82aMchQQpYMd5"^^com.spotify:artist("Our Last Night"), "spotify:artist:4gO25bbcu1eFNi8uDCvJFS"^^com.spotify:artist("Derek DiScanio")] },
@@ -150,7 +150,7 @@ C:   { id="spotify:track:6ocbgoVGwYJhOv1GgI9NsF"^^com.spotify:song("7 rings"), a
 C:   { id="spotify:track:6va6SjWz457IOZidBppAhz"^^com.spotify:song("7 rings - live"), artists=["spotify:artist:66CXWjxzNUsdJxJ2JdwvnR"^^com.spotify:artist("Ariana Grande")] },
 C:   { id="spotify:track:6AyI8UGx8Y4peb7pLOy2pf"^^com.spotify:song("7 rings (feat. 2 Chainz) - Remix"), artists=["spotify:artist:66CXWjxzNUsdJxJ2JdwvnR"^^com.spotify:artist("Ariana Grande"), "spotify:artist:17lzZA2AlOHwCwFALHttmp"^^com.spotify:artist("2 Chainz")] }
 C: ]];
-C: now => (@com.spotify.song()), contains(artists, "spotify:artist:66CXWjxzNUsdJxJ2JdwvnR"^^com.spotify:artist("Ariana Grande")) => notify
+C: now => (@com.spotify(id="com.spotify-001").song()), contains(artists, "spotify:artist:66CXWjxzNUsdJxJ2JdwvnR"^^com.spotify:artist("Ariana Grande")) => notify
 C: #[results=[
 C:   { id="spotify:track:2qT1uLXPVPzGgFOx4jtEuo"^^com.spotify:song("no tears left to cry"), artists=["spotify:artist:66CXWjxzNUsdJxJ2JdwvnR"^^com.spotify:artist("Ariana Grande")], release_date=new Date("2018-08-17T00:00:00.000Z"), popularity=81, energy=71, danceability=69 },
 C:   { id="spotify:track:3e9HZxeyfWwjeyPAMmWSSQ"^^com.spotify:song("thank u, next"), artists=["spotify:artist:66CXWjxzNUsdJxJ2JdwvnR"^^com.spotify:artist("Ariana Grande")], release_date=new Date("2019-02-08T00:00:00.000Z"), popularity=84, energy=65, danceability=71 },
@@ -164,7 +164,7 @@ C:   { id="spotify:track:4kV4N9D1iKVxx1KLvtTpjS"^^com.spotify:song("break up wit
 C:   { id="spotify:track:5OCJzvD7sykQEKHH7qAC3C"^^com.spotify:song("God is a woman"), artists=["spotify:artist:66CXWjxzNUsdJxJ2JdwvnR"^^com.spotify:artist("Ariana Grande")], release_date=new Date("2018-08-17T00:00:00.000Z"), popularity=79, energy=65, danceability=60 }
 C: ]]
 C: #[count=25];
-C: now => (sort popularity desc of (@com.spotify.song(), contains(artists, "spotify:artist:66CXWjxzNUsdJxJ2JdwvnR"^^com.spotify:artist("Ariana Grande"))))[1] => notify
+C: now => (sort popularity desc of (@com.spotify(id="com.spotify-001").song(), contains(artists, "spotify:artist:66CXWjxzNUsdJxJ2JdwvnR"^^com.spotify:artist("Ariana Grande"))))[1] => notify
 C: #[results=[
 C:   { id="spotify:track:4HBZA5flZLE435QTztThqH"^^com.spotify:song("Stuck with U (with Justin Bieber)"), artists=["spotify:artist:66CXWjxzNUsdJxJ2JdwvnR"^^com.spotify:artist("Ariana Grande"), "spotify:artist:1uNFoZAHBGtllmzznpCI3s"^^com.spotify:artist("Justin Bieber")], release_date=new Date("2020-05-08T00:00:00.000Z"), popularity=93, energy=45, danceability=59 }
 C: ]]
