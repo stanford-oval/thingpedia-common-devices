@@ -85,15 +85,15 @@ dataset @com.spotify language "en" {
       now => @com.spotify.song(), album == p_album => @com.spotify.play_song(song=id)
     #_[utterances=["play ${p_album:no-undefined}",
                    "play the album ${p_album:no-undefined}",
-                   "i would like to hear ${p_album:no-undefined}",
-                   "i would like to hear the album ${p_album:no-undefined}",
-                   "i would like to listen to ${p_album:no-undefined}"]]
+                   /*"i would like to hear ${p_album:no-undefined}",*/
+                   "i would like to hear the album ${p_album:no-undefined}"
+                   /*"i would like to listen to ${p_album:no-undefined}"*/]]
     #[id=27924878]
     #[name=""];
 
     program (p_album :Entity(com.spotify:album), p_artist :Entity(com.spotify:artist)) :=
       now => @com.spotify.song(), album == p_album && contains(artists, p_artist) => @com.spotify.play_song(song=id)
-    #_[utterances=["play ${p_album:no-undefined} by ${p_artist:no-undefined}",
+    #_[utterances=[/*"play ${p_album:no-undefined} by ${p_artist:no-undefined}",*/
                    "play the album ${p_album:no-undefined} by ${p_artist:no-undefined}",
                    "i would like to listen the album ${p_album:no-undefined} by ${p_artist:no-undefined}",
                    "i would like to listen the album ${p_album:no-undefined} from ${p_artist:no-undefined}"]]
