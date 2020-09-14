@@ -45,9 +45,9 @@ const ALBUM_URL = 'https://api.spotify.com/v1/albums?';
 const TRACK_URL = 'https://api.spotify.com/v1/tracks?';
 const ARTIST_URL = 'https://api.spotify.com/v1/artists?';
 const SHUFFLE_URL = 'https://api.spotify.com/v1/me/player/shuffle?';
-const PAUSE_URL = 'https://api.spotify.com/v1/me/player/pause';
-const NEXT_URL = 'https://api.spotify.com/v1/me/player/next';
-const PREVIOUS_URL = 'https://api.spotify.com/v1/me/player/previous';
+const PAUSE_URL = 'https://api.spotify.com/v1/me/player/pause?';
+const NEXT_URL = 'https://api.spotify.com/v1/me/player/next?';
+const PREVIOUS_URL = 'https://api.spotify.com/v1/me/player/previous?';
 const REPEAT_URL = 'https://api.spotify.com/v1/me/player/repeat?';
 const QUEUE_URL = "https://api.spotify.com/v1/me/player/queue";
 const PLAYER_INFO_URL = "https://api.spotify.com/v1/me/player";
@@ -623,13 +623,14 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (this._testMode())
             return { device: new Tp.Value.Entity('mock', 'Coolest Computer') };
         const [deviceId, deviceName] = this._findActiveDevice(devices);
-        if (deviceId === null) {
-            const error = new Error(`No Spotify device is active`);
-            error.code = 'no_active_device';
-            throw error;
+        if (deviceId === null)
+            throwError('no_active_device');
+        try {
+            await this.http_put(PLAY_URL + `?device_id=${deviceId}`, data, options);
+        } catch (error) {
+            throwError('disallowed_action');
         }
 
-        await this.http_put(PLAY_URL + `?device_id=${deviceId}`, data, options);
         return { device: new Tp.Value.Entity(deviceId, deviceName) };
     }
     async player_queue_helper(uri, [deviceId, deviceName]) {
@@ -658,11 +659,9 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (!deviceState) {
             let devices = await this.get_get_available_devices();
             const [deviceId, deviceName] = this._findActiveDevice(devices);
-            if (deviceId === null) {
-                const error = new Error(`No Spotify device is active`);
-                error.code = 'no_active_device';
-                throw error;
-            }
+            if (deviceId === null)
+                throwError('no_active_device');
+
             this._deviceState.set(env.app.uniqueId, [deviceId, deviceName]);
             return { device: new Tp.Value.Entity(deviceId, deviceName) };
         } else {
@@ -727,91 +726,96 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     async do_player_pause() {
         if (this._testMode())
             return;
-        const player_info = await this.get_get_play_info();
-        if (player_info) {
-            if (player_info.actions.disallows.pausing)
-                throw new Error("Failed to pause");
+        let devices = await this.get_get_available_devices();
+        const deviceId = this._findActiveDevice(devices)[0];
+        if (deviceId === null)
+            throwError('no_active_device');
+        let pauseURL = PAUSE_URL + querystring.stringify({ device_id: deviceId });
+        try {
+            await this.http_put_default_options(pauseURL, '');
+        } catch (error) {
+            throwError('disallowed_action');
         }
-        await this.http_put_default_options(PAUSE_URL, '');
     }
 
     async do_player_play() {
         console.log("Playing music...");
         if (this._testMode())
             return;
-        const player_info = await this.get_get_play_info();
-        if (player_info) {
-            if (player_info.actions.disallows.resuming)
-                throw new Error("Failed to resume");
-        }
         await this.player_play_helper();
     }
 
     async do_player_next() {
         if (this._testMode())
             return;
-        const player_info = await this.get_get_play_info();
-        if (player_info) {
-            if (player_info.actions.disallows.skipping_next)
-                throw new Error("Failed to skip");
+        let devices = await this.get_get_available_devices();
+        const deviceId = this._findActiveDevice(devices)[0];
+        if (deviceId === null)
+            throwError('no_active_device');
+        let nextURL = NEXT_URL + querystring.stringify({ device_id: deviceId });
+        try {
+            await this.http_post_default_options(nextURL, '');
+        } catch (error) {
+            throwError('disallowed_action');
         }
-        await this.http_post_default_options(NEXT_URL, '');
     }
 
     async do_player_previous() {
         if (this._testMode())
             return;
-        const player_info = await this.get_get_play_info();
-        if (player_info) {
-            if (player_info.actions.disallows.skipping_prev)
-                throw new Error("Failed to skip to previous song");
+        let devices = await this.get_get_available_devices();
+        const deviceId = this._findActiveDevice(devices)[0];
+        if (deviceId === null)
+            throwError('no_active_device');
+        let previousURL = PREVIOUS_URL + querystring.stringify({ device_id: deviceId });
+        try {
+            await this.http_post_default_options(previousURL, '');
+        } catch (error) {
+            throwError('disallowed_action');
         }
-        await this.http_post_default_options(PREVIOUS_URL, '');
     }
 
     async do_player_shuffle({ shuffle }) {
+
         shuffle = shuffle === 'on' ? 'true' : 'false';
         console.log("setting shuffle: " + shuffle);
         if (this._testMode())
             return;
-        const player_info = await this.get_get_play_info();
-        if (player_info) {
-            console.log(player_info.actions.disallows.toggling_shuffle);
-            if (player_info.actions.disallows.toggling_shuffle)
-                throw new Error("Failed to change shuffle state");
-        }
         let devices = await this.get_get_available_devices();
         const deviceId = this._findActiveDevice(devices)[0];
-        if (deviceId === null) {
-            const error = new Error(`No Spotify device is active`);
-            error.code = 'no_active_device';
-            throw error;
-        }
+        if (deviceId === null)
+            throwError('no_active_device');
         let shuffleURL = SHUFFLE_URL + querystring.stringify({ state: shuffle, device_id: deviceId });
         console.log(shuffleURL);
-        await this.http_put_default_options(shuffleURL, '');
+        try {
+            await this.http_put_default_options(shuffleURL, '');
+        } catch (error) {
+            throwError('disallowed_action');
+        }
     }
 
     async do_player_repeat({ repeat }) {
         console.log("repeat: " + repeat);
         if (this._testMode())
             return;
-        const player_info = await this.get_get_play_info();
-        if (player_info) {
-            if (player_info.actions.disallows.toggling_repeat_context)
-                throw new Error("Failed to change repeat state");
-        }
         let devices = await this.get_get_available_devices();
         const deviceId = this._findActiveDevice(devices)[0];
-        if (deviceId === null) {
-            const error = new Error(`No Spotify device is active`);
-            error.code = 'no_active_device';
-            throw error;
-        }
+        if (deviceId === null)
+            throwError('no_active_device');
         let repeatURL = REPEAT_URL + querystring.stringify({ state: repeat, device_id: deviceId });
-        await this.http_put_default_options(repeatURL, '');
+        try {
+            await this.http_put_default_options(repeatURL, '');
+        } catch (error) {
+            throwError('disallowed_action');
+        }
     }
 };
+
+function throwError(code) {
+    const error = new Error();
+    error.code = code;
+    throw error;
+}
 
 function entityMatchScore(searchTerm, candidate) {
     if (searchTerm === candidate)
