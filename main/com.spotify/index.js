@@ -691,13 +691,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     async _flushPlaySong(env) {
         const songs = this._state.get(env.app.uniqueId);
         const album = this._findCommonAlbum(songs, env);
-        const player_info = await this.get_get_play_info();
-        if (player_info) {
-            if (player_info.shuffle_state === "true")
-                await this.do_player_shuffle("false");
-        } else {
-            await this.do_player_shuffle("false");
-        }
+        await this.do_player_shuffle("false");
 
         if (album && songs.length > 1) {
             let data = {
@@ -733,6 +727,11 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     async do_player_pause() {
         if (this._testMode())
             return;
+        const player_info = await this.get_get_play_info();
+        if (player_info) {
+            if (player_info.actions.disallows.pausing)
+                throw new Error("Failed to pause");
+        }
         await this.http_put_default_options(PAUSE_URL, '');
     }
 
@@ -740,18 +739,33 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         console.log("Playing music...");
         if (this._testMode())
             return;
+        const player_info = await this.get_get_play_info();
+        if (player_info) {
+            if (player_info.actions.disallows.resuming)
+                throw new Error("Failed to resume");
+        }
         await this.player_play_helper();
     }
 
     async do_player_next() {
         if (this._testMode())
             return;
+        const player_info = await this.get_get_play_info();
+        if (player_info) {
+            if (player_info.actions.disallows.skipping_next)
+                throw new Error("Failed to skip");
+        }
         await this.http_post_default_options(NEXT_URL, '');
     }
 
     async do_player_previous() {
         if (this._testMode())
             return;
+        const player_info = await this.get_get_play_info();
+        if (player_info) {
+            if (player_info.actions.disallows.skipping_prev)
+                throw new Error("Failed to skip to previous song");
+        }
         await this.http_post_default_options(PREVIOUS_URL, '');
     }
 
@@ -760,6 +774,12 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         console.log("setting shuffle: " + shuffle);
         if (this._testMode())
             return;
+        const player_info = await this.get_get_play_info();
+        if (player_info) {
+            console.log(player_info.actions.disallows.toggling_shuffle);
+            if (player_info.actions.disallows.toggling_shuffle)
+                throw new Error("Failed to change shuffle state");
+        }
         let devices = await this.get_get_available_devices();
         const deviceId = this._findActiveDevice(devices)[0];
         if (deviceId === null) {
@@ -776,6 +796,11 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         console.log("repeat: " + repeat);
         if (this._testMode())
             return;
+        const player_info = await this.get_get_play_info();
+        if (player_info) {
+            if (player_info.actions.disallows.toggling_repeat_context)
+                throw new Error("Failed to change repeat state");
+        }
         let devices = await this.get_get_available_devices();
         const deviceId = this._findActiveDevice(devices)[0];
         if (deviceId === null) {
