@@ -628,7 +628,15 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         try {
             await this.http_put(PLAY_URL + `?device_id=${deviceId}`, data, options);
         } catch (error) {
-            throwError('disallowed_action');
+            const player_info = await this.get_get_play_info();
+            if (player_info) {
+                //regular spotify players will throw an error when songs are already playing
+                throwError('disallowed_action');
+            } else {
+                //web players will throw an error when songs are not playing
+                throwError('player_error');
+            }
+
         }
 
         return { device: new Tp.Value.Entity(deviceId, deviceName) };
@@ -644,8 +652,8 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     async do_play_song({ song }, env) {
         let progstate = this._state.get(env.app.uniqueId);
         if (!progstate) {
-            env.addExitProcedureHook(() => {
-                this._flushPlaySong(env);
+            env.addExitProcedureHook(async () => {
+                await this._flushPlaySong(env);
             });
             this._state.set(env.app.uniqueId, [song]);
         } else {
@@ -690,7 +698,11 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     async _flushPlaySong(env) {
         const songs = this._state.get(env.app.uniqueId);
         const album = this._findCommonAlbum(songs, env);
-        await this.do_player_shuffle("false");
+        try {
+            await this.do_player_shuffle("false");
+        } catch (error) {
+            throwError("disallowed_action");
+        }
 
         if (album && songs.length > 1) {
             let data = {
