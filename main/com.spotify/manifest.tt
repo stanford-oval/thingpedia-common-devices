@@ -167,6 +167,9 @@ class @com.spotify
                   // i would like to...
                   "listen to a song", "hear a song"]]
     #_[confirmation="play the song $song"]
+    #_[on_error={no_active_device=["you must open the spotify app first", "no spotify player is active"],
+    disallowed_action=["failed to play: try playing from the spotify app"],
+    player_error=["failed to play: try playing from the spotify app"]}]
     #[confirm=enum(auto)];
 
     list query artist(out id: Entity(com.spotify:artist)
@@ -285,6 +288,8 @@ class @com.spotify
     action player_next()
     #_[canonical=["play the next song", "go to the next song", "skip this song"]]
     #_[confirmation="go to the next song"]
+    #_[on_error={no_active_device=["you must open the spotify app first", "no spotify player is active"],
+    disallowed_action=["there's no next song"]}]
     #[doc="go to the next song"]
     #[confirm=false];
 
@@ -294,12 +299,17 @@ class @com.spotify
                   "go back to the last song",
                   "go to the previous song"]]
     #_[confirmation="go to the previous song"]
+    #_[on_error={no_active_device=["you must open the spotify app first", "no spotify player is active"],
+    disallowed_action=["there's no previous song"]}]
     #[doc="go to the previous song"]
     #[confirm=false];
 
     action player_play()
     #_[canonical=["resume playing", "start playing again", "resume playback"]]
     #_[confirmation="resume playing"]
+    #_[on_error={no_active_device=["you must open the spotify app first", "no spotify player is active"],
+    disallowed_action=["music is already playing"],
+    player_error=["failed to play: try manually resuming"]}]
     #[doc="resume playback"]
     #[confirm=false];
 
@@ -307,6 +317,8 @@ class @com.spotify
     #_[canonical=["pause playback", "pause my spotify"]]
     #_[confirmation="pause playback"]
     #_[confirmation_remote="pause $_person's playback"]
+    #_[on_error={no_active_device=["you must open the spotify app first", "no spotify player is active"],
+    disallowed_action=["music is already paused"]}]
     #[doc="pause playback"]
     #[confirm=false];
 
@@ -319,6 +331,8 @@ class @com.spotify
     #_[canonical="set the shuffle state"]
     #_[confirmation="set the shuffle state"]
     #_[confirmation_remote="set the shuffle state"]
+    #_[on_error={no_active_device=["you must open the spotify app first", "no spotify player is active"],
+    disallowed_action=["failed to change shuffle state: try playing from the spotify app"]}]
     #[doc="set the shuffle state"]
     #[confirm=false];
 
@@ -331,6 +345,8 @@ class @com.spotify
     #_[canonical="set the repeat state"]
     #_[confirmation="set the repeat state"]
     #_[confirmation_remote="set the repeat state"]
+    #_[on_error={no_active_device=["you must open the spotify app first", "no spotify player is active"],
+    disallowed_action=["failed to change repeat state: try playing from the spotify app"]}]
     #[doc="set the repeat state"]
     #[confirm=false];
 

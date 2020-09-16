@@ -25,7 +25,7 @@ module.exports = [
             genres: ['latin', 'latin pop', 'puerto rican pop', 'tropical'],
             danceability: 65.5,
             energy: 79.7,
-            popularity: 80,
+            popularity: 79,
 
             id: new Tp.Value.Entity('spotify:track:6habFhsOp2NvshLv26DqMb', 'Despacito'),
             release_date: new Date('2019-02-01T00:00:00.000Z')

@@ -45,11 +45,12 @@ const ALBUM_URL = 'https://api.spotify.com/v1/albums?';
 const TRACK_URL = 'https://api.spotify.com/v1/tracks?';
 const ARTIST_URL = 'https://api.spotify.com/v1/artists?';
 const SHUFFLE_URL = 'https://api.spotify.com/v1/me/player/shuffle?';
-const PAUSE_URL = 'https://api.spotify.com/v1/me/player/pause';
-const NEXT_URL = 'https://api.spotify.com/v1/me/player/next';
-const PREVIOUS_URL = 'https://api.spotify.com/v1/me/player/previous';
+const PAUSE_URL = 'https://api.spotify.com/v1/me/player/pause?';
+const NEXT_URL = 'https://api.spotify.com/v1/me/player/next?';
+const PREVIOUS_URL = 'https://api.spotify.com/v1/me/player/previous?';
 const REPEAT_URL = 'https://api.spotify.com/v1/me/player/repeat?';
 const QUEUE_URL = "https://api.spotify.com/v1/me/player/queue";
+const PLAYER_INFO_URL = "https://api.spotify.com/v1/me/player";
 
 module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
@@ -100,6 +101,16 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     get_get_available_devices() {
         return this.http_get(AVAILABLE_DEVICES_URL).then((response) => {
             return JSON.parse(response).devices;
+        });
+    }
+
+    get_get_play_info() {
+        return this.http_get(PLAYER_INFO_URL).then((response) => {
+            if (response)
+                return JSON.parse(response);
+            else
+                return undefined;
+
         });
     }
 
@@ -236,12 +247,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
             songs.push(songObj);
         }
-
-        const filteredSongs = Array.from(new Set(songs.map((song) => String(song.id.display))))
-            .map((song_name) => {
-                return songs.find((song) => song.id.display === song_name);
-            });
-        return filteredSongs;
+        return songs;
     }
 
     async songs_by_search(query, limit = 5, appID = '') {
@@ -380,15 +386,15 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (hints && hints.filter) {
             for (let [pname, op, value] of hints.filter) {
                 if (pname === "id" && (op === "==" || op === "=~")) {
-                    if (value instanceof Tp.Value.Entity) idFilter = `track:"${value.display.toLowerCase()}" `;
-                    else idFilter = `track:"${value.toLowerCase()}" `;
+                    if (value instanceof Tp.Value.Entity) idFilter = `track:${value.display.toLowerCase()} `;
+                    else idFilter = `track:${value.toLowerCase()} `;
                 }
                 if (pname === "artists" && (op === "contains" || op === "contains~")) {
                     artists.push(value);
                     if (value instanceof Tp.Value.Entity)
-                        artistFilter = `artist:"${artists[0].display.toLowerCase()}" `;
+                        artistFilter = `artist:${artists[0].display.toLowerCase()} `;
                     else
-                        artistFilter = `artist:"${artists[0].toLowerCase()}" `;
+                        artistFilter = `artist:${artists[0].toLowerCase()} `;
 
                 } else if (pname === "release_date" && (op === "==")) {
                     yearFilter = `year:${value.getFullYear()} `;
@@ -404,8 +410,8 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 } else if (pname === "genres" && (op === "contains" || op === "contains~")) {
                     genreFilter = `genre:"${value.toLowerCase()}" `;
                 } else if (pname === "album" && (op === "==" || op === "=~")) {
-                    if (value instanceof Tp.Value.Entity) albumFilter = `album:"${value.display.toLowerCase()}" `;
-                    else albumFilter = `album:"${value.toLowerCase()}" `;
+                    if (value instanceof Tp.Value.Entity) albumFilter = `album:${value.display.toLowerCase()} `;
+                    else albumFilter = `album:${value.toLowerCase()} `;
                     album = value;
                 }
 
@@ -423,6 +429,10 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 let query = (idFilter + yearFilter + genreFilter + albumFilter).trim();
                 let songs = await this.songs_by_search(query, 5);
                 let searchTerm = idFilter.split("track:")[1].trim();
+                songs = Array.from(new Set(songs.map((song) => String(song.id.display))))
+                    .map((song_name) => {
+                        return songs.find((song) => song.id.display === song_name);
+                    });
                 songs.sort((a, b) => {
                     return entityMatchScore(searchTerm, b.id.display.toLowerCase()) - entityMatchScore(searchTerm, a.id.display.toLowerCase());
                 });
@@ -433,15 +443,21 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 if (songs.length === 0 && artists.length === 1)
                     songs = await this.songs_by_artist(artists);
                 let searchTerm = idFilter.split("track:")[1].trim();
+                songs = Array.from(new Set(songs.map((song) => String(song.id.display))))
+                    .map((song_name) => {
+                        return songs.find((song) => song.id.display === song_name);
+                    });
                 songs.sort((a, b) => {
                     return entityMatchScore(searchTerm, b.id.display.toLowerCase()) - entityMatchScore(searchTerm, a.id.display.toLowerCase());
                 });
                 return songs;
             }
         } else if (hints && hints.sort && hints.sort[0] === "release_date" && artists.length > 0) {
-            return this.songs_by_artist(artists, hints.sort[1]);
+            let songs = await this.songs_by_artist(artists, hints.sort[1]);
+            return filterSongs(songs);
         } else if (artists.length > 1) {
             let songs = await this.songs_by_artist(artists);
+            songs = filterSongs(songs);
             songs.sort((a, b) => {
                 return (b.popularity - a.popularity);
             });
@@ -453,10 +469,10 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             let query = (yearFilter + artistFilter + genreFilter).trim() || `year:${new Date().getFullYear()} `;
             let songs;
             if (yearFilter || genreFilter)
-                songs = await this.songs_by_search(query, 20);
+                songs = await this.songs_by_search(query, 50);
             else
-                songs = await this.songs_by_search(query, 20, appID);
-
+                songs = await this.songs_by_search(query, 50, appID);
+            songs = filterSongs(songs);
             songs.sort((a, b) => {
                 return (b.popularity - a.popularity);
             });
@@ -471,7 +487,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             for (let [pname, op, value] of hints.filter) {
                 if (pname === "id" && (op === "==" || op === "=~")) {
                     if (value instanceof Tp.Value.Entity) idFilter = `artist:${value.display} `;
-                    else idFilter = `artist:"${value}" `;
+                    else idFilter = `artist:${value} `;
                 } else if (pname === "genres" && (op === "contains" || op === "contains~")) {
                     genreFilter = `genre:"${value}" `;
                 }
@@ -505,13 +521,13 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (hints && hints.filter) {
             for (let [pname, op, value] of hints.filter) {
                 if (pname === "id" && (op === "==" || op === "=~")) {
-                    if (value instanceof Tp.Value.Entity) idFilter = `album:"${value.display}" `;
-                    else idFilter = `album:"${value}" `;
+                    if (value instanceof Tp.Value.Entity) idFilter = `album:${value.display} `;
+                    else idFilter = `album:${value} `;
                 }
                 if (pname === "artists" && (op === "contains" || op === "contains~")) {
                     if (value instanceof Tp.Value.Entity) artists.push(value.display.toLowerCase());
                     else artists.push(value.toLowerCase());
-                    artistFilter = `artist:"${artists[0]}" `;
+                    artistFilter = `artist:${artists[0]} `;
                 } else if (pname === "release_date" && (op === "==")) {
                     yearFilter = `year:${value.getFullYear()} `;
                 } else if (pname === "release_date" && (op === ">=")) {
@@ -604,13 +620,22 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (this._testMode())
             return { device: new Tp.Value.Entity('mock', 'Coolest Computer') };
         const [deviceId, deviceName] = this._findActiveDevice(devices);
-        if (deviceId === null) {
-            const error = new Error(`No Spotify device is active`);
-            error.code = 'no_active_device';
-            throw error;
+        if (deviceId === null)
+            throwError('no_active_device');
+        try {
+            await this.http_put(PLAY_URL + `?device_id=${deviceId}`, data, options);
+        } catch (error) {
+            const player_info = await this.get_get_play_info();
+            if (player_info) {
+                //regular spotify players will throw an error when songs are already playing
+                throwError('disallowed_action');
+            } else {
+                //web players will throw an error when songs are not playing
+                throwError('player_error');
+            }
+
         }
 
-        await this.http_put(PLAY_URL + `?device_id=${deviceId}`, data, options);
         return { device: new Tp.Value.Entity(deviceId, deviceName) };
     }
     async player_queue_helper(uri, [deviceId, deviceName]) {
@@ -624,8 +649,8 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     async do_play_song({ song }, env) {
         let progstate = this._state.get(env.app.uniqueId);
         if (!progstate) {
-            env.addExitProcedureHook(() => {
-                this._flushPlaySong(env);
+            env.addExitProcedureHook(async () => {
+                await this._flushPlaySong(env);
             });
             this._state.set(env.app.uniqueId, [song]);
         } else {
@@ -639,11 +664,9 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (!deviceState) {
             let devices = await this.get_get_available_devices();
             const [deviceId, deviceName] = this._findActiveDevice(devices);
-            if (deviceId === null) {
-                const error = new Error(`No Spotify device is active`);
-                error.code = 'no_active_device';
-                throw error;
-            }
+            if (deviceId === null)
+                throwError('no_active_device');
+
             this._deviceState.set(env.app.uniqueId, [deviceId, deviceName]);
             return { device: new Tp.Value.Entity(deviceId, deviceName) };
         } else {
@@ -672,16 +695,15 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     async _flushPlaySong(env) {
         const songs = this._state.get(env.app.uniqueId);
         const album = this._findCommonAlbum(songs, env);
-        const artist = this._findCommonArtist(songs, env);
-        await this.do_player_shuffle("false");
+        try {
+            await this.do_player_shuffle("false");
+        } catch (error) {
+            throwError("disallowed_action");
+        }
+
         if (album && songs.length > 1) {
             let data = {
                 context_uri: album,
-            };
-            return this.player_play_helper(JSON.stringify(data));
-        } else if (artist && songs.length > 1) {
-            let data = {
-                context_uri: artist,
             };
             return this.player_play_helper(JSON.stringify(data));
         } else {
@@ -710,36 +732,19 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         return album;
     }
 
-    _findCommonArtist(songs, env) {
-        var artists = [];
-        const songObjs = this._queryResults.get(env.app.uniqueId);
-        if (!songObjs)
-            return null;
-        for (const song of songs) {
-            const result = songObjs[String(song)];
-            if (!result) {
-                return null;
-            } else {
-                if (artists.length === 0) {
-                    artists = result.artists.map((artist) => String(artist));
-                } else {
-                    const songArtists = result.artists.map((artist) => String(artist));
-                    artists = artists.filter((value) => songArtists.includes(value));
-                    if (artists.length === 0)
-                        return null;
-                }
-            }
-        }
-        if (artists.length !== 1)
-            return null;
-        else
-            return artists[0];
-    }
-
     async do_player_pause() {
         if (this._testMode())
             return;
-        await this.http_put_default_options(PAUSE_URL, '');
+        let devices = await this.get_get_available_devices();
+        const deviceId = this._findActiveDevice(devices)[0];
+        if (deviceId === null)
+            throwError('no_active_device');
+        let pauseURL = PAUSE_URL + querystring.stringify({ device_id: deviceId });
+        try {
+            await this.http_put_default_options(pauseURL, '');
+        } catch (error) {
+            throwError('disallowed_action');
+        }
     }
 
     async do_player_play() {
@@ -752,30 +757,50 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     async do_player_next() {
         if (this._testMode())
             return;
-        await this.http_post_default_options(NEXT_URL, '');
+        let devices = await this.get_get_available_devices();
+        const deviceId = this._findActiveDevice(devices)[0];
+        if (deviceId === null)
+            throwError('no_active_device');
+        let nextURL = NEXT_URL + querystring.stringify({ device_id: deviceId });
+        try {
+            await this.http_post_default_options(nextURL, '');
+        } catch (error) {
+            throwError('disallowed_action');
+        }
     }
 
     async do_player_previous() {
         if (this._testMode())
             return;
-        await this.http_post_default_options(PREVIOUS_URL, '');
+        let devices = await this.get_get_available_devices();
+        const deviceId = this._findActiveDevice(devices)[0];
+        if (deviceId === null)
+            throwError('no_active_device');
+        let previousURL = PREVIOUS_URL + querystring.stringify({ device_id: deviceId });
+        try {
+            await this.http_post_default_options(previousURL, '');
+        } catch (error) {
+            throwError('disallowed_action');
+        }
     }
 
     async do_player_shuffle({ shuffle }) {
+
         shuffle = shuffle === 'on' ? 'true' : 'false';
         console.log("setting shuffle: " + shuffle);
         if (this._testMode())
             return;
         let devices = await this.get_get_available_devices();
         const deviceId = this._findActiveDevice(devices)[0];
-        if (deviceId === null) {
-            const error = new Error(`No Spotify device is active`);
-            error.code = 'no_active_device';
-            throw error;
-        }
+        if (deviceId === null)
+            throwError('no_active_device');
         let shuffleURL = SHUFFLE_URL + querystring.stringify({ state: shuffle, device_id: deviceId });
         console.log(shuffleURL);
-        await this.http_put_default_options(shuffleURL, '');
+        try {
+            await this.http_put_default_options(shuffleURL, '');
+        } catch (error) {
+            throwError('disallowed_action');
+        }
     }
 
     async do_player_repeat({ repeat }) {
@@ -784,15 +809,22 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             return;
         let devices = await this.get_get_available_devices();
         const deviceId = this._findActiveDevice(devices)[0];
-        if (deviceId === null) {
-            const error = new Error(`No Spotify device is active`);
-            error.code = 'no_active_device';
-            throw error;
-        }
+        if (deviceId === null)
+            throwError('no_active_device');
         let repeatURL = REPEAT_URL + querystring.stringify({ state: repeat, device_id: deviceId });
-        await this.http_put_default_options(repeatURL, '');
+        try {
+            await this.http_put_default_options(repeatURL, '');
+        } catch (error) {
+            throwError('disallowed_action');
+        }
     }
 };
+
+function throwError(code) {
+    const error = new Error();
+    error.code = code;
+    throw error;
+}
 
 function entityMatchScore(searchTerm, candidate) {
     if (searchTerm === candidate)
@@ -830,6 +862,27 @@ function entityMatchScore(searchTerm, candidate) {
 
 function removeParenthesis(str) {
     return str.replace(/ \(.*?\)/g, '');
+}
+
+function extractSongName(str) {
+    str = removeParenthesis(str);
+    str = str.split(" - ")[0];
+    return str;
+}
+
+function filterSongs(songs) {
+    const songNames = new Set();
+    const filteredSongs = Array.from(new Set(songs.map((song) => String(song.id.display))))
+        .filter((song_name) => {
+            if (!songNames.has(extractSongName(song_name))) {
+                songNames.add(extractSongName(song_name));
+                return true;
+            }
+            return false;
+        }).map((song_name) => {
+            return songs.find((song) => song.id.display === song_name);
+        });
+    return filteredSongs;
 }
 
 function editDistance(one, two) {
