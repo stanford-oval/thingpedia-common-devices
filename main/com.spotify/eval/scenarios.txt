@@ -100,7 +100,7 @@ U: what songs are in the album folklore by taylor swift
 #U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 #U: now => (@com.spotify.song(), album == null^^com.spotify:album("folklore") && contains(artists, null^^com.spotify:artist("taylor swift"))) => notify;
 
-A: I have found the 1, cardigan and the last great American dynasty. All of them are song by Taylor Swift in the album folklore.
+A: I have( found)? the 1, cardigan and the last great American dynasty\. All of them are song by Taylor Swift in the album folklore\.
 A: >> expecting = command
 
 ====
@@ -118,7 +118,7 @@ U: what is justin bieber's most popular song
 #U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 #U: now => sort popularity desc of (@com.spotify.song(), contains(artists, null^^com.spotify:artist("justin bieber")))[1] => notify;
 
-A: I have one, it is Intentions\. It is (a )?song by Justin Bieber in( the album)? Intentions ?\. Would you like to play it on Spotify\?
+A: The most popular song is Intentions\. It is (a )?song by Justin Bieber in( the album)? Intentions ?\. Would you like to play it on Spotify\?
 A: >> expecting = command
 
 ====
@@ -136,7 +136,7 @@ U: what is the newest song by beyonce
 #U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 #U: now => sort release_date desc of (@com.spotify.song(), contains(artists, null^^com.spotify:artist("beyonce")))[1] => notify;
 
-A: I have one, (it's|it is) BIGGER\. (It's|It is)( a)? song by Beyoncé (from|in) 7/30/2020. Would you like to play it on Spotify\?
+A: The most recent song is BIGGER\. (It's|It is)( a)? song by Beyoncé (from|in) 7/30/2020. Would you like to play it on Spotify\?
 A: >> expecting = command
 
 ====
@@ -293,7 +293,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.song(), contains~(genres, "rock") && release_date >= makeDate(1960, 1, 1) && release_date <= makeDate(1960, 1, 1) + 1year) => notify;
 
-A: I have Breaking Up Is Hard to Do and C’Mon Everybody. All of them are song which is adult standards.
+A: I have found Breaking Up Is Hard to Do and C’Mon Everybody. All of them are songs which are rockabilly.
 A: >> expecting = command
 
 ====
