@@ -72,11 +72,16 @@ class @com.spotify
                             "singer", "composer"],
                       property=["artist #", "song writer #"],
                       preposition=["by #", "from #"],
-                      adjective=["#"],
+                      adjective=["#", "# 's"],
                       passive_verb=["written by #", "released by #", "produced by #",
                                     "composed by #", "recorded by #"],
                       verb = ["# wrote", "# released", "# produced", "# composed",
-                              "# did", "# recorded", "# sang", "# made"]
+                              "# did", "# recorded", "# sang", "# made"],
+                      base_projection=['artist', 'singer', 'band', 'composer'],
+                      passive_verb_projection=['created | by', 'sang | by', 'performed | by',
+                                               'composed | by', 'recorded | by'],
+                      reverse_verb_projection=['sing', 'sang', 'wrote', 'composed',
+                                               'recorded']
                     }],
                     out album: Entity(com.spotify:album)
                     #[string_values="tt:song_album"]
@@ -87,6 +92,11 @@ class @com.spotify
                       preposition=["in the album #",
                                    "in #", "part of #", "from the album #",
                                    "from #"],
+                      base_projection=['album'],
+                      verb_projection=['appear | in', 'appear | on'],
+                      reverse_verb_projection=['have', 'has', 'contain', 'contains', 'includes'],
+                      passive_verb_projection=['included | in', 'included | on'],
+                      preposition_projection=['in', 'on']
                     }],
                     out genres: Array(String)
                     #[string_values="com.spotify:genre"]
@@ -109,6 +119,7 @@ class @com.spotify
                       adjective_argmin=["least recent", "oldest", "first"],
                       adjective_argmax=["most recent", "newest", "latest"],
                       passive_verb_argmax=["released most recently"],
+                      passive_verb_projection=['published | on', 'released | on', 'written | on'],
                     }],
                     out popularity: Number
                     #[min_number=0]
@@ -167,9 +178,11 @@ class @com.spotify
                   // i would like to...
                   "listen to a song", "hear a song"]]
     #_[confirmation="play the song $song"]
-    #_[on_error={no_active_device=["you must open the spotify app first", "no spotify player is active"],
-    disallowed_action=["failed to play: try playing from the spotify app"],
-    player_error=["failed to play: try playing from the spotify app"]}]
+    #_[on_error={
+      no_active_device=["you must open the spotify app first", "no spotify player is active"],
+      disallowed_action=["failed to play: try playing from the spotify app"],
+      player_error=["failed to play: try playing from the spotify app"]
+    }]
     #[confirm=enum(auto)];
 
     list query artist(out id: Entity(com.spotify:artist)
@@ -193,7 +206,12 @@ class @com.spotify
                         verb=["plays # music", "plays the # genre", "does # music",
                               "plays # songs", "does the # genre",
                               "plays the # style", "belongs to the genre #",
-                              "belongs to the # genre", "plays #"]
+                              "belongs to the # genre", "plays #"],
+                        base_projection=['artist', 'singer', 'band', 'composer'],
+                        passive_verb_projection=['created | by', 'sang | by', 'performed | by',
+                                               'composed | by', 'recorded | by'],
+                        reverse_verb_projection=['sing', 'sang', 'wrote', 'composed',
+                                               'recorded'],
                       }],
                       out popularity: Number
                       #[min_number=0]
@@ -232,7 +250,12 @@ class @com.spotify
                       passive_verb=["written by #", "released by #", "produced by #",
                                     "composed by #", "recorded by #"],
                       verb = ["# wrote", "# released", "# produced", "# composed",
-                              "# did", "# recorded", "# sang", "# made"]
+                              "# did", "# recorded", "# sang", "# made"],
+                      base_projection=['artist', 'singer', 'band', 'composer'],
+                      passive_verb_projection=['created | by', 'sang | by', 'performed | by',
+                                               'composed | by', 'recorded | by'],
+                      reverse_verb_projection=['sing', 'sang', 'wrote', 'composed',
+                                               'recorded']
                     }],
                     out release_date : Date
                     #_[canonical={
@@ -245,6 +268,7 @@ class @com.spotify
                       adjective_argmin=["least recent", "oldest", "first"],
                       adjective_argmax=["most recent", "newest", "latest"],
                       passive_verb_argmax=["released most recently"],
+                      passive_verb_projection=['published | on', 'released | on', 'written | on'],
                     }],
                     out popularity: Number
                     #[min_number=0]

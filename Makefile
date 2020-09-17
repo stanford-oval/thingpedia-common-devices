@@ -52,7 +52,7 @@ subdataset_ids := $(shell seq 1 $(subdatasets))
 max_turns ?= 4
 max_depth ?= 8
 debug_level ?= 1
-subsample_thingpedia ?= 1
+subsample_thingpedia ?= 0.75
 update_canonical_flags ?= --algorithm bert,adj,bart --paraphraser-model ./models/paraphraser-bart
 synthetic_expand_factor ?= 3
 paraphrase_expand_factor ?= 5
@@ -302,8 +302,6 @@ lint:
 evaluate: eval/$(release)/$(eval_set)/$(model).dialogue.results eval/$(release)/$(eval_set)/$(model).nlu.results
 	@echo eval/$(release)/$(eval_set)/$(model).dialogue.results
 	@cat eval/$(release)/$(eval_set)/$(model).dialogue.results
-	@echo eval/$(release)/$(eval_set)/$(model).nlu.results
-	@cat eval/$(release)/$(eval_set)/$(model).nlu.results
 
 evaluate-upload:
 	for f in {dialogue,nlu}.{results,debug} ; do \
