@@ -22,7 +22,7 @@ def write_ui_metadata(dialogue_results, nlu_results):
       "source": nlu_results,
       "format": 'csv',
       "type": "table",
-      "header": ["Eval Set", "Device", "Turn Number", "# turns","Accuracy", 
+      "header": ["Eval Set", "Device", "Turn Number", "# turns", "Accuracy", 
                  "W/o params", "Function", "Device", "Num Function", "Syntax"]
     },
   ]} 
