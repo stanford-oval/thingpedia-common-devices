@@ -89,6 +89,7 @@ developer_key ?= invalid
 s3_bucket ?=
 genie_k8s_project ?=
 genie_k8s_owner ?=
+artifacts_dir ?=
 
 .PRECIOUS: %/node_modules
 .PHONY: all clean lint
@@ -306,6 +307,12 @@ evaluate: eval/$(release)/$(eval_set)/$(model).dialogue.results eval/$(release)/
 evaluate-upload:
 	for f in {dialogue,nlu}.{results,debug} ; do \
 	  aws s3 cp eval/$(release)/$(eval_set)/$(model).$$f s3://$(s3_bucket)/$(genie_k8s_owner)/workdir/$(genie_k8s_project)/eval/$(release)/$(eval_set)/$(if $(findstring /,$(model)),$(dir $(model)),) ; \
+	done
+
+evaluate-output-artifacts:
+	mkdir -p $(artifacts_dir)
+	for f in {dialogue,nlu}.{results,debug} ; do \
+	  cp eval/$(release)/$(eval_set)/$(model).$$f $(artifacts_dir) ; \
 	done
 
 evaluate-download: eval/$(release)/$(eval_set)/user.tsv $(schema_file)
