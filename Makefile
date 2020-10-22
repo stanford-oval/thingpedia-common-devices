@@ -89,7 +89,7 @@ developer_key ?= invalid
 s3_bucket ?=
 genie_k8s_project ?=
 genie_k8s_owner ?=
-artifacts_dir ?=
+artifacts_path ?=
 
 .PRECIOUS: %/node_modules
 .PHONY: all clean lint
@@ -310,8 +310,8 @@ evaluate-upload:
 	done
 
 evaluate-output-artifacts:
-	mkdir -p $(artifacts_dir)
-	cp -r eval/$(release)/$(eval_set)/* $(artifacts_dir)
+	mkdir -p `dirname $(artifacts_path)`
+	tar cvzf $(artifacts_path) eval/$(release)/$(eval_set)/*
 	python3 scripts/write_ui_metrics_outputs.py eval/$(release)/$(eval_set)/$(model).dialogue.results
 
 evaluate-download: eval/$(release)/$(eval_set)/user.tsv $(schema_file)
