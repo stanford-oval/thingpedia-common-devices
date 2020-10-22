@@ -311,7 +311,7 @@ evaluate-upload:
 
 evaluate-output-artifacts:
 	mkdir -p $(artifacts_dir)
-	cp eval/$(release)/$(eval_set)/* $(artifacts_dir)
+	cp -r eval/$(release)/$(eval_set)/* $(artifacts_dir)
 	python3 scripts/write_ui_metrics_outputs.py eval/$(release)/$(eval_set)/$(model).dialogue.results
 
 evaluate-download: eval/$(release)/$(eval_set)/user.tsv $(schema_file)
