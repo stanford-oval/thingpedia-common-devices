@@ -340,11 +340,11 @@ evaluate-all-download:
 
 eval/$(release)/models/%/best.pth:
 	mkdir -p eval/$(release)/models/$(if $(findstring /,$*),$(dir $*),)
-        ifeq ($(s3_model_dir),)
+      ifeq ($(s3_model_dir),)
 	  aws s3 sync --exclude '*/dataset/*' --exclude '*/cache/*' --exclude 'iteration_*.pth' --exclude '*_optim.pth' s3://geniehai/$(if $(findstring /,$*),$(dir $*),$(genie_k8s_owner)/)models/$(genie_k8s_project)/$(release)/$(notdir $*)/ eval/$(release)/models/$*/
-        else
+      else
 	  aws s3 sync --exclude '*/dataset/*' --exclude '*/cache/*' --exclude 'iteration_*.pth' --exclude '*_optim.pth' $(s3_model_dir) eval/$(release)/models/$*/
-        endif
+      endif
 
 
 syncup:
