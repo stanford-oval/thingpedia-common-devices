@@ -312,7 +312,7 @@ evaluate-upload:
 
 evaluate-output-artifacts:
 	mkdir -p `dirname $(artifacts_path)`
-	tar cvzf $(artifacts_path) eval/$(release)/$(eval_set)/*
+	cp -r eval/$(release)/$(eval_set)/* $(artifacts_path)
 	python3 scripts/write_ui_metrics_outputs.py eval/$(release)/$(eval_set)/$(model).dialogue.results eval/$(release)/$(eval_set)/$(model).nlu.results
 
 evaluate-download: eval/$(release)/$(eval_set)/user.tsv $(schema_file)
