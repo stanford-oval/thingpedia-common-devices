@@ -89,6 +89,7 @@ developer_key ?= invalid
 s3_bucket ?=
 genie_k8s_project ?=
 genie_k8s_owner ?=
+artifacts_path ?=
 
 .PRECIOUS: %/node_modules
 .PHONY: all clean lint
@@ -307,6 +308,11 @@ evaluate-upload:
 	for f in {dialogue,nlu}.{results,debug} ; do \
 	  aws s3 cp eval/$(release)/$(eval_set)/$(model).$$f s3://$(s3_bucket)/$(genie_k8s_owner)/workdir/$(genie_k8s_project)/eval/$(release)/$(eval_set)/$(if $(findstring /,$(model)),$(dir $(model)),) ; \
 	done
+
+evaluate-output-artifacts:
+	mkdir -p `dirname $(artifacts_path)`
+	tar cvzf $(artifacts_path) eval/$(release)/$(eval_set)/*
+	python3 scripts/write_ui_metrics_outputs.py eval/$(release)/$(eval_set)/$(model).dialogue.results eval/$(release)/$(eval_set)/$(model).nlu.results
 
 evaluate-download: eval/$(release)/$(eval_set)/user.tsv $(schema_file)
 	for f in {dialogue,nlu}.{results,debug} ; do \
