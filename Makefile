@@ -90,6 +90,8 @@ s3_bucket ?=
 genie_k8s_project ?=
 genie_k8s_owner ?=
 artifacts_path ?=
+artifacts_dir ?=
+artifacts_ver := $(shell date +%s)
 s3_model_dir ?=
 
 .PRECIOUS: %/node_modules
@@ -312,7 +314,12 @@ evaluate-upload:
 
 evaluate-output-artifacts:
 	mkdir -p `dirname $(artifacts_path)`
-	cp -r eval/$(release)/$(eval_set)/* $(artifacts_path)
+	mkdir -p  $(artifacts_dir)
+	for f in {dialogue,nlu}.{results,debug} ; do \
+	  aws s3 cp eval/$(release)/$(eval_set)/$(model).$$f s3://$(s3_bucket)/$(genie_k8s_owner)/workdir/$(genie_k8s_project)/eval/$(release)/$(eval_set)/$(if $(findstring /,$(model)),$(dir $(model)),)$(artifacts_ver)/ ; \
+	done
+	echo s3://$(s3_bucket)/$(genie_k8s_owner)/workdir/$(genie_k8s_project)/eval/$(release)/$(eval_set)/$(if $(findstring /,$(model)),$(dir $(model)),)$(artifacts_ver)/ > $(artifacts_path)
+	cp -r eval/$(release)/$(eval_set)/* $(artifacts_dir)
 	python3 scripts/write_ui_metrics_outputs.py eval/$(release)/$(eval_set)/$(model).dialogue.results eval/$(release)/$(eval_set)/$(model).nlu.results
 
 evaluate-download: eval/$(release)/$(eval_set)/user.tsv $(schema_file)
