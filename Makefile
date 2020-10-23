@@ -89,8 +89,8 @@ developer_key ?= invalid
 s3_bucket ?=
 genie_k8s_project ?=
 genie_k8s_owner ?=
-artifacts_path ?=
-artifacts_dir ?=
+s3_metrics_output ?=
+metrics_output ?=
 artifacts_ver := $(shell date +%s)
 s3_model_dir ?=
 
@@ -313,13 +313,13 @@ evaluate-upload:
 	done
 
 evaluate-output-artifacts:
-	mkdir -p `dirname $(artifacts_path)`
-	mkdir -p  $(artifacts_dir)
+	mkdir -p `dirname $(s3_metrics_output)`
+	mkdir -p $(metrics_output)
 	for f in {dialogue,nlu}.{results,debug} ; do \
 	  aws s3 cp eval/$(release)/$(eval_set)/$(model).$$f s3://$(s3_bucket)/$(genie_k8s_owner)/workdir/$(genie_k8s_project)/eval/$(release)/$(eval_set)/$(if $(findstring /,$(model)),$(dir $(model)),)$(artifacts_ver)/ ; \
 	done
-	echo s3://$(s3_bucket)/$(genie_k8s_owner)/workdir/$(genie_k8s_project)/eval/$(release)/$(eval_set)/$(if $(findstring /,$(model)),$(dir $(model)),)$(artifacts_ver)/ > $(artifacts_path)
-	cp -r eval/$(release)/$(eval_set)/* $(artifacts_dir)
+	echo s3://$(s3_bucket)/$(genie_k8s_owner)/workdir/$(genie_k8s_project)/eval/$(release)/$(eval_set)/$(if $(findstring /,$(model)),$(dir $(model)),)$(artifacts_ver)/ > $(s3_metrics_output)
+	cp -r eval/$(release)/$(eval_set)/* $(metrics_output)
 	python3 scripts/write_ui_metrics_outputs.py eval/$(release)/$(eval_set)/$(model).dialogue.results eval/$(release)/$(eval_set)/$(model).nlu.results
 
 evaluate-download: eval/$(release)/$(eval_set)/user.tsv $(schema_file)
