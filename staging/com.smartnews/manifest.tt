@@ -1,0 +1,37 @@
+class @com.smartnews
+{
+  import loader from @org.thingpedia.v2();
+  import config from @org.thingpedia.config.none();
+
+  list query top_articles(in opt counter: Number #[prompt="How many news articles do you want?"],
+    			  out news_id: String,
+                          out title: String,
+                          out audio: Entity(tt:url),
+                          out date: Date,
+    			  out site_name: String,
+    			  out content: String)
+  #_[confirmation="top news on SmartNews"]
+  #_[formatted=[{type="rdl", webCallback="${audio}", displayTitle= "${title}", displayText="ID: ${news_id}\nPublished: ${date}\nSource: ${site_name}"}]]
+    //#_[formatted=[{type="text", text="Id: ${news_id}\nTitle: ${title}\nPublished: ${date}\nSource: ${site_name}\nAudio: ${audio}\nContent: ${content}"}]]
+  #[doc="get the top news from SmartNews"];
+
+  list query reading_list(out title: String,
+			  out news_id: String,
+                          out title: String,
+                          out link: Entity(tt:url),
+                          out date: Date,
+    			  out site_name: String,
+    			  out content: String)
+  #_[confirmation="reading list on SmartNews"]
+  #_[formatted=[{type="rdl", webCallback="${audio}", displayTitle= "${title}", displayText="ID: ${news_id}\nPublished: ${date}\nSource: ${site_name}"}]]
+  //#_[formatted=[{type="rdl", webCallback="${link}", displayTitle= "${title}", displayText="ID: ${news_id}\nPublished Time: ${date}\nSource: ${site_name}"}]]
+  //#_[formatted=[{type="text", text="Id: ${news_id}\nTitle: ${title}\nPublished: ${date}\nSource: ${site_name}\nAudio: ${audio}\nContent: ${content}"}]]
+  #[doc="get reading list from SmartNews"];
+
+  action pocket(in req news_id: Number)//#[confirm=false])
+  #_[confirmation="pocket ${news_id:select:null {the news}}"];
+
+  action drop(in req news_id: Number)
+  #_[confirmation="drop ${news_id:select:null {the news}}"];
+
+}
