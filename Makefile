@@ -66,11 +66,10 @@ auto_annotate_mlm_model ?= bert-large-uncased
 auto_annotate_custom_flags ?=
 
 template_deps = \
-	$(geniedir)/languages/thingtalk/*.js \
-	$(geniedir)/languages/thingtalk/dialogue_acts/*.js \
-	$(geniedir)/languages/thingtalk/*.genie \
-	$(geniedir)/languages/thingtalk/en/*.genie \
-	$(geniedir)/languages/thingtalk/en/dlg/*.genie
+	$(geniedir)/languages-dist/thingtalk/*.js \
+	$(geniedir)/languages-dist/thingtalk/en/*.js \
+	$(geniedir)/languages-dist/thingtalk/en/dlg/*.js \
+	$(geniedir)/languages-dist/thingtalk/dialogue_acts/*.js
 
 evalflags ?=
 
@@ -81,7 +80,7 @@ thingpedia_cli ?= node_modules/.bin/thingpedia
 geniedir ?= node_modules/genie-toolkit
 memsize ?= 9000
 parallel ?= 7
-genie ?= node --experimental_worker --max_old_space_size=$(memsize) $(geniedir)/tool/genie.js
+genie ?= node --experimental_worker --max_old_space_size=$(memsize) $(geniedir)/dist/tool/genie.js
 
 thingpedia_url ?= https://almond-dev.stanford.edu/thingpedia
 developer_key ?= invalid
@@ -172,7 +171,7 @@ eval/$(release)/synthetic-%.txt : $(schema_file) $(dataset_file) $(template_deps
 	fi
 	$(genie) generate-dialogs \
 	  --locale en-US --target-language thingtalk \
-	  --template $(geniedir)/languages/$(template_file) \
+	  --template $(geniedir)/languages-dist/$(template_file) \
 	  --thingpedia eval/$(release)/schema-$*.tt --entities entities.json --dataset $(dataset_file) \
 	  -o $@.tmp -f txt $(generate_flags) --debug $(debug_level) $(custom_gen_flags) --random-seed $@ \
 	  -n $(target_size) -B $(minibatch_size)
