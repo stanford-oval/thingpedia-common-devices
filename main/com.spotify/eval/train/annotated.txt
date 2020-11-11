@@ -1,0 +1,180 @@
+====
+# online/spotify-130
+U: play stairway to heaven.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => ((@com.spotify.song()), id =~ "stairway to heaven")[1] => @com.spotify.play_song(song=id);
+====
+# online/spotify-18
+U: skip this song and go to the next song.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.player_next();
+====
+# online/spotify-2
+U: play the artist st. vincent.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.spotify.song(), contains(artists, null^^com.spotify:artist("st. vincent"))) => @com.spotify.play_song(song=id);
+====
+# online/1678054
+U: set shuffle off
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.player_shuffle(shuffle=enum(off));
+====
+# online/spotify-113
+U: repeat the current track on spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.player_repeat(repeat=enum(track));
+====
+# online/spotify-16
+U: i want to listen to the artist dream theater.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.spotify.song(), contains(artists, null^^com.spotify:artist("dream theater"))) => @com.spotify.play_song(song=id);
+====
+# online/spotify-181
+U: play the song black hole sun from my spotify account.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => ((@com.spotify.song()), id =~ "black hole sun")[1] => @com.spotify.play_song(song=id);
+====
+# online/1675046
+U: play artist taylor swift
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.spotify.song(), contains(artists, null^^com.spotify:artist("taylor swift"))) => @com.spotify.play_song(song=id);
+====
+# online/32582187
+U: stop music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.player_pause();
+====
+# online/61557162
+U: play bruce springsteen on spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.spotify.song(), contains(artists, null^^com.spotify:artist("bruce springsteen"))) => @com.spotify.play_song(song=id);
+====
+# online/spotify-228
+#U: begin playing the album dirty computer by janelle monae
+#UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+#UT: now => ((@com.spotify.song()), id =~ "dirty computer" && contains(artists, null^^com.spotify:artist("janelle monae")))[1] => #@com.spotify.play_album(album=id);
+====
+# online/spotify-238
+#U: play the newest red hot chili peppers album in its entirety, please.
+#UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+#UT: now => ((@com.spotify.album()), id =~ "red hot chili peppers")[1] => @com.spotify.play_album(album=id);
+====
+# online/spotify-26
+U: play tequila by dan and shay
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => ((@com.spotify.song()), id =~ "tequila" && contains(artists, null^^com.spotify:artist("dan and shay")))[1] => @com.spotify.play_song(song=id);
+====
+# online/spotify-32
+U: go back to the song that just finished playing.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.player_previous();
+====
+# online/spotify-137
+U: play ice on the dune from empire of the sun.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => ((@com.spotify.song()), id =~ "ice on the dune")[1] => @com.spotify.play_song(song=id);
+====
+# online/spotify-14
+U: play songs by artist smash mouth.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.spotify.song(), contains(artists, null^^com.spotify:artist("smash mouth"))) => @com.spotify.play_song(song=id);
+====
+# online/1674421
+U: play artist taylor swift
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.spotify.song(), contains(artists, null^^com.spotify:artist("taylor swift"))) => @com.spotify.play_song(song=id);
+====
+# online/1678058
+U: set repeat on
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.player_repeat(repeat=enum(track));
+====
+# online/spotify-221
+U: play the next song on a spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.spotify.player_next();
+====
+# online/spotify-68
+U: play the album magic mystery tour
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => ((@com.spotify.song()), album == null^^com.spotify:album("magic mystery tour")) => @com.spotify.play_song(song=id);
+====
+# online/1675048
+U: play yesterday
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.spotify.song(), contains(artists, null^^com.spotify:artist("yesterday"))) => @com.spotify.play_song(song=id);
+====
+# online/1675052
+U: play songs in the wall
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => ((@com.spotify.song()), album == null^^com.spotify:album("the wall")) => @com.spotify.play_song(song=id);
+====
+# online/spotify-6
+U: play the song all i need by the green.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => ((@com.spotify.song()), id =~ "all i need")[1] => @com.spotify.play_song(song=id);
+====
+# online/1676748
+U: play song destination calabria
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => ((@com.spotify.song()), id =~ "destination calabria")[1] => @com.spotify.play_song(song=id);
+====
+# schemaorg/125
+U: who sings the song called sweet child of mine?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => [artists] of ((@com.spotify.song()), id =~ "sweet child of mine") => notify;
+====
+# schemaorg/127
+U: who sings the song called home sweet alabama?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => [artists] of ((@com.spotify.song()), id =~ "home sweet alabama") => notify;
+====
+# schemaorg/163
+U: who sings the song chandelier?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => [artists] of ((@com.spotify.song()), id =~ "chandelier") => notify;
+====
+# schemaorg/168
+U: which artists performed the song moulin rouge?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => [artists] of ((@com.spotify.song()), id =~ "moulin rouge") => notify;
+====
+# schemaorg/177
+U: i want to hear shape of you.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.spotify.song()), id =~ "shape of you" => notify;
+====
+# schemaorg/178
+U: can you find a song by whitney houston?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.spotify.song()), contains(artists, null^^com.spotify:artist("whitney houston")) => notify;
+====
+# schemaorg/193
+U: what artist performs blue suede shoes?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => [artists] of ((@com.spotify.song()), id =~ "blue suede shoes") => notify;
+====
+# schemaorg/248
+U: who sang my heart will go on?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => [artists] of ((@com.spotify.song()), id =~ "my heart will go on") => notify;
+====
+# schemaorg/249
+U: which artist sang temperature?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => [artists] of ((@com.spotify.song()), id =~ "temperature") => notify;
+====
+# schemaorg/271
+U: who is the artist of the song bad blood?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => [artists] of ((@com.spotify.song()), id =~ "bad blood") => notify;
+====
+# schemaorg/2132
+U: who performed the song yellow?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => [artists] of ((@com.spotify.song()), id =~ "yellow") => notify;
+====
+# schemaorg/2139
+U: search for all songs by farrah abraham.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.spotify.song()), contains(artists, null^^com.spotify:artist("farrah abraham")) => notify;

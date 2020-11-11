@@ -1,0 +1,137 @@
+// Copyright 2019-2020 The Board of Trustees of the Leland Stanford Junior University
+//
+// Redistribution and use in source and binary forms, with or
+// without modification, are permitted provided that the following
+// conditions are met:
+//
+// 1. Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+// 2. Redistributions in binary form must reproduce the above
+//    copyright notice, this list of conditions and the following
+//    disclaimer in the documentation and/or other materials
+//    provided with the distribution.
+// 3. Neither the name of the copyright holder nor the names of its
+//    contributors may be used to endorse or promote products derived
+//    from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+// OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+// Author: Silei Xu <silei@cs.stanford.edu>
+
+class @com.yelp
+#_[thingpedia_name="Yelp"]
+#_[thingpedia_description="Search restaurants on Yelp"]
+#_[canonical="yelp"]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="service"]
+{
+  import loader from @org.thingpedia.v2();
+  import config from @org.thingpedia.config.none(api_key=$?);
+
+  entity restaurant #_[description="Restaurants on Yelp"];
+  entity restaurant_cuisine #_[description="Cuisines in Yelp"];
+
+  list query restaurant(out id: Entity(com.yelp:restaurant)
+                        #[conflict_filter=["cuisines", "price_range"]]
+                        #[unique=true]
+                        #[string_values="org.openstreetmap:restaurant"]
+                        #_[canonical={
+                          default="base",
+                          base=["name"],
+                          property=[]
+                        }],
+                        out image_url: Entity(tt:picture)
+                        #[filterable=false]
+                        #_[canonical={
+                          default="base",
+                          base=["picture", "image", "photo"]
+                        }],
+                        out link: Entity(tt:url)
+                        #[filterable=false]
+                        #_[canonical="link"],
+                        out cuisines: Array(Entity(com.yelp:restaurant_cuisine))
+                        #[conflict_filter=["id"]]
+                        #_[canonical={
+                          default="property",
+                          base=["cuisines", "types of cuisine", "food", "types of food", "category"],
+                          property=["# food", "# cuisine", "# category"],
+                          adjective=["#"],
+                          verb=["serves # cuisine", "serves # food", "offer # cuisine", "offer # food", "serves", "offers"],
+                          preposition=["in the # category"],
+                          base_projection=["food", "cuisine"],
+                          verb_projection=["serve", "offer", "have"],
+                        }],
+                        out price : Enum(cheap, moderate, expensive, luxury)
+                        #[conflict_filter=["id"]]
+                        #_[canonical={
+                          default="adjective",
+                          base=["price range", "price"],
+                          property=["# price"],
+                          preposition=["in the # price range"],
+                          adjective=["#", "# -ly priced"],
+                          adjective_enum={
+                            cheap=["inexpensive"],
+                            luxury=["upscale", "fine-dining"]
+                          }
+                        }],
+                        out rating: Number
+                        #[min_number=1]
+                        #[max_number=5]
+                        #_[canonical={
+                          default="passive_verb",
+                          base=["rating", "overall rating", "average rating", "customer rating", "review rating"],
+                          passive_verb=["rated # star"],
+                          adjective=["# star"],
+                          property=["rating", "# star rating"],
+                          adjective_argmax=["top rated", "top-rated", "highest rated", "best rated", "best"],
+                          adjective_argmin=["worst rated", "worst"],
+                          projection_pronoun=["how"],
+                          passive_verb_projection=["rated"]
+                        }]
+                        #_[counted_object="stars"],
+                        out review_count: Number
+                        #_[canonical={
+                          default="property",
+                          base=["review count"],
+                          property=["# reviews"],
+                          adjective_argmax=["most reviewed"],
+                          adjective_argmin=["least reviewed"]
+                        }]
+                        #_[counted_object="reviews"],
+                        out geo: Location
+                        #_[canonical={
+                          default="preposition",
+                          base=["address", "location"],
+                          preposition=["near #", "in #", "around #"]
+                        }],
+                        out phone: Entity(tt:phone_number)
+                        #[filterable=false]
+                        #_[canonical={
+                          default="npp",
+                          base=["telephone", "phone number"]
+                        }])
+  #_[canonical="restaurant"]
+  #_[confirmation="restaurants on Yelp"]
+  #[minimal_projection=["id"]]
+  #_[formatted=[{
+    type="rdl",
+    displayTitle="${id}",
+    webCallback="${link}",
+    displayText="Offers ${cuisines} food.",
+    pictureUrl="${image_url}"
+  }]]
+  #[doc="search for restaurants on Yelp"]
+  #[confirm=false];
+}

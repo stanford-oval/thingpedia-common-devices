@@ -1,0 +1,16 @@
+class @com.duckduckgo {
+
+  import loader from @org.thingpedia.v2();
+  import config from @org.thingpedia.config.none();
+
+  monitorable list query web_search(in req query: String #_[prompt="What do you want to search?"] #_[canonical="query"] #[string_values="tt:search_query"],
+                                    out description: String #_[canonical="description"] #[string_values="tt:long_free_text"],
+                                    out link: Entity(tt:url) #_[canonical="link"])
+  #_[canonical="web search on DuckDuckGo"]
+  #_[confirmation="websites matching $query on DuckDuckGo"]
+  #_[formatted=[{type="rdl",webCallback="${link}",displayText="${description}"}]]
+  #_[confirmation_remote="websites matching $query on DuckDuckGo"]
+  #[poll_interval=3600000ms]
+  #[doc="search for `query` on DuckDuckGo"];
+
+}

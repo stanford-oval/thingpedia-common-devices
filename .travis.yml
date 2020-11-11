@@ -2,15 +2,35 @@ branches:
   except:
   - "/^wip/"
 language: node_js
-node_js:
-- '8'
-before_install: yarn global add greenkeeper-lockfile@1
-before_script: greenkeeper-lockfile-update
-after_script: greenkeeper-lockfile-upload
-script:
-- yarn make lint
-- TZ="America/Los_Angeles" yarn test $(git diff --name-only $TRAVIS_COMMIT_RANGE | paste -sd " ")
-after_success: yarn run coverage
+node_js: '10'
 env:
   global:
-    secure: if/uAlocgQl/D76vzuR90EQqoxZyBZv5+OLO/SV7hUE50hPdBfn7yucPomQG85nE2JAGyWzFwQTxkTDBmGE8Uew+PrGyDU244nH2vvwdEQl6VEJi8BCdK7jtE5/wb+ewyRBn1siNOWGlFG/God+ojkaL0fGcVINWLbT4JWF4olN1mcKv3y8oiVMPbA1RkHaE75nfF2l2b5MOGd6QxcoyeBIZegFwHk3evKBNy2lZ+eOxZoZZUUN9bwZYyF0tbpi/w7F1hv5Tj9c5/2FTYM9z+jXSfC4kCH0WCMyOpE/YhfE1NhHVglJk9MVArm3o5V4BtKfKtyTpVWOJGqgWavWqF+QteTeP3hvQpKS/3SyGTL9hqG30yijCtuVo5YZFTGhjBtqhFMhEqaSAuXgQol+IPur+9Hn9DyDW7XRVkpoP22EemP2SweXwOkQg6QFTqyN3PU0R51akgP6LD8VaXw7MPAtH07b7YCbBT7/IMCIDMe8hGAqRLUjB+GhzCWLvEsl8o82SaF+w4mzqDMApLsL1up9AMrQ6MQWFc+8lujShmfnEvAMiNdTHZOr+vcY5ytU6WAkaR2lgUR90Zn13/z2jYToVti9nD/x6pkVvr9XBP6uRruoT3LTzWXY2mflDwblobu0T9VND63A4CSPHpfH/utFKq8Em6INrhNvBJI87Z2I=
+  - COVERALLS_PARALLEL=true
+jobs:
+  include:
+    -
+      name: "Unit Tests"
+      install:
+      - travis_retry yarn
+      script:
+      - yarn lint
+      - TZ="America/Los_Angeles" yarn nyc node ./test/unit main universe
+      after_success: yarn run coverage
+    -
+      name: "Scenario Tests"
+      install:
+      - travis_retry yarn
+      script:
+      - TZ="America/Los_Angeles" yarn nyc node ./test/scenarios -r universe builtin main universe
+      after_success: yarn run coverage
+    -
+      name: "Dataset Generation"
+      install:
+      - travis_retry yarn
+      - pyenv global 3.6.7
+      - pip3 install --user numpy
+      script:
+      - ./travis/test-dataset.sh
+
+notifications:
+  webhooks: https://coveralls.io/webhook

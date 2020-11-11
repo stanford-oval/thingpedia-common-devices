@@ -1,0 +1,45 @@
+====
+# online/count-52
+U: how many upcoming holidays are there this month in the united states?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => aggregate count of ((@org.thingpedia.holidays.get_holidays()), date <= end_of(mon)) => notify;
+====
+# online/1641961
+U: get the upcoming holidays in the netherlands
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @org.thingpedia.holidays.get_holidays(country=null^^tt:country("netherlands")) => notify;
+====
+# online/32396028
+U: get the holidays in the us
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @org.thingpedia.holidays.get_holidays(country=null^^tt:country("the us")) => notify;
+====
+# online/32513083
+U: get us holidays
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @org.thingpedia.holidays.get_holidays(country=null^^tt:country("us")) => notify;
+====
+# online/ac13
+U: when is the next us holiday?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @org.thingpedia.holidays.get_holidays(country=null^^tt:country("us")) => notify;
+====
+# online/count-100
+U: tell me how many holidays until the year ends.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => aggregate count of ((@org.thingpedia.holidays.get_holidays()), (date >= start_of(day) && date <= end_of(year))) => notify;
+====
+# online/count-48
+U: how many holidays have happened in the past month?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => aggregate count of ((@org.thingpedia.holidays.get_holidays()), date >= start_of(mon)) => notify;
+====
+# online/1641959
+U: get the holidays in the american samoa
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @org.thingpedia.holidays.get_holidays(country=null^^tt:country("american samoa")) => notify;
+====
+# online/1641963
+U: list the holidays in the denmark
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @org.thingpedia.holidays.get_holidays(country=null^^tt:country("denmark")) => notify;

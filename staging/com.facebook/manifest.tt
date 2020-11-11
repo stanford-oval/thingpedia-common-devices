@@ -1,0 +1,33 @@
+class @com.facebook
+#_[name="Facebook"]
+#_[canonical="facebook"] {
+  import loader from @org.thingpedia.v2();
+  import config from @org.thingpedia.config.oauth2();
+
+  action post(in req status: String
+              #_[prompt="what do you want to post"]
+              #_[canonical={
+                 base=["status", "text", "content"],
+                 preposition=["saying #"]
+              }]
+              #[string_values="tt:long_free_text"])
+  #_[canonical=["post on facebook", "make a post on facebook", "update your facebook status"]]
+  #_[confirmation="post $status on Facebook"]
+  #[confirm=true];
+
+  action post_picture(in req picture_url: Entity(tt:picture)
+                      #_[prompt="upload the picture now"]
+                      #_[canonical={
+                         base=["picture", "image", "photo"],
+                      }],
+                      in req caption: String
+                      #_[prompt="what should be the caption of the picture"]
+                      #_[canonical={
+                         base=["caption", "message", "description"],
+                         preposition=["saying #"]
+                      }]
+                      #[string_values="com.instagram:caption"])
+  #_[canonical=["post a picture on facebook", "upload a picture to facebook"]]
+  #_[confirmation="upload a picture on Facebook with caption $caption"]
+  #[confirm=true];
+}
