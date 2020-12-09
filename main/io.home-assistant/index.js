@@ -28,8 +28,8 @@ const HASS_URL = 'http://hassio.local:8123';
 
 // map to a Home Assistant domain to a specific Thingpedia device
 const DOMAIN_TO_TP_KIND = {
-    /*
     'light': 'org.thingpedia.iot.light-bulb',
+    /*
     'climate': 'io.home-assistant.climate',
     'cover_active': 'org.thingpedia.iot.cover',
     'fan': 'org.thingpedia.iot.fan',

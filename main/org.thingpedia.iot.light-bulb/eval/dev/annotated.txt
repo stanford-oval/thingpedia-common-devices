@@ -7,7 +7,7 @@ UT: now => @org.thingpedia.iot.light-bulb.alert_long();
 # online/121278
 U: loop colors on hue
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.light-bulb.color_loop();
+UT: now => @org.thingpedia.iot.light-bulb(name="hue").color_loop();
 ====
 # online/127968
 U: off light
@@ -72,12 +72,12 @@ UT: now => @org.thingpedia.iot.light-bulb(name="gates").set_power(power=enum(off
 # online/57610060
 U: turn off the table lamp
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.light-bulb(name="table lamp").set_power(power=enum(off));
+UT: now => @org.thingpedia.iot.light-bulb(name="table").set_power(power=enum(off));
 ====
 # online/57610061
 U: turn on the table lamp
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.light-bulb(name="table lamp").set_power(power=enum(on));
+UT: now => @org.thingpedia.iot.light-bulb(name="table").set_power(power=enum(on));
 ====
 # online/57610064
 U: switch off kitchen lights
@@ -147,7 +147,7 @@ UT: now => @org.thingpedia.iot.light-bulb.set_power(power=enum(on));
 # online/367269
 U: turn off bedroom lamp
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.light-bulb.set_power(power=enum(off));
+UT: now => @org.thingpedia.iot.light-bulb(name="bedroom").set_power(power=enum(off));
 ====
 # online/1435525
 U: turn off my lights
@@ -218,18 +218,3 @@ UT: now => @org.thingpedia.iot.light-bulb.set_power(power=enum(off));
 U: turn off light.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => @org.thingpedia.iot.light-bulb.set_power(power=enum(off));
-====
-# online/62725703
-U: is ben's light on
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.light-bulb.power() => notify;
-====
-# online/62725704
-U: turn on ben's light
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.light-bulb(name="ben 's").set_power(power=enum(on));
-====
-# online/62725707
-U: turn ben's light on
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.light-bulb(name="ben 's").set_power(power=enum(on));

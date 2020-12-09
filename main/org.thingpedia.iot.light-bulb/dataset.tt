@@ -18,13 +18,6 @@ dataset @org.thingpedia.iot.light-bulb language "en" {
     #[id=52298563]
     #[name="LightBulbPowerStateThenNotify"];
 
-    query  := @org.thingpedia.iot.light-bulb.power()
-    #_[utterances=["the power state of the light bulb",
-                   "the power state of my lights",
-                   "whether the lights are on or off"]]
-    #[id=52298572]
-    #[name="LightBulbPowerState"];
-
     stream  := monitor (@org.thingpedia.iot.light-bulb.power())
     #_[utterances=["when the state of my lights changes",
                    "whenever the state of my lights has changed",
@@ -46,24 +39,11 @@ dataset @org.thingpedia.iot.light-bulb language "en" {
     #_[utterances=["set ${p_power} the lights",
                    "turn ${p_power} my light bulb",
                    "turn ${p_power} the light",
+                   "turn ${p_power} the lamp",
                    "turn ${p_power} the lights"]]
     #[id=52298582]
     #[name="SetPowerOnLightBulbWithPower"];
 
-    action  := @org.thingpedia.iot.light-bulb.color_loop()
-    #_[utterances=["start disco lights",
-                   "color loop the lights",
-                   "loop the color in my light bulb",
-                   "loop the color of the light bulb"]]
-    #[id=52298586]
-    #[name="ColorLoopLightsOnLightBulb"];
-
-    action  := @org.thingpedia.iot.light-bulb.alert_long()
-    #_[utterances=["alert me by flashing the lights",
-                   "flash the lights",
-                   "flash the lights as alerts"]]
-    #[id=52298589]
-    #[name="FlashAlertLightsOnLightBulb"];
 
     program (p_name :String)  := {
   now => @org.thingpedia.iot.light-bulb(name=p_name).power() => notify;
@@ -105,6 +85,7 @@ dataset @org.thingpedia.iot.light-bulb language "en" {
     action (p_name :String, p_power :Enum(on,off))  := @org.thingpedia.iot.light-bulb(name=p_name).set_power(power=p_power)
     #_[utterances=["turn ${p_power} my ${p_name} light bulb",
                    "turn ${p_power} the ${p_name} light",
+                   "turn ${p_power} the ${p_name} lamp",
                    "turn ${p_power} the ${p_name} lights",
                    "turn ${p_power} the lights called ${p_name}",
                    "turn ${p_power} the lights in the ${p_name}",
