@@ -217,6 +217,21 @@ eval/$(release)/augmented.user.tsv : eval/$(release)/synthetic.user.tsv $(schema
 	  $(paraphrases_user) $<
 	mv $@.tmp $@
 
+eval/$(release)/augmented.agent.tsv : eval/$(release)/synthetic.agent.tsv $(schema_file) $(paraphrases_agent) parameter-datasets.tsv
+	$(genie) augment -o $@.tmp \
+	  --locale en-US \
+	  --target-language thingtalk --contextual \
+	  --thingpedia $(schema_file) \
+	  --parameter-datasets parameter-datasets.tsv \
+	  --synthetic-expand-factor $(synthetic_expand_factor) \
+	  --quoted-paraphrasing-expand-factor $(paraphrase_expand_factor) \
+	  --no-quote-paraphrasing-expand-factor $(paraphrase_expand_factor) \
+	  --quoted-fraction $(quoted_fraction) \
+	  --debug \
+	  --parallelize $(parallel) \
+	  $(paraphrases_agent) $<
+	mv $@.tmp $@
+
 eval/$(release)/$(eval_set)/agent.tsv : $(eval_files) $(schema_file)
 	$(genie) dialog-to-contextual \
 	  --locale en-US --target-language thingtalk --no-tokenized \
@@ -262,10 +277,15 @@ eval/$(release)/$(eval_set)/%.nlu.results: eval/$(release)/models/%/best.pth eva
 	mv eval/$(release)/$(eval_set)/$*.nlu.debug.tmp eval/$(release)/$(eval_set)/$*.nlu.debug
 	mv $@.tmp $@
 
-# NOTE: there is no augmentation of agent sentences! The agent networks (policy & NLG) operate with QUOTED tokens exclusively
-datadir/agent: eval/$(release)/synthetic.agent.tsv eval/$(release)/dev/agent.tsv
+datadir/agent: eval/$(release)/synthetic.agent.tsv eval/$(release)/augmented.agent.tsv eval/$(release)/dev/agent.tsv
 	mkdir -p $@
 	cp eval/$(release)/synthetic.agent.tsv $@/
+	cp eval/$(release)/augmented.agent.tsv $@/train.tsv ; \
+	cp eval/$(release)/dev/agent.tsv $@/eval.tsv ; \
+	touch $@
+
+datadir/nlg: eval/$(release)/synthetic.agent.tsv eval/$(release)/dev/agent.tsv
+	mkdir -p $@
 	cp eval/$(release)/synthetic.agent.tsv $@/train.tsv ; \
 	cp eval/$(release)/dev/agent.tsv $@/eval.tsv ; \
 	touch $@
@@ -283,7 +303,7 @@ datadir/fewshot: eval/$(release)/train/user.tsv eval/$(release)/dev/user.tsv
 	cp eval/$(release)/dev/user.tsv $@/user/eval.tsv
 	touch $@
 
-datadir: datadir/agent datadir/user datadir/fewshot $(foreach v,$(subdataset_ids),eval/$(release)/synthetic-$(v).txt)
+datadir: datadir/agent datadir/nlg datadir/user datadir/fewshot $(foreach v,$(subdataset_ids),eval/$(release)/synthetic-$(v).txt)
 	cat eval/$(release)/synthetic-*.txt > $@/synthetic.txt
 	$(genie) measure-training-set $@ > $@/stats
 	touch $@
