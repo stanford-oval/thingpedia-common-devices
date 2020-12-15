@@ -267,6 +267,7 @@ eval/$(release)/$(eval_set)/%.dialogue.results: eval/$(release)/models/%/best.pt
 	mv $@.tmp $@
 
 eval/$(release)/$(eval_set)/%.nlu.results: eval/$(release)/models/%/best.pth eval/$(release)/$(eval_set)/user.tsv $(schema_file)
+	mkdir -p eval/$(release)/$(eval_set)/$(dir $*)
 	$(genie) evaluate-server \
 	  --url "file://$(abspath $(dir $<))" \
 	  --thingpedia $(schema_file) -l en-US \
@@ -322,14 +323,10 @@ lint:
 		test ! -f $$d/package.json || $(eslint) $$d/*.js ; \
 	done
 
+
 evaluate: eval/$(release)/$(eval_set)/$(model).dialogue.results eval/$(release)/$(eval_set)/$(model).nlu.results
 	@echo eval/$(release)/$(eval_set)/$(model).dialogue.results
 	@cat eval/$(release)/$(eval_set)/$(model).dialogue.results
-
-evaluate-upload:
-	for f in {dialogue,nlu}.{results,debug} ; do \
-	  aws s3 cp eval/$(release)/$(eval_set)/$(model).$$f s3://$(s3_bucket)/$(genie_k8s_owner)/workdir/$(genie_k8s_project)/eval/$(release)/$(eval_set)/$(if $(findstring /,$(model)),$(dir $(model)),) ; \
-	done
 
 evaluate-output-artifacts:
 	mkdir -p `dirname $(s3_metrics_output)`
@@ -341,29 +338,6 @@ evaluate-output-artifacts:
 	cp -r eval/$(release)/$(eval_set)/* $(metrics_output)
 	python3 scripts/write_ui_metrics_outputs.py eval/$(release)/$(eval_set)/$(model).dialogue.results eval/$(release)/$(eval_set)/$(model).nlu.results
 
-evaluate-download: eval/$(release)/$(eval_set)/user.tsv $(schema_file)
-	for f in {dialogue,nlu}.{results,debug} ; do \
-	  aws s3 cp s3://$(s3_bucket)/$(genie_k8s_owner)/workdir/$(genie_k8s_project)/eval/$(release)/$(eval_set)/$(model).$$f eval/$(release)/$(eval_set)/$(if $(findstring /,$(model)),$(dir $(model)),) ; \
-	  touch eval/$(release)/$(eval_set)/$(model).$$f ; \
-	done
-	@echo eval/$(release)/$(eval_set)/$(model).dialogue.results
-	@cat eval/$(release)/$(eval_set)/$(model).dialogue.results
-	@echo eval/$(release)/$(eval_set)/$(model).nlu.results
-	@cat eval/$(release)/$(eval_set)/$(model).nlu.results
-
-evaluate-all:
-	@for m in $($(release)_eval_$(eval_set)_models) ; do make --no-print-directory model=$$m evaluate ; done
-
-evaluate-all-remote: eval/$(release)/$(eval_set)/user.tsv $(schema_file)
-	make syncup
-	cd $(genie_k8s_dir) ; \
-	for m in $($(release)_eval_$(eval_set)_models) ; do \
-	  ./evaluate.sh --experiment $(release) --model `basename $$m` --model_owner `dirname $$m` --eval_set $(eval_set) ; \
-	done
-
-evaluate-all-download:
-	@for m in $($(release)_eval_$(eval_set)_models) ; do make --no-print-directory model=$$m evaluate-download ; done
-
 eval/$(release)/models/%/best.pth:
 	mkdir -p eval/$(release)/models/$(if $(findstring /,$*),$(dir $*),)
       ifeq ($(s3_model_dir),)
@@ -371,20 +345,3 @@ eval/$(release)/models/%/best.pth:
       else
 	  aws s3 sync --exclude '*/dataset/*' --exclude '*/cache/*' --exclude 'iteration_*.pth' --exclude '*_optim.pth' $(s3_model_dir) eval/$(release)/models/$*/
       endif
-
-
-syncup:
-	aws s3 sync --delete --exclude 'node_modules/*' --exclude '*/node_modules/*' --exclude '.embeddings/*' --exclude '*/models/*' --exclude '*/datasets/*' --exclude 'datadir/*' --exclude '*/synthetic*' --exclude '*/augmented*' --exclude '.git/*' --exclude '.nyc_output/*' --exclude 'export/*' --no-follow-symlinks . s3://$(s3_bucket)/$(genie_k8s_owner)/workdir/$(genie_k8s_project)/
-	# HACK: sync the builtin folder separately with --follow-symlinks
-	aws s3 sync --delete --exclude 'node_modules/*' --exclude '*/node_modules/*' --exclude '.embeddings/*' --exclude '*/models/*' --exclude '*/datasets/*' --exclude 'datadir/*' --exclude '*/synthetic*' --exclude '*/augmented*' --exclude '.git/*' --exclude '.nyc_output/*' --exclude 'export/*' --follow-symlinks builtin/ s3://$(s3_bucket)/$(genie_k8s_owner)/workdir/$(genie_k8s_project)/builtin/
-
-syncdown:
-	aws s3 sync s3://$(s3_bucket)/$(genie_k8s_owner)/workdir/$(genie_k8s_project)/ .
-
-eval/$(release)/datasets/%/stats:
-	aws s3 cp s3://$(s3_bucket)/$(if $(findstring /,$*),$(dir $*),$(genie_k8s_owner)/)dataset/$(genie_k8s_project)/$(release)/$(notdir $*)/stats $@ || true
-	sed -i 's|datadir|'$(release)/$*'|g' $@
-
-training-set-statistics: $(foreach v,$($(release)_training_sets),eval/$(release)/datasets/$(v)/stats)
-	@echo "dataset	num_dlgs	num_synthetic	num_turns	ctx_entropy	utt_entropy	tgt_entropy	turns_per_dlgs	unique_ctxs"
-	@cat $^
