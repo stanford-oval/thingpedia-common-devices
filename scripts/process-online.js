@@ -283,8 +283,10 @@ class Processor extends stream.Writable {
             return;
 
         const entities = Genie.EntityUtils.makeDummyEntities(ex.preprocessed);
-        const program = ThingTalk.NNSyntax.fromNN(ex.target_code.split(' '), entities);
-        await program.typecheck(this._schemas, false);
+        const program = await Genie.ThingTalkUtils.parsePrediction(ex.target_code, entities, {
+            schemaRetriever: this._schemas,
+            loadMetadata: false,
+        }, true);
 
         const dialoguestate = toDialogueState(program, this._idQueries);
         if (typeof dialoguestate === 'string') {
@@ -314,7 +316,7 @@ class Processor extends stream.Writable {
         } else {
             out = await this._getFile(device);
 
-            const code = ThingTalk.NNSyntax.toNN(dialoguestate, ex.preprocessed, entities, { typeAnnotations: false }).join(' ');
+            const code = Genie.ThingTalkUtils.serializePrediction(dialoguestate, ex.preprocessed, entities, { locale: 'en-US' }).join(' ');
             out.write({
                 id: this._prefix + ex.id,
                 context: 'null',
