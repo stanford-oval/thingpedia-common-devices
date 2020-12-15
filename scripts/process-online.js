@@ -66,7 +66,11 @@ async function existsSafe(path) {
     }
 }
 
-
+const DEVICES_REMAP = {
+    'light-bulb': 'org.thingpedia.iot.light-bulb',
+    'security-camera': 'org.thingpedia.iot.security-camera',
+    'thermostat': 'org.thingpedia.iot.thermostat'
+};
 
 class Processor extends stream.Writable {
     constructor(type, prefix, schemas, droppedFilename, rng) {
@@ -257,6 +261,21 @@ class Processor extends stream.Writable {
         return output;
     }
 
+    _adjustDevices(dialogueState) {
+        dialogueState.visit(new class extends ThingTalk.Ast.NodeVisitor {
+            visitDeviceSelector(sel) {
+                if (sel.kind in DEVICES_REMAP)
+                    sel.kind = DEVICES_REMAP[sel.kind];
+                return true;
+            }
+            visitExternalBooleanExpression(expr) {
+                if (expr.kind in DEVICES_REMAP)
+                    expr.kind = DEVICES_REMAP[expr.kind];
+                return true;
+            }
+        });
+    }
+
     _getDevice(dialogueState) {
         const devices = new Set;
         dialogueState.visit(new class extends ThingTalk.Ast.NodeVisitor {
@@ -310,6 +329,8 @@ class Processor extends stream.Writable {
             console.log(`Ignored example ${ex.id}: ${dialoguestate}`);
             return;
         }
+        this._adjustDevices(dialoguestate);
+
         const device = this._getDevice(dialoguestate);
 
         let out;
