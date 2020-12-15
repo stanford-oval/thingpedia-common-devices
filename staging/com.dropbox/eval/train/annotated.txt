@@ -58,3 +58,8 @@ UT: now => @com.dropbox.open(file_name=$?) => notify;
 U: see all the files in my pictures folder in dropbox
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => @com.dropbox.list_folder(folder_name="pictures") => notify;
+====
+# online/62110269
+U: rename str:PATH_NAME::0: to str:PATH_NAME::1: in my dropbox drive
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.dropbox.move(new_name="str:PATH_NAME::1:"^^tt:path_name, old_name="str:PATH_NAME::0:"^^tt:path_name);

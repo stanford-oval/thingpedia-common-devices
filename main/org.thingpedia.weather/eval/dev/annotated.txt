@@ -97,7 +97,7 @@ UT: now => [temperature] of @org.thingpedia.weather.current(location=$context.lo
 # online/ep46
 U: what's the wind speed?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => [wind_speed] of @org.thingpedia.weather.current(location=$context.location.current_location) => notify;
+UT: now => [wind_speed] of @org.thingpedia.weather.current() => notify;
 ====
 # online/120797
 U: what's the weather somewhere
@@ -221,3 +221,33 @@ A: The temperature is 65 F.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
 U: great thank you.
 UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# online/62110258
+U: is it raining outside?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# online/62110326
+U: what's the humidity outside
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# online/62110327
+U: what's the temperature outside at home
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=$location.home);
+====
+# online/62767884
+U: what's the weather in palo alto?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("palo alto"));
+====
+# online/62915880
+U: what's the weather in athens?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("athens"));
+====
+# online/62919479
+U: how is the weather in karslruhe
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("karslruhe"));

@@ -78,3 +78,23 @@ UT: now => (@com.google.drive.list_drive_files(order_by=enum(created_time_decrea
 U: what's the size of the smallest file in my google drive
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => aggregate min file_size of (@com.google.drive.list_drive_files()) => notify;
+====
+# online/62110265
+U: sort my google drive files by name
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.google.drive.list_drive_files(order_by=enum name_increasing);
+====
+# online/62110282
+U: create a file with name / str:PATH_NAME::0: in my google drive
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.google.drive.create_new_drive_file(file_name="str:PATH_NAME::0:"^^tt:path_name);
+====
+# online/62110334
+U: list my files from google drive
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.google.drive.list_drive_files();
+====
+# online/62110337
+U: show me my google drive files created since monday
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.google.drive.list_drive_files(order_by=enum created_time_decreasing) filter created_time >= $start_of(week);
