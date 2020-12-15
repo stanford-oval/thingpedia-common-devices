@@ -69,13 +69,17 @@ async function existsSafe(path) {
 
 
 class Processor extends stream.Writable {
-    constructor(type, prefix, schemas, rng) {
+    constructor(type, prefix, schemas, droppedFilename, rng) {
         super({ objectMode: true });
 
         this._type = type;
         this._prefix = prefix;
 
+        this._droppedFilename = droppedFilename;
         this._existingDataset = new Set;
+        this._dropped = new Set;
+        this._deduplicate = new Set;
+
         this._devices = new Map;
         this._outputs = new Map;
         this._schemas = schemas;
@@ -90,6 +94,15 @@ class Processor extends stream.Writable {
         //    return;
 
         const existingDataset = this._existingDataset;
+
+        if (this._droppedFilename) {
+            for await (let line of readAllLines([this._droppedFilename])) {
+                line = line.trim();
+                if (!line || line.startsWith('#'))
+                    continue;
+                this._dropped.add(line);
+            }
+        }
 
         await StreamUtils.waitFinish(readAllLines([filename])
             .pipe(this._type === 'manual' ? new Genie.DialogueParser() : new Genie.DatasetParser())
@@ -279,7 +292,11 @@ class Processor extends stream.Writable {
     }
 
     async _process(ex) {
-        if (this._existingDataset.has(this._prefix + ex.id))
+        if (this._deduplicate.has(ex.preprocessed))
+            return;
+        this._deduplicate.add(ex.preprocessed);
+
+        if (this._existingDataset.has(this._prefix + ex.id) || this._dropped.has(this._prefix + ex.id))
             return;
 
         const entities = Genie.EntityUtils.makeDummyEntities(ex.preprocessed);
@@ -344,6 +361,10 @@ async function main() {
         required: false,
         help: 'Prefix to add to IDs (defaults to "online" for manual datasets, and "turking" for paraphrase datasets)',
     });
+    parser.add_argument('--dropped', {
+        required: false,
+        help: 'Path to text file containing IDs of sentences to ignore (one per line)',
+    });
     parser.add_argument('--random-seed', {
         default: 'almond is awesome',
         required: false,
@@ -363,7 +384,7 @@ async function main() {
 
     const input = readAllLines(args.input_file);
     const rng = seedrandom.alea(args.random_seed);
-    const processor = new Processor(args.type, prefix, schemas, rng);
+    const processor = new Processor(args.type, prefix, schemas, args.dropped, rng);
     await processor.init();
 
     const out = input
