@@ -253,6 +253,13 @@ eval/$(release)/train/user.tsv : $(fewshot_train_files) $(schema_file)
 	  -o $@.tmp $(fewshot_train_files)
 	if test -f $@ && cmp $@.tmp $@ ; then rm $@.tmp ; else mv $@.tmp $@ ; fi
 
+eval/$(release)/train/agent.tsv : $(fewshot_train_files) $(schema_file)
+	$(genie) dialog-to-contextual \
+	  --locale en-US --target-language thingtalk --no-tokenized \
+	  --thingpedia $(schema_file) --side agent \
+	  -o $@.tmp $(fewshot_train_files)
+	if test -f $@ && cmp $@.tmp $@ ; then rm $@.tmp ; else mv $@.tmp $@ ; fi
+
 eval/$(release)/$(eval_set)/%.dialogue.results: eval/$(release)/models/%/best.pth $(eval_files) $(schema_file) eval/$(release)/database-map.tsv parameter-datasets.tsv
 	mkdir -p eval/$(release)/$(eval_set)/$(dir $*)
 	$(genie) evaluate-dialog \
@@ -298,10 +305,12 @@ datadir/user: eval/$(release)/synthetic.user.tsv eval/$(release)/augmented.user.
 	cp eval/$(release)/dev/user.tsv $@/eval.tsv ; \
 	touch $@
 
-datadir/fewshot: eval/$(release)/train/user.tsv eval/$(release)/dev/user.tsv
-	mkdir -p $@/user
+datadir/fewshot: eval/$(release)/train/user.tsv eval/$(release)/dev/user.tsv eval/$(release)/train/agent.tsv eval/$(release)/dev/agent.tsv
+	mkdir -p $@/user $@/agent
 	cp eval/$(release)/train/user.tsv $@/user/train.tsv
 	cp eval/$(release)/dev/user.tsv $@/user/eval.tsv
+	cp eval/$(release)/train/agent.tsv $@/agent/train.tsv
+	cp eval/$(release)/dev/agent.tsv $@/agent/eval.tsv
 	touch $@
 
 datadir: datadir/agent datadir/nlg datadir/user datadir/fewshot $(foreach v,$(subdataset_ids),eval/$(release)/synthetic-$(v).txt)
