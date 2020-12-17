@@ -59,7 +59,7 @@ const RELEASES = ['builtin', 'main', 'universe', 'staging'];
 const SHORTHAND_COMMENT = {
     'j': 'junk',
     'm': 'meta-command',
-    'c': 'control command',
+    'c': 'contextual command',
     'ch': 'chatty',
     'fl': 'foreign language',
     'bt': 'bug-tokenize',
