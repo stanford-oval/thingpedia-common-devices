@@ -458,3 +458,13 @@ UT: now => (@com.yelp.restaurant()), geo == new Location("main street") => notif
 U: what is the phone number of the nearest pizza hut?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => [phone] of ((sort distance asc of (compute (distance(geo, $context.location.current_location)) of ((@com.yelp.restaurant()), id =~ "pizza hut")))[1]) => notify;
+====
+# log/48007
+U: get 13 star restaurants with category includes chinese at palo alto
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese")) && geo == new Location("palo alto") && rating == 13;
+====
+# log/125402
+U: yelp
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant();

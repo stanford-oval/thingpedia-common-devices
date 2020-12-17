@@ -33,3 +33,13 @@ UT: now => (@org.thingpedia.icalendar.list_events()), summary =~ "str:QUOTED_STR
 U: do i have any meeting next week?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.icalendar.list_events() filter start_date <= $end_of(week) + 1week && start_date >= $end_of(week);
+====
+# log/105497
+U: show me my calendar
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.icalendar.list_events();
+====
+# log/51449
+U: schedule
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.icalendar.list_events();

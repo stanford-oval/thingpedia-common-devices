@@ -83,3 +83,23 @@ UT: now => (@com.twitter.tweet()), author == "realdonaldtrump"^^tt:username => n
 U: get my twitter direct messages
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.twitter.direct_messages();
+====
+# log/3160
+U: search "str:QUOTED_STRING::0:" on twitter
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.twitter.tweet() filter text =~ "str:QUOTED_STRING::0:";
+====
+# log/40692
+U: get dms
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.twitter.direct_messages();
+====
+# log/3236
+U: search for "str:QUOTED_STRING::0:" on twitter
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.twitter.tweet() filter text =~ "str:QUOTED_STRING::0:";
+====
+# log/3237
+U: search for tweets with hashtag #cat on twitter
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.twitter.tweet() filter contains(hashtags, "cat"^^tt:hashtag);

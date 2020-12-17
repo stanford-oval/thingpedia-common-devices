@@ -16,3 +16,9 @@ U: if the weather is colder than 13 c then set my thermostat to 14 f
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => (@org.thingpedia.weather.current(location=$?)), temperature <= 13C => notify;
 UT: now => @org.thingpedia.iot.thermostat.set_target_temperature(value=14F);
+====
+# log/40989
+U: news summaries from bbc comma huffington post
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.bbc.top_stories();
+UT: @com.huffingtonpost.frontpage();

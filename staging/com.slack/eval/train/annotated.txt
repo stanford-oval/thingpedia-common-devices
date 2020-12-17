@@ -13,3 +13,23 @@ UT: now => @com.slack.send(channel="hyperacusia"^^tt:hashtag, message=$?);
 U: send message on slack saying meeting today
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => @com.slack.send(message="meeting today", channel=$?);
+====
+# log/19727
+U: send message on slack
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.slack.send();
+====
+# log/3686
+U: send a message on slack to str:HASHTAG::0: saying "str:QUOTED_STRING::0:"
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.slack.send(channel="str:HASHTAG::0:"^^tt:hashtag, message="str:QUOTED_STRING::0:");
+====
+# log/3261
+U: set me as away on slack
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.slack.setPresence(presence=enum away);
+====
+# log/3259
+U: send a message on slack to str:HASHTAG::0: saying "str:QUOTED_STRING::0:"
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.slack.send(channel="str:HASHTAG::0:"^^tt:hashtag, message="str:QUOTED_STRING::0:");
