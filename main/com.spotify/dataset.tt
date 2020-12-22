@@ -13,7 +13,7 @@ dataset @com.spotify language "en" {
     #_[utterances=["new ${p_artist}", "new music from ${p_artist}",
                    "${p_artist} by the new first"]];
 
-    program := now => @com.spotify.play_song(song=$?)
+    program := @com.spotify.play_song(song=$?)
     #[click_count=6]
     #[like_count=0]
     #_[utterances=["play some music on spotify",
@@ -82,7 +82,7 @@ dataset @com.spotify language "en" {
 
     // TODO: use "action" here so we can combine with streams
     program (p_artist :Entity(com.spotify:artist)) :=
-      now => @com.spotify.song(), contains(artists, p_artist) => @com.spotify.play_song(song=id)
+      @com.spotify.song(), contains(artists, p_artist) => @com.spotify.play_song(song=id)
     #_[utterances=["play ${p_artist:no-undefined}",
                    "play music by ${p_artist:no-undefined}",
                    "play some ${p_artist:no-undefined}",
@@ -94,7 +94,7 @@ dataset @com.spotify language "en" {
     ;
 
     program (p_album :Entity(com.spotify:album)) :=
-      now => @com.spotify.song(), album == p_album => @com.spotify.play_song(song=id)
+      @com.spotify.song(), album == p_album => @com.spotify.play_song(song=id)
     #_[utterances=["play ${p_album:no-undefined}",
                    "play the album ${p_album:no-undefined}",
                    /*"i would like to hear ${p_album:no-undefined}",*/
@@ -104,7 +104,7 @@ dataset @com.spotify language "en" {
     ;
 
     program (p_album :Entity(com.spotify:album), p_artist :Entity(com.spotify:artist)) :=
-      now => @com.spotify.song(), album == p_album && contains(artists, p_artist) => @com.spotify.play_song(song=id)
+      @com.spotify.song(), album == p_album && contains(artists, p_artist) => @com.spotify.play_song(song=id)
     #_[utterances=[/*"play ${p_album:no-undefined} by ${p_artist:no-undefined}",*/
                    "play the album ${p_album:no-undefined} by ${p_artist:no-undefined}",
                    "i would like to listen the album ${p_album:no-undefined} by ${p_artist:no-undefined}",
@@ -123,7 +123,7 @@ dataset @com.spotify language "en" {
     #[id=27924900]
     ;
 
-    program := @com.spotify.get_currently_playing())
+    program := @com.spotify.get_currently_playing()
     #_[utterances=["what song is playing?", "what music is playing?", "what is playing?", "what song is currently on?"]]
     ;
 }

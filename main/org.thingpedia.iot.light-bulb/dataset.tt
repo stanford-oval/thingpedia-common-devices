@@ -4,7 +4,7 @@ dataset @org.thingpedia.iot.light-bulb language "en" {
     #[id=52295275]
     #[name="SetPowerOnLightBulbWithPowerOff"];
 
-    program  := @org.thingpedia.iot.light-bulb.power();
+    program  := @org.thingpedia.iot.light-bulb.power()
     #_[utterances=["are the lights on?",
                    "are the lights off?",
                    "is my light-bulb on or off?",
@@ -16,10 +16,10 @@ dataset @org.thingpedia.iot.light-bulb language "en" {
     #[id=52298563]
     #[name="LightBulbPowerStateThenNotify"];
 
-    program  := @org.thingpedia.iot.light-bulb(all=true).power();
+    program  := @org.thingpedia.iot.light-bulb(all=true).power()
     #_[utterances=["which lights are on?", "are any lights on?", "are all the lights on?"]]
     #[id=52298563]
-    #[name="LightBulbPowerStateThenNotify"];
+    #[name="LightBulbPowerStateAllThenNotify"];
 
     stream  := monitor (@org.thingpedia.iot.light-bulb.power())
     #_[utterances=["when the state of my lights changes",
@@ -28,7 +28,7 @@ dataset @org.thingpedia.iot.light-bulb language "en" {
     #[id=52298575]
     #[name="MonitorLightBulbPowerState"];
 
-    stream (p_power :Enum(on,off))  := edge (monitor (@org.thingpedia.iot.light-bulb.power())) on power == p_power
+    stream (p_power :Enum(on,off))  := monitor (@org.thingpedia.iot.light-bulb.power()), power == p_power
     #_[utterances=["when my lights turn ${p_power}",
                    "when my lights are ${p_power}",
                    "when I turn ${p_power} the lights",
@@ -62,9 +62,7 @@ dataset @org.thingpedia.iot.light-bulb language "en" {
     #[name="SetPowerOnLightBulbWithPowerAll"];
 
 
-    program (p_name :String)  := {
-  now => @org.thingpedia.iot.light-bulb(name=p_name).power() => notify;
-}
+    program (p_name :String)  := @org.thingpedia.iot.light-bulb(name=p_name).power()
     #_[utterances=["are the ${p_name} lights off?",
                    "is my ${p_name} light-bulb on or off?",
                    "is my ${p_name} lightbulb on?",
@@ -90,7 +88,7 @@ dataset @org.thingpedia.iot.light-bulb language "en" {
     #[id=54033626]
     #[name="MonitorPower"];
 
-    stream (p_name :String, p_power :Enum(on,off))  := edge (monitor (@org.thingpedia.iot.light-bulb(name=p_name).power())) on power == p_power
+    stream (p_name :String, p_power :Enum(on,off))  := monitor (@org.thingpedia.iot.light-bulb(name=p_name).power()), power == p_power
     #_[utterances=["when I turn ${p_power} the ${p_name} lights",
                    "when somebody turns ${p_power} my ${p_name} lights",
                    "when my ${p_name} lights are switched ${p_power}",
