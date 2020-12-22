@@ -4,6 +4,15 @@ dataset @com.spotify language "en" {
     #_[utterances=["${p_song:no-undefined} by ${p_artist}",
                    "${p_song:no-undefined} from ${p_artist}"]];
 
+    // these ones are hard to get with domain-independent templates
+    query (p_artist :Entity(com.spotify:artist)) := sort(popularity desc of @com.spotify.song(), contains(artists, p_artist))
+    #_[utterances=["${p_artist}'s greatest hits",
+                   "popular music by ${p_artist}",
+                   "popular ${p_artist} songs"]];
+    query (p_artist :Entity(com.spotify:artist)) := sort(release_date desc of @com.spotify.song(), contains(artists, p_artist))
+    #_[utterances=["new ${p_artist}", "new music from ${p_artist}",
+                   "${p_artist} by the new first"]];
+
     program := now => @com.spotify.play_song(song=$?)
     #[click_count=6]
     #[like_count=0]
@@ -63,8 +72,11 @@ dataset @com.spotify language "en" {
     ;
 
     action := @com.spotify.player_pause()
-    #_[utterances=["paused playback",
-                   "paused playing"]]
+    #_[utterances=["pause playback",
+                   "pause playing",
+                   "stop playing",
+                   "stop playback",
+                   "stop the music"]]
     #[id=27924859]
     ;
 
@@ -109,5 +121,9 @@ dataset @com.spotify language "en" {
     stream := monitor (@com.spotify.get_currently_playing())
     #_[utterances=["when a song is playing"]]
     #[id=27924900]
+    ;
+
+    program := @com.spotify.get_currently_playing())
+    #_[utterances=["what song is playing?", "what music is playing?", "what is playing?", "what song is currently on?"]]
     ;
 }
