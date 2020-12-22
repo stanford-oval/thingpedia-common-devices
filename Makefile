@@ -104,9 +104,9 @@ build/%.zip: % %/node_modules
 	mkdir -p `dirname $@`
 	cd $< ; zip -x '*.tt' '*.yml' 'node_modules/.bin/*' 'icon.png' 'secrets.json' 'eval/*' 'simulation/*' 'database-map.tsv' -r $(abspath $@) .
 
-%/node_modules: %/package.json %/yarn.lock
+%/node_modules: %/package.json %/package-lock.json
 	mkdir -p $@
-	cd `dirname $@` ; yarn --only=prod --no-optional
+	cd `dirname $@` ; npm install --only=prod --no-optional
 	touch $@
 
 %: %/package.json %/*.js %/node_modules
