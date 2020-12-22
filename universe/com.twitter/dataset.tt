@@ -35,18 +35,18 @@ dataset @com.twitter language "en" {
                    "when somebody i follow on twitter posts",
                    "when there is a new post on my twitter timeline"]]
     #[id=28017000]
-    #[name=""];
+    ;
 
     stream (p_author :Entity(tt:username)) := monitor ((@com.twitter.home_timeline()), author == p_author)
     #_[utterances=["when user ${p_author:no-undefined} tweets",
                    "when i receive a tweet from ${p_author:no-undefined}"]]
     #[id=28017005]
-    #[name=""];
+    ;
 
     stream (p_in_reply_to :Entity(tt:username)) := monitor ((@com.twitter.home_timeline()), in_reply_to == p_in_reply_to)
     #_[utterances=["when someone i follow replies to user ${p_in_reply_to} on twitter"]]
     #[id=28017007]
-    #[name=""];
+    ;
 
     stream := monitor (@com.twitter.direct_messages())
     #_[utterances=["when i receive a direct message on twitter",
@@ -56,7 +56,7 @@ dataset @com.twitter language "en" {
                    "when somebody messages me on twitter",
                    "when i get a message on twitter"]]
     #[id=28017008]
-    #[name=""];
+    ;
 
     stream (p_sender :Entity(tt:username)) := monitor ((@com.twitter.direct_messages()), sender == p_sender)
     #_[utterances=["when i receive a direct message from ${p_sender:no-undefined} on twitter",
@@ -64,7 +64,7 @@ dataset @com.twitter language "en" {
                    "when ${p_sender:no-undefined} dms me",
                    "when ${p_sender:no-undefined} sends me a direct message on twitter"]]
     #[id=28017014]
-    #[name=""];
+    ;
 
     stream := monitor (@com.twitter.tweet(), from_self == true)
     #_[utterances=["when i tweet",
@@ -72,14 +72,14 @@ dataset @com.twitter language "en" {
                    "when i make a new tweet",
                    "when i make a new twitter post"]]
     #[id=28017018]
-    #[name=""];
+    ;
 
     stream (p_in_reply_to :Entity(tt:username)) := monitor ((@com.twitter.tweet(), from_self == true), in_reply_to == p_in_reply_to)
     #_[utterances=["when i reply to ${p_in_reply_to} on twitter",
                    "when i make a new tweet in reply to ${p_in_reply_to} on twitter",
                    "when i mention $p_in_reply_to on twitter"]]
     #[id=28017022]
-    #[name=""];
+    ;
 
     action (p_status :String) := @com.twitter.post(status=p_status)
     #_[utterances=["tweet ${p_status}",
@@ -89,7 +89,7 @@ dataset @com.twitter language "en" {
                    "make a post on twitter that says $p_status",
                    "make a tweet on twitter that says $p_status"]]
     #[id=28017044]
-    #[name=""];
+    ;
 
     action (p_to :Entity(tt:username), p_message :String) := @com.twitter.send_direct_message(to=p_to, message=p_message)
     #_[utterances=["send a dm on twitter to ${p_to} saying ${p_message}",
@@ -97,19 +97,19 @@ dataset @com.twitter language "en" {
                    "dm ${p_to} on twitter saying ${p_message}",
                    "send a message on twitter to ${p_to} saying ${p_message}"]]
     #[id=28017050]
-    #[name=""];
+    ;
 
     action (p_caption :String) := @com.twitter.post_picture(caption=p_caption, picture_url=$?)
     #_[utterances=["tweet a picture with caption ${p_caption}",
                    "post a picture on twitter saying ${p_caption}"]]
     #[id=28017054]
-    #[name=""];
+    ;
 
     action := @com.twitter.post_picture(caption=$?, picture_url=$?)
     #_[utterances=["tweet a picture",
                    "post a picture on twitter"]]
     #[id=28017056]
-    #[name=""];
+    ;
 
     action (p_user_name :Entity(tt:username)) := @com.twitter.follow(user_name=p_user_name)
     #_[utterances=["follow ${p_user_name} on twitter",
@@ -117,20 +117,20 @@ dataset @com.twitter language "en" {
                    "be a twitter follower of ${p_user_name}",
                    "become a twitter follower of ${p_user_name}"]]
     #[id=28017058]
-    #[name=""];
+    ;
 
     action (p_user_name :Entity(tt:username)) := @com.twitter.unfollow(user_name=p_user_name)
     #_[utterances=["unfollow ${p_user_name} on twitter",
                    "stop following ${p_user_name} on twitter"]]
     #[id=28017062]
-    #[name=""];
+    ;
 
     query (p_in_reply_to :Entity(tt:username)) := (@com.twitter.tweet()), from_self == true && in_reply_to == p_in_reply_to
     #_[utterances=["my twitter replies to ${p_in_reply_to}",
                    "my twitter mentions to $p_in_reply_to",
                    "my tweets that mention $p_in_reply_to"]]
     #[id=28017068]
-    #[name=""];
+    ;
 
     query := @com.twitter.tweet(), from_self == true
     #_[utterances=["my tweets",
@@ -138,18 +138,18 @@ dataset @com.twitter language "en" {
                    "my recent tweets",
                    "tweets i made"]]
     #[id=28017071]
-    #[name=""];
+    ;
 
     action (p_tweet_id :Entity(com.twitter:tweet)) := @com.twitter.retweet(tweet_id=p_tweet_id)
     #_[utterances=["retweet ${p_tweet_id}",
                    "retweet $p_tweet_id to my followers"]]
     #[id=28017084]
-    #[name=""];
+    ;
 
     action (p_picture_url :Entity(tt:picture)) := @com.twitter.post_picture(picture_url=p_picture_url, caption=$?)
     #_[utterances=["post ${p_picture_url} on twitter",
                    "upload $p_picture_url to twitter",
                    "make a tweet containing $p_picture_url"]]
     #[id=28017087]
-    #[name=""];
+    ;
 }
