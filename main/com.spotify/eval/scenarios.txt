@@ -15,7 +15,7 @@ U: find me the song despacito
 #U: now => (@com.spotify.song(), id =~ ("despacito")) => notify;
 
 # FIXME need a template for song by {artist 1} and {artist 2}
-A: I see Despacito or Despacito - Remix. They're songs by Luis Fonsi that are latin pop.
+A: I (see|have found) Despacito or Despacito - Remix. They're songs by Luis Fonsi that are latin pop.
 A: >> expecting = command
 
 ====
@@ -90,7 +90,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.song(), album == null^^com.spotify:album("21") && contains(artists, null^^com.spotify:artist("adele"))) => notify;
 
-A: I see Rolling in the Deep, Rumour Has It and Turning Tables\. They're songs by Adele in the album 21\.
+A: I (see|have found) Rolling in the Deep, Rumour Has It and Turning Tables\. They're songs by Adele in the album 21\.
 A: >> expecting = command
 
 ====
@@ -293,7 +293,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.song(), contains~(genres, "rock") && release_date >= makeDate(1960, 1, 1) && release_date <= makeDate(1960, 1, 1) + 1year) => notify;
 
-A: I have found Breaking Up Is Hard to Do and C’Mon Everybody. All of them are songs? which (are|is) (rockabilly|brill building pop)\.
+A: I (see|have( found)?) Breaking Up Is Hard to Do and C’Mon Everybody. All of them are songs? which (are|is) (rockabilly|brill building pop)\.
 A: >> expecting = command
 
 ====
