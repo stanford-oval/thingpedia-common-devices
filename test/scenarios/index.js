@@ -329,7 +329,7 @@ async function main() {
             'eval/' + args.release + '/models/' + args.nlu_model + '/best.pth');
     }
 
-    const platform = new Platform();
+    const platform = new Platform(args.release);
 
     let nluModelUrl;
     if (args.nlu_model)

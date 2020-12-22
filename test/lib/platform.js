@@ -123,9 +123,9 @@ class ThingpediaClient extends Tp.HttpClient {
         const classDef = await super._getLocalDeviceManifest(manifestPath, deviceKind);
 
         // copy some metadata that is required by the tests and would be provided by Thingpedia
-        if (!classDef.metadata.name)
+        if (!classDef.metadata.name && classDef.metadata.thingpedia_name)
             classDef.metadata.name = classDef.metadata.thingpedia_name;
-        if (!classDef.metadata.description)
+        if (!classDef.metadata.description && classDef.metadata.thingpedia_description)
             classDef.metadata.description = classDef.metadata.thingpedia_description;
 
         return classDef;
@@ -146,10 +146,16 @@ function getGitConfig(key, _default) {
     }
 }
 
+const RELEASES = {
+    'main': ['main'],
+    'universe': ['main', 'universe'],
+    'staging': ['main', 'universe', 'staging']
+};
+
 class Platform extends Tp.BasePlatform {
     // Initialize the platform code
     // Will be called before instantiating the engine
-    constructor() {
+    constructor(release = 'staging') {
         super();
         this._gettext = new Gettext();
 
@@ -166,7 +172,7 @@ class Platform extends Tp.BasePlatform {
 
         this._developerKey = getGitConfig('thingpedia.developer-key', process.env.THINGENGINE_DEVELOPER_KEY || undefined);
         this._prefs.set('developer-key', this._developerKey);
-        this._prefs.set('developer-dir', ['main', 'universe', 'staging'].map((r) => path.resolve(r)));
+        this._prefs.set('developer-dir', RELEASES[release].map((r) => path.resolve(r)));
 
         // set a fix device ID for cloud sync
         this._prefs.set('cloud-sync-device-id', 'abcdef0123456789');
