@@ -2767,11 +2767,6 @@ U: play music by Bonobo
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => @com.spotify.song(), contains(artists, null^^com.spotify:artist("bonobo")) => @com.spotify.play_song(song=id);
 ====
-# snips-nlu/spotify-1732
-U: Play Miami 2017 by Rodney Whitaker
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@com.spotify.song(), id =~ "miami 2017" && contains(artists, null^^com.spotify:artist("rodney whitaker")))[1] => @com.spotify.play_song(song=id);
-====
 # snips-nlu/spotify-1734
 U: Can you play Halloween by Ajinoam Nini
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
@@ -3871,3 +3866,18 @@ UT: now => [artists] of ((@com.spotify.song()), id =~ "black magic woman") => no
 U: what artist sang the song rooster?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => [artists] of ((@com.spotify.song()), id =~ "rooster") => notify;
+====
+# online/61768664
+U: resume playing
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_play();
+====
+# online/62109745
+U: skip to the next song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_next();
+====
+# online/62109746
+U: go to the next song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_next();

@@ -34,6 +34,7 @@ module.exports = [
         });
     }],
 
+    /* FIXME: add back the weather forecast
     ['query', 'forecast', { location: { x: -120, y: 37 } }, (result) => {
         result.forEach((r) => {
             assert(r.date instanceof Date);
@@ -44,5 +45,5 @@ module.exports = [
             assert(typeof r.cloudiness === 'number');
             assert(WEATHER_STATUS.includes(r.status));
         });
-    }]
+    }]*/
 ];

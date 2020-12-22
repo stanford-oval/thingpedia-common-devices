@@ -83,3 +83,8 @@ UT: now => @com.nytimes.get_front_page() => notify;
 U: get nyt articles with health in the title
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => (@com.nytimes.get_front_page()), title =~ "health" => notify;
+====
+# online/62110294
+U: what are today's news from the new york times
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.nytimes.get_front_page() filter updated >= $start_of(day);

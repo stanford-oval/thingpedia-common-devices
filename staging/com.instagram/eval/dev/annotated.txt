@@ -38,3 +38,13 @@ UT: now => @com.instagram.get_pictures() => notify;
 U: get 13 instagram pics
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => @com.instagram.get_pictures(count=13) => notify;
+====
+# online/62110215
+U: get my instagram posts with hashtag hamster
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.instagram.get_pictures() filter contains(hashtags, "hamster"^^tt:hashtag);
+====
+# online/62110229
+U: find me my last 13 lo-fi instagram pictures
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.instagram.get_pictures(count=13) filter filter_ == null^^com.instagram:filter_("lo-fi");

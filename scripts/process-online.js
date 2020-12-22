@@ -66,16 +66,24 @@ async function existsSafe(path) {
     }
 }
 
-
+const DEVICES_REMAP = {
+    'light-bulb': 'org.thingpedia.iot.light-bulb',
+    'security-camera': 'org.thingpedia.iot.security-camera',
+    'thermostat': 'org.thingpedia.iot.thermostat'
+};
 
 class Processor extends stream.Writable {
-    constructor(type, prefix, schemas, rng) {
+    constructor(type, prefix, schemas, droppedFilename, rng) {
         super({ objectMode: true });
 
         this._type = type;
         this._prefix = prefix;
 
+        this._droppedFilename = droppedFilename;
         this._existingDataset = new Set;
+        this._dropped = new Set;
+        this._deduplicate = new Set;
+
         this._devices = new Map;
         this._outputs = new Map;
         this._schemas = schemas;
@@ -90,6 +98,15 @@ class Processor extends stream.Writable {
         //    return;
 
         const existingDataset = this._existingDataset;
+
+        if (this._droppedFilename) {
+            for await (let line of readAllLines([this._droppedFilename])) {
+                line = line.trim();
+                if (!line || line.startsWith('#'))
+                    continue;
+                this._dropped.add(line);
+            }
+        }
 
         await StreamUtils.waitFinish(readAllLines([filename])
             .pipe(this._type === 'manual' ? new Genie.DialogueParser() : new Genie.DatasetParser())
@@ -244,6 +261,21 @@ class Processor extends stream.Writable {
         return output;
     }
 
+    _adjustDevices(dialogueState) {
+        dialogueState.visit(new class extends ThingTalk.Ast.NodeVisitor {
+            visitDeviceSelector(sel) {
+                if (sel.kind in DEVICES_REMAP)
+                    sel.kind = DEVICES_REMAP[sel.kind];
+                return true;
+            }
+            visitExternalBooleanExpression(expr) {
+                if (expr.kind in DEVICES_REMAP)
+                    expr.kind = DEVICES_REMAP[expr.kind];
+                return true;
+            }
+        });
+    }
+
     _getDevice(dialogueState) {
         const devices = new Set;
         dialogueState.visit(new class extends ThingTalk.Ast.NodeVisitor {
@@ -279,18 +311,26 @@ class Processor extends stream.Writable {
     }
 
     async _process(ex) {
-        if (this._existingDataset.has(this._prefix + ex.id))
+        if (this._deduplicate.has(ex.preprocessed))
+            return;
+        this._deduplicate.add(ex.preprocessed);
+
+        if (this._existingDataset.has(this._prefix + ex.id) || this._dropped.has(this._prefix + ex.id))
             return;
 
         const entities = Genie.EntityUtils.makeDummyEntities(ex.preprocessed);
-        const program = ThingTalk.NNSyntax.fromNN(ex.target_code.split(' '), entities);
-        await program.typecheck(this._schemas, false);
+        const program = await Genie.ThingTalkUtils.parsePrediction(ex.target_code, entities, {
+            schemaRetriever: this._schemas,
+            loadMetadata: false,
+        }, true);
 
         const dialoguestate = toDialogueState(program, this._idQueries);
         if (typeof dialoguestate === 'string') {
             console.log(`Ignored example ${ex.id}: ${dialoguestate}`);
             return;
         }
+        this._adjustDevices(dialoguestate);
+
         const device = this._getDevice(dialoguestate);
 
         let out;
@@ -314,7 +354,7 @@ class Processor extends stream.Writable {
         } else {
             out = await this._getFile(device);
 
-            const code = ThingTalk.NNSyntax.toNN(dialoguestate, ex.preprocessed, entities, { typeAnnotations: false }).join(' ');
+            const code = Genie.ThingTalkUtils.serializePrediction(dialoguestate, ex.preprocessed, entities, { locale: 'en-US' }).join(' ');
             out.write({
                 id: this._prefix + ex.id,
                 context: 'null',
@@ -342,6 +382,10 @@ async function main() {
         required: false,
         help: 'Prefix to add to IDs (defaults to "online" for manual datasets, and "turking" for paraphrase datasets)',
     });
+    parser.add_argument('--dropped', {
+        required: false,
+        help: 'Path to text file containing IDs of sentences to ignore (one per line)',
+    });
     parser.add_argument('--random-seed', {
         default: 'almond is awesome',
         required: false,
@@ -361,7 +405,7 @@ async function main() {
 
     const input = readAllLines(args.input_file);
     const rng = seedrandom.alea(args.random_seed);
-    const processor = new Processor(args.type, prefix, schemas, rng);
+    const processor = new Processor(args.type, prefix, schemas, args.dropped, rng);
     await processor.init();
 
     const out = input
