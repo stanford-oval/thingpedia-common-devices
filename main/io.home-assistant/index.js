@@ -26,11 +26,13 @@ const HomeAssistantVacuum = require('./vacuum');
 // FIXME make configurable
 const HASS_URL = 'http://hassio.local:8123';
 
+// map to a Home Assistant domain to a specific Thingpedia device
 const DOMAIN_TO_TP_KIND = {
+    'light': 'org.thingpedia.iot.light-bulb',
+    /*
     'climate': 'io.home-assistant.climate',
     'cover_active': 'org.thingpedia.iot.cover',
     'fan': 'org.thingpedia.iot.fan',
-    'light': 'light-bulb',
     'lock': 'org.thingpedia.iot.lock',
     'media_player_speaker': 'org.thingpedia.iot.speaker',
     'media_player_tv': 'org.thingpedia.iot.tv',
@@ -47,10 +49,14 @@ const DOMAIN_TO_TP_KIND = {
     'sensor_temperature': 'org.thingpedia.iot.temperature',
     'switch': 'org.thingpedia.iot.switch',
     'vacuum': 'org.thingpedia.iot.vacuum'
+    */
 };
+
+// provide implementations for various abstract & embedded Thingpedia devices
+// we can provide implementation for devices that are not in the enabled portion of
+// Thingpedia yet (and the implementation will not be loaded)
 const SUBDEVICES = {
-    'io.home-assistant.climate': HomeAssistantClimate,
-    'light-bulb': HomeAssistantLightbulbDevice,
+    'org.thingpedia.iot.light-bulb': HomeAssistantLightbulbDevice,
     'org.thingpedia.iot.cover': HomeAssistantCover,
     'org.thingpedia.iot.fan': HomeAssistantFan,
     'org.thingpedia.iot.humidity': HomeAssistantSensorHumidity,
@@ -59,9 +65,10 @@ const SUBDEVICES = {
     'org.thingpedia.iot.switch': HomeAssistantSwitch,
     'org.thingpedia.iot.temperature': HomeAssistantSensorTemperature,
     'org.thingpedia.iot.tv': HomeAssistantMediaPlayer,
-    'org.thingpedia.iot.vacuum': HomeAssistantVacuum
-};
+    'org.thingpedia.iot.vacuum': HomeAssistantVacuum,
 
+    'io.home-assistant.climate': HomeAssistantClimate,
+};
 Object.entries(DOMAIN_TO_TP_KIND).forEach(([key,value]) => {
     if (key.includes('sensor') && !(value in SUBDEVICES))
         SUBDEVICES[value] = class extends HomeAssistantSensor {};
@@ -86,7 +93,7 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
             });
             return;
         }
-        
+
         // Do not add entities without a friendly name.
         if (!attributes.friendly_name)
             return;
@@ -166,9 +173,6 @@ module.exports = class HomeAssistantGateway extends Tp.BaseDevice {
         super(engine, state);
 
         this.uniqueId = 'io.home-assistant/' + state.hassUrl;
-
-        // FIXME i18n
-        this.name = `Home Assistant Gateway at ${state.hassUrl}`;
         this._subdevices = new HomeAssistantDeviceSet(this);
 
         // if this device was configured through hassio, mark it as transient

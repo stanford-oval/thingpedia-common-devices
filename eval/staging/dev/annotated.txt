@@ -3,16 +3,16 @@
 U: check temperature on thermostat, if it is below 13 change it to 14
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => (@org.thingpedia.iot.temperature.temperature()), value <= 13F => notify;
-UT: now => @thermostat.set_target_temperature(value=14F);
+UT: now => @org.thingpedia.iot.thermostat.set_target_temperature(value=14F);
 ====
 # online/121049
 U: if the weather is colder than 13 c then set my thermostat to 14 c
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => (@org.thingpedia.weather.current(location=$?)), temperature <= 13C => notify;
-UT: now => @thermostat.set_target_temperature(value=14C);
+UT: now => @org.thingpedia.iot.thermostat.set_target_temperature(value=14C);
 ====
 # online/121527
 U: if the weather is colder than 13 c then set my thermostat to 14 f
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => (@org.thingpedia.weather.current(location=$?)), temperature <= 13C => notify;
-UT: now => @thermostat.set_target_temperature(value=14F);
+UT: now => @org.thingpedia.iot.thermostat.set_target_temperature(value=14F);
