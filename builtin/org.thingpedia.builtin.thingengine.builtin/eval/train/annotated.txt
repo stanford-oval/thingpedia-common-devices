@@ -198,3 +198,18 @@ UT: @org.thingpedia.builtin.thingengine.builtin.get_gps();
 U: a random coin
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.builtin.thingengine.builtin.get_random_between(high=1, low=0);
+====
+# online/1519416
+U: give me a random number between 13 and __
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @org.thingpedia.builtin.thingengine.builtin.get_random_between(low=13) => notify;
+====
+# online/1519432
+U: give me a random number between __ and 13
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @org.thingpedia.builtin.thingengine.builtin.get_random_between(high=13) => notify;
+====
+# online/ifttt483100p
+U: send myself a notification for testing.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @org.thingpedia.builtin.thingengine.builtin.say(message="testing");

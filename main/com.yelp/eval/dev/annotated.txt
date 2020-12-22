@@ -429,7 +429,7 @@ UT: now => [distance] of ((sort distance asc of (compute (distance(geo, $context
 # schemaorg/97
 U: what are the prices for the 13 highest rated italian restaurants in roanoke, va?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => [price] of (sort rating desc of (((@com.yelp.restaurant()), (contains(cuisines, null^^com.yelp:restaurant_cuisine("italian")) && geo == new Location("roanoke , va")))[1 : 13])) => notify;
+UT: now => [price] of sort(rating desc of @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("italian")) && geo == new Location("roanoke , va"))[1 : 13] => notify;
 ====
 # schemaorg/22
 U: what is a 13 star mexican restaurant?

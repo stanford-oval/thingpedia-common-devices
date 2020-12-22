@@ -32,7 +32,7 @@ UT: now => @com.twitter.send_direct_message(message="reserve activities", to="fe
 # online/120638
 U: twitter get tweets
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.twitter.home_timeline() => notify;
+UT: now => @com.twitter.tweet() => notify;
 ====
 # online/121059
 U: post a fucking picture on twitter
@@ -117,7 +117,7 @@ UT: now => @com.twitter.send_direct_message(to="realdonaldtrump"^^tt:username, m
 # online/ep5
 U: search tweets about the oscars
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@com.twitter.tweet()), contains(hashtags, "oscars"^^tt:hashtag) => notify;
+UT: @com.twitter.tweet() filter text=~"oscars";
 ====
 # online/ep9
 U: get my direct message history out of twitter
@@ -254,11 +254,6 @@ UT: now => @com.twitter.post(status="this is a test");
 U: tell somebody to piss off on twitter
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.twitter.send_direct_message(message="piss off");
-====
-# online/62110275
-U: tweet that i'm at work and i'm bored
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.twitter.post(status="i 'm at work and i 'm bored");
 ====
 # online/62110298
 U: follow tweets from realdonaldtrump
