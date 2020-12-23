@@ -45,14 +45,14 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => @com.yandex.translate.detect_language(text="la rana salta") => notify;
 ====
 # online/120541
-U: translate to str:ENTITY_tt:iso_lang_code::0:
+U: translate to spanish
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.yandex.translate.translate(target_language="str:ENTITY_tt:iso_lang_code::0:"^^tt:iso_lang_code, text=$?) => notify;
+UT: now => @com.yandex.translate.translate(target_language="es"^^tt:iso_lang_code("spanish"), text=$?) => notify;
 ====
 # online/121433
-U: translate from str:ENTITY_tt:iso_lang_code::0: to str:ENTITY_tt:iso_lang_code::1:
+U: translate from english to french
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.yandex.translate.translate(source_language="str:ENTITY_tt:iso_lang_code::0:"^^tt:iso_lang_code, target_language="str:ENTITY_tt:iso_lang_code::1:"^^tt:iso_lang_code, text=$?) => notify;
+UT: now => @com.yandex.translate.translate(source_language="en"^^tt:iso_lang_code("english"), target_language="fr"^^tt:iso_lang_code("french"), text=$?) => notify;
 ====
 # online/1479494
 U: detect language of "str:QUOTED_STRING::0:"
@@ -75,9 +75,9 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.yandex.translate.translate(target_language=null^^tt:iso_lang_code("english"));
 ====
 # log/6522
-U: translate fire from str:ENTITY_tt:iso_lang_code::0: to str:ENTITY_tt:iso_lang_code::1:
+U: translate fire from english to chinese
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.yandex.translate.translate(source_language="str:ENTITY_tt:iso_lang_code::0:"^^tt:iso_lang_code, target_language="str:ENTITY_tt:iso_lang_code::1:"^^tt:iso_lang_code, text="fire");
+UT: @com.yandex.translate.translate(source_language="en"^^tt:iso_lang_code("english"), target_language="zh"^^tt:iso_lang_code("chinese"), text="fire");
 ====
 # log/131159
 U: what is dot in russian
@@ -110,6 +110,6 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.yandex.translate.translate();
 ====
 # log/3268
-U: translate "str:QUOTED_STRING::0:" to str:ENTITY_tt:iso_lang_code::0: with yandex
+U: translate "str:QUOTED_STRING::0:" to korean with yandex
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.yandex.translate.translate(target_language="str:ENTITY_tt:iso_lang_code::0:"^^tt:iso_lang_code, text="str:QUOTED_STRING::0:");
+UT: @com.yandex.translate.translate(target_language="kr"^^tt:iso_lang_code("korean"), text="str:QUOTED_STRING::0:");
