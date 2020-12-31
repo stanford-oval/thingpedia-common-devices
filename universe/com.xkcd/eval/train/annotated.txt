@@ -2,12 +2,12 @@
 # online/1691800
 U: get an xkcd comic
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.xkcd.get_comic() => notify;
+UT: now => @com.xkcd.comic() => notify;
 ====
 # online/121317
 U: get xkcd 13
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.xkcd.get_comic(number=13) => notify;
+UT: now => @com.xkcd.comic(), id==13 => notify;
 ====
 # online/121518
 U: get a random xkcd
@@ -17,9 +17,9 @@ UT: now => @com.xkcd.random_comic() => notify;
 # online/1544261
 U: show me the latest xkcd
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.xkcd.get_comic() => notify;
+UT: sort(release_date asc of @com.xkcd.comic())[1];
 ====
 # online/62110299
 U: get today's xkcd
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.xkcd.get_comic();
+UT: @com.xkcd.comic(), release_date==$start_of(day);
