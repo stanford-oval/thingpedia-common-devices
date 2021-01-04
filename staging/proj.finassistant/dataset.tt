@@ -1,0 +1,17 @@
+dataset @proj.finassistant language "en" {
+
+    query (p_company :Entity(tt:stock_id)) := @proj.finassistant.price(company=p_company)
+    #_[utterances=["stock price of ${p_company}",
+    		   "the stock price of ${p_company}"]];
+
+    program (p_company :Entity(tt:stock_id)) :=
+      now => @co.alphavantage.price(company=p_company) => notify
+      #_[utterances=["what did ${p_company trade at today?",
+            "how much is ${p_company} trading at"]];
+
+    query (p_company :Entity(tt:stock_id)) := @proj.finassistant.pe(company=p_company)
+    #_[utterances=["pe ratio of ${p_company}",
+    		   "pe multiple of ${p_company}",
+    		   "price earnings ratio of ${p_company}",
+    		   "pe of ${p_company}"]];
+}
