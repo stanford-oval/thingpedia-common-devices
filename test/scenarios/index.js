@@ -100,7 +100,7 @@ class TestDelegate {
         // do nothing
     }
     setExpected(expect, context) {
-        //this._testRunner.writeLine('>> expecting = ' + expect);
+        this._testRunner.writeLine('>> expecting = ' + expect);
     }
 
     addMessage(msg) {
