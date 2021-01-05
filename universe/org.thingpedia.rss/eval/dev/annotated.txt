@@ -2,12 +2,12 @@
 # online/15252548
 U: how many articles in the rss feed
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => aggregate count of (@org.thingpedia.rss.get_post()) => notify;
+UT: count(@org.thingpedia.rss.get_post());
 ====
 # log/641
 U: get the latest posts on the rss feed
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.rss.get_post();
+UT: sort(updated_time desc of @org.thingpedia.rss.get_post())[1];
 ====
 # log/8929
 U: rss
