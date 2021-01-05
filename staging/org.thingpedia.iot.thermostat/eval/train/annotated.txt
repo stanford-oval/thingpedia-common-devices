@@ -43,3 +43,33 @@ UT: now => @org.thingpedia.iot.thermostat.set_minmax_temperature(low=13F, high=$
 U: set the ac off
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.thermostat.set_hvac_mode(mode=enum off);
+====
+# log/55713
+U: turn all heating off
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.thermostat(all=true).set_hvac_mode(mode=enum off);
+====
+# log/121216
+U: set temperature 13 degrees of celcjus
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.thermostat.set_target_temperature(value=13C);
+====
+# log/114595
+U: turn on ac
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.thermostat.set_hvac_mode(mode=enum cool);
+====
+# log/87255
+U: set hvac to auto
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.thermostat.set_hvac_mode(mode=enum heat_cool);
+====
+# log/3283
+U: set my temperature between 13 f and 14 f on my thermostat
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.thermostat.set_minmax_temperature(high=14F, low=13F);
+====
+# log/73702
+U: set thermostat to 13
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.thermostat.set_target_temperature(value=13defaultTemperature);

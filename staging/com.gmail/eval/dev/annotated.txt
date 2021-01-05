@@ -273,3 +273,72 @@ UT: @com.gmail.inbox() filter contains(labels, "work");
 U: find emails from monica
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.gmail.inbox() filter sender_address == "monica"^^tt:username;
+====
+# log/140343
+U: what are my new emails
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.gmail.inbox();
+====
+# log/39338
+U: send an email to james
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.gmail.send_email(to="james"^^tt:username);
+====
+# log/45876
+U: email bob@example.com check out stanford almond
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.gmail.send_email(subject="check out stanford almond", to="bob@example.com"^^tt:email_address);
+====
+# log/17966
+U: get my latest mail
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.gmail.inbox();
+====
+# log/975
+U: show me my latest email from bob@example.com
+UT: sort(date desc of @com.gmail.inbox() filter sender_address == "bob@example.com"^^tt:email_address)[1];
+====
+# log/6004
+U: please read me the latest email from john doe
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(date desc of @com.gmail.inbox() filter sender_address == "john doe"^^tt:username)[1];
+====
+# log/18632
+U: my email from google wallet
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.gmail.inbox() filter sender_address == "google wallet"^^tt:username;
+====
+# log/39708
+U: show me all my emails from sender udacity
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.gmail.inbox() filter sender_address == "udacity"^^tt:username;
+====
+# log/43486
+U: filter emails from str:EMAIL_ADDRESS::0:
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.gmail.inbox() filter sender_address == "str:EMAIL_ADDRESS::0:"^^tt:email_address;
+====
+# log/11350
+U: get my emails.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.gmail.inbox();
+====
+# log/633
+U: send an email to str:EMAIL_ADDRESS::0:
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.gmail.send_email(to="str:EMAIL_ADDRESS::0:"^^tt:email_address);
+====
+# log/3274
+U: send an email to str:EMAIL_ADDRESS::0: with subject "str:QUOTED_STRING::0:" with message "str:QUOTED_STRING::1:" using my gmail
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.gmail.send_email(message="str:QUOTED_STRING::1:", subject="str:QUOTED_STRING::0:", to="str:EMAIL_ADDRESS::0:"^^tt:email_address);
+====
+# log/41260
+U: get my gmail inbox
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.gmail.inbox();
+====
+# log/7469
+U: send me an email
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.gmail.send_email();

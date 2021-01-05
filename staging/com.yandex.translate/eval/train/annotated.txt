@@ -15,9 +15,9 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => @com.yandex.translate.translate(target_language=null^^tt:iso_lang_code("hill mari"), text=$?) => notify;
 ====
 # online/120704
-U: translate "str:QUOTED_STRING::0:" to str:ENTITY_tt:iso_lang_code::0:
+U: translate "str:QUOTED_STRING::0:" to japanese
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.yandex.translate.translate(target_language="str:ENTITY_tt:iso_lang_code::0:"^^tt:iso_lang_code, text="str:QUOTED_STRING::0:") => notify;
+UT: now => @com.yandex.translate.translate(target_language="ja"^^tt:iso_lang_code("japanese"), text="str:QUOTED_STRING::0:") => notify;
 ====
 # online/1479495
 U: detect the language of "str:QUOTED_STRING::0:"
@@ -38,3 +38,23 @@ UT: @com.yandex.translate.translate(target_language=null^^tt:iso_lang_code("chin
 U: how do you say hola como estas in english
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.yandex.translate.translate(target_language=null^^tt:iso_lang_code("english"), text="hola como estas");
+====
+# log/81605
+U: translate father
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yandex.translate.translate(text="father");
+====
+# log/50910
+U: translate a sentence to chinese
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yandex.translate.translate(target_language=null^^tt:iso_lang_code("chinese"));
+====
+# log/40415
+U: translate a to chinese
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yandex.translate.translate(target_language=null^^tt:iso_lang_code("chinese"), text="a");
+====
+# log/72333
+U: translate country to japanese
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yandex.translate.translate(target_language=null^^tt:iso_lang_code("japanese"), text="country");

@@ -1,0 +1,90 @@
+dataset @com.smartnews language "en" {
+    query := @com.smartnews.top_articles()
+    #_[utterances=["smartnews",
+                   "smart news",
+                   "smartnews top",
+                   "smart news top",
+                   "news",
+                   "top news",
+                   "top smartnews",
+                   "top smart news",
+                   "news from smartnews",
+                   "news on smartnews",
+                   "breaking news",
+                   "smart news",
+                   "today news",
+                   "popular news",
+                   "important news",
+                   "today's news",
+                   "global news",
+                   "hot topic",
+                   "hot news",
+                   "high rank news"]]
+    #[id=61614268]
+    #[name="TopArticles"];
+
+    query (p_counter :Number) := @com.smartnews.top_articles(counter=p_counter)
+    #_[utterances=["$p_counter smartnews",
+                   "$p_counter smart news",
+                   "$p_counter smartnews top",
+                   "$p_counter smart news top",
+                   "$p_counter news",
+                   "$p_counter top news",
+                   "$p_counter top smartnews",
+                   "$p_counter top smart news",
+                   "$p_counter news from smartnews",
+                   "$p_counter news on smartnews",
+                   "$p_counter breaking news",
+                   "$p_counter smart news",
+                   "$p_counter today news",
+                   "$p_counter popular news",
+                   "$p_counter important news",
+                   "$p_counter today's news",
+                   "$p_counter global news",
+                   "$p_counter hot topic",
+                   "$p_counter hot news"]]
+    #[id=62725774]
+    #[name="TopArticlesWithCounter"];
+
+    query := @com.smartnews.reading_list()
+    #_[utterances=["smartnews reading list",
+                   "smart news reading list",
+                   "smartnews list",
+                   "smart news list",
+                   "my smart news list",
+                   "reading list",
+                   "my reading list",
+                   "list",
+                   "my list",
+                   "news list",
+                   "article list",
+                   "my pocket list",
+                   "pokcet list",
+                   "pocket",
+                   "my pocket"]]
+    #[id=62726516]
+    #[name="ReadingList"];
+
+    action (p_news_id :Number) := @com.smartnews.pocket(news_id=p_news_id)
+    #_[utterances=["pocket smartnews $p_news_id",
+                   "pocket smart news $p_news_id",
+                   "pocket $p_news_id",
+                   "add smartnews $p_news_id",
+                   "add smart news $p_news_id",
+                   "pocket news $p_news_id",
+                   "read $p_news_id later"]]
+    #[id=62740743]
+    #[name="PocketWithNewsId"];
+
+    action (p_news_id :Number) := @com.smartnews.drop(news_id=p_news_id)
+    #_[utterances=["drop smartnews $p_news_id",
+                   "drop smart news $p_news_id",
+                   "drop news $p_news_id",
+                   "drop $p_news_id",
+                   "remove news $p_news_id",
+                   "remove smart news $p_news_id",
+                   "remove smartnews $p_news_id from my pocket"]]
+    #[id=62741272]
+    #[name="DropWithNewsId"];
+
+}

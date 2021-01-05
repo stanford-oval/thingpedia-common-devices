@@ -1,0 +1,122 @@
+// Copyright 2016-2020 The Board of Trustees of the Leland Stanford Junior University
+//
+// Redistribution and use in source and binary forms, with or
+// without modification, are permitted provided that the following
+// conditions are met:
+//
+// 1. Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+// 2. Redistributions in binary form must reproduce the above
+//    copyright notice, this list of conditions and the following
+//    disclaimer in the documentation and/or other materials
+//    provided with the distribution.
+// 3. Neither the name of the copyright holder nor the names of its
+//    contributors may be used to endorse or promote products derived
+//    from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+// OF THE POSSIBILITY OF SUCH DAMAGE.
+
+class @com.bing
+#_[thingpedia_name="Bing Search"]
+#_[thingpedia_description="Search the web, using Bing"]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="service"]
+{
+  import loader from @org.thingpedia.v2();
+  import config from @org.thingpedia.config.none(subscription_key=$?);
+
+  monitorable list query web_search(in req query: String
+                                    #_[canonical={
+                                      base=["search query", "query"],
+                                      passive_verb=["matching #", "containing #", "about #"],
+                                    }]
+                                    #_[prompt=["what do you want to search", "what are you looking for"]]
+                                    #[string_values="tt:search_query"],
+                                    out title: String
+                                    #_[canonical={
+                                      base=["title", "headline"],
+                                      passive_verb=["titled #"],
+                                    }],
+                                    out description: String
+                                    #_[canonical={
+                                      base=["description", "summary", "snippet"],
+                                    }]
+                                    #[filterable=false]
+                                    #[string_values="tt:long_free_text"],
+                                    out link: Entity(tt:url)
+                                    #_[canonical={
+                                      base=["link", "url", "address"],
+                                    }])
+  #_[canonical=["websites", "web pages", "web links"]]
+  #_[confirmation="websites matching $query on Bing"]
+  #_[result=["i found ${title}", "here is ${title}"]]
+  #_[formatted=[{
+     type="rdl",
+     webCallback="${link}",
+     displayTitle="${title}",
+     displayText="${description}"
+  }]]
+  #[poll_interval=3600000ms]
+  #[minimal_projection=["title", "link"]]
+  #[doc="search for `query` on Bing"];
+
+  monitorable list query image_search(in req query: String
+                                      #_[canonical={
+                                        base=["search query", "query"],
+                                        passive_verb=["matching #", "containing #", "about #"],
+                                        adjective=["#"],
+                                      }]
+                                      #_[prompt=["what do you want to search", "what are you looking for"]]
+                                      #[string_values="tt:search_query"],
+                                      out title: String
+                                      #_[canonical={
+                                        base=["title", "headline", "page title"],
+                                        passive_verb=["titled #"],
+                                      }],
+                                      out picture_url: Entity(tt:picture)
+                                      #_[canonical={
+                                        base=["picture url", "image url"]
+                                      }],
+                                      out link: Entity(tt:url)
+                                      #_[canonical={
+                                        base=["page url", "link"],
+                                      }],
+                                      out width: Number
+                                      #[min_number=1]
+                                      #_[canonical={
+                                        base=["width", "image width"],
+                                        adjective=["# wide", "# pixels wide"]
+                                      }]
+                                      #_[prompt="what width are you looking for ( in pixels )"],
+                                      out height: Number
+                                      #[min_number=1]
+                                      #_[prompt="what height are you looking for ( in pixels )"]
+                                      #_[canonical={
+                                        base=["height", "image height"],
+                                        adjective=["# tall", "# pixels tall", "# pixels high"]
+                                      }])
+  #_[canonical=["images", "pictures", "photo"]]
+  #_[confirmation="images matching $query from Bing"]
+  #_[result=["here is an image for you", "here is what i found"]]
+  #_[formatted=[{
+     type="rdl",
+     webCallback="${link}",
+     displayTitle="${title}",
+     pictureUrl="${picture_url}"
+  }]]
+  #[minimal_projection=["title", "link", "picture_url"]]
+  #[poll_interval=3600000ms]
+  #[doc="search for `query` on Bing Images"];
+}

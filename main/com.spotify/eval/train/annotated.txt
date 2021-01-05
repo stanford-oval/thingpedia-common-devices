@@ -178,3 +178,83 @@ UT: now => [artists] of ((@com.spotify.song()), id =~ "yellow") => notify;
 U: search for all songs by farrah abraham.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => (@com.spotify.song()), contains(artists, null^^com.spotify:artist("farrah abraham")) => notify;
+====
+# log/44326
+U: what are songs by billy joel
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter contains(artists, null^^com.spotify:artist("billy joel"));
+====
+# log/40132
+U: play john mayer
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter contains(artists, null^^com.spotify:artist("john mayer")) => @com.spotify.play_song(song=id);
+====
+# log/17719
+U: get the energy of this song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.get_currently_playing() => [energy] of @com.spotify.song() filter id == song;
+====
+# log/110499
+U: play bon jovi on spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter contains(artists, null^^com.spotify:artist("bon jovi")) => @com.spotify.play_song(song=id);
+====
+# log/6533
+U: play show me the meaning of being lonely
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: (@com.spotify.song() filter id =~ "show me the meaning of being lonely")[1] => @com.spotify.play_song(song=id);
+====
+# log/68810
+U: play a metallica song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter contains(artists, null^^com.spotify:artist("metallica")) => @com.spotify.play_song(song=id);
+====
+# log/74581
+U: play megan on spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: (@com.spotify.song() filter id =~ "megan")[1] => @com.spotify.play_song(song=id);
+====
+# log/90588
+U: stop playing spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_pause();
+====
+# log/107446
+U: continue spotify playback
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_play();
+====
+# log/103037
+U: play jaychou
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter contains(artists, null^^com.spotify:artist("jaychou")) => @com.spotify.play_song(song=id);
+====
+# log/38830
+U: play bohemian rhapsody
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: (@com.spotify.song() filter id =~ "bohemian rhapsody")[1] => @com.spotify.play_song(song=id);
+====
+# log/6051
+U: open spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_play();
+====
+# log/2070
+U: play a song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() => @com.spotify.play_song(song=id);
+====
+# log/57100
+U: next song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_next();
+====
+# log/19469
+U: play billy joel
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter contains(artists, null^^com.spotify:artist("billy joel")) => @com.spotify.play_song(song=id);
+====
+# log/4373
+U: pause my spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_pause();

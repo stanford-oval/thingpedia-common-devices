@@ -1,0 +1,28 @@
+class @org.acm
+#_[name="ACM Journals"]
+#_[description="Access the latest issues of ACM journals and magazines"]
+#[version=2]
+#[package_version=2] {
+  import loader from @org.thingpedia.rss();
+  import config from @org.thingpedia.config.none();
+
+  monitorable list query xrds(out title: String #_[canonical="title"] #[string_values="tt:news_title"],
+                              out link: Entity(tt:url) #_[canonical="link"],
+                              out updated: Date #_[canonical="updated"])
+  #_[canonical="get acm xrds"]
+  #_[confirmation="latest articles in ACM Crossroads (XRDS)"]
+  #_[formatted=[{type="rdl",webCallback="${link}",displayTitle="${title}"}]]
+  #_[confirmation_remote="latest articles in ACM Crossroads (XRDS)"]
+  #[url="https://xrds.acm.org/blog/feed/"]
+  #[poll_interval=3h];
+
+  monitorable list query cacm(out title: String #_[canonical="title"] #[string_values="tt:news_title"],
+                              out link: Entity(tt:url) #_[canonical="link"],
+                              out updated: Date #_[canonical="updated"])
+  #_[canonical="get acm cacm"]
+  #_[confirmation="latest articles in Communications of the ACM"]
+  #_[formatted=[{type="rdl",webCallback="${link}",displayTitle="${title}"}]]
+  #_[confirmation_remote="latest articles in Communications of the ACM"]
+  #[url="https://cacm.acm.org/news.rss"]
+  #[poll_interval=3h];
+}

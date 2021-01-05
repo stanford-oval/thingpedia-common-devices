@@ -53,3 +53,13 @@ UT: @com.uber.price_estimate(end=new Location(2, 2), start=$location.current_loc
 U: get uber prices from to
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.uber.price_estimate(end=new Location(3, 3), start=new Location(2, 2));
+====
+# log/125480
+U: i need a taxi
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.uber.request();
+====
+# log/3266
+U: get time estimate for uber here
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.uber.time_estimate(start=$location.current_location);

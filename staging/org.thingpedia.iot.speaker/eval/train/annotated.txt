@@ -58,3 +58,23 @@ UT: now => @org.thingpedia.iot.speaker.set_power(power=enum(off));
 U: turn on the sound system
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => @org.thingpedia.iot.speaker.set_power(power=enum(on));
+====
+# log/101408
+U: almond stop playing my sonos speaker in my office
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.speaker(name="sonos").mute();
+====
+# log/125283
+U: increase the volume
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.speaker.raise_volume();
+====
+# log/3959
+U: set the volume of my bluetooth speaker to 13
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.speaker(name="bluetooth").set_volume(volume=13);
+====
+# log/73925
+U: turn the volume up
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.speaker.raise_volume();

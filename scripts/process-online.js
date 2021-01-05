@@ -99,15 +99,6 @@ class Processor extends stream.Writable {
 
         const existingDataset = this._existingDataset;
 
-        if (this._droppedFilename) {
-            for await (let line of readAllLines([this._droppedFilename])) {
-                line = line.trim();
-                if (!line || line.startsWith('#'))
-                    continue;
-                this._dropped.add(line);
-            }
-        }
-
         await StreamUtils.waitFinish(readAllLines([filename])
             .pipe(this._type === 'manual' ? new Genie.DialogueParser() : new Genie.DatasetParser())
             .pipe(new stream.Writable({
@@ -122,6 +113,15 @@ class Processor extends stream.Writable {
 
     async init() {
         // load all existing datasets
+        if (this._droppedFilename) {
+            for await (let line of readAllLines([this._droppedFilename])) {
+                line = line.trim();
+                if (!line || line.startsWith('#'))
+                    continue;
+                this._dropped.add(line);
+            }
+        }
+
         for (const r of RELEASES) {
             if (this._type === 'manual') {
                 await this._tryLoadExistingDataset(path.resolve('eval', r, 'dev/annotated.txt'));

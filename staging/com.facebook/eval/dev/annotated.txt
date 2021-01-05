@@ -53,3 +53,18 @@ UT: now => @com.facebook.post(status="hello world");
 U: post on facebook
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => @com.facebook.post(status=$?);
+====
+# log/10
+U: post "str:QUOTED_STRING::0:" on facebook
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.facebook.post(status="str:QUOTED_STRING::0:");
+====
+# log/34
+U: post a pic on facebook
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.facebook.post_picture();
+====
+# log/37
+U: post something on facebook
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.facebook.post();

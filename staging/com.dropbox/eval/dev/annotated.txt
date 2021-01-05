@@ -158,3 +158,18 @@ UT: @com.dropbox.get_space_usage();
 U: what dropbox files are bigger than 1 megabyte
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.dropbox.list_folder() filter file_size >= 1MB;
+====
+# log/67512
+U: get my files in dropbox
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.dropbox.list_folder();
+====
+# log/47873
+U: my dropbox files
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.dropbox.list_folder();
+====
+# log/3276
+U: move file "str:QUOTED_STRING::0:" to "str:QUOTED_STRING::1:" in dropbox
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.dropbox.move(new_name="str:QUOTED_STRING::1:", old_name="str:QUOTED_STRING::0:");
