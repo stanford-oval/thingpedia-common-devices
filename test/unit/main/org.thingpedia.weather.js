@@ -9,7 +9,7 @@ const assert = require('assert');
 const Tp = require('thingpedia');
 
 const MOON_PHASE = 'new_moon,waxing_crescent,first_quarter,waxing_gibbous,full_moon,waning_gibbous,third_quarter,waning_crescent'.split(',');
-const WEATHER_STATUS = 'raining,cloudy,sunny,snowy,sleety,drizzling,windy'.split(',');
+const WEATHER_STATUS = 'raining,cloudy,sunny,snowy,sleety,drizzling,windy,foggy'.split(',');
 
 module.exports = [
     ['query', 'sunrise', { location: { x: -120, y: 37 }, date: new Date() }, (result) => {
