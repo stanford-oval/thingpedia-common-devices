@@ -30,7 +30,7 @@ module.exports = [
             assert(typeof r.fog === 'number');
             assert(typeof r.humidity === 'number');
             assert(typeof r.cloudiness === 'number');
-            assert(WEATHER_STATUS.includes(r.status));
+            assert(WEATHER_STATUS.includes(r.status), `Invalid weather status ${r.status}`);
         });
     }],
 
