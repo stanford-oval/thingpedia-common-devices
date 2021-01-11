@@ -313,6 +313,17 @@ datadir/fewshot: eval/$(release)/train/user.tsv eval/$(release)/dev/user.tsv eva
 	cp eval/$(release)/dev/agent.tsv $@/agent/eval.tsv
 	touch $@
 
+datadir/calibration: eval/$(release)/dev/user.tsv
+	mkdir -p $@/user $@/agent
+ifneq ($(calibration_ood_file),)
+	aws s3 cp $(calibration_ood_file) eval/$(release)/dev/calibration-ood.tsv
+	sed -E -e '/\t(ok|contextual command)$$/d' -e 's/\t/\tnull\t/' -e 's/\t[^\t]*$$/\t\$$failed ;/' eval/$(release)/dev/calibration-ood.tsv > eval/$(release)/dev/calibration-ood-processed.tsv
+else
+	cat > eval/$(release)/dev/calibration-ood-processed.tsv
+endif
+	cat eval/$(release)/dev/user.tsv eval/$(release)/dev/calibration-ood-processed.tsv > $@/user/eval.tsv
+	touch $@
+
 datadir: datadir/agent datadir/nlg datadir/user datadir/fewshot $(foreach v,$(subdataset_ids),eval/$(release)/synthetic-$(v).txt)
 	cat eval/$(release)/synthetic-*.txt > $@/synthetic.txt
 	$(genie) measure-training-set $@ > $@/stats
