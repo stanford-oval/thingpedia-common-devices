@@ -43,3 +43,23 @@ UT: now => @org.thingpedia.holidays.get_holidays(country=null^^tt:country("ameri
 U: list the holidays in the denmark
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => @org.thingpedia.holidays.get_holidays(country=null^^tt:country("denmark")) => notify;
+====
+# online/62110283
+U: when is the next us holiday?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.holidays.get_holidays(country=null^^tt:country("us"));
+====
+# log/296
+U: list american holidays
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.holidays.get_holidays(country="us"^^tt:country("american"));
+====
+# log/140143
+U: get the holidays
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.holidays.get_holidays();
+====
+# log/263
+U: list the holidays
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.holidays.get_holidays();

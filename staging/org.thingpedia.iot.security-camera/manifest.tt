@@ -1,0 +1,22 @@
+abstract class @org.thingpedia.iot.security-camera extends @org.thingpedia.iot.motion, @org.thingpedia.iot.sound, @org.thingpedia.iot.occupancy
+#_[thingpedia_name="Security Camera"]
+#_[thingpedia_description="Interface for Security Camera."]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="home"]
+{
+  monitorable query current_event(out start_time: Date #_[canonical="start time"],
+                                  out has_sound: Boolean #_[prompt="Do you want events with sound?"] #_[canonical="has sound"],
+                                  out has_motion: Boolean #_[prompt="Do you want events with motion?"] #_[canonical="has motion"],
+                                  out has_person: Boolean #_[prompt="Do you want events with people in front of the camera?"] #_[canonical="has person"],
+                                  out picture_url: Entity(tt:picture) #_[canonical="picture url"])
+  #_[canonical="current event on security camera"]
+  #_[confirmation="the current event detected on your security camera"]
+  #_[confirmation_remote="the current event detected on $__person's security camera"];
+
+  action set_power(in req power: Enum(on,off) #_[prompt="Do you want to turn your camera on or off?"] #_[canonical="power"])
+  #_[canonical="set power on security camera"]
+  #_[confirmation="turn $power your security camera"]
+  #_[confirmation_remote="turn $power $__person's security camera"]
+  #[doc="change the streaming status of the camera"];
+}

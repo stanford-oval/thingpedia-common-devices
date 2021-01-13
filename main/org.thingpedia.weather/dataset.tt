@@ -29,78 +29,94 @@
 // OF THE POSSIBILITY OF SUCH DAMAGE.
 
 dataset @org.thingpedia.weather language "en" {
-    stream (p_location :Location) := edge (monitor (@org.thingpedia.weather.current(location=p_location))) on temperature <= 0C
+    query () := [temperature] of @org.thingpedia.weather.current()
+    #_[utterances=["the temperature outside", "the weather temperature"]]
+    #[name="TemperatureOfWeather"];
+
+    query (p_location :Location) := [temperature] of @org.thingpedia.weather.current(location=p_location)
+    #_[utterances=["the temperature in ${p_location}"]]
+    #[name="TemperatureOfWeatherWithLocation"];
+
+    query () := [humidity] of @org.thingpedia.weather.current()
+    #_[utterances=["the humidity outside"]]
+    #[name="HumidityOfWeather"];
+
+    query () := [wind_speed] of @org.thingpedia.weather.current()
+    #_[utterances=["the wind speed outside"]]
+    #[name="WindSpeedOfWeather"];
+
+    stream (p_location :Location) := monitor (@org.thingpedia.weather.current(location=p_location)), temperature <= 0C
     #_[utterances=["when the temperature in $p_location is below freezing"]]
     #[id=53258809]
     #[name="MonitorGetCurrentWeatherOnWeatherapiWithLocationByTemperatureLessThan2"];
 
-    stream (p_humidity :Number, p_location :Location) := edge (monitor (@org.thingpedia.weather.current(location=p_location))) on humidity <= p_humidity
+    stream (p_humidity :Number, p_location :Location) := monitor (@org.thingpedia.weather.current(location=p_location)), humidity <= p_humidity
     #_[utterances=["when the humidity in $p_location is below $p_humidity"]]
     #[id=53258812]
     #[name="MonitorGetCurrentWeatherOnWeatherapiWithLocationByHumidityLessThan"];
 
-    stream (p_location :Location) := edge (monitor (@org.thingpedia.weather.current(location=p_location))) on status == enum(raining)
+    stream (p_location :Location) := monitor (@org.thingpedia.weather.current(location=p_location)), status == enum(raining)
     #_[utterances=["when it starts raining in $p_location"]]
     #[id=53258813]
     #[name="MonitorGetCurrentWeatherOnWeatherapiWithLocationByStatusRaining"];
 
-    stream (p_location :Location) := edge (monitor (@org.thingpedia.weather.current(location=p_location))) on status == enum(snowy)
+    stream (p_location :Location) := monitor (@org.thingpedia.weather.current(location=p_location)), status == enum(snowy)
     #_[utterances=["when it starts snowing in $p_location"]]
     #[id=53258814]
     #[name="MonitorGetCurrentWeatherOnWeatherapiWithLocationByStatusSnowy"];
 
-    stream (p_location :Location) := edge (monitor (@org.thingpedia.weather.current(location=p_location))) on !(status == enum(raining))
+    stream (p_location :Location) := monitor (@org.thingpedia.weather.current(location=p_location)), !(status == enum(raining))
     #_[utterances=["when it stops raining in $p_location"]]
     #[id=53258815]
     #[name="MonitorGetCurrentWeatherOnWeatherapiWithLocationNotByStatusRaining"];
 
-    stream (p_location :Location) := edge (monitor (@org.thingpedia.weather.current(location=p_location))) on !(status == enum(snowy))
+    stream (p_location :Location) := monitor (@org.thingpedia.weather.current(location=p_location)), !(status == enum(snowy))
     #_[utterances=["when it stops snowing in $p_location"]]
     #[id=53258816]
     #[name="MonitorGetCurrentWeatherOnWeatherapiWithLocationNotByStatusSnowy"];
 
-    stream (p_wind_speed :Measure(mps), p_location :Location) := monitor ((@org.thingpedia.weather.current(location=p_location)), wind_speed >= p_wind_speed)
+    stream (p_wind_speed :Measure(mps), p_location :Location) := monitor (@org.thingpedia.weather.current(location=p_location)), wind_speed >= p_wind_speed
     #_[utterances=["when the wind speed in $p_location is above $p_wind_speed"]]
     #[id=53258817]
     #[name="MonitorGetCurrentWeatherOnWeatherapiWithLocationByWindSpeedGreaterThan"];
 
-    stream (p_status :Enum(raining,cloudy,sunny,snowy,sleety,drizzling,windy), p_location :Location) := edge (monitor (@org.thingpedia.weather.current(location=p_location))) on status == p_status
+    stream (p_status :Enum(raining,cloudy,sunny,snowy,sleety,drizzling,windy), p_location :Location) := monitor (@org.thingpedia.weather.current(location=p_location)), status == p_status
     #_[utterances=["when it's $p_status at location $p_location",
                    "when it becomes $p_status at $p_location"]]
     #[id=53266921]
     #[name="MonitorGetCurrentWeatherOnWeatherapiWithLocationByStatus"];
 
-    stream (p_temperature :Measure(C), p_location :Location) := edge (monitor (@org.thingpedia.weather.current(location=p_location))) on temperature >= p_temperature
+    stream (p_temperature :Measure(C), p_location :Location) := monitor (@org.thingpedia.weather.current(location=p_location)), temperature >= p_temperature
     #_[utterances=["when the temperature in $p_location is above $p_temperature",
                    "when it 's hotter than $p_temperature in $p_location"]]
     #[id=53266931]
     #[name="MonitorGetCurrentWeatherOnWeatherapiWithLocationByTemperatureGreaterThan"];
 
-    stream (p_temperature :Measure(C), p_location :Location) := edge (monitor (@org.thingpedia.weather.current(location=p_location))) on temperature <= p_temperature
+    stream (p_temperature :Measure(C), p_location :Location) := monitor (@org.thingpedia.weather.current(location=p_location)), temperature <= p_temperature
     #_[utterances=["when the temperature in $p_location is below $p_temperature",
                    "when it 's colder than $p_temperature in $p_location"]]
     #[id=53266933]
     #[name="MonitorGetCurrentWeatherOnWeatherapiWithLocationByTemperatureLessThan"];
 
-    stream (p_temperature :Measure(C)) := edge (monitor (@org.thingpedia.weather.current())) on temperature >= p_temperature
+    stream (p_temperature :Measure(C)) := monitor (@org.thingpedia.weather.current()), temperature >= p_temperature
     #_[utterances=["when the temperature outside is above $p_temperature",
                    "when it 's hotter outside than $p_temperature"]]
     #[id=53266935]
     #[name="MonitorGetCurrentWeatherOnWeatherapiWithLocationByTemperatureGreaterThan1"];
 
-    stream (p_temperature :Measure(C)) := edge (monitor (@org.thingpedia.weather.current())) on temperature <= p_temperature
+    stream (p_temperature :Measure(C)) := monitor (@org.thingpedia.weather.current()), temperature <= p_temperature
     #_[utterances=["when the temperature outside is below $p_temperature",
                    "when it 's colder outside than $p_temperature"]]
     #[id=53266937]
     #[name="MonitorGetCurrentWeatherOnWeatherapiWithLocationByTemperatureLessThan1"];
 
-    stream (p_humidity :Number, p_location :Location) := edge (monitor (@org.thingpedia.weather.current(location=p_location))) on humidity >= p_humidity
+    stream (p_humidity :Number, p_location :Location) := monitor (@org.thingpedia.weather.current(location=p_location)), humidity >= p_humidity
     #_[utterances=["when the humidity in $p_location is above $p_humidity",
                    "when it is more humid than $p_humidity in $p_location"]]
     #[id=53266939]
     #[name="MonitorGetCurrentWeatherOnWeatherapiWithLocationByHumidityGreaterThan"];
 
-    /*stream := edge (monitor (@org.thingpedia.weather.sunrise())) on sunset == true
+    /*stream := monitor (@org.thingpedia.weather.sunrise()), sunset == true
     #_[utterances=["when sun goes down",
                    "after sunset",
                    "when sunset",
@@ -108,7 +124,7 @@ dataset @org.thingpedia.weather language "en" {
     #[id=53266945]
     #[name="MonitorGetSunriseOnWeatherapiWithLocationBySunset"];
 
-    stream := edge (monitor (@org.thingpedia.weather.sunrise())) on sunrisen == true
+    stream := monitor (@org.thingpedia.weather.sunrise()), sunrisen == true
     #_[utterances=["when sun comes up",
                    "after sunrise",
                    "when sunrise",

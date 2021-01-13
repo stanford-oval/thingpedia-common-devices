@@ -48,3 +48,13 @@ UT: now => @com.wsj.get(section=$?) => notify;
 U: get a wall street journal about trump
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => (@com.wsj.get(section=$?)), title =~ "trump" => notify;
+====
+# online/62110250
+U: show me wall street journal world news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.wsj.get(section=enum world_news);
+====
+# online/62110251
+U: what's happening in the world today according to the wall street journal?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.wsj.get(section=enum world_news) filter updated >= $start_of(day);

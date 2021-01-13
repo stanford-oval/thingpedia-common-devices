@@ -10,4 +10,24 @@ dataset @edu.stanford.news language "en" {
     #[id=11681771]
     #[name=""];
 
+
+    query := @edu.stanford.news.get_events_list()
+    #_[utterances=["stanford events",
+                   "Stanford Events",
+                   "Stanford Event Calendar",
+                   "events Stanford",
+                   "Stanford Events Calendar",
+                   "events in the Stanford Events Calendar"]]
+    #[id=21696038]
+    #[name=""];
+
+    query := (@edu.stanford.news.get_events_list()), pubDate >= start_of(day)
+    #_[utterances=["events published today in the Stanford Events Calendar"]]
+    #[id=21696044]
+    #[name=""];
+
+    stream := monitor (@edu.stanford.news.get_events_list())
+    #_[utterances=["when Stanford Events publishes a new event"]]
+    #[id=21696045]
+    #[name=""];
 }

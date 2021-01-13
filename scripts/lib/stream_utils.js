@@ -119,5 +119,11 @@ module.exports = {
             stream.once('finish', resolve);
             stream.on('error', reject);
         });
+    },
+    waitEnd(stream) {
+        return new Promise((resolve, reject) => {
+            stream.once('end', resolve);
+            stream.on('error', reject);
+        });
     }
 };

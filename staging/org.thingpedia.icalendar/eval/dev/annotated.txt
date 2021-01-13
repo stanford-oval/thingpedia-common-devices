@@ -123,3 +123,68 @@ UT: now => (@org.thingpedia.icalendar.list_events()), summary =~ "str:QUOTED_STR
 U: list upcoming zoom meetings
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => (@org.thingpedia.icalendar.list_events()), start_date >= start_of(day) => notify;
+====
+# online/62110273
+U: show me my meetings today
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.icalendar.list_events() filter start_date <= $end_of(day) && start_date >= $start_of(day);
+====
+# online/62110274
+U: do i have any meeting today?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.icalendar.list_events() filter start_date <= $end_of(day) && start_date >= $start_of(day);
+====
+# online/62110276
+U: when does the next meeting start
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.icalendar.list_events();
+====
+# online/62110277
+U: where is the next event in my calendar?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.icalendar.list_events();
+====
+# online/62110342
+U: show me today's appointments
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.icalendar.list_events() filter start_date <= $end_of(day) && start_date >= $start_of(day);
+====
+# online/62110344
+U: where is my next meeting
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.icalendar.list_events();
+====
+# online/62110345
+U: list my calendar events
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.icalendar.list_events();
+====
+# online/62110346
+U: list my upcoming calendar events
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.icalendar.list_events() filter status == enum upcoming;
+====
+# online/62110347
+U: list calendar events in progress
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.icalendar.list_events() filter status == enum started;
+====
+# online/62915881
+U: tell me my next meetings.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.icalendar.list_events();
+====
+# log/102906
+U: how does my schedule look?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.icalendar.list_events();
+====
+# log/79314
+U: when is my next event?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.icalendar.list_events();
+====
+# log/1733
+U: calendar
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.icalendar.list_events();

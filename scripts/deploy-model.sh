@@ -8,15 +8,15 @@ shift $n
 set -e
 set -x
 
-make "release=${release}" "eval/${release}/models/${model}/best.pth"
+aws s3 sync --exclude '*/dataset/*' --exclude '*/cache/*' --exclude 'iteration_*.pth' --exclude '*_optim.pth' "${model}" ./tmp/model
 
-rm -fr export/
-genienlp export --path "eval/${release}/models/${model}/" -o export/
+rm -fr ./tmp/export/
+genienlp export --path ./tmp/model -o ./tmp/export/
 
 version=2
 
-for model_tag in org.thingpedia.models.contextual org.thingpedia.models.developer.contextual ; do
-	AWS_PROFILE=oval aws s3 sync export/ "s3://almond-training/staging/inference/${model_tag}:en-v${version}/"
+for model_tag in org.thingpedia.models.contextual ; do
+	AWS_PROFILE=oval aws s3 sync ./tmp/export/ "s3://almond-training/staging/inference/${model_tag}:en-v${version}/"
 
 	set +x
 	ADMIN_TOKEN=$(secret-tool lookup almond.nlp_admin_token dev)

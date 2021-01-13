@@ -429,7 +429,7 @@ UT: now => [distance] of ((sort distance asc of (compute (distance(geo, $context
 # schemaorg/97
 U: what are the prices for the 13 highest rated italian restaurants in roanoke, va?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => [price] of (sort rating desc of (((@com.yelp.restaurant()), (contains(cuisines, null^^com.yelp:restaurant_cuisine("italian")) && geo == new Location("roanoke , va")))[1 : 13])) => notify;
+UT: now => [price] of sort(rating desc of @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("italian")) && geo == new Location("roanoke , va"))[1 : 13] => notify;
 ====
 # schemaorg/22
 U: what is a 13 star mexican restaurant?
@@ -1415,3 +1415,28 @@ UT: now => (@com.yelp.restaurant()), contains(cuisines, null^^com.yelp:restauran
 U: find restaurants in denver, colorado.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => (@com.yelp.restaurant()), geo == new Location("denver , colorado") => notify;
+====
+# log/1872
+U: get reviews of "str:QUOTED_STRING::0:" near
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [rating, review_count] of @com.yelp.restaurant() filter geo == $location.current_location && id =~ "str:QUOTED_STRING::0:";
+====
+# log/91938
+U: i'm looking for a chinese restaurant
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese"));
+====
+# log/117993
+U: get me restaurants in grenoble
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("grenoble");
+====
+# log/54496
+U: insert the best restaurant in palo alto here
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating desc of @com.yelp.restaurant() filter geo == new Location("palo alto"))[1];
+====
+# log/114708
+U: show me restaurants in san francisco rated at least 13 stars
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("san francisco") && rating >= 13;

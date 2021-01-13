@@ -1,0 +1,40 @@
+abstract class @org.thingpedia.iot.light-bulb extends @org.thingpedia.iot.switch
+#_[thingpedia_name="Light Bulb"]
+#_[thingpedia_description="The general interface supported by all light bulbs."]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="home"]
+{
+  monitorable query power(out power : Enum(on,off))
+  #_[canonical=["the power state of the light bulb",
+                "the power state of my lights",
+                "whether the lights are on or off",
+                "light state"]]
+  #_[confirmation="the power state of ${__device}"]
+  #_[result=["your lights are ${power}"]];
+
+  action alert_long()
+  #_[canonical=["loop the color in my light bulb",
+                "start disco lights",
+                "color loop the lights",
+                "loop the color of the light bulb"]]
+  #_[confirmation="flash alerts on ${__device}"]
+  #[confirm=true];
+
+  action color_loop()
+  #_[canonical=["flash the lights",
+                "alert me by flashing the lights",
+                "flash the lights as alerts"]]
+  #_[confirmation="loop colors on ${__device}"]
+  #[confirm=true];
+
+  action set_power(in req power: Enum(on,off)
+                   #_[prompt=["do you want to turn it on or off"]]
+                   #_[canonical={
+                      base=["power"],
+                      property=[]
+                   }])
+  #_[canonical=["set the power on the lights", "set the power on the lamp"]]
+  #_[confirmation="turn $power ${__device}"]
+  #[confirm=true];
+}

@@ -184,10 +184,10 @@ async function roundtrip(testRunner, input, expected) {
         await conversation.handleCommand(input);
 
     const output = testRunner.buffer;
-    const regexp = new RegExp(expected);
+    const regexp = new RegExp(expected.trim());
     if (!regexp.test(output)) {
         console.error('Invalid reply: ' + testRunner.buffer.trim());
-        console.error('\nExpected: ' + expected.trim());
+        console.error('\nExpected: ', regexp);
         _anyFailed = true;
         if (testRunner.stopOnError)
             process.exit(1);
@@ -217,7 +217,7 @@ async function test(testRunner, dlg, i) {
 
     // reset the conversation
     if (i > 0)
-        await roundtrip(testRunner, '\\r bookkeeping special special:stop', null);
+        await roundtrip(testRunner, '\\r bookkeeping special special:stop', '');
 
     for (let req of reqs) {
         if (testRunner.engine.devices.getAllDevicesOfKind(req).length === 0) {
@@ -329,7 +329,7 @@ async function main() {
             'eval/' + args.release + '/models/' + args.nlu_model + '/best.pth');
     }
 
-    const platform = new Platform();
+    const platform = new Platform(args.release);
 
     let nluModelUrl;
     if (args.nlu_model)

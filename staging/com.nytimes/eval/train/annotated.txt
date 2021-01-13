@@ -33,3 +33,18 @@ UT: now => (@com.nytimes.get_front_page()), title =~ "trade" => notify;
 U: get me new york times articles about trade
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => (@com.nytimes.get_front_page()), title =~ "trade" => notify;
+====
+# online/27740963
+U: get new york times about trade
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.nytimes.get_front_page() filter description =~ "trade" || title =~ "trade";
+====
+# online/62110304
+U: what's the headline of new york times
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.nytimes.get_front_page();
+====
+# online/62110319
+U: what's happening in the world today according to the new york times?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.nytimes.get_front_page() filter updated >= $start_of(day);

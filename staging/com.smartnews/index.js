@@ -15,7 +15,7 @@ module.exports = class SmartNewsDevice extends Tp.BaseDevice {
     }
 
     //connect SN API endpoint /top with GET request
-    get_article({ counter }) {
+    get_top_articles({ counter }) {
         counter = counter || 10; //default is 10 news
         let url = API_URL + "/top?counter=" + counter;
         return Tp.Helpers.Http.get(url).then((response) => {
@@ -23,7 +23,7 @@ module.exports = class SmartNewsDevice extends Tp.BaseDevice {
         }).then((parsed) => {
             return parsed.map((article) => {
                 return {
-                    id: article["id"],
+                    news_id: article["id"],
                     title: article["title"],
                     date: new Date(article["published_time"] * 1000),
                     site_name: article["site"],
@@ -42,7 +42,7 @@ module.exports = class SmartNewsDevice extends Tp.BaseDevice {
         }).then((parsed) => {
             return parsed.map((article) => {
                 return {
-                    id: article["id"],
+                    news_id: article["id"],
                     title: article["title"],
                     date: new Date(article["publishedTimestamp"] * 1000),
                     site_name: article["site"],
@@ -54,19 +54,19 @@ module.exports = class SmartNewsDevice extends Tp.BaseDevice {
     }
 
     //connect SN API endpoint /pocket with POST request
-    do_pocket({ id, user = USER }) {
+    do_pocket({ news_id, user = USER }) {
         return Tp.Helpers.Http.post(
             API_URL + "/pocket?user=" + user,
-            JSON.stringify({ reading_list: [id] }),
+            JSON.stringify({ reading_list: [news_id] }),
             { dataContentType: 'application/json' }
         );
     }
 
     //connect SN API endpoint /drop with POST request
-    do_drop({ id, user = USER }) {
+    do_drop({ news_id, user = USER }) {
         return Tp.Helpers.Http.post(
             API_URL + "/drop?user=" + user,
-            JSON.stringify({ reading_list: [id] }),
+            JSON.stringify({ reading_list: [news_id] }),
             { dataContentType: 'application/json' }
         );
     }

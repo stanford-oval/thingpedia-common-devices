@@ -1,0 +1,60 @@
+dataset @org.thingpedia.iot.thermostat language "en" {
+    action (p_value :Measure(C)) := @org.thingpedia.iot.thermostat.set_target_temperature(value=p_value)
+    #_[utterances=["set temperature on my thermostat to $p_value",
+                   "set my thermostat to ${p_value:const}",
+                   "set the temperature to ${p_value:const} on my thermostat"]];
+
+    action (p_low :Measure(C), p_high :Measure(C)) := @org.thingpedia.iot.thermostat.set_minmax_temperature(low=p_low, high=p_high)
+    #_[utterances=["set the temperature between ${p_low:const} and ${p_high:const} on my thermostat",
+                   "set the low temperature to $p_low on my thermostat , and the high to $p_high"]];
+
+    action (p_mode :Enum(heat,cool,heat_cool,off,auto,dry,fan_only)) := @org.thingpedia.iot.thermostat.set_hvac_mode(mode=p_mode)
+    #_[utterances=["set my hvac to $p_mode"]];
+
+    query := @org.thingpedia.iot.thermostat.get_hvac_state()
+    #_[utterances=["the state of my hvac",
+                   "the state of my heater"]];
+
+    action := @org.thingpedia.iot.thermostat.set_hvac_mode(mode=enum(off))
+    #_[utterances=["turn the heating off",
+                   "turn off the heater",
+                   "turn off the ac",
+                   "switch off the heater",
+                   "switch the aircon off"]];
+
+    action := @org.thingpedia.iot.thermostat.set_hvac_mode(mode=enum(heat))
+    #_[utterances=["turn the heating on",
+                   "turn on the heater"]];
+
+    action := @org.thingpedia.iot.thermostat.set_hvac_mode(mode=enum(cool))
+    #_[utterances=["turn the ac on",
+                   "turn on the ac",
+                   "turn on the aircon",
+                   "turn the air conditioning on",
+                   "turn the cooling system on"]];
+
+    action := @org.thingpedia.iot.thermostat.set_target_temperature(value=$?)
+    #_[utterances=["change the temperature on my thermostat"]];
+
+    action := @org.thingpedia.iot.thermostat.set_minmax_temperature(low=$?, high=$?)
+    #_[utterances=["change the minimum and maximum temperatures on my thermostat"]];
+
+    action (p_name : String, p_value :Measure(C)) := @org.thingpedia.iot.thermostat(name=p_name).set_target_temperature(value=p_value)
+    #_[utterances=["set temperature on my ${p_name} thermostat to $p_value",
+                   "set my ${p_name} thermostat to ${p_value:const}",
+                   "set the temperature to ${p_value:const} on my ${p_name} thermostat"]];
+
+    action (p_name : String, p_low :Measure(C), p_high :Measure(C)) := @org.thingpedia.iot.thermostat(name=p_name).set_minmax_temperature(low=p_low, high=p_high)
+    #_[utterances=["set the temperature between ${p_low:const} and ${p_high:const} on my ${p_name} thermostat",
+                   "set the low temperature to $p_low on my ${p_name} thermostat , and the high to $p_high"]];
+
+    action (p_name : String, p_mode :Enum(heat,cool,heat_cool,off,auto,dry,fan_only)) := @org.thingpedia.iot.thermostat(name=p_name).set_hvac_mode(mode=p_mode)
+    #_[utterances=["set my ${p_name} thermostat to $p_mode"]];
+
+    action (p_name : String) := @org.thingpedia.iot.thermostat(name=p_name).set_target_temperature(value=$?)
+    #_[utterances=["change the temperature on my ${p_name} thermostat"]];
+
+    action (p_name : String) := @org.thingpedia.iot.thermostat(name=p_name).set_minmax_temperature(low=$?, high=$?)
+    #_[utterances=["change the minimum and maximum temperatures on my ${p_name} thermostat"]];
+
+}

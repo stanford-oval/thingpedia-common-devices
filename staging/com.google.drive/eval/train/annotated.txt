@@ -48,3 +48,18 @@ UT: now => aggregate count of (@com.google.drive.list_drive_files()) => notify;
 U: what google files are bigger than 1 megabyte
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => (@com.google.drive.list_drive_files()), file_size >= 1MB => notify;
+====
+# online/62110266
+U: show me my google drive files created this week
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.google.drive.list_drive_files(order_by=enum created_time_decreasing) filter created_time >= $start_of(week);
+====
+# online/62110335
+U: list my files in google drive
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.google.drive.list_drive_files();
+====
+# online/62110338
+U: what google files are bigger than 1 megabyte
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.google.drive.list_drive_files() filter file_size >= 1MB;

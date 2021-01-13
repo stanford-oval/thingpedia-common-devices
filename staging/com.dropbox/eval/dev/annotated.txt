@@ -128,3 +128,48 @@ UT: now => aggregate count of (@com.dropbox.list_folder(folder_name=$?)) => noti
 U: what's the size of the largest file in my dropbox
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => aggregate max file_size of (@com.dropbox.list_folder(folder_name=$?)) => notify;
+====
+# online/120609
+U: list folder phone pictures with size greater than 13 kb
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.dropbox.list_folder(folder_name="phone pictures") filter file_size >= 13KB;
+====
+# online/121373
+U: list files in dropbox in phone pictures
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.dropbox.list_folder(folder_name="phone pictures");
+====
+# online/62110267
+U: how much space do i have left on dropbox?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.dropbox.get_space_usage();
+====
+# online/62110268
+U: list the dropbox files in / foo
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.dropbox.list_folder(folder_name="foo");
+====
+# online/62110284
+U: how much space do i have left in dropbox
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.dropbox.get_space_usage();
+====
+# online/62110339
+U: what dropbox files are bigger than 1 megabyte
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.dropbox.list_folder() filter file_size >= 1MB;
+====
+# log/67512
+U: get my files in dropbox
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.dropbox.list_folder();
+====
+# log/47873
+U: my dropbox files
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.dropbox.list_folder();
+====
+# log/3276
+U: move file "str:QUOTED_STRING::0:" to "str:QUOTED_STRING::1:" in dropbox
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.dropbox.move(new_name="str:QUOTED_STRING::1:", old_name="str:QUOTED_STRING::0:");

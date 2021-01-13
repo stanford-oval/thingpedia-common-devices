@@ -66,11 +66,10 @@ auto_annotate_mlm_model ?= bert-large-uncased
 auto_annotate_custom_flags ?=
 
 template_deps = \
-	$(geniedir)/languages/thingtalk/*.js \
-	$(geniedir)/languages/thingtalk/dialogue_acts/*.js \
-	$(geniedir)/languages/thingtalk/*.genie \
-	$(geniedir)/languages/thingtalk/en/*.genie \
-	$(geniedir)/languages/thingtalk/en/dlg/*.genie
+	$(geniedir)/languages-dist/thingtalk/*.js \
+	$(geniedir)/languages-dist/thingtalk/en/*.js \
+	$(geniedir)/languages-dist/thingtalk/en/dlg/*.js \
+	$(geniedir)/languages-dist/thingtalk/dialogue_acts/*.js
 
 evalflags ?=
 
@@ -81,7 +80,7 @@ thingpedia_cli ?= node_modules/.bin/thingpedia
 geniedir ?= node_modules/genie-toolkit
 memsize ?= 9000
 parallel ?= 7
-genie ?= node --experimental_worker --max_old_space_size=$(memsize) $(geniedir)/tool/genie.js
+genie ?= node --experimental_worker --max_old_space_size=$(memsize) $(geniedir)/dist/tool/genie.js
 
 thingpedia_url ?= https://almond-dev.stanford.edu/thingpedia
 developer_key ?= invalid
@@ -89,7 +88,10 @@ developer_key ?= invalid
 s3_bucket ?=
 genie_k8s_project ?=
 genie_k8s_owner ?=
-artifacts_path ?=
+s3_metrics_output ?=
+metrics_output ?=
+artifacts_ver := $(shell date +%s)
+s3_model_dir ?=
 
 .PRECIOUS: %/node_modules
 .PHONY: all clean lint
@@ -102,9 +104,9 @@ build/%.zip: % %/node_modules
 	mkdir -p `dirname $@`
 	cd $< ; zip -x '*.tt' '*.yml' 'node_modules/.bin/*' 'icon.png' 'secrets.json' 'eval/*' 'simulation/*' 'database-map.tsv' -r $(abspath $@) .
 
-%/node_modules: %/package.json %/yarn.lock
+%/node_modules: %/package.json %/package-lock.json
 	mkdir -p $@
-	cd `dirname $@` ; yarn --only=prod --no-optional
+	cd `dirname $@` ; npm install --only=prod --no-optional
 	touch $@
 
 %: %/package.json %/*.js %/node_modules
@@ -169,7 +171,7 @@ eval/$(release)/synthetic-%.txt : $(schema_file) $(dataset_file) $(template_deps
 	fi
 	$(genie) generate-dialogs \
 	  --locale en-US --target-language thingtalk \
-	  --template $(geniedir)/languages/$(template_file) \
+	  --template $(geniedir)/languages-dist/$(template_file) \
 	  --thingpedia eval/$(release)/schema-$*.tt --entities entities.json --dataset $(dataset_file) \
 	  -o $@.tmp -f txt $(generate_flags) --debug $(debug_level) $(custom_gen_flags) --random-seed $@ \
 	  -n $(target_size) -B $(minibatch_size)
@@ -215,6 +217,21 @@ eval/$(release)/augmented.user.tsv : eval/$(release)/synthetic.user.tsv $(schema
 	  $(paraphrases_user) $<
 	mv $@.tmp $@
 
+eval/$(release)/augmented.agent.tsv : eval/$(release)/synthetic.agent.tsv $(schema_file) $(paraphrases_agent) parameter-datasets.tsv
+	$(genie) augment -o $@.tmp \
+	  --locale en-US \
+	  --target-language thingtalk --contextual \
+	  --thingpedia $(schema_file) \
+	  --parameter-datasets parameter-datasets.tsv \
+	  --synthetic-expand-factor $(synthetic_expand_factor) \
+	  --quoted-paraphrasing-expand-factor $(paraphrase_expand_factor) \
+	  --no-quote-paraphrasing-expand-factor $(paraphrase_expand_factor) \
+	  --quoted-fraction $(quoted_fraction) \
+	  --debug \
+	  --parallelize $(parallel) \
+	  $(paraphrases_agent) $<
+	mv $@.tmp $@
+
 eval/$(release)/$(eval_set)/agent.tsv : $(eval_files) $(schema_file)
 	$(genie) dialog-to-contextual \
 	  --locale en-US --target-language thingtalk --no-tokenized \
@@ -236,6 +253,13 @@ eval/$(release)/train/user.tsv : $(fewshot_train_files) $(schema_file)
 	  -o $@.tmp $(fewshot_train_files)
 	if test -f $@ && cmp $@.tmp $@ ; then rm $@.tmp ; else mv $@.tmp $@ ; fi
 
+eval/$(release)/train/agent.tsv : $(fewshot_train_files) $(schema_file)
+	$(genie) dialog-to-contextual \
+	  --locale en-US --target-language thingtalk --no-tokenized \
+	  --thingpedia $(schema_file) --side agent \
+	  -o $@.tmp $(fewshot_train_files)
+	if test -f $@ && cmp $@.tmp $@ ; then rm $@.tmp ; else mv $@.tmp $@ ; fi
+
 eval/$(release)/$(eval_set)/%.dialogue.results: eval/$(release)/models/%/best.pth $(eval_files) $(schema_file) eval/$(release)/database-map.tsv parameter-datasets.tsv
 	mkdir -p eval/$(release)/$(eval_set)/$(dir $*)
 	$(genie) evaluate-dialog \
@@ -250,6 +274,7 @@ eval/$(release)/$(eval_set)/%.dialogue.results: eval/$(release)/models/%/best.pt
 	mv $@.tmp $@
 
 eval/$(release)/$(eval_set)/%.nlu.results: eval/$(release)/models/%/best.pth eval/$(release)/$(eval_set)/user.tsv $(schema_file)
+	mkdir -p eval/$(release)/$(eval_set)/$(dir $*)
 	$(genie) evaluate-server \
 	  --url "file://$(abspath $(dir $<))" \
 	  --thingpedia $(schema_file) -l en-US \
@@ -260,10 +285,15 @@ eval/$(release)/$(eval_set)/%.nlu.results: eval/$(release)/models/%/best.pth eva
 	mv eval/$(release)/$(eval_set)/$*.nlu.debug.tmp eval/$(release)/$(eval_set)/$*.nlu.debug
 	mv $@.tmp $@
 
-# NOTE: there is no augmentation of agent sentences! The agent networks (policy & NLG) operate with QUOTED tokens exclusively
-datadir/agent: eval/$(release)/synthetic.agent.tsv eval/$(release)/dev/agent.tsv
+datadir/agent: eval/$(release)/synthetic.agent.tsv eval/$(release)/augmented.agent.tsv eval/$(release)/dev/agent.tsv
 	mkdir -p $@
 	cp eval/$(release)/synthetic.agent.tsv $@/
+	cp eval/$(release)/augmented.agent.tsv $@/train.tsv ; \
+	cp eval/$(release)/dev/agent.tsv $@/eval.tsv ; \
+	touch $@
+
+datadir/nlg: eval/$(release)/synthetic.agent.tsv eval/$(release)/dev/agent.tsv
+	mkdir -p $@
 	cp eval/$(release)/synthetic.agent.tsv $@/train.tsv ; \
 	cp eval/$(release)/dev/agent.tsv $@/eval.tsv ; \
 	touch $@
@@ -275,13 +305,15 @@ datadir/user: eval/$(release)/synthetic.user.tsv eval/$(release)/augmented.user.
 	cp eval/$(release)/dev/user.tsv $@/eval.tsv ; \
 	touch $@
 
-datadir/fewshot: eval/$(release)/train/user.tsv eval/$(release)/dev/user.tsv
-	mkdir -p $@/user
+datadir/fewshot: eval/$(release)/train/user.tsv eval/$(release)/dev/user.tsv eval/$(release)/train/agent.tsv eval/$(release)/dev/agent.tsv
+	mkdir -p $@/user $@/agent
 	cp eval/$(release)/train/user.tsv $@/user/train.tsv
 	cp eval/$(release)/dev/user.tsv $@/user/eval.tsv
+	cp eval/$(release)/train/agent.tsv $@/agent/train.tsv
+	cp eval/$(release)/dev/agent.tsv $@/agent/eval.tsv
 	touch $@
 
-datadir: datadir/agent datadir/user datadir/fewshot $(foreach v,$(subdataset_ids),eval/$(release)/synthetic-$(v).txt)
+datadir: datadir/agent datadir/nlg datadir/user datadir/fewshot $(foreach v,$(subdataset_ids),eval/$(release)/synthetic-$(v).txt)
 	cat eval/$(release)/synthetic-*.txt > $@/synthetic.txt
 	$(genie) measure-training-set $@ > $@/stats
 	touch $@
@@ -300,59 +332,25 @@ lint:
 		test ! -f $$d/package.json || $(eslint) $$d/*.js ; \
 	done
 
+
 evaluate: eval/$(release)/$(eval_set)/$(model).dialogue.results eval/$(release)/$(eval_set)/$(model).nlu.results
 	@echo eval/$(release)/$(eval_set)/$(model).dialogue.results
 	@cat eval/$(release)/$(eval_set)/$(model).dialogue.results
 
-evaluate-upload:
-	for f in {dialogue,nlu}.{results,debug} ; do \
-	  aws s3 cp eval/$(release)/$(eval_set)/$(model).$$f s3://$(s3_bucket)/$(genie_k8s_owner)/workdir/$(genie_k8s_project)/eval/$(release)/$(eval_set)/$(if $(findstring /,$(model)),$(dir $(model)),) ; \
-	done
-
 evaluate-output-artifacts:
-	mkdir -p `dirname $(artifacts_path)`
-	tar cvzf $(artifacts_path) eval/$(release)/$(eval_set)/*
-	python3 scripts/write_ui_metrics_outputs.py eval/$(release)/$(eval_set)/$(model).dialogue.results eval/$(release)/$(eval_set)/$(model).nlu.results
-
-evaluate-download: eval/$(release)/$(eval_set)/user.tsv $(schema_file)
+	mkdir -p `dirname $(s3_metrics_output)`
+	mkdir -p $(metrics_output)
 	for f in {dialogue,nlu}.{results,debug} ; do \
-	  aws s3 cp s3://$(s3_bucket)/$(genie_k8s_owner)/workdir/$(genie_k8s_project)/eval/$(release)/$(eval_set)/$(model).$$f eval/$(release)/$(eval_set)/$(if $(findstring /,$(model)),$(dir $(model)),) ; \
-	  touch eval/$(release)/$(eval_set)/$(model).$$f ; \
+	  aws s3 cp eval/$(release)/$(eval_set)/$(model).$$f s3://$(s3_bucket)/$(genie_k8s_owner)/workdir/$(genie_k8s_project)/eval/$(release)/$(eval_set)/$(if $(findstring /,$(model)),$(dir $(model)),)$(artifacts_ver)/ ; \
 	done
-	@echo eval/$(release)/$(eval_set)/$(model).dialogue.results
-	@cat eval/$(release)/$(eval_set)/$(model).dialogue.results
-	@echo eval/$(release)/$(eval_set)/$(model).nlu.results
-	@cat eval/$(release)/$(eval_set)/$(model).nlu.results
-
-evaluate-all:
-	@for m in $($(release)_eval_$(eval_set)_models) ; do make --no-print-directory model=$$m evaluate ; done
-
-evaluate-all-remote: eval/$(release)/$(eval_set)/user.tsv $(schema_file)
-	make syncup
-	cd $(genie_k8s_dir) ; \
-	for m in $($(release)_eval_$(eval_set)_models) ; do \
-	  ./evaluate.sh --experiment $(release) --model `basename $$m` --model_owner `dirname $$m` --eval_set $(eval_set) ; \
-	done
-
-evaluate-all-download:
-	@for m in $($(release)_eval_$(eval_set)_models) ; do make --no-print-directory model=$$m evaluate-download ; done
+	echo s3://$(s3_bucket)/$(genie_k8s_owner)/workdir/$(genie_k8s_project)/eval/$(release)/$(eval_set)/$(if $(findstring /,$(model)),$(dir $(model)),)$(artifacts_ver)/ > $(s3_metrics_output)
+	cp -r eval/$(release)/$(eval_set)/* $(metrics_output)
+	python3 scripts/write_ui_metrics_outputs.py eval/$(release)/$(eval_set)/$(model).dialogue.results eval/$(release)/$(eval_set)/$(model).nlu.results
 
 eval/$(release)/models/%/best.pth:
 	mkdir -p eval/$(release)/models/$(if $(findstring /,$*),$(dir $*),)
-	aws s3 sync --exclude '*/dataset/*' --exclude '*/cache/*' --exclude 'iteration_*.pth' --exclude '*_optim.pth' s3://geniehai/$(if $(findstring /,$*),$(dir $*),$(genie_k8s_owner)/)models/$(genie_k8s_project)/$(release)/$(notdir $*)/ eval/$(release)/models/$*/
-
-syncup:
-	aws s3 sync --delete --exclude 'node_modules/*' --exclude '*/node_modules/*' --exclude '.embeddings/*' --exclude '*/models/*' --exclude '*/datasets/*' --exclude 'datadir/*' --exclude '*/synthetic*' --exclude '*/augmented*' --exclude '.git/*' --exclude '.nyc_output/*' --exclude 'export/*' --no-follow-symlinks . s3://$(s3_bucket)/$(genie_k8s_owner)/workdir/$(genie_k8s_project)/
-	# HACK: sync the builtin folder separately with --follow-symlinks
-	aws s3 sync --delete --exclude 'node_modules/*' --exclude '*/node_modules/*' --exclude '.embeddings/*' --exclude '*/models/*' --exclude '*/datasets/*' --exclude 'datadir/*' --exclude '*/synthetic*' --exclude '*/augmented*' --exclude '.git/*' --exclude '.nyc_output/*' --exclude 'export/*' --follow-symlinks builtin/ s3://$(s3_bucket)/$(genie_k8s_owner)/workdir/$(genie_k8s_project)/builtin/
-
-syncdown:
-	aws s3 sync s3://$(s3_bucket)/$(genie_k8s_owner)/workdir/$(genie_k8s_project)/ .
-
-eval/$(release)/datasets/%/stats:
-	aws s3 cp s3://$(s3_bucket)/$(if $(findstring /,$*),$(dir $*),$(genie_k8s_owner)/)dataset/$(genie_k8s_project)/$(release)/$(notdir $*)/stats $@ || true
-	sed -i 's|datadir|'$(release)/$*'|g' $@
-
-training-set-statistics: $(foreach v,$($(release)_training_sets),eval/$(release)/datasets/$(v)/stats)
-	@echo "dataset	num_dlgs	num_synthetic	num_turns	ctx_entropy	utt_entropy	tgt_entropy	turns_per_dlgs	unique_ctxs"
-	@cat $^
+      ifeq ($(s3_model_dir),)
+	  aws s3 sync --no-progress --exclude '*/dataset/*' --exclude '*/cache/*' --exclude 'iteration_*.pth' --exclude '*_optim.pth' s3://geniehai/$(if $(findstring /,$*),$(dir $*),$(genie_k8s_owner)/)models/$(genie_k8s_project)/$(release)/$(notdir $*)/ eval/$(release)/models/$*/
+      else
+	  aws s3 sync --no-progress --exclude '*/dataset/*' --exclude '*/cache/*' --exclude 'iteration_*.pth' --exclude '*_optim.pth' $(s3_model_dir) eval/$(release)/models/$*/
+      endif

@@ -27,7 +27,7 @@ UT: now => @com.spotify.player_play();
 # online/1675050
 U: play songs by the beatles
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@com.spotify.song(), contains(artists, null^^com.spotify:artist("the beatles"))) => @com.spotify.play_song(song=id);
+UT: now => (@com.spotify.song(), contains(artists, null^^com.spotify:artist("beatles"))) => @com.spotify.play_song(song=id);
 ====
 # online/1678056
 U: set shuffle on
@@ -183,7 +183,7 @@ UT: now => @com.spotify.song(), album == null^^com.spotify:album("música da sé
 # snips-nlu/spotify-5
 U: Play The Soft Parade .
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@com.spotify.song(), id =~ "the soft parade")[1] => @com.spotify.play_song(song=id);
+UT: now => (@com.spotify.song(), id =~ "soft parade")[1] => @com.spotify.play_song(song=id);
 ====
 # snips-nlu/spotify-9
 U: Please play me Jerry Lee Lewis's If You Say So track .
@@ -403,7 +403,7 @@ UT: now => (sort popularity desc of (@com.spotify.song(), contains(artists, null
 # snips-nlu/spotify-166
 U: play The Necromancer
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@com.spotify.song(), id =~ "the necromancer")[1] => @com.spotify.play_song(song=id);
+UT: now => (@com.spotify.song(), id =~ "necromancer")[1] => @com.spotify.play_song(song=id);
 ====
 # snips-nlu/spotify-167
 U: Can you play Under The Anheuser Bush by Pete Doherty
@@ -543,7 +543,7 @@ UT: now => @com.spotify.song(), contains~(genres, "tribal") => @com.spotify.play
 # snips-nlu/spotify-243
 U: Repeat the track of music
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@com.spotify.song(), id =~ "repeat")[1] => @com.spotify.play_song(song=id);
+UT: @com.spotify.player_repeat(repeat=enum track);
 ====
 # snips-nlu/spotify-247
 U: Play Martha My Dear by shannon .
@@ -608,7 +608,7 @@ UT: now => (@com.spotify.song(), contains(artists, null^^com.spotify:artist("lea
 # snips-nlu/spotify-278
 U: play The Happiest Days Of Our Lives by Tommy Emmanuel
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@com.spotify.song(), id =~ "the happiest days of our lives" && contains(artists, null^^com.spotify:artist("tommy emmanuel")))[1] => @com.spotify.play_song(song=id);
+UT: now => (@com.spotify.song(), id =~ "happiest days of our lives" && contains(artists, null^^com.spotify:artist("tommy emmanuel")))[1] => @com.spotify.play_song(song=id);
 ====
 # snips-nlu/spotify-279
 U: Please play This Is The Day by Brian Robertson .
@@ -698,7 +698,7 @@ UT: now => @com.spotify.song(), contains(artists, null^^com.spotify:artist("p. j
 # snips-nlu/spotify-340
 U: Play The Lamentation Of Cloris
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@com.spotify.song(), id =~ "the lamentation of cloris")[1] => @com.spotify.play_song(song=id);
+UT: now => (@com.spotify.song(), id =~ "lamentation of cloris")[1] => @com.spotify.play_song(song=id);
 ====
 # snips-nlu/spotify-346
 U: Play me a song from Luxury Liner
@@ -768,7 +768,7 @@ UT: now => @com.spotify.song(), contains~(genres, "psychedelic rock") => @com.sp
 # snips-nlu/spotify-407
 U: Play the red room sessions from chris cunningham
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.spotify.song(), album == null^^com.spotify:album("the red room sessions") && contains(artists, null^^com.spotify:artist("chris cunningham")) => @com.spotify.play_song(song=id);
+UT: now => @com.spotify.song(), album == null^^com.spotify:album("red room sessions") && contains(artists, null^^com.spotify:artist("chris cunningham")) => @com.spotify.play_song(song=id);
 ====
 # snips-nlu/spotify-410
 U: Play music from Tommy Ridgley .
@@ -798,7 +798,7 @@ UT: now => @com.spotify.song(), contains(artists, null^^com.spotify:artist("funt
 # snips-nlu/spotify-418
 U: Play some The Lady Is A Tramp from Timour Moutsouraev
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@com.spotify.song(), id =~ "the lady is a tramp" && contains(artists, null^^com.spotify:artist("timour moutsouraev")))[1] => @com.spotify.play_song(song=id);
+UT: now => (@com.spotify.song(), id =~ "lady is a tramp" && contains(artists, null^^com.spotify:artist("timour moutsouraev")))[1] => @com.spotify.play_song(song=id);
 ====
 # snips-nlu/spotify-422
 U: Can you play a song by Ken
@@ -868,7 +868,7 @@ UT: now => @com.spotify.song(), album == null^^com.spotify:album("every woman in
 # snips-nlu/spotify-465
 U: Play some Ven A Mi
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.spotify.song(), album == null^^com.spotify:album("ven a mi") => @com.spotify.play_song(song=id);
+UT: now => @com.spotify.song(), id =~ "ven a mi" => @com.spotify.play_song(song=id);
 ====
 # snips-nlu/spotify-468
 U: play some gotye
@@ -913,7 +913,7 @@ UT: now => (@com.spotify.song(), id =~ "r u professional" && contains(artists, n
 # snips-nlu/spotify-488
 U: Play The Fool On The Hill by Khwaja Ghulam Farid
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@com.spotify.song(), id =~ "the fool on the hill" && contains(artists, null^^com.spotify:artist("khwaja ghulam farid")))[1] => @com.spotify.play_song(song=id);
+UT: now => (@com.spotify.song(), id =~ "fool on the hill" && contains(artists, null^^com.spotify:artist("khwaja ghulam farid")))[1] => @com.spotify.play_song(song=id);
 ====
 # snips-nlu/spotify-490
 U: Play something by Chris Knight
@@ -1133,7 +1133,7 @@ UT: now => (@com.spotify.song(), id =~ "si no te hubiera conocido" && contains(a
 # snips-nlu/spotify-617
 U: Open the playlist from Sergei Chatschatrjan
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.spotify.song(), contains(artists, null^^com.spotify:artist("sergei chatschatrjan")) => @com.spotify.play_song(song=id);
+UT: now => @com.spotify.song(), contains(artists, null^^com.spotify:artist("sergei chatschatrjan"));
 ====
 # snips-nlu/spotify-619
 U: play the Gary Chaw album
@@ -1148,7 +1148,7 @@ UT: now => @com.spotify.song(), contains~(genres, "grunge") => @com.spotify.play
 # snips-nlu/spotify-622
 U: Play The Garden Of Allah  from Wade Mainer
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@com.spotify.song(), id =~ "the garden of allah" && contains(artists, null^^com.spotify:artist("wade mainer")))[1] => @com.spotify.play_song(song=id);
+UT: now => (@com.spotify.song(), id =~ "garden of allah" && contains(artists, null^^com.spotify:artist("wade mainer")))[1] => @com.spotify.play_song(song=id);
 ====
 # snips-nlu/spotify-623
 U: Play Alles Heeft Ritme by Liu Tianhua .
@@ -1318,7 +1318,7 @@ UT: now => (@com.spotify.song(), id =~ "her majesty")[1] => @com.spotify.play_so
 # snips-nlu/spotify-748
 U: I want to hear the newest music from The Railway Children
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (sort release_date desc of (@com.spotify.song(), contains(artists, null^^com.spotify:artist("the railway children"))))[1] => @com.spotify.play_song(song=id);
+UT: now => (sort release_date desc of (@com.spotify.song(), contains(artists, null^^com.spotify:artist("railway children"))))[1] => @com.spotify.play_song(song=id);
 ====
 # snips-nlu/spotify-750
 U: I want to hear Vegetables by pharrell williams
@@ -1479,7 +1479,7 @@ UT: now => (@com.spotify.song(), id =~ "hughie graham" && contains(artists, null
 # snips-nlu/spotify-834
 U: play the track The Wizard And I
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@com.spotify.song(), id =~ "the wizard and i")[1] => @com.spotify.play_song(song=id);
+UT: now => (@com.spotify.song(), id =~ "wizard and i")[1] => @com.spotify.play_song(song=id);
 ====
 # snips-nlu/spotify-841
 U: play Addicted To You by Hank Ballard
@@ -1634,7 +1634,7 @@ UT: now => (sort popularity desc of (@com.spotify.song(), contains(artists, null
 # snips-nlu/spotify-931
 U: Do you have something like Impossible Is Nothing by Abderrahmane Abdelli?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@com.spotify.song(), id =~ "impossible is nothing" && contains(artists, null^^com.spotify:artist("abderrahmane abdelli")))[1] => @com.spotify.play_song(song=id);
+UT: @com.spotify.song(), id =~ "impossible is nothing" && contains(artists, null^^com.spotify:artist("abderrahmane abdelli"));
 ====
 # snips-nlu/spotify-934
 U: Play some gothic rock .
@@ -1875,7 +1875,7 @@ UT: now => @com.spotify.song(), contains~(genres, "acid punk") => @com.spotify.p
 # snips-nlu/spotify-1109
 U: Play The Birds And The Bees by Ceca .
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@com.spotify.song(), id =~ "the birds and the bees" && contains(artists, null^^com.spotify:artist("ceca")))[1] => @com.spotify.play_song(song=id);
+UT: now => (@com.spotify.song(), id =~ "birds and the bees" && contains(artists, null^^com.spotify:artist("ceca")))[1] => @com.spotify.play_song(song=id);
 ====
 # snips-nlu/spotify-1113
 U: Play Rap Album One by Gene Vincent .
@@ -1990,7 +1990,7 @@ UT: now => @com.spotify.song(), contains(artists, null^^com.spotify:artist("mc h
 # snips-nlu/spotify-1194
 U: play Bill Evans album The Best Of The 12 Mixes
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.spotify.song(), contains(artists, null^^com.spotify:artist("bill evans")) && album == null^^com.spotify:album("the best of the 12 mixes") => @com.spotify.play_song(song=id);
+UT: now => @com.spotify.song(), contains(artists, null^^com.spotify:artist("bill evans")) && album == null^^com.spotify:album("best of the 12 mixes") => @com.spotify.play_song(song=id);
 ====
 # snips-nlu/spotify-1199
 U: Play Still Life 1 
@@ -2235,7 +2235,7 @@ UT: now => (sort popularity desc of (@com.spotify.song(), contains(artists, null
 # snips-nlu/spotify-1368
 U: Play Rob Mills album The Golden Archipelago .
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.spotify.song(), contains(artists, null^^com.spotify:artist("rob mills")) && album == null^^com.spotify:album("the golden archipelago") => @com.spotify.play_song(song=id);
+UT: now => @com.spotify.song(), contains(artists, null^^com.spotify:artist("rob mills")) && album == null^^com.spotify:album("golden archipelago") => @com.spotify.play_song(song=id);
 ====
 # snips-nlu/spotify-1375
 U: play Glenn Yarbrough tunes
@@ -2250,7 +2250,7 @@ UT: now => @com.spotify.song(), contains(artists, null^^com.spotify:artist("mick
 # snips-nlu/spotify-1378
 U: play The Insoc Ep
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.spotify.song(), album == null^^com.spotify:album("the insoc ep") => @com.spotify.play_song(song=id);
+UT: now => @com.spotify.song(), album == null^^com.spotify:album("insoc ep") => @com.spotify.play_song(song=id);
 ====
 # snips-nlu/spotify-1380
 U: I need to hear the new Kevin Fowler album
@@ -2520,7 +2520,7 @@ UT: now => @com.spotify.song(), album == null^^com.spotify:album("yuauea") && co
 # snips-nlu/spotify-1546
 U: Play The Tyranny Of Distance by Willy Mason .
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.spotify.song(), album == null^^com.spotify:album("the tyranny of distance") && contains(artists, null^^com.spotify:artist("willy mason")) => @com.spotify.play_song(song=id);
+UT: now => @com.spotify.song(), album == null^^com.spotify:album("tyranny of distance") && contains(artists, null^^com.spotify:artist("willy mason")) => @com.spotify.play_song(song=id);
 ====
 # snips-nlu/spotify-1551
 U: Play Chad I Ginsburg
@@ -2565,7 +2565,7 @@ UT: now => @com.spotify.song(), album == null^^com.spotify:album("suites & sweet
 # snips-nlu/spotify-1580
 U: Open The Second Adventure album by Hans Nilsson
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.spotify.song(), album == null^^com.spotify:album("the second adventure") && contains(artists, null^^com.spotify:artist("hans nilsson")) => @com.spotify.play_song(song=id);
+UT: @com.spotify.song(), album == null^^com.spotify:album("second adventure") && contains(artists, null^^com.spotify:artist("hans nilsson"));
 ====
 # snips-nlu/spotify-1582
 U: I want to hear This Is The Night from Proof
@@ -2615,7 +2615,7 @@ UT: now => @com.spotify.song(), contains(artists, null^^com.spotify:artist("cari
 # snips-nlu/spotify-1604
 U: Play a song off The Best Of Siouxsie & The Banshees by Faustino Oramas
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.spotify.song(), album == null^^com.spotify:album("the best of siouxsie & the banshees") && contains(artists, null^^com.spotify:artist("faustino oramas")) => @com.spotify.play_song(song=id);
+UT: now => @com.spotify.song(), album == null^^com.spotify:album("best of siouxsie & the banshees") && contains(artists, null^^com.spotify:artist("faustino oramas")) => @com.spotify.play_song(song=id);
 ====
 # snips-nlu/spotify-1605
 U: Play the album, Dance Hall At Louse Point .
@@ -2655,7 +2655,7 @@ UT: now => @com.spotify.song(), contains~(genres, "drum & bass") => @com.spotify
 # snips-nlu/spotify-1652
 U: I want to hear some The Roches
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.spotify.song(), album == null^^com.spotify:album("the roches") => @com.spotify.play_song(song=id);
+UT: now => @com.spotify.song(), album == null^^com.spotify:album("roches") => @com.spotify.play_song(song=id);
 ====
 # snips-nlu/spotify-1656
 U: play Soheila Zaland
@@ -2665,7 +2665,7 @@ UT: now => @com.spotify.song(), contains(artists, null^^com.spotify:artist("sohe
 # snips-nlu/spotify-1662
 U: I need some ambient music. 
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.spotify.song(), contains~(genres, "ambient") => @com.spotify.play_song(song=id);
+UT: @com.spotify.song(), contains~(genres, "ambient");
 ====
 # snips-nlu/spotify-1663
 U: Play a song by Nash The Slash
@@ -2680,7 +2680,7 @@ UT: now => (sort popularity desc of (@com.spotify.song(), contains(artists, null
 # snips-nlu/spotify-1669
 U: Play Crazy=genius by The Alchemist
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@com.spotify.song(), id =~ "crazy=genius" && contains(artists, null^^com.spotify:artist("the alchemist")))[1] => @com.spotify.play_song(song=id);
+UT: now => (@com.spotify.song(), id =~ "crazy=genius" && contains(artists, null^^com.spotify:artist("alchemist")))[1] => @com.spotify.play_song(song=id);
 ====
 # snips-nlu/spotify-1670
 U: Can I listen to merengue style music?
@@ -2766,11 +2766,6 @@ UT: now => @com.spotify.song(), album == null^^com.spotify:album("expresión") &
 U: play music by Bonobo
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => @com.spotify.song(), contains(artists, null^^com.spotify:artist("bonobo")) => @com.spotify.play_song(song=id);
-====
-# snips-nlu/spotify-1732
-U: Play Miami 2017 by Rodney Whitaker
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@com.spotify.song(), id =~ "miami 2017" && contains(artists, null^^com.spotify:artist("rodney whitaker")))[1] => @com.spotify.play_song(song=id);
 ====
 # snips-nlu/spotify-1734
 U: Can you play Halloween by Ajinoam Nini
@@ -2875,7 +2870,7 @@ UT: now => @com.spotify.song(), contains(artists, null^^com.spotify:artist("paol
 # snips-nlu/spotify-1806
 U: Play Who Knows Where The Time Goes? by Grigory Leps
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@com.spotify.song(), id =~ "who knows where the time goes" && contains(artists, null^^com.spotify:artist("grigory leps")))[1] => @com.spotify.play_song(song=id);
+UT: now => (@com.spotify.song(), id =~ "who knows where the time goes?" && contains(artists, null^^com.spotify:artist("grigory leps")))[1] => @com.spotify.play_song(song=id);
 ====
 # snips-nlu/spotify-1812
 U: Play Elitsa Todorova music
@@ -2920,7 +2915,7 @@ UT: now => @com.spotify.song(), contains(artists, null^^com.spotify:artist("rui 
 # snips-nlu/spotify-1837
 U: Play The Cherry-tree Carol by Edwin Mccain
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@com.spotify.song(), id =~ "the cherry-tree carol" && contains(artists, null^^com.spotify:artist("edwin mccain")))[1] => @com.spotify.play_song(song=id);
+UT: now => (@com.spotify.song(), id =~ "cherry-tree carol" && contains(artists, null^^com.spotify:artist("edwin mccain")))[1] => @com.spotify.play_song(song=id);
 ====
 # snips-nlu/spotify-1838
 U: Play Tomtegubben Som Hade Snuva
@@ -2965,7 +2960,7 @@ UT: now => sort popularity desc of (@com.spotify.song(), contains(artists, null^
 # snips-nlu/spotify-1870
 U: I need some Hardcore Hip Hop
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.spotify.song(), contains~(genres, "hardcore hip hop") => @com.spotify.play_song(song=id);
+UT: @com.spotify.song(), contains~(genres, "hardcore hip hop");
 ====
 # snips-nlu/spotify-1874
 U: play Dj Ozma top songs
@@ -3095,7 +3090,7 @@ UT: now => @com.spotify.song(), contains~(genres, "satire") => @com.spotify.play
 # snips-nlu/spotify-1950
 U: Let me listen to The Music Of Nature album by Paul Draper .
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.spotify.song(), album == null^^com.spotify:album("the music of nature") && contains(artists, null^^com.spotify:artist("paul draper")) => @com.spotify.play_song(song=id);
+UT: now => @com.spotify.song(), album == null^^com.spotify:album("music of nature") && contains(artists, null^^com.spotify:artist("paul draper")) => @com.spotify.play_song(song=id);
 ====
 # snips-nlu/spotify-1957
 U: Play the music of Aphex Twin's good Album
@@ -3170,7 +3165,7 @@ UT: now => @com.spotify.song(), contains(artists, null^^com.spotify:artist("roy 
 # snips-nlu/spotify-2003
 U: is there something new you can play by Lola Monroe
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (sort release_date desc of (@com.spotify.song(), contains(artists, null^^com.spotify:artist("lola monroe"))))[1] => @com.spotify.play_song(song=id);
+UT: sort(release_date desc of (@com.spotify.song(), contains(artists, null^^com.spotify:artist("lola monroe"))))[1];
 ====
 # snips-nlu/spotify-2004
 U: I want to hear something from Post-punk Revival
@@ -3210,7 +3205,7 @@ UT: now => @com.spotify.song(), contains(artists, null^^com.spotify:artist("dom 
 # snips-nlu/spotify-2030
 U: Put The Silent Enigma album by Yoko Kanno
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.spotify.song(), album == null^^com.spotify:album("the silent enigma") && contains(artists, null^^com.spotify:artist("yoko kanno")) => @com.spotify.play_song(song=id);
+UT: now => @com.spotify.song(), album == null^^com.spotify:album("silent enigma") && contains(artists, null^^com.spotify:artist("yoko kanno")) => @com.spotify.play_song(song=id);
 ====
 # snips-nlu/spotify-2031
 U: Please play Every Woman In Me
@@ -3235,7 +3230,7 @@ UT: now => @com.spotify.song(), album == null^^com.spotify:album("ocean beach") 
 # snips-nlu/spotify-2038
 U: I would like to hear The Worst Is Yet To Come .
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@com.spotify.song(), id =~ "the worst is yet to come")[1] => @com.spotify.play_song(song=id);
+UT: now => (@com.spotify.song(), id =~ "worst is yet to come")[1] => @com.spotify.play_song(song=id);
 ====
 # snips-nlu/spotify-2045
 U: Play some klezmer fiddle
@@ -3255,7 +3250,7 @@ UT: now => @com.spotify.song(), contains(artists, null^^com.spotify:artist("timo
 # snips-nlu/spotify-2050
 U: most popular song of taco ockerse
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (sort popularity desc of (@com.spotify.song(), contains(artists, null^^com.spotify:artist("taco ockerse"))))[1] => @com.spotify.play_song(song=id);
+UT: sort(popularity desc of (@com.spotify.song(), contains(artists, null^^com.spotify:artist("taco ockerse"))))[1];
 ====
 # snips-nlu/spotify-2051
 U: Play Tennessee Saturday Night by Mr. Porter
@@ -3315,7 +3310,7 @@ UT: now => @com.spotify.song(), album == null^^com.spotify:album("man like me") 
 # snips-nlu/spotify-2074
 U: please, a sound track of Jyotsna Radhakrishnan
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.spotify.song(), contains(artists, null^^com.spotify:artist("jyotsna radhakrishnan")) => @com.spotify.play_song(song=id);
+UT: @com.spotify.song(), contains(artists, null^^com.spotify:artist("jyotsna radhakrishnan"));
 ====
 # snips-nlu/spotify-2075
 U: Play some Darkcore .
@@ -3487,11 +3482,6 @@ U: I want to hear music from the Lotus Flower album by Andy Mccoy
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => @com.spotify.song(), album == null^^com.spotify:album("lotus flower") && contains(artists, null^^com.spotify:artist("andy mccoy")) => @com.spotify.play_song(song=id);
 ====
-# snips-nlu/spotify-2179
-U: Please play Different Slanguages by Fred Labour .
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.spotify.song(), album == null^^com.spotify:album("different slanguages") && contains(artists, null^^com.spotify:artist("fred labour")) => @com.spotify.play_song(song=id);
-====
 # snips-nlu/spotify-2181
 U: Play some pambiche please
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
@@ -3535,7 +3525,7 @@ UT: now => @com.spotify.song(), contains(artists, null^^com.spotify:artist("raym
 # snips-nlu/spotify-2210
 U: Play the man who sold the world from Steve Swell
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.spotify.song(), album == null^^com.spotify:album("the man who sold the world") && contains(artists, null^^com.spotify:artist("steve swell")) => @com.spotify.play_song(song=id);
+UT: now => @com.spotify.song(), album == null^^com.spotify:album("man who sold the world") && contains(artists, null^^com.spotify:artist("steve swell")) => @com.spotify.play_song(song=id);
 ====
 # snips-nlu/spotify-2211
 U: Play biguine music.
@@ -3645,7 +3635,7 @@ UT: now => @com.spotify.song(), contains~(genres, "rumba africana") => @com.spot
 # snips-nlu/spotify-2268
 U: last song by Latifa
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (sort release_date desc of (@com.spotify.song(), contains(artists, null^^com.spotify:artist("latifa"))))[1] => @com.spotify.play_song(song=id);
+UT: sort(release_date desc of (@com.spotify.song(), contains(artists, null^^com.spotify:artist("latifa"))))[1];
 ====
 # snips-nlu/spotify-2275
 U: I want to listen to the track Close To The Edge
@@ -3710,7 +3700,7 @@ UT: now => @com.spotify.song(), contains(artists, null^^com.spotify:artist("greg
 # snips-nlu/spotify-2295
 U: Plaly The Ladybug Transistor by Loreena Mckennitt .
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.spotify.song(), album == null^^com.spotify:album("the ladybug transistor") && contains(artists, null^^com.spotify:artist("loreena mckennitt")) => @com.spotify.play_song(song=id);
+UT: now => @com.spotify.song(), album == null^^com.spotify:album("ladybug transistor") && contains(artists, null^^com.spotify:artist("loreena mckennitt")) => @com.spotify.play_song(song=id);
 ====
 # snips-nlu/spotify-2296
 U: Play the latest music from Mark Knopfler .
@@ -3740,7 +3730,7 @@ UT: now => [artists] of ((@com.spotify.song()), id =~ "dancing queen") => notify
 # schemaorg/121
 U: will you play power in numbers by jurrasic 5?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@com.spotify.song()), (contains(artists, null^^com.spotify:artist("jurrasic 5")) && id =~ "power in numbers") => notify;
+UT: (@com.spotify.song(), (contains(artists, null^^com.spotify:artist("jurrasic 5")) && id =~ "power in numbers"))[1] => @com.spotify.play_song(song=id);
 ====
 # schemaorg/146
 U: find hunky dory by david bowie
@@ -3750,7 +3740,7 @@ UT: now => (@com.spotify.song()), (contains(artists, null^^com.spotify:artist("d
 # schemaorg/148
 U: find hey jude by the beatles
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@com.spotify.song()), (contains(artists, null^^com.spotify:artist("the beatles")) && id =~ "hey jude") => notify;
+UT: now => (@com.spotify.song()), (contains(artists, null^^com.spotify:artist("beatles")) && id =~ "hey jude") => notify;
 ====
 # schemaorg/194
 U: what is the name of a song that johnny cash performs?
@@ -3780,7 +3770,7 @@ UT: now => (@com.spotify.song()), (contains(artists, null^^com.spotify:artist("g
 # schemaorg/27
 U: find me alanis morrisette's first lp
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@com.spotify.song()), (contains(artists, null^^com.spotify:artist("alanis morrisette")) && id =~ "first lp") => notify;
+UT: sort(release_date asc of @com.spotify.album() filter contains(artists, null^^com.spotify:artist("alanis morrisette")))[1];
 ====
 # schemaorg/216
 U: who is the original singer of impossible?
@@ -3790,7 +3780,7 @@ UT: now => [artists] of ((@com.spotify.song()), id =~ "impossible") => notify;
 # schemaorg/220
 U: find the song titled i want it that way' by the backstreet boys.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@com.spotify.song()), (contains(artists, null^^com.spotify:artist("the backstreet boys")) && id =~ "i want it that way") => notify;
+UT: now => (@com.spotify.song()), (contains(artists, null^^com.spotify:artist("backstreet boys")) && id =~ "i want it that way") => notify;
 ====
 # schemaorg/221
 U: find all songs by micheal jackson.
@@ -3871,3 +3861,223 @@ UT: now => [artists] of ((@com.spotify.song()), id =~ "black magic woman") => no
 U: what artist sang the song rooster?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => [artists] of ((@com.spotify.song()), id =~ "rooster") => notify;
+====
+# online/61768664
+U: resume playing
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_play();
+====
+# online/62109745
+U: skip to the next song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_next();
+====
+# online/62109746
+U: go to the next song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_next();
+====
+# log/5962
+U: play the song "str:QUOTED_STRING::0:" on spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: (@com.spotify.song() filter id =~ "str:QUOTED_STRING::0:")[1] => @com.spotify.play_song(song=id);
+====
+# log/48169
+U: play my spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() => @com.spotify.play_song(song=id);
+====
+# log/18991
+U: play something in spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() => @com.spotify.play_song(song=id);
+====
+# log/65880
+U: play run the jewels
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: (@com.spotify.song() filter contains(artists, null^^com.spotify:artist("run the jewels")))[1] => @com.spotify.play_song(song=id);
+====
+# log/127245
+U: play the song go public service broadcasting
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: (@com.spotify.song() filter id =~ "go public service broadcasting")[1] => @com.spotify.play_song(song=id);
+====
+# log/116083
+U: hey almond, play atrevete
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter id =~ "atrevete" => @com.spotify.play_song(song=id);
+====
+# log/131332
+U: play mary j blige
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter contains(artists, null^^com.spotify:artist("mary j blige")) => @com.spotify.play_song(song=id);
+====
+# log/45717
+U: pause music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_pause();
+====
+# log/123571
+U: who is eminem
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.artist() filter id =~ "eminem";
+====
+# log/1456
+U: artist chart
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.artist();
+====
+# log/101017
+U: play spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() => @com.spotify.play_song(song=id);
+====
+# log/76164
+U: which are my favourite tracks?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.get_user_top_tracks();
+====
+# log/59588
+U: play a milli on spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: (@com.spotify.song() filter id =~ "milli")[1] => @com.spotify.play_song(song=id);
+====
+# log/101185
+U: stop spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_pause();
+====
+# log/62031
+U: play madonna on spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter contains(artists, null^^com.spotify:artist("madonna")) => @com.spotify.play_song(song=id);
+====
+# log/94849
+U: show me the cannibal corpse singer
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.artist() filter id =~ "cannibal corpse";
+====
+# log/100305
+U: play pressure of muse on spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: (@com.spotify.song() filter contains(artists, null^^com.spotify:artist(" muse")) && id =~ "pressure")[1] => @com.spotify.play_song(song=id);
+====
+# log/116082
+U: play on the road again in spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: (@com.spotify.song() filter id =~ "on the road again")[1] => @com.spotify.play_song(song=id);
+====
+# log/38804
+U: play taylor swift
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter contains(artists, null^^com.spotify:artist("taylor swift")) => @com.spotify.play_song(song=id);
+====
+# log/72340
+U: sporify play
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_play();
+====
+# log/118270
+U: play song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() => @com.spotify.play_song(song=id);
+====
+# log/11876
+U: play some jazz
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter contains~(genres, "jazz") => @com.spotify.play_song(song=id);
+====
+# log/87692
+U: beyonce
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.artist() filter id =~ "beyonce";
+====
+# log/136961
+U: stop the music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_pause();
+====
+# log/134027
+U: play next track on spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_next();
+====
+# log/44250
+U: play the songs piano man and uptown girl
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: (@com.spotify.song() filter in_array~(id, ["piano man", "uptown girl"]))[1 : 2] => @com.spotify.play_song(song=id);
+====
+# log/107440
+U: continue playback on spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_play();
+====
+# log/19317
+U: play toni rommiti
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter contains(artists, null^^com.spotify:artist("toni rommiti")) => @com.spotify.play_song(song=id);
+====
+# log/19980
+U: play music on spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() => @com.spotify.play_song(song=id);
+====
+# log/43957
+U: pause spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_pause();
+====
+# log/6344
+U: play next song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_next();
+====
+# log/1568
+U: get top artists
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(popularity desc of @com.spotify.artist())[1];
+====
+# log/43339
+U: skip this song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_next();
+====
+# log/5927
+U: play the song "str:QUOTED_STRING::0:"
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: (@com.spotify.song() filter id =~ "str:QUOTED_STRING::0:")[1] => @com.spotify.play_song(song=id);
+====
+# log/6783
+U: play some music on spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() => @com.spotify.play_song(song=id);
+====
+# log/7202
+U: play the next song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_next();
+====
+# log/17661
+U: start spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_play();
+====
+# log/7508
+U: what song is playing?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.get_currently_playing();
+====
+# log/796
+U: sing a song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() => @com.spotify.play_song(song=id);
+====
+# log/40980
+U: play rihanna
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter contains(artists, null^^com.spotify:artist("rihanna")) => @com.spotify.play_song(song=id);
+====
+# log/88340
+U: open the spotify app
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_play();
