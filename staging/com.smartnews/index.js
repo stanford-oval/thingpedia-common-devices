@@ -7,15 +7,15 @@ const USER = "jack";  // use 1 for now
 
 module.exports = class SmartNewsDevice extends Tp.BaseDevice {
     constructor(engine, state) {
-         super(engine, state);
+        super(engine, state);
 
-         this.uniqueId = "com.smartnews";
-         this.name = "SmartNews";
-         this.description = "SmartNews latest articles";
+        this.uniqueId = "com.smartnews";
+        this.name = "SmartNews";
+        this.description = "SmartNews latest articles";
     }
 
     //connect SN API endpoint /top with GET request
-    get_top_articles({counter}) {
+    get_article({ counter }) {
         counter = counter || 10; //default is 10 news
         let url = API_URL + "/top?counter=" + counter;
         return Tp.Helpers.Http.get(url).then((response) => {
@@ -23,7 +23,7 @@ module.exports = class SmartNewsDevice extends Tp.BaseDevice {
         }).then((parsed) => {
             return parsed.map((article) => {
                 return {
-                    news_id: article["id"],
+                    id: article["id"],
                     title: article["title"],
                     date: new Date(article["published_time"] * 1000),
                     site_name: article["site"],
@@ -35,14 +35,14 @@ module.exports = class SmartNewsDevice extends Tp.BaseDevice {
         });
     }
     //connect SN API endpoint /list with GET request
-    get_reading_list({user=USER}) {
+    get_reading_list({ user = USER }) {
         let url = API_URL + "/list?user=" + user;
         return Tp.Helpers.Http.get(url).then((response) => {
             return JSON.parse(response);
         }).then((parsed) => {
             return parsed.map((article) => {
                 return {
-                    news_id: article["id"],
+                    id: article["id"],
                     title: article["title"],
                     date: new Date(article["publishedTimestamp"] * 1000),
                     site_name: article["site"],
@@ -54,19 +54,19 @@ module.exports = class SmartNewsDevice extends Tp.BaseDevice {
     }
 
     //connect SN API endpoint /pocket with POST request
-    do_pocket({news_id, user=USER}) {
+    do_pocket({ id, user = USER }) {
         return Tp.Helpers.Http.post(
             API_URL + "/pocket?user=" + user,
-            JSON.stringify({ reading_list: [news_id] }),
+            JSON.stringify({ reading_list: [id] }),
             { dataContentType: 'application/json' }
         );
     }
 
     //connect SN API endpoint /drop with POST request
-    do_drop({news_id, user=USER}) {
+    do_drop({ id, user = USER }) {
         return Tp.Helpers.Http.post(
             API_URL + "/drop?user=" + user,
-            JSON.stringify({ reading_list: [news_id] }),
+            JSON.stringify({ reading_list: [id] }),
             { dataContentType: 'application/json' }
         );
     }
