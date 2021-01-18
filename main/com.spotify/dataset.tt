@@ -4,7 +4,16 @@ dataset @com.spotify language "en" {
     #_[utterances=["${p_song:no-undefined} by ${p_artist}",
                    "${p_song:no-undefined} from ${p_artist}"]];
 
-    program := now => @com.spotify.play_song(song=$?)
+    // these ones are hard to get with domain-independent templates
+    query (p_artist :Entity(com.spotify:artist)) := sort(popularity desc of @com.spotify.song(), contains(artists, p_artist))
+    #_[utterances=["${p_artist}'s greatest hits",
+                   "popular music by ${p_artist}",
+                   "popular ${p_artist} songs"]];
+    query (p_artist :Entity(com.spotify:artist)) := sort(release_date desc of @com.spotify.song(), contains(artists, p_artist))
+    #_[utterances=["new ${p_artist}", "new music from ${p_artist}",
+                   "${p_artist} by the new first"]];
+
+    program := @com.spotify.play_song(song=$?)
     #[click_count=6]
     #[like_count=0]
     #_[utterances=["play some music on spotify",
@@ -63,14 +72,17 @@ dataset @com.spotify language "en" {
     ;
 
     action := @com.spotify.player_pause()
-    #_[utterances=["paused playback",
-                   "paused playing"]]
+    #_[utterances=["pause playback",
+                   "pause playing",
+                   "stop playing",
+                   "stop playback",
+                   "stop the music"]]
     #[id=27924859]
     ;
 
     // TODO: use "action" here so we can combine with streams
     program (p_artist :Entity(com.spotify:artist)) :=
-      now => @com.spotify.song(), contains(artists, p_artist) => @com.spotify.play_song(song=id)
+      @com.spotify.song(), contains(artists, p_artist) => @com.spotify.play_song(song=id)
     #_[utterances=["play ${p_artist:no-undefined}",
                    "play music by ${p_artist:no-undefined}",
                    "play some ${p_artist:no-undefined}",
@@ -82,7 +94,7 @@ dataset @com.spotify language "en" {
     ;
 
     program (p_album :Entity(com.spotify:album)) :=
-      now => @com.spotify.song(), album == p_album => @com.spotify.play_song(song=id)
+      @com.spotify.song(), album == p_album => @com.spotify.play_song(song=id)
     #_[utterances=["play ${p_album:no-undefined}",
                    "play the album ${p_album:no-undefined}",
                    /*"i would like to hear ${p_album:no-undefined}",*/
@@ -92,7 +104,7 @@ dataset @com.spotify language "en" {
     ;
 
     program (p_album :Entity(com.spotify:album), p_artist :Entity(com.spotify:artist)) :=
-      now => @com.spotify.song(), album == p_album && contains(artists, p_artist) => @com.spotify.play_song(song=id)
+      @com.spotify.song(), album == p_album && contains(artists, p_artist) => @com.spotify.play_song(song=id)
     #_[utterances=[/*"play ${p_album:no-undefined} by ${p_artist:no-undefined}",*/
                    "play the album ${p_album:no-undefined} by ${p_artist:no-undefined}",
                    "i would like to listen the album ${p_album:no-undefined} by ${p_artist:no-undefined}",
@@ -109,5 +121,9 @@ dataset @com.spotify language "en" {
     stream := monitor (@com.spotify.get_currently_playing())
     #_[utterances=["when a song is playing"]]
     #[id=27924900]
+    ;
+
+    program := @com.spotify.get_currently_playing()
+    #_[utterances=["what song is playing?", "what music is playing?", "what is playing?", "what song is currently on?"]]
     ;
 }

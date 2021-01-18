@@ -78,3 +78,18 @@ UT: now => (@com.imgflip.list()), name =~ "str:QUOTED_STRING::0:" => notify;
 U: generate meme on template "str:QUOTED_STRING::0:" with text "str:QUOTED_STRING::1:" at the top and text "str:QUOTED_STRING::2:" at the bottom
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => @com.imgflip.generate(template="str:QUOTED_STRING::0:", text_bottom="str:QUOTED_STRING::2:", text_top="str:QUOTED_STRING::1:") => notify;
+====
+# log/99855
+U: show me the most visited memes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.imgflip.list ();
+====
+# log/52909
+U: make a meme template with top text being up
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.imgflip.generate(text_top="up");
+====
+# log/18076
+U: imflip
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.imgflip.generate();

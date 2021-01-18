@@ -6,8 +6,7 @@ dataset @com.yandex.translate language "en" {
                    ", translate to $p_target_language $p_text",
                    "$p_text in $p_target_language",
                    "$p_text translated to $p_target_language"]]
-    #[id=27925232]
-    #[name=""];
+    #[id=27925232];
 
     query (p_text :String, p_source_language :Entity(tt:iso_lang_code), p_target_language :Entity(tt:iso_lang_code))  := @com.yandex.translate.translate(text=p_text, source_language=p_source_language, target_language=p_target_language)
     #_[utterances=["the translation of $p_text from $p_source_language to $p_target_language with yandex",
@@ -15,27 +14,23 @@ dataset @com.yandex.translate language "en" {
                    "the translation of $p_text to $p_target_language from $p_source_language with yandex",
                    "the translation of $p_text to $p_target_language from $p_source_language",
                    ", translate $p_text from $p_source_language to $p_target_language"]]
-    #[id=27925238]
-    #[name=""];
+    #[id=27925238];
 
     query (p_target_language :Entity(tt:iso_lang_code))  := @com.yandex.translate.translate(target_language=p_target_language, text=$?)
     #_[utterances=[", translate to $p_target_language",
                    "a translation to $p_target_language"]]
-    #[id=27925243]
-    #[name=""];
+    #[id=27925243];
 
     query (p_text :String)  := @com.yandex.translate.translate(text=p_text, target_language=$?)
     #_[utterances=[", translate $p_text",
                    "the translation of $p_text"]]
-    #[id=27925245]
-    #[name=""];
+    #[id=27925245];
 
     query (p_text :String, p_source_language :Entity(tt:iso_lang_code))  := @com.yandex.translate.translate(text=p_text, source_language=p_source_language, target_language=$?)
     #_[utterances=[", translate $p_text from $p_source_language",
                    "the translation of $p_text from $p_source_language",
                    "the translation of $p_source_language sentence ${p_text:const}"]]
-    #[id=27925247]
-    #[name=""];
+    #[id=27925247];
 
     query (p_text :String)  := @com.yandex.translate.detect_language(text=p_text)
     #_[utterances=["the language of $p_text",
@@ -43,7 +38,5 @@ dataset @com.yandex.translate language "en" {
                    "the language yandex detects $p_text as",
                    ", detect the language of $p_text",
                    ", detect what language ${p_text:const} is written in"]]
-    #[id=27925250]
-    #[name=""];
-
+    #[id=27925250];
 }

@@ -32,7 +32,7 @@ UT: now => @com.twitter.send_direct_message(message="reserve activities", to="fe
 # online/120638
 U: twitter get tweets
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.twitter.home_timeline() => notify;
+UT: now => @com.twitter.tweet() => notify;
 ====
 # online/121059
 U: post a fucking picture on twitter
@@ -117,7 +117,7 @@ UT: now => @com.twitter.send_direct_message(to="realdonaldtrump"^^tt:username, m
 # online/ep5
 U: search tweets about the oscars
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@com.twitter.tweet()), contains(hashtags, "oscars"^^tt:hashtag) => notify;
+UT: @com.twitter.tweet() filter text=~"oscars";
 ====
 # online/ep9
 U: get my direct message history out of twitter
@@ -255,11 +255,6 @@ U: tell somebody to piss off on twitter
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.twitter.send_direct_message(message="piss off");
 ====
-# online/62110275
-U: tweet that i'm at work and i'm bored
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.twitter.post(status="i 'm at work and i 'm bored");
-====
 # online/62110298
 U: follow tweets from realdonaldtrump
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
@@ -274,3 +269,63 @@ UT: @com.twitter.send_direct_message(to="realdonaldtrump"^^tt:username);
 U: get my direct message history out of twitter
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.twitter.direct_messages();
+====
+# log/36
+U: post something on twitter
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.twitter.post();
+====
+# log/71
+U: get tweets from @bob
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.twitter.tweet() filter author == "bob"^^tt:username;
+====
+# log/111974
+U: do tweet almond
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.twitter.post(status="almond");
+====
+# log/4080
+U: search for tweets with hashtag #cat on twitter
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.twitter.tweet() filter contains(hashtags, "cat"^^tt:hashtag);
+====
+# log/101059
+U: post in twitter
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.twitter.post();
+====
+# log/10773
+U: get tweets
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.twitter.tweet();
+====
+# log/41910
+U: show me past tweets from @bob
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.twitter.tweet() filter author == "bob"^^tt:username;
+====
+# log/47857
+U: tweet hello
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.twitter.post(status="hello");
+====
+# log/66051
+U: make a tweet on twitter that says "str:QUOTED_STRING::0:"
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.twitter.post(status="str:QUOTED_STRING::0:");
+====
+# log/3234
+U: send a dm on twitter to @bob saying "str:QUOTED_STRING::0:"
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.twitter.send_direct_message(message="str:QUOTED_STRING::0:", to="bob"^^tt:username);
+====
+# log/3235
+U: follow user @bob on twitter
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.twitter.follow(user_name="bob"^^tt:username);
+====
+# log/3284
+U: tweet a picture with caption "str:QUOTED_STRING::0:"
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.twitter.post_picture(caption="str:QUOTED_STRING::0:");

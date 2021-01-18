@@ -15,7 +15,7 @@ U: find me the song despacito
 #U: now => (@com.spotify.song(), id =~ ("despacito")) => notify;
 
 # FIXME need a template for song by {artist 1} and {artist 2}
-A: I (see|have found) Despacito or Despacito - Remix. They're songs by Luis Fonsi that are latin pop.
+A: I (see|have( found)?) Despacito( or Despacito - Remix|, Despacito - Live (and|or) Despacito - Remix). They're songs by Luis Fonsi (that|which) are (latin pop|tropical).
 A: >> expecting = command
 
 ====
@@ -34,7 +34,7 @@ U: find me songs by britney spears
 #U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 #U: now => (@com.spotify.song(), contains(artists, null^^com.spotify:artist("britney spears"))) => notify;
 
-A: I have found My Only Wish \(This Year\), Toxic,? and Oops!\.\.\.I Did It Again\. All of them are songs? by Britney Spears which (is|are) post-teen pop.
+A: I (see|have( found)?) My Only Wish \(This Year\), Toxic,? and Oops!\.\.\.I Did It Again\. All of them are songs? by Britney Spears which (is|are) (post-teen|dance) pop.
 A: >> expecting = command
 
 ====
@@ -89,7 +89,7 @@ U: what songs are in the album folklore by taylor swift
 #U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 #U: now => (@com.spotify.song(), album == null^^com.spotify:album("folklore") && contains(artists, null^^com.spotify:artist("taylor swift"))) => notify;
 
-A: I have( found)? the 1, cardigan and the last great American dynasty\. (All of them are|They're|They are) songs? by Taylor Swift in the album folklore\.
+A: I (see|have( found)?) the 1, cardigan and the last great American dynasty\. (All of them are|They're|They are) songs? by Taylor Swift in the album folklore\.
 A: >> expecting = command
 
 ====
@@ -227,7 +227,7 @@ U: play pop music
 #U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 #U: now => (@com.spotify.song(), contains~(genres, "pop")) => @com.spotify.play_song(song=id);
 
-A: I played Pop Out \(feat. Lil Tjay\) on Spotify on Coolest Computer\.
+A: Your request was completed successfully\.?
 A: >> expecting = null
 
 ====
@@ -282,7 +282,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.song(), contains~(genres, "rock") && release_date >= makeDate(1960, 1, 1) && release_date <= makeDate(1960, 1, 1) + 1year) => notify;
 
-A: I (see|have( found)?) Breaking Up Is Hard to Do and C’Mon Everybody. All of them are songs? (which|that) (are|is) (rockabilly|brill building pop)\.
+A: I (see|have( found)?) Breaking Up Is Hard to Do and C’Mon Everybody. (All of them are|They are|They're) (song|(sound )?track)s? (which|that) (are|is) (adult standards|rockabilly|brill building pop)\.
 A: >> expecting = command
 
 ====

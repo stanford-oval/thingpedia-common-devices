@@ -6,7 +6,7 @@ set -o pipefail
 
 # Test that we can generate a (small) dataset for the main + universe devices
 
-cat > config.mk <<EOF
+test -f config.mk || cat > config.mk <<EOF
 developer_key=${THINGENGINE_DEVELOPER_KEY}
 EOF
 

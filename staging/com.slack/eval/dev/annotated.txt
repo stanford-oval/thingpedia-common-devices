@@ -88,3 +88,23 @@ UT: now => @com.slack.send(channel=$?, message=$?);
 U: send message on slack saying "str:QUOTED_STRING::0:"
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => @com.slack.send(message="str:QUOTED_STRING::0:", channel=$?);
+====
+# log/40492
+U: recent slack messages in general
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.slack.channel_history() filter channel == "general"^^tt:hashtag;
+====
+# log/101166
+U: get slack message
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.slack.channel_history();
+====
+# log/66473
+U: send slack
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.slack.send();
+====
+# log/3260
+U: set the topic for channel str:HASHTAG::0: to "str:QUOTED_STRING::0:" on slack
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.slack.updateChannelTopic(channel="str:HASHTAG::0:"^^tt:hashtag, topic="str:QUOTED_STRING::0:");

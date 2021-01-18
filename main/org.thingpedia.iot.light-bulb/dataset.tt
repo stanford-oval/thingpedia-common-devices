@@ -4,9 +4,7 @@ dataset @org.thingpedia.iot.light-bulb language "en" {
     #[id=52295275]
     #[name="SetPowerOnLightBulbWithPowerOff"];
 
-    program  := {
-  now => @org.thingpedia.iot.light-bulb.power() => notify;
-}
+    program  := @org.thingpedia.iot.light-bulb.power()
     #_[utterances=["are the lights on?",
                    "are the lights off?",
                    "is my light-bulb on or off?",
@@ -18,6 +16,11 @@ dataset @org.thingpedia.iot.light-bulb language "en" {
     #[id=52298563]
     #[name="LightBulbPowerStateThenNotify"];
 
+    program  := @org.thingpedia.iot.light-bulb(all=true).power()
+    #_[utterances=["which lights are on?", "are any lights on?", "are all the lights on?"]]
+    #[id=52298563]
+    #[name="LightBulbPowerStateAllThenNotify"];
+
     stream  := monitor (@org.thingpedia.iot.light-bulb.power())
     #_[utterances=["when the state of my lights changes",
                    "whenever the state of my lights has changed",
@@ -25,7 +28,7 @@ dataset @org.thingpedia.iot.light-bulb language "en" {
     #[id=52298575]
     #[name="MonitorLightBulbPowerState"];
 
-    stream (p_power :Enum(on,off))  := edge (monitor (@org.thingpedia.iot.light-bulb.power())) on power == p_power
+    stream (p_power :Enum(on,off))  := monitor (@org.thingpedia.iot.light-bulb.power()), power == p_power
     #_[utterances=["when my lights turn ${p_power}",
                    "when my lights are ${p_power}",
                    "when I turn ${p_power} the lights",
@@ -40,14 +43,26 @@ dataset @org.thingpedia.iot.light-bulb language "en" {
                    "turn ${p_power} my light bulb",
                    "turn ${p_power} the light",
                    "turn ${p_power} the lamp",
-                   "turn ${p_power} the lights"]]
+                   "turn ${p_power} my lights",
+                   "set the lights ${p_power}",
+                   "turn my light bulb ${p_power}",
+                   "turn the light ${p_power}",
+                   "turn the lamp ${p_power}",
+                   "turn the led ${p_power}",
+                   "turn my lights ${p_power}"]]
     #[id=52298582]
     #[name="SetPowerOnLightBulbWithPower"];
 
+    action (p_power :Enum(on,off))  := @org.thingpedia.iot.light-bulb(all=true).set_power(power=p_power)
+    #_[utterances=["set ${p_power} all the lights",
+                   "turn ${p_power} all my light bulb",
+                   "turn ${p_power} all the light",
+                   "turn ${p_power} all the lamp",
+                   "turn ${p_power} all my lights"]]
+    #[name="SetPowerOnLightBulbWithPowerAll"];
 
-    program (p_name :String)  := {
-  now => @org.thingpedia.iot.light-bulb(name=p_name).power() => notify;
-}
+
+    program (p_name :String)  := @org.thingpedia.iot.light-bulb(name=p_name).power()
     #_[utterances=["are the ${p_name} lights off?",
                    "is my ${p_name} light-bulb on or off?",
                    "is my ${p_name} lightbulb on?",
@@ -73,7 +88,7 @@ dataset @org.thingpedia.iot.light-bulb language "en" {
     #[id=54033626]
     #[name="MonitorPower"];
 
-    stream (p_name :String, p_power :Enum(on,off))  := edge (monitor (@org.thingpedia.iot.light-bulb(name=p_name).power())) on power == p_power
+    stream (p_name :String, p_power :Enum(on,off))  := monitor (@org.thingpedia.iot.light-bulb(name=p_name).power()), power == p_power
     #_[utterances=["when I turn ${p_power} the ${p_name} lights",
                    "when somebody turns ${p_power} my ${p_name} lights",
                    "when my ${p_name} lights are switched ${p_power}",
@@ -93,10 +108,27 @@ dataset @org.thingpedia.iot.light-bulb language "en" {
     #[id=54033633]
     #[name="SetPowerWithPower"];
 
+    program (p_name :String, p_power :Enum(on,off))  := @org.thingpedia.iot.light-bulb(name=p_name).set_power(power=p_power)
+    #_[utterances=["light ${p_name} ${p_power}",
+                   "light bulb ${p_name} ${p_power}"]]
+    #[name="SetPowerWithPower2"];
+
+    action (p_name :String, p_power :Enum(on,off))  := @org.thingpedia.iot.light-bulb(all=true, name=p_name).set_power(power=p_power)
+    #_[utterances=["turn ${p_power} all my ${p_name} light bulb",
+                   "turn ${p_power} all the ${p_name} light",
+                   "turn ${p_power} all the ${p_name} lamp",
+                   "turn ${p_power} all the ${p_name} lights",
+                   "turn ${p_power} all the lights called ${p_name}",
+                   "turn ${p_power} all the lights in the ${p_name}",
+                   "set ${p_power} all the ${p_name} lights"]]
+    #[name="SetPowerWithPowerAll"];
+
     action (p_name :String)  := @org.thingpedia.iot.light-bulb(name=p_name).color_loop()
     #_[utterances=["color loop the ${p_name} lights",
                    "loop the color in my ${p_name} light bulb",
-                   "start disco lights for my ${p_name} lights"]]
+                   "start disco lights for my ${p_name} lights",
+                   "color loop on ${p_name}",
+                   "loop colors on ${p_name}"]]
     #[id=54033639]
     #[name="ColorLoop"];
 

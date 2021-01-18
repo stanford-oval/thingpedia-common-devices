@@ -23,3 +23,8 @@ UT: now => (@com.github.get_commit(repo_name="almond")), user == "gcampax"^^tt:u
 U: get commits to github repository tensorflow by bob
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => (@com.github.get_commit(repo_name="tensorflow")), user == "bob"^^tt:username => notify;
+====
+# log/5838
+U: get commits to str:USERNAME::0:'s repository "str:QUOTED_STRING::0:"
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.github.get_commit(repo_name="str:QUOTED_STRING::0:") filter user == "str:USERNAME::0:"^^tt:username;

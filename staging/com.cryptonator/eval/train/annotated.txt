@@ -12,7 +12,7 @@ UT: now => @com.cryptonator.get_price(currency=null^^tt:cryptocurrency_code("bit
 # online/1679701
 U: bitcoin price
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.cryptonator.get_price(currency=null^^tt:cryptocurrency_code("bitcoin")) => return;
+UT: now => @com.cryptonator.get_price(currency=null^^tt:cryptocurrency_code("bitcoin")) => notify;
 ====
 # online/1683806
 U: get str:ENTITY_tt:cryptocurrency_code::0: price
@@ -23,3 +23,13 @@ UT: now => @com.cryptonator.get_price(currency="str:ENTITY_tt:cryptocurrency_cod
 U: show me price of btc
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => @com.cryptonator.get_price(currency=null^^tt:cryptocurrency_code("btc")) => notify;
+====
+# log/53454
+U: get price of rust from steam
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.cryptonator.get_price(currency=null^^tt:cryptocurrency_code("rust"));
+====
+# log/76292
+U: what was the closing price of stock market symbol tcoex
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.cryptonator.get_price(currency=null^^tt:cryptocurrency_code("tcoex"));

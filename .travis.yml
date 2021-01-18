@@ -11,14 +11,14 @@ jobs:
     -
       name: "Unit Tests"
       script:
-      - yarn lint
-      - TZ="America/Los_Angeles" yarn nyc node ./test/unit main universe
-      after_success: yarn run coverage
+      - npm run lint
+      - TZ="America/Los_Angeles" npx nyc node ./test/unit main universe
+      after_success: npm run coverage
     -
       name: "Scenario Tests"
       script:
-      - TZ="America/Los_Angeles" yarn nyc node ./test/scenarios -r universe builtin main universe
-      after_success: yarn run coverage
+      - TZ="America/Los_Angeles" npx nyc node ./test/scenarios -r universe builtin main universe
+      after_success: npm run coverage
     -
       name: "Dataset Generation"
       script:

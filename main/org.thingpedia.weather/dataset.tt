@@ -29,6 +29,22 @@
 // OF THE POSSIBILITY OF SUCH DAMAGE.
 
 dataset @org.thingpedia.weather language "en" {
+    query () := [temperature] of @org.thingpedia.weather.current()
+    #_[utterances=["the temperature outside", "the weather temperature"]]
+    #[name="TemperatureOfWeather"];
+
+    query (p_location :Location) := [temperature] of @org.thingpedia.weather.current(location=p_location)
+    #_[utterances=["the temperature in ${p_location}"]]
+    #[name="TemperatureOfWeatherWithLocation"];
+
+    query () := [humidity] of @org.thingpedia.weather.current()
+    #_[utterances=["the humidity outside"]]
+    #[name="HumidityOfWeather"];
+
+    query () := [wind_speed] of @org.thingpedia.weather.current()
+    #_[utterances=["the wind speed outside"]]
+    #[name="WindSpeedOfWeather"];
+
     stream (p_location :Location) := monitor (@org.thingpedia.weather.current(location=p_location)), temperature <= 0C
     #_[utterances=["when the temperature in $p_location is below freezing"]]
     #[id=53258809]

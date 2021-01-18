@@ -1,0 +1,33 @@
+class @com.thedogapi
+#_[thingpedia_name="The Dog API"]
+#_[thingpedia_description="Dogs as a Service"]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="media"]
+{
+  import loader from @org.thingpedia.v2();
+  import config from @org.thingpedia.config.none();
+
+  entity dog #_[description="Identifier of a Dog Picture"];
+
+  list query dog(out id : Entity(com.thedogapi:dog)
+                 #_[canonical={
+                   base=["name", "breed"]
+                 }],
+                 out picture_url: Entity(tt:picture)
+                 #_[canonical={
+                   base=["picture url", "url"]
+                 }])
+  #_[canonical=["dog picture",
+                "puppy picture",
+                "random picture of a dog",
+                "picture of a random dog"]]
+  #_[confirmation="dog pictures"]
+  #_[result=["here is a picture of a ${id}", "here is a ${id}"]]
+  #_[formatted=[{
+     type="picture",
+     url="${picture_url}"
+  }]]
+  #[minimal_projection=["id", "picture_url"]]
+  #[doc="get many dog pictures"];
+}

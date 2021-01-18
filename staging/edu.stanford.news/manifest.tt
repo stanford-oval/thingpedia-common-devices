@@ -9,4 +9,19 @@ class @edu.stanford.news {
   #_[formatted=[{type="rdl",webCallback="$url",displayTitle="$title"}]]
   #[poll_interval=3600000ms]
   #[url="https://news.stanford.edu/wp-json/wp/v2/posts"];
+
+  monitorable list query get_events_list(out title: String,
+                                        out link: Entity(tt:url),
+                                        out description: String,
+                                        out pubDate: Date)
+  // confirmation sentence which will be prompted to the users before execution:
+  #_[confirmation="Stanford Events"]
+  // the format of how the output will be presented to the users:
+  #_[formatted=[{type="rdl",webCallback="${link}",displayTitle="${title}"},
+    		{type="code",code="function({description}, hint, formatter) {\ndescription = description.replace(/<[^>]*>/g, '');\nreturn description;\n}"}]]
+  // if the query is monitored, how frequent we invoke it
+  #[poll_interval=60min]
+  #[doc="Gets Stanford Events!"]
+  // the URL of the RSS feed
+  #[url="http://events.stanford.edu/xml/rss.xml"];
 }

@@ -2105,3 +2105,8 @@ UT: now => @com.spotify.song(), release_date >= makeDate(1990, 1, 1) && release_
 U: Play music from the eighties .
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => @com.spotify.song(), release_date >= makeDate(1980, 1, 1) && release_date <= makeDate(1989, 12, 31) => @com.spotify.play_song(song=id);
+====
+# snips-nlu/spotify-1732
+U: Play Miami 2017 by Rodney Whitaker
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.spotify.song(), id =~ "miami 2017" && contains(artists, null^^com.spotify:artist("rodney whitaker")))[1] => @com.spotify.play_song(song=id);
