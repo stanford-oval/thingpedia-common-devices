@@ -3,9 +3,11 @@ class @info.owlbot {
   import config from @org.thingpedia.config.none(api_key=$?);
 
   query get(in req word: String
-                    #_[canonical= {base = ["term", "word"],preposition = ["of #"]}],
-                out definition: String
-                    #_[canonical=["definition", "meaning"]])
+            #_[canonical= {base = ["term", "word"],preposition = ["of #"]}]
+            #[string_values="tt:word"],
+            out definition: String
+            #_[canonical=["definition", "meaning"]]
+            #[string_values="tt:long_free_text"])
   #_[result=["${definition}"]]
   #_[canonical=["definition", "meaning", "word", "term"]]
   #_[confirmation="definition"];
