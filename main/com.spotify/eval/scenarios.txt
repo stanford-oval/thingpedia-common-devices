@@ -15,7 +15,7 @@ U: find me the song despacito
 #U: now => (@com.spotify.song(), id =~ ("despacito")) => notify;
 
 # FIXME need a template for song by {artist 1} and {artist 2}
-A: I (see|have( found)?) Despacito( or Despacito - Remix|, Despacito - Live (and|or) Despacito - Remix). They're songs by Luis Fonsi (that|which) are (latin pop|tropical).
+A: I (see|have( found)?) Despacito( or Despacito - Remix|, Despacito - Live (and|or) Despacito - Remix). (All of them are|They're) (songs?|musics?) by (Luis Fonsi|Daddy Yankee) (that|which) (are|is) (latin pop|latin|tropical).
 A: >> expecting = command
 
 ====
@@ -34,7 +34,7 @@ U: find me songs by britney spears
 #U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 #U: now => (@com.spotify.song(), contains(artists, null^^com.spotify:artist("britney spears"))) => notify;
 
-A: I (see|have( found)?) My Only Wish \(This Year\), Toxic,? and Oops!\.\.\.I Did It Again\. All of them are songs? by Britney Spears which (is|are) (post-teen|dance) pop.
+A: I (see|have( found)?) Toxic, My Only Wish \(This Year\),? and Oops!\.\.\.I Did It Again\. All of them are songs? by Britney Spears which (is|are) (post-teen|dance) pop.
 A: >> expecting = command
 
 ====
@@ -116,7 +116,7 @@ U: play the newest song by john legend
 #U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 #U: now => sort release_date desc of (@com.spotify.song(), contains(artists, null^^com.spotify:artist("john legend")))[1] => @com.spotify.play_song(song=id);
 
-A: I played (Bigger Love (- Remix)?|Minefields)( on Spotify)?( on (Coolest Computer|giovanni-xps15))? ?.
+A: I played (Bigger Love (- Remix)?|Minefields( - Hook N Sling Remix))( on Spotify)?( on (Coolest Computer|giovanni-xps15))? ?.
 A: >> expecting = null
 
 ====
