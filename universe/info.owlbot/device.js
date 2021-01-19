@@ -39,7 +39,7 @@ module.exports = class DictionaryAPIDevice extends Tp.BaseDevice {
     let key = this.constructor.metadata.auth.api_key;
     let client = Owlbot(key);
 
-    return client.define(word).then(function(result){
+    return client.define(word).then((result) => {
       let temp =  result["definitions"][0]["definition"];
       return [{"definition": temp}];
     });
