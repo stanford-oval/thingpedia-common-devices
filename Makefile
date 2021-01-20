@@ -322,7 +322,7 @@ clean:
 	rm -fr build/
 	rm -fr entities.json
 	for exp in $(all_releases) ; do \
-		rm -rf $$exp/schema.tt $$exp/dataset.tt $$exp/synthetic* parameter-datasets* $$exp/augmented* ; \
+		rm -rf eval/$$exp/schema.tt eval/$$exp/dataset.tt eval/$$exp/synthetic* parameter-datasets* eval/$$exp/augmented* ; \
 	done
 
 lint:
