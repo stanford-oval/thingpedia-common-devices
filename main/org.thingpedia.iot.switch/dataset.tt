@@ -64,84 +64,84 @@ dataset @org.thingpedia.iot.switch language "en" {
     #[name="SetPowerWithPowerAll"];
 
     action (p_name :String, p_power :Enum(on,off))  := @org.thingpedia.iot.switch(all=true, name=p_name).set_power(power=p_power)
-    #_[utterances=["turn ${p_power} all my ${p_name} switches",
-                   "turn ${p_power} all the ${p_name} switch",
-                   "turn ${p_power} all the switches called ${p_name}",
-                   "turn ${p_power} all the switches in the ${p_name}",
-                   "turn ${p_power} all the ${p_name}",
-                   "set ${p_power} all the ${p_name} switches"]]
+    #_[utterances=["turn ${p_power} all my ${p_name:const} switches",
+                   "turn ${p_power} all the ${p_name:const} switch",
+                   "turn ${p_power} all the switches called ${p_name:const}",
+                   "turn ${p_power} all the switches in the ${p_name:const}",
+                   "turn ${p_power} all the ${p_name:const}",
+                   "set ${p_power} all the ${p_name:const} switches"]]
     #[name="SetPowerWithPowerAll2"];
 
     program (p_name :String)  := @org.thingpedia.iot.switch(name=p_name).state()
-    #_[utterances=["is my ${p_name} switch on?",
-                   "check if the ${p_name} switch is on",
-                   "is the ${p_name} switch turned on?",
-                   "is my ${p_name} switch switched on?",
-                   "check if the ${p_name} switch is switched on or off",
-                   "is my ${p_name} switch turned on or turned off",
-                   "is my ${p_name} on?",
-                   "check if the ${p_name} is on",
-                   "is the ${p_name} turned on?",
-                   "is my ${p_name} switched on?",
-                   "check if the ${p_name} is switched on or off",
-                   "is my ${p_name} turned on or turned off"]]
+    #_[utterances=["is my ${p_name:const} switch on?",
+                   "check if the ${p_name:const} switch is on",
+                   "is the ${p_name:const} switch turned on?",
+                   "is my ${p_name:const} switch switched on?",
+                   "check if the ${p_name:const} switch is switched on or off",
+                   "is my ${p_name:const} switch turned on or turned off",
+                   "is my ${p_name:const} on?",
+                   "check if the ${p_name:const} is on",
+                   "is the ${p_name:const} turned on?",
+                   "is my ${p_name:const} switched on?",
+                   "check if the ${p_name:const} is switched on or off",
+                   "is my ${p_name:const} turned on or turned off"]]
     #[id=54339892]
     #[name="StateThenNotify1"];
 
     query (p_name :String)  := @org.thingpedia.iot.switch(name=p_name).state()
-    #_[utterances=["the power state of my ${p_name} switch",
-                   "whether the ${p_name} switch are on or off",
-                   "the state of the ${p_name} switch",
-                   "the power state of my ${p_name}",
-                   "whether the ${p_name} are on or off",
-                   "the state of the ${p_name}"]]
+    #_[utterances=["the power state of my ${p_name:const} switch",
+                   "whether the ${p_name:const} switch are on or off",
+                   "the state of the ${p_name:const} switch",
+                   "the power state of my ${p_name:const}",
+                   "whether the ${p_name:const} are on or off",
+                   "the state of the ${p_name:const}"]]
     #[id=54339898]
     #[name="State1"];
 
     stream (p_name :String)  := monitor (@org.thingpedia.iot.switch(name=p_name).state())
-    #_[utterances=["when my ${p_name} switch changes state"]]
+    #_[utterances=["when my ${p_name:const} switch changes state"]]
     #[id=54339902]
     #[name="MonitorState1"];
 
     stream (p_name :String, p_state :Enum(on,off))  := monitor (@org.thingpedia.iot.switch(name=p_name).state()), state == p_state
-    #_[utterances=["when my ${p_name} switch turns ${p_state}",
-                   "when the ${p_name} switch switches ${p_state}",
-                   "if my ${p_name} switch becomes ${p_state}",
-                   "when the ${p_name} switch is ${p_state}",
-                   "if my ${p_name} switch changes to ${p_state}"]]
+    #_[utterances=["when my ${p_name:const} switch turns ${p_state}",
+                   "when the ${p_name:const} switch switches ${p_state}",
+                   "if my ${p_name:const} switch becomes ${p_state}",
+                   "when the ${p_name:const} switch is ${p_state}",
+                   "if my ${p_name:const} switch changes to ${p_state}"]]
     #[id=54339903]
     #[name="MonitorStateByState1"];
 
     stream (p_name :String)  := monitor (@org.thingpedia.iot.switch(name=p_name).state()), state == enum(on)
-    #_[utterances=["when my ${p_name} switch turns on",
-                   "if the ${p_name} switch switches on",
-                   "when the ${p_name} switch becomes on",
-                   "the moment my ${p_name} switch changes to on",
-                   "when my ${p_name} switch is on"]]
+    #_[utterances=["when my ${p_name:const} switch turns on",
+                   "if the ${p_name:const} switch switches on",
+                   "when the ${p_name:const} switch becomes on",
+                   "the moment my ${p_name:const} switch changes to on",
+                   "when my ${p_name:const} switch is on"]]
     #[id=54339908]
     #[name="MonitorStateByStateOn1"];
 
     stream (p_name :String)  := monitor (@org.thingpedia.iot.switch(name=p_name).state()), state == enum(off)
-    #_[utterances=["when the ${p_name} switch is turned off",
-                   "once my ${p_name} switch is off",
-                   "when I turn off my ${p_name} switch",
-                   "if my ${p_name} switch gets switched off"]]
+    #_[utterances=["when the ${p_name:const} switch is turned off",
+                   "once my ${p_name:const} switch is off",
+                   "when I turn off my ${p_name:const} switch",
+                   "if my ${p_name:const} switch gets switched off"]]
     #[id=54339913]
     #[name="MonitorStateByStateOff1"];
 
     action (p_name :String, p_power :Enum(on,off))  := @org.thingpedia.iot.switch(name=p_name).set_power(power=p_power)
-    #_[utterances=["turn ${p_power} my ${p_name} switch",
-                   "switch ${p_power} the ${p_name} switch",
-                   "switch ${p_power} the ${p_name} smart plug",
-                   "switch ${p_power} the ${p_name} smart appliance",
-                   "switch ${p_power} the ${p_name} smart device",
-                   "turn ${p_power} my ${p_name}",
-                   "switch ${p_power} the ${p_name}"]]
+    #_[utterances=["turn ${p_power} my ${p_name:const} switch",
+                   "switch ${p_power} the ${p_name:const} switch",
+                   "switch ${p_power} the ${p_name:const} smart plug",
+                   "switch ${p_power} the ${p_name:const} smart appliance",
+                   "switch ${p_power} the ${p_name:const} smart device",
+                   "turn ${p_power} my ${p_name:const}",
+                   "switch ${p_power} the ${p_name:const}"]]
     #[id=54339917]
     #[name="SetPowerWithPower1"];
 
     program (p_name :String, p_power :Enum(on,off))  := @org.thingpedia.iot.switch(name=p_name).set_power(power=p_power)
-    #_[utterances=["switch ${p_name} ${p_power}",
-                   "${p_name} ${p_power}"]]
+    #_[utterances=["switch ${p_name:const} ${p_power}",
+                   "${p_name:const} ${p_power}"]]
     #[name="SetPowerWithPower2"];
 }
