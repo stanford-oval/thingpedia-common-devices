@@ -9,7 +9,7 @@
 
 const HomeAssistantDevice = require('./base');
 
-module.exports = class HomeAssistantSensorHumidity extends HomeAssistantDevice {
+module.exports = class HomeAssistantHumidity extends HomeAssistantDevice {
 	constructor(engine, state, master, entityId) {
         super(engine, state, master, entityId);
         const [domain,] = entityId.split('.');
