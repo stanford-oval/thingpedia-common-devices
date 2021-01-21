@@ -1,0 +1,72 @@
+dataset @org.thingpedia.iot.humidity language "en" {
+
+  program := now => @org.thingpedia.iot.humidity.humidity() => notify
+  #_[utterances=["is it humid?",
+                 "check if my humidity sensor says it is humid",
+                 "what does my humidity sensor say?",
+                 "how humid is it?",
+                 "what is the level of humidity?",
+                 "how high is the humidity?"]];
+
+  query := @org.thingpedia.iot.humidity.humidity()
+  #_[utterances=["the humidity",
+                 "the humidity level",
+                 "whether it is humid",
+                 "if it is humid"]];
+
+  stream := monitor @org.thingpedia.iot.humidity.humidity()
+  #_[utterances=["when the humidity changes"]];
+
+  stream (p_state : Enum(humid, normal)) := edge( monitor @org.thingpedia.iot.humidity.humidity()) on (state == p_state)
+  #_[utterances=["when the humidity sensor says it is ${p_state}"]];
+
+  stream := edge( monitor @org.thingpedia.iot.humidity.humidity()) on (state == enum(humid))
+  #_[utterances=["when it gets humid",
+                 "when the humidity is high",
+                 "if it gets very humid",
+                 "when start getting super humid",
+                 "if it is too humid in the area"]];
+
+  stream := edge( monitor @org.thingpedia.iot.humidity.humidity()) on (state == enum(normal))
+  #_[utterances=["when the humidity is normal",
+                "if it is no longer humid",
+                "when it is not humid anymore"]];
+
+  stream (p_humidity : Number) := edge (monitor (@org.thingpedia.iot.humidity.humidity())) on value >= p_humidity
+  #_[utterances=["when the room 's humidity is higher than $p_humidity percent",
+                 "if the humidity goes above $p_humidity percent"]];
+
+  stream (p_humidity : Number) := edge (monitor (@org.thingpedia.iot.humidity.humidity())) on value <= p_humidity
+  #_[utterances=["when the humidity inside is lower than $p_humidity",
+                 "if the humidity in the area goes below $p_humidity"]];           
+
+  program (p_name : String) := now => @org.thingpedia.iot.humidity(name=p_name).humidity() => notify
+  #_[utterances=["check if my ${p_name} humidity sensor says it is humid",
+                 "what does my ${p_name} humidity sensor say?",
+                 "how humid is it according to my ${p_name} sensor?"]];
+
+  query (p_name : String) := @org.thingpedia.iot.humidity(name=p_name).humidity()
+  #_[utterances=["the humidity according to my ${p_name} sensor"]];
+
+  stream (p_name : String) := monitor @org.thingpedia.iot.humidity(name=p_name).humidity()
+  #_[utterances=["when my ${p_name} humidity sensor detects a change in the humidity"]];
+
+  stream (p_name : String, p_state : Enum(humid, normal)) := edge( monitor @org.thingpedia.iot.humidity(name=p_name).humidity()) on (state == p_state)
+  #_[utterances=["when the ${p_name} humidity sensor says it is ${p_state}"]];
+
+  stream (p_name : String) := edge( monitor @org.thingpedia.iot.humidity(name=p_name).humidity()) on (state == enum(humid))
+  #_[utterances=["when my ${p_name} humidity sensor says it is humid",
+                 "when the ${p_name} sensor detects high humidity"]];
+
+  stream (p_name : String) := edge( monitor @org.thingpedia.iot.humidity(name=p_name).humidity()) on (state == enum(normal))
+  #_[utterances=["when my ${p_name} humidity sensor says it is not humid",
+                 "when the ${p_name} sensor detects regular humidity"]];
+
+  stream (p_name : String, p_humidity : Number) := edge (monitor (@org.thingpedia.iot.humidity(name=p_name).humidity())) on value >= p_humidity
+  #_[utterances=["when the room 's humidity is higher than ${p_humidity} percent according to my ${p_name} sensor",
+                 "if the humidity detected by my ${p_name} sensor goes above ${p_humidity} percent"]];
+
+  stream (p_name : String, p_humidity : Number) := edge (monitor (@org.thingpedia.iot.humidity(name=p_name).humidity())) on value <= p_humidity
+  #_[utterances=["when the humidity inside is lower than ${p_humidity} according to my ${p_name} sensor",
+                 "if the humidity in the area detected by my ${p_name} sensor goes above ${p_humidity} percent"]];
+}
