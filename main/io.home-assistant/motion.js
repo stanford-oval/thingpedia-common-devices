@@ -16,13 +16,21 @@ module.exports = class HomeAssistantMotion extends HomeAssistantDevice {
 		this.domain = domain;
         this.device_class = this.state.attributes.device_class;
     }
-    async get_state() {
-        return [{ state: this.state.state }];
+    async get_motion() {
+        if (this.domain === 'binary_sensor') {
+            return [{ state: this.state.state }];
+        } else {
+            throw new Error (`Unexpected Home Assistant domain ${this.domain}`);
+        }  
     }
     // note: subscribe_ must NOT be async, or an ImplementationError will occur at runtime
-    subscribe_state() {
-        return this._subscribeState(() => {
-            return { state: this.state.state };
-        });
+    subscribe_motion() {
+        if (this.domain === 'binary_sensor') {
+            return this._subscribeState(() => {
+                return {state : this.state.state};
+            });
+        } else {
+            throw new Error (`Unexpected Home Assistant domain ${this.domain}`);
+        }
     }
 };
