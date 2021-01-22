@@ -6,12 +6,12 @@ dataset @com.spotify language "en" {
 
     // these ones are hard to get with domain-independent templates
     query (p_artist :Entity(com.spotify:artist)) := sort(popularity desc of @com.spotify.song(), contains(artists, p_artist))
-    #_[utterances=["${p_artist}'s greatest hits",
-                   "popular music by ${p_artist}",
-                   "popular ${p_artist} songs"]];
+    #_[utterances=[/*"${p_artist}'s greatest hits",*/
+                   "popular music by ${p_artist:no-undefined}",
+                   "popular ${p_artist:no-undefined} songs"]];
     query (p_artist :Entity(com.spotify:artist)) := sort(release_date desc of @com.spotify.song(), contains(artists, p_artist))
-    #_[utterances=["new ${p_artist}", "new music from ${p_artist}",
-                   "${p_artist} by the new first"]];
+    #_[utterances=["new ${p_artist:no-undefined}", "new music from ${p_artist:no-undefined}",
+                   "${p_artist:no-undefined} by the new first"]];
 
     program := @com.spotify.play_song(song=$?)
     #[click_count=6]
@@ -23,15 +23,25 @@ dataset @com.spotify language "en" {
     ;
 
     action (p_song :Entity(com.spotify:song)) := @com.spotify.play_song(song=p_song)
-    #_[utterances=["play ${p_song} on spotify",
-                   "on spotify play ${p_song}",
-                   "play ${p_song}"]]
+    #_[utterances=["play ${p_song:no-undefined} on spotify",
+                   "play ${p_song:no-undefined}"]]
     #[id=27924741]
     ;
 
-    program (p_song :Entity(com.spotify:song)) := @com.spotify.play_song(song=p_song)
-    #_[utterances=["i would like to hear ${p_song}",
-                   "i would like to listen to ${p_song}"]]
+    program (p_song :String) := (@com.spotify.song(), id =~ p_song)[1] => @com.spotify.play_song(song=id)
+    #_[utterances=["i would like to hear ${p_song:const}",
+                   "i would like to listen to ${p_song:const}",
+                   "play ${p_song:const} on spotify",
+                   "on spotify play ${p_song:const}",
+                   "play ${p_song:const}"]]
+    ;
+
+    program (p_genre :String) := (@com.spotify.song(), contains~(genres, p_genre)) => @com.spotify.play_song(song=id)
+    #_[utterances=["i would like to hear some ${p_genre:const}",
+                   "i would like to listen to ${p_genre:const} music",
+                   "play ${p_genre:const} on spotify",
+                   "on spotify play ${p_genre:const} music",
+                   "play ${p_genre:const} music"]]
     ;
 
     action (p_state :Enum(on,off)) := @com.spotify.player_shuffle(shuffle=p_state)
