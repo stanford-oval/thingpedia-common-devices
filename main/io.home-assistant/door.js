@@ -10,23 +10,22 @@
 const HomeAssistantDevice = require('./base');
 
 module.exports = class HomeAssistantDoor extends HomeAssistantDevice {
+    constructor(engine, state, master, entityId) {
+        super(engine, state, master, entityId);
+        const [domain,] = entityId.split('.');
+		this.domain = domain;
+        this.device_class = this.state.attributes.device_class;
+    }
     async get_state() {
-        if (this.domain === 'sensor') {
-            return [{ value:  parseFloat(this.state.state)}];
-        } else if ( this.domain === 'binary_sensor') {
+        if (this.domain === 'binary_sensor') {
             return [{ state: this.state.state }];
         } else {
             throw new Error (`Unexpected Home Assistant domain ${this.domain}`);
-        }
-        
+        }  
     }
     // note: subscribe_ must NOT be async, or an ImplementationError will occur at runtime
     subscribe_state() {
-        if (this.domain === 'sensor') {
-            return this._subscribeState(() => {
-                    return { value: parseFloat(this.state.state)};
-            });
-        } else if ( this.domain === 'binary_sensor') {
+        if (this.domain === 'binary_sensor') {
             return this._subscribeState(() => {
                 return {state : this.state.state};
             });
