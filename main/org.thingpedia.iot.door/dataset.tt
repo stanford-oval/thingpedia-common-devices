@@ -1,7 +1,5 @@
 dataset @org.thingpedia.iot.door language "en" {
-    program  := {
-  now => @org.thingpedia.iot.door.state() => notify;
-}
+    program  := @org.thingpedia.iot.door.state()
     #_[utterances=["is my door open?",
                    "is my door closed?",
                    "check whether my door is open or closed",
@@ -15,8 +13,12 @@ dataset @org.thingpedia.iot.door language "en" {
                    "is my garage door closed?",
                    "check whether my garage door is open or closed",
                    "did I leave the garage door open?",
-                   "did I forget to close my garage door?"]]
-    #[id=54308554]
+                   "did I forget to close my garage door?",
+                   "did somebody open the garage door?",
+                   "did anyone close the garage door",
+                   "was the garage door shut?",
+                   ]]
+    
     #[name="StateThenNotify"];
 
     query  := @org.thingpedia.iot.door.state()
@@ -24,27 +26,29 @@ dataset @org.thingpedia.iot.door language "en" {
                    "whether the door is open or closed",
                    "whether anyone opened the door",
                    "if the garage door is open or closed",
-                   "whether the garage door is open or closed"]]
-    #[id=54308563]
+                   "whether the garage door is open or closed,
+                   "whether anyone opened the garage door",
+                   "]]
+
     #[name="State"];
 
     stream  := monitor (@org.thingpedia.iot.door.state())
     #_[utterances=["when the door is opened or closed",
                    "when the garage door is opened or closed"]]
-    #[id=54308566]
+
     #[name="MonitorState"];
 
-    stream (p_state :Enum(open,closed))  := edge (monitor (@org.thingpedia.iot.door.state())) on state == p_state
+    stream (p_state :Enum(open,closed))  := monitor (@org.thingpedia.iot.door.state()), state == p_state
     #_[utterances=["when the door is ${p_state}",
                    "once the door is ${p_state}",
                    "when my door gets ${p_state}",
                    "when the garage door becomes ${p_state}",
                    "if the garage door is ${p_state}",
                    "when my garage door gets ${p_state}"]]
-    #[id=54308567]
+
     #[name="MonitorStateByState"];
 
-    stream  := edge (monitor (@org.thingpedia.iot.door.state())) on state == enum(open)
+    stream  := monitor (@org.thingpedia.iot.door.state()), state == enum(open)
     #_[utterances=["when my door opens",
                    "when I open the door",
                    "the moment I open the door",
@@ -59,10 +63,10 @@ dataset @org.thingpedia.iot.door language "en" {
                    "when someone opens the garage door",
                    "whoever opens the garage door",
                    "if anyone opens the garage door"]]
-    #[id=54308569]
+
     #[name="MonitorStateByStateOpen"];
 
-    stream  := edge (monitor (@org.thingpedia.iot.door.state())) on state == enum(closed)
+    stream  := monitor (@org.thingpedia.iot.door.state()), state == enum(closed)
     #_[utterances=["when my door closes",
                    "when I close the door",
                    "the moment I close the door",
@@ -77,12 +81,11 @@ dataset @org.thingpedia.iot.door language "en" {
                    "when someone closes the garage door",
                    "whoever closes the garage door",
                    "if anyone closes the garage door"]]
-    #[id=54308576]
+
     #[name="MonitorStateByStateClosed"];
 
-    program (p_name :String)  := {
-  now => @org.thingpedia.iot.door(name=p_name).state() => notify;
-}
+    program (p_name :String)  := @org.thingpedia.iot.door(name=p_name).state()
+
     #_[utterances=["is my ${p_name} door open?",
                    "is my ${p_name} door closed?",
                    "check whether my ${p_name} door is open or closed",
@@ -97,7 +100,7 @@ dataset @org.thingpedia.iot.door language "en" {
                    "check whether my ${p_name} garage door is open or closed",
                    "did I leave the ${p_name} garage door open?",
                    "did I forget to close my ${p_name} garage door?"]]
-    #[id=54308583]
+
     #[name="StateThenNotify1"];
 
     query (p_name :String)  := @org.thingpedia.iot.door(name=p_name).state()
@@ -106,26 +109,26 @@ dataset @org.thingpedia.iot.door language "en" {
                    "whether the ${p_name} door is open or closed",
                    "if the ${p_name} garage door is open or closed",
                    "whether the ${p_name} garage door is open or closed"]]
-    #[id=54308592]
+
     #[name="State1"];
 
     stream (p_name :String)  := monitor (@org.thingpedia.iot.door(name=p_name).state())
     #_[utterances=["when the ${p_name} door is opened or closed",
                    "when the ${p_name} garage door is opened or closed"]]
-    #[id=54308594]
+
     #[name="MonitorState1"];
 
-    stream (p_name :String, p_state :Enum(open,closed))  := edge (monitor (@org.thingpedia.iot.door(name=p_name).state())) on state == p_state
+    stream (p_name :String, p_state :Enum(open,closed))  := monitor (@org.thingpedia.iot.door(name=p_name).state()), state == p_state
     #_[utterances=["when the ${p_name} door is ${p_state}",
                    "when my ${p_name} door gets ${p_state}",
                    "when the ${p_name} garage door becomes ${p_state}",
                    "if the ${p_name} garage door is ${p_state}",
                    "when my ${p_name} garage door gets ${p_state}",
                    "if my ${p_name} garage door changes to ${p_state}"]]
-    #[id=54308595]
+
     #[name="MonitorStateByState1"];
 
-    stream (p_name :String)  := edge (monitor (@org.thingpedia.iot.door(name=p_name).state())) on state == enum(open)
+    stream (p_name :String)  := monitor (@org.thingpedia.iot.door(name=p_name).state()), state == enum(open)
     #_[utterances=["when my ${p_name} door opens",
                    "when I open the ${p_name} door",
                    "the moment I open the ${p_name} door",
@@ -140,10 +143,10 @@ dataset @org.thingpedia.iot.door language "en" {
                    "when someone opens the ${p_name} garage door",
                    "whoever opens the ${p_name} garage door",
                    "if anyone opens the ${p_name} garage door"]]
-    #[id=54308597]
+
     #[name="MonitorStateByStateOpen1"];
 
-    stream (p_name :String)  := edge (monitor (@org.thingpedia.iot.door(name=p_name).state())) on state == enum(closed)
+    stream (p_name :String)  := monitor (@org.thingpedia.iot.door(name=p_name).state()), state == enum(closed)
     #_[utterances=["when my ${p_name} door closes",
                    "when I close the ${p_name} door",
                    "the moment I close the ${p_name} door",
@@ -158,7 +161,7 @@ dataset @org.thingpedia.iot.door language "en" {
                    "when someone closes the ${p_name} garage door",
                    "whoever closes the ${p_name} garage door",
                    "if anyone closes the ${p_name} garage door"]]
-    #[id=54308604]
+
     #[name="MonitorStateByStateClosed1"];
 
 }
