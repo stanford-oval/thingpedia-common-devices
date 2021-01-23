@@ -2,14 +2,14 @@
 //
 // This file is part of io.home-assistant
 //
-// Copyright 2019 Xiaomeng Jin <tracyjxm@stanford.edu>
+// Copyright 2021 The Board of Trustees of the Leland Stanford Junior University
 //
 // See LICENSE for details
 "use strict";
 
 const HomeAssistantDevice = require('./base');
 
-module.exports = class HomeAssistantSensorHumidity extends HomeAssistantDevice {
+module.exports = class HomeAssistantHumidity extends HomeAssistantDevice {
 	constructor(engine, state, master, entityId) {
         super(engine, state, master, entityId);
         const [domain,] = entityId.split('.');

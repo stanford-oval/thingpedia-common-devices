@@ -2,7 +2,7 @@
 //
 // This file is part of io.home-assistant
 //
-// Copyright 2021
+// Copyright 2021 The Board of Trustees of the Leland Stanford Junior University
 //
 // See LICENSE for details
 "use strict";
