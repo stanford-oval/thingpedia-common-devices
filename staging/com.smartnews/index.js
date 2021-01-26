@@ -15,9 +15,9 @@ module.exports = class SmartNewsDevice extends Tp.BaseDevice {
     }
 
     //connect SN API endpoint /top with GET request
-    get_top_articles({ counter }) {
-        counter = counter || 10; //default is 10 news
-        let url = API_URL + "/top?counter=" + counter;
+    get_top_articles({ count }) {
+        count = count || 10; //default is 10 news
+        let url = API_URL + "/top?count=" + count;
         return Tp.Helpers.Http.get(url).then((response) => {
             return JSON.parse(response);
         }).then((parsed) => {

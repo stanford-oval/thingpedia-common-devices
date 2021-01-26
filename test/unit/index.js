@@ -27,7 +27,7 @@ async function existsSafe(path) {
     try {
         await util.promisify(fs.access)(path);
         return true;
-    } catch(e) {
+    } catch (e) {
         if (e.code === 'ENOENT')
             return false;
         if (e.code === 'ENOTDIR')
@@ -132,15 +132,15 @@ class TestRunner {
             [testType, functionName, input, expected] = test;
 
         switch (testType) {
-        case 'query':
-            await this._testQuery(instance, functionName, input, hints, expected);
-            break;
-        case 'monitor':
-            // do something
-            break;
-        case 'action':
-            // do something
-            break;
+            case 'query':
+                await this._testQuery(instance, functionName, input, hints, expected);
+                break;
+            case 'monitor':
+                // do something
+                break;
+            case 'action':
+                // do something
+                break;
         }
     }
 
@@ -149,7 +149,7 @@ class TestRunner {
         let testsuite;
         try {
             testsuite = require('./' + release + '/' + deviceKind);
-        } catch(e) {
+        } catch (e) {
             console.log('No tests found for ' + release + '/' + deviceKind);
             // exit with no error and without loading the device
             // class (which would pollute code coverage statistics)
@@ -197,11 +197,11 @@ class TestRunner {
             assertNonEmptyString(instance.uniqueId);
 
             for (let i = 0; i < testsuite.length; i++) {
-                console.log(`## Test ${i+1}/${testsuite.length}`);
+                console.log(`## Test ${i + 1}/${testsuite.length}`);
                 const test = testsuite[i];
                 try {
                     await this._runTest(instance, test);
-                } catch(e) {
+                } catch (e) {
                     console.log('## FAILED: ' + e.message);
                     console.log(e.stack);
                     this.anyFailed = true;
