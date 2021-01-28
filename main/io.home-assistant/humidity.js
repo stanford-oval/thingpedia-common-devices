@@ -14,7 +14,7 @@ module.exports = class HomeAssistantHumidity extends HomeAssistantDevice {
 	constructor(engine, state, master, entityId) {
         super(engine, state, master, entityId);
         const [domain,] = entityId.split('.');
-		this.domain = domain;
+        this.domain = domain;
         this.device_class = this.state.attributes.device_class;
         if (this.domain === 'binary_sensor')
             this.deviceStateMapping = {on: 'humid', off: 'normal'};
