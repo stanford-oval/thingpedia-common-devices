@@ -2,7 +2,6 @@
 //
 // This file is part of io.home-assistant
 //
-// Copyright 2019 Xiaomeng Jin <tracyjxm@stanford.edu>
 // Copyright 2021 The Board of Trustees of the Leland Stanford Junior University
 //
 // See LICENSE for details
@@ -10,32 +9,24 @@
 
 const HomeAssistantDevice = require('./base');
 
-module.exports = class HomeAssistantHumidity extends HomeAssistantDevice {
-	constructor(engine, state, master, entityId) {
+module.exports = class HomeAssistantBattery extends HomeAssistantDevice {
+    constructor(engine, state, master, entityId) {
         super(engine, state, master, entityId);
         const [domain,] = entityId.split('.');
         this.domain = domain;
         this.device_class = this.state.attributes.device_class;
-        if (this.domain === 'binary_sensor')
-            this.deviceStateMapping = {on: 'humid', off: 'normal'};
     }
-    async get_humidity() {
+	async get_state() {
         if (this.domain === 'sensor')
-            return [{state: undefined, value: parseFloat(this.state.state)}];
-        else if (this.domain === 'binary_sensor')
-            return [{state: this.deviceStateMapping[this.state.state], value: undefined}];
+            return [{value: parseFloat(this.state.state)}];
         else
             throw new Error (`Unexpected Home Assistant domain ${this.domain}`);
     }
     // note: subscribe_ must NOT be async, or an ImplementationError will occur at runtime
-    subscribe_humidity() {
+    subscribe_state() {
         if (this.domain === 'sensor') {
             return this._subscribeState(() => {
-                return {state: undefined, value: parseFloat(this.state.state)};
-            });
-        } else if (this.domain === 'binary_sensor') {
-            return this._subscribeState(() => {
-                return {state: this.deviceStateMapping[this.state.state], value: undefined};
+                return {value: parseFloat(this.state.state)};
             });
         } else {
             throw new Error (`Unexpected Home Assistant domain ${this.domain}`);

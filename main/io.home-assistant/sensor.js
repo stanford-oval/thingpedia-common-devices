@@ -13,7 +13,7 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
 	constructor(engine, state, master, entityId) {
         super(engine, state, master, entityId);
         const [domain,] = entityId.split('.');
-		this.domain = domain;
+        this.domain = domain;
         this.device_class = this.state.attributes.device_class;
         if (['binary_sensor', 'cover'].includes(this.domain)) {
             let supportedDeviceClasses = {
