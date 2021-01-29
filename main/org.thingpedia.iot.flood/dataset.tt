@@ -18,14 +18,14 @@ dataset @org.thingpedia.iot.flood language "en" {
   stream (p_state : Enum(on, off)) := monitor (@org.thingpedia.iot.flood.flood()), (state == p_state)
   #_[utterances=["when the flood sensor says it is ${p_state}"]];
 
-  stream := monitor (@org.thingpedia.iot.flood.flood()),  (state == enum(humid))
+  stream := monitor (@org.thingpedia.iot.flood.flood()),  (state == enum(on))
   #_[utterances=["when it gets flooding",
                  "when the flood alert is high",
                  "if water level gets very high",
                  "when start getting high water",
                  "if it is flooding"]];
 
-  stream := edge( monitor (@org.thingpedia.iot.flood.flood()), (state == enum(normal))
+  stream := monitor (@org.thingpedia.iot.flood.flood()), (state == enum(off))
   #_[utterances=["when the water level is normal",
                 "if it is no longer flooding",
                 "when it is not flooding anymore"]];        
@@ -38,7 +38,7 @@ dataset @org.thingpedia.iot.flood language "en" {
   query (p_name : String) := @org.thingpedia.iot.flood(name=p_name).flood()
   #_[utterances=["the flood according to my ${p_name} sensor"]];
 
-  stream (p_name : String) := monitor @org.thingpedia.iot.flood(name=p_name).flood()
+  stream (p_name : String) := monitor(@org.thingpedia.iot.flood(name=p_name).flood())
   #_[utterances=["when my ${p_name} flood sensor detects a change in the water level"]];
 
   stream (p_name : String, p_state : Enum(on, off)) := monitor (@org.thingpedia.iot.flood(name=p_name).flood()), (state == p_state)

@@ -16,7 +16,7 @@ dataset @org.thingpedia.iot.illuminance language "en" {
                  "if the inside illuminance is high or low",
                  "whether the home illuminance is high or low"]];
 
-  stream := monitor @org.thingpedia.iot.illuminance.illuminance()
+  stream := monitor(@org.thingpedia.iot.illuminance.illuminance())
   #_[utterances=["when the home illuminance changes"]];
 
   stream (p_illuminance :Measure(lx)) := monitor (@org.thingpedia.iot.illuminance.illuminance()), value >= p_illuminance
@@ -36,7 +36,7 @@ dataset @org.thingpedia.iot.illuminance language "en" {
   #_[utterances=["what the ${p_name} home illuminance sensor says",
                  "the illuminance of the ${p_name} room illuminance sensor"]];
 
-  stream (p_name : String) := monitor @org.thingpedia.iot.illuminance(name=p_name).illuminance()
+  stream (p_name : String) := monitor(@org.thingpedia.iot.illuminance(name=p_name).illuminance())
   #_[utterances=["when the ${p_name} room illuminance changes"]];
 
   stream (p_name : String, p_illuminance :Measure(lx)) := monitor (@org.thingpedia.iot.illuminance(name=p_name).illuminance()), value >= p_illuminance

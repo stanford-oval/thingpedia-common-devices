@@ -16,7 +16,7 @@ dataset @org.thingpedia.iot.uv language "en" {
                  "if the inside uv is high or low",
                  "whether the home uv is high or low"]];
 
-  stream := monitor @org.thingpedia.iot.uv.uv()
+  stream := monitor(@org.thingpedia.iot.uv.uv())
   #_[utterances=["when the home uv changes"]];
 
   stream (p_uv :Number) := monitor (@org.thingpedia.iot.uv.uv()), value >= p_uv
@@ -36,7 +36,7 @@ dataset @org.thingpedia.iot.uv language "en" {
   #_[utterances=["what the ${p_name} home uv sensor says",
                  "the uv of the ${p_name} room uv sensor"]];
 
-  stream (p_name : String) := monitor @org.thingpedia.iot.uv(name=p_name).uv()
+  stream (p_name : String) := monitor(@org.thingpedia.iot.uv(name=p_name).uv())
   #_[utterances=["when the ${p_name} room uv changes"]];
 
   stream (p_name : String, p_uv :Number) := monitor (@org.thingpedia.iot.uv(name=p_name).uv()), value >= p_uv

@@ -16,7 +16,7 @@ dataset @org.thingpedia.iot.temperature language "en" {
                  "if the inside temperature is warm or cold",
                  "whether the home temperature is warm or cold"]];
 
-  stream := monitor @org.thingpedia.iot.temperature.temperature()
+  stream := monitor(@org.thingpedia.iot.temperature.temperature())
   #_[utterances=["when the home temperature changes"]];
 
   stream (p_temperature :Measure(C)) := monitor (@org.thingpedia.iot.temperature.temperature()), value >= p_temperature
@@ -36,7 +36,7 @@ dataset @org.thingpedia.iot.temperature language "en" {
   #_[utterances=["what the ${p_name} home temperature sensor says",
                  "the temperature of the ${p_name} room temperature sensor"]];
 
-  stream (p_name : String) := monitor @org.thingpedia.iot.temperature(name=p_name).temperature()
+  stream (p_name : String) := monitor(@org.thingpedia.iot.temperature(name=p_name).temperature())
   #_[utterances=["when the ${p_name} room temperature changes"]];
 
   stream (p_name : String, p_temperature :Measure(C)) :=  monitor (@org.thingpedia.iot.temperature(name=p_name).temperature()), value >= p_temperature
