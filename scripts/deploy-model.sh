@@ -12,9 +12,9 @@ aws s3 sync --exclude '*/dataset/*' --exclude '*/cache/*' --exclude 'iteration_*
 
 rm -fr ./tmp/export/
 genienlp export --path ./tmp/model -o ./tmp/export/
+test -f ./tmp/model/calibrator.pkl && cp ./tmp/model/calibrator.pkl ./tmp/export/
 
 version=2
-
 for model_tag in org.thingpedia.models.contextual ; do
 	AWS_PROFILE=oval aws s3 sync ./tmp/export/ "s3://almond-training/staging/inference/${model_tag}:en-v${version}/"
 
