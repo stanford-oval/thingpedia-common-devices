@@ -50,112 +50,137 @@ class @com.spotify
     profile=["id", "display_name"]
   );
 
+  entity playable #_[description="Playable content on Spotify"];
   entity song #_[description="Songs on Spotify"];
   entity artist #_[description="Artists on Spotify"];
   entity album #_[description="Albums on Spotify"];
   entity device #_[description="Spotify Connect device ID"];
 
-  list query song(out id: Entity(com.spotify:song)
-                    #[string_values="tt:song_name"]
-                    #[unique=true]
-                    #_[canonical={
-                      default="base",
-                      base=["name", "title", "track name"],
-                      passive_verb=["named #", "called #", "titled #"],
-                      property=["name #", "title #"]
-                    }],
-                    out artists: Array(Entity(com.spotify:artist))
-                    #[string_values="tt:song_artist"]
-                    #_[canonical={
-                      default="preposition",
-                      base=["artist", "author", "song writer", "band", "artist name",
-                            "singer", "composer"],
-                      property=["artist #", "song writer #"],
-                      preposition=["by #", "from #"],
-                      adjective=["#", "# 's"],
-                      passive_verb=["written by #", "released by #", "produced by #",
-                                    "composed by #", "recorded by #"],
-                      verb = ["# wrote", "# released", "# produced", "# composed",
-                              "# did", "# recorded", "# sang", "# made"],
-                      base_projection=['artist', 'singer', 'band', 'composer'],
-                      passive_verb_projection=['created | by', 'sang | by', 'performed | by',
-                                               'composed | by', 'recorded | by'],
-                      reverse_verb_projection=['sing', 'sang', 'wrote', 'composed',
-                                               'recorded']
-                    }],
-                    out album: Entity(com.spotify:album)
-                    #[string_values="tt:song_album"]
-                    #_[canonical={
-                      default="preposition",
-                      base=["album"],
-                      property=["album #"],
-                      preposition=["in the album #",
-                                   "in #", "part of #", "from the album #",
-                                   "from #"],
-                      base_projection=['album'],
-                      verb_projection=['appear | in', 'appear | on'],
-                      reverse_verb_projection=['have', 'has', 'contain', 'contains', 'includes'],
-                      passive_verb_projection=['included | in', 'included | on'],
-                      preposition_projection=['in', 'on']
-                    }],
-                    out genres: Array(String)
-                    #[string_values="com.spotify:genre"]
-                    #_[canonical={
-                      default="adjective",
-                      base=["genres", "type of genre", "type of music", "category"],
-                      adjective=["#"],
-                      preposition=["in the # genre", "in #", "of the # genre",
-                                   "in the # style", "in the # category"],
-                    }],
-                    out release_date : Date
-                    #_[canonical={
-                      default="passive_verb",
-                      base=["date", "release date", "release year", "release day"],
-                      property=["release date #"],
-                      preposition=["from #", "in #"],
-                      passive_verb=["released in #", "released #", "published in #"],
-                      adjective_argmin=["least recent", "oldest", "first"],
-                      adjective_argmax=["most recent", "newest", "latest"],
-                      passive_verb_argmax=["released most recently"],
-                      passive_verb_projection=['published | on', 'released | on', 'written | on'],
-                    }],
-                    out popularity: Number
-                    #[min_number=0]
-                    #[max_number=100]
-                    #_[canonical={
-                      default="base",
-                      base=["popularity", "average popularity"],
-                      passive_verb=["rated # popularity"],
-                      property=["# popularity"],
-                      adjective_argmin=["least popular", "most niche"],
-                      adjective_argmax=["most popular", "most well-known", "best", "greatest", "top"],
-                    }],
-                    out energy : Number
-                    #[min_number=0]
-                    #[max_number=100]
-                    #[filterable=false]
-                    #_[canonical={
-                      default="base",
-                      base=["energy"],
-                      adjective_argmin=["least energetic"],
-                      adjective_argmax=["most energetic"],
-                    }],
-                    out danceability : Number
-                    #[min_number=0]
-                    #[max_number=100]
-                    #[filterable=false]
-                    #_[canonical={
-                      default="base",
-                      base=["danceability"],
-                      adjective_argmin=["least danceable"],
-                      adjective_argmax=["most danceable"],
-                    }])
-    #_[canonical=["song", "music", "good music", "track", "sound track"]]
-    #_[canonical_short=["song", "track"]]
-    #_[confirmation="songs on Spotify"]
-    #[minimal_projection=["id"]]
-    #_[formatted=[{type="text",text="${id} by ${artists}"}]]
-    #[doc="search for songs on Spotify"];
+
+  query playable(out id: Entity(com.spotify:playable)
+                      out artists: Array(Entity(com.spotify:artist))
+                      #[string_values="tt:song_artist"]
+                      #_[canonical={
+                        default="preposition",
+                        base=["artist", "author", "song writer", "band", "artist name",
+                              "singer", "composer"],
+                        property=["artist #", "song writer #"],
+                        preposition=["by #", "from #"],
+                        adjective=["#", "# 's"],
+                        passive_verb=["written by #", "released by #", "produced by #",
+                                      "composed by #", "recorded by #"],
+                        verb = ["# wrote", "# released", "# produced", "# composed",
+                                "# did", "# recorded", "# sang", "# made"],
+                        base_projection=['artist', 'singer', 'band', 'composer'],
+                        passive_verb_projection=['created | by', 'sang | by', 'performed | by',
+                                                 'composed | by', 'recorded | by'],
+                        reverse_verb_projection=['sing', 'sang', 'wrote', 'composed',
+                                                 'recorded']
+                      }],
+                      out popularity: Number
+                      #[min_number=0]
+                      #[max_number=100]
+                      #_[canonical={
+                        default="base",
+                        base=["popularity", "average popularity"],
+                        passive_verb=["rated # popularity"],
+                        property=["# popularity"],
+                        adjective_argmin=["least popular", "most niche"],
+                        adjective_argmax=["most popular", "most well-known", "best", "greatest", "top"],
+                      }],
+                      out release_date : Date
+                      #_[canonical={
+                        default="passive_verb",
+                        base=["date", "release date", "release year", "release day"],
+                        property=["release date #"],
+                        preposition=["from #", "in #"],
+                        passive_verb=["released in #", "released #", "published in #"],
+                        adjective_argmin=["least recent", "oldest", "first"],
+                        adjective_argmax=["most recent", "newest", "latest"],
+                        passive_verb_argmax=["released most recently"],
+                        passive_verb_projection=['published | on', 'released | on', 'written | on'],
+                      }])
+  #_[canonical=["song", "music", "good music", "track", "sound track", "album", "good album", "music collection"]]
+  #_[canonical_short=["song", "music"]]
+  #_[confirmation="playable content on Spotify"]
+  #[minimal_projection=["id"]]
+  #_[formatted=[{type="text",text="${id} by ${artists}"}]]
+  #[doc="search for content on Spotify"];
+
+
+  query song extends playable(out id: Entity(com.spotify:song)
+                      #[string_values="tt:song_name"]
+                      #[unique=true]
+                      #_[canonical={
+                        default="base",
+                        base=["name", "title", "track name"],
+                        passive_verb=["named #", "called #", "titled #"],
+                        property=["name #", "title #"]
+                      }],
+                      out album: Entity(com.spotify:album)
+                      #[string_values="tt:song_album"]
+                      #_[canonical={
+                        default="preposition",
+                        base=["album"],
+                        property=["album #"],
+                        preposition=["in the album #",
+                                     "in #", "part of #", "from the album #",
+                                     "from #"],
+                        base_projection=['album'],
+                        verb_projection=['appear | in', 'appear | on'],
+                        reverse_verb_projection=['have', 'has', 'contain', 'contains', 'includes'],
+                        passive_verb_projection=['included | in', 'included | on'],
+                        preposition_projection=['in', 'on']
+                      }],
+                      out genres: Array(String)
+                      #[string_values="com.spotify:genre"]
+                      #_[canonical={
+                        default="adjective",
+                        base=["genres", "type of genre", "type of music", "category"],
+                        adjective=["#"],
+                        preposition=["in the # genre", "in #", "of the # genre",
+                                     "in the # style", "in the # category"],
+                      }],
+                      out energy : Number
+                      #[min_number=0]
+                      #[max_number=100]
+                      #[filterable=false]
+                      #_[canonical={
+                        default="base",
+                        base=["energy"],
+                        adjective_argmin=["least energetic"],
+                        adjective_argmax=["most energetic"],
+                      }],
+                      out danceability : Number
+                      #[min_number=0]
+                      #[max_number=100]
+                      #[filterable=false]
+                      #_[canonical={
+                        default="base",
+                        base=["danceability"],
+                        adjective_argmin=["least danceable"],
+                        adjective_argmax=["most danceable"],
+                      }])
+  #_[canonical=["song", "music", "good music", "track", "sound track"]]
+  #_[canonical_short=["song", "track"]]
+  #_[confirmation="songs on Spotify"]
+  #[minimal_projection=["id"]]
+  #_[formatted=[{type="text",text="${id} by ${artists}"}]]
+  #[doc="search for songs on Spotify"];
+
+  query album extends playable (out id: Entity(com.spotify:album) #[string_values="tt:song_album"]
+                      #[unique=true]
+                      #_[canonical={
+                        default="base",
+                        base=["name"],
+                        passive_verb=["named #", "called #", "titled #"],
+                        property=["name #", "title"]
+                      }])
+  #_[canonical=["album", "good album", "music collection"]]
+  #_[confirmation="album on Spotify"]
+  #[minimal_projection=["id"]]
+  #_[formatted=[{type="text",text="${id} by ${artists}"}]]
+  #[doc="search for albums on Spotify"];
 
     action play_song (in req song: Entity(com.spotify:song)
                       #[string_values="tt:song_name"]
@@ -228,63 +253,6 @@ class @com.spotify
     #[minimal_projection=["id"]]
     #_[formatted=[{type="text",text="${id}"}]]
     #[doc="search for artists on Spotify"];
-
-    list query album(out id: Entity(com.spotify:album) #[string_values="tt:song_album"]
-                    #[unique=true]
-                    #_[canonical={
-                      default="base",
-                      base=["name"],
-                      passive_verb=["named #", "called #", "titled #"],
-                      property=["name #", "title"]
-                    }],
-                    out artists: Array(Entity(com.spotify:artist))
-                    #[string_values="tt:song_artist"]
-                    #_[canonical={
-                      default="preposition",
-                      base=["artist", "author", "song writer", "band", "artist name",
-                            "singer", "composer"],
-                      property=["artist #", "song writer #"],
-                      preposition=["by #", "from #"],
-                      adjective=["#"],
-                      passive_verb=["written by #", "released by #", "produced by #",
-                                    "composed by #", "recorded by #"],
-                      verb = ["# wrote", "# released", "# produced", "# composed",
-                              "# did", "# recorded", "# sang", "# made"],
-                      base_projection=['artist', 'singer', 'band', 'composer'],
-                      passive_verb_projection=['created | by', 'sang | by', 'performed | by',
-                                               'composed | by', 'recorded | by'],
-                      reverse_verb_projection=['sing', 'sang', 'wrote', 'composed',
-                                               'recorded']
-                    }],
-                    out release_date : Date
-                    #_[canonical={
-                      default="preposition",
-                      base=["date", "release date", "release year", "release day"],
-                      property=["release date #"],
-                      adjective=["#"],
-                      preposition=["from #", "in #"],
-                      passive_verb=["released in #", "released #", "published in #"],
-                      adjective_argmin=["least recent", "oldest", "first"],
-                      adjective_argmax=["most recent", "newest", "latest"],
-                      passive_verb_argmax=["released most recently"],
-                      passive_verb_projection=['published | on', 'released | on', 'written | on'],
-                    }],
-                    out popularity: Number
-                    #[min_number=0]
-                    #[max_number=100]
-                    #_[canonical={
-                      default="base",
-                      base=["popularity", "average popularity"],
-                      passive_verb=["rated # popularity"],
-                      property=["# popularity"],
-                      adjective_argmin=["least popular", "most niche"],
-                      adjective_argmax=["most popular", "most well-known", "best", "greatest", "top"],
-                    }])
-    #_[canonical=["album", "good album", "music collection"]]
-    #_[confirmation="album on Spotify"]
-    #[minimal_projection=["id"]]
-    #_[formatted=[{type="text",text="${id} by ${artists}"}]]
-    #[doc="search for albums on Spotify"];
 
     monitorable query get_currently_playing(out song: Entity(com.spotify:song)
                                             #[string_values="tt:song_name"])
