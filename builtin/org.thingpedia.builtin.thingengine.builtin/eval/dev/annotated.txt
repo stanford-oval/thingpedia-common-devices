@@ -90,11 +90,6 @@ U: give me a random number less than 13
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => @org.thingpedia.builtin.thingengine.builtin.get_random_between(high=13) => notify;
 ====
-# online/52224338
-U: help facebook
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@org.thingpedia.builtin.thingengine.builtin.commands()), device == "com.facebook"^^tt:device => notify;
-====
 # online/59177584
 U: throw a d 13 dice
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
@@ -208,7 +203,7 @@ UT: @org.thingpedia.builtin.thingengine.builtin.get_date();
 # log/74265
 U: what can you do for me?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.builtin.thingengine.builtin.commands();
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
 ====
 # log/87228
 U: time is it
@@ -218,22 +213,22 @@ UT: @org.thingpedia.builtin.thingengine.builtin.get_time();
 # log/58986
 U: what can u do?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.builtin.thingengine.builtin.commands();
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
 ====
 # log/62457
 U: what can you do?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.builtin.thingengine.builtin.commands();
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
 ====
 # log/115038
 U: commands
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.builtin.thingengine.builtin.commands();
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
 ====
 # log/107024
 U: what can i do?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.builtin.thingengine.builtin.commands();
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
 ====
 # log/17269
 U: open http://troikas.eu
@@ -243,7 +238,7 @@ UT: @org.thingpedia.builtin.thingengine.builtin.open_url(url="http://troikas.eu"
 # log/103761
 U: list function
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.builtin.thingengine.builtin.commands();
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
 ====
 # log/44421
 U: get current location
@@ -258,17 +253,17 @@ UT: @org.thingpedia.builtin.thingengine.builtin.get_random_between(low=13);
 # log/135826
 U: what comads?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.builtin.thingengine.builtin.commands();
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
 ====
 # log/97468
 U: what can you do for me
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.builtin.thingengine.builtin.commands();
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
 ====
 # log/120382
 U: what skills are there
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.builtin.thingengine.builtin.device();
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
 ====
 # log/113805
 U: roll a die
@@ -323,7 +318,7 @@ UT: @org.thingpedia.builtin.thingengine.builtin.say(message="hello");
 # log/68059
 U: what command is available
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.builtin.thingengine.builtin.commands();
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
 ====
 # log/120287
 U: where am i
@@ -348,7 +343,7 @@ UT: @org.thingpedia.builtin.thingengine.builtin.get_time();
 # log/70367
 U: list devices
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.builtin.thingengine.builtin.device();
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
 ====
 # log/75903
 U: where am i?
@@ -358,7 +353,7 @@ UT: @org.thingpedia.builtin.thingengine.builtin.get_gps();
 # log/8914
 U: show me services
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.builtin.thingengine.builtin.device();
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
 ====
 # log/134581
 U: where am i now
@@ -373,12 +368,12 @@ UT: @org.thingpedia.builtin.thingengine.builtin.get_gps();
 # log/117851
 U: what command?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.builtin.thingengine.builtin.commands();
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
 ====
 # log/55575
 U: skills
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.builtin.thingengine.builtin.device();
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
 ====
 # log/9086
 U: my location
@@ -393,7 +388,7 @@ UT: @org.thingpedia.builtin.thingengine.builtin.get_time();
 # log/17027
 U: list commands
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.builtin.thingengine.builtin.commands();
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
 ====
 # log/6092
 U: what day is it?
@@ -413,7 +408,7 @@ UT: @org.thingpedia.builtin.thingengine.builtin.get_random_between(high=14, low=
 # log/60662
 U: show skills
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.builtin.thingengine.builtin.device();
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
 ====
 # log/62699
 U: location
@@ -423,7 +418,7 @@ UT: @org.thingpedia.builtin.thingengine.builtin.get_gps();
 # log/73090
 U: what can i say
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.builtin.thingengine.builtin.commands();
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
 ====
 # log/63509
 U: time?
@@ -438,12 +433,12 @@ UT: @org.thingpedia.builtin.thingengine.builtin.get_gps();
 # log/66306
 U: examples
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.builtin.thingengine.builtin.commands();
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
 ====
 # log/58780
 U: skill
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.builtin.thingengine.builtin.device();
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
 ====
 # log/70206
 U: show me google.com
@@ -453,7 +448,7 @@ UT: @org.thingpedia.builtin.thingengine.builtin.open_url(url="http://google.com"
 # log/11588
 U: what you can do?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.builtin.thingengine.builtin.commands();
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
 ====
 # log/20776
 U: what day is today?
