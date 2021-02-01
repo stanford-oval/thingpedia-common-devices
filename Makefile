@@ -44,7 +44,7 @@ synthetic_flags ?= \
 	undefined_filter \
 	$(NULL)
 
-target_pruning_size ?= 200
+target_pruning_size ?= 250
 minibatch_size ?= 1000
 target_size ?= 1
 subdatasets ?= 6
@@ -55,7 +55,8 @@ debug_level ?= 1
 subsample_thingpedia ?= 0.75
 update_canonical_flags ?= --algorithm bert,adj,bart --paraphraser-model ./models/paraphraser-bart
 synthetic_expand_factor ?= 3
-paraphrase_expand_factor ?= 5
+quoted_paraphrase_expand_factor ?= 100
+noquote_paraphrase_expand_factor ?= 10
 quoted_fraction ?= 0.05
 
 generate_flags ?= $(foreach v,$(synthetic_flags),--set-flag $(v)) --target-pruning-size $(target_pruning_size) --max-turns $(max_turns) --maxdepth $(max_depth)
@@ -209,8 +210,8 @@ eval/$(release)/augmented.user.tsv : eval/$(release)/synthetic.user.tsv $(schema
 	  --thingpedia $(schema_file) \
 	  --parameter-datasets parameter-datasets.tsv \
 	  --synthetic-expand-factor $(synthetic_expand_factor) \
-	  --quoted-paraphrasing-expand-factor $(paraphrase_expand_factor) \
-	  --no-quote-paraphrasing-expand-factor $(paraphrase_expand_factor) \
+	  --quoted-paraphrasing-expand-factor $(quoted_paraphrase_expand_factor) \
+	  --no-quote-paraphrasing-expand-factor $(noquote_paraphrase_expand_factor) \
 	  --quoted-fraction $(quoted_fraction) \
 	  --debug \
 	  --parallelize $(parallel) \
@@ -224,8 +225,8 @@ eval/$(release)/augmented.agent.tsv : eval/$(release)/synthetic.agent.tsv $(sche
 	  --thingpedia $(schema_file) \
 	  --parameter-datasets parameter-datasets.tsv \
 	  --synthetic-expand-factor $(synthetic_expand_factor) \
-	  --quoted-paraphrasing-expand-factor $(paraphrase_expand_factor) \
-	  --no-quote-paraphrasing-expand-factor $(paraphrase_expand_factor) \
+	  --quoted-paraphrasing-expand-factor $(quoted_paraphrase_expand_factor) \
+	  --no-quote-paraphrasing-expand-factor $(noquote_paraphrase_expand_factor) \
 	  --quoted-fraction $(quoted_fraction) \
 	  --debug \
 	  --parallelize $(parallel) \
@@ -322,7 +323,7 @@ clean:
 	rm -fr build/
 	rm -fr entities.json
 	for exp in $(all_releases) ; do \
-		rm -rf $$exp/schema.tt $$exp/dataset.tt $$exp/synthetic* parameter-datasets* $$exp/augmented* ; \
+		rm -rf eval/$$exp/schema.tt eval/$$exp/dataset.tt eval/$$exp/synthetic* parameter-datasets* eval/$$exp/augmented* ; \
 	done
 
 lint:
