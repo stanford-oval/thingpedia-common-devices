@@ -52,13 +52,13 @@ class @com.spotify
   );
 
   entity playable #_[description="Playable content on Spotify"];
-  entity song #_[description="Songs on Spotify"];
+  entity song extends playable #[has_ner=true] #_[description="Songs on Spotify"];
   entity artist #_[description="Artists on Spotify"];
-  entity album #_[description="Albums on Spotify"];
+  entity album extends playable #[has_ner=true] #_[description="Albums on Spotify"];
   entity device #_[description="Spotify Connect device ID"];
 
 
-  query playable(out id: Entity(com.spotify:playable)
+  query playable(out id: Entity(com.spotify:playable),
                       out artists: Array(Entity(com.spotify:artist))
                       #[string_values="tt:song_artist"]
                       #_[canonical={
@@ -110,7 +110,7 @@ class @com.spotify
 
 
   query song extends playable(out id: Entity(com.spotify:song)
-                      #[string_values="tt:song_name"]
+                      #[string_values="tt:name"]
                       #[unique=true]
                       #_[canonical={
                         default="base",
@@ -169,7 +169,7 @@ class @com.spotify
   #_[formatted=[{type="text",text="${id} by ${artists}"}]]
   #[doc="search for songs on Spotify"];
 
-  query album extends playable (out id: Entity(com.spotify:album) #[string_values="tt:song_album"]
+  query album extends playable (out id: Entity(com.spotify:album) #[string_values="tt:name"]
                       #[unique=true]
                       #_[canonical={
                         default="base",
@@ -183,32 +183,32 @@ class @com.spotify
   #_[formatted=[{type="text",text="${id} by ${artists}"}]]
   #[doc="search for albums on Spotify"];
 
-    action play_song (in req song: Entity(com.spotify:song)
-                      #[string_values="tt:song_name"]
-                      #_[prompt=["what song do you want to play"]]
-                      #_[canonical={
-                        default="base",
-                        base=["name"],
-                        // FIXME: actions must use "preposition" not "passive_verb"
-                        preposition=["named #", "called #", "titled #"],
-                        property=["name #", "title #"]
-                      }],
-                      out device : Entity(com.spotify:device)
-                      #_[canonical={
-                        default="preposition",
-                        base=["device", "player", "app"], // "can you tell me the app"?
-                        preposition=["on"]
-                      }])
-    #_[canonical=["play a song", "play the song", "play a track", "play music",
-                  // i would like to...
-                  "listen to a song", "hear a song"]]
-    #_[confirmation="play the song $song"]
-    #_[on_error={
-      no_active_device=["you must open the spotify app first", "no spotify player is active"],
-      disallowed_action=["failed to play: try playing from the spotify app"],
-      player_error=["failed to play: try playing from the spotify app"]
-    }]
-    #[confirm=enum(auto)];
+  action play (in req song: Entity(com.spotify:playable)
+                    #[string_values="tt:song_name"]
+                    #_[prompt=["what song do you want to play"]]
+                    #_[canonical={
+                      default="base",
+                      base=["name"],
+                      // FIXME: actions must use "preposition" not "passive_verb"
+                      preposition=["named #", "called #", "titled #"],
+                      property=["name #", "title #"]
+                    }],
+                    out device : Entity(com.spotify:device)
+                    #_[canonical={
+                      default="preposition",
+                      base=["device", "player", "app"], // "can you tell me the app"?
+                      preposition=["on"]
+                    }])
+  #_[canonical=["play a song", "play the song", "play a track", "play music",
+                // i would like to...
+                "listen to a song", "hear a song"]]
+  #_[confirmation="play the song $song"]
+  #_[on_error={
+    no_active_device=["you must open the spotify app first", "no spotify player is active"],
+    disallowed_action=["failed to play: try playing from the spotify app"],
+    player_error=["failed to play: try playing from the spotify app"]
+  }]
+  #[confirm=enum(auto)];
 
     list query artist(out id: Entity(com.spotify:artist)
                       #[string_values="tt:song_artist"]
