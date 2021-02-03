@@ -8,11 +8,12 @@ dataset @org.thingpedia.iot.humidity language "en" {
                  "what is the level of humidity?",
                  "how high is the humidity?"]];
 
-  query := @org.thingpedia.iot.humidity.humidity()
-  #_[utterances=["the humidity",
-                 "the humidity level",
-                 "whether it is humid",
-                 "if it is humid"]];
+  query (p_name : String) := @org.thingpedia.iot.humidity(name=p_name).humidity()
+  #_[utterances=["what the ${p_name} humidity sensor says",
+                 "the value of the ${p_name} humidity sensor",
+                 "the humidity of the ${p_name}",
+                 "the humidity in the ${p_name}",
+                 "the ${p_name} humdity"]];
 
   stream := monitor(@org.thingpedia.iot.humidity.humidity())
   #_[utterances=["when the humidity changes"]];
