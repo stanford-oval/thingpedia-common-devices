@@ -11,35 +11,117 @@ class @com.smartnews
   import loader from @org.thingpedia.v2();
   import config from @org.thingpedia.config.none();
 
-  list query top_articles(in opt counter: Number #[prompt="How many news articles do you want?"],
-    			  out news_id: String,
-                          out title: String,
-                          out audio: Entity(tt:url),
-                          out date: Date,
-    			  out site_name: String,
-    			  out content: String)
-  #_[confirmation="top news on SmartNews"]
-  #_[formatted=[{type="rdl", webCallback="${audio}", displayTitle= "${title}", displayText="ID: ${news_id}\nPublished: ${date}\nSource: ${site_name}"}]]
-    //#_[formatted=[{type="text", text="Id: ${news_id}\nTitle: ${title}\nPublished: ${date}\nSource: ${site_name}\nAudio: ${audio}\nContent: ${content}"}]]
-  #[doc="get the top news from SmartNews"];
+  entity article #_[description="News Articles on SmartNews"] #[has_ner=false];
 
-  list query reading_list(out title: String,
-			  out news_id: String,
-                          out title: String,
-                          out link: Entity(tt:url),
-                          out date: Date,
-    			  out site_name: String,
-    			  out content: String)
-  #_[confirmation="reading list on SmartNews"]
-  #_[formatted=[{type="rdl", webCallback="${audio}", displayTitle= "${title}", displayText="ID: ${news_id}\nPublished: ${date}\nSource: ${site_name}"}]]
-  //#_[formatted=[{type="rdl", webCallback="${link}", displayTitle= "${title}", displayText="ID: ${news_id}\nPublished Time: ${date}\nSource: ${site_name}"}]]
-  //#_[formatted=[{type="text", text="Id: ${news_id}\nTitle: ${title}\nPublished: ${date}\nSource: ${site_name}\nAudio: ${audio}\nContent: ${content}"}]]
-  #[doc="get reading list from SmartNews"];
+  monitorable list query article(
+    in opt count: Number #_[prompt="how many news articles do you want"],
+    out id: Entity(com.smartnews:article)
+      #_[canonical={
+        default = "base",
+        base  = ["id", "news id"],
+        property = ["news #", "article #"]
+      }],
+    out title: String
+      #_[canonical={
+        defalut = "base",
+        base = ["title", "news title", "name"],
+        property = ["news #", "title #"]
+      }],
+    out audio: Entity(tt:url),
+    out date: Date
+      #_[canonical={
+        default="passive_verb",
+        base=["date", "published date", "published year", "published day"],
+        property=["published date #"],
+        preposition=["from #", "in #"],
+        passive_verb=["published in #", "released #", "published in #"],
+        adjective_argmin=["least recent", "oldest", "first"],
+        adjective_argmax=["most recent", "newest", "latest"],
+        passive_verb_argmax=["published most recently"],
+        passive_verb_projection=['published | on', 'released | on', 'written | on']
+      }],
+    out site_name: String
+      #_[canonical={
+        default="preposition",
+        base=["publisher", "media", "publisher name", "source"],
+        property=["publisher #", "media #"],
+        preposition=["from #", "by #"],
+        adjective=["#", "# 's"],
+        passive_verb=["released by #", "published by #"],
+        verb = ["# released", "# published", "# announced", "# stated"],
+        base_projection=['publisher', 'company', 'media'],
+        passive_verb_projection=['published | by', 'released | by'],
+        reverse_verb_projection=['released', 'published']
+      }],
+    out content: String
+      #_[canonical={
+        defalut = "base",
+        base = ["news content", "content", "body", "article"],
+        property = ["news #", "content #", "body #"]
+      }])
+  #_[canonical=["news articles", "news reports"]]
+  #_[confirmation="news articles"]
+  #_[result=["the latest news is ${title}"]]
+  #_[formatted=[{type="rdl", webCallback="${audio}", displayTitle= "${title}", displayText="ID: ${id}\nPublished: ${date}\nSource: ${site_name}"}]]
+  #[related=["com.smartnews:reading_list"]]
+  #[doc="get news articles from SmartNews api"];
 
-  action pocket(in req news_id: Number)//#[confirm=false])
-  #_[confirmation="pocket ${news_id:select:null {the news}}"];
+  list query reading_list(
+    out id: Entity(com.smartnews:article)
+      #_[canonical={
+        default = "base",
+        base  = ["id", "news id"],
+        property = ["news #", "article #"]
+      }],
+    out title: String
+      #_[canonical={
+        defalut = "base",
+        base = ["title", "news title", "name"],
+        property = ["news #", "title #"]
+      }],
+    out audio: Entity(tt:url),
+    out date: Date
+      #_[canonical={
+        default="passive_verb",
+        base=["date", "published date", "published year", "published day"],
+        property=["published date #"],
+        preposition=["from #", "in #"],
+        passive_verb=["published in #", "released #", "published in #"],
+        adjective_argmin=["least recent", "oldest", "first"],
+        adjective_argmax=["most recent", "newest", "latest"],
+        passive_verb_argmax=["published most recently"],
+        passive_verb_projection=['published | on', 'released | on', 'written | on']
+      }],
+    out site_name: String
+      #_[canonical={
+        default="preposition",
+        base=["publisher", "media", "publisher name", "source"],
+        property=["publisher #", "media #"],
+        preposition=["from #", "by #"],
+        adjective=["#", "# 's"],
+        passive_verb=["released by #", "published by #"],
+        verb = ["# released", "# published", "# announced", "# stated"],
+        base_projection=['publisher', 'company', 'media'],
+        passive_verb_projection=['published | by', 'released | by'],
+        reverse_verb_projection=['released', 'published']
+      }],
+    out content: String
+      #_[canonical={
+        defalut = "base",
+        base = ["news content", "content", "body", "article"],
+        property = ["news #", "content #", "body #"]
+      }])
+  #_[canonical=["reading list"]]
+  #_[confirmation="reading list"]
+  #_[result=["${title} is in your reading list"]]
+  #_[formatted=[{type="rdl", webCallback="${audio}", displayTitle= "${title}", displayText="ID: ${id}\nPublished: ${date}\nSource: ${site_name}"}]]
+  #[doc="get user's reading list from SmartNews api"];
 
-  action drop(in req news_id: Number)
-  #_[confirmation="drop ${news_id:select:null {the news}}"];
+  action pocket(in req id: Entity(com.smartnews:article))//#[confirm=false])
+  #_[canonical=["pocket the news", "save the news"]]
+  #_[confirmation="pocket ${id:select:null {the news}}"];
 
+  action drop(in req id: Entity(com.smartnews:article))
+  #_[canonical=["drop the news", "remove the news"]]
+  #_[confirmation="drop ${id:select:null {the news}}"];
 }

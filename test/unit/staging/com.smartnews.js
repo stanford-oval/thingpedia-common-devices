@@ -11,8 +11,12 @@ const assert = require('assert');
 console.log("SmartNews Device Test Case:");
 
 module.exports = [
-    ['query', 'top_articles', { counter: 3 }, (results) => {
-        //console.log(results);
+    ['query', 'article', { count: 2 }, (results) => {
+        console.log(results);
+        assert(true, 'something');
+    }],
+    ['query', 'reading_list', {}, (results) => {
+        console.log(results);
         assert(true, 'something');
     }]
 ];

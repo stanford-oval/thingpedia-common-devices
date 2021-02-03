@@ -1,5 +1,5 @@
 dataset @com.smartnews language "en" {
-    query := @com.smartnews.top_articles()
+    query := @com.smartnews.article()
     #_[utterances=["smartnews",
                    "smart news",
                    "news",
@@ -18,7 +18,7 @@ dataset @com.smartnews language "en" {
     #[id=61614268]
     #[name="TopArticles"];
 
-    query (p_count :Number) := @com.smartnews.top_articles()[1 : p_count]
+    query (p_count :Number) := @com.smartnews.article()[1 : p_count]
     #_[utterances=["$p_count smartnews",
                    "$p_count smart news",
                    "$p_count news",
@@ -35,7 +35,7 @@ dataset @com.smartnews language "en" {
                    "$p_count story"
                    ]]
     #[id=62725774]
-    #[name="TopArticlesWithCounter"];
+    #[name="TopArticlesWithCount"];
 
     query := @com.smartnews.reading_list()
     #_[utterances=["smartnews reading list",
@@ -56,25 +56,25 @@ dataset @com.smartnews language "en" {
     #[id=62726516]
     #[name="ReadingList"];
 
-    action (p_news_id :Number) := @com.smartnews.pocket(news_id=p_news_id)
-    #_[utterances=["pocket smartnews $p_news_id",
-                   "pocket smart news $p_news_id",
-                   "pocket $p_news_id",
-                   "add smartnews $p_news_id",
-                   "add smart news $p_news_id",
-                   "pocket news $p_news_id",
-                   "read $p_news_id later"]]
+    action (p_id :Number) := @com.smartnews.pocket(id=p_id)
+    #_[utterances=["pocket smartnews $p_id",
+                   "pocket smart news $p_id",
+                   "pocket $p_id",
+                   "add smartnews $p_id",
+                   "add smart news $p_id",
+                   "pocket news $p_id",
+                   "read $p_id later"]]
     #[id=62740743]
     #[name="PocketWithNewsId"];
 
-    action (p_news_id :Number) := @com.smartnews.drop(news_id=p_news_id)
-    #_[utterances=["drop smartnews $p_news_id",
-                   "drop smart news $p_news_id",
-                   "drop news $p_news_id",
-                   "drop $p_news_id",
-                   "remove news $p_news_id",
-                   "remove smart news $p_news_id",
-                   "remove smartnews $p_news_id from my pocket"]]
+    action (p_id :Number) := @com.smartnews.drop(id=p_id)
+    #_[utterances=["drop smartnews $p_id",
+                   "drop smart news $p_id",
+                   "drop news $p_id",
+                   "drop $p_id",
+                   "remove news $p_id",
+                   "remove smart news $p_id",
+                   "remove smartnews $p_id from my pocket"]]
     #[id=62741272]
     #[name="DropWithNewsId"];
 
