@@ -9,7 +9,7 @@
 
 const HomeAssistantDevice = require('./base');
 
-module.exports = class HomeAssistantLightbulbDevice extends HomeAssistantDevice {
+module.exports = class HomeAssistantLightbulb extends HomeAssistantDevice {
     async get_power() {
         return [{ power: this.state.state }];
     }
