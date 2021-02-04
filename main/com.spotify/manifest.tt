@@ -108,6 +108,15 @@ class @com.spotify
                         adjective_argmax=["most recent", "newest", "latest"],
                         passive_verb_argmax=["released most recently"],
                         passive_verb_projection=['published | on', 'released | on', 'written | on'],
+                      }],
+                      out genres: Array(String)
+                      #[string_values="com.spotify:genre"]
+                      #_[canonical={
+                        default="adjective",
+                        base=["genres", "type of genre", "type of music", "category"],
+                        adjective=["#"],
+                        preposition=["in the # genre", "in #", "of the # genre",
+                                     "in the # style", "in the # category"],
                       }])
   #_[canonical=["music", "good music"]]
   #_[canonical_short=["music"]]
@@ -141,15 +150,6 @@ class @com.spotify
                                     passive_verb_projection=['included | in', 'included | on'],
                                     preposition_projection=['in', 'on']
                                   }],
-                                  out genres: Array(String)
-                                  #[string_values="com.spotify:genre"]
-                                  #_[canonical={
-                                    default="adjective",
-                                    base=["genres", "type of genre", "type of music", "category"],
-                                    adjective=["#"],
-                                    preposition=["in the # genre", "in #", "of the # genre",
-                                                 "in the # style", "in the # category"],
-                                  }],
                                   out energy : Number
                                   #[min_number=0]
                                   #[max_number=100]
@@ -170,7 +170,7 @@ class @com.spotify
                                     adjective_argmin=["least danceable"],
                                     adjective_argmax=["most danceable"],
                                   }])
-  #_[canonical=["song", "track", "sound track"]]
+  #_[canonical=["song", "track", "sound track", "tune"]]
   #_[canonical_short=["song", "track"]]
   #_[confirmation="songs on Spotify"]
   #[minimal_projection=["id"]]

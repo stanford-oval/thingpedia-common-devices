@@ -35,7 +35,7 @@ dataset @com.spotify language "en" {
                    "play ${p_song:const}"]]
     ;
 
-    program (p_genre :String) := (@com.spotify.song(), contains~(genres, p_genre)) => @com.spotify.play(playable=id)
+    program (p_genre :String) := (@com.spotify.playable(), contains~(genres, p_genre)) => @com.spotify.play(playable=id)
     #_[utterances=["i would like to hear some ${p_genre:const}",
                    "i would like to listen to ${p_genre:const} music",
                    "play ${p_genre:const} on spotify",
