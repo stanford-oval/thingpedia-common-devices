@@ -15,12 +15,6 @@ class @com.smartnews
 
   monitorable list query article(
     in opt count: Number #_[prompt="how many news articles do you want"],
-    out id: Entity(com.smartnews:article)
-      #_[canonical={
-        default = "base",
-        base  = ["id", "news id"],
-        property = ["news #", "article #"]
-      }],
     out title: String
       #_[canonical={
         defalut = "base",
@@ -40,7 +34,7 @@ class @com.smartnews
         passive_verb_argmax=["published most recently"],
         passive_verb_projection=['published | on', 'released | on', 'written | on']
       }],
-    out site_name: String
+    out source: String
       #_[canonical={
         default="preposition",
         base=["publisher", "media", "publisher name", "source"],
@@ -62,66 +56,74 @@ class @com.smartnews
   #_[canonical=["news articles", "news reports"]]
   #_[confirmation="news articles"]
   #_[result=["the latest news is ${title}"]]
-  #_[formatted=[{type="rdl", webCallback="${audio}", displayTitle= "${title}", displayText="ID: ${id}\nPublished: ${date}\nSource: ${site_name}"}]]
+  #_[formatted=[{type="rdl", webCallback="${url}", displayTitle= "${title}", displayText="Published on: ${date}\nSource: ${source}"}]]
   #[related=["com.smartnews:reading_list"]]
+  #[poll_interval=3600000ms]
   #[doc="get news articles from SmartNews api"];
 
-  list query reading_list(
-    out id: Entity(com.smartnews:article)
-      #_[canonical={
-        default = "base",
-        base  = ["id", "news id"],
-        property = ["news #", "article #"]
-      }],
-    out title: String
-      #_[canonical={
-        defalut = "base",
-        base = ["title", "news title", "name"],
-        property = ["news #", "title #"]
-      }],
-    out audio: Entity(tt:url),
-    out date: Date
-      #_[canonical={
-        default="passive_verb",
-        base=["date", "published date", "published year", "published day"],
-        property=["published date #"],
-        preposition=["from #", "in #"],
-        passive_verb=["published in #", "released #", "published in #"],
-        adjective_argmin=["least recent", "oldest", "first"],
-        adjective_argmax=["most recent", "newest", "latest"],
-        passive_verb_argmax=["published most recently"],
-        passive_verb_projection=['published | on', 'released | on', 'written | on']
-      }],
-    out site_name: String
-      #_[canonical={
-        default="preposition",
-        base=["publisher", "media", "publisher name", "source"],
-        property=["publisher #", "media #"],
-        preposition=["from #", "by #"],
-        adjective=["#", "# 's"],
-        passive_verb=["released by #", "published by #"],
-        verb = ["# released", "# published", "# announced", "# stated"],
-        base_projection=['publisher', 'company', 'media'],
-        passive_verb_projection=['published | by', 'released | by'],
-        reverse_verb_projection=['released', 'published']
-      }],
-    out content: String
-      #_[canonical={
-        defalut = "base",
-        base = ["news content", "content", "body", "article"],
-        property = ["news #", "content #", "body #"]
-      }])
-  #_[canonical=["reading list"]]
-  #_[confirmation="reading list"]
-  #_[result=["${title} is in your reading list"]]
-  #_[formatted=[{type="rdl", webCallback="${audio}", displayTitle= "${title}", displayText="ID: ${id}\nPublished: ${date}\nSource: ${site_name}"}]]
-  #[doc="get user's reading list from SmartNews api"];
+//BELOW FOR FUTURE DEV
+/*
 
-  action pocket(in req id: Entity(com.smartnews:article))//#[confirm=false])
-  #_[canonical=["pocket the news", "save the news"]]
-  #_[confirmation="pocket ${id:select:null {the news}}"];
+    query (p_count :Number) := @com.smartnews.article()[1 : p_count]
+    #_[utterances=["$p_count smartnews",
+                   "$p_count smart news",
+                   "$p_count news",
+                   "$p_count top news",
+                   "$p_count news from smartnews",
+                   "$p_count news on smartnews",
+                   "$p_count breaking news",
+                   "$p_count important news",
+                   "$p_count today's news",
+                   "$p_count global news",
+                   "$p_count hot topic",
+                   "$p_count news sotry",
+                   "$p_count news report",
+                   "$p_count story"
+                   ]]
+    #[id=62725774]
+    #[name="TopArticlesWithCount"];
 
-  action drop(in req id: Entity(com.smartnews:article))
-  #_[canonical=["drop the news", "remove the news"]]
-  #_[confirmation="drop ${id:select:null {the news}}"];
+    query := @com.smartnews.reading_list()
+    #_[utterances=["smartnews reading list",
+                   "smart news reading list",
+                   "smartnews list",
+                   "smart news list",
+                   "my smart news list",
+                   "reading list",
+                   "my reading list",
+                   "list",
+                   "my list",
+                   "news list",
+                   "article list",
+                   "my pocket list",
+                   "pokcet list",
+                   "pocket",
+                   "my pocket"]]
+    #[id=62726516]
+    #[name="ReadingList"];
+
+    action (p_id :Number) := @com.smartnews.pocket(id=p_id)
+    #_[utterances=["pocket smartnews $p_id",
+                   "pocket smart news $p_id",
+                   "pocket $p_id",
+                   "add smartnews $p_id",
+                   "add smart news $p_id",
+                   "pocket news $p_id",
+                   "read $p_id later"]]
+    #[id=62740743]
+    #[name="PocketWithNewsId"];
+
+    action (p_id :Number) := @com.smartnews.drop(id=p_id)
+    #_[utterances=["drop smartnews $p_id",
+                   "drop smart news $p_id",
+                   "drop news $p_id",
+                   "drop $p_id",
+                   "remove news $p_id",
+                   "remove smart news $p_id",
+                   "remove smartnews $p_id from my pocket"]]
+    #[id=62741272]
+    #[name="DropWithNewsId"];
+
+*/
+
 }
