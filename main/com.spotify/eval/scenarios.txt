@@ -24,8 +24,7 @@ U: play songs by taylor swift
 #U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 #U: now => (@com.spotify.song(), contains(artists, null^^com.spotify:artist("taylor swift"))) => @com.spotify.play_song(song=id);
 
-# FIXME this answer is awful. We need templates for talking about multiple action results.
-A: Your request was completed successfully\.?
+A: I played songs by Taylor Swift on Spotify for you\.
 A: >> expecting = null
 
 ====
@@ -61,7 +60,7 @@ U: play songs from the album american teen
 #U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 #U: now => (@com.spotify.song(), album == null^^com.spotify:album("american teen")) => @com.spotify.play_song(song=id);
 
-A: Your request was completed successfully\.?
+A: I played songs in the album American Teen on Spotify for you\.
 A: >> expecting = null
 
 ====
@@ -79,7 +78,7 @@ U: play the album songs about jane by maroon 5
 #U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 #U: now => (@com.spotify.song(), album == null^^com.spotify:album("songs about jane") && contains(artists, null^^com.spotify:artist("maroon 5"))) => @com.spotify.play_song(song=id);
 
-A: Your request was completed successfully.
+A: I played songs in the album Songs About Jane by Maroon 5 on Spotify for you\.
 A: >> expecting = null
 
 ====
@@ -130,24 +129,22 @@ A: >> expecting = command
 
 ====
 # 15-sort-energy (req=com.spotify)
-# TODO this is not a supported scenario
 
 # play me energetic songs
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => sort energy desc of (@com.spotify.song()) => @com.spotify.play_song(song=id);
 
-A: Your request was completed successfully\.?
+A: I played the songs sorted by decreasing energy on Spotify for you\.
 A: >> expecting = null
 
 ====
 # 16-sort-danceability (req=com.spotify)
-# TODO this is not a supported scenario
 
 # play me songs that are good for dancing
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => sort danceability desc of (@com.spotify.song()) => @com.spotify.play_song(song=id);
 
-A: Your request was completed successfully\.?
+A: I played the songs sorted by decreasing danceability on Spotify for you\.
 A: >> expecting = null
 
 ====
@@ -227,7 +224,7 @@ U: play pop music
 #U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 #U: now => (@com.spotify.song(), contains~(genres, "pop")) => @com.spotify.play_song(song=id);
 
-A: Your request was completed successfully\.?
+A: I played pop songs on Spotify for you\.
 A: >> expecting = null
 
 ====
@@ -238,7 +235,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.song(), contains~(genres, "r&b")) => @com.spotify.play_song(song=id);
 
-A: Your request was completed successfully\.?
+A: I played r&b songs on Spotify for you\.
 A: >> expecting = null
 
 ====
@@ -249,7 +246,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.song(), release_date >= makeDate(2010, 1, 1) && release_date <= makeDate(2010, 1, 1) + 1year) => @com.spotify.play_song(song=id);
 
-A: Your request was completed successfully\.?
+A: I played songs such that the date is before 1 year past Friday, January 1, 2010 and the date is after Friday, January 1, 2010 on Spotify for you\.
 A: >> expecting = null
 
 ====
@@ -260,7 +257,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.song(), release_date >= makeDate(2000, 1, 1) && release_date <= makeDate(2000, 1, 1) + 1year) => @com.spotify.play_song(song=id);
 
-A: Your request was completed successfully\.?
+A: I played songs such that the date is before 1 year past Saturday, January 1, 2000 and the date is after Saturday, January 1, 2000 on Spotify for you\.
 A: >> expecting = null
 
 ====
@@ -271,7 +268,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.song(), contains~(genres, "hip hop") && release_date >= makeDate(1980, 1, 1) && release_date <= makeDate(1980, 1, 1) + 1year) => @com.spotify.play_song(song=id);
 
-A: Your request was completed successfully\.?
+A: I played hip hop songs such that the date is before 1 year past Tuesday, January 1, 1980 and the date is after Tuesday, January 1, 1980 on Spotify for you\.
 A: >> expecting = null
 
 ====
