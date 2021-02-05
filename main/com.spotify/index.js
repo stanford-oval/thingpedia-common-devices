@@ -52,6 +52,8 @@ const REPEAT_URL = 'https://api.spotify.com/v1/me/player/repeat?';
 const QUEUE_URL = "https://api.spotify.com/v1/me/player/queue";
 const PLAYER_INFO_URL = "https://api.spotify.com/v1/me/player";
 
+// Test test 123
+
 module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
     constructor(engine, state) {
