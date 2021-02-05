@@ -9,7 +9,7 @@
 const assert = require('assert');
 
 module.exports = [
-    ['query', 'articles', { }, (results) => {
+    ['query', 'articles', {}, (results) => {
         for (let result of results) {
             assert(result.title === null || typeof result.title === 'string');
             assert(result.link === null || result.link.startsWith('http'));
