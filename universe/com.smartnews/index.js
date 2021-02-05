@@ -1,10 +1,40 @@
+// -*- mode: js; indent-tabs-mode: nil; js-basic-offset: 4 -*-
+//
+// Copyright 2020-2021 SmartNews Inc.
+//           2021 The Board of Trustees of the Leland Stanford Junior University
+//
+// Redistribution and use in source and binary forms, with or
+// without modification, are permitted provided that the following
+// conditions are met:
+//
+// 1. Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+// 2. Redistributions in binary form must reproduce the above
+//    copyright notice, this list of conditions and the following
+//    disclaimer in the documentation and/or other materials
+//    provided with the distribution.
+// 3. Neither the name of the copyright holder nor the names of its
+//    contributors may be used to endorse or promote products derived
+//    from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+// OF THE POSSIBILITY OF SUCH DAMAGE.
 "use strict";
 
 const Tp = require("thingpedia");
 const API_URL = "http://dev-snva.smartnews.com/api/v1";
 const DEVICE_TOKEN = 1;  // use 1 for now
 // const API_URL = "https://039ev0y88l.execute-api.us-west-1.amazonaws.com/test/v2"; //DEMO API
-
 
 module.exports = class SmartNewsDevice extends Tp.BaseDevice {
     constructor(engine, state) {
@@ -14,22 +44,23 @@ module.exports = class SmartNewsDevice extends Tp.BaseDevice {
         this.description = "SmartNews latest articles";
     }
 
-    get_article({ device_token = DEVICE_TOKEN, count }) {
+    get_article(params, hints) {
+        const device_token = DEVICE_TOKEN;
         let url = API_URL + "/top?deviceToken=" + device_token;
-        count = count || 5; //default is 5 news
+
         return Tp.Helpers.Http.get(url).then((response) => {
             return JSON.parse(response);
         }).then((parsed) => {
             let newArray = parsed['blocks'][0]['links'].concat(parsed['blocks'][1]['links']);
             newArray = newArray.filter((element) => element['articleViewStyle'] === 'SMART');
             newArray = newArray.filter((element) => element['title'] !== 'coronavirus_push_landingpage');
-            newArray = newArray.slice(0, count);
             return newArray.map((article) => {
                 return {
-                    //id: article["id"], // this id is for internal use
+                    id: new Tp.Value.Entity(article["id"], null),
                     title: article["title"],
                     date: new Date(article["publishedTimestamp"] * 1000),
-                    source: article["site"]["name"],
+                    source: article["site"] ? article["site"]["name"] : null,
+                    author: article["author"] ? article["author"]["name"] : null,
                     url: article["url"]
                 };
             });
