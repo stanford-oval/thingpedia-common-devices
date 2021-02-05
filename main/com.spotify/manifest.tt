@@ -51,9 +51,10 @@ class @com.spotify
   );
 
   entity playable #_[description="Playable content on Spotify"];
-  entity song extends playable #[has_ner=true] #_[description="Songs on Spotify"];
   entity artist #_[description="Artists on Spotify"];
+  entity song extends playable #[has_ner=true] #_[description="Songs on Spotify"];
   entity album extends playable #[has_ner=true] #_[description="Albums on Spotify"];
+  entity podcast extends playable #[has_ner=true] #_[description="Podcasts on Spotify"]
   entity device #_[description="Spotify Connect device ID"];
 
   list query playable(out id: Entity(com.spotify:playable)
@@ -191,6 +192,19 @@ class @com.spotify
   #[minimal_projection=["id"]]
   #_[formatted=[{type="text",text="${id} by ${artists}"}]]
   #[doc="search for albums on Spotify"];
+
+  list query podcast extends playable(out id: Entity(com.spotify:podcast)
+                                        #[string_values="tt:podcast"]
+                                        #[unique="true"]
+                                        #_[canonical={
+                                        verb=["listen"]
+                                        }]
+                                        )
+  #_[canonical=["podcast", "good podcast", "episodes"]]
+  #_[confirmation="podcast on Spotify"]
+  #[minimal_projection=["id"]]
+  #_[formatted=[{type="text",text="${id} by ${artists}"}]]
+  #[doc="search for podcasts on Spotify"];
 
   action play (in req playable: Entity(com.spotify:playable)
                 #[string_values="tt:song_name"]
