@@ -7,14 +7,8 @@ dataset @org.thingpedia.iot.temperature language "en" {
                  "check if the home temperature is cold",
                  "check if the room temperature is warm or cold",
                  "what is the indoor temperature?",
+                 "what is the temperature?",
                  "how high is the indoor temperature?"]];
-
-  query := @org.thingpedia.iot.temperature.temperature()
-  #_[utterances=["the state of the room temperature",
-                 "the room temperature",
-                 "how high the home temperature is",
-                 "if the inside temperature is warm or cold",
-                 "whether the home temperature is warm or cold"]];
 
   stream := monitor(@org.thingpedia.iot.temperature.temperature())
   #_[utterances=["when the home temperature changes"]];
@@ -34,10 +28,13 @@ dataset @org.thingpedia.iot.temperature language "en" {
 
   query (p_name : String) := @org.thingpedia.iot.temperature(name=p_name).temperature()
   #_[utterances=["what the ${p_name} home temperature sensor says",
-                 "the temperature of the ${p_name} room temperature sensor"]];
+                 "the temperature of the ${p_name} temperature sensor",
+                 "the temperature of the ${p_name}",
+                 "the temperature in the ${p_name}",
+                 "the ${p_name} temperatue"]];
 
   stream (p_name : String) := monitor(@org.thingpedia.iot.temperature(name=p_name).temperature())
-  #_[utterances=["when the ${p_name} room temperature changes"]];
+  #_[utterances=["when the ${p_name} temperature changes"]];
 
   stream (p_name : String, p_temperature :Measure(C)) :=  monitor (@org.thingpedia.iot.temperature(name=p_name).temperature()), value >= p_temperature
   #_[utterances=["when the ${p_name} sensor 's room temperature is hotter than $p_temperature",
@@ -46,6 +43,6 @@ dataset @org.thingpedia.iot.temperature language "en" {
 
   stream (p_name : String, p_temperature :Measure(C)) := monitor (@org.thingpedia.iot.temperature(name=p_name).temperature()), value <= p_temperature
   #_[utterances=["when the ${p_name} sensor 's indoor temperature is colder than $p_temperature",
-                   "if the temperature of the ${p_name} room sensor is lower than $p_temperature",
-                   "when the temperature of the ${p_name} home sensor goes below $p_temperature"]];
+                   "if the temperature of the ${p_name} sensor is lower than $p_temperature",
+                   "when the temperature of the ${p_name} sensor goes below $p_temperature"]];
 }
