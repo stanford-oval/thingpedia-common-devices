@@ -8,12 +8,17 @@
 
 const assert = require('assert');
 
-console.log("SmartNews Device Test Case:");
+function assertNonEmptyString(what) {
+    assert(typeof what === 'string' && what, 'Expected a non-empty string, got ' + what);
+}
 
 module.exports = [
-    ['query', 'article', { count: 5 }, (results) => {
-        console.log(results);
-        assert(true, 'something');
+    ['query', 'article', {}, (results) => {
+        for (const res of results) {
+            assertNonEmptyString(res.title);
+            assert(res.date instanceof Date);
+            assertNonEmptyString(res.source);
+        }
     }]
     // ['query', 'reading_list', {}, (results) => {
     //     console.log(results);
