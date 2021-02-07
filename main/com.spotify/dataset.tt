@@ -1,4 +1,4 @@
-dataset @com.spotify language "en" {
+showdataset @com.spotify language "en" {
     // this combination is so common it warrants its own primitive template...
     query (p_song :String, p_artist :Entity(com.spotify:artist)) := @com.spotify.playable(), id =~ p_song && contains(artists, p_artist)
     #_[utterances=["${p_song:no-undefined} by ${p_artist}",
@@ -67,13 +67,17 @@ dataset @com.spotify language "en" {
 
     action := @com.spotify.player_next()
     #_[utterances=["play the next song",
-                   "skip this song"]]
+                   "skip this song",
+                   "play the next episode",
+                   "skip this episode"]]
     #[id=27924859]
     ;
 
     action := @com.spotify.player_previous()
     #_[utterances=["play the previous song",
-                   "go back a song"]]
+                   "go back a song",
+                   "play the previous episode",
+                   "go back an episode"]]
     #[id=27924859]
     ;
 
@@ -111,16 +115,6 @@ dataset @com.spotify language "en" {
                    "i would like to listen to the album ${p_album:no-undefined} by ${p_artist:no-undefined}",
                    "i would like to listen to the album ${p_album:no-undefined} from ${p_artist:no-undefined}"]]
     #[id=27924878]
-    ;
-
-    program (p_podcast :Entity(com.spotify:podcast), p_artist :Entity(com.spotify:artist)) :=
-      @com.spotify.podcast(), id =~ p_podcast && contains(artists, p_artist) => @com.spotify.play(playable=id)
-    #_[utterances=["play the podcast ${p_podcast:no-undefined} by ${p_artist:no-undefined}",
-                  "i would like to listen to the podcast ${p_podcast:no-undefined} from ${p_artist:no-undefined}",
-                  "i would like to listen to the podcast ${p_podcast:no-undefined} by ${p_artist:no-undefined}",
-                  "play the episode ${p_podcast:no-undefined} by ${p_artist:no-undefined}",
-                  "i would like to listen to the episode ${p_podcast:no-undefined} from ${p_artist:no-undefined}",
-                  "i would like to listen to the episode ${p_podcast:no-undefined} by ${p_artist:no-undefined}"]]
     ;
 
     stream := monitor (@com.spotify.get_user_top_tracks())

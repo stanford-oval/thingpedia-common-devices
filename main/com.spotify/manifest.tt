@@ -54,7 +54,7 @@ class @com.spotify
   entity artist #_[description="Artists on Spotify"];
   entity song extends playable #[has_ner=true] #_[description="Songs on Spotify"];
   entity album extends playable #[has_ner=true] #_[description="Albums on Spotify"];
-  entity podcast extends playable #[has_ner=true] #_[description="Podcasts on Spotify"];
+  entity show extends playable #[has_ner=true] #_[description="Podcasts on Spotify"];
   entity device #_[description="Spotify Connect device ID"];
 
   list query playable(out id: Entity(com.spotify:playable)
@@ -193,11 +193,16 @@ class @com.spotify
   #_[formatted=[{type="text",text="${id} by ${artists}"}]]
   #[doc="search for albums on Spotify"];
 
-  list query podcast extends playable(out id: Entity(com.spotify:podcast)
-                                        #[string_values="tt:podcast"]
+  list query show extends playable(out id: Entity(com.spotify:show)
+                                        #[string_values="tt:show"]
                                         #[unique=true]
                                         #_[canonical={
                                         verb=["listen"]
+                                        }]
+                                   out publisher: String
+                                        #[filterable=false]
+                                        #[canonical={
+                                        verb=["publish"]
                                         }])
   #_[canonical=["podcast", "good podcast", "episodes"]]
   #_[confirmation="podcast on Spotify"]
