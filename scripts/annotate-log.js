@@ -109,6 +109,7 @@ class Trainer {
         this._outputs = new Map;
         this._existingDataset = new Set;
         this._sentenceCache = new Map;
+        this._editExisting = options.edit_existing;
 
         this._devices = new Map;
         this._idQueries = new Map;
@@ -217,12 +218,14 @@ class Trainer {
     }
 
     async _loadAllExistingDatasets() {
-        for await (const row of fs.createReadStream(this._droppedFilename).pipe(csvparse({ delimiter: '\t' }))) {
-            const [id, sentence, comment] = row;
-            this._existingDataset.add(id);
+        if (fs.existsSync(this._droppedFilename)) {
+            for await (const row of fs.createReadStream(this._droppedFilename).pipe(csvparse({ delimiter: '\t' }))) {
+                const [id, sentence, comment] = row;
+                this._existingDataset.add(id);
 
-            if (sentence !== '<redacted>')
-                this._sentenceCache.set(sentence, { dropped: comment });
+                if (sentence !== '<redacted>')
+                    this._sentenceCache.set(sentence, { dropped: comment });
+            }
         }
 
         for (const r of RELEASES) {
@@ -232,7 +235,7 @@ class Trainer {
             for (const d of await pfs.readdir(path.resolve(r))) {
                 if (!await existsSafe(path.resolve(r, d, 'manifest.tt')))
                     continue;
-                assert(!this._devices.has(d));
+                assert(!this._devices.has(d), `duplicate device ${d}`);
 
                 this._devices.set(d, r);
 
@@ -523,19 +526,27 @@ class Trainer {
         }
         this._state = 'loading';
         const { id, preprocessed, target_code } = line;
-        this._id = 'log/' + (id || String(this._serial));
+        if (id && id.startsWith('log/'))
+            this._id = id;
+        else
+            this._id = 'log/' + (id || String(this._serial));
+        this._preprocessed = preprocessed;
+        this._entities = Genie.EntityUtils.makeDummyEntities(preprocessed);
+
         if (this._existingDataset.has(this._id)) {
-            process.nextTick(() => this.next());
+            process.nextTick(() => this._next());
             return;
         }
 
-        this._preprocessed = preprocessed;
-        this._entities = Genie.EntityUtils.makeDummyEntities(preprocessed);
+        if (this._editExisting && this._editExisting !== target_code) {
+            this._drop(target_code);
+            return;
+        }
 
         const cached = this._sentenceCache.get(this._preprocessed);
         if (cached) {
             // exact duplicate of an existing sentence, ignore
-            process.nextTick(() => this.next());
+            process.nextTick(() => this._next());
             return;
             /*if (cached.parsed) {
                 const parsed = await ThingTalkUtils.parsePrediction(cached.parsed, this._entities, {
@@ -564,14 +575,19 @@ class Trainer {
     async _handleSentence(utterance, target_code) {
         this._utterance = utterance;
 
-
-        const parsed = await this._parser.sendUtterance(this._preprocessed, /* context */ ['null'], /* contextEntities */ {}, {
-            tokenized: true,
-            skip_typechecking: true
-        });
+        let parsed;
+        try {
+            parsed = await this._parser.sendUtterance(this._preprocessed, /* context */ ['null'], /* contextEntities */ {}, {
+                tokenized: true,
+                skip_typechecking: true
+            });
+        } catch(e) {
+            console.error(`Failed to parse ${utterance}: ${e.message}`);
+            return;
+        }
 
         let olddialoguestate;
-        if (target_code) {
+        if (target_code && !this._editExisting) {
             let oldprogram;
             try {
                 oldprogram = await ThingTalkUtils.parsePrediction(target_code.split(' '), parsed.entities, {
@@ -630,8 +646,13 @@ async function main() {
         help: `BGP 47 locale tag of the natural language being processed (defaults to en-US).`
     });
     parser.add_argument('--model', {
-        required: true,
+        required: false,
+        default: 'file://' + path.resolve(path.dirname(module.filename), '../tmp/model'),
         help: `The URL of the natural language model.`
+    });
+    parser.add_argument('--edit-existing', {
+        required: false,
+        help: `Edit an existing OOD dataset instead of annotating a new dataset.`
     });
 
     const args = parser.parse_args();
@@ -648,6 +669,7 @@ async function main() {
 
     const trainer = new Trainer(lines, platform, tpClient, args);
     await trainer.init();
+
     trainer.next();
 }
 main();
