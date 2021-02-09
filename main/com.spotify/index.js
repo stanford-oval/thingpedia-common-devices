@@ -255,8 +255,14 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     async music_by_search(query, limit = 5) {
         const searchResults = await this.search(query, "track,album", limit);
         if ((!Object.prototype.hasOwnProperty.call(searchResults, "tracks") && !Object.prototype.hasOwnProperty.call(searchResults, "albums")) || searchResults.tracks.total === 0) return [];
+
         const tracks = searchResults.tracks.items;
         const albums = searchResults.albums.items;
+
+        const trackArtistIds = tracks.map((track) => track.artists[0].id);
+        const trackAritstInfo = (await this.artists_get_by_id(trackArtistIds)).artists;
+        const trackGenres = trackAritstInfo.map((artist) => artist.genres);
+
         var music = [];
         for (var i = 0; i < tracks.length; i++) {
             const release_date = new Date(tracks[i].album.release_date);
@@ -267,25 +273,32 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 artists,
                 release_date,
                 popularity: tracks[i].popularity,
+                genres: trackGenres[i],
             };
 
             music.push(songObj);
         }
-        const albumIds = albums.map((album) => album.id);
-        const albumPopularities = (await this.albums_get_by_id(albumIds)).albums.map((album) => album.popularity);
-        for (var j = 0; j < albums.length; j++) {
-            const release_date = new Date(albums[j].release_date);
-            const artists = albums[j].artists.map((artist) => new Tp.Value.Entity(artist.uri, artist.name));
-            const id = new Tp.Value.Entity(albums[j].uri, albums[j].name);
-            const popularity = albumPopularities[j];
-            const albumObj = {
-                id,
-                artists,
-                release_date,
-                popularity,
-            };
+        if (albums.length >= 1) {
+            const albumArtistIds = albums.map((album) => album.artists[0].id);
+            const albumAritstInfo = (await this.artists_get_by_id(albumArtistIds)).artists;
+            const albumGenres = albumAritstInfo.map((artist) => artist.genres);
+            const albumIds = albums.map((album) => album.id);
+            const albumPopularities = (await this.albums_get_by_id(albumIds)).albums.map((album) => album.popularity);
+            for (var j = 0; j < albums.length; j++) {
+                const release_date = new Date(albums[j].release_date);
+                const artists = albums[j].artists.map((artist) => new Tp.Value.Entity(artist.uri, artist.name));
+                const id = new Tp.Value.Entity(albums[j].uri, albums[j].name);
+                const popularity = albumPopularities[j];
+                const albumObj = {
+                    id,
+                    artists,
+                    release_date,
+                    popularity,
+                    genres: albumGenres[i]
+                };
 
-            music.push(albumObj);
+                music.push(albumObj);
+            }
         }
         return music;
     }
@@ -419,55 +432,47 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         var idFilter = '';
         var yearFilter = '';
         var artistFilter = '';
+        var genreFilter = '';
         var yearLowerBound = 0;
         var yearUpperBound = new Date().getFullYear();
         if (hints && hints.filter) {
             for (let [pname, op, value] of hints.filter) {
                 if (pname === "id" && (op === "==" || op === "=~")) {
-                    if (value instanceof Tp.Value.Entity) idFilter = value.display.toLowerCase();
-                    else idFilter = value.toLowerCase();
-                }
-                if (pname === "artists" && (op === "contains" || op === "contains~")) {
+                    if (value instanceof Tp.Value.Entity) idFilter = `${value.display.toLowerCase()} `;
+                    else idFilter = `${value.toLowerCase()} `;
+                } else if (pname === "artists" && (op === "contains" || op === "contains~")) {
                     if (value instanceof Tp.Value.Entity)
                         artistFilter = `artist:${value.display.toLowerCase()} `;
                     else
                         artistFilter = `artist:${value.toLowerCase()} `;
-                }
-                if (pname === "release_date" && (op === "=="))
+                } else if (pname === "release_date" && (op === "==")) {
                     yearFilter = `year:${value.getFullYear()} `;
-
-                if (pname === "release_date" && (op === ">=")) {
+                } else if (pname === "release_date" && (op === ">=")) {
                     yearFilter = `year:${value.getFullYear()}-${yearUpperBound} `;
                     yearLowerBound = value.getFullYear();
-                }
-                if (pname === "release_date" && (op === "<=")) {
+                } else if (pname === "release_date" && (op === "<=")) {
                     //Thingtalk generates songs from 2010 as release_date >= makeDate(2010,1,1), release_date <= makeDate(2010,1,1) + 1year
                     //This includes one day in 2011. If we include that one day spotify will get all the songs from 2011, so we should subtract 1 day.
                     value.setDate(value.getDate() - 1);
                     yearFilter = `year:${yearLowerBound}-${value.getFullYear()} `;
                     yearUpperBound = value.getFullYear();
+                } else if (pname === "genres" && (op === "contains" || op === "contains~")) {
+                    genreFilter = `genre:"${value.toLowerCase()}" `;
                 }
 
             }
 
         }
 
-        let query = (idFilter + yearFilter + artistFilter).trim();
+        let query = (idFilter + yearFilter + artistFilter + genreFilter).trim();
         if (idFilter) {
             let music = await this.music_by_search(query, 5);
             music.sort((a, b) => {
                 return b.popularity - a.popularity;
             });
-            music = Array.from(new Set(music.map((playable) => String(playable.id.display))))
-                .map((name) => {
-                    return music.find((playable) => playable.id.display === name);
-                });
-            music.sort((a, b) => {
-                return entityMatchScore(idFilter, b.id.display.toLowerCase()) - entityMatchScore(idFilter, a.id.display.toLowerCase());
-            });
             return music;
         } else {
-            return this.music_by_search(query, 5);
+            return this.music_by_search(query, 20);
         }
     }
 
@@ -640,12 +645,29 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (idFilter) {
             if (artists.length > 1) {
                 let query = (idFilter + yearFilter).trim();
-                return this.albums_by_search(query);
+                let albums = this.albums_by_search(query);
+                let searchTerm = idFilter.split("album:")[1].trim();
+                albums = Array.from(new Set(albums.map((album) => String(album.id.display))))
+                    .map((album_name) => {
+                        return albums.find((album) => album.id.display === album_name);
+                    });
+                albums.sort((a, b) => {
+                    return entityMatchScore(searchTerm, b.id.display.toLowerCase()) - entityMatchScore(searchTerm, a.id.display.toLowerCase());
+                });
+                return albums;
             } else {
                 let query = (idFilter + yearFilter + artistFilter).trim();
                 let albums = await this.albums_by_search(query);
                 if (albums.length === 0 && artists.length === 1)
                     albums = await this.albums_by_artist(artists);
+                let searchTerm = idFilter.split("album:")[1].trim();
+                albums = Array.from(new Set(albums.map((album) => String(album.id.display))))
+                    .map((album_name) => {
+                        return albums.find((album) => album.id.display === album_name);
+                    });
+                albums.sort((a, b) => {
+                    return entityMatchScore(searchTerm, b.id.display.toLowerCase()) - entityMatchScore(searchTerm, a.id.display.toLowerCase());
+                });
                 return albums;
             }
         } else if (hints && hints.sort && hints.sort[0] === "release_date" && artists.length > 0) {

@@ -31,5 +31,19 @@ module.exports = [
 
         assert.deepStrictEqual(result[0].id, new Tp.Value.Entity('spotify:track:6habFhsOp2NvshLv26DqMb', 'Despacito'));
         assert.deepStrictEqual(result[0].release_date, new Date('2019-02-01T00:00:00.000Z'));
-    }]
+    }],
+    ['query', 'playable', {}, {
+        filter: [
+            ['id', '=~', 'bohemian rhapsody']
+        ]
+    }, (result) => {
+        assert.deepStrictEqual(result[0].artists, [
+            new Tp.Value.Entity('spotify:artist:1dfeR4HaWDbWqFHLkxsg1d', 'Queen')
+        ]);
+        assert.deepStrictEqual(result[0].genres, ['classic rock', 'glam rock', 'rock']);
+        assert(typeof result[0].popularity === 'number');
+
+        assert.deepStrictEqual(result[0].id, new Tp.Value.Entity('spotify:track:7tFiyTwD0nx5a1eklYtX2J', 'Bohemian Rhapsody - Remastered 2011'));
+        assert.deepStrictEqual(result[0].release_date, new Date('1975-11-21T00:00:00.000Z'));
+    }],
 ];
