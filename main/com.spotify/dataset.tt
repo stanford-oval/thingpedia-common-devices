@@ -1,4 +1,4 @@
-dataset @com.spotify language "en" {
+showdataset @com.spotify language "en" {
     // this combination is so common it warrants its own primitive template...
     query (p_song :String, p_artist :Entity(com.spotify:artist)) := @com.spotify.playable(), id =~ p_song && contains(artists, p_artist)
     #_[utterances=["${p_song:no-undefined} by ${p_artist}",
@@ -67,13 +67,17 @@ dataset @com.spotify language "en" {
 
     action := @com.spotify.player_next()
     #_[utterances=["play the next song",
-                   "skip this song"]]
+                   "skip this song",
+                   "play the next episode",
+                   "skip this episode"]]
     #[id=27924859]
     ;
 
     action := @com.spotify.player_previous()
     #_[utterances=["play the previous song",
-                   "go back a song"]]
+                   "go back a song",
+                   "play the previous episode",
+                   "go back an episode"]]
     #[id=27924859]
     ;
 
