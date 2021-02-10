@@ -249,7 +249,7 @@ module.exports = class FinAssistantDevice extends Tp.BaseDevice {
             }
             if (updated != 4) break;
             else {
-                chart_data.debug.push({date: d, price: price, ttm: TTM_metric, ttm_dates:ttm_dates})
+                chart_data.debug.push({date: d, price: price, ttm: TTM_metric, ttm_dates:ttm_dates});
                 let ratio = price/TTM_metric;
                 ratio = ratio.toFixed(2);
                 chart_data.values.push({x: d, y: ratio});
@@ -257,7 +257,7 @@ module.exports = class FinAssistantDevice extends Tp.BaseDevice {
                 updated = true;
             }
         }
-        return {chart_data: chart_data, display: display}
+        return {chart_data: chart_data, display: display};
     }
 
     async get_pe(company) {

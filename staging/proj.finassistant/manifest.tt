@@ -1,126 +1,146 @@
-// Copyright 2016-2020 The Board of Trustees of the Leland Stanford Junior University
-//
-// Redistribution and use in source and binary forms, with or
-// without modification, are permitted provided that the following
-// conditions are met:
-//
-// 1. Redistributions of source code must retain the above copyright
-//    notice, this list of conditions and the following disclaimer.
-// 2. Redistributions in binary form must reproduce the above
-//    copyright notice, this list of conditions and the following
-//    disclaimer in the documentation and/or other materials
-//    provided with the distribution.
-// 3. Neither the name of the copyright holder nor the names of its
-//    contributors may be used to endorse or promote products derived
-//    from this software without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-// COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
-// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
-// OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class @proj.finassistant
-#_[thingpedia_name="Finance Assistant"]
+#_[thingpedia_name="Financial Assistant"]
 #_[thingpedia_description="Research assistant leveraging Alpha Vantage APIs to help users quickly find relevant financial data to support their investing decisions"]
 #[subcategory="media"]
 #[license="BSD-3-Clause"]
 #[license_gplcompatible=true]
-#[website="https://www.alphavantage.co"]
+#[website="https://james-zhuang.github.io/stockcharts/"]
 {
   import loader from @org.thingpedia.v2();
-  import config from @org.thingpedia.config.none(api_key="VPJXG30AV7OQAM22");
+  import config from @org.thingpedia.config.none();
 
-  monitorable query price(in req company: Entity(tt:stock_id)
-                          #_[prompt="What company do you want to check?"],
-                          out price: Currency,
-                          out change: Number
-                          )
-  #_[canonical="stock price"]
+  query price(in req company: Entity(tt:stock_id)
+                    #_[prompt="What company do you want to check?"]
+                    #_[canonical={
+                        default="preposition",
+                        base=["company", "business", "enterprise", "ticker", "symbol"],
+                        preposition=["for #", "of #"],
+                        property=["# trading at"]
+                    }],
+              out price: Currency
+                    #_[canonical={
+                        base=["price", "stock price"]
+                    }]
+              )
+  #_[canonical=["stock price", "price", "price per share", "share price"]]
   #_[confirmation="stock price of ${company}"]
-  #_[formatted=[{type="text",text="The current stock price of ${company} is ${price}."}]]
-  #[poll_interval=300000ms]
+  #_[result=["The current stock price of ${company} is ${price}."]]
   #[doc="Get stock price"];
 
   query pe(in req company: Entity(tt:stock_id)
-    		   #_[prompt="What company do you want to check?"],
+                #_[prompt="What company do you want to check?"]
+                #_[canonical={
+                    default="preposition",
+                    base=["company", "business", "enterprise", "ticker", "symbol"],
+                    preposition=["for #", "of #"]
+                }],
                out pe: Number
                )
-  #_[canonical="pe ratio"]
+  #_[canonical=["pe ratio", "pe multiple", "price earnings", "price earnings ratio", "price earnings multiple"]]
   #_[confirmation="pe ratio of ${company}"]
-  #_[formatted=[{type="text",text="The PE ratio of ${company} is ${pe}."}]]
+  #_[result=["The PE ratio of ${company} is ${pe}."]]
   #[doc="Get PE ratio"];
 
   query ps(in req company: Entity(tt:stock_id)
-    		   #_[prompt="What company do you want to check?"],
-               out ps: Number
-               )
-  #_[canonical="P/S ratio"]
+                  #_[prompt="What company do you want to check?"]
+                  #_[canonical={
+                      default="preposition",
+                      base=["company", "business", "enterprise", "ticker", "symbol"],
+                      preposition=["for #", "of #"]
+                  }],
+            out ps: Number
+            )
+  #_[canonical=["ps ratio", "ps", "ps multiple", "price sales ratio", "price sales multiple"]]
   #_[confirmation="P/S ratio of ${company}"]
-  #_[formatted=[{type="text",text="The P/S ratio of ${company} is ${ps}."}]]
+  #_[result=["The P/S ratio of ${company} is ${ps}."]]
   #[doc="Get P/S ratio"];
 
   query revenue(in req company: Entity(tt:stock_id)
-    		   #_[prompt="What company do you want to check?"],
+                  #_[prompt="What company do you want to check?"]
+                  #_[canonical={
+                      default="preposition",
+                      base=["company", "business", "enterprise", "ticker", "symbol"],
+                      preposition=["for #", "of #"]
+                  }],
                out revenue: Currency
                )
-  #_[canonical="revenue"]
+  #_[canonical=["revenue", "sales"]]
   #_[confirmation="revenue of ${company}"]
-  #_[formatted=[{type="text",text="The revenue of ${company} is ${revenue}."}]]
+  #_[result=["The revenue of ${company} is ${revenue}."]]
   #[doc="Get revenue"];
 
   query earnings(in req company: Entity(tt:stock_id)
-             #_[prompt="What company do you want to check?"],
-               out earnings: Number
-               )
-  #_[canonical="earnings"]
+                      #_[prompt="What company do you want to check?"]
+                      #_[canonical={
+                          default="preposition",
+                          base=["company", "business", "enterprise", "ticker", "symbol"],
+                          preposition=["for #", "of #"]
+                      }],
+                  out earnings: Number
+                  )
+  #_[canonical=["earnings", "profit", "net income"]]
   #_[confirmation="earnings of ${company}"]
-  #_[formatted=[{type="text",text="The earnings of ${company} is ${earnings}."}]]
+  #_[result=["The earnings of ${company} is ${earnings}."]]
   #[doc="Get earnings"];
 
   query market_cap(in req company: Entity(tt:stock_id)
-    		   #_[prompt="What company do you want to check?"],
-               out market_cap : Currency
-               )
-  #_[canonical="market cap"]
+                          #_[prompt="What company do you want to check?"]
+                          #_[canonical={
+                              default="preposition",
+                              base=["company", "business", "enterprise", "ticker", "symbol"],
+                              preposition=["for #", "of #"]
+                          }],
+                    out market_cap : Currency
+                    )
+  #_[canonical=["market cap", "market capitalization", "worth", "equity value"]]
   #_[confirmation="Market cap of ${company}"]
-  #_[formatted=[{type="text",text="The market cap of ${company} is ${market_cap}."}]]
+  #_[result=["The market cap of ${company} is ${market_cap}."]]
   #[doc="Get market cap"];
 
   query ebitda(in req company: Entity(tt:stock_id)
-    		   #_[prompt="What company do you want to check?"],
+                      #_[prompt="What company do you want to check?"]
+                      #_[canonical={
+                          default="preposition",
+                          base=["company", "business", "enterprise", "ticker", "symbol"],
+                          preposition=["for #", "of #"]
+                      }],
                out ebitda : Currency
                )
   #_[canonical="ebitda"]
   #_[confirmation="ebitda of ${company}"]
-  #_[formatted=[{type="text",text="The ebitda of ${company} is ${ebitda}."}]]
+  #_[result=["The ebitda of ${company} is ${ebitda}."]]
   #[doc="Get ebitda"];
 
   query operating_profit(in req company: Entity(tt:stock_id)
-    		   #_[prompt="What company do you want to check?"],
-               out operating_profit : Currency
-               )
-  #_[canonical="operating_profit"]
-  #_[confirmation="operating_profit of ${company}"]
-  #_[formatted=[{type="text",text="The operating_profit of ${company} is ${operating_profit}."}]]
-  #[doc="Get operating_profit"];
+                                #_[prompt="What company do you want to check?"]
+                                #_[canonical={
+                                    default="preposition",
+                                    base=["company", "business", "enterprise", "ticker", "symbol"],
+                                    preposition=["for #", "of #"]
+                                }],
+                            out operating_profit : Currency
+                            )
+  #_[canonical=["operating profit", "operating income", "operating margin"]]
+  #_[confirmation="operating profit of ${company}"]
+  #_[result=["The operating profit of ${company} is ${operating_profit}."]]
+  #[doc="Get operating profit"];
 
   query gross_profit(in req company: Entity(tt:stock_id)
-    		   #_[prompt="What company do you want to check?"],
-               out gross_profit : Currency
-               )
-  #_[canonical="gross_profit"]
-  #_[confirmation="gross_profit of ${company}"]
-  #_[formatted=[{type="text",text="The gross_profit of ${company} is ${gross_profit}."}]]
-  #[doc="Get gross_profit"];
+                            #_[prompt="What company do you want to check?"]
+                            #_[canonical={
+                                default="preposition",
+                                base=["company", "business", "enterprise", "ticker", "symbol"],
+                                preposition=["for #", "of #"]
+                            }],
+                    out gross_profit : Currency
+                    )
+  #_[canonical=["gross profit", "gross margin"]]
+  #_[confirmation="gross profit of ${company}"]
+  #_[result=["The gross profit of ${company} is ${gross_profit}."]]
+  #[doc="Get gross profit"];
 
+/*
   query create_report(in req data: Object
     		   #_[prompt="What do you want to name your report?"]
                )
@@ -134,6 +154,6 @@ class @proj.finassistant
   #_[canonical="Display report"]
   #_[confirmation="Displayed report ${name}"]
   #[doc="create report"];
-
+*/
 
 }
