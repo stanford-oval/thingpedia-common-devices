@@ -34,6 +34,7 @@
 const Tp = require("thingpedia");
 const querystring = require("querystring");
 const assert = require('assert');
+const spotifyd = require("./spotifyd");
 
 const PLAY_URL = "https://api.spotify.com/v1/me/player/play";
 const SEARCH_URL = "https://api.spotify.com/v1/search?";
@@ -60,6 +61,10 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         this._state = new Map();
         this._queryResults = new Map();
         this._deviceState = new Map();
+
+        if (this.platform.type == "server") {
+            this.spotifyd = new spotifyd({ cacheDir: this.platform._cacheDir, username: this.state.id, device_name: this.state.id, token: this.accessToken });
+        }
     }
 
     http_get(url) {
@@ -731,6 +736,16 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (devices.length === 0) {
             console.log("no available devices");
             return [null, null];
+        }
+        // spotifyd active
+        if (this.spotifyd) {
+            for (let i = 0; i < devices.length; i++) {
+                console.log(devices[i].is_active);
+                if (devices[i].id == this.spotifyd.get_deviceId()) {
+                    console.log("found spotifyd device");
+                    return [devices[i].id, this.state.id];
+                }
+            }
         }
         // device already active
         for (let i = 0; i < devices.length; i++) {
