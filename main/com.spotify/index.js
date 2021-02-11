@@ -44,7 +44,7 @@ const ARTIST_ALBUM_URL = "https://api.spotify.com/v1/artists/{id}/albums?";
 const AUDIO_FEATURES_URL = 'https://api.spotify.com/v1/audio-features/?';
 const ALBUM_URL = 'https://api.spotify.com/v1/albums?';
 const TRACK_URL = 'https://api.spotify.com/v1/tracks?';
-const PODCAST_URL = 'https://api.spotify.com/v1/shows?';
+const SHOW_URL = 'https://api.spotify.com/v1/shows?';
 const ARTIST_URL = 'https://api.spotify.com/v1/artists?';
 const SHUFFLE_URL = 'https://api.spotify.com/v1/me/player/shuffle?';
 const PAUSE_URL = 'https://api.spotify.com/v1/me/player/pause?';
@@ -210,7 +210,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     }
 
     shows_get_by_id(ids) {
-        const url = PODCAST_URL + querystring.stringify({
+        const url = SHOW_URL + querystring.stringify({
             ids: ids.join()
         });
         return Tp.Helpers.Http.get(url, {
@@ -269,7 +269,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         return songs;
     }
 
-    //songs + albums + podcasts ...
+    //songs + albums + shows ...
     async music_by_search(query, limit = 5) {
         const searchResults = await this.search(query, "track,album", limit);
         if ((!Object.prototype.hasOwnProperty.call(searchResults, "tracks") && !Object.prototype.hasOwnProperty.call(searchResults, "albums")) || searchResults.tracks.total === 0) return [];
@@ -449,19 +449,19 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         const searchResults = await this.search(query, "show", 5);
         if (!Object.prototype.hasOwnProperty.call(searchResults, "shows") || searchResults.albums.total === 0) return [];
         const ids = searchResults.shows.items.map((show) => show.id);
-        const podcastItems = (await this.shows_get_by_id(ids)).shows;
-        var podcasts = [];
-        for (var i = 0; i < podcastItems.length; i++) {
-            const release_date = new Date(podcastItems[i].release_date);
-            const artists = podcastItems[i].artists.map((producer) => new Tp.Value.Entity(producer.uri, producer.name));
-            const podcast = {
-                id: new Tp.Value.Entity(podcastItems[i].uri, podcastItems[i].name),
+        const showItems = (await this.shows_get_by_id(ids)).shows;
+        var shows = [];
+        for (var i = 0; i < showItems.length; i++) {
+            const release_date = new Date(showItems[i].release_date);
+            const artists = showItems[i].artists.map((producer) => new Tp.Value.Entity(producer.uri, producer.name));
+            const show = {
+                id: new Tp.Value.Entity(showItems[i].uri, showItems[i].name),
                 artists,
                 release_date,
             };
-            podcasts.push(podcast);
+            shows.push(show);
         }
-        return podcasts;
+        return shows;
     }
 
     async get_playable(params, hints, env) {
