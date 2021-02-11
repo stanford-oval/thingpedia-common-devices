@@ -3,9 +3,9 @@
 # simple playing
 #U: play bohemian rhapsody
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: now => (@com.spotify.playable(), id =~ ("bohemian rhapsody"))[1] => @com.spotify.play(playable=id);
+U: now => (@com.spotify.playable(), id =~ ("bohemian rhapsody")) => @com.spotify.play(playable=id);
 
-A: I played Bohemian Rhapsody( - Remastered 2011)( on Spotify)?( on (Coolest Computer|giovanni-xps15))? ?.
+A:  I played music that have name bohemian rhapsody( - remastered 2011)?( on Spotify)?( for you)?\.
 A: >> expecting = null
 
 ====
@@ -40,27 +40,27 @@ A: >> expecting = command
 # 5-song-artist (req=com.spotify)
 #U: play destination calabria by alex gaudino
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: now => (@com.spotify.playable(), id =~ ("destination calabria") && contains(artists, null^^com.spotify:artist("alex gaudino")))[1] => @com.spotify.play(playable=id);
+U: now => (@com.spotify.playable(), id =~ ("destination calabria") && contains(artists, null^^com.spotify:artist("alex gaudino"))) => @com.spotify.play(playable=id);
 
-A: I played Destination Calabria( - (Radio Edit|Club Mix))?( on Spotify)?( on (Coolest Computer|giovanni-xps15))? ?.
+A: I played music that have name destination calabria( - (Radio Edit|Club Mix))? by Alex Gaudino( on Spotify)?( for you)?.
 A: >> expecting = null
 
 ====
 # 6-song-artist-search (req=com.spotify)
 U: find me the box by roddy ricch
 #U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-#U: now => (@com.spotify.song(), id =~ ("the box") && contains(artists, null^^com.spotify:artist("roddy ricch")))[1] => notify;
+#U: now => (@com.spotify.song(), id =~ ("the box") && contains(artists, null^^com.spotify:artist("roddy ricch"))) => notify;
 
-A: The Box is a song (in the album Please Excuse Me For Being Antisocial) by Roddy Ricch.
-A: >> expecting = null
+A: The Box is a rap music by Roddy Ricch\. Would you like to play it on Spotify\?
+A: >> expecting = command
 
 ====
 # 7-from-album (req=com.spotify)
 #U: play the album american teen
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: now => (@com.spotify.album(), id =~ ("american teen"))[1] => @com.spotify.play(playable=id);
+U: now => (@com.spotify.album(), id =~ ("american teen")) => @com.spotify.play(playable=id);
 
-A: I played American Teen on Spotify( for you)?\.
+A: I played albums that have name American teen on Spotify( for you)?\.
 A: >> expecting = null
 
 ====
@@ -76,9 +76,9 @@ A: >> expecting = command
 # 9-from-album-artist (req=com.spotify)
 #U: play the album songs about jane by maroon 5
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: now => (@com.spotify.album(), id =~ ("songs about jane") && contains(artists, null^^com.spotify:artist("maroon 5")))[1] => @com.spotify.play(playable=id);
+U: now => (@com.spotify.album(), id =~ ("songs about jane") && contains(artists, null^^com.spotify:artist("maroon 5"))) => @com.spotify.play(playable=id);
 
-A: I played Songs About Jane( by Maroon 5)? on Spotify( for you)?\.
+A: I played albums that have name songs about jane( by Maroon 5)? on Spotify( for you)?\.
 A: >> expecting = null
 
 ====
@@ -212,7 +212,7 @@ A: >> expecting = null
 
 #U: play the song senorita by camila cabello
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: now => (@com.spotify.song(), id =~ ("senorita") && contains(artists, null^^com.spotify:artist("camila cabello")))[1] => @com.spotify.play(playable=id);
+U: now => (@com.spotify.song(), id =~ ("senorita") && contains(artists, null^^com.spotify:artist("camila cabello"))) => @com.spotify.play(playable=id);
 
 A: I played Se.orita( on Spotify)?( on (Coolest Computer|giovanni-xps15))? ?.
 A: >> expecting = null
