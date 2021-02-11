@@ -5,7 +5,7 @@
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.playable(), id =~ ("bohemian rhapsody")) => @com.spotify.play(playable=id);
 
-A:  I played music that have name bohemian rhapsody( - remastered 2011)?( on Spotify)?( for you)?\.
+A: I played Bohemian Rhapsody( - Remastered 2011)? on Spotify( for you)?\.
 A: >> expecting = null
 
 ====
@@ -33,7 +33,7 @@ U: find me songs by britney spears
 #U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 #U: now => (@com.spotify.song(), contains(artists, null^^com.spotify:artist("britney spears"))) => notify;
 
-A: I (see|have( found)?) .*, .*,? (or|and) .*. (They're|They are|All of them are) posts-teen pop and pop rap (song|track)s? by Britney Spears.
+A: I (see|have( found)?) .*, .*,? (or|and) .*. (They're|They are|All of them are) posts?-teen pop and pop rap (song|track)s? by Britney Spears.
 A: >> expecting = command
 
 ====
@@ -42,7 +42,7 @@ A: >> expecting = command
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.playable(), id =~ ("destination calabria") && contains(artists, null^^com.spotify:artist("alex gaudino"))) => @com.spotify.play(playable=id);
 
-A: I played music that have name destination calabria( - (Radio Edit|Club Mix))? by Alex Gaudino( on Spotify)?( for you)?.
+A: I played Destination Calabria( - Radio Edit)? on Spotify( for you)?\.
 A: >> expecting = null
 
 ====
@@ -60,7 +60,7 @@ A: >> expecting = command
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.album(), id =~ ("american teen")) => @com.spotify.play(playable=id);
 
-A: I played albums that have name American teen on Spotify( for you)?\.
+A: I played American Teen on Spotify( for you)?\.
 A: >> expecting = null
 
 ====
@@ -78,7 +78,7 @@ A: >> expecting = command
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.album(), id =~ ("songs about jane") && contains(artists, null^^com.spotify:artist("maroon 5"))) => @com.spotify.play(playable=id);
 
-A: I played albums that have name songs about jane( by Maroon 5)? on Spotify( for you)?\.
+A: I played Songs About Jane on Spotify( for you)?\.
 A: >> expecting = null
 
 ====
@@ -88,7 +88,7 @@ U: what songs are in the album folklore by taylor swift
 #U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 #U: now => (@com.spotify.song(), album == null^^com.spotify:album("folklore") && contains(artists, null^^com.spotify:artist("taylor swift"))) => notify;
 
-A: I (see|have( found)?) the 1, cardigan (or|and) the last great American dynasty\. (All of them are|They're|They are) songs? in the album folklore by Taylor Swift\.
+A: I (see|have( found)?) the 1, cardigan (or|and) the last great american dynasty\. (All of them are|They're|They are) songs? in the album folklore by Taylor Swift\.
 A: >> expecting = command
 
 ====
@@ -246,7 +246,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.playable(), release_date >= makeDate(2010, 1, 1) && release_date <= makeDate(2010, 1, 1) + 1year) => @com.spotify.play(playable=id);
 
-A: I played music such that the date is before 1 year past Friday, January 1, 2010 and the date is after Friday, January 1, 2010 on Spotify( for you)?\.
+A: I played music such that the date is before 1 year past January 1, 2010 and the date is after January 1, 2010 on Spotify( for you)?\.
 A: >> expecting = null
 
 ====
@@ -268,7 +268,7 @@ A: >> expecting = command
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.playable(), contains~(genres, "hip hop") && release_date >= makeDate(1980, 1, 1) && release_date <= makeDate(1980, 1, 1) + 1year) => @com.spotify.play(playable=id);
 
-A: I played hip hop music such that the date is before 1 year past Tuesday, January 1, 1980 and the date is after Tuesday, January 1, 1980 on Spotify( for you)?\.
+A: I played hip hop music such that the date is before 1 year past January 1, 1980 and the date is after January 1, 1980 on Spotify( for you)?\.
 A: >> expecting = null
 
 ====
