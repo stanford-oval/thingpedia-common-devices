@@ -3,6 +3,7 @@
 // Copyright 2018 Gabby Wright, Hemanth Kini
 //           2018-2020 The Board of Trustees of the Leland Stanford Junior University
 //           2020 Ryan Cheng
+//           2021 Aydan Pirani
 //
 // Redistribution and use in source and binary forms, with or
 // without modification, are permitted provided that the following
@@ -43,6 +44,7 @@ const ARTIST_ALBUM_URL = "https://api.spotify.com/v1/artists/{id}/albums?";
 const AUDIO_FEATURES_URL = 'https://api.spotify.com/v1/audio-features/?';
 const ALBUM_URL = 'https://api.spotify.com/v1/albums?';
 const TRACK_URL = 'https://api.spotify.com/v1/tracks?';
+const PODCAST_URL = 'https://api.spotify.com/v1/shows?';
 const ARTIST_URL = 'https://api.spotify.com/v1/artists?';
 const SHUFFLE_URL = 'https://api.spotify.com/v1/me/player/shuffle?';
 const PAUSE_URL = 'https://api.spotify.com/v1/me/player/pause?';
@@ -195,6 +197,20 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
     albums_get_by_id(ids) {
         const url = ALBUM_URL + querystring.stringify({
+            ids: ids.join()
+        });
+        return Tp.Helpers.Http.get(url, {
+            accept: 'application/json',
+            useOAuth2: this
+        }).then((response) => {
+            return JSON.parse(response);
+        }).catch((e) => {
+            throw new Error(JSON.parse(e.detail).error.message);
+        });
+    }
+
+    shows_get_by_id(ids) {
+        const url = PODCAST_URL + querystring.stringify({
             ids: ids.join()
         });
         return Tp.Helpers.Http.get(url, {
@@ -427,6 +443,25 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             albums.push(albumObj);
         }
         return albums;
+    }
+
+    async shows_by_search(query, artistURI) {
+        const searchResults = await this.search(query, "show", 5);
+        if (!Object.prototype.hasOwnProperty.call(searchResults, "shows") || searchResults.albums.total === 0) return [];
+        const ids = searchResults.shows.items.map((show) => show.id);
+        const podcastItems = (await this.shows_get_by_id(ids)).shows;
+        var podcasts = [];
+        for (var i = 0; i < podcastItems.length; i++) {
+            const release_date = new Date(podcastItems[i].release_date);
+            const artists = podcastItems[i].artists.map((producer) => new Tp.Value.Entity(producer.uri, producer.name));
+            const podcast = {
+                id: new Tp.Value.Entity(podcastItems[i].uri, podcastItems[i].name),
+                artists,
+                release_date,
+            };
+            podcasts.push(podcast);
+        }
+        return podcasts;
     }
 
     async get_playable(params, hints, env) {
