@@ -459,18 +459,21 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 } else if (pname === "genres" && (op === "contains" || op === "contains~")) {
                     genreFilter = `genre:"${value.toLowerCase()}" `;
                 }
-
             }
-
         }
 
-        let query = (idFilter + yearFilter + artistFilter + genreFilter).trim();
+        let query = (idFilter + yearFilter + artistFilter + genreFilter).trim() || `year:${new Date().getFullYear()} `;
         if (idFilter) {
             let music = await this.music_by_search(query, 5);
             music.sort((a, b) => {
                 return b.popularity - a.popularity;
             });
-            return filterMusic(music);
+            music = Array.from(new Set(music.map((playable) => String(playable.id.display))))
+                .map((name) => {
+                    return music.find((playable) => playable.id.display === name);
+                });
+            return music;
+
         } else {
             return filterMusic(await this.music_by_search(query, 20));
         }
@@ -532,7 +535,10 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 let query = (idFilter + yearFilter + genreFilter + albumFilter).trim();
                 let songs = await this.songs_by_search(query, 5);
                 let searchTerm = idFilter.split("track:")[1].trim();
-                songs = filterMusic(songs);
+                songs = Array.from(new Set(songs.map((song) => String(song.id.display))))
+                    .map((song_name) => {
+                        return songs.find((song) => song.id.display === song_name);
+                    });
                 songs.sort((a, b) => {
                     return entityMatchScore(searchTerm, b.id.display.toLowerCase()) - entityMatchScore(searchTerm, a.id.display.toLowerCase());
                 });
@@ -543,7 +549,10 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 if (songs.length === 0 && artists.length === 1)
                     songs = await this.songs_by_artist(artists);
                 let searchTerm = idFilter.split("track:")[1].trim();
-                songs = filterMusic(songs);
+                songs = Array.from(new Set(songs.map((song) => String(song.id.display))))
+                    .map((song_name) => {
+                        return songs.find((song) => song.id.display === song_name);
+                    });
                 songs.sort((a, b) => {
                     return entityMatchScore(searchTerm, b.id.display.toLowerCase()) - entityMatchScore(searchTerm, a.id.display.toLowerCase());
                 });
@@ -641,7 +650,10 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 let query = (idFilter + yearFilter).trim();
                 let albums = this.albums_by_search(query);
                 let searchTerm = idFilter.split("album:")[1].trim();
-                albums = filterMusic(albums);
+                albums = Array.from(new Set(albums.map((album) => String(album.id.display))))
+                    .map((album_name) => {
+                        return albums.find((album) => album.id.display === album_name);
+                    });
                 albums.sort((a, b) => {
                     return entityMatchScore(searchTerm, b.id.display.toLowerCase()) - entityMatchScore(searchTerm, a.id.display.toLowerCase());
                 });
@@ -652,19 +664,27 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 if (albums.length === 0 && artists.length === 1)
                     albums = await this.albums_by_artist(artists);
                 let searchTerm = idFilter.split("album:")[1].trim();
-                albums = filterMusic(albums);
+                albums = Array.from(new Set(albums.map((album) => String(album.id.display))))
+                    .map((album_name) => {
+                        return albums.find((album) => album.id.display === album_name);
+                    });
                 albums.sort((a, b) => {
                     return entityMatchScore(searchTerm, b.id.display.toLowerCase()) - entityMatchScore(searchTerm, a.id.display.toLowerCase());
                 });
                 return albums;
             }
         } else if (hints && hints.sort && hints.sort[0] === "release_date" && artists.length > 0) {
-            return this.albums_by_artist(artists, hints.sort[1]);
+            return filterMusic(await this.albums_by_artist(artists, hints.sort[1]));
         } else if (artists.length > 0) {
-            return this.albums_by_artist(artists);
+            return filterMusic(await this.albums_by_artist(artists));
         } else {
             const query = yearFilter || `year:${new Date().getFullYear()} `;
-            return this.albums_by_search(query);
+            let albums = await this.albums_by_search(query);
+            albums = filterMusic(albums);
+            albums.sort((a, b) => {
+                return (b.popularity - a.popularity);
+            });
+            return albums;
         }
     }
 
@@ -893,6 +913,11 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         let song_uris = [];
         let album_uris = [];
         let album_tracks = {};
+        try {
+            await this.do_player_shuffle("false");
+        } catch (error) {
+            throwError("disallowed_action");
+        }
 
         for (const playable of music) {
             const uri = String(playable);
@@ -1100,6 +1125,7 @@ function extractSongName(str) {
     return str;
 }
 
+//removes duplicate remixes/editions
 function filterMusic(music) {
     const names = new Set();
     const filteredSongs = Array.from(new Set(music.map((playable) => String(playable.id.display))))
