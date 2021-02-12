@@ -11,6 +11,7 @@ abstract class @org.thingpedia.iot.light-bulb extends @org.thingpedia.iot.switch
                 "whether the lights are on or off",
                 "light state"]]
   #_[confirmation="the power state of ${__device}"]
+  #[confirm=false]
   #_[result=["your lights are ${power}"]];
 
   action alert_long()
@@ -19,14 +20,14 @@ abstract class @org.thingpedia.iot.light-bulb extends @org.thingpedia.iot.switch
                 "color loop the lights",
                 "loop the color of the light bulb"]]
   #_[confirmation="flash alerts on ${__device}"]
-  #[confirm=true];
+  #[confirm=false];
 
   action color_loop()
   #_[canonical=["flash the lights",
                 "alert me by flashing the lights",
                 "flash the lights as alerts"]]
   #_[confirmation="loop colors on ${__device}"]
-  #[confirm=true];
+  #[confirm=false];
 
   action set_power(in req power: Enum(on,off)
                    #_[prompt=["do you want to turn it on or off"]]
@@ -36,5 +37,5 @@ abstract class @org.thingpedia.iot.light-bulb extends @org.thingpedia.iot.switch
                    }])
   #_[canonical=["set the power on the lights", "set the power on the lamp"]]
   #_[confirmation="turn $power ${__device}"]
-  #[confirm=true];
+  #[confirm=false];
 }

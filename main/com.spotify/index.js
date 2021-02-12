@@ -34,6 +34,7 @@
 const Tp = require("thingpedia");
 const querystring = require("querystring");
 const assert = require('assert');
+const spotifyd = require("./spotifyd");
 
 const PLAY_URL = "https://api.spotify.com/v1/me/player/play";
 const SEARCH_URL = "https://api.spotify.com/v1/search?";
@@ -60,6 +61,9 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         this._state = new Map();
         this._queryResults = new Map();
         this._deviceState = new Map();
+
+        if (this.platform.type === "server")
+            this.spotifyd = new spotifyd({ cacheDir: this.platform._cacheDir, username: this.state.id, device_name: this.state.id, token: this.accessToken });
     }
 
     http_get(url) {
@@ -459,20 +463,24 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 } else if (pname === "genres" && (op === "contains" || op === "contains~")) {
                     genreFilter = `genre:"${value.toLowerCase()}" `;
                 }
-
             }
-
         }
 
-        let query = (idFilter + yearFilter + artistFilter + genreFilter).trim();
+        let query = (idFilter + yearFilter + artistFilter + genreFilter).trim() || `year:${new Date().getFullYear()} `;
         if (idFilter) {
             let music = await this.music_by_search(query, 5);
+
             music.sort((a, b) => {
                 return b.popularity - a.popularity;
             });
+            music = Array.from(new Set(music.map((playable) => String(playable.id.display))))
+                .map((name) => {
+                    return music.find((playable) => playable.id.display === name);
+                });
             return music;
+
         } else {
-            return this.music_by_search(query, 20);
+            return filterMusic(await this.music_by_search(query, 20));
         }
     }
 
@@ -557,10 +565,10 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             }
         } else if (hints && hints.sort && hints.sort[0] === "release_date" && artists.length > 0) {
             let songs = await this.songs_by_artist(artists, hints.sort[1]);
-            return filterSongs(songs);
+            return filterMusic(songs);
         } else if (artists.length > 1) {
             let songs = await this.songs_by_artist(artists);
-            songs = filterSongs(songs);
+            songs = filterMusic(songs);
             songs.sort((a, b) => {
                 return (b.popularity - a.popularity);
             });
@@ -575,7 +583,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 songs = await this.songs_by_search(query, 50);
             else
                 songs = await this.songs_by_search(query, 50, appID);
-            songs = filterSongs(songs);
+            songs = filterMusic(songs);
             songs.sort((a, b) => {
                 return (b.popularity - a.popularity);
             });
@@ -671,12 +679,17 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 return albums;
             }
         } else if (hints && hints.sort && hints.sort[0] === "release_date" && artists.length > 0) {
-            return this.albums_by_artist(artists, hints.sort[1]);
+            return filterMusic(await this.albums_by_artist(artists, hints.sort[1]));
         } else if (artists.length > 0) {
-            return this.albums_by_artist(artists);
+            return filterMusic(await this.albums_by_artist(artists));
         } else {
             const query = yearFilter || `year:${new Date().getFullYear()} `;
-            return this.albums_by_search(query);
+            let albums = await this.albums_by_search(query);
+            albums = filterMusic(albums);
+            albums.sort((a, b) => {
+                return (b.popularity - a.popularity);
+            });
+            return albums;
         }
     }
 
@@ -722,6 +735,16 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (devices.length === 0) {
             console.log("no available devices");
             return [null, null];
+        }
+        // spotifyd active
+        if (this.spotifyd) {
+            for (let i = 0; i < devices.length; i++) {
+                console.log(devices[i].is_active);
+                if (devices[i].id === this.spotifyd.deviceId) {
+                    console.log("found spotifyd device");
+                    return [devices[i].id, this.state.id];
+                }
+            }
         }
         // device already active
         for (let i = 0; i < devices.length; i++) {
@@ -905,6 +928,11 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         let song_uris = [];
         let album_uris = [];
         let album_tracks = {};
+        try {
+            await this.do_player_shuffle("false");
+        } catch (error) {
+            throwError("disallowed_action");
+        }
 
         for (const playable of music) {
             const uri = String(playable);
@@ -1112,17 +1140,18 @@ function extractSongName(str) {
     return str;
 }
 
-function filterSongs(songs) {
-    const songNames = new Set();
-    const filteredSongs = Array.from(new Set(songs.map((song) => String(song.id.display))))
-        .filter((song_name) => {
-            if (!songNames.has(extractSongName(song_name))) {
-                songNames.add(extractSongName(song_name));
+//removes duplicate remixes/editions
+function filterMusic(music) {
+    const names = new Set();
+    const filteredSongs = Array.from(new Set(music.map((playable) => String(playable.id.display))))
+        .filter((name) => {
+            if (!names.has(extractSongName(name))) {
+                names.add(extractSongName(name));
                 return true;
             }
             return false;
-        }).map((song_name) => {
-            return songs.find((song) => song.id.display === song_name);
+        }).map((name) => {
+            return music.find((playable) => playable.id.display === name);
         });
     return filteredSongs;
 }
