@@ -717,6 +717,34 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         }
     }
 
+    // CONVERT THIS TO SHOWS
+    async get_show(params, hints, env) {
+        //get_show works essentially the same as get_artists.
+        var idFilter = '';
+        if (hints && hints.filter) {
+            for (let [pname, op, value] of hints.filter) {
+                if (pname === "id" && (op === "==" || op === "=~")) {
+                    if (value instanceof Tp.Value.Entity) idFilter = `show:${value.display} `;
+                    else idFilter = `show:${value} `;
+                }
+            }
+        }
+        //default query will be to just get the most popular shows right now
+        let query = (idFilter).trim() || `year:${new Date().getFullYear()}`;
+        const searchResults = await this.search(query, "show", 5);
+        if (!Object.prototype.hasOwnProperty.call(searchResults, 'shows') || searchResults.shows.total === 0) return [];
+        var shows = [];
+        for (const show of searchResults.shows.items) {
+            const id = new Tp.Value.Entity(show.uri, show.name);
+            const showObj = {
+                id,
+                publisher: show.publisher
+            };
+            shows.push(showObj);
+        }
+        return shows;
+    }
+
     async currently_playing_helper() {
         return Tp.Helpers.Http.get(CURRENTLY_PLAYING_URL, {
             accept: 'application/json',
