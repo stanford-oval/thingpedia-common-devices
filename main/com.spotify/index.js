@@ -62,9 +62,8 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         this._queryResults = new Map();
         this._deviceState = new Map();
 
-        if (this.platform.type == "server") {
+        if (this.platform.type === "server")
             this.spotifyd = new spotifyd({ cacheDir: this.platform._cacheDir, username: this.state.id, device_name: this.state.id, token: this.accessToken });
-        }
     }
 
     http_get(url) {
@@ -741,7 +740,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (this.spotifyd) {
             for (let i = 0; i < devices.length; i++) {
                 console.log(devices[i].is_active);
-                if (devices[i].id == this.spotifyd.get_deviceId()) {
+                if (devices[i].id === this.spotifyd.deviceId) {
                     console.log("found spotifyd device");
                     return [devices[i].id, this.state.id];
                 }
