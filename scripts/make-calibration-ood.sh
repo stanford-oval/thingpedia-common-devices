@@ -5,8 +5,8 @@ set -x
 
 test -f dropped-log.tsv || aws s3 cp s3://geniehai/gcampax/dropped-log.tsv dropped-log.tsv
 
-# These are in-domain: ok|contextual command|ambiguous|redacted|meta-command
-# We ignore these: bug-tokenize
+# These are in-domain: ok|contextual command|ambiguous|meta-command
+# We ignore these: bug-tokenize|redacted
 # out of domain:
 sed -E -e '/\t(chatty|phone|foreign language|dialogue-model|gnome|math|new device|new function|policy or remote program|question|skill-help|web search|unintellegible|stream|tutorial)$/!d' -e 's/\t/\tnull\t/' -e 's/\t[^\t]*$/\t\$ood ;/' dropped-log.tsv > calibration-ood.tsv
 # junk
