@@ -740,7 +740,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 id,
                 publisher: show.publisher
             };
-            console.log(showObj);
             shows.push(showObj);
         }
         return shows;
