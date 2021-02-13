@@ -52,6 +52,8 @@ const PREVIOUS_URL = 'https://api.spotify.com/v1/me/player/previous?';
 const REPEAT_URL = 'https://api.spotify.com/v1/me/player/repeat?';
 const QUEUE_URL = "https://api.spotify.com/v1/me/player/queue";
 const PLAYER_INFO_URL = "https://api.spotify.com/v1/me/player";
+const USER_PLAYLISTS = 'https://api.spotify.com/v1/users/{username}/playlists?';
+const PER_SET = 50;
 
 module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
@@ -63,7 +65,12 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         this._deviceState = new Map();
 
         if (this.platform.type === "server")
-            this.spotifyd = new spotifyd({ cacheDir: this.platform._cacheDir, username: this.state.id, device_name: this.state.id, token: this.accessToken });
+            this.spotifyd = new spotifyd({
+                cacheDir: this.platform._cacheDir,
+                username: this.state.id,
+                device_name: this.state.id,
+                token: this.accessToken
+            });
     }
 
     http_get(url) {
@@ -217,7 +224,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         const genres = artistsInfo.map((artist) => artist.genres);
         const audioFeatures = await this.audio_features_get_by_id(ids);
         var songs = [];
-        for (var i = 0; i < tracks.length; i++) {
+        for (let i = 0; i < tracks.length; i++) {
             const release_date = new Date(tracks[i].album.release_date);
             const artists = tracks[i].artists.map((artist) => new Tp.Value.Entity(artist.uri, artist.name));
             const album = new Tp.Value.Entity(tracks[i].album.uri, tracks[i].album.name);
@@ -257,30 +264,40 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
     //songs + albums + podcasts ...
     async music_by_search(query, limit = 5) {
-        const searchResults = await this.search(query, "track,album", limit);
-        if ((!Object.prototype.hasOwnProperty.call(searchResults, "tracks") && !Object.prototype.hasOwnProperty.call(searchResults, "albums")) || searchResults.tracks.total === 0) return [];
+        const searchResults = await this.search(query, "track,album,playlist", limit);
+        if ((!Object.prototype.hasOwnProperty.call(searchResults, "tracks") &&
+                !Object.prototype.hasOwnProperty.call(searchResults, "albums") &&
+                !Object.prototype.hasOwnProperty.call(searchResults, "playlists")) ||
+            (searchResults.tracks.total === 0 &&
+                searchResults.albums.total === 0 &&
+                searchResults.playlists.total === 0))
+            return [];
 
         const tracks = searchResults.tracks.items;
         const albums = searchResults.albums.items;
-
-        const trackArtistIds = tracks.map((track) => track.artists[0].id);
-        const trackAritstInfo = (await this.artists_get_by_id(trackArtistIds)).artists;
-        const trackGenres = trackAritstInfo.map((artist) => artist.genres);
+        const playlists = searchResults.playlists.items;
 
         var music = [];
-        for (var i = 0; i < tracks.length; i++) {
-            const release_date = new Date(tracks[i].album.release_date);
-            const artists = tracks[i].artists.map((artist) => new Tp.Value.Entity(artist.uri, artist.name));
-            const id = new Tp.Value.Entity(tracks[i].uri, tracks[i].name);
-            const songObj = {
-                id,
-                artists,
-                release_date,
-                popularity: tracks[i].popularity,
-                genres: trackGenres[i],
-            };
 
-            music.push(songObj);
+        if (tracks.length >= 1) {
+            const trackArtistIds = tracks.map((track) => track.artists[0].id);
+            const trackAritstInfo = (await this.artists_get_by_id(trackArtistIds)).artists;
+            const trackGenres = trackAritstInfo.map((artist) => artist.genres);
+
+            for (let i = 0; i < tracks.length; i++) {
+                const release_date = new Date(tracks[i].album.release_date);
+                const artists = tracks[i].artists.map((artist) => new Tp.Value.Entity(artist.uri, artist.name));
+                const id = new Tp.Value.Entity(tracks[i].uri, tracks[i].name);
+                const songObj = {
+                    id,
+                    artists,
+                    release_date,
+                    popularity: tracks[i].popularity,
+                    genres: trackGenres[i],
+                };
+
+                music.push(songObj);
+            }
         }
         if (albums.length >= 1) {
             const albumArtistIds = albums.map((album) => album.artists[0].id);
@@ -288,11 +305,11 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             const albumGenres = albumAritstInfo.map((artist) => artist.genres);
             const albumIds = albums.map((album) => album.id);
             const albumPopularities = (await this.albums_get_by_id(albumIds)).albums.map((album) => album.popularity);
-            for (var j = 0; j < albums.length; j++) {
-                const release_date = new Date(albums[j].release_date);
-                const artists = albums[j].artists.map((artist) => new Tp.Value.Entity(artist.uri, artist.name));
-                const id = new Tp.Value.Entity(albums[j].uri, albums[j].name);
-                const popularity = albumPopularities[j];
+            for (let i = 0; i < albums.length; i++) {
+                const release_date = new Date(albums[i].release_date);
+                const artists = albums[i].artists.map((artist) => new Tp.Value.Entity(artist.uri, artist.name));
+                const id = new Tp.Value.Entity(albums[i].uri, albums[i].name);
+                const popularity = albumPopularities[i];
                 const albumObj = {
                     id,
                     artists,
@@ -304,6 +321,14 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 music.push(albumObj);
             }
         }
+        if (tracks.length == 0 && albums.length == 0) {
+            for (const playlist of playlists) {
+                music.push({
+                    id: new Tp.Value.Entity(playlist.uri, playlist.name)
+                });
+            }
+        }
+
         return music;
     }
 
@@ -379,7 +404,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         const ids = searchResults.albums.items.map((album) => album.id);
         const albumItems = (await this.albums_get_by_id(ids)).albums;
         var albums = [];
-        for (var i = 0; i < albumItems.length; i++) {
+        for (let i = 0; i < albumItems.length; i++) {
             const release_date = new Date(albumItems[i].release_date);
             const artists = albumItems[i].artists.map((artist) => new Tp.Value.Entity(artist.uri, artist.name));
             const albumObj = {
@@ -416,7 +441,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (ids.length > 20) ids.length = 20;
         var albumItems = (await this.albums_get_by_id(ids)).albums;
         var albums = [];
-        for (var i = 0; i < albumItems.length; i++) {
+        for (let i = 0; i < albumItems.length; i++) {
             const release_date = new Date(albumItems[i].release_date);
             const artists = albumItems[i].artists.map((artist) => new Tp.Value.Entity(artist.uri, artist.name));
             const id = new Tp.Value.Entity(albumItems[i].uri, albumItems[i].name);
@@ -469,14 +494,21 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         let query = (idFilter + yearFilter + artistFilter + genreFilter).trim() || `year:${new Date().getFullYear()} `;
         if (idFilter) {
             let music = await this.music_by_search(query, 5);
-
-            music.sort((a, b) => {
-                return b.popularity - a.popularity;
-            });
-            music = Array.from(new Set(music.map((playable) => String(playable.id.display))))
-                .map((name) => {
-                    return music.find((playable) => playable.id.display === name);
+            if (String(music[0]).includes("track") || String(music[0]).includes("album")) {
+                music.sort((a, b) => {
+                    return b.popularity - a.popularity;
                 });
+                music = Array.from(new Set(music.map((playable) => String(playable.id.display))))
+                    .map((name) => {
+                        return music.find((playable) => playable.id.display === name);
+                    });
+            } else {
+                let searchTerm = idFilter.trim();
+                music.sort((a, b) => {
+                    return entityMatchScore(searchTerm, b.id.display.toLowerCase()) - entityMatchScore(searchTerm, a.id.display.toLowerCase());
+                });
+            }
+
             return music;
 
         } else {
@@ -691,6 +723,94 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             });
             return albums;
         }
+    }
+
+    async get_playlist(params, hints, env) {
+
+        var id = '';
+        if (hints && hints.filter) {
+            for (let [pname, op, value] of hints.filter) {
+                if (pname === "id" && (op === "==" || op === "=~")) {
+                    if (value instanceof Tp.Value.Entity) id = value.display;
+                    else id = value;
+                }
+            }
+        }
+
+        let userPlaylists = await this.getUserPlaylists();
+        let bestMatch = this.findBestPlaylistMatch(id, userPlaylists);
+
+        if (bestMatch !== null) {
+            return [bestMatch];
+        } else {
+            let query = id || `${new Date().getFullYear()}`;
+            const searchResults = await this.search(query, "playlist", 5);
+            if (!Object.prototype.hasOwnProperty.call(searchResults, 'playlists') || searchResults.playlists.total === 0) return [];
+            var playlists = [];
+            for (const playlist of searchResults.playlists.items) {
+                playlists.push({
+                    id: new Tp.Value.Entity(playlist.uri, playlist.name)
+                });
+            }
+            return playlists;
+
+        }
+
+    }
+
+    getPageOfPlaylists(offset = 0) {
+        let set = USER_PLAYLISTS.replace(new RegExp('{username}', 'g'), this.state.id.toString());
+        set = set + querystring.stringify({
+            offset: offset,
+            limit: PER_SET
+        });
+        console.log('user playlist search url is ' + set);
+        return Tp.Helpers.Http.get(set, {
+            accept: 'application/json',
+            useOAuth2: this
+        }).then((response) => {
+            return JSON.parse(response);
+        }).catch((e) => {
+            throw new Error(JSON.parse(e.detail).error.message);
+        });
+    }
+    async getUserPlaylists() {
+        let allPlaylists = [];
+        let nextSet = await this.getPageOfPlaylists();
+        allPlaylists = allPlaylists.concat(nextSet.items);
+        let size = nextSet.total;
+        for (let i = PER_SET; i < size; i += PER_SET) {
+            nextSet = await this.getPageOfPlaylists(i);
+            allPlaylists = allPlaylists.concat(nextSet.items);
+        }
+        return allPlaylists;
+    }
+
+    findBestPlaylistMatch(query, allPlaylists) {
+        if (allPlaylists.length === 0) return null;
+        let bestMatch = {
+            uri: '',
+            score: '',
+            name: '',
+        };
+        bestMatch.uri = allPlaylists[0].uri;
+        bestMatch.name = allPlaylists[0].name.toLowerCase();
+        bestMatch.score = editDistance(query.toLowerCase(), bestMatch.name);
+        for (let i = 1; i < allPlaylists.length; i++) {
+            let name = allPlaylists[i].name;
+            let score = editDistance(query.toLowerCase(), name.toLowerCase());
+            if (score < bestMatch.score) {
+                bestMatch.score = score;
+                bestMatch.uri = allPlaylists[i].uri;
+                bestMatch.name = name;
+            }
+            if (bestMatch.score === 0) break;
+        }
+        if (bestMatch.uri === '' || bestMatch.score / Math.max(query.length, bestMatch.name.length) > 0.34)
+            return null;
+        return {
+            id: new Tp.Value.Entity(bestMatch.uri, bestMatch.name)
+        };
     }
 
     async currently_playing_helper() {
@@ -925,6 +1045,12 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
     async _flushPlay(env) {
         const music = this._state.get(env.app.uniqueId);
+        if (String(music[0]).includes("playlist")) {
+            let data = {
+                context_uri: String(music[0]),
+            };
+            return this.player_play_helper(JSON.stringify(data));
+        }
         let song_uris = [];
         let album_uris = [];
         let album_tracks = {};
