@@ -276,9 +276,10 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
         const tracks = searchResults.tracks.items;
         const albums = searchResults.albums.items;
+        const shows = searchResults.shows.items;
 
         const trackArtistIds = tracks.map((track) => track.artists[0].id);
-        const trackAritstInfo = (await this.artists_get_by_id(trackArtistIds)).artists;
+        const trackArtistInfo = (await this.artists_get_by_id(trackArtistIds)).artists;
         const trackGenres = trackAritstInfo.map((artist) => artist.genres);
 
         var music = [];
@@ -318,6 +319,16 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 music.push(albumObj);
             }
         }
+
+
+        if (tracks.length == 0 && albums.length == 0) {
+            for (const show of shows) {
+                music.push({
+                    id: new Tp.Value.Entity(show.uri, show.name)
+                });
+            }
+        }
+
         return music;
     }
 
@@ -501,17 +512,31 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
         }
 
-        let query = (idFilter + yearFilter + artistFilter + genreFilter).trim();
+        let query = (idFilter + yearFilter + artistFilter + genreFilter).trim() || `year:${new Date().getFullYear()} `;
         if (idFilter) {
             let music = await this.music_by_search(query, 5);
-            music.sort((a, b) => {
-                return b.popularity - a.popularity;
-            });
+            if (String(music[0]).includes("track") || String(music[0]).includes("album")) {
+                music.sort((a, b) => {
+                    return b.popularity - a.popularity;
+                });
+                music = Array.from(new Set(music.map((playable) => String(playable.id.display))))
+                    .map((name) => {
+                        return music.find((playable) => playable.id.display === name);
+                    });
+            } else {
+                let searchTerm = idFilter.trim();
+                music.sort((a, b) => {
+                    return entityMatchScore(searchTerm, b.id.display.toLowerCase()) - entityMatchScore(searchTerm, a.id.display.toLowerCase());
+                });
+            }
+
             return music;
+
         } else {
             return this.music_by_search(query, 20);
         }
     }
+
 
     async get_song(params, hints, env) {
         var idFilter = '';
@@ -731,6 +756,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         }
         //default query will be to just get the most popular shows right now
         let query = (idFilter).trim() || `year:${new Date().getFullYear()}`;
+        console.log(query);
         const searchResults = await this.search(query, "show", 5);
         if (!Object.prototype.hasOwnProperty.call(searchResults, 'shows') || searchResults.shows.total === 0) return [];
         var shows = [];
