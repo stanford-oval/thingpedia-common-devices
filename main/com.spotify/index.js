@@ -724,8 +724,8 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (hints && hints.filter) {
             for (let [pname, op, value] of hints.filter) {
                 if (pname === "id" && (op === "==" || op === "=~")) {
-                    if (value instanceof Tp.Value.Entity) idFilter = `show:${value.display} `;
-                    else idFilter = `show:${value} `;
+                    if (value instanceof Tp.Value.Entity) idFilter = value.display;
+                    else idFilter = value;
                 }
             }
         }
@@ -740,6 +740,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 id,
                 publisher: show.publisher
             };
+            console.log(showObj);
             shows.push(showObj);
         }
         return shows;
