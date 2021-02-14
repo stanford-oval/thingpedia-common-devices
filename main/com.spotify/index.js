@@ -279,7 +279,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
     //songs + albums + podcasts ...
     async music_by_search(query, limit = 5) {
-        const searchResults = await this.search(query, "track,album,playlist", limit);
+        const searchResults = await this.search(query, "track,album,playlist,show", limit);
         if ((!Object.prototype.hasOwnProperty.call(searchResults, "tracks") &&
                 !Object.prototype.hasOwnProperty.call(searchResults, "albums") &&
                 !Object.prototype.hasOwnProperty.call(searchResults, "playlists")) ||
@@ -337,19 +337,17 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 music.push(albumObj);
             }
         }
+
         if (tracks.length == 0 && albums.length == 0) {
             for (const playlist of playlists) {
                 music.push({
                     id: new Tp.Value.Entity(playlist.uri, playlist.name)
                 });
             }
-
-            if(playlists.length == 0) {
-              for (const show of shows) {
-                  music.push({
-                      id: new Tp.Value.Entity(show.uri, show.name)
-                  });
-              }
+            for (const show of shows) {
+                music.push({
+                    id: new Tp.Value.Entity(show.uri, show.name)
+                });
             }
         }
 
@@ -1083,6 +1081,17 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         album
     }, env) {
         const uri = String(album);
+        let data = {
+            context_uri: uri,
+        };
+        console.log("data is " + JSON.stringify(data));
+        return this.player_play_helper(JSON.stringify(data));
+    }
+
+    async do_play_show({
+        show
+    }, env) {
+        const uri = String(show);
         let data = {
             context_uri: uri,
         };
