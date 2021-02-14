@@ -5,7 +5,7 @@
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.playable(), id =~ ("bohemian rhapsody")) => @com.spotify.play(playable=id);
 
-A: I played Bohemian Rhapsody( - Remastered 2011)? on Spotify( for you)?\.
+A: I played Bohemian Rhapsody( - Remastered 2011)?( on Spotify)?( for you)?\.
 A: >> expecting = null
 
 ====
@@ -15,7 +15,7 @@ U: find me the song despacito
 #U: now => (@com.spotify.song(), id =~ ("despacito")) => notify;
 
 # FIXME need a template for song by {artist 1} and {artist 2}
-A: I (see|have( found)?) Despacito( or Despacito - Remix|, Despacito - Live (and|or) Despacito - Remix). (All of them are|They're) (puerto rican pop|latin pop|latin|tropical)s? (songs?|musics?) by (Luis Fonsi|Daddy Yankee).
+A: I (see|have( found)?) Despacito( or Despacito - Remix|, Despacito - Live (and|or) Despacito - Remix). (All of them are|They're) (puerto rican pop|latin pop|latin|tropical)s? (songs?|musics?|tracks?) by (Luis Fonsi|Daddy Yankee).
 A: >> expecting = command
 
 ====
@@ -69,7 +69,7 @@ U: what songs are in the album the wall
 #U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 #U: now => (@com.spotify.song(), album == null^^com.spotify:album("the wall")) => notify;
 
-A: I (see|have) In the Flesh\?, The Thin Ice (or|and) Another Brick in the Wall, Pt\. 1\. They're songs in the album The Wall by Pink Floyd\.
+A: I (see|have) In the Flesh\?, The Thin Ice (or|and) Another Brick in the Wall, Pt\. 1\. (They're|All of them are) songs? in the album The Wall by Pink Floyd\.
 A: >> expecting = command
 
 ====
@@ -291,3 +291,13 @@ U: now => (@com.spotify.playable(), id =~ ("totally fake song")) => @com.spotify
 
 A: Sorry, I cannot find any music like that\.
 A: >> expecting = command
+
+====
+# 31-play-playlist (req=com.spotify)
+
+# play the playlist
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => (@com.spotify.playlist(), id =~ ("today's top hits")) => @com.spotify.play(playable=id);
+
+A: I played Today's Top Hits( on Spotify)?( for you)?\.
+A: >> expecting = null

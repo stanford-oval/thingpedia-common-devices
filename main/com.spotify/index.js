@@ -494,7 +494,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         let query = (idFilter + yearFilter + artistFilter + genreFilter).trim() || `year:${new Date().getFullYear()} `;
         if (idFilter) {
             let music = await this.music_by_search(query, 5);
-            if (String(music[0]).includes("track") || String(music[0]).includes("album")) {
+            if (String(music[0].id).includes("track") || String(music[0].id).includes("album")) {
                 music.sort((a, b) => {
                     return b.popularity - a.popularity;
                 });
@@ -737,80 +737,17 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             }
         }
 
-        let userPlaylists = await this.getUserPlaylists();
-        let bestMatch = this.findBestPlaylistMatch(id, userPlaylists);
-
-        if (bestMatch !== null) {
-            return [bestMatch];
-        } else {
-            let query = id || `${new Date().getFullYear()}`;
-            const searchResults = await this.search(query, "playlist", 5);
-            if (!Object.prototype.hasOwnProperty.call(searchResults, 'playlists') || searchResults.playlists.total === 0) return [];
-            var playlists = [];
-            for (const playlist of searchResults.playlists.items) {
-                playlists.push({
-                    id: new Tp.Value.Entity(playlist.uri, playlist.name)
-                });
-            }
-            return playlists;
-
+        let query = id || `${new Date().getFullYear()}`;
+        const searchResults = await this.search(query, "playlist", 5);
+        if (!Object.prototype.hasOwnProperty.call(searchResults, 'playlists') || searchResults.playlists.total === 0) return [];
+        var playlists = [];
+        for (const playlist of searchResults.playlists.items) {
+            playlists.push({
+                id: new Tp.Value.Entity(playlist.uri, playlist.name)
+            });
         }
+        return playlists;
 
-    }
-
-    getPageOfPlaylists(offset = 0) {
-        let set = USER_PLAYLISTS.replace(new RegExp('{username}', 'g'), this.state.id.toString());
-        set = set + querystring.stringify({
-            offset: offset,
-            limit: PER_SET
-        });
-        console.log('user playlist search url is ' + set);
-        return Tp.Helpers.Http.get(set, {
-            accept: 'application/json',
-            useOAuth2: this
-        }).then((response) => {
-            return JSON.parse(response);
-        }).catch((e) => {
-            throw new Error(JSON.parse(e.detail).error.message);
-        });
-    }
-    async getUserPlaylists() {
-        let allPlaylists = [];
-        let nextSet = await this.getPageOfPlaylists();
-        allPlaylists = allPlaylists.concat(nextSet.items);
-        let size = nextSet.total;
-        for (let i = PER_SET; i < size; i += PER_SET) {
-            nextSet = await this.getPageOfPlaylists(i);
-            allPlaylists = allPlaylists.concat(nextSet.items);
-        }
-        return allPlaylists;
-    }
-
-    findBestPlaylistMatch(query, allPlaylists) {
-        if (allPlaylists.length === 0) return null;
-        let bestMatch = {
-            uri: '',
-            score: '',
-            name: '',
-        };
-        bestMatch.uri = allPlaylists[0].uri;
-        bestMatch.name = allPlaylists[0].name.toLowerCase();
-        bestMatch.score = editDistance(query.toLowerCase(), bestMatch.name);
-        for (let i = 1; i < allPlaylists.length; i++) {
-            let name = allPlaylists[i].name;
-            let score = editDistance(query.toLowerCase(), name.toLowerCase());
-            if (score < bestMatch.score) {
-                bestMatch.score = score;
-                bestMatch.uri = allPlaylists[i].uri;
-                bestMatch.name = name;
-            }
-            if (bestMatch.score === 0) break;
-        }
-        if (bestMatch.uri === '' || bestMatch.score / Math.max(query.length, bestMatch.name.length) > 0.34)
-            return null;
-        return {
-            id: new Tp.Value.Entity(bestMatch.uri, bestMatch.name)
-        };
     }
 
     async currently_playing_helper() {
