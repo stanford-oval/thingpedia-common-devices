@@ -47,7 +47,7 @@ const C = require('genie-toolkit/languages/thingtalk/ast_manip');
 const _platform = new Platform();
 _platform.getSharedPreferences().set('developer-dir', 'main');
 
-const _tpClient = new Tp.HttpClient(_platform, 'https://almond-dev.stanford.edu/thingpedia');
+const _tpClient = new Tp.HttpClient(_platform, 'https://dev.almond.stanford.edu/thingpedia');
 const _schemas = new ThingTalk.SchemaRetriever(_tpClient, null, false);
 
 
