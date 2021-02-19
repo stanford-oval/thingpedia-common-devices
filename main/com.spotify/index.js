@@ -62,6 +62,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         this._queryResults = new Map();
         this._deviceState = new Map();
 
+        this._launchedSpotify = false;
         if (this.platform.type === "server")
             this.spotifyd = new spotifyd({ cacheDir: this.platform._cacheDir, username: this.state.id, device_name: this.state.id, token: this.accessToken });
     }
@@ -731,10 +732,22 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         return process.env.TEST_MODE === '1';
     }
 
-    _findActiveDevice(devices) {
+    async _findActiveDevice(devices) {
         if (devices.length === 0) {
             console.log("no available devices");
-            return [null, null];
+
+            // try launching the spotify app
+            const appLauncher = this.platform.getCapability('app-launcher');
+            if (appLauncher && !this._launchedSpotify) {
+                this._launchedSpotify = true;
+                console.log("spawning spotify app");
+                await appLauncher.launchApp('com.spotify.Client.desktop');
+                // wait 20 seconds for the app to launch
+                await new Promise((resolve) => setTimeout(resolve, 20000));
+                devices = await this.get_get_available_devices();
+            }
+            if (devices.length === 0)
+                return [null, null];
         }
         // spotifyd active
         if (this.spotifyd) {
@@ -769,7 +782,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 device: new Tp.Value.Entity('mock', 'Coolest Computer')
             };
         }
-        const [deviceId, deviceName] = this._findActiveDevice(devices);
+        const [deviceId, deviceName] = await this._findActiveDevice(devices);
         if (deviceId === null)
             throwError('no_active_device');
         try {
@@ -825,7 +838,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         let deviceState = this._deviceState.get(env.app.uniqueId);
         if (!deviceState) {
             let devices = await this.get_get_available_devices();
-            const [deviceId, deviceName] = this._findActiveDevice(devices);
+            const [deviceId, deviceName] = await this._findActiveDevice(devices);
             if (deviceId === null)
                 throwError('no_active_device');
 
@@ -862,7 +875,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         let deviceState = this._deviceState.get(env.app.uniqueId);
         if (!deviceState) {
             let devices = await this.get_get_available_devices();
-            const [deviceId, deviceName] = this._findActiveDevice(devices);
+            const [deviceId, deviceName] = await this._findActiveDevice(devices);
             if (deviceId === null)
                 throwError('no_active_device');
 
@@ -990,7 +1003,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (this._testMode())
             return;
         let devices = await this.get_get_available_devices();
-        const deviceId = this._findActiveDevice(devices)[0];
+        const deviceId = (await this._findActiveDevice(devices))[0];
         if (deviceId === null)
             throwError('no_active_device');
         let pauseURL = PAUSE_URL + querystring.stringify({
@@ -1014,7 +1027,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (this._testMode())
             return;
         let devices = await this.get_get_available_devices();
-        const deviceId = this._findActiveDevice(devices)[0];
+        const deviceId = (await this._findActiveDevice(devices))[0];
         if (deviceId === null)
             throwError('no_active_device');
         let nextURL = NEXT_URL + querystring.stringify({
@@ -1031,7 +1044,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (this._testMode())
             return;
         let devices = await this.get_get_available_devices();
-        const deviceId = this._findActiveDevice(devices)[0];
+        const deviceId = (await this._findActiveDevice(devices))[0];
         if (deviceId === null)
             throwError('no_active_device');
         let previousURL = PREVIOUS_URL + querystring.stringify({
@@ -1053,7 +1066,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (this._testMode())
             return;
         let devices = await this.get_get_available_devices();
-        const deviceId = this._findActiveDevice(devices)[0];
+        const deviceId = (await this._findActiveDevice(devices))[0];
         if (deviceId === null)
             throwError('no_active_device');
         let shuffleURL = SHUFFLE_URL + querystring.stringify({
@@ -1075,7 +1088,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (this._testMode())
             return;
         let devices = await this.get_get_available_devices();
-        const deviceId = this._findActiveDevice(devices)[0];
+        const deviceId = (await this._findActiveDevice(devices))[0];
         if (deviceId === null)
             throwError('no_active_device');
         let repeatURL = REPEAT_URL + querystring.stringify({
