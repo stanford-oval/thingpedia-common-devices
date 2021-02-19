@@ -55,7 +55,7 @@ class TestRunner {
     constructor() {
         this._platform = new Platform();
         this._engine = new Genie.AssistantEngine(this._platform, {
-            cloudSyncUrl: 'https://almond-dev.stanford.edu'
+            cloudSyncUrl: 'https://dev.almond.stanford.edu'
         });
 
         this.anyFailed = false;

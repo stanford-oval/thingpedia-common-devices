@@ -256,7 +256,7 @@ async function main() {
     const platform = new Platform();
     platform.getSharedPreferences().set('developer-dir', RELEASES.map((r) => path.resolve(r)));
 
-    const tpClient = new Tp.HttpClient(platform, 'https://almond-dev.stanford.edu/thingpedia');
+    const tpClient = new Tp.HttpClient(platform, 'https://dev.almond.stanford.edu/thingpedia');
 
     const lines = await readAllLines(args.input)
         .pipe(new Genie.DatasetParser())

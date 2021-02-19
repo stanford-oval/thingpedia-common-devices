@@ -83,7 +83,7 @@ memsize ?= 9000
 parallel ?= 7
 genie ?= node --experimental_worker --max_old_space_size=$(memsize) $(geniedir)/dist/tool/genie.js
 
-thingpedia_url ?= https://almond-dev.stanford.edu/thingpedia
+thingpedia_url ?= https://dev.almond.stanford.edu/thingpedia
 developer_key ?= invalid
 
 s3_bucket ?=
