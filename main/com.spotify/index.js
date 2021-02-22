@@ -64,7 +64,12 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
         this._launchedSpotify = false;
         if (this.platform.type === "server")
-            this.spotifyd = new spotifyd({ cacheDir: this.platform._cacheDir, username: this.state.id, device_name: this.state.id, token: this.accessToken });
+            this.spotifyd = new spotifyd({
+                cacheDir: this.platform._cacheDir,
+                username: this.state.id,
+                device_name: this.state.id,
+                token: this.accessToken
+            });
     }
 
     http_get(url) {
@@ -619,6 +624,13 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             };
             artists.push(artistObj);
         }
+
+        artists.sort((a, b) => {
+            return b.popularity - a.popularity;
+        });
+        const popularity_treshold = artists[0].popularity * 0.2;
+        artists = artists.filter((artist) => artist.popularity >= popularity_treshold);
+
         return artists;
     }
 
