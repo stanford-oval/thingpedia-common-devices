@@ -3,9 +3,9 @@
 # simple playing
 #U: play bohemian rhapsody
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: now => (@com.spotify.playable(), id =~ ("bohemian rhapsody"))[1] => @com.spotify.play(playable=id);
+U: now => (@com.spotify.playable(), id =~ ("bohemian rhapsody")) => @com.spotify.play(playable=id);
 
-A: I played Bohemian Rhapsody( - Remastered 2011)( on Spotify)?( on (Coolest Computer|giovanni-xps15))? ?.
+A: I played Bohemian Rhapsody( - Remastered 2011)? on Spotify( for you)?\.
 A: >> expecting = null
 
 ====
@@ -33,32 +33,32 @@ U: find me songs by britney spears
 #U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 #U: now => (@com.spotify.song(), contains(artists, null^^com.spotify:artist("britney spears"))) => notify;
 
-A: I (see|have( found)?) .*, .*,? (or|and) .*. (They're|They are|All of them are) posts-teen pop and pop rap (song|track)s? by Britney Spears.
+A: I (see|have( found)?) .*, .*,? (or|and) .*. (They're|They are|All of them are) posts?-teen pop and pop rap (song|track)s? by Britney Spears.
 A: >> expecting = command
 
 ====
 # 5-song-artist (req=com.spotify)
 #U: play destination calabria by alex gaudino
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: now => (@com.spotify.playable(), id =~ ("destination calabria") && contains(artists, null^^com.spotify:artist("alex gaudino")))[1] => @com.spotify.play(playable=id);
+U: now => (@com.spotify.playable(), id =~ ("destination calabria") && contains(artists, null^^com.spotify:artist("alex gaudino"))) => @com.spotify.play(playable=id);
 
-A: I played Destination Calabria( - (Radio Edit|Club Mix))?( on Spotify)?( on (Coolest Computer|giovanni-xps15))? ?.
+A: I played Destination Calabria( - Radio Edit)? on Spotify( for you)?\.
 A: >> expecting = null
 
 ====
 # 6-song-artist-search (req=com.spotify)
 U: find me the box by roddy ricch
 #U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-#U: now => (@com.spotify.song(), id =~ ("the box") && contains(artists, null^^com.spotify:artist("roddy ricch")))[1] => notify;
+#U: now => (@com.spotify.song(), id =~ ("the box") && contains(artists, null^^com.spotify:artist("roddy ricch"))) => notify;
 
-A: The Box is a song (in the album Please Excuse Me For Being Antisocial) by Roddy Ricch.
-A: >> expecting = null
+A: The Box is a rap music by Roddy Ricch\. Would you like to play it on Spotify\?
+A: >> expecting = command
 
 ====
 # 7-from-album (req=com.spotify)
 #U: play the album american teen
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: now => (@com.spotify.album(), id =~ ("american teen"))[1] => @com.spotify.play(playable=id);
+U: now => (@com.spotify.album(), id =~ ("american teen")) => @com.spotify.play(playable=id);
 
 A: I played American Teen on Spotify( for you)?\.
 A: >> expecting = null
@@ -76,9 +76,9 @@ A: >> expecting = command
 # 9-from-album-artist (req=com.spotify)
 #U: play the album songs about jane by maroon 5
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: now => (@com.spotify.album(), id =~ ("songs about jane") && contains(artists, null^^com.spotify:artist("maroon 5")))[1] => @com.spotify.play(playable=id);
+U: now => (@com.spotify.album(), id =~ ("songs about jane") && contains(artists, null^^com.spotify:artist("maroon 5"))) => @com.spotify.play(playable=id);
 
-A: I played Songs About Jane( by Maroon 5)? on Spotify( for you)?\.
+A: I played Songs About Jane on Spotify( for you)?\.
 A: >> expecting = null
 
 ====
@@ -88,7 +88,7 @@ U: what songs are in the album folklore by taylor swift
 #U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 #U: now => (@com.spotify.song(), album == null^^com.spotify:album("folklore") && contains(artists, null^^com.spotify:artist("taylor swift"))) => notify;
 
-A: I (see|have( found)?) the 1, cardigan (or|and) the last great American dynasty\. (All of them are|They're|They are) songs? in the album folklore by Taylor Swift\.
+A: I (see|have( found)?) the 1, cardigan (or|and) the last great american dynasty\. (All of them are|They're|They are) songs? in the album folklore by Taylor Swift\.
 A: >> expecting = command
 
 ====
@@ -212,7 +212,7 @@ A: >> expecting = null
 
 #U: play the song senorita by camila cabello
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: now => (@com.spotify.song(), id =~ ("senorita") && contains(artists, null^^com.spotify:artist("camila cabello")))[1] => @com.spotify.play(playable=id);
+U: now => (@com.spotify.song(), id =~ ("senorita") && contains(artists, null^^com.spotify:artist("camila cabello"))) => @com.spotify.play(playable=id);
 
 A: I played Se.orita( on Spotify)?( on (Coolest Computer|giovanni-xps15))? ?.
 A: >> expecting = null
@@ -246,7 +246,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.playable(), release_date >= makeDate(2010, 1, 1) && release_date <= makeDate(2010, 1, 1) + 1year) => @com.spotify.play(playable=id);
 
-A: I played music such that the date is before 1 year past Friday, January 1, 2010 and the date is after Friday, January 1, 2010 on Spotify( for you)?\.
+A: I played music such that the date is before 1 year past January 1, 2010 and the date is after January 1, 2010 on Spotify( for you)?\.
 A: >> expecting = null
 
 ====
@@ -257,7 +257,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.playable(), release_date >= makeDate(2000, 1, 1) && release_date <= makeDate(2000, 1, 1) + 1year) => notify;
 
-A: I have found Yellow. It is a pop music by Coldplay. Would you like to play it on Spotify\?
+A: I have (found|one, it is) Yellow. It is a pop music by Coldplay. Would you like to play it on Spotify\?
 A: >> expecting = command
 
 ====
@@ -268,7 +268,7 @@ A: >> expecting = command
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.playable(), contains~(genres, "hip hop") && release_date >= makeDate(1980, 1, 1) && release_date <= makeDate(1980, 1, 1) + 1year) => @com.spotify.play(playable=id);
 
-A: I played hip hop music such that the date is before 1 year past Tuesday, January 1, 1980 and the date is after Tuesday, January 1, 1980 on Spotify( for you)?\.
+A: I played hip hop music such that the date is before 1 year past January 1, 1980 and the date is after January 1, 1980 on Spotify( for you)?\.
 A: >> expecting = null
 
 ====
@@ -279,7 +279,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.playable(), contains~(genres, "rock") && release_date >= makeDate(1960, 1, 1) && release_date <= makeDate(1960, 1, 1) + 1year) => notify;
 
-A: I (see|have( found)?) Breaking Up Is Hard to Do, C’Mon Everybody,? (or|and) Pocketful of Rainbows. (All of them are|They are|They're) (adult standards|rockabill(y|ies)|brill building pop)s? music\.
+A: I (see|have( found)?) Breaking Up Is Hard to Do, C’Mon Everybody,? (or|and) (Pocketful of Rainbows|I'm Sorry). (All of them are|They are|They're) (adult standards|rockabill(y|ies)|brill building pop)s? music\.
 A: >> expecting = command
 
 ====

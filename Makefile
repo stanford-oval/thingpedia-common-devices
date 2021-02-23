@@ -52,11 +52,11 @@ subdataset_ids := $(shell seq 1 $(subdatasets))
 max_turns ?= 4
 max_depth ?= 8
 debug_level ?= 1
-subsample_thingpedia ?= 0.75
+subsample_thingpedia ?= 1
 update_canonical_flags ?= --algorithm bert,adj,bart --paraphraser-model ./models/paraphraser-bart
-synthetic_expand_factor ?= 3
-quoted_paraphrase_expand_factor ?= 100
-noquote_paraphrase_expand_factor ?= 10
+synthetic_expand_factor ?= 1
+quoted_paraphrase_expand_factor ?= 25
+noquote_paraphrase_expand_factor ?= 1
 quoted_fraction ?= 0.05
 
 generate_flags ?= $(foreach v,$(synthetic_flags),--set-flag $(v)) --target-pruning-size $(target_pruning_size) --max-turns $(max_turns) --maxdepth $(max_depth)
@@ -79,11 +79,11 @@ eslint ?= node_modules/.bin/eslint
 thingpedia_cli ?= node_modules/.bin/thingpedia
 
 geniedir ?= node_modules/genie-toolkit
-memsize ?= 9000
+memsize ?= 8500
 parallel ?= 7
 genie ?= node --experimental_worker --max_old_space_size=$(memsize) $(geniedir)/dist/tool/genie.js
 
-thingpedia_url ?= https://almond-dev.stanford.edu/thingpedia
+thingpedia_url ?= https://dev.almond.stanford.edu/thingpedia
 developer_key ?= invalid
 
 s3_bucket ?=

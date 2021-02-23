@@ -10,7 +10,7 @@ Use:
 ```
 
 To package and upload all devices in a specific release to the Thingpedia
-at almond-dev.stanford.edu (the testing Thingpedia).
+at dev.almond.stanford.edu (the testing Thingpedia).
 
 ## Deploying a Model
 
@@ -19,7 +19,7 @@ Use:
 ./scripts/deploy-model.sh --release $release --model $model
 ```
 
-To deploy the new model as the default model for almond-dev.stanford.edu.
+To deploy the new model as the default model for dev.almond.stanford.edu.
 
 ## Downloading Train Almond & Paraphrase Datasets
 
