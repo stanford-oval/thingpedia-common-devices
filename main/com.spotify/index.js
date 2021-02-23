@@ -318,7 +318,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (albums.length >= 1) {
             const albumArtistIds = albums.map((album) => album.artists[0].id);
             const albumArtistInfo = (await this.artists_get_by_id(albumArtistIds)).artists;
-            const albumGenres = albumAritstInfo.map((artist) => artist.genres);
+            const albumGenres = albumArtistInfo.map((artist) => artist.genres);
             const albumIds = albums.map((album) => album.id);
             const albumPopularities = (await this.albums_get_by_id(albumIds)).albums.map((album) => album.popularity);
             for (let i = 0; i < albums.length; i++) {
