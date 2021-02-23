@@ -51,9 +51,10 @@ class @com.spotify
   );
 
   entity playable #_[description="Playable content on Spotify"];
-  entity song extends playable #[has_ner=true] #_[description="Songs on Spotify"];
   entity artist #_[description="Artists on Spotify"];
+  entity song extends playable #[has_ner=true] #_[description="Songs on Spotify"];
   entity album extends playable #[has_ner=true] #_[description="Albums on Spotify"];
+  entity show extends playable #[has_ner=true] #_[description="Shows on Spotify"];
   entity device #_[description="Spotify Connect device ID"];
 
   list query playable(out id: Entity(com.spotify:playable)
@@ -191,6 +192,21 @@ class @com.spotify
   #[minimal_projection=["id"]]
   #_[formatted=[{type="text",text="${id} by ${artists}"}]]
   #[doc="search for albums on Spotify"];
+
+  list query show extends playable(out id: Entity(com.spotify:show)
+                                        #[string_values="tt:show"]
+                                        #[unique=true]
+                                        #_[canonical={
+                                          default="base",
+                                          base=["name"],
+                                          passive_verb=["named #", "called #", "titled #"],
+                                          property=["name #", "title"]
+                                        }])
+  #_[canonical=["show", "good show", "episodes"]]
+  #_[confirmation="show on Spotify"]
+  #[minimal_projection=["id"]]
+  #_[formatted=[{type="text",text="${id}"}]]
+  #[doc="search for shows on Spotify"];
 
   action play (in req playable: Entity(com.spotify:playable)
                 #[string_values="tt:song_name"]
@@ -350,6 +366,4 @@ class @com.spotify
     disallowed_action=["failed to change repeat state: try playing from the spotify app"]}]
     #[doc="set the repeat state"]
     #[confirm=false];
-
-
 }

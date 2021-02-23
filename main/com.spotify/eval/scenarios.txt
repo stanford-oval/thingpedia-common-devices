@@ -108,7 +108,7 @@ U: what is justin bieber's most popular song
 
 A: The most popular song is .*\. It is (a )?song (in( the album)? .*|from [0-9/]+) by Justin Bieber ?\.
 A: >> expecting = null
- 
+
 ====
 # 13-sort-release-date-artist (req=com.spotify)
 #U: play the newest song by john legend
@@ -124,7 +124,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => sort release_date desc of (@com.spotify.playable(), contains(artists, null^^com.spotify:artist("beyonce")))[1] => notify;
 
-A: I have Crazy In Love \(feat. Jay-Z\)\. (It's|It is)( a)? dance pop music by Beyonc.\. Would you like to play it on Spotify\? 
+A: I have Crazy In Love \(feat. Jay-Z\)\. (It's|It is)( a)? dance pop music by Beyonc.\. Would you like to play it on Spotify\?
 A: >> expecting = command
 
 ====
@@ -291,3 +291,21 @@ U: now => (@com.spotify.playable(), id =~ ("totally fake song")) => @com.spotify
 
 A: Sorry, I cannot find any music like that\.
 A: >> expecting = command
+
+====
+# 31-search-for-podcast (req=com.spotify)
+#U: play the podcast "Stock Market Fundamentals"
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => (@com.spotify.show(), id =~ ("Stock Market Fundamentals"))[1] => @com.spotify.play(playable=id);
+
+A: I played Stock Market Fundamentals on Spotify\.
+A: >> expecting = null
+
+====
+# 32-implicit-search-for-podcast (req=com.spotify)
+#U: play Thinking Basketball
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => (@com.spotify.playable(), id =~ ("Thinking Basketball"))[1] => @com.spotify.play(playable=id);
+
+A: I played Thinking Basketball on Spotify\.
+A: >> expecting = null
