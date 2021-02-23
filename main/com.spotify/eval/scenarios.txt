@@ -15,7 +15,7 @@ U: find me the song despacito
 #U: now => (@com.spotify.song(), id =~ ("despacito")) => notify;
 
 # FIXME need a template for song by {artist 1} and {artist 2}
-A: I (see|have( found)?) Despacito( or Despacito - Remix|, Despacito - Live (and|or) Despacito - Remix). (All of them are|They're) (puerto rican pop|latin pop|latin|tropical)s? (songs?|musics?|tracks?) by (Luis Fonsi|Daddy Yankee).
+A: I (see|have( found)?) Despacito( or Despacito - Remix|, Despacito - Live (and|or) Despacito - Remix). (All of them are|They're) (puerto rican pop|latin pop|latin|tropical)s? (tracks?|songs?|musics?) by (Luis Fonsi|Daddy Yankee).
 A: >> expecting = command
 
 ====
@@ -69,7 +69,7 @@ U: what songs are in the album the wall
 #U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 #U: now => (@com.spotify.song(), album == null^^com.spotify:album("the wall")) => notify;
 
-A: I (see|have) In the Flesh\?, The Thin Ice (or|and) Another Brick in the Wall, Pt\. 1\. (They're|All of them are) songs? in the album The Wall by Pink Floyd\.
+A: I (see|have) In the Flesh\?, The Thin Ice (or|and) Another Brick in the Wall, Pt\. 1\. (All of them are|They're) songs? in the album The Wall by Pink Floyd\.
 A: >> expecting = command
 
 ====
@@ -108,7 +108,7 @@ U: what is justin bieber's most popular song
 
 A: The most popular song is .*\. It is (a )?song (in( the album)? .*|from [0-9/]+) by Justin Bieber ?\.
 A: >> expecting = null
- 
+
 ====
 # 13-sort-release-date-artist (req=com.spotify)
 #U: play the newest song by john legend
@@ -124,7 +124,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => sort release_date desc of (@com.spotify.playable(), contains(artists, null^^com.spotify:artist("beyonce")))[1] => notify;
 
-A: I have Crazy In Love \(feat. Jay-Z\)\. (It's|It is)( a)? dance pop music by Beyonc.\. Would you like to play it on Spotify\? 
+A: I have Crazy In Love \(feat. Jay-Z\)\. (It's|It is)( a)? dance pop music by Beyonc.\. Would you like to play it on Spotify\?
 A: >> expecting = command
 
 ====
@@ -257,7 +257,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.playable(), release_date >= makeDate(2000, 1, 1) && release_date <= makeDate(2000, 1, 1) + 1year) => notify;
 
-A: I have found Yellow. It is a pop music by Coldplay. Would you like to play it on Spotify\?
+A: I have (found|one, it is) Yellow. It is a pop music by Coldplay. Would you like to play it on Spotify\?
 A: >> expecting = command
 
 ====
@@ -279,7 +279,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.playable(), contains~(genres, "rock") && release_date >= makeDate(1960, 1, 1) && release_date <= makeDate(1960, 1, 1) + 1year) => notify;
 
-A: I (see|have( found)?) Breaking Up Is Hard to Do, C’Mon Everybody,? (or|and) Pocketful of Rainbows. (All of them are|They are|They're) (adult standards|rockabill(y|ies)|brill building pop)s? music\.
+A: I (see|have( found)?) Breaking Up Is Hard to Do, C’Mon Everybody,? (or|and) (Pocketful of Rainbows|I'm Sorry). (All of them are|They are|They're) (adult standards|rockabill(y|ies)|brill building pop)s? music\.
 A: >> expecting = command
 
 ====
@@ -295,9 +295,27 @@ A: >> expecting = command
 ====
 # 31-play-playlist (req=com.spotify)
 
-# play the playlist
+#U: play the playlist today's top hits
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.playlist(), id =~ ("today's top hits")) => @com.spotify.play(playable=id);
 
 A: I played Today's Top Hits( on Spotify)?( for you)?\.
+A: >> expecting = null
+
+====
+# 32-search-for-podcast (req=com.spotify)
+#U: play the podcast "Stock Market Fundamentals"
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => (@com.spotify.show(), id =~ ("Stock Market Fundamentals")) => @com.spotify.play(playable=id);
+
+A: I played Stock Market Fundamentals on Spotify\.
+A: >> expecting = null
+
+====
+# 33-implicit-search-for-podcast (req=com.spotify)
+#U: play Thinking Basketball
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => (@com.spotify.playable(), id =~ ("Thinking Basketball")) => @com.spotify.play(playable=id);
+
+A: I played Thinking Basketball on Spotify\.
 A: >> expecting = null

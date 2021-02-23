@@ -338,7 +338,7 @@ async function main() {
         nluModelUrl = 'https://nlp-staging.almond.stanford.edu';
     const engine = new Genie.AssistantEngine(platform, {
         nluModelUrl,
-        cloudSyncUrl: 'https://almond-dev.stanford.edu'
+        cloudSyncUrl: 'https://dev.almond.stanford.edu'
     });
     testRunner.engine = engine;
 

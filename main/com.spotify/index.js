@@ -45,6 +45,7 @@ const AUDIO_FEATURES_URL = 'https://api.spotify.com/v1/audio-features/?';
 const ALBUM_URL = 'https://api.spotify.com/v1/albums?';
 const TRACK_URL = 'https://api.spotify.com/v1/tracks?';
 const ARTIST_URL = 'https://api.spotify.com/v1/artists?';
+const SHOW_URL = 'https://api.spotify.com/v1/shows?';
 const SHUFFLE_URL = 'https://api.spotify.com/v1/me/player/shuffle?';
 const PAUSE_URL = 'https://api.spotify.com/v1/me/player/pause?';
 const NEXT_URL = 'https://api.spotify.com/v1/me/player/next?';
@@ -52,6 +53,8 @@ const PREVIOUS_URL = 'https://api.spotify.com/v1/me/player/previous?';
 const REPEAT_URL = 'https://api.spotify.com/v1/me/player/repeat?';
 const QUEUE_URL = "https://api.spotify.com/v1/me/player/queue";
 const PLAYER_INFO_URL = "https://api.spotify.com/v1/me/player";
+const USER_PLAYLISTS = 'https://api.spotify.com/v1/users/{username}/playlists?';
+const PER_SET = 50;
 
 module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
@@ -62,6 +65,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         this._queryResults = new Map();
         this._deviceState = new Map();
 
+        this._launchedSpotify = false;
         if (this.platform.type === "server")
             this.spotifyd = new spotifyd({
                 cacheDir: this.platform._cacheDir,
@@ -214,6 +218,20 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         });
     }
 
+    shows_get_by_id(ids) {
+        const url = SHOW_URL + querystring.stringify({
+            ids: ids.join()
+        });
+        return Tp.Helpers.Http.get(url, {
+            accept: 'application/json',
+            useOAuth2: this
+        }).then((response) => {
+            return JSON.parse(response);
+        }).catch((e) => {
+            throw new Error(JSON.parse(e.detail).error.message);
+        });
+    }
+
     async parse_tracks(tracks, appID) {
         //const ids = tracks.map((track) => new Tp.Value.Entity(track.id, track.name));
         const ids = tracks.map((track) => track.id);
@@ -262,18 +280,21 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
     //songs + albums + podcasts ...
     async music_by_search(query, limit = 5) {
-        const searchResults = await this.search(query, "track,album,playlist", limit);
+        const searchResults = await this.search(query, "track,album,playlist,show", limit);
         if ((!Object.prototype.hasOwnProperty.call(searchResults, "tracks") &&
                 !Object.prototype.hasOwnProperty.call(searchResults, "albums") &&
-                !Object.prototype.hasOwnProperty.call(searchResults, "playlists")) ||
+                !Object.prototype.hasOwnProperty.call(searchResults, "playlists") &&
+                !Object.prototype.hasOwnProperty.call(searchResults, "shows")) ||
             (searchResults.tracks.total === 0 &&
                 searchResults.albums.total === 0 &&
-                searchResults.playlists.total === 0))
+                searchResults.playlists.total === 0 &&
+                searchResults.shows.total === 0))
             return [];
 
         const tracks = searchResults.tracks.items;
         const albums = searchResults.albums.items;
         const playlists = searchResults.playlists.items;
+        const shows = searchResults.shows.items;
 
         var music = [];
 
@@ -299,8 +320,8 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         }
         if (albums.length >= 1) {
             const albumArtistIds = albums.map((album) => album.artists[0].id);
-            const albumAritstInfo = (await this.artists_get_by_id(albumArtistIds)).artists;
-            const albumGenres = albumAritstInfo.map((artist) => artist.genres);
+            const albumArtistInfo = (await this.artists_get_by_id(albumArtistIds)).artists;
+            const albumGenres = albumArtistInfo.map((artist) => artist.genres);
             const albumIds = albums.map((album) => album.id);
             const albumPopularities = (await this.albums_get_by_id(albumIds)).albums.map((album) => album.popularity);
             for (let i = 0; i < albums.length; i++) {
@@ -319,10 +340,17 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 music.push(albumObj);
             }
         }
+
         if (tracks.length == 0 && albums.length == 0) {
             for (const playlist of playlists) {
                 music.push({
                     id: new Tp.Value.Entity(playlist.uri, playlist.name)
+                });
+            }
+
+            for (const show of shows) {
+                music.push({
+                    id: new Tp.Value.Entity(show.uri, show.name)
                 });
             }
         }
@@ -454,6 +482,25 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         return albums;
     }
 
+    async shows_by_search(query, artistURI) {
+        const searchResults = await this.search(query, "show", 5);
+        if (!Object.prototype.hasOwnProperty.call(searchResults, "shows") || searchResults.albums.total === 0) return [];
+        const ids = searchResults.shows.items.map((show) => show.id);
+        const showItems = (await this.shows_get_by_id(ids)).shows;
+        var shows = [];
+        for (var i = 0; i < showItems.length; i++) {
+            const release_date = new Date(showItems[i].release_date);
+            const artists = showItems[i].artists.map((producer) => new Tp.Value.Entity(producer.uri, producer.name));
+            const show = {
+                id: new Tp.Value.Entity(showItems[i].uri, showItems[i].name),
+                artists,
+                release_date,
+            };
+            shows.push(show);
+        }
+        return shows;
+    }
+
     async get_playable(params, hints, env) {
 
         var idFilter = '';
@@ -510,7 +557,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             return music;
 
         } else {
-            return filterMusic(await this.music_by_search(query, 20));
+            return filterMusic(await this.songs_by_search(query, 50));
         }
     }
 
@@ -648,6 +695,13 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             };
             artists.push(artistObj);
         }
+
+        artists.sort((a, b) => {
+            return b.popularity - a.popularity;
+        });
+        const popularity_treshold = artists[0].popularity * 0.2;
+        artists = artists.filter((artist) => artist.popularity >= popularity_treshold);
+
         return artists;
     }
 
@@ -723,6 +777,34 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         }
     }
 
+    async get_show(params, hints, env) {
+        //get_show works essentially the same as get_artists.
+        var idFilter = '';
+        if (hints && hints.filter) {
+            for (let [pname, op, value] of hints.filter) {
+                if (pname === "id" && (op === "==" || op === "=~")) {
+                    if (value instanceof Tp.Value.Entity) idFilter = value.display;
+                    else idFilter = value;
+                }
+            }
+        }
+        //default query will be to just get the most popular shows right now
+        let query = (idFilter).trim() || `year:${new Date().getFullYear()}`;
+        console.log(query);
+        const searchResults = await this.search(query, "show", 5);
+        if (!Object.prototype.hasOwnProperty.call(searchResults, 'shows') || searchResults.shows.total === 0) return [];
+        var shows = [];
+        for (const show of searchResults.shows.items) {
+            const id = new Tp.Value.Entity(show.uri, show.name);
+            const showObj = {
+                id,
+                publisher: show.publisher
+            };
+            shows.push(showObj);
+        }
+        return shows;
+    }
+
     async get_playlist(params, hints, env) {
 
         var id = '';
@@ -745,7 +827,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             });
         }
         return playlists;
-
     }
 
     async currently_playing_helper() {
@@ -786,10 +867,32 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         return process.env.TEST_MODE === '1';
     }
 
-    _findActiveDevice(devices) {
+    async _findActiveDevice(devices) {
         if (devices.length === 0) {
             console.log("no available devices");
-            return [null, null];
+
+            // try launching the spotify app
+            const appLauncher = this.platform.getCapability('app-launcher');
+            if (appLauncher && !this._launchedSpotify) {
+                this._launchedSpotify = true;
+                console.log("spawning spotify app");
+                await appLauncher.launchApp('com.spotify.Client.desktop');
+                // wait 20 seconds for the app to launch
+                await new Promise((resolve) => setTimeout(resolve, 20000));
+                devices = await this.get_get_available_devices();
+            }
+            if (devices.length === 0)
+                return [null, null];
+        }
+        // spotifyd active
+        if (this.spotifyd) {
+            for (let i = 0; i < devices.length; i++) {
+                console.log(devices[i].is_active);
+                if (devices[i].id === this.spotifyd.deviceId) {
+                    console.log("found spotifyd device");
+                    return [devices[i].id, this.state.id];
+                }
+            }
         }
         // spotifyd active
         if (this.spotifyd) {
@@ -824,7 +927,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 device: new Tp.Value.Entity('mock', 'Coolest Computer')
             };
         }
-        const [deviceId, deviceName] = this._findActiveDevice(devices);
+        const [deviceId, deviceName] = await this._findActiveDevice(devices);
         if (deviceId === null)
             throwError('no_active_device');
         try {
@@ -880,7 +983,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         let deviceState = this._deviceState.get(env.app.uniqueId);
         if (!deviceState) {
             let devices = await this.get_get_available_devices();
-            const [deviceId, deviceName] = this._findActiveDevice(devices);
+            const [deviceId, deviceName] = await this._findActiveDevice(devices);
             if (deviceId === null)
                 throwError('no_active_device');
 
@@ -917,7 +1020,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         let deviceState = this._deviceState.get(env.app.uniqueId);
         if (!deviceState) {
             let devices = await this.get_get_available_devices();
-            const [deviceId, deviceName] = this._findActiveDevice(devices);
+            const [deviceId, deviceName] = await this._findActiveDevice(devices);
             if (deviceId === null)
                 throwError('no_active_device');
 
@@ -947,6 +1050,17 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         album
     }, env) {
         const uri = String(album);
+        let data = {
+            context_uri: uri,
+        };
+        console.log("data is " + JSON.stringify(data));
+        return this.player_play_helper(JSON.stringify(data));
+    }
+
+    async do_play_show({
+        show
+    }, env) {
+        const uri = String(show);
         let data = {
             context_uri: uri,
         };
@@ -1051,7 +1165,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (this._testMode())
             return;
         let devices = await this.get_get_available_devices();
-        const deviceId = this._findActiveDevice(devices)[0];
+        const deviceId = (await this._findActiveDevice(devices))[0];
         if (deviceId === null)
             throwError('no_active_device');
         let pauseURL = PAUSE_URL + querystring.stringify({
@@ -1075,7 +1189,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (this._testMode())
             return;
         let devices = await this.get_get_available_devices();
-        const deviceId = this._findActiveDevice(devices)[0];
+        const deviceId = (await this._findActiveDevice(devices))[0];
         if (deviceId === null)
             throwError('no_active_device');
         let nextURL = NEXT_URL + querystring.stringify({
@@ -1092,7 +1206,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (this._testMode())
             return;
         let devices = await this.get_get_available_devices();
-        const deviceId = this._findActiveDevice(devices)[0];
+        const deviceId = (await this._findActiveDevice(devices))[0];
         if (deviceId === null)
             throwError('no_active_device');
         let previousURL = PREVIOUS_URL + querystring.stringify({
@@ -1114,7 +1228,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (this._testMode())
             return;
         let devices = await this.get_get_available_devices();
-        const deviceId = this._findActiveDevice(devices)[0];
+        const deviceId = (await this._findActiveDevice(devices))[0];
         if (deviceId === null)
             throwError('no_active_device');
         let shuffleURL = SHUFFLE_URL + querystring.stringify({
@@ -1136,7 +1250,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (this._testMode())
             return;
         let devices = await this.get_get_available_devices();
-        const deviceId = this._findActiveDevice(devices)[0];
+        const deviceId = (await this._findActiveDevice(devices))[0];
         if (deviceId === null)
             throwError('no_active_device');
         let repeatURL = REPEAT_URL + querystring.stringify({

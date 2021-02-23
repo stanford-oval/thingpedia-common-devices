@@ -400,7 +400,7 @@ async function main() {
     const platform = new Platform();
     platform.getSharedPreferences().set('developer-dir', RELEASES.map((r) => path.resolve(r)));
 
-    const tpClient = new Tp.HttpClient(platform, 'https://almond-dev.stanford.edu/thingpedia');
+    const tpClient = new Tp.HttpClient(platform, 'https://dev.almond.stanford.edu/thingpedia');
     const schemas = new ThingTalk.SchemaRetriever(tpClient, null, false);
 
     const input = readAllLines(args.input_file);

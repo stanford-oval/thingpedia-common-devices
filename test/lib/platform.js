@@ -29,7 +29,7 @@ const path = require('path');
 const child_process = require('child_process');
 const Gettext = require('node-gettext');
 
-const THINGPEDIA_URL = 'https://almond-dev.stanford.edu/thingpedia';
+const THINGPEDIA_URL = 'https://dev.almond.stanford.edu/thingpedia';
 
 var _unzipApi = {
     unzip(zipPath, dir) {
