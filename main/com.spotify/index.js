@@ -486,7 +486,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             return music;
 
         } else {
-            return filterMusic(await this.music_by_search(query, 20));
+            return filterMusic(await this.songs_by_search(query, 50));
         }
     }
 
