@@ -54,6 +54,7 @@ class @com.spotify
   entity artist #_[description="Artists on Spotify"];
   entity song extends playable #[has_ner=true] #_[description="Songs on Spotify"];
   entity album extends playable #[has_ner=true] #_[description="Albums on Spotify"];
+  entity playlist extends playable #[has_ner=true] #_[description="Playlists on Spotify"];
   entity show extends playable #[has_ner=true] #_[description="Shows on Spotify"];
   entity device #_[description="Spotify Connect device ID"];
 
@@ -193,6 +194,21 @@ class @com.spotify
   #_[formatted=[{type="text",text="${id} by ${artists}"}]]
   #[doc="search for albums on Spotify"];
 
+  list query playlist extends playable (out id: Entity(com.spotify:playlist)
+                                         #[string_values="tt:song_name"]
+                                         #[unique=true]
+                                         #_[canonical={
+                                           default="base",
+                                           base=["name"],
+                                           passive_verb=["named #", "called #", "titled #"],
+                                           property=["name #", "title"]
+                                         }])
+  #_[canonical=["playlist"]]
+  #_[confirmation="playlists on Spotify"]
+  #[minimal_projection=["id"]]
+  #_[formatted=[{type="text",text="${id}"}]]
+  #[doc="search for playlists on Spotify"];
+
   list query show extends playable(out id: Entity(com.spotify:show)
                                         #[string_values="tt:show"]
                                         #[unique=true]
@@ -202,7 +218,7 @@ class @com.spotify
                                           passive_verb=["named #", "called #", "titled #"],
                                           property=["name #", "title #"]
                                         }])
-  #_[canonical=["show", "good show", "podcast", "audio podcast", "episodes"]]
+  #_[canonical=["show", "podcast", "audio podcast", "episodes"]]
   #_[confirmation="show on Spotify"]
   #[minimal_projection=["id"]]
   #_[formatted=[{type="text",text="${id}"}]]
