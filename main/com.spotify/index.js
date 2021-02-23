@@ -53,8 +53,6 @@ const PREVIOUS_URL = 'https://api.spotify.com/v1/me/player/previous?';
 const REPEAT_URL = 'https://api.spotify.com/v1/me/player/repeat?';
 const QUEUE_URL = "https://api.spotify.com/v1/me/player/queue";
 const PLAYER_INFO_URL = "https://api.spotify.com/v1/me/player";
-const USER_PLAYLISTS = 'https://api.spotify.com/v1/users/{username}/playlists?';
-const PER_SET = 50;
 
 module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
