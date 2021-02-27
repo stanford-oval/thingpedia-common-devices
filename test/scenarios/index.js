@@ -277,9 +277,9 @@ async function main() {
         description: "Scenario testing script."
     });
     parser.add_argument('-r', '--release', {
-        required: true,
         help: 'Release to work against',
-        choices: ['builtin', 'main', 'universe', 'staging']
+        choices: ['builtin', 'main', 'universe', 'staging'],
+        default: 'universe',
     });
     parser.add_argument('--nlu-model', {
         required: false,

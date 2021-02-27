@@ -87,7 +87,7 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
         const query = {
             term: '',
             location: undefined,
-            categories: 'restaurants',
+            categories: '',
             price: undefined,
         };
         const addedCategories = new Set;
@@ -105,12 +105,17 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                     if (addedCategories.has(String(value)))
                         continue;
                     addedCategories.add(String(value));
-                    query.categories += ',' + value;
+                    if (query.categories)
+                        query.categories += ',' + value;
+                    else
+                        query.categories = value;
                 } else if (pname === 'price' && op === '==') {
                     query.price = INVERSE_PRICE_RANGE_MAP[String(value)];
                 }
             }
         }
+        if (!query.categories)
+            query.categories = 'restaurants';
         if (!query.location) {
             const gps = this.platform.getCapability('gps');
             if (gps)

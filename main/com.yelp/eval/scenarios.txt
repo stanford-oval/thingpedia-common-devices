@@ -1,0 +1,36 @@
+# 1-basic
+U: \t @com.yelp.restaurant();
+
+A: I have Ramen Nagi, Evvia Estiatorio and Zareen's. (All of them are|They're) 4.5 star restaurants?.
+A: rdl: Ramen Nagi https://www.yelp.com/biz/ramen-nagi-palo-alto.*
+A: rdl: Evvia Estiatorio https://www.yelp.com/biz/evvia-estiatorio-palo-alto.*
+A: rdl: Zareen's https://www.yelp.com/biz/zareens-palo-alto.*
+A: >> expecting = command
+
+====
+
+# 2-by-location
+U: \t @com.yelp.restaurant() filter geo == new Location(37.442156, -122.1634471, "Palo Alto, California");
+
+A: I see Ramen Nagi or Evvia Estiatorio. (All of them are|They're) 4.5 star restaurants?.
+A: rdl: Ramen Nagi https://www.yelp.com/biz/ramen-nagi-palo-alto.*
+A: rdl: Evvia Estiatorio https://www.yelp.com/biz/evvia-estiatorio-palo-alto.*
+A: >> expecting = command
+
+====
+# 3-by-category-and-location
+U: \t @com.yelp.restaurant() filter contains(cuisines, "chinese"^^com.yelp:restaurant_cuisine("Chinese")) && geo == new Location(37.2856948, -121.9432202, "Campbell");
+
+A: I see Blue Sky Chinese Restaurant, Sweet Mango and Red Hot Wok\. (All of them are|They're) moderates? restaurants? with Chinese food\.
+A: rdl: Blue Sky Chinese Restaurant https://www.yelp.com/biz/blue-sky-chinese-restaurant-campbell.*
+A: rdl: Sweet Mango https://www.yelp.com/biz/sweet-mango-san-jose.*
+A: rdl: Red Hot Wok https://www.yelp.com/biz/red-hot-wok-cupertino.*
+A: >> expecting = command
+
+====
+# 4-sort-by-rating
+U: \t sort(rating desc of @com.yelp.restaurant() filter geo == new Location(37.442156, -122.1634471, "Palo Alto, California"))[1];
+
+A: The top rated restaurant is V&V Delicious Crepes. It is a moderate restaurant near 601 Old County Rd, San Carlos, CA 94070.
+A: rdl: V&V Delicious Crepes https://www.yelp.com/biz/v-and-v-delicious-crepes-san-carlos-2.*
+A: >> expecting = null
