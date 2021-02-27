@@ -158,7 +158,7 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                 cuisines,
                 price: PRICE_RANGE_MAP[b.price] || b.price,
                 rating: Number(b.rating),
-                reviewCount: b.review_count,
+                review_count: b.review_count,
                 geo,
                 phone: b.phone
             };
