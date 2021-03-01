@@ -541,6 +541,9 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         let query = (idFilter + yearFilter + artistFilter + genreFilter).trim() || `year:${new Date().getFullYear()} `;
         if (idFilter) {
             let music = await this.music_by_search(query, 5);
+            if (music.length == 0)
+                return music;
+
             if (String(music[0].id).includes("track") || String(music[0].id).includes("album")) {
                 music.sort((a, b) => {
                     return b.popularity - a.popularity;
