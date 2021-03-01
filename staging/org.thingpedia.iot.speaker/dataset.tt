@@ -1,6 +1,6 @@
 dataset @org.thingpedia.iot.speaker language "en" {
 
-  program := now => @org.thingpedia.iot.speaker.power() => notify
+  program := @org.thingpedia.iot.speaker.power()
   #_[utterances=["is my speaker on?",
                 "check if my speaker is off",
                 "is the speaker turned on?",
@@ -12,17 +12,17 @@ dataset @org.thingpedia.iot.speaker language "en" {
   #_[utterances=["if my speaker is on or off",
                  "whether my speaker is switched on or switched off"]];
 
-  stream := monitor @org.thingpedia.iot.speaker.power()
+  stream := monitor(@org.thingpedia.iot.speaker.power())
   #_[utterances=["when my speaker changes state"]];
 
-  stream (p_state : Enum(on, off)) := edge( monitor @org.thingpedia.iot.speaker.power()) on (state == p_state)
+  stream (p_state : Enum(on, off)) := monitor(@org.thingpedia.iot.speaker.power()), (state == p_state)
   #_[utterances=["when my speaker turns ${p_state}",
                 "if my speaker switches ${p_state}",
                 "when the speaker becomes ${p_state}",
                 "if my speaker is ${p_state}",
                 "when my speaker changes to ${p_state}"]];
 
-  stream := edge( monitor @org.thingpedia.iot.speaker.power()) on (state == enum(on))
+  stream := monitor(@org.thingpedia.iot.speaker.power()), (state == enum(on))
   #_[utterances=["when my speaker turns on",
                 "when I switch on the speaker",
                 "if the speaker becomes on",
@@ -31,7 +31,7 @@ dataset @org.thingpedia.iot.speaker language "en" {
                 "when my speaker is turned on",
                 "the moment my speaker is switched on"]];
 
-  stream := edge( monitor @org.thingpedia.iot.speaker.power()) on (state == enum(off))
+  stream := monitor(@org.thingpedia.iot.speaker.power()), (state == enum(off))
   #_[utterances=["when my speaker is turned off",
                 "if my speaker switches off",
                 "the moment my speaker becomes off",
@@ -96,7 +96,7 @@ dataset @org.thingpedia.iot.speaker language "en" {
                    "play music on my speaker",
                    "play something on my speaker"]];
 
-  program (p_name : String) := now => @org.thingpedia.iot.speaker(name=p_name).power() => notify
+  program (p_name : String) := @org.thingpedia.iot.speaker(name=p_name).power()
   #_[utterances=["is my ${p_name} speaker on?",
                 "check if my ${p_name} speaker is off",
                 "is the ${p_name} speaker turned on?",
@@ -108,17 +108,17 @@ dataset @org.thingpedia.iot.speaker language "en" {
   #_[utterances=["if my ${p_name} speaker is on or off",
                  "whether my ${p_name} speaker is switched on or switched off"]];
 
-  stream (p_name : String) := monitor @org.thingpedia.iot.speaker(name=p_name).power()
+  stream (p_name : String) := monitor(@org.thingpedia.iot.speaker(name=p_name).power())
   #_[utterances=["when my ${p_name} speaker changes state"]];
 
-  stream (p_name : String, p_state : Enum(on, off)) := edge( monitor @org.thingpedia.iot.speaker(name=p_name).power()) on (state == p_state)
+  stream (p_name : String, p_state : Enum(on, off)) := monitor(@org.thingpedia.iot.speaker(name=p_name).power()), (state == p_state)
   #_[utterances=["when my ${p_name} speaker turns ${p_state}",
                 "if my ${p_name} speaker switches ${p_state}",
                 "when the ${p_name} speaker becomes ${p_state}",
                 "if my ${p_name} speaker is ${p_state}",
                 "when my ${p_name} speaker changes to ${p_state}"]];
 
-  stream (p_name : String) := edge( monitor @org.thingpedia.iot.speaker(name=p_name).power()) on (state == enum(on))
+  stream (p_name : String) := monitor(@org.thingpedia.iot.speaker(name=p_name).power()), (state == enum(on))
   #_[utterances=["when my ${p_name} speaker turns on",
                 "when I switch on the ${p_name} speaker",
                 "if the ${p_name} speaker becomes on",
@@ -127,7 +127,7 @@ dataset @org.thingpedia.iot.speaker language "en" {
                 "when my ${p_name} speaker is turned on",
                 "the moment my ${p_name} speaker is switched on"]];
 
-  stream (p_name : String) := edge( monitor @org.thingpedia.iot.speaker(name=p_name).power()) on (state == enum(off))
+  stream (p_name : String) := monitor(@org.thingpedia.iot.speaker(name=p_name).power()), (state == enum(off))
   #_[utterances=["when my ${p_name} speaker is turned off",
                 "if my ${p_name} speaker switches off",
                 "the moment my ${p_name} speaker becomes off",
