@@ -534,6 +534,10 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             }
         }
 
+        if (idFilter.toLowerCase().includes("daily mix")) {
+            throwError('disallowed_action');
+        }
+
         let query = (idFilter + yearFilter + artistFilter + genreFilter).trim() || `year:${new Date().getFullYear()} `;
         if (idFilter) {
             let music = await this.music_by_search(query, 5);
@@ -813,6 +817,10 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                     else id = value;
                 }
             }
+        }
+
+        if (id.toLowerCase().includes("daily mix")) {
+            throwError('disallowed_action');
         }
 
         let query = id || `${new Date().getFullYear()}`;
