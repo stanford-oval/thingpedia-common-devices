@@ -98,3 +98,28 @@ UT: @com.icanhazdadjoke.get();
 U: tell another joke
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.icanhazdadjoke.get();
+====
+# manual/1
+U: tell me a joke
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.icanhazdadjoke.get();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="wcxPRu41wc"^^com.icanhazdadjoke:id, text="Why do bees have sticky hair? Because they use honey combs!" }
+C: ]];
+A: Why do bees have sticky hair? Because they use honey combs!
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: another one
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.icanhazdadjoke.get();
+====
+# manual/2
+U: tell me a joke about cats
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.icanhazdadjoke.get(query="cats");
+====
+# manual/2
+U: tell me an animal joke
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.icanhazdadjoke.get(query="animal");

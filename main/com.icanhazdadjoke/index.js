@@ -1,4 +1,6 @@
-// Copyright 2019-2020 The Board of Trustees of the Leland Stanford Junior University
+// -*- mode: js; indent-tabs-mode: nil; js-basic-offset: 4 -*-
+//
+// Copyright 2021 The Board of Trustees of the Leland Stanford Junior University
 //
 // Redistribution and use in source and binary forms, with or
 // without modification, are permitted provided that the following
@@ -26,40 +28,39 @@
 // STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 // OF THE POSSIBILITY OF SUCH DAMAGE.
+"use strict";
 
-class @com.icanhazdadjoke
-#_[thingpedia_name="Dad Jokes"]
-#_[thingpedia_description="Ask for a joke"]
-#_[canonical="dad jokes"]
-#[license="BSD-3-Clause"]
-#[license_gplcompatible=true]
-#[subcategory="service"]
-{
-  import loader from @org.thingpedia.v2();
-  import config from @org.thingpedia.config.none();
+const Tp = require('thingpedia');
 
-  entity id #_[description="Joke ID"] #[has_ner=false];
+module.exports = class JokeApi extends Tp.BaseDevice {
+    async get_get({ query }) {
+        if (query) {
+            query = query.toLowerCase();
+            const parsed = JSON.parse(await Tp.Helpers.Http.get(`https://icanhazdadjoke.com/search?term=${encodeURIComponent(query)}`, {
+                accept: 'application/json'
+            }));
+            // eliminate jokes that don't actually contain the keywords
+            const filtered = parsed.results.filter((joke) => joke.joke.toLowerCase().indexOf(query) >= 0);
+            if (filtered.length === 0) {
+                const err = new Error(`No jokes returned`);
+                err.code = 'no_joke_available';
+                throw err;
+            }
 
-  query get(in opt query : String
-            #_[canonical={
-              base=["topic", "search term", "query"],
-              property=["# topic"],
-              preposition=["about #"],
-              adjective=["#"]
-            }]
-            #[string_values="tt:word"],
-            out id: Entity(com.icanhazdadjoke:id),
-            out text: String
-            #_[canonical={
-               base=["text", "content"],
-               verb=["say #"],
-               passive_verb=["saying #"],
-            }])
-  #_[result=["${text}"]]
-  #_[canonical=["joke", "dad joke", "funny joke"]]
-  #_[on_error={
-    no_joke_available=["i do not have any joke about ${query}", "there are no jokes about ${query}", "there are no jokes at the moment"]
-  }]
-  #[minimal_projection=["id", "text"]]
-  #[doc="get a joke"];
-}
+            // return a random one
+            const choice = filtered[Math.floor(Math.random() * filtered.length)];
+            return [{
+                id: choice.id,
+                text: choice.joke
+            }];
+        } else {
+            const parsed = JSON.parse(await Tp.Helpers.Http.get(`https://icanhazdadjoke.com`, {
+                accept: 'application/json'
+            }));
+            return [{
+                id: parsed.id,
+                text: parsed.joke
+            }];
+        }
+    }
+};
