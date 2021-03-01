@@ -14,7 +14,7 @@ const MS_PER_HOUR = 60 * 60 * 1000;
 const MS_PER_DAY = 24 * MS_PER_HOUR;
 
 const SUNRISE_URL = 'https://api.met.no/weatherapi/sunrise/2.0/?lat=%f&lon=%f&date=%04d-%02d-%02d&offset=-00:00';
-const WEATHER_URL = 'https://api.met.no/weatherapi/locationforecast/1.9/?lat=%f;lon=%f';
+const WEATHER_URL = 'https://api.met.no/weatherapi/locationforecast/2.0/classic?lat=%f;lon=%f';
 
 
 function dateDiff(date1, date2) {
