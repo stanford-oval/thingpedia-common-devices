@@ -11,23 +11,13 @@ const Tp = require('thingpedia');
 const WebSocket = require('ws');
 const HomeAssistant = require('home-assistant-js-websocket');
 
-const HomeAssistantAir = require('./air');
-const HomeAssistantBattery = require('./battery');
 const HomeAssistantClimate = require('./climate');
 const HomeAssistantCover = require('./cover');
-const HomeAssistantDoor = require('./door');
 const HomeAssistantFan = require('./fan');
-const HomeAssistantFlood = require('./flood');
-const HomeAssistantHumidity = require('./humidity');
 const HomeAssistantLightbulb = require('./light-bulb');
-const HomeAssistantLock = require('./lock');
-const HomeAssistantIlluminance = require('./illuminance');
 const HomeAssistantMediaPlayer = require('./media-player');
-const HomeAssistantMotion = require('./motion');
 const HomeAssistantSensor = require('./sensor');
 const HomeAssistantSwitch = require('./switch');
-const HomeAssistantTemperature = require('./temperature');
-const HomeAssistantUV = require('./uv');
 const HomeAssistantVacuum = require('./vacuum');
 
 // FIXME make configurable
@@ -64,25 +54,21 @@ const DOMAIN_TO_TP_KIND = {
 // provide implementations for various abstract & embedded Thingpedia devices
 // we can provide implementation for devices that are not in the enabled portion of
 // Thingpedia yet (and the implementation will not be loaded)
+//
+// many devices use the shared HomeAssistantSensor class, as they just expose the
+// sensor value from Home Assistant and if necessary map it to the right enum
+// those are handled immediately below by creating anonymous classes
+// note that we need to create distinct JS classes for each Thingpedia class because the
+// Thingpedia loading code will attach metadata to the JS class
 const SUBDEVICES = {
-    'org.thingpedia.iot.air': HomeAssistantAir,
-    'org.thingpedia.iot.battery': HomeAssistantBattery,
     'io.home-assistant.climate': HomeAssistantClimate,
     'org.thingpedia.iot.cover': HomeAssistantCover,
-    'org.thingpedia.iot.door': HomeAssistantDoor,
     'org.thingpedia.iot.fan': HomeAssistantFan,
-    'org.thingpedia.iot.flood': HomeAssistantFlood,
-    'org.thingpedia.iot.humidity': HomeAssistantHumidity,
     'org.thingpedia.iot.light-bulb': HomeAssistantLightbulb,
-    'org.thingpedia.iot.illuminance': HomeAssistantIlluminance,
-    'org.thingpedia.iot.lock': HomeAssistantLock,
     'org.thingpedia.iot.media-player': HomeAssistantMediaPlayer,
-    'org.thingpedia.iot.motion': HomeAssistantMotion,
     //'org.thingpedia.iot.occupancy': HomeAssistantOccupancy,
     //'org.thingpedia.iot.sound': HomeAssistantSound,
     'org.thingpedia.iot.switch': HomeAssistantSwitch,
-    'org.thingpedia.iot.temperature': HomeAssistantTemperature,
-    'org.thingpedia.iot.uv': HomeAssistantUV,
     'org.thingpedia.iot.vacuum': HomeAssistantVacuum
 };
 

@@ -41,6 +41,10 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
                     on: 'open',
                     off: 'closed'
                 },
+                window: {
+                    on: 'open',
+                    off: 'closed'
+                },
                 gas: {
                     on: 'detecting',
                     off: 'not_detecting'
@@ -52,6 +56,10 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
                 moisture: {
                     on: 'wet',
                     off: 'dry'
+                },
+                humidity: {
+                    on: 'humid',
+                    off: 'normal',
                 },
                 motion: {
                     on: 'detecting',
@@ -72,6 +80,11 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
                 sound: {
                     on: 'detecting',
                     off: 'not_detecting'
+                },
+                flood: {
+                    // FIXME???
+                    on: 'on',
+                    off: 'off'
                 }
             };
             this.deviceStateMapping = supportedDeviceClasses[this.device_class] || {on: 'on', off: 'off'};
