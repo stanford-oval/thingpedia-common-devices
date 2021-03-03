@@ -651,3 +651,28 @@ UT: [temperature] of @org.thingpedia.weather.current();
 U: the weather
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.weather.current();
+====
+# manual/3
+U: what is the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.7790262, -122.4199061, "San Francisco, California"))
+C: #[results=[
+C:   { temperature=12.3C, wind_speed=5.8mps, humidity=76.9, cloudiness=99.2, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=3;content_type=image/png"^^tt:picture, location=new Location(37.7790262, -122.4199061, "San Francisco, California") }
+C: ]];
+A: The current weather in San Francisco, California is cloudy. The temperature is 54.1 F and the humidity is 76.9 %.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: what is the humidity?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [humidity] of @org.thingpedia.weather.current(location=new Location(37.7790262, -122.4199061, "San Francisco, California"));
+====
+# manual/4
+U: what's the humidity in san francisco
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [humidity] of @org.thingpedia.weather.current(location=new Location("san francisco"));
+====
+# manual/5
+U: what is the humidity in palo alto
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [humidity] of @org.thingpedia.weather.current(location=new Location("palo alto"));
