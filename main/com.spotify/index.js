@@ -64,13 +64,14 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         this._deviceState = new Map();
 
         this._launchedSpotify = false;
-        if (this.platform.type === "server")
+        if (this.platform.type === "server") {
             this.spotifyd = new spotifyd({
                 cacheDir: this.platform._cacheDir,
                 username: this.state.id,
                 device_name: this.state.id,
                 token: this.accessToken
             });
+        }
     }
 
     http_get(url) {
@@ -78,15 +79,18 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             accept: "application/json",
             useOAuth2: this,
         }).catch((e) => {
+            if (!e.detail)
+                throw e;
             throw new Error(JSON.parse(e.detail).error.message);
         });
     }
 
     http_put(url, data, options) {
-        return Tp.Helpers.Http.request(url, "PUT", data, options).catch(
-            (e) => {
-                throw new Error(JSON.parse(e.detail).error.message);
-            });
+        return Tp.Helpers.Http.request(url, "PUT", data, options).catch((e) => {
+            if (!e.detail)
+                throw e;
+            throw new Error(JSON.parse(e.detail).error.message);
+        });
     }
 
     http_put_default_options(url, data) {
@@ -105,6 +109,8 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             dataContentType: 'application/json',
             accept: 'application/json'
         }).catch((e) => {
+            if (!e.detail)
+                throw e;
             throw new Error(JSON.parse(e.detail).error.message);
         });
     }
@@ -126,37 +132,28 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     }
 
     search(query, types, limit) {
-        let searchURL = SEARCH_URL + querystring.stringify({
+        const searchURL = SEARCH_URL + querystring.stringify({
             q: query.toString(),
             type: types,
             market: "from_token",
             limit
         });
         console.log("searching for  " + searchURL);
-        return Tp.Helpers.Http.get(searchURL, {
-            accept: "application/json",
-            useOAuth2: this,
-        }).then((response) => {
+        return this.http_get(searchURL).then((response) => {
             const parsed = JSON.parse(response);
             return parsed;
-        }).catch((e) => {
-            throw new Error(JSON.parse(e.detail).error.message);
         });
     }
 
     albums_get_by_artist_id(artistID, groups) {
-        let url = ARTIST_ALBUM_URL.replace("{id}", artistID) + querystring.stringify({
+        const url = ARTIST_ALBUM_URL.replace("{id}", artistID) + querystring.stringify({
             include_groups: groups,
             market: "from_token",
             limit: 50
         });
-        return Tp.Helpers.Http.get(url, {
-            accept: 'application/json',
-            useOAuth2: this
-        }).then((response) => {
-            return JSON.parse(response).items;
-        }).catch((e) => {
-            throw new Error(JSON.parse(e.detail).error.message);
+        return this.http_get(url).then((response) => {
+            const parsed = JSON.parse(response);
+            return parsed.items;
         });
     }
 
@@ -164,13 +161,8 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         const url = AUDIO_FEATURES_URL + querystring.stringify({
             ids: ids.join()
         });
-        return Tp.Helpers.Http.get(url, {
-            accept: 'application/json',
-            useOAuth2: this
-        }).then((response) => {
+        return this.http_get(url).then((response) => {
             return JSON.parse(response).audio_features;
-        }).catch((e) => {
-            throw new Error(JSON.parse(e.detail).error.message);
         });
     }
 
@@ -178,13 +170,8 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         const url = ARTIST_URL + querystring.stringify({
             ids: ids.join()
         });
-        return Tp.Helpers.Http.get(url, {
-            accept: 'application/json',
-            useOAuth2: this
-        }).then((response) => {
+        return this.http_get(url).then((response) => {
             return JSON.parse(response);
-        }).catch((e) => {
-            throw new Error(JSON.parse(e.detail).error.message);
         });
     }
 
@@ -192,13 +179,8 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         const url = TRACK_URL + querystring.stringify({
             ids: ids.join()
         });
-        return Tp.Helpers.Http.get(url, {
-            accept: 'application/json',
-            useOAuth2: this
-        }).then((response) => {
+        return this.http_get(url).then((response) => {
             return JSON.parse(response);
-        }).catch((e) => {
-            throw new Error(JSON.parse(e.detail).error.message);
         });
     }
 
@@ -206,13 +188,8 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         const url = ALBUM_URL + querystring.stringify({
             ids: ids.join()
         });
-        return Tp.Helpers.Http.get(url, {
-            accept: 'application/json',
-            useOAuth2: this
-        }).then((response) => {
+        return this.http_get(url).then((response) => {
             return JSON.parse(response);
-        }).catch((e) => {
-            throw new Error(JSON.parse(e.detail).error.message);
         });
     }
 
@@ -220,13 +197,8 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         const url = SHOW_URL + querystring.stringify({
             ids: ids.join()
         });
-        return Tp.Helpers.Http.get(url, {
-            accept: 'application/json',
-            useOAuth2: this
-        }).then((response) => {
+        return this.http_get(url).then((response) => {
             return JSON.parse(response);
-        }).catch((e) => {
-            throw new Error(JSON.parse(e.detail).error.message);
         });
     }
 
@@ -339,7 +311,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             }
         }
 
-        if (tracks.length == 0 && albums.length == 0) {
+        if (tracks.length === 0 && albums.length === 0) {
             for (const playlist of playlists) {
                 music.push({
                     id: new Tp.Value.Entity(playlist.uri, playlist.name)
@@ -534,14 +506,13 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             }
         }
 
-        if (idFilter.toLowerCase().includes("daily mix")) {
+        if (idFilter.toLowerCase().includes("daily mix"))
             throwError('dailymix_error');
-        }
 
         let query = (idFilter + yearFilter + artistFilter + genreFilter).trim() || `year:${new Date().getFullYear()} `;
         if (idFilter) {
             let music = await this.music_by_search(query, 5);
-            if (music.length == 0)
+            if (music.length === 0)
                 return music;
 
             if (String(music[0].id).includes("track") || String(music[0].id).includes("album")) {
@@ -822,9 +793,8 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             }
         }
 
-        if (id.toLowerCase().includes("daily mix")) {
+        if (id.toLowerCase().includes("daily mix"))
             throwError('dailymix_error');
-        }
 
         let query = id || `${new Date().getFullYear()}`;
         const searchResults = await this.search(query, "playlist", 5);
@@ -838,14 +808,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         return playlists;
     }
 
-    async currently_playing_helper() {
-        return Tp.Helpers.Http.get(CURRENTLY_PLAYING_URL, {
-            accept: 'application/json',
-            useOAuth2: this
-        }).catch((e) => {
-            throw new Error(JSON.parse(e.detail).error.message);
-        });
-    }
     get_get_user_top_tracks() {
         return this.http_get(`https://api.spotify.com/v1/me/top/tracks?limit=20&time_range=short_term`).then((response) => {
             let parsed = JSON.parse(response);
@@ -858,7 +820,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     }
 
     get_get_currently_playing() {
-        return this.currently_playing_helper().then((response) => {
+        return this.http_get(CURRENTLY_PLAYING_URL).then((response) => {
             if (response === '' || response.length === 0)
                 return [];
 
