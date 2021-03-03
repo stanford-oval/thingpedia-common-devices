@@ -100,7 +100,7 @@ module.exports = class SpotifyDaemon {
         switch (process.arch) {
             case 'x64':
                 break;
-            case 'armhf':
+            case 'arm':
                 arch = "-armhf";
                 break;
             case 'arm64':
@@ -146,7 +146,7 @@ module.exports = class SpotifyDaemon {
             "--device-name", this.options.device_name,
             "--token", this.options.token,
             "--no-daemon",
-            "--backend", "pulseaudio"
+            "--backend", process.arch.match('arm') ? "alsa" : "pulseaudio"
         ], { stdio: ['inherit', 'inherit', 'inherit'] });
 
         this._child.on('error', (err) => {
