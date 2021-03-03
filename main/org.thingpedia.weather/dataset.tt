@@ -37,6 +37,10 @@ dataset @org.thingpedia.weather language "en" {
     #_[utterances=["the temperature in ${p_location}"]]
     #[name="TemperatureOfWeatherWithLocation"];
 
+    query (p_location :Location) := [humidity] of @org.thingpedia.weather.current(location=p_location)
+    #_[utterances=["the humidity in ${p_location}"]]
+    #[name="HumidityOfWeatherWithLocation"];
+
     query () := [humidity] of @org.thingpedia.weather.current()
     #_[utterances=["the humidity outside"]]
     #[name="HumidityOfWeather"];
