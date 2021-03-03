@@ -343,3 +343,38 @@ UT: @org.thingpedia.iot.switch(name="kitchen").set_power(power=enum off);
 U: turn on the kitchen
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.switch(name="kitchen").set_power(power=enum on);
+====
+# log-dev/6423
+U: turn off everything
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.switch(all=true).set_power(power=enum off);
+====
+# log-dev/6407
+U: turn on everything
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.switch(all=true).set_power(power=enum on);
+====
+# log-dev/6526
+U: turn on ge switch
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.switch(name="ge").set_power(power=enum on);
+====
+# log-dev/6368
+U: which is the state of ge switch
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.switch(name="ge").state();
+====
+# log-dev/6426
+U: tell me which is the switches status
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.switch.state();
+====
+# log-dev/6533
+U: turn on smart switch
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.switch.set_power(power=enum on);
+====
+# log-dev/6297
+U: turn on fibaro plug
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.switch(name="fibaro").set_power(power=enum on);

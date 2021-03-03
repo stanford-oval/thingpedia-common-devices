@@ -283,3 +283,28 @@ UT: @org.thingpedia.weather.current();
 U: how's the weather
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.weather.current();
+====
+# log-dev/5352
+U: how hot is it today in san francisco
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [temperature] of @org.thingpedia.weather.current(location=new Location("san francisco"));
+====
+# log-dev/4263
+U: show me the humidity in berlin
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [humidity] of @org.thingpedia.weather.current(location=new Location("berlin"));
+====
+# log-dev/7257
+U: what is the weather like today at stanford?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("stanford"));
+====
+# log-dev/6930
+U: get the weather for home.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=$location.home);
+====
+# log-dev/5436
+U: what's the weather in portland
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("portland"));

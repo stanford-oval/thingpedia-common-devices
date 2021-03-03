@@ -468,3 +468,78 @@ UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_c
 U: yelp
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.yelp.restaurant();
+====
+# log-dev/3704
+U: find chinese restaurants
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese"));
+====
+# log-dev/3680
+U: find restaurants nearby
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == $location.current_location;
+====
+# log-dev/5700
+U: find me a restaurant
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant();
+====
+# log-dev/3689
+U: show me nearby starbucks
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == $location.current_location && id =~ "starbucks";
+====
+# log-dev/2822
+U: restaurants with cuisine chinese
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese"));
+====
+# log-dev/3235
+U: what is the highest rated chinese restaurant in hawaii?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating desc of @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese")) && geo == new Location("hawaii"))[1];
+====
+# log-dev/3248
+U: show me restaurants in taiwan rated 13 stars and above
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("taiwan") && rating >= 13;
+====
+# log-dev/3457
+U: what's the highest rated restaurant in san francisco
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating desc of @com.yelp.restaurant() filter geo == new Location("san francisco"))[1];
+====
+# log-dev/3633
+U: search for restaurant in honolulu
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("honolulu");
+====
+# log-dev/7296
+U: i'm hungry, what should i have for lunch?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant();
+====
+# log-dev/7293
+U: almonds. can you find a russian restaurant near me?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("russian")) && geo == $location.current_location;
+====
+# log-dev/3478
+U: show me the highest rated restaurant in palo alto
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating desc of @com.yelp.restaurant() filter geo == new Location("palo alto"))[1];
+====
+# log-dev/5655
+U: find me an italian restaurant
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("italian"));
+====
+# log-dev/5738
+U: get restaurant
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant();
+====
+# log-dev/2198
+U: get chinese restaurants with 13 or more stars
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese")) && rating >= 13;

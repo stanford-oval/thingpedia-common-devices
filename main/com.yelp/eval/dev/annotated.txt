@@ -1440,3 +1440,178 @@ UT: sort(rating desc of @com.yelp.restaurant() filter geo == new Location("palo 
 U: show me restaurants in san francisco rated at least 13 stars
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.yelp.restaurant() filter geo == new Location("san francisco") && rating >= 13;
+====
+# log-dev/6816
+U: show me cheap italian restaurants near mountain view
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("italian")) && geo == new Location("mountain view") && price == enum cheap;
+====
+# log-dev/3223
+U: show restaurants in taiwan rated higher than 13
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("taiwan") && rating >= 13;
+====
+# log-dev/2141
+U: what is the best restaurant in palo alto
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating desc of @com.yelp.restaurant() filter geo == new Location("palo alto"))[1];
+====
+# log-dev/2168
+U: what is the top-rated restaurant in palo alto
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating desc of @com.yelp.restaurant() filter geo == new Location("palo alto"))[1];
+====
+# log-dev/3096
+U: show restaurants in san francisco rated lower than 13
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("san francisco") && rating <= 13;
+====
+# log-dev/3484
+U: show me the highest rated restaurant in palo alto with more than 13 reviews
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating desc of @com.yelp.restaurant() filter geo == new Location("palo alto") && review_count >= 13)[1];
+====
+# log-dev/3492
+U: show me the highest rated restaurant in san francisco with more than 13 reviews
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating desc of @com.yelp.restaurant() filter geo == new Location("san francisco") && review_count >= 13)[1];
+====
+# log-dev/5695
+U: find me a cheap restaurant
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter price == enum cheap;
+====
+# log-dev/3200
+U: what is the highest rated japanese restaurant in toronto?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating desc of @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("japanese")) && geo == new Location("toronto"))[1];
+====
+# log-dev/3253
+U: show me highest rated chinese restaurant in taiwan
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating desc of @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese")) && geo == new Location("taiwan"))[1];
+====
+# log-dev/3092
+U: get restaurants in san francisco
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("san francisco");
+====
+# log-dev/3668
+U: show me restaurants in taiwan rated at least 13 stars
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("taiwan") && rating >= 13;
+====
+# log-dev/3250
+U: what is the highest rated chinese restaurant?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating desc of @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese")))[1];
+====
+# log-dev/3113
+U: get me restaurants rated less than 13
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter rating <= 13;
+====
+# log-dev/3199
+U: what is the highest rated japanese restaurant in toronto city?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating desc of @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("japanese")) && geo == new Location("toronto"))[1];
+====
+# log-dev/3660
+U: show me restaurants in ny, ny
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("ny , ny");
+====
+# log-dev/4355
+U: good restaurants in palo alto
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("palo alto");
+====
+# log-dev/7292
+U: almond find me a russian restaurant.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("russian"));
+====
+# log-dev/3510
+U: find the highest rated restaurant in san diego with more than 13 reviews
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating desc of @com.yelp.restaurant() filter geo == new Location("san diego") && review_count >= 13)[1];
+====
+# log-dev/3525
+U: find me the highest rated restaurant in san diego with at least 13 reviews
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating desc of @com.yelp.restaurant() filter geo == new Location("san diego") && review_count >= 13)[1];
+====
+# log-dev/3081
+U: get restaurants
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant();
+====
+# log-dev/3637
+U: show me restaurants in new york rated at least 13 stars
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("new york") && rating >= 13;
+====
+# log-dev/3087
+U: find me restaurants in san francisco
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("san francisco");
+====
+# log-dev/3489
+U: what is the lowest rated restaurant in san francisco
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating asc of @com.yelp.restaurant() filter geo == new Location("san francisco"))[1];
+====
+# log-dev/3104
+U: show me restaurants with at least 13 reviews
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter review_count >= 13;
+====
+# log-dev/3243
+U: what is the highest rated chinese restaurant in california?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating desc of @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese")) && geo == new Location("california"))[1];
+====
+# log-dev/7083
+U: search for a chinese restaurant
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese"));
+====
+# log-dev/3687
+U: find restaurants rated lower than 13
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter rating <= 13;
+====
+# log-dev/2823
+U: restaurants
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant();
+====
+# log-dev/3271
+U: which restaurant has the most number of reviews
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(review_count desc of @com.yelp.restaurant())[1];
+====
+# log-dev/3481
+U: show me the highest rated restaurants in palo alto
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating desc of @com.yelp.restaurant() filter geo == new Location("palo alto"))[1];
+====
+# log-dev/4492
+U: show me restaurants in new york
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("new york");
+====
+# log-dev/7413
+U: popeye.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter id =~ "popeye";
+====
+# log-dev/6077
+U: cats cafe karlsruhe
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter id =~ "cats cafe karlsruhe";
+====
+# log-dev/3523
+U: find me the highest rated restaurant in san diego
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating desc of @com.yelp.restaurant() filter geo == new Location("san diego"))[1];
