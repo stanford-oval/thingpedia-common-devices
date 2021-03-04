@@ -696,3 +696,140 @@ UT: @org.thingpedia.weather.current(location=new Location("san francisco"));
 U: what's the weather like in palo alto right now
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.weather.current(location=new Location("palo alto"));
+====
+# recording/1cdab389268428a7ada99f1790793ee4
+U: what's the temperature outside
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [temperature] of @org.thingpedia.weather.current();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: [temperature] of @org.thingpedia.weather.current(location=new Location(37.4863239, -122.232523, "Redwood City, California"))
+C: #[results=[
+C:   { location=new Location(37.4863239, -122.232523, "Redwood City, California"), temperature=12.8C, status=enum cloudy }
+C: ]];
+A: The current weather in Redwood City, California is cloudy.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: what's the temperature
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [temperature] of @org.thingpedia.weather.current(location=new Location(37.4863239, -122.232523, "Redwood City, California"));
+====
+# recording/f752e1496060fa5c76581338bf6710da
+U: what's the weather in san francisco
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("san francisco"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.7790262, -122.4199061, "San Francisco, California"))
+C: #[results=[]]
+C: #[error="Unexpected HTTP error 404"];
+A: Sorry, Unexpected HTTP error 404.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
+U: what's the weather in san francisco
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("san francisco"));
+====
+# recording/4bba40f377898ebbe49ddbd7cc19f37a
+U: what's the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# recording/3bfc59b2f1a037b27eb2a7bca35ce916
+U: what's the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# recording/a177f7647546aea40145b9d0708034e4
+U: what's the humidity outside
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [humidity] of @org.thingpedia.weather.current();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: [humidity] of @org.thingpedia.weather.current(location=new Location(37.4863239, -122.232523, "Redwood City, California"))
+C: #[results=[
+C:   { location=new Location(37.4863239, -122.232523, "Redwood City, California"), humidity=58.8, status=enum cloudy }
+C: ]];
+A: The current weather in Redwood City, California is cloudy. The humidity is 58.8 %.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: what's the wind speed
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [wind_speed] of @org.thingpedia.weather.current(location=new Location(37.4863239, -122.232523, "Redwood City, California"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: [humidity] of @org.thingpedia.weather.current(location=new Location(37.4863239, -122.232523, "Redwood City, California"))
+C: #[results=[
+C:   { location=new Location(37.4863239, -122.232523, "Redwood City, California"), humidity=58.8, status=enum cloudy }
+C: ]];
+C: [wind_speed] of @org.thingpedia.weather.current(location=new Location(37.4863239, -122.232523, "Redwood City, California"))
+C: #[results=[
+C:   { location=new Location(37.4863239, -122.232523, "Redwood City, California"), wind_speed=0.6mps, status=enum cloudy }
+C: ]];
+A: The wind speed is 1.3 mph.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: how about the temperature
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [temperature] of @org.thingpedia.weather.current(location=new Location(37.4863239, -122.232523, "Redwood City, California"));
+====
+# recording/dc3637167bbbb0820cdf0e7ca3503ea4
+U: what's the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# recording/18e0e42306ff4ec72564740a7892a52c
+U: what's the temperature outside
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [temperature] of @org.thingpedia.weather.current();
+====
+# recording/8e298966b2eb96898b447e1468ae1f05
+U: hello
+UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
+C: $dialogue @org.thingpedia.dialogue.transaction.greet;
+A: Hi, how can I help you?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_greet;
+U: what's the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# recording/8122739bd0f65daf6dab4f52b084d357
+U: what's the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.426540700000004, -122.17029258409187, "Stanford, Palo Alto"))
+C: #[results=[
+C:   { temperature=17.6C, wind_speed=1.4mps, humidity=38.8, cloudiness=95.3, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=3;content_type=image/png"^^tt:picture, location=new Location(37.426540700000004, -122.17029258409187, "Stanford, Palo Alto") }
+C: ]];
+A: The current weather in Stanford, Palo Alto is cloudy. The temperature is 63.7 F and the humidity is 38.8 %.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: what's the weather in beijing
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("beijing"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.426540700000004, -122.17029258409187, "Stanford, Palo Alto"))
+C: #[results=[
+C:   { temperature=17.6C, wind_speed=1.4mps, humidity=38.8, cloudiness=95.3, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=3;content_type=image/png"^^tt:picture, location=new Location(37.426540700000004, -122.17029258409187, "Stanford, Palo Alto") }
+C: ]];
+C: @org.thingpedia.weather.current(location=new Location(24.156951, 107.4831828, "Beijing"))
+C: #[results=[
+C:   { temperature=12.9C, wind_speed=1.9mps, humidity=68.2, cloudiness=71.9, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=3;content_type=image/png"^^tt:picture, location=new Location(24.156951, 107.4831828, "Beijing") }
+C: ]];
+A: The current weather in Beijing is cloudy. The temperature is 55.2 F and the humidity is 68.2 %.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: what's the weather in hefei
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("hefei"));
+====
+# recording/cd77db71560b2599e91a53f006500466
+U: What is the weather?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# recording/050c443dc8f2da397f20bd73c12770a4
+U: what's the weather like in des moines today
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("des moines"));
+====
+# recording/6d078f87bc989bb6cb037b5209bfb463
+U: weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# recording/a763d117e861e58f6cab810cd71a4f3b
+U: weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();

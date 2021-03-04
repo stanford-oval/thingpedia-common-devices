@@ -1,0 +1,30 @@
+====
+# recording/f106519ffba8bc870e58396d5c99e032
+U: tell me a joke
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.icanhazdadjoke.get();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="6hqHJmyPmyd"^^com.icanhazdadjoke:id, text="What kind of music do mummy's like? Rap" }
+C: ]];
+A: What kind of music do mummy's like? Rap.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: post it on twitter
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.twitter.post(status="What kind of music do mummy's like? Rap");
+====
+# recording/6b62ca72ae439e9508a62a66f95e9d2c
+U: get a cat
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.thecatapi.cat();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.thecatapi.cat()
+C: #[results=[
+C:   { id="AdsrndOAi"^^com.thecatapi:cat, picture_url="https://s3.us-west-2.amazonaws.com/cdn2.thecatapi.com/images/AdsrndOAi.jpg"^^tt:picture, link="http://thecatapi.com/?id=AdsrndOAi"^^tt:url }
+C: ]];
+A: Here is a cat picture.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: play hello
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter id =~ "hello" => @com.spotify.play(playable=id);
