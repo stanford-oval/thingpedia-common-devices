@@ -865,16 +865,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 }
             }
         }
-        // spotifyd active
-        if (this.spotifyd) {
-            for (let i = 0; i < devices.length; i++) {
-                console.log(devices[i].is_active);
-                if (devices[i].id === this.spotifyd.deviceId) {
-                    console.log("found spotifyd device");
-                    return [devices[i].id, this.state.id];
-                }
-            }
-        }
         // device already active
         for (let i = 0; i < devices.length; i++) {
             console.log(devices[i].is_active);
