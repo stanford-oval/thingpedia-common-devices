@@ -5187,3 +5187,49 @@ UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("d
 U: music to the tree of life
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.spotify.playable() filter id =~ "tree of life" => @com.spotify.play(playable=id);
+====
+# recording/9031c8820dfe359fa597b3d393246c16
+U: what is rihanna's latest song?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(release_date desc of @com.spotify.song() filter contains(artists, null^^com.spotify:artist("rihanna")))[1];
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: sort(release_date desc of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, "spotify:artist:5pKCCKE2ajJHZ9KAiaK11H"^^com.spotify:artist("Rihanna")))[1]
+C: #[results=[
+C:   { id="spotify:track:6mulQVtiyAO551KgUuJI8Q"^^com.spotify:song("BELIEVE IT"), artists=["spotify:artist:2HPaUgqeutzr3jx5a9WyDV"^^com.spotify:artist("PARTYNEXTDOOR"), "spotify:artist:5pKCCKE2ajJHZ9KAiaK11H"^^com.spotify:artist("Rihanna")], album="spotify:album:44tafm4490xYqhfQKvMD4r"^^com.spotify:album("BELIEVE IT"), genres=["pop", "pop rap", "r&b", "rap", "toronto rap", "trap", "urban contemporary"], release_date=new Date("2020-03-26T00:00:00.000Z"), popularity=50, energy=70, danceability=43 }
+C: ]];
+A: The most recent song is BELIEVE IT. It is a song in the album BELIEVE IT by Rihanna.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: can you play it?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.play(playable="spotify:track:6mulQVtiyAO551KgUuJI8Q"^^com.spotify:song("BELIEVE IT"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: sort(release_date desc of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, "spotify:artist:5pKCCKE2ajJHZ9KAiaK11H"^^com.spotify:artist("Rihanna")))[1]
+C: #[results=[
+C:   { id="spotify:track:6mulQVtiyAO551KgUuJI8Q"^^com.spotify:song("BELIEVE IT"), artists=["spotify:artist:2HPaUgqeutzr3jx5a9WyDV"^^com.spotify:artist("PARTYNEXTDOOR"), "spotify:artist:5pKCCKE2ajJHZ9KAiaK11H"^^com.spotify:artist("Rihanna")], album="spotify:album:44tafm4490xYqhfQKvMD4r"^^com.spotify:album("BELIEVE IT"), genres=["pop", "pop rap", "r&b", "rap", "toronto rap", "trap", "urban contemporary"], release_date=new Date("2020-03-26T00:00:00.000Z"), popularity=50, energy=70, danceability=43 }
+C: ]];
+C: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable="spotify:track:6mulQVtiyAO551KgUuJI8Q"^^com.spotify:song("BELIEVE IT"))
+C: #[results=[]]
+C: #[error=enum disallowed_action];
+A: Sorry, failed to play: you must first click play from inside the Spotify app, and then I will play songs for you.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
+U: can you try playing it now?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.play(playable="spotify:track:6mulQVtiyAO551KgUuJI8Q"^^com.spotify:song("BELIEVE IT"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: sort(release_date desc of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, "spotify:artist:5pKCCKE2ajJHZ9KAiaK11H"^^com.spotify:artist("Rihanna")))[1]
+C: #[results=[
+C:   { id="spotify:track:6mulQVtiyAO551KgUuJI8Q"^^com.spotify:song("BELIEVE IT"), artists=["spotify:artist:2HPaUgqeutzr3jx5a9WyDV"^^com.spotify:artist("PARTYNEXTDOOR"), "spotify:artist:5pKCCKE2ajJHZ9KAiaK11H"^^com.spotify:artist("Rihanna")], album="spotify:album:44tafm4490xYqhfQKvMD4r"^^com.spotify:album("BELIEVE IT"), genres=["pop", "pop rap", "r&b", "rap", "toronto rap", "trap", "urban contemporary"], release_date=new Date("2020-03-26T00:00:00.000Z"), popularity=50, energy=70, danceability=43 }
+C: ]];
+C: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable="spotify:track:6mulQVtiyAO551KgUuJI8Q"^^com.spotify:song("BELIEVE IT"))
+C: #[results=[]]
+C: #[error=enum disallowed_action];
+C: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable="spotify:track:6mulQVtiyAO551KgUuJI8Q"^^com.spotify:song("BELIEVE IT"))
+C: #[results=[
+C:   { device="XXXXXXXX"^^com.spotify:device, playable="spotify:track:6mulQVtiyAO551KgUuJI8Q"^^com.spotify:playable("BELIEVE IT") }
+C: ]]
+C: #[error=enum disallowed_action];
+A: Sorry, failed to play: you must first click play from inside the Spotify app, and then I will play songs for you.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
+U: please try playing it again
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.play(playable="spotify:track:6mulQVtiyAO551KgUuJI8Q"^^com.spotify:song("BELIEVE IT"));

@@ -1797,3 +1797,48 @@ UT: [geo] of @com.yelp.restaurant() filter id == null^^com.yelp:restaurant("zare
 U: What are good Chinese restaurants around me?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese")) && geo == $location.current_location;
+====
+# recording/9b801db6283d1f27d94f2fcc7be45756
+U: where is the Taipan restaurant?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [geo] of @com.yelp.restaurant() filter id =~ "taipan";
+====
+# recording/60eb639dc4bd7dd71991824850ebac44
+U: Suggest a chinese restaurant in palo alto
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese")) && geo == new Location("palo alto");
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.yelp.restaurant() filter contains(cuisines, "chinese"^^com.yelp:restaurant_cuisine("Chinese")) && geo == new Location(37.4443293, -122.1598465, "Palo Alto, California")
+C: #[results=[
+C:   { id="w17EBwOBXKaYIiGf7LTD9Q"^^com.yelp:restaurant("Jing Jing Chinese Gourmet"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/fsjBluohoq0fQYUAN8fD4g/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/jing-jing-chinese-gourmet-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["chinese"^^com.yelp:restaurant_cuisine("Chinese")], price=enum moderate, rating=3.5, review_count=401, geo=new Location(37.44514, -122.16306, "443 Emerson St, Palo Alto, CA 94301"), phone="+16503286885"^^tt:phone_number },
+C:   { id="zg83ulOQw1m18kLoNHcXUA"^^com.yelp:restaurant("Phil's Kitchen"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/rpCFoxuH71QLwDoveRY9Hg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/phils-kitchen-menlo-park?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["chinese"^^com.yelp:restaurant_cuisine("Chinese"), "hawaiian"^^com.yelp:restaurant_cuisine("Hawaiian"), "bbq"^^com.yelp:restaurant_cuisine("Barbeque")], price=enum cheap, rating=4, review_count=495, geo=new Location(37.4536749590389, -122.184342294931, "625 Oak Grove Ave, Unit B, Menlo Park, CA 94025"), phone="+16505614296"^^tt:phone_number },
+C:   { id="uVploy81jeEvlvPTA6cgjw"^^com.yelp:restaurant("Mandarin Roots"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/AnLZUIDEHJsFcEMyzoggzQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/mandarin-roots-palo-alto-4?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["chinese"^^com.yelp:restaurant_cuisine("Chinese"), "asianfusion"^^com.yelp:restaurant_cuisine("Asian Fusion"), "tapasmallplates"^^com.yelp:restaurant_cuisine("Tapas/Small Plates")], price=enum moderate, rating=4, review_count=550, geo=new Location(37.42028, -122.13601, "3345 El Camino Real, Palo Alto, CA 94306"), phone="+16505658868"^^tt:phone_number },
+C:   { id="IccyNXafP876EY6vkHetbg"^^com.yelp:restaurant("MP Mongolian BBQ"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/cNSrupp6U0iPI6xRLf2-bg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/mp-mongolian-bbq-menlo-park?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["buffets"^^com.yelp:restaurant_cuisine("Buffets"), "chinese"^^com.yelp:restaurant_cuisine("Chinese")], price=enum moderate, rating=3.5, review_count=306, geo=new Location(37.451705, -122.178848, "700 El Camino Real, Ste 170, Menlo Park, CA 94025"), phone="+16508531118"^^tt:phone_number },
+C:   { id="JANM5KuO8r1MiXY9kU3LRg"^^com.yelp:restaurant("Shiok Singapore Kitchen"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/nWxR30Ei5ipCVzbJWRVa1Q/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/shiok-singapore-kitchen-menlo-park?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["singaporean"^^com.yelp:restaurant_cuisine("Singaporean"), "chinese"^^com.yelp:restaurant_cuisine("Chinese"), "indpak"^^com.yelp:restaurant_cuisine("Indian")], price=enum moderate, rating=3.5, review_count=537, geo=new Location(37.4519739, -122.1853542, "1137 Chestnut St, Menlo Park, CA 94025"), phone="+16508389448"^^tt:phone_number },
+C:   { id="ZimdCe2xCAOOZjt1aQAMvg"^^com.yelp:restaurant("Chef Chu's"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/8Ne4RN6pc5NN-w2PRx2KMA/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/chef-chus-los-altos?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["chinese"^^com.yelp:restaurant_cuisine("Chinese"), "seafood"^^com.yelp:restaurant_cuisine("Seafood")], price=enum moderate, rating=4, review_count=1849, geo=new Location(37.4006, -122.11367, "1067 N San Antonio Rd, Los Altos, CA 94022"), phone="+16509482696"^^tt:phone_number },
+C:   { id="cm8oHti0SIPPqR8PcmcSvA"^^com.yelp:restaurant("Garden Fresh"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/EnKogtsi9rjeTVAbGjTY7Q/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/garden-fresh-mountain-view-4?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["vegan"^^com.yelp:restaurant_cuisine("Vegan"), "chinese"^^com.yelp:restaurant_cuisine("Chinese")], price=enum moderate, rating=4, review_count=1320, geo=new Location(37.387904, -122.089053, "1245 W El Camino Real, Mountain View, CA 94040"), phone="+16502541688"^^tt:phone_number },
+C:   { id="WWyaK9oskNOpjCsO6MA7Pw"^^com.yelp:restaurant("P.F. Chang's"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/SR0mlHWyUwVBqxBBbeGRaw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/p-f-changs-palo-alto-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["chinese"^^com.yelp:restaurant_cuisine("Chinese"), "asianfusion"^^com.yelp:restaurant_cuisine("Asian Fusion"), "gluten_free"^^com.yelp:restaurant_cuisine("Gluten-Free")], price=enum moderate, rating=2.5, review_count=766, geo=new Location(37.4436714574102, -122.168239921338, "900 Stanford Shopping Ctr, Bldg W, Palo Alto, CA 94304"), phone="+16503301782"^^tt:phone_number },
+C:   { id="OFUQHchaV2uqjJmO-EuVlA"^^com.yelp:restaurant("Veggie Garden"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/lXh0FX6kfTa7IXuGew5etQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/veggie-garden-mountain-view?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["vegan"^^com.yelp:restaurant_cuisine("Vegan"), "vegetarian"^^com.yelp:restaurant_cuisine("Vegetarian"), "chinese"^^com.yelp:restaurant_cuisine("Chinese")], price=enum moderate, rating=4.5, review_count=488, geo=new Location(37.399226131236, -122.1086273955, "2464 W El Camino Real, Ste C, Mountain View, CA 94040"), phone="+16509616888"^^tt:phone_number },
+C:   { id="dLbBSJeyN85FIzHxb6oYtg"^^com.yelp:restaurant("Crouching Tiger Restaurant & Bar"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/ve7XevVMUGbqXg3eZtRpgw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/crouching-tiger-restaurant-and-bar-redwood-city?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["chinese"^^com.yelp:restaurant_cuisine("Chinese")], price=enum moderate, rating=4, review_count=958, geo=new Location(37.48640133, -122.23424633, "2644 Broadway St, Redwood City, CA 94063"), phone="+16502988881"^^tt:phone_number }
+C: ]]
+C: #[count=35];
+A: I have found Jing Jing Chinese Gourmet, Phil's Kitchen and Mandarin Roots. All of them are Chinese restaurants.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_three;
+U: where is the tamarine restaurant?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [geo] of @com.yelp.restaurant() filter geo == new Location(37.4443293, -122.1598465, "Palo Alto, California") && id =~ "tamarine";
+====
+# recording/db50ecba58c4f36e06f1c05d297f0435
+U: where is jing jing chinese gourmet?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [geo] of @com.yelp.restaurant() filter id =~ "jing jing chinese gourmet";
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: [geo] of @com.yelp.restaurant() filter id =~ "jing jing chinese gourmet"
+C: #[results=[
+C:   { id="w17EBwOBXKaYIiGf7LTD9Q"^^com.yelp:restaurant("Jing Jing Chinese Gourmet"), geo=new Location(37.44514, -122.16306, "443 Emerson St, Palo Alto, CA 94301") }
+C: ]];
+A: Jing Jing Chinese Gourmet is a restaurant near 443 Emerson St, Palo Alto, CA 94301.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: suggest a top vietnamese restaurant
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [geo] of @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("vietnamese"));

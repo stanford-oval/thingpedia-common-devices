@@ -563,3 +563,8 @@ UT: @com.spotify.playable() filter contains~(genres, "kpop") => @com.spotify.pla
 U: Almond can you play me some Beatles?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("beatles")) => @com.spotify.play(playable=id);
+====
+# recording/8281792a7c13d1fa64f4a5dc5655e3c6
+U: try playing latest song by rihanna
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(release_date desc of @com.spotify.song() filter contains(artists, null^^com.spotify:artist("rihanna")))[1] => @com.spotify.play(playable=id);
