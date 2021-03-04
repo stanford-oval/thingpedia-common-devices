@@ -120,7 +120,7 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
             const gps = this.platform.getCapability('gps');
             if (gps)
                 query.location = await gps.getCurrentLocation();
-            else
+            if (!query.location)
                 query.location = { display: 'palo alto' };
         }
         if (query.location.lat && query.location.lat)
