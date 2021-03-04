@@ -523,6 +523,9 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                     .map((name) => {
                         return music.find((playable) => playable.id.display === name);
                     });
+                const songArtists = music.filter((playable) => String(playable.id).includes("track")).map((song) => String(song.artists[0]));
+                music = music.filter((playable) => (String(playable.id).includes("album") && songArtists.includes(String(playable.artists[0]))) === false);
+
             } else {
                 let searchTerm = idFilter.trim();
                 music.sort((a, b) => {
