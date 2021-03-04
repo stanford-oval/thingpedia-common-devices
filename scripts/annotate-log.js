@@ -97,6 +97,7 @@ class Trainer {
         this._rl.setPrompt('$ ');
         this._rl.on('SIGINT', this._quit.bind(this));
 
+        this._idPrefix = options.id_prefix;
         this._locale = options.locale;
         this._tpClient = tpClient;
         this._schemas = new ThingTalk.SchemaRetriever(this._tpClient, null, true);
@@ -198,8 +199,8 @@ class Trainer {
     }
 
     async _tryLoadExistingDataset(filename) {
-        //if (!await existsSafe(filename))
-        //    return;
+        if (!await existsSafe(filename))
+            return;
         for await (const dlg of readAllLines([filename]).pipe(new Genie.DialogueParser())) {
             this._existingDataset.add(dlg.id);
             try {
@@ -526,10 +527,10 @@ class Trainer {
         }
         this._state = 'loading';
         const { id, preprocessed, target_code } = line;
-        if (id && id.startsWith('log/'))
+        if (id && id.startsWith(this._idPrefix + '/'))
             this._id = id;
         else
-            this._id = 'log/' + (id || String(this._serial));
+            this._id = this._idPrefix + '/' + (id || String(this._serial));
         this._preprocessed = preprocessed;
         this._entities = Genie.EntityUtils.makeDummyEntities(preprocessed);
 
@@ -645,9 +646,15 @@ async function main() {
         default: 'en-US',
         help: `BGP 47 locale tag of the natural language being processed (defaults to en-US).`
     });
+    parser.add_argument('--id-prefix', {
+        required: false,
+        default: 'log',
+        help: 'Prefix to use for sentence IDs, defaults to "log"'
+    });
     parser.add_argument('--model', {
         required: false,
-        default: 'file://' + path.resolve(path.dirname(module.filename), '../tmp/model'),
+        //default: 'file://' + path.resolve(path.dirname(module.filename), '../tmp/model'),
+        default: 'https://nlp-staging.almond.stanford.edu',
         help: `The URL of the natural language model.`
     });
     parser.add_argument('--edit-existing', {

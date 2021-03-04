@@ -138,3 +138,28 @@ UT: @org.thingpedia.iot.switch(name="lampadaire").set_power(power=enum on);
 U: turn lampa on
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.switch(name="lampa").set_power(power=enum on);
+====
+# log-dev/6361
+U: which is the ge switch status?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.switch(name="ge").state();
+====
+# log-dev/6355
+U: tell me switch status
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.switch.state();
+====
+# log-dev/6562
+U: turn on all
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.switch(all=true).set_power(power=enum on);
+====
+# log-dev/6359
+U: which is the leviton status?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.switch(name="leviton").state();
+====
+# log-dev/6619
+U: trn off all
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.switch(all=true).set_power(power=enum off);
