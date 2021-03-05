@@ -939,6 +939,28 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         playable
     }, env) {
 
+        if (this.state.product !== "premium")
+            throwError("non_premium_account");
+
+        let deviceState = this._deviceState.get(env.app.uniqueId);
+        let device;
+
+        if (this._testMode()) {
+            device = new Tp.Value.Entity('mock', 'Coolest Computer')
+        }
+
+        if (!deviceState && !device) {
+            let devices = await this.get_get_available_devices();
+            const [deviceId, deviceName] = await this._findActiveDevice(devices);
+            if (deviceId === null)
+                throwError('no_active_device');
+
+            this._deviceState.set(env.app.uniqueId, [deviceId, deviceName]);
+            device = new Tp.Value.Entity(deviceId, deviceName)
+        } else if (deviceState && !device) {
+            device = new Tp.Value.Entity(deviceState[0], deviceState[1])
+        }
+
         let progstate = this._state.get(env.app.uniqueId);
         if (!progstate) {
             env.addExitProcedureHook(async () => {
@@ -949,28 +971,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             progstate.push(playable);
         }
 
-        if (this._testMode()) {
-            return {
-                device: new Tp.Value.Entity('mock', 'Coolest Computer')
-            };
-        }
-
-        let deviceState = this._deviceState.get(env.app.uniqueId);
-        if (!deviceState) {
-            let devices = await this.get_get_available_devices();
-            const [deviceId, deviceName] = await this._findActiveDevice(devices);
-            if (deviceId === null)
-                throwError('no_active_device');
-
-            this._deviceState.set(env.app.uniqueId, [deviceId, deviceName]);
-            return {
-                device: new Tp.Value.Entity(deviceId, deviceName)
-            };
-        } else {
-            return {
-                device: new Tp.Value.Entity(deviceState[0], deviceState[1])
-            };
-        }
+        return device;
     }
 
     async do_play_song({
