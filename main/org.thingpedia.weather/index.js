@@ -24,6 +24,13 @@ function dateDiff(date1, date2) {
     return Math.floor((utc2 - utc1) / MS_PER_DAY);
 }
 
+class ForecastError extends Error {
+    constructor(code, message) {
+        super(message);
+        this.code = code;
+    }
+}
+
 module.exports = class WeatherAPIDevice extends Tp.BaseDevice {
     async _sunrise_data(location, date) {
         const url = SUNRISE_URL.format(location.y, location.x, date.getFullYear(), date.getMonth()+1, date.getDate());
@@ -120,15 +127,48 @@ module.exports = class WeatherAPIDevice extends Tp.BaseDevice {
         return [ current ];
     }
 
-    async get_forecast({ location }) {
+    async get_forecast({ time, location }) {
         const data = await this._weather_data(location);
         const forecasts = [];
         const now = new Date(data[0].$.from);
-        const added = new Set();
+        const today = new Date(now);
+        today.setHours(0, 0, 0);
+        // do forecast for tomorrow if time is unspecified
+        if (!time)
+            time = new Date(today + 86400 * 1000);
+
+        if (time < now)
+            throw new ForecastError('no_past_forecast', `Invalid date ${time}: is in the past`);
+
+        // find the weather closest to the time the user asked for
+
+        // if the time is midnight (ie the user specified a date without a time), we do 2pm,
+        // which is usually the hottest time of the day
+        //
+        // FIXME: we should do 2pm local-time of the location we're asking the weather for,
+        // but that's a bit difficult so we just 2pm local-time to the server
+        // (which is 2pm pacific for cloud, and 2pm local-time to the user for server/gnome)
+
+        let comparetime = new Date(time.getTime());
+        if (comparetime.getHours() === 0 && comparetime.getMinutes() === 0 &&
+            comparetime.getSeconds() === 0)
+            comparetime.setHours(14, 0, 0);
+
+        let best = undefined, bestdelta = undefined;
         for (let i = 0; i < data.length; i++) {
             if (data[i].$.from !== data[i].$.to)
                 continue;
             const datetime = new Date(data[i].$.from);
+
+            // never select a forecast for the wrong day
+            if (datetime.getDate() !== comparetime.getDate() ||
+                datetime.getMonth() !== comparetime.getMonth() ||
+                datetime.getFullYear() !== comparetime.getFullYear())
+                continue;
+
+            let delta = Math.abs(datetime - comparetime);
+            if (bestdelta === undefined || delta < bestdelta) {
+
             if (datetime.getDate() === now.getDate()) {
                 // same day forecast
                 // return forecast every 6 hours
