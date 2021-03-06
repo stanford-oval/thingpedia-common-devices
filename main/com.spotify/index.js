@@ -523,6 +523,9 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                     .map((name) => {
                         return music.find((playable) => playable.id.display === name);
                     });
+                const songArtists = music.filter((playable) => String(playable.id).includes("track")).map((song) => String(song.artists[0]));
+                music = music.filter((playable) => (String(playable.id).includes("album") && songArtists.includes(String(playable.artists[0]))) === false);
+
             } else {
                 let searchTerm = idFilter.trim();
                 music.sort((a, b) => {
@@ -857,16 +860,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         }
         // spotifyd active
         if (this.spotifyd) {
-            for (let i = 0; i < devices.length; i++) {
-                console.log(devices[i].is_active);
-                if (devices[i].id === this.spotifyd.deviceId) {
-                    console.log("found spotifyd device");
-                    return [devices[i].id, this.state.id];
-                }
-            }
-        }
-        // spotifyd active
-        if (this.spotifyd) {
+            console.log('trying to run spotifyd');
             for (let i = 0; i < devices.length; i++) {
                 console.log(devices[i].is_active);
                 if (devices[i].id === this.spotifyd.deviceId) {
@@ -935,6 +929,29 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     async do_play({
         playable
     }, env) {
+
+        if (this.state.product !== "premium" && this.state.product !== undefined)
+            throwError("non_premium_account");
+
+        let deviceState = this._deviceState.get(env.app.uniqueId);
+        let device;
+
+        if (this._testMode()) {
+            device = new Tp.Value.Entity('mock', 'Coolest Computer')
+        }
+
+        if (!deviceState && !device) {
+            let devices = await this.get_get_available_devices();
+            const [deviceId, deviceName] = await this._findActiveDevice(devices);
+            if (deviceId === null)
+                throwError('no_active_device');
+
+            this._deviceState.set(env.app.uniqueId, [deviceId, deviceName]);
+            device = new Tp.Value.Entity(deviceId, deviceName)
+        } else if (deviceState && !device) {
+            device = new Tp.Value.Entity(deviceState[0], deviceState[1])
+        }
+
         let progstate = this._state.get(env.app.uniqueId);
         if (!progstate) {
             env.addExitProcedureHook(async () => {
@@ -945,28 +962,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             progstate.push(playable);
         }
 
-        if (this._testMode()) {
-            return {
-                device: new Tp.Value.Entity('mock', 'Coolest Computer')
-            };
-        }
-
-        let deviceState = this._deviceState.get(env.app.uniqueId);
-        if (!deviceState) {
-            let devices = await this.get_get_available_devices();
-            const [deviceId, deviceName] = await this._findActiveDevice(devices);
-            if (deviceId === null)
-                throwError('no_active_device');
-
-            this._deviceState.set(env.app.uniqueId, [deviceId, deviceName]);
-            return {
-                device: new Tp.Value.Entity(deviceId, deviceName)
-            };
-        } else {
-            return {
-                device: new Tp.Value.Entity(deviceState[0], deviceState[1])
-            };
-        }
+        return device;
     }
 
     async do_play_song({
@@ -1040,6 +1036,9 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     }
 
     async _flushPlaySong(env) {
+        if (this.state.product !== "premium" && this.state.product !== undefined)
+            throwError("non_premium_account");
+
         const songs = this._state.get(env.app.uniqueId);
         const album = this._findCommonAlbum(songs, env);
         try {
@@ -1064,6 +1063,9 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     }
 
     async _flushPlay(env) {
+        if (this.state.product !== "premium" && this.state.product !== undefined)
+            throwError("non_premium_account");
+
         const music = this._state.get(env.app.uniqueId);
         if (String(music[0]).includes("playlist")) {
             let data = {
@@ -1135,6 +1137,10 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     async do_player_pause() {
         if (this._testMode())
             return;
+
+        if (this.state.product !== "premium" && this.state.product !== undefined)
+            throwError("non_premium_account");
+
         let devices = await this.get_get_available_devices();
         const deviceId = (await this._findActiveDevice(devices))[0];
         if (deviceId === null)
@@ -1153,12 +1159,20 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         console.log("Playing music...");
         if (this._testMode())
             return;
+
+        if (this.state.product !== "premium" && this.state.product !== undefined)
+            throwError("non_premium_account");
+
         await this.player_play_helper();
     }
 
     async do_player_next() {
         if (this._testMode())
             return;
+
+        if (this.state.product !== "premium" && this.state.product !== undefined)
+            throwError("non_premium_account");
+
         let devices = await this.get_get_available_devices();
         const deviceId = (await this._findActiveDevice(devices))[0];
         if (deviceId === null)
@@ -1176,6 +1190,10 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     async do_player_previous() {
         if (this._testMode())
             return;
+
+        if (this.state.product !== "premium" && this.state.product !== undefined)
+            throwError("non_premium_account");
+
         let devices = await this.get_get_available_devices();
         const deviceId = (await this._findActiveDevice(devices))[0];
         if (deviceId === null)
@@ -1198,6 +1216,10 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         console.log("setting shuffle: " + shuffle);
         if (this._testMode())
             return;
+
+        if (this.state.product !== "premium" && this.state.product !== undefined)
+            throwError("non_premium_account");
+
         let devices = await this.get_get_available_devices();
         const deviceId = (await this._findActiveDevice(devices))[0];
         if (deviceId === null)
@@ -1220,6 +1242,10 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         console.log("repeat: " + repeat);
         if (this._testMode())
             return;
+
+        if (this.state.product !== "premium" && this.state.product !== undefined)
+            throwError("non_premium_account");
+
         let devices = await this.get_get_available_devices();
         const deviceId = (await this._findActiveDevice(devices))[0];
         if (deviceId === null)
