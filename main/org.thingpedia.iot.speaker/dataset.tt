@@ -1,6 +1,6 @@
 dataset @org.thingpedia.iot.speaker language "en" {
 
-  program := @org.thingpedia.iot.speaker.power()
+  /*program := @org.thingpedia.iot.speaker.power()
   #_[utterances=["is my speaker on?",
                 "check if my speaker is off",
                 "is the speaker turned on?",
@@ -53,50 +53,13 @@ dataset @org.thingpedia.iot.speaker language "en" {
   #_[utterances=["turn off my speaker",
                 "switch off the speaker",
                 "turn off the speaker",
-                "help to off the speaker"]];
-
-  action := @org.thingpedia.iot.speaker.raise_volume()
-  #_[utterances=["increase the volume of the speaker",
-                 "increase my speaker 's volume",
-                 "make the speaker louder"]];
-
-  action := @org.thingpedia.iot.speaker.lower_volume()
-  #_[utterances=["decrease the volume of my speaker",
-                 "decrease my speaker 's volume",
-                 "reduce the volume of the speaker",
-                 "reduce my speaker 's volume",
-                 "make the speaker softer"]];
-
-  action := @org.thingpedia.iot.speaker.mute()
-  #_[utterances=["mute my speaker",
-                 "silence my speaker 's volume",
-                 "turn off the volume of the speaker",
-                 "switch off the sound for my speaker",
-                 "mute my speaker 's sound",
-                 "make my speaker silent"]];
-
-  action := @org.thingpedia.iot.speaker.unmute()
-  #_[utterances=["unmute my speaker",
-                 "unmute the speaker 's volume",
-                 "unmute my speaker 's sound",
-                 "turn on the speaker sound",
-                 "stop muting my speaker"]];
+                "help to off the speaker"]];*/
 
   action (p_volume : Number) := @org.thingpedia.iot.speaker.set_volume(volume=p_volume)
-  #_[utterances=["turn my speaker sound to ${p_volume}",
-                 "set the speaker 's volume to ${p_volume}"]];
+  #_[utterances=["turn my speaker sound to ${p_volume:const}",
+                 "set the speaker 's volume to ${p_volume:const}"]];
 
-  action  := @org.thingpedia.iot.speaker.set_sink()
-  #_[utterances=["set my bluetooth speaker as default",
-                 "set my speaker as default",
-                 "set my speaker as sink"]];
-
-  action  := @org.thingpedia.iot.speaker.play_music()
-    #_[utterances=["play something on my bluetooth speaker",
-                   "play music on my speaker",
-                   "play something on my speaker"]];
-
-  program (p_name : String) := @org.thingpedia.iot.speaker(name=p_name).power()
+  /*program (p_name : String) := @org.thingpedia.iot.speaker(name=p_name).power()
   #_[utterances=["is my ${p_name} speaker on?",
                 "check if my ${p_name} speaker is off",
                 "is the ${p_name} speaker turned on?",
@@ -179,16 +142,6 @@ dataset @org.thingpedia.iot.speaker language "en" {
                  "stop muting my ${p_name} speaker"]];
 
   action (p_name : String, p_volume : Number) := @org.thingpedia.iot.speaker(name=p_name).set_volume(volume=p_volume)
-  #_[utterances=["turn my ${p_name} speaker sound to ${p_volume}",
-                 "set the ${p_name} speaker 's volume to ${p_volume}"]];
-
-  action (p_name : String) := @org.thingpedia.iot.speaker(name=p_name).set_sink()
-  #_[utterances=["set my ${p_name} bluetooth speaker as default",
-                 "set my ${p_name} speaker as default",
-                 "set my ${p_name} speaker as sink"]];
-
-  action (p_name : String) := @org.thingpedia.iot.speaker(name=p_name).play_music()
-    #_[utterances=["play something on my ${p_name} bluetooth speaker",
-                   "play music on my ${p_name} speaker",
-                   "play something on ${p_name} my speaker"]];
+  #_[utterances=["turn my ${p_name} speaker sound to ${p_volume:const}",
+                 "set the ${p_name} speaker 's volume to ${p_volume:const}"]];*/
 }
