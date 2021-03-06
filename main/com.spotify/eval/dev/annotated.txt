@@ -4473,3 +4473,763 @@ UT: @com.spotify.song() filter contains(artists, null^^com.spotify:artist("gigi 
 U: play the song levan polka
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.spotify.song() filter id =~ "levan polka" => @com.spotify.play(playable=id);
+====
+# recording/32b451f55e217fa2cd13db5d302ef7ce
+U: play never gonna give you up
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter id =~ "never gonna give you up" => @com.spotify.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter id =~ "never gonna give you up")[1] => @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^com.spotify:device, playable="spotify:track:7GhIk7Il098yCjg4BQjzvb"^^com.spotify:playable("Never Gonna Give You Up") }
+C: ]]
+C: #[error=enum disallowed_action];
+A: Sorry, failed to play: try playing from the Spotify app.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
+U: play never gonna give you up
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter id =~ "never gonna give you up" => @com.spotify.play(playable=id);
+====
+# recording/b2c4a4039f67c3ca39ecf4c6a879e33f
+U: play spiderman into the spiderverse
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter id =~ "spiderman into the spiderverse" => @com.spotify.play(playable=id);
+====
+# recording/947d13232af093547ecde3fe680de9f6
+U: pause playback
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_pause();
+====
+# recording/9338a3e803aa6c25fdf1c950fbb1c98d
+U: play a songs from the beatles
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter contains(artists, null^^com.spotify:artist("beatles")) => @com.spotify.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, "spotify:artist:3WrFJ7ztbogyGnTHbHJFl2"^^com.spotify:artist("The Beatles")) => @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^com.spotify:device, playable="spotify:track:6dGnYIeXmHdcikdzNNDMm2"^^com.spotify:playable("Here Comes The Sun - Remastered 2009") },
+C:   { device="XXXXXXXX"^^com.spotify:device, playable="spotify:track:2EqlS6tkEnglzr7tkKAAYD"^^com.spotify:playable("Come Together - Remastered 2009") },
+C:   { device="XXXXXXXX"^^com.spotify:device, playable="spotify:track:7iN1s7xHE4ifF5povM6A48"^^com.spotify:playable("Let It Be - Remastered 2009") },
+C:   { device="XXXXXXXX"^^com.spotify:device, playable="spotify:track:3BQHpFgAp4l80e1XslIjNI"^^com.spotify:playable("Yesterday - Remastered 2009") },
+C:   { device="XXXXXXXX"^^com.spotify:device, playable="spotify:track:0aym2LBJBk9DAYuHHutrIl"^^com.spotify:playable("Hey Jude - Remastered 2015") },
+C:   { device="XXXXXXXX"^^com.spotify:device, playable="spotify:track:5jgFfDIR6FR0gvlA56Nakr"^^com.spotify:playable("Blackbird - Remastered 2009") },
+C:   { device="XXXXXXXX"^^com.spotify:device, playable="spotify:track:5ZBeML7Lf3FMEVviTyvi8l"^^com.spotify:playable("Twist And Shout - Remastered 2009") },
+C:   { device="XXXXXXXX"^^com.spotify:device, playable="spotify:track:3KfbEIOC7YIv90FIfNSZpo"^^com.spotify:playable("In My Life - Remastered 2009") },
+C:   { device="XXXXXXXX"^^com.spotify:device, playable="spotify:track:4pbG9SUmWIvsROVLF0zF9s"^^com.spotify:playable("I Want To Hold Your Hand - Remastered 2015") },
+C:   { device="XXXXXXXX"^^com.spotify:device, playable="spotify:track:7DD7eSuYSC5xk2ArU62esN"^^com.spotify:playable("Help! - Remastered 2009") }
+C: ]]
+C: #[count=48]
+C: #[error=enum player_error];
+A: Sorry, failed to play: try playing from the Spotify app.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
+U: who sings love story
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [artists] of @com.spotify.playable() filter id =~ "love story";
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, "spotify:artist:3WrFJ7ztbogyGnTHbHJFl2"^^com.spotify:artist("The Beatles")) => @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^com.spotify:device, playable="spotify:track:6dGnYIeXmHdcikdzNNDMm2"^^com.spotify:playable("Here Comes The Sun - Remastered 2009") },
+C:   { device="XXXXXXXX"^^com.spotify:device, playable="spotify:track:2EqlS6tkEnglzr7tkKAAYD"^^com.spotify:playable("Come Together - Remastered 2009") },
+C:   { device="XXXXXXXX"^^com.spotify:device, playable="spotify:track:7iN1s7xHE4ifF5povM6A48"^^com.spotify:playable("Let It Be - Remastered 2009") },
+C:   { device="XXXXXXXX"^^com.spotify:device, playable="spotify:track:3BQHpFgAp4l80e1XslIjNI"^^com.spotify:playable("Yesterday - Remastered 2009") },
+C:   { device="XXXXXXXX"^^com.spotify:device, playable="spotify:track:0aym2LBJBk9DAYuHHutrIl"^^com.spotify:playable("Hey Jude - Remastered 2015") },
+C:   { device="XXXXXXXX"^^com.spotify:device, playable="spotify:track:5jgFfDIR6FR0gvlA56Nakr"^^com.spotify:playable("Blackbird - Remastered 2009") },
+C:   { device="XXXXXXXX"^^com.spotify:device, playable="spotify:track:5ZBeML7Lf3FMEVviTyvi8l"^^com.spotify:playable("Twist And Shout - Remastered 2009") },
+C:   { device="XXXXXXXX"^^com.spotify:device, playable="spotify:track:3KfbEIOC7YIv90FIfNSZpo"^^com.spotify:playable("In My Life - Remastered 2009") },
+C:   { device="XXXXXXXX"^^com.spotify:device, playable="spotify:track:4pbG9SUmWIvsROVLF0zF9s"^^com.spotify:playable("I Want To Hold Your Hand - Remastered 2015") },
+C:   { device="XXXXXXXX"^^com.spotify:device, playable="spotify:track:7DD7eSuYSC5xk2ArU62esN"^^com.spotify:playable("Help! - Remastered 2009") }
+C: ]]
+C: #[count=48]
+C: #[error=enum player_error];
+C: [artists] of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter id =~ "love story"
+C: #[results=[
+C:   { id="spotify:track:1vrd6UOGamcKNGnSHJQlSt"^^com.spotify:playable("Love Story"), artists=["spotify:artist:06HL4z0CvFAxyc27GXpf02"^^com.spotify:artist("Taylor Swift")] },
+C:   { id="spotify:track:3CeCwYWvdfXbZLXFhBrbnf"^^com.spotify:playable("Love Story (Taylor’s Version)"), artists=["spotify:artist:06HL4z0CvFAxyc27GXpf02"^^com.spotify:artist("Taylor Swift")] },
+C:   { id="spotify:track:2yQZwi1P8AkkxxFhQ8rMEK"^^com.spotify:playable("Greatest Love Story"), artists=["spotify:artist:2lRH2dgU5Kk4Bc5phmII4T"^^com.spotify:artist("LANCO")] },
+C:   { id="spotify:track:3pRrL0BfKWY1QdQNzL6v92"^^com.spotify:playable("Love Story meets Love Story (Taylor Swift Remix)"), artists=["spotify:artist:2YQ4MY2VwOMv43C0GemUY5"^^com.spotify:artist("Jon Schmidt")] }
+C: ]];
+A: I have Love Story or Love Story (Taylor’s Version). All of them are music by Taylor Swift.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_two;
+U: what is beatles's top hit
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(popularity desc of @com.spotify.song() filter contains(artists, null^^com.spotify:artist("beatles")))[1];
+====
+# recording/a72002e65e77a86dc77c5a25aafebd7c
+U: resume playback
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_play();
+====
+# recording/ad32165c43ae364e5526d44cccddc9bf
+U: what are the top 3 most popular tracks?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(popularity desc of @com.spotify.song())[1 : 3];
+====
+# recording/b80d26e81180e3a1cf4915e53ade8fc9
+U: next song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_next();
+====
+# recording/fd988aa20ddeda677e01b9b40deea17d
+U: pause playback
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_pause();
+====
+# recording/7c9271bf1707a5dd2c2e8f816bf745cb
+U: play the podcast all the presidents lawyers
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.show() filter id =~ "all the presidents lawyers" => @com.spotify.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).show() filter id =~ "all the presidents lawyers")[1] => @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[]]
+C: #[error=enum disallowed_action];
+A: Sorry, failed to play: you must first click play from inside the Spotify app, and then I will play songs for you.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
+U: play the podcast all the presidents lawyers
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.show() filter id =~ "all the presidents lawyers" => @com.spotify.play(playable=id);
+====
+# recording/7a3c7291e1eb2b0e67766797e75f05c0
+U: play the podcast left right and center
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.show() filter id =~ "left right and center" => @com.spotify.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).show() filter id =~ "left right and center")[1] => @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[]];
+A: I'm sorry, I cannot find any show matching your request.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_empty_search;
+U: play the neoliberal podcast
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.show() filter id =~ "neoliberal" => @com.spotify.play(playable=id);
+====
+# recording/250ccb85220072d307429f57d3f8e4a7
+U: play songs by Cascada
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter contains(artists, null^^com.spotify:artist("cascada")) => @com.spotify.play(playable=id);
+====
+# recording/bee94e41bf0580b94e41af71a7bb2618
+U: play yellow brick road by elton john
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("elton john")) && id =~ "yellow brick road" => @com.spotify.play(playable=id);
+====
+# recording/afc2f92af98bab956603fefe40b26e49
+U: who is the most popular artist
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(popularity desc of @com.spotify.artist())[1];
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: sort(popularity desc of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).artist())[1]
+C: #[results=[
+C:   { id="spotify:artist:4MCBfE4596Uoi2O4DtmEMz"^^com.spotify:artist("Juice WRLD"), genres=["chicago rap", "melodic rap"], popularity=98 }
+C: ]];
+A: The most popular singers is Juice WRLD. It is a melodic rap singers.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: play a song by them
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter contains(artists, "spotify:artist:4MCBfE4596Uoi2O4DtmEMz"^^com.spotify:artist("Juice WRLD")) => @com.spotify.play(playable=id);
+====
+# recording/3acc88acea9ac21f32ed8d8dba30b955
+U: next song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_next();
+====
+# recording/1acc9cc0461b8d847794755f45ae7ed4
+U: what is the current song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.get_currently_playing();
+====
+# recording/742f3ba422e32d6b46c64347ac8db8e3
+U: Resume playback.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_play();
+====
+# recording/f4fd734d3e364068600082b2762805ae
+U: play hello
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter id =~ "hello" => @com.spotify.play(playable=id);
+====
+# recording/1470444c4eb284fbda2dbd36869340cb
+U: play hello
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter id =~ "hello" => @com.spotify.play(playable=id);
+====
+# recording/f31822e71ef3fcd4424852d6b31b716f
+U: play hello by adele
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("adele")) && id =~ "hello" => @com.spotify.play(playable=id);
+====
+# recording/e5fbe9d6b675ad8cae27852fbca0cf8f
+U: play me a song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() => @com.spotify.play(playable=id);
+====
+# recording/611f9456aa1beeb9ebaa38ee3b7ae509
+U: Stop playing
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_pause();
+====
+# recording/9ac67d07170e6905cf23b976e93a7e6d
+U: play the oldest song by the Beatles
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(release_date asc of @com.spotify.song() filter contains(artists, null^^com.spotify:artist("beatles")))[1] => @com.spotify.play(playable=id);
+====
+# recording/77e5270220c08aa0b46c4ad8a97accf7
+U: play back street boys
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("back street boys")) => @com.spotify.play(playable=id);
+====
+# recording/c4d968fa9897e14820f3fe65f1e65156
+U: play jason mraz
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("jason mraz")) => @com.spotify.play(playable=id);
+====
+# recording/05cad34d148bce679a4599ac23c2aa6f
+U: Play yellow brick Rd.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter id =~ "yellow brick rd." => @com.spotify.play(playable=id);
+====
+# recording/113d571d2d28908ce2c44d11f58b2eb2
+U: play a song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() => @com.spotify.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() => @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[]]
+C: #[error=enum disallowed_action];
+A: Sorry, failed to play: try playing from the Spotify app.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
+U: Play a song.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() => @com.spotify.play(playable=id);
+====
+# recording/be4d6e56040ebf45a6ac76f409099e5f
+U: play a song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() => @com.spotify.play(playable=id);
+====
+# recording/d5410c78f86b35daabd88c1fe08806dd
+U: play me a song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() => @com.spotify.play(playable=id);
+====
+# recording/da4c4602305d625f379ebc3dddc1233c
+U: can you play a song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() => @com.spotify.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() => @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[]]
+C: #[error=enum disallowed_action];
+A: Sorry, failed to play: try playing from the Spotify app.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
+U: play a song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() => @com.spotify.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() => @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[]]
+C: #[error=enum disallowed_action];
+C: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() => @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^com.spotify:device, playable="spotify:track:7lPN2DXiMsVn7XUKtOW1CS"^^com.spotify:playable("drivers license") },
+C:   { device="XXXXXXXX"^^com.spotify:device, playable="spotify:track:31qCy5ZaophVA81wtlwLc4"^^com.spotify:playable("Anyone") },
+C:   { device="XXXXXXXX"^^com.spotify:device, playable="spotify:track:5Kskr9LcNYa0tpt5f0ZEJx"^^com.spotify:playable("Calling My Phone") },
+C:   { device="XXXXXXXX"^^com.spotify:device, playable="spotify:track:3Ofmpyhv5UAQ70mENzB277"^^com.spotify:playable("Astronaut In The Ocean") },
+C:   { device="XXXXXXXX"^^com.spotify:device, playable="spotify:track:0D75ciM842cdUMKSMfAR9y"^^com.spotify:playable("Baila Conmigo (with Rauw Alejandro)") },
+C:   { device="XXXXXXXX"^^com.spotify:device, playable="spotify:track:5uEYRdEIh9Bo4fpjDd4Na9"^^com.spotify:playable("Goosebumps - Remix") },
+C:   { device="XXXXXXXX"^^com.spotify:device, playable="spotify:track:2etHQJxIbV0soyPhelVs9Y"^^com.spotify:playable("Best Friend (feat. Doja Cat)") },
+C:   { device="XXXXXXXX"^^com.spotify:device, playable="spotify:track:1XXimziG1uhM0eDNCZCrUl"^^com.spotify:playable("Up") },
+C:   { device="XXXXXXXX"^^com.spotify:device, playable="spotify:track:3CeCwYWvdfXbZLXFhBrbnf"^^com.spotify:playable("Love Story (Taylor’s Version)") },
+C:   { device="XXXXXXXX"^^com.spotify:device, playable="spotify:track:43CIWpJaJHRcI4mUSjqgc2"^^com.spotify:playable("Bad Boy (with Young Thug)") }
+C: ]]
+C: #[count=47]
+C: #[error=enum disallowed_action];
+A: Sorry, failed to play: try playing from the Spotify app.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
+U: play a song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() => @com.spotify.play(playable=id);
+====
+# recording/504d2270531a6cc70b5af73874e369b0
+U: play another song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_next();
+====
+# recording/95c2251e40ef3d8fd73de0f4d5fe0285
+U: please play me songs from taylor swift
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter contains(artists, null^^com.spotify:artist("taylor swift")) => @com.spotify.play(playable=id);
+====
+# recording/05e7114425cb9878f784f0989c7efb81
+U: play the most popular song by taylor swift
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(popularity desc of @com.spotify.song() filter contains(artists, null^^com.spotify:artist("taylor swift")))[1] => @com.spotify.play(playable=id);
+====
+# recording/0236e208ab3686e63d95fb462db2e187
+U: play the most popular song by Queen
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(popularity desc of @com.spotify.song() filter contains(artists, null^^com.spotify:artist("queen")))[1] => @com.spotify.play(playable=id);
+====
+# recording/e5b5894cea48dcf953e0dee8b8b015fb
+U: What is the biggest hit  by elton john
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(popularity desc of @com.spotify.song() filter contains(artists, null^^com.spotify:artist("elton john")))[1];
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: sort(popularity desc of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, "spotify:artist:3PhoLpVuITZKcymswpck5b"^^com.spotify:artist("Elton John")))[1]
+C: #[results=[
+C:   { id="spotify:track:3gdewACMIVMEWVbyb8O9sY"^^com.spotify:song("Rocket Man (I Think It's Going To Be A Long, Long Time)"), artists=["spotify:artist:3PhoLpVuITZKcymswpck5b"^^com.spotify:artist("Elton John")], album="spotify:album:2ei2X6ghPnw7YRwQtAH075"^^com.spotify:album("Honky Chateau"), genres=["glam rock", "mellow gold", "piano rock", "soft rock"], release_date=new Date("1972-05-19T00:00:00.000Z"), popularity=80, energy=53.2, danceability=60.099999999999994 }
+C: ]];
+A: The most popular track is Rocket Man (I Think It's Going To Be A Long, Long Time). It is a track in the album Honky Chateau by Elton John.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: what is the biggest hit by Taylor swift
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(popularity desc of @com.spotify.song() filter contains(artists, null^^com.spotify:artist("taylor swift")))[1];
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: sort(popularity desc of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, "spotify:artist:3PhoLpVuITZKcymswpck5b"^^com.spotify:artist("Elton John")))[1]
+C: #[results=[
+C:   { id="spotify:track:3gdewACMIVMEWVbyb8O9sY"^^com.spotify:song("Rocket Man (I Think It's Going To Be A Long, Long Time)"), artists=["spotify:artist:3PhoLpVuITZKcymswpck5b"^^com.spotify:artist("Elton John")], album="spotify:album:2ei2X6ghPnw7YRwQtAH075"^^com.spotify:album("Honky Chateau"), genres=["glam rock", "mellow gold", "piano rock", "soft rock"], release_date=new Date("1972-05-19T00:00:00.000Z"), popularity=80, energy=53.2, danceability=60.099999999999994 }
+C: ]];
+C: sort(popularity desc of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, "spotify:artist:06HL4z0CvFAxyc27GXpf02"^^com.spotify:artist("Taylor Swift")))[1]
+C: #[results=[
+C:   { id="spotify:track:0lx2cLdOt3piJbcaXIV74f"^^com.spotify:song("willow"), artists=["spotify:artist:06HL4z0CvFAxyc27GXpf02"^^com.spotify:artist("Taylor Swift")], album="spotify:album:2Xoteh7uEpea4TohMxjtaq"^^com.spotify:album("evermore"), genres=["dance pop", "pop"], release_date=new Date("2020-12-11T00:00:00.000Z"), popularity=86, energy=57.4, danceability=39.2 }
+C: ]];
+A: The most popular track is willow. It is a track in the album evermore by Taylor Swift.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: who sings shake it off
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [artists] of @com.spotify.playable() filter id =~ "shake it off";
+====
+# recording/f39b42d4f8fe18b504a7c3b28796db4e
+U: Name the singer of the Piano man album
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [artists] of @com.spotify.album() filter id =~ "piano man";
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: [artists] of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).album() filter id =~ "piano man"
+C: #[results=[
+C:   { id="spotify:album:77ErLrVvYETIlQJHAwhfIH"^^com.spotify:album("Piano Man"), artists=["spotify:artist:6zFYqv1mOsgBRQbae3JJ9e"^^com.spotify:artist("Billy Joel")] },
+C:   { id="spotify:album:69wjSAZXZiD2EBia3b3gxL"^^com.spotify:album("Piano Man (Legacy Edition)"), artists=["spotify:artist:6zFYqv1mOsgBRQbae3JJ9e"^^com.spotify:artist("Billy Joel")] },
+C:   { id="spotify:album:5EMqbcSQgub9fRFwmcfxa9"^^com.spotify:album("Texas Piano Man"), artists=["spotify:artist:6XtG9W2KkPiQ6n1rlIvTJE"^^com.spotify:artist("Robert Ellis")] }
+C: ]];
+A: I see Piano Man or Piano Man (Legacy Edition). All of them are albums by Billy Joel.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_two;
+U: Name the singer of Bohemian rhapsody
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [artists] of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).album() filter id =~ "bohemian rhapsody";
+====
+# recording/7d49e2fe7a76411dcd6a1226161e9b5c
+U: who is the most popular artist?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(popularity desc of @com.spotify.artist())[1];
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: sort(popularity desc of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).artist())[1]
+C: #[results=[
+C:   { id="spotify:artist:4MCBfE4596Uoi2O4DtmEMz"^^com.spotify:artist("Juice WRLD"), genres=["chicago rap", "melodic rap"], popularity=98 }
+C: ]];
+A: The most popular singers is Juice WRLD. It is a melodic rap singers.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: play the beatles
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter contains(artists, null^^com.spotify:artist("beatles")) => @com.spotify.play(playable=id);
+====
+# recording/71c8b187b0b9d1e8138d488111c20658
+U: play a song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() => @com.spotify.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() => @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[]]
+C: #[error=enum disallowed_action];
+A: Sorry, failed to play: try playing from the Spotify app.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
+U: play queen
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter contains(artists, null^^com.spotify:artist("queen")) => @com.spotify.play(playable=id);
+====
+# recording/81aaec26692917513ce3b40e47156cf1
+U: play the artist queen
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter contains(artists, null^^com.spotify:artist("queen")) => @com.spotify.play(playable=id);
+====
+# recording/a53d3b895cc837844eba4092fd9ef472
+U: pause
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_pause();
+====
+# recording/80d33327cc713feaf3926422b60fe216
+U: pause playing a song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_pause();
+====
+# recording/a394f4a87fa8360ff323661eeefec8d9
+U: play the queen
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("queen")) => @com.spotify.play(playable=id);
+====
+# recording/413f8152be0452b8d53581aa4e983a72
+U: Play the Queen.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("queen")) => @com.spotify.play(playable=id);
+====
+# recording/fb9c802f17b5cd878f6f8bb9a12c8685
+U: I'd like to hear some music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() => @com.spotify.play(playable=id);
+====
+# recording/5406846f342b44666caae34e7da2f40d
+U: Play some music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() => @com.spotify.play(playable=id);
+====
+# recording/f255ad18008e15cf1a8c48fb0fc160a7
+U: Play some Taylor Swift on Spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("taylor swift")) => @com.spotify.play(playable=id);
+====
+# recording/457c2df55c50d009a6753db14bddeeb7
+U: What albums does Bon Iver have
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.album() filter contains(artists, null^^com.spotify:artist("bon iver"));
+====
+# recording/4bec91151bd783d285ddbe8fcb149953
+U: Play Ether by Mogwai
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("mogwai")) && id =~ "ether" => @com.spotify.play(playable=id);
+====
+# recording/93e7ac97a596d2561e618201a7fab3c2
+U: what is James Blake's top song on Spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(popularity desc of @com.spotify.song() filter contains(artists, null^^com.spotify:artist("james blake")))[1];
+====
+# recording/db5d51769b7a44280d5bcad6c9f14410
+U: list popular songs by James Blake
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(popularity desc of @com.spotify.song() filter contains(artists, null^^com.spotify:artist("james blake")));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: sort(popularity desc of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, "spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake")))
+C: #[results=[
+C:   { id="spotify:track:5WfACgyEk4rwdWU3rrzNt1"^^com.spotify:song("Godspeed"), artists=["spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake")], album="spotify:album:0qYRbCu2dmz948wOiROlcC"^^com.spotify:album("Godspeed"), genres=["indie soul", "uk alternative pop"], release_date=new Date("2020-09-11T00:00:00.000Z"), popularity=68, energy=17.4, danceability=39.5 },
+C:   { id="spotify:track:4cQrSREMqBSvJ8ZzBZjVb8"^^com.spotify:song("Mile High (feat. Travis Scott & Metro Boomin)"), artists=["spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake"), "spotify:artist:0Y5tJX1MQlPlqiwlOH1tJY"^^com.spotify:artist("Travis Scott"), "spotify:artist:0iEtIxbK0KxaSlF7G42ZOp"^^com.spotify:artist("Metro Boomin")], album="spotify:album:23dKNZpiadggKHrQgHLi3L"^^com.spotify:album("Assume Form"), genres=["indie soul", "uk alternative pop"], release_date=new Date("2019-01-18T00:00:00.000Z"), popularity=67, energy=37, danceability=75.4 },
+C:   { id="spotify:track:2IqjKEBiz0CdLKdkXhxw84"^^com.spotify:song("Retrograde"), artists=["spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake")], album="spotify:album:53FEYOXnplxBWoQMmWn82U"^^com.spotify:album("Overgrown"), genres=["indie soul", "uk alternative pop"], release_date=new Date("2013-04-08T00:00:00.000Z"), popularity=65, energy=25.1, danceability=53.300000000000004 },
+C:   { id="spotify:track:0U9oiRl4hYwORmWwkYihZN"^^com.spotify:song("when the party’s over"), artists=["spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake")], album="spotify:album:7saSlN9qdW5wKoN4M9nNRq"^^com.spotify:album("Covers"), genres=["indie soul", "uk alternative pop"], release_date=new Date("2020-12-11T00:00:00.000Z"), popularity=64, energy=17.1, danceability=46.800000000000004 },
+C:   { id="spotify:track:2k0HXdTDW28JFAaS8TaHeA"^^com.spotify:song("Are You Even Real?"), artists=["spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake")], album="spotify:album:4k4iHNk6u4RlloqaNXlzwQ"^^com.spotify:album("Are You Even Real?"), genres=["indie soul", "uk alternative pop"], release_date=new Date("2020-07-08T00:00:00.000Z"), popularity=62, energy=61.9, danceability=28.9 },
+C:   { id="spotify:track:0TLAptKgYxe7F0KewWH6X6"^^com.spotify:song("I Need A Forest Fire"), artists=["spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake"), "spotify:artist:4LEiUm1SRbFMgfqnQTwUbQ"^^com.spotify:artist("Bon Iver")], album="spotify:album:1WyrGCkFDlH1xPadZ5qTkL"^^com.spotify:album("The Colour In Anything"), genres=["indie soul", "uk alternative pop"], release_date=new Date("2016-05-05T00:00:00.000Z"), popularity=61, energy=28.999999999999996, danceability=29.299999999999997 },
+C:   { id="spotify:track:5teYCP3pROESCEaASCVf5w"^^com.spotify:song("You're Too Precious"), artists=["spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake")], album="spotify:album:0hs2pdNq5QXYWsEcAFVO9q"^^com.spotify:album("You're Too Precious"), genres=["indie soul", "uk alternative pop"], release_date=new Date("2020-04-24T00:00:00.000Z"), popularity=60, energy=47.699999999999996, danceability=68.4 },
+C:   { id="spotify:track:3onYsieuDICdVt5ULZSExF"^^com.spotify:song("Barefoot In The Park (feat. ROSALÍA)"), artists=["spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake"), "spotify:artist:7ltDVBr6mKbRvohxheJ9h1"^^com.spotify:artist("ROSALÍA")], album="spotify:album:23dKNZpiadggKHrQgHLi3L"^^com.spotify:album("Assume Form"), genres=["indie soul", "uk alternative pop"], release_date=new Date("2019-01-18T00:00:00.000Z"), popularity=60, energy=63.2, danceability=55.800000000000004 },
+C:   { id="spotify:track:6EvUAsfncetT0RcWshHCbl"^^com.spotify:song("I'll Come Too"), artists=["spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake")], album="spotify:album:23dKNZpiadggKHrQgHLi3L"^^com.spotify:album("Assume Form"), genres=["indie soul", "uk alternative pop"], release_date=new Date("2019-01-18T00:00:00.000Z"), popularity=57, energy=47.199999999999996, danceability=66.10000000000001 },
+C:   { id="spotify:track:0FjyvdAffyJcnvbv3dLFyw"^^com.spotify:song("Before"), artists=["spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake")], album="spotify:album:5vqILcEeCT0N1DeJBsLrGE"^^com.spotify:album("Before"), genres=["indie soul", "uk alternative pop"], release_date=new Date("2020-10-14T00:00:00.000Z"), popularity=57, energy=46.400000000000006, danceability=69.89999999999999 }
+C: ]]
+C: #[count=37];
+A: I have found Godspeed, Mile High (feat. Travis Scott & Metro Boomin) and Retrograde. All of them are uk alternative pop song by James Blake.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_three;
+U: what is the most popular song by James Blake on spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(popularity desc of @com.spotify.song() filter contains(artists, null^^com.spotify:artist("james blake")))[1];
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: sort(popularity desc of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, "spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake")))
+C: #[results=[
+C:   { id="spotify:track:5WfACgyEk4rwdWU3rrzNt1"^^com.spotify:song("Godspeed"), artists=["spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake")], album="spotify:album:0qYRbCu2dmz948wOiROlcC"^^com.spotify:album("Godspeed"), genres=["indie soul", "uk alternative pop"], release_date=new Date("2020-09-11T00:00:00.000Z"), popularity=68, energy=17.4, danceability=39.5 },
+C:   { id="spotify:track:4cQrSREMqBSvJ8ZzBZjVb8"^^com.spotify:song("Mile High (feat. Travis Scott & Metro Boomin)"), artists=["spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake"), "spotify:artist:0Y5tJX1MQlPlqiwlOH1tJY"^^com.spotify:artist("Travis Scott"), "spotify:artist:0iEtIxbK0KxaSlF7G42ZOp"^^com.spotify:artist("Metro Boomin")], album="spotify:album:23dKNZpiadggKHrQgHLi3L"^^com.spotify:album("Assume Form"), genres=["indie soul", "uk alternative pop"], release_date=new Date("2019-01-18T00:00:00.000Z"), popularity=67, energy=37, danceability=75.4 },
+C:   { id="spotify:track:2IqjKEBiz0CdLKdkXhxw84"^^com.spotify:song("Retrograde"), artists=["spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake")], album="spotify:album:53FEYOXnplxBWoQMmWn82U"^^com.spotify:album("Overgrown"), genres=["indie soul", "uk alternative pop"], release_date=new Date("2013-04-08T00:00:00.000Z"), popularity=65, energy=25.1, danceability=53.300000000000004 },
+C:   { id="spotify:track:0U9oiRl4hYwORmWwkYihZN"^^com.spotify:song("when the party’s over"), artists=["spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake")], album="spotify:album:7saSlN9qdW5wKoN4M9nNRq"^^com.spotify:album("Covers"), genres=["indie soul", "uk alternative pop"], release_date=new Date("2020-12-11T00:00:00.000Z"), popularity=64, energy=17.1, danceability=46.800000000000004 },
+C:   { id="spotify:track:2k0HXdTDW28JFAaS8TaHeA"^^com.spotify:song("Are You Even Real?"), artists=["spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake")], album="spotify:album:4k4iHNk6u4RlloqaNXlzwQ"^^com.spotify:album("Are You Even Real?"), genres=["indie soul", "uk alternative pop"], release_date=new Date("2020-07-08T00:00:00.000Z"), popularity=62, energy=61.9, danceability=28.9 },
+C:   { id="spotify:track:0TLAptKgYxe7F0KewWH6X6"^^com.spotify:song("I Need A Forest Fire"), artists=["spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake"), "spotify:artist:4LEiUm1SRbFMgfqnQTwUbQ"^^com.spotify:artist("Bon Iver")], album="spotify:album:1WyrGCkFDlH1xPadZ5qTkL"^^com.spotify:album("The Colour In Anything"), genres=["indie soul", "uk alternative pop"], release_date=new Date("2016-05-05T00:00:00.000Z"), popularity=61, energy=28.999999999999996, danceability=29.299999999999997 },
+C:   { id="spotify:track:5teYCP3pROESCEaASCVf5w"^^com.spotify:song("You're Too Precious"), artists=["spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake")], album="spotify:album:0hs2pdNq5QXYWsEcAFVO9q"^^com.spotify:album("You're Too Precious"), genres=["indie soul", "uk alternative pop"], release_date=new Date("2020-04-24T00:00:00.000Z"), popularity=60, energy=47.699999999999996, danceability=68.4 },
+C:   { id="spotify:track:3onYsieuDICdVt5ULZSExF"^^com.spotify:song("Barefoot In The Park (feat. ROSALÍA)"), artists=["spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake"), "spotify:artist:7ltDVBr6mKbRvohxheJ9h1"^^com.spotify:artist("ROSALÍA")], album="spotify:album:23dKNZpiadggKHrQgHLi3L"^^com.spotify:album("Assume Form"), genres=["indie soul", "uk alternative pop"], release_date=new Date("2019-01-18T00:00:00.000Z"), popularity=60, energy=63.2, danceability=55.800000000000004 },
+C:   { id="spotify:track:6EvUAsfncetT0RcWshHCbl"^^com.spotify:song("I'll Come Too"), artists=["spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake")], album="spotify:album:23dKNZpiadggKHrQgHLi3L"^^com.spotify:album("Assume Form"), genres=["indie soul", "uk alternative pop"], release_date=new Date("2019-01-18T00:00:00.000Z"), popularity=57, energy=47.199999999999996, danceability=66.10000000000001 },
+C:   { id="spotify:track:0FjyvdAffyJcnvbv3dLFyw"^^com.spotify:song("Before"), artists=["spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake")], album="spotify:album:5vqILcEeCT0N1DeJBsLrGE"^^com.spotify:album("Before"), genres=["indie soul", "uk alternative pop"], release_date=new Date("2020-10-14T00:00:00.000Z"), popularity=57, energy=46.400000000000006, danceability=69.89999999999999 }
+C: ]]
+C: #[count=37];
+C: sort(popularity desc of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, "spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake")))[1]
+C: #[results=[
+C:   { id="spotify:track:5WfACgyEk4rwdWU3rrzNt1"^^com.spotify:song("Godspeed"), artists=["spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake")], album="spotify:album:0qYRbCu2dmz948wOiROlcC"^^com.spotify:album("Godspeed"), genres=["indie soul", "uk alternative pop"], release_date=new Date("2020-09-11T00:00:00.000Z"), popularity=68, energy=17.4, danceability=39.5 }
+C: ]];
+A: The most popular song is Godspeed. It is a song in the album Godspeed by James Blake.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: what is the most popular song by Burial on Spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(popularity desc of @com.spotify.song() filter contains(artists, null^^com.spotify:artist("burial")))[1];
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: sort(popularity desc of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, "spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake")))
+C: #[results=[
+C:   { id="spotify:track:5WfACgyEk4rwdWU3rrzNt1"^^com.spotify:song("Godspeed"), artists=["spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake")], album="spotify:album:0qYRbCu2dmz948wOiROlcC"^^com.spotify:album("Godspeed"), genres=["indie soul", "uk alternative pop"], release_date=new Date("2020-09-11T00:00:00.000Z"), popularity=68, energy=17.4, danceability=39.5 },
+C:   { id="spotify:track:4cQrSREMqBSvJ8ZzBZjVb8"^^com.spotify:song("Mile High (feat. Travis Scott & Metro Boomin)"), artists=["spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake"), "spotify:artist:0Y5tJX1MQlPlqiwlOH1tJY"^^com.spotify:artist("Travis Scott"), "spotify:artist:0iEtIxbK0KxaSlF7G42ZOp"^^com.spotify:artist("Metro Boomin")], album="spotify:album:23dKNZpiadggKHrQgHLi3L"^^com.spotify:album("Assume Form"), genres=["indie soul", "uk alternative pop"], release_date=new Date("2019-01-18T00:00:00.000Z"), popularity=67, energy=37, danceability=75.4 },
+C:   { id="spotify:track:2IqjKEBiz0CdLKdkXhxw84"^^com.spotify:song("Retrograde"), artists=["spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake")], album="spotify:album:53FEYOXnplxBWoQMmWn82U"^^com.spotify:album("Overgrown"), genres=["indie soul", "uk alternative pop"], release_date=new Date("2013-04-08T00:00:00.000Z"), popularity=65, energy=25.1, danceability=53.300000000000004 },
+C:   { id="spotify:track:0U9oiRl4hYwORmWwkYihZN"^^com.spotify:song("when the party’s over"), artists=["spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake")], album="spotify:album:7saSlN9qdW5wKoN4M9nNRq"^^com.spotify:album("Covers"), genres=["indie soul", "uk alternative pop"], release_date=new Date("2020-12-11T00:00:00.000Z"), popularity=64, energy=17.1, danceability=46.800000000000004 },
+C:   { id="spotify:track:2k0HXdTDW28JFAaS8TaHeA"^^com.spotify:song("Are You Even Real?"), artists=["spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake")], album="spotify:album:4k4iHNk6u4RlloqaNXlzwQ"^^com.spotify:album("Are You Even Real?"), genres=["indie soul", "uk alternative pop"], release_date=new Date("2020-07-08T00:00:00.000Z"), popularity=62, energy=61.9, danceability=28.9 },
+C:   { id="spotify:track:0TLAptKgYxe7F0KewWH6X6"^^com.spotify:song("I Need A Forest Fire"), artists=["spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake"), "spotify:artist:4LEiUm1SRbFMgfqnQTwUbQ"^^com.spotify:artist("Bon Iver")], album="spotify:album:1WyrGCkFDlH1xPadZ5qTkL"^^com.spotify:album("The Colour In Anything"), genres=["indie soul", "uk alternative pop"], release_date=new Date("2016-05-05T00:00:00.000Z"), popularity=61, energy=28.999999999999996, danceability=29.299999999999997 },
+C:   { id="spotify:track:5teYCP3pROESCEaASCVf5w"^^com.spotify:song("You're Too Precious"), artists=["spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake")], album="spotify:album:0hs2pdNq5QXYWsEcAFVO9q"^^com.spotify:album("You're Too Precious"), genres=["indie soul", "uk alternative pop"], release_date=new Date("2020-04-24T00:00:00.000Z"), popularity=60, energy=47.699999999999996, danceability=68.4 },
+C:   { id="spotify:track:3onYsieuDICdVt5ULZSExF"^^com.spotify:song("Barefoot In The Park (feat. ROSALÍA)"), artists=["spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake"), "spotify:artist:7ltDVBr6mKbRvohxheJ9h1"^^com.spotify:artist("ROSALÍA")], album="spotify:album:23dKNZpiadggKHrQgHLi3L"^^com.spotify:album("Assume Form"), genres=["indie soul", "uk alternative pop"], release_date=new Date("2019-01-18T00:00:00.000Z"), popularity=60, energy=63.2, danceability=55.800000000000004 },
+C:   { id="spotify:track:6EvUAsfncetT0RcWshHCbl"^^com.spotify:song("I'll Come Too"), artists=["spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake")], album="spotify:album:23dKNZpiadggKHrQgHLi3L"^^com.spotify:album("Assume Form"), genres=["indie soul", "uk alternative pop"], release_date=new Date("2019-01-18T00:00:00.000Z"), popularity=57, energy=47.199999999999996, danceability=66.10000000000001 },
+C:   { id="spotify:track:0FjyvdAffyJcnvbv3dLFyw"^^com.spotify:song("Before"), artists=["spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake")], album="spotify:album:5vqILcEeCT0N1DeJBsLrGE"^^com.spotify:album("Before"), genres=["indie soul", "uk alternative pop"], release_date=new Date("2020-10-14T00:00:00.000Z"), popularity=57, energy=46.400000000000006, danceability=69.89999999999999 }
+C: ]]
+C: #[count=37];
+C: sort(popularity desc of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, "spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake")))[1]
+C: #[results=[
+C:   { id="spotify:track:5WfACgyEk4rwdWU3rrzNt1"^^com.spotify:song("Godspeed"), artists=["spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake")], album="spotify:album:0qYRbCu2dmz948wOiROlcC"^^com.spotify:album("Godspeed"), genres=["indie soul", "uk alternative pop"], release_date=new Date("2020-09-11T00:00:00.000Z"), popularity=68, energy=17.4, danceability=39.5 }
+C: ]];
+C: sort(popularity desc of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, "spotify:artist:0uCCBpmg6MrPb1KY2msceF"^^com.spotify:artist("Burial")))[1]
+C: #[results=[
+C:   { id="spotify:track:2MhDAsciLk9txdni5CL8iw"^^com.spotify:song("Her Revolution"), artists=["spotify:artist:0uCCBpmg6MrPb1KY2msceF"^^com.spotify:artist("Burial"), "spotify:artist:7Eu1txygG6nJttLHbZdQOh"^^com.spotify:artist("Four Tet"), "spotify:artist:4CvTDPKA6W06DRfBnZKrau"^^com.spotify:artist("Thom Yorke")], album="spotify:album:4ciK8DtBglOBd0FYznsg98"^^com.spotify:album("Her Revolution / His Rope"), genres=["bass music", "classic dubstep", "electronica", "future garage", "hauntology", "intelligent dance music", "microhouse"], release_date=new Date("2020-12-11T00:00:00.000Z"), popularity=58, energy=51, danceability=46.6 }
+C: ]];
+A: The most popular song is Her Revolution. It is a song in the album Her Revolution / His Rope.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: play Burial's most popular song on Spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(popularity desc of @com.spotify.song() filter contains(artists, null^^com.spotify:artist("burial")))[1] => @com.spotify.play(playable=id);
+====
+# recording/85a71140a96d4e097fb65eff100e1d07
+U: play the most popular song by Burial on Spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(popularity desc of @com.spotify.song() filter contains(artists, null^^com.spotify:artist("burial")))[1] => @com.spotify.play(playable=id);
+====
+# recording/ed9390e636f5aa46ce8f1477f4729dbd
+U: play You Found Me by Sublab on Spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("sublab")) && id =~ "you found me" => @com.spotify.play(playable=id);
+====
+# recording/5dd58a14d81c354a556bef0c6f86f6d1
+U: what's the most popular song right now
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(popularity desc of @com.spotify.song())[1];
+====
+# recording/1102362151ed6822db39caa3988ae6ba
+U: play Car Radio on Spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter id =~ "car radio" => @com.spotify.play(playable=id);
+====
+# recording/07a3ef2a8700e8f5ad8b73941af12c49
+U: play Stranger Things Vol 1
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter id =~ "stranger things vol 1" => @com.spotify.play(playable=id);
+====
+# recording/75c78238cbb3047c0bc63ad66821bc7f
+U: play Stranger Things soundtrack Vol 1
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter id =~ "stranger things soundtrack vol 1" => @com.spotify.play(playable=id);
+====
+# recording/c2feb526d4dc82907a00274ea714a7b7
+U: play the Stranger Things soundtrack Vol 1
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter id =~ "stranger things soundtrack vol 1" => @com.spotify.play(playable=id);
+====
+# recording/68dc2717dbed71c07c64fa7b2571e80b
+U: play the Weeknd
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("weeknd")) => @com.spotify.play(playable=id);
+====
+# recording/522fdeb340088b875930f868c2f24edd
+U: play the The Weeknd
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("weeknd")) => @com.spotify.play(playable=id);
+====
+# recording/534749bbfcb7e85b11d13ae8a852ee25
+U: play the Random Access Memories
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter id =~ "random access memories" => @com.spotify.play(playable=id);
+====
+# recording/af7849b6072e6822250d897817b2bbb7
+U: play the top song by James Blake on Spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(popularity desc of @com.spotify.song() filter contains(artists, null^^com.spotify:artist("james blake")))[1] => @com.spotify.play(playable=id);
+====
+# recording/0bccc92072d280ec34c1af7fcf7aa3d9
+U: can you really play music?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() => @com.spotify.play(playable=id);
+====
+# recording/4b225ab354a8ca631ce75148f5a15ea0
+U: find artist beatles
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.artist() filter id =~ "beatles";
+====
+# recording/02869f193a0c83efc97736d06f7bfedf
+U: Resume playback.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_play();
+====
+# recording/c7996840a8d840610d56785b2a0df5e7
+U: play songs by the weeknd
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter contains(artists, null^^com.spotify:artist("weeknd")) => @com.spotify.play(playable=id);
+====
+# recording/9c67cdd2eff46bdf57ee7552502dcdd3
+U: play songs by the weeknd
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter contains(artists, null^^com.spotify:artist("weeknd")) => @com.spotify.play(playable=id);
+====
+# recording/4a5b94e10e1ce7e96cc6ce911499e173
+U: what is the most popular rock song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(popularity desc of @com.spotify.song() filter contains~(genres, "rock"))[1];
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: sort(popularity desc of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains~(genres, "rock"))[1]
+C: #[results=[
+C:   { id="spotify:track:2QjOHCTQ1Jl3zawyYOpxh6"^^com.spotify:song("Sweater Weather"), artists=["spotify:artist:77SW9BnxLY8rJ0RciFqkHh"^^com.spotify:artist("The Neighbourhood")], album="spotify:album:4xkM0BwLM9H2IUcbYzpcBI"^^com.spotify:album("I Love You."), genres=["modern alternative rock", "modern rock", "pop"], release_date=new Date("2013-04-19T00:00:00.000Z"), popularity=88, energy=80.7, danceability=61.199999999999996 }
+C: ]];
+A: The most popular track is Sweater Weather. It is a track in the album I Love You. By The Neighbourhood.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: what is the most popular taiwanese song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(popularity desc of @com.spotify.song() filter contains~(genres, "taiwanese"))[1];
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: sort(popularity desc of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains~(genres, "rock"))[1]
+C: #[results=[
+C:   { id="spotify:track:2QjOHCTQ1Jl3zawyYOpxh6"^^com.spotify:song("Sweater Weather"), artists=["spotify:artist:77SW9BnxLY8rJ0RciFqkHh"^^com.spotify:artist("The Neighbourhood")], album="spotify:album:4xkM0BwLM9H2IUcbYzpcBI"^^com.spotify:album("I Love You."), genres=["modern alternative rock", "modern rock", "pop"], release_date=new Date("2013-04-19T00:00:00.000Z"), popularity=88, energy=80.7, danceability=61.199999999999996 }
+C: ]];
+C: sort(popularity desc of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains~(genres, "taiwanese"))[1]
+C: #[results=[
+C:   { id="spotify:track:2YA5IfmQwAmVzHRP3SVnEd"^^com.spotify:song("浪子回頭"), artists=["spotify:artist:6g641431O1Xkl7HAs2yFEg"^^com.spotify:artist("EggPlantEgg")], album="spotify:album:5SGhMGsRdfFKlFjsE9L3V5"^^com.spotify:album("卡通人物"), genres=["mandopop", "taiwan indie", "taiwan pop", "taiwanese indie"], release_date=new Date("2017-11-04T00:00:00.000Z"), popularity=58, energy=48.8, danceability=47.3 }
+C: ]];
+A: The most popular track is 浪子回頭. It is a track in the album 卡通人物 by EggPlantEgg.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: play juice wrld
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("juice wrld")) => @com.spotify.play(playable=id);
+====
+# recording/df62065a89b14ea949eae744fc570aa0
+U: play juice wrld
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("juice wrld")) => @com.spotify.play(playable=id);
+====
+# recording/bb0e9cbfc4ff9facd55de07d0a335fc3
+U: play the playlist songs
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playlist() filter id =~ "songs" => @com.spotify.play(playable=id);
+====
+# recording/178d96e2b7d4d7692cc54c5a23f2c291
+U: play the playlist named songs
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playlist() filter id =~ "songs" => @com.spotify.play(playable=id);
+====
+# recording/dd581d6c5f943a9a81bd6e3883a43136
+U: play the bealtes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("bealtes")) => @com.spotify.play(playable=id);
+====
+# recording/b15bbdb99667ff74f3fedb617a0a0475
+U: play the beatles
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("beatles")) => @com.spotify.play(playable=id);
+====
+# recording/952871f8af90ae8691163ce7d67ff88e
+U: what's the most popular song by the beatles
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(popularity desc of @com.spotify.song() filter contains(artists, null^^com.spotify:artist("beatles")))[1];
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: sort(popularity desc of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, "spotify:artist:3WrFJ7ztbogyGnTHbHJFl2"^^com.spotify:artist("The Beatles")))[1]
+C: #[results=[
+C:   { id="spotify:track:6dGnYIeXmHdcikdzNNDMm2"^^com.spotify:song("Here Comes The Sun - Remastered 2009"), artists=["spotify:artist:3WrFJ7ztbogyGnTHbHJFl2"^^com.spotify:artist("The Beatles")], album="spotify:album:0ETFjACtuP2ADo6LFhL6HN"^^com.spotify:album("Abbey Road (Remastered)"), genres=["beatlesque", "british invasion", "classic rock", "merseybeat", "psychedelic rock", "rock"], release_date=new Date("1969-09-26T00:00:00.000Z"), popularity=81, energy=54, danceability=55.7 }
+C: ]];
+A: The most popular track is Here Comes The Sun - Remastered 2009. It is a track in the album Abbey Road (Remastered) by The Beatles.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: play rap songs
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter contains~(genres, "rap") => @com.spotify.play(playable=id);
+====
+# recording/8f2d9948e31b7a790db4d325e4282551
+U: play the playlist today's top hits
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playlist() filter id =~ "today's top hits" => @com.spotify.play(playable=id);
+====
+# recording/803d88cbfa2834fa6580676404b41bc7
+U: play rap
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains~(genres, "rap") => @com.spotify.play(playable=id);
+====
+# recording/1a05836a3e782a28906aee141f38293f
+U: play Taylor swift
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("taylor swift")) => @com.spotify.play(playable=id);
+====
+# recording/53029617fc0982c622243d05c04b2f95
+U: play Taylor swift
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("taylor swift")) => @com.spotify.play(playable=id);
+====
+# recording/0aac13734ff86b26d08182d3bb62a127
+U: Can you play me music by the weekend?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("weekend")) => @com.spotify.play(playable=id);
+====
+# recording/ea215f97db3e2fa24fb90a11837fb772
+U: Can you play me music by the weekend?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("weekend")) => @com.spotify.play(playable=id);
+====
+# recording/9fc2db81382ba42e67515f3b5cec54c4
+U: Allman, can you play some music?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() => @com.spotify.play(playable=id);
+====
+# recording/0194a1eacee1a358cc63fe9c19739acd
+U: Skip this song.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_next();
+====
+# recording/5ca82488f9fe478b98bdaae35492915a
+U: i want to listen to new order
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("new order")) => @com.spotify.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:0yNLKJebCb8Aueb54LYya3"^^com.spotify:artist("New Order")) => @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[]]
+C: #[error=enum disallowed_action];
+A: Sorry, failed to play: try playing from the Spotify app.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
+U: i want to listen to dead mau5
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("dead mau5")) => @com.spotify.play(playable=id);
+====
+# recording/242e09544f9019caa251b95048cd08c1
+U: i want to listen to deadmau5
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("deadmau5")) => @com.spotify.play(playable=id);
+====
+# recording/2390ec2a54ffa2dd645d6551ce654413
+U: music to the tree of life
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter id =~ "tree of life" => @com.spotify.play(playable=id);
+====
+# recording/9031c8820dfe359fa597b3d393246c16
+U: what is rihanna's latest song?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(release_date desc of @com.spotify.song() filter contains(artists, null^^com.spotify:artist("rihanna")))[1];
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: sort(release_date desc of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, "spotify:artist:5pKCCKE2ajJHZ9KAiaK11H"^^com.spotify:artist("Rihanna")))[1]
+C: #[results=[
+C:   { id="spotify:track:6mulQVtiyAO551KgUuJI8Q"^^com.spotify:song("BELIEVE IT"), artists=["spotify:artist:2HPaUgqeutzr3jx5a9WyDV"^^com.spotify:artist("PARTYNEXTDOOR"), "spotify:artist:5pKCCKE2ajJHZ9KAiaK11H"^^com.spotify:artist("Rihanna")], album="spotify:album:44tafm4490xYqhfQKvMD4r"^^com.spotify:album("BELIEVE IT"), genres=["pop", "pop rap", "r&b", "rap", "toronto rap", "trap", "urban contemporary"], release_date=new Date("2020-03-26T00:00:00.000Z"), popularity=50, energy=70, danceability=43 }
+C: ]];
+A: The most recent song is BELIEVE IT. It is a song in the album BELIEVE IT by Rihanna.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: can you play it?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.play(playable="spotify:track:6mulQVtiyAO551KgUuJI8Q"^^com.spotify:song("BELIEVE IT"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: sort(release_date desc of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, "spotify:artist:5pKCCKE2ajJHZ9KAiaK11H"^^com.spotify:artist("Rihanna")))[1]
+C: #[results=[
+C:   { id="spotify:track:6mulQVtiyAO551KgUuJI8Q"^^com.spotify:song("BELIEVE IT"), artists=["spotify:artist:2HPaUgqeutzr3jx5a9WyDV"^^com.spotify:artist("PARTYNEXTDOOR"), "spotify:artist:5pKCCKE2ajJHZ9KAiaK11H"^^com.spotify:artist("Rihanna")], album="spotify:album:44tafm4490xYqhfQKvMD4r"^^com.spotify:album("BELIEVE IT"), genres=["pop", "pop rap", "r&b", "rap", "toronto rap", "trap", "urban contemporary"], release_date=new Date("2020-03-26T00:00:00.000Z"), popularity=50, energy=70, danceability=43 }
+C: ]];
+C: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable="spotify:track:6mulQVtiyAO551KgUuJI8Q"^^com.spotify:song("BELIEVE IT"))
+C: #[results=[]]
+C: #[error=enum disallowed_action];
+A: Sorry, failed to play: you must first click play from inside the Spotify app, and then I will play songs for you.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
+U: can you try playing it now?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.play(playable="spotify:track:6mulQVtiyAO551KgUuJI8Q"^^com.spotify:song("BELIEVE IT"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: sort(release_date desc of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, "spotify:artist:5pKCCKE2ajJHZ9KAiaK11H"^^com.spotify:artist("Rihanna")))[1]
+C: #[results=[
+C:   { id="spotify:track:6mulQVtiyAO551KgUuJI8Q"^^com.spotify:song("BELIEVE IT"), artists=["spotify:artist:2HPaUgqeutzr3jx5a9WyDV"^^com.spotify:artist("PARTYNEXTDOOR"), "spotify:artist:5pKCCKE2ajJHZ9KAiaK11H"^^com.spotify:artist("Rihanna")], album="spotify:album:44tafm4490xYqhfQKvMD4r"^^com.spotify:album("BELIEVE IT"), genres=["pop", "pop rap", "r&b", "rap", "toronto rap", "trap", "urban contemporary"], release_date=new Date("2020-03-26T00:00:00.000Z"), popularity=50, energy=70, danceability=43 }
+C: ]];
+C: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable="spotify:track:6mulQVtiyAO551KgUuJI8Q"^^com.spotify:song("BELIEVE IT"))
+C: #[results=[]]
+C: #[error=enum disallowed_action];
+C: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable="spotify:track:6mulQVtiyAO551KgUuJI8Q"^^com.spotify:song("BELIEVE IT"))
+C: #[results=[
+C:   { device="XXXXXXXX"^^com.spotify:device, playable="spotify:track:6mulQVtiyAO551KgUuJI8Q"^^com.spotify:playable("BELIEVE IT") }
+C: ]]
+C: #[error=enum disallowed_action];
+A: Sorry, failed to play: you must first click play from inside the Spotify app, and then I will play songs for you.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
+U: please try playing it again
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.play(playable="spotify:track:6mulQVtiyAO551KgUuJI8Q"^^com.spotify:song("BELIEVE IT"));

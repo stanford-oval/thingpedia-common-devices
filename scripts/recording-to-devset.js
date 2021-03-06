@@ -20,7 +20,9 @@
 "use strict";
 
 const assert = require('assert');
+const crypto = require('crypto');
 const argparse = require('argparse');
+const byline = require('byline');
 const fs = require('fs');
 const { promises: pfs } = require('fs');
 const path = require('path');
@@ -28,71 +30,55 @@ const csvparse = require('csv-parse');
 const csvstringify = require('csv-stringify');
 const readline = require('readline');
 const Tp = require('thingpedia');
-const ThingTalk = require('thingtalk');
+const ThingTalk = require('genie-toolkit/node_modules/thingtalk');
 const Genie = require('genie-toolkit');
 const { ParserClient, ThingTalkUtils } = Genie;
 
-const StreamUtils = require('./lib/stream_utils');
+//const StreamUtils = require('./lib/stream_utils');
 const Platform = require('./lib/platform');
 const { readAllLines } = require('./lib/argutils');
 const { coin } = require('./lib/random');
-const toDialogueState = require('./lib/program-to-dialogue-state');
-
-async function existsSafe(path) {
-    try {
-        await pfs.access(path, fs.constants.F_OK);
-        return true;
-    } catch(e) {
-        if (e.code === 'ENOENT')
-            return false;
-        if (e.code === 'ENOTDIR')
-            return false;
-        throw e;
-    }
-}
 
 const FEW_SHOT_TRAIN_PROBABILITY = 0.3;
 
 // must be in inheritance order
 const RELEASES = ['builtin', 'main', 'universe', 'staging'];
 
-const SHORTHAND_COMMENT = {
-    'j': 'junk',
-    'm': 'meta-command',
-    'c': 'contextual command',
-    'ch': 'chatty',
-    'fl': 'foreign language',
-    'bt': 'bug-tokenize',
-    'nf': 'new function',
-    'nd': 'new device',
-    's': 'stream',
-    'r': 'policy or remote program',
-    'a': 'ambiguous',
-    'u': 'unintellegible',
-    'w': 'web search',
-    'q': 'question',
-};
+class GetDevicesVisitor extends ThingTalk.Ast.NodeVisitor {
+    constructor() {
+        super();
+        this.devices = new Set;
+    }
 
-const DEVICES_REMAP = {
-    'light-bulb': 'org.thingpedia.iot.light-bulb',
-    'security-camera': 'org.thingpedia.iot.security-camera',
-    'thermostat': 'org.thingpedia.iot.thermostat'
-};
+    visitDeviceSelector(sel) {
+        this.devices.add(sel.kind);
+        return true;
+    }
+    visitExternalBooleanExpression(expr) {
+        this.devices.add(expr.kind);
+        return true;
+    }
+}
 
-const LEGACY_TOKEN_MAP = {
-    // legacy PTB tokens: [L]eft/[R]ight [R]ound/[C]urly/[S]quare [B]racket
-    '-lcb-': '{',
-    '-rcb-': '}',
-    '-lrb-': '(',
-    '-rrb-': ')',
-    '-lsb-': '[',
-    '-rsb-': ']',
-    '``': '"',
-    "''": '"',
-};
+class RemoveSensitiveInfoVisitor extends ThingTalk.Ast.NodeVisitor {
+    visitDeviceSelector(sel) {
+        if (sel.id === 'thingengine-own-global')
+            sel.id = null;
+        if (sel.id && sel.id !== sel.kind)
+            sel.id = sel.kind + '-XXXXXXXX';
+        sel.attributes = sel.attributes.filter((ip) => ip.name !== 'name');
+        return true;
+    }
+    visitEntityValue(value) {
+        if (value.type === 'com.spotify:device') {
+            value.value = 'XXXXXXXX';
+            value.display = null;
+        }
+    }
+}
 
 class Trainer {
-    constructor(lines, platform, tpClient, options) {
+    constructor(platform, tpClient, options) {
         this._rl = readline.createInterface({ input: process.stdin, output: process.stdout });
         this._rl.setPrompt('$ ');
         this._rl.on('SIGINT', this._quit.bind(this));
@@ -110,20 +96,21 @@ class Trainer {
         this._outputs = new Map;
         this._existingDataset = new Set;
         this._sentenceCache = new Map;
-        this._editExisting = options.edit_existing;
+
+        this._dialogues = [];
+        this._serial = -1;
 
         this._devices = new Map;
         this._idQueries = new Map;
 
-        this._nextLine = lines[Symbol.iterator]();
-
         this._state = 'loading';
+        this._turnIdx = 0;
+        this._outputDialogue = [];
+        this._outputTurn = undefined;
         this._candidates = undefined;
         this._utterance = undefined;
-        this._preprocessed = undefined;
         this._comment = undefined;
         this._entities = undefined;
-        this._serial = -1;
         this._id = undefined;
 
         this._rl.on('line', async (line) => {
@@ -139,24 +126,8 @@ class Trainer {
             }
 
             if (line === 'd' || line.startsWith('d ')) {
-                let comment = line.substring(2).trim();
-                if (!comment && this._comment)
-                    comment = this._comment;
-                comment = SHORTHAND_COMMENT[comment] || comment;
+                const comment = line.substring(2).trim();
                 this._drop(comment);
-                return;
-            }
-
-            if (line === 'es') {
-                this._state = 'edit-sentence';
-                this._rl.setPrompt('U: ');
-                this._rl.write(this._utterance.replace(/\n/g, ' '));
-                this._rl.prompt();
-                return;
-            }
-
-            if (this._state === 'edit-sentence') {
-                this._handleCustomSentence(line);
                 return;
             }
 
@@ -187,45 +158,25 @@ class Trainer {
         console.log('Available commands:');
         console.log(`$number : select from the candidates`);
         console.log(`e $number : edit the selected thingtalk code`);
-        console.log(`es : edit the sentence`);
         console.log(`n : show more candidates`);
         console.log(`t : type in the thingtalk directly`);
-        console.log(`d $comment : drop the example, with the given reason`);
-        console.log(`d redacted : drop the example, and hide the sentence from the dropped log`);
-        for (const key in SHORTHAND_COMMENT)
-            console.log(`d ${key} : drop the example as ${SHORTHAND_COMMENT[key]}`);
+        console.log(`d $comment : drop the turn and truncate the dialogue, with the given reason`);
 
         this._rl.prompt();
     }
 
     async _tryLoadExistingDataset(filename) {
-        if (!await existsSafe(filename))
+        if (!fs.existsSync(filename))
             return;
-        for await (const dlg of readAllLines([filename]).pipe(new Genie.DialogueParser())) {
+        for await (const dlg of readAllLines([filename]).pipe(new Genie.DialogueParser()))
             this._existingDataset.add(dlg.id);
-            try {
-                const turn0 = dlg[0];
-                const preprocessed = this._tokenizer.tokenize(turn0.user);
-                const program = await ThingTalkUtils.parse(turn0.user_target, this._schemas);
-                const targetCode = ThingTalkUtils.serializePrediction(program, preprocessed.tokens, preprocessed.entities, {
-                    locale: this._locale
-                }).join(' ');
-
-                this._sentenceCache.set(preprocessed.tokens.join(' '), { parsed: targetCode });
-            } catch(e) {
-                console.error(`Failed to load existing example ${dlg.id} in ${filename}: ${e.message}`);
-            }
-        }
     }
 
     async _loadAllExistingDatasets() {
         if (fs.existsSync(this._droppedFilename)) {
             for await (const row of fs.createReadStream(this._droppedFilename).pipe(csvparse({ delimiter: '\t' }))) {
-                const [id, sentence, comment] = row;
+                const [id,] = row;
                 this._existingDataset.add(id);
-
-                if (sentence !== '<redacted>')
-                    this._sentenceCache.set(sentence, { dropped: comment });
             }
         }
 
@@ -234,7 +185,7 @@ class Trainer {
             await this._tryLoadExistingDataset(path.resolve('eval', r, 'train/annotated.txt'));
 
             for (const d of await pfs.readdir(path.resolve(r))) {
-                if (!await existsSafe(path.resolve(r, d, 'manifest.tt')))
+                if (!fs.existsSync(path.resolve(r, d, 'manifest.tt')))
                     continue;
                 assert(!this._devices.has(d), `duplicate device ${d}`);
 
@@ -267,6 +218,43 @@ class Trainer {
         this._droppedOut = csvstringify({ delimiter: '\t' });
         this._droppedOut.pipe(fs.createWriteStream(this._droppedFilename, { flags: 'a' }));
         await this._parser.start();
+
+        // load the dialogues to process
+        for (const userId of await pfs.readdir('./logs/unsorted')) {
+            for (const conversationId of await pfs.readdir(path.resolve('./logs/unsorted/', userId, 'logs'))) {
+                const filepath = path.resolve('./logs/unsorted/', userId, 'logs', conversationId);
+                try {
+                    let i = 0;
+                    for await (const dlg of fs.createReadStream(filepath, { encoding: 'utf8' }).pipe(byline()).pipe(new Genie.DialogueParser({ ignoreErrors: true }))) {
+                        if (dlg.length === 0)
+                            continue;
+                        dlg.id = await this._computeId(userId, conversationId, i++);
+
+                        const visitor = new RemoveSensitiveInfoVisitor();
+                        for (const turn of dlg) {
+                            if (turn.context) {
+                                const parsed = ThingTalk.Syntax.parse(turn.context);
+                                parsed.visit(visitor);
+                                turn.context = parsed.prettyprint();
+                            }
+                            if (turn.agent_target) {
+                                const parsed = ThingTalk.Syntax.parse(turn.agent_target);
+                                parsed.visit(visitor);
+                                turn.agent_target = parsed.prettyprint();
+                            }
+                            if (turn.user_target) {
+                                const parsed = ThingTalk.Syntax.parse(turn.user_target);
+                                parsed.visit(visitor);
+                                turn.user_target = parsed.prettyprint();
+                            }
+                        }
+                        this._dialogues.push(dlg);
+                    }
+                } catch(e) {
+                    console.error(`Failed to process ${filepath}: ${e}`);
+                }
+            }
+        }
     }
 
     async _quit() {
@@ -280,13 +268,28 @@ class Trainer {
         await this._parser.stop();
     }
 
-    _drop(comment = '') {
-        if (comment === 'redacted') {
-            this._droppedOut.write([this._id, '<redacted>', comment]);
-        } else {
-            this._sentenceCache.set(this._preprocessed, { dropped: comment });
-            this._droppedOut.write([this._id, this._preprocessed, comment]);
-        }
+    async _computeId(userId, conversationId, idx) {
+        const hash = crypto.createHash('sha256');
+        hash.update(userId + '-' + conversationId + '-' + idx);
+        return 'recording/' + hash.digest('hex').substring(0, 32);
+    }
+
+    async _finishDialogue() {
+        const device = this._getDevice();
+
+        const [dev, train] = await this._getFile(device);
+        const out = coin(FEW_SHOT_TRAIN_PROBABILITY, this._rng) ? train : dev;
+
+        out.write({
+            id: this._id,
+            turns: this._outputDialogue
+        });
+    }
+
+    async _drop(comment = '') {
+        if (this._outputDialogue.length > 0)
+            await this._finishDialogue();
+        this._droppedOut.write([this._id, comment]);
 
         this.next();
     }
@@ -322,70 +325,22 @@ class Trainer {
         }
     }
 
-    _detokenize(preprocessed, entities) {
-        let output = '';
-        let prevToken;
-        for (let token of preprocessed.split(' ')) {
-            if (token in LEGACY_TOKEN_MAP)
-                token = LEGACY_TOKEN_MAP[token];
-
-            if (token in entities) {
-                let display;
-                if (token.startsWith('GENERIC_ENTITY_'))
-                    display = (entities[token].display || entities[token].value);
-                else if (token.startsWith('DATE_'))
-                    display = entities[token].month + '/' + entities[token].day + '/' + entities[token].year;
-                else if (token.startsWith('TIME_'))
-                    display = entities[token].hour + ':' + entities[token].minute;
-                else if (token.startsWith('MEASURE_') || token.startsWith('DURATION_'))
-                    display = entities[token].value + ' ' + entities[token].unit;
-                else if (token.startsWith('CURRENCY_'))
-                    display = '$' + entities[token].value;
-                else if (token.startsWith('LOCATION_'))
-                    display = entities[token].display;
-                else if (token.startsWith('QUOTED_STRING_'))
-                    display = '"' + entities[token] + '"';
-                else
-                    display = String(entities[token]);
-
-                token = display || token;
+    _getDevice() {
+        const visitor = new GetDevicesVisitor();
+        for (const turn of this._outputDialogue) {
+            if (turn.context) {
+                const parsed = ThingTalk.Syntax.parse(turn.context);
+                parsed.visit(visitor);
             }
-
-            output = this._langPack.detokenize(output, prevToken, token);
-            prevToken = token;
+            if (turn.agent_target) {
+                const parsed = ThingTalk.Syntax.parse(turn.agent_target);
+                parsed.visit(visitor);
+            }
+            const parsed = ThingTalk.Syntax.parse(turn.user_target);
+            parsed.visit(visitor);
         }
 
-        return output;
-    }
-
-    _adjustDevices(dialogueState) {
-        dialogueState.visit(new class extends ThingTalk.Ast.NodeVisitor {
-            visitDeviceSelector(sel) {
-                if (sel.kind in DEVICES_REMAP)
-                    sel.kind = DEVICES_REMAP[sel.kind];
-                return true;
-            }
-            visitExternalBooleanExpression(expr) {
-                if (expr.kind in DEVICES_REMAP)
-                    expr.kind = DEVICES_REMAP[expr.kind];
-                return true;
-            }
-        });
-    }
-
-    _getDevice(dialogueState) {
-        const devices = new Set;
-        dialogueState.visit(new class extends ThingTalk.Ast.NodeVisitor {
-            visitDeviceSelector(sel) {
-                devices.add(sel.kind);
-                return true;
-            }
-            visitExternalBooleanExpression(expr) {
-                devices.add(expr.kind);
-                return true;
-            }
-        });
-
+        const devices = visitor.devices;
         if (devices.size === 1)
             return Array.from(devices)[0];
 
@@ -407,10 +362,23 @@ class Trainer {
         return release;
     }
 
-    async _learnProgram(dialoguestate) {
+    async _learnProgram(prediction) {
+        const newCode = prediction.prettyprint();
+        if (newCode.trim() === this._outputTurn.user_target.trim()) {
+            this._outputDialogue.push(this._outputTurn);
+            this._turnIdx ++;
+            if (this._turnIdx === this._dialogues[this._serial].length) {
+                await this._finishDialogue();
+                await this.next();
+            } else {
+                await this._nextTurn();
+            }
+            return;
+        }
+
         let targetCode;
         try {
-            targetCode = ThingTalkUtils.serializePrediction(dialoguestate, this._preprocessed, this._entities, {
+            targetCode = ThingTalkUtils.serializePrediction(prediction, this._preprocessed, this._entities, {
                 locale: this._locale
             }).join(' ');
         } catch(e) {
@@ -420,27 +388,11 @@ class Trainer {
             return;
         }
         console.log(`Learned: ${targetCode}`);
-        this._sentenceCache.set(this._preprocessed, { parsed: targetCode });
+        this._outputTurn.user_target = newCode;
+        this._outputDialogue.push(this._outputTurn);
 
-        const device = this._getDevice(dialoguestate);
-
-        const [dev, train] = await this._getFile(device);
-        const out = coin(FEW_SHOT_TRAIN_PROBABILITY, this._rng) ? train : dev;
-
-        const code = dialoguestate.prettyprint();
-
-        out.write({
-            id: this._id,
-            turns: [{
-                context: '',
-                agent: '',
-                agent_target: '',
-                user: this._utterance,
-                user_target: code
-            }]
-        });
-
-        this.next();
+        await this._finishDialogue();
+        await this.next();
     }
 
     async _learnThingTalk(code) {
@@ -499,104 +451,86 @@ class Trainer {
     }
 
     async next() {
-        //try {
-            await this._next();
-        //} catch(e) {
-        //    console.error(`Failed to process example ${this._id}: ${e.message}`);
-        //    this.next();
-        //}
-    }
-
-    async _next() {
         this._serial++;
 
-        const { value: line, done } = this._nextLine.next();
-        if (done) {
-            this._quit();
+        if (this._serial >= this._dialogues.length) {
+            await this._quit();
             return;
         }
-        this._state = 'loading';
-        const { id, preprocessed, target_code } = line;
-        if (id && id.startsWith(this._idPrefix + '/'))
-            this._id = id;
-        else
-            this._id = this._idPrefix + '/' + (id || String(this._serial));
-        this._preprocessed = preprocessed;
-        this._entities = Genie.EntityUtils.makeDummyEntities(preprocessed);
+
+        this._turnIdx = 0;
+        this._id = this._dialogues[this._serial].id;
 
         if (this._existingDataset.has(this._id)) {
-            process.nextTick(() => this._next());
+            await this.next();
             return;
         }
 
-        if (this._editExisting && this._editExisting !== target_code) {
-            this._drop(target_code);
+        console.log('====');
+        console.log(`Dialogue #${this._serial} (${this._id})`);
+        this._outputDialogue = [];
+        await this._nextTurn();
+    }
+
+    async _nextTurn() {
+        this._outputTurn = this._dialogues[this._serial][this._turnIdx];
+
+        let contextCode = ['null'], contextEntities = {};
+
+        if (this._outputTurn.user.startsWith('\\t')) {
+            await this._drop('\\t');
             return;
         }
 
-        const cached = this._sentenceCache.get(this._preprocessed);
-        if (cached) {
-            // exact duplicate of an existing sentence, ignore
-            process.nextTick(() => this._next());
-            return;
-            /*if (cached.parsed) {
-                const parsed = await ThingTalkUtils.parsePrediction(cached.parsed, this._entities, {
+        if (this._outputTurn.context) {
+            try {
+                let context = await ThingTalkUtils.parse(this._outputTurn.context, {
                     thingpediaClient: this._tpClient,
                     schemaRetriever: this._schemas
                 }, true);
-                this._learnProgram(parsed);
-            } else {
-                this._drop(cached.dropped);
+
+                let agentTarget = await ThingTalkUtils.parse(this._outputTurn.agent_target, {
+                    thingpediaClient: this._tpClient,
+                    schemaRetriever: this._schemas
+                }, true);
+
+                context = ThingTalkUtils.computeNewState(context, agentTarget, 'agent');
+
+                context = ThingTalkUtils.prepareContextForPrediction(context, 'user');
+                [contextCode, contextEntities] = ThingTalkUtils.serializeNormalized(context);
+            } catch(e) {
+                console.log(`Turn ${this._id}/${this._turnIdx}'s existing context is incorrect: ${e}`); //'
+                await this._drop('no-typecheck');
+                return;
             }
-            return;
-            */
+
+            for (const line of this._outputTurn.context.trim().split('\n'))
+                console.log('C: ' + line);
+            console.log('A: ' + this._outputTurn.agent);
         }
 
-        const utterance = this._detokenize(this._preprocessed, this._entities);
-        await this._handleSentence(utterance, target_code);
-    }
+        const parsed = await this._parser.sendUtterance(this._outputTurn.user, contextCode, contextEntities, {
+            tokenized: false,
+            skip_typechecking: true
+        });
 
-    async _handleCustomSentence(utterance) {
-        const preprocessed = this._tokenizer.tokenize(utterance);
-        this._preprocessed = preprocessed.tokens.join(' ');
-        this._entities = preprocessed.entities;
-        return this._handleSentence(utterance);
-    }
-
-    async _handleSentence(utterance, target_code) {
-        this._utterance = utterance;
-
-        let parsed;
-        try {
-            parsed = await this._parser.sendUtterance(this._preprocessed, /* context */ ['null'], /* contextEntities */ {}, {
-                tokenized: true,
-                skip_typechecking: true
-            });
-        } catch(e) {
-            console.error(`Failed to parse ${utterance}: ${e.message}`);
-            return;
-        }
+        this._preprocessed = parsed.tokens;
+        this._entities = parsed.entities;
 
         let olddialoguestate;
-        if (target_code && !this._editExisting) {
-            let oldprogram;
-            try {
-                oldprogram = await ThingTalkUtils.parsePrediction(target_code.split(' '), parsed.entities, {
-                    thingpediaClient: this._tpClient,
-                    schemaRetriever: this._schemas
-                }, true);
-            } catch(e) {
-                console.log(`Sentence ${this._id}'s existing code is incorrect: ${e}`); //'
+        try {
+            olddialoguestate = await ThingTalkUtils.parse(this._outputTurn.user_target, {
+                thingpediaClient: this._tpClient,
+                schemaRetriever: this._schemas
+            }, true);
+
+            if (olddialoguestate instanceof ThingTalk.Ast.Program) {
+                const history = olddialoguestate.statements.map((stmt) => new ThingTalk.Ast.DialogueHistoryItem(null, stmt, null, 'accepted'));
+                olddialoguestate = new ThingTalk.Ast.DialogueState(null, 'org.thingpedia.dialogue.transaction', 'execute', null, history);
+                this._outputTurn.user_target = olddialoguestate.prettyprint();
             }
-            if (oldprogram) {
-                olddialoguestate = toDialogueState(oldprogram, this._idQueries);
-                if (typeof olddialoguestate === 'string') {
-                    console.log(`Sentence ${this._id}'s existing code is unusable: ${olddialoguestate}`);
-                    olddialoguestate = undefined;
-                } else {
-                    this._adjustDevices(olddialoguestate);
-                }
-            }
+        } catch(e) {
+            console.log(`Turn ${this._id}/${this._turnIdx}'s existing user target is incorrect: ${e}`); //'
         }
 
         this._state = 'top3';
@@ -609,10 +543,9 @@ class Trainer {
         if (olddialoguestate)
             this._candidates.unshift(olddialoguestate);
 
-        console.log(`Sentence #${this._serial+1} (${this._id}): ${this._utterance}`);
-        console.log(`Entities: ${JSON.stringify(this._entities)}`);
-        for (let i = 0; i < 3 && i < candidates.length; i++)
-            console.log(`${i+1}) ${candidates[i].prettyprint()}`);
+        console.log(`U: ${this._outputTurn.user}`);
+        for (let i = 0; i < 3 && i < this._candidates.length; i++)
+            console.log(`${i+1}) ${this._candidates[i].prettyprint()}`);
         this._rl.setPrompt('$ ');
         this._rl.prompt();
     }
@@ -625,31 +558,18 @@ async function main() {
     });
     parser.add_argument('--dropped', {
         required: false,
-        default: './dropped-log.tsv',
-    });
-    parser.add_argument('input', {
-        nargs: '+',
-        help: `The script expects tsv input files with columns: id, utterance, target_code`
+        default: './logs/dropped.tsv',
     });
     parser.add_argument('-l', '--locale', {
         required: false,
         default: 'en-US',
         help: `BGP 47 locale tag of the natural language being processed (defaults to en-US).`
     });
-    parser.add_argument('--id-prefix', {
-        required: false,
-        default: 'log',
-        help: 'Prefix to use for sentence IDs, defaults to "log"'
-    });
     parser.add_argument('--model', {
         required: false,
         //default: 'file://' + path.resolve(path.dirname(module.filename), '../tmp/model'),
         default: 'https://nlp-staging.almond.stanford.edu',
         help: `The URL of the natural language model.`
-    });
-    parser.add_argument('--edit-existing', {
-        required: false,
-        help: `Edit an existing OOD dataset instead of annotating a new dataset.`
     });
 
     const args = parser.parse_args();
@@ -659,12 +579,7 @@ async function main() {
 
     const tpClient = new Tp.HttpClient(platform, 'https://dev.almond.stanford.edu/thingpedia');
 
-    const lines = await readAllLines(args.input)
-        .pipe(new Genie.DatasetParser())
-        .pipe(new StreamUtils.ArrayAccumulator())
-        .read();
-
-    const trainer = new Trainer(lines, platform, tpClient, args);
+    const trainer = new Trainer(platform, tpClient, args);
     await trainer.init();
 
     trainer.next();
