@@ -888,3 +888,28 @@ UT: @org.thingpedia.weather.forecast();
 U: what will the weather be in palo alto tomorrow
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.weather.forecast(location=new Location("palo alto"));
+====
+# recording/8c70720011e1c3bde4108dcc7c19d38f
+U: what is the weather like?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# recording/aa78d31fc60023cf04c07ba541dd7561
+U: what is the weather gonna be tomorrow?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast();
+====
+# recording/551991a28e167c0f9de4f137be52f867
+U: what will be the weather on wednesday
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast(date=new Date(enum wednesday));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.forecast(date=new Date(enum wednesday), location=new Location(37.4863239, -122.232523, "Redwood City, California"))
+C: #[results=[
+C:   { temperature=8.7C, wind_speed=1.3mps, humidity=88, cloudiness=93.8, fog=0, status=enum raining, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=9;content_type=image/png"^^tt:picture, date=new Date("2021-03-10T18:00:00.000Z"), location=new Location(37.4863239, -122.232523, "Redwood City, California") }
+C: ]];
+A: It will be raining on next Wednesday at 10:00 AM in Redwood City, California and the temperature will be 47.7 F.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: what will be the humidity
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [humidity] of @org.thingpedia.weather.forecast(date=new Date(enum wednesday), location=new Location(37.4863239, -122.232523, "Redwood City, California"));

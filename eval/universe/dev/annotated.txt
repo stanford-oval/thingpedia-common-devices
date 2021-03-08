@@ -23,3 +23,18 @@ AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
 U: What IoT devices can you work with?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum iot_help);
+====
+# recording/87c42d2fe8cfccf153ed1cfa89144072
+U: find me a cat picture
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.thecatapi.cat();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.thecatapi.cat()
+C: #[results=[
+C:   { id="uFkQ1tJ5o"^^com.thecatapi:cat, picture_url="https://s3.us-west-2.amazonaws.com/cdn2.thecatapi.com/images/uFkQ1tJ5o.jpg"^^tt:picture, link="http://thecatapi.com/?id=uFkQ1tJ5o"^^tt:url }
+C: ]];
+A: Here is a cat picture.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: find me a picture of a woman
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.bing.image_search(query="woman");

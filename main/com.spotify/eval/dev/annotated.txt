@@ -5233,3 +5233,30 @@ AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
 U: please try playing it again
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.spotify.play(playable="spotify:track:6mulQVtiyAO551KgUuJI8Q"^^com.spotify:song("BELIEVE IT"));
+====
+# recording/b5366564777e4d4805c4e10eb87c195d
+U: play music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() => @com.spotify.play(playable=id);
+====
+# recording/e68775988dd2a297e60f199c98cb792d
+U: turn shuffle on
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_shuffle(shuffle=enum on);
+====
+# recording/8a3d0aa0d06f5f136de47610a5b561e6
+U: who sings the album evermore
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [artists] of @com.spotify.album() filter id =~ "evermore";
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: [artists] of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).album() filter id =~ "evermore"
+C: #[results=[
+C:   { id="spotify:album:2Xoteh7uEpea4TohMxjtaq"^^com.spotify:album("evermore"), artists=["spotify:artist:06HL4z0CvFAxyc27GXpf02"^^com.spotify:artist("Taylor Swift")] },
+C:   { id="spotify:album:1obdMwQYqDQTJLLBGFsFoP"^^com.spotify:album("Evermore"), artists=["spotify:artist:2CiO7xWdwPMDlVwlt9qa1f"^^com.spotify:artist("WYS"), "spotify:artist:0CF9CnQbK6uS8u78KVnIPv"^^com.spotify:artist("Sweet Medicine")] },
+C:   { id="spotify:album:6AORtDjduMM3bupSWzbTSG"^^com.spotify:album("evermore (deluxe version)"), artists=["spotify:artist:06HL4z0CvFAxyc27GXpf02"^^com.spotify:artist("Taylor Swift")] }
+C: ]];
+A: Evermore is an album by Taylor Swift.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: what else does she sing
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:06HL4z0CvFAxyc27GXpf02"^^com.spotify:artist("Taylor Swift"));
