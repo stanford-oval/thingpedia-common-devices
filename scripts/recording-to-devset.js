@@ -30,7 +30,7 @@ const csvparse = require('csv-parse');
 const csvstringify = require('csv-stringify');
 const readline = require('readline');
 const Tp = require('thingpedia');
-const ThingTalk = require('genie-toolkit/node_modules/thingtalk');
+const ThingTalk = require('thingtalk');
 const Genie = require('genie-toolkit');
 const { ParserClient, ThingTalkUtils } = Genie;
 
