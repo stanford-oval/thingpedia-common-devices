@@ -25,30 +25,35 @@ const HASS_URL = 'http://hassio.local:8123';
 
 // map to a Home Assistant domain to a specific Thingpedia device
 const DOMAIN_TO_TP_KIND = {
-    //'sensor_air': 'org.thingpedia.iot.air',
-    'sensor_battery': 'org.thingpedia.iot.battery',
-    //'climate': 'io.home-assistant.climate',
-    //'cover_active': 'org.thingpedia.iot.cover',
-    'sensor_door': 'org.thingpedia.iot.door',
-    //'fan': 'org.thingpedia.iot.fan',
-    'sensor_flood': 'org.thingpedia.iot.flood',
-    //'sensor_heat': 'org.thingpedia.iot.heat',
-    'sensor_humidity': 'org.thingpedia.iot.humidity',
+    // devices with dedicated APIs
     'light': 'org.thingpedia.iot.light-bulb',
-    'sensor_illuminance': 'org.thingpedia.iot.illuminance',
+    'switch': 'org.thingpedia.iot.switch',
     //'lock': 'org.thingpedia.iot.lock',
+    //'climate': 'io.home-assistant.climate',
+    //'vacuum': 'org.thingpedia.iot.vacuum',
+    //'cover_active': 'org.thingpedia.iot.cover',
+    //'fan': 'org.thingpedia.iot.fan',
+
+    // media players
     //'media_player': 'org.thingpedia.iot.media-player',
     //'media_player_speaker': 'org.thingpedia.iot.speaker',
     //'media_player_tv': 'org.thingpedia.iot.tv',
-    //'sensor_moisture': 'org.thingpedia.iot.moisture',
-    //'sensor_plug': 'org.thingpedia.iot.plug',
+
+    // sensors and binary sensors (implemented by HomeAssistantSensor)
+    'sensor_battery': 'org.thingpedia.iot.battery',
+    'sensor_door': 'org.thingpedia.iot.door',
+    'sensor_flood': 'org.thingpedia.iot.flood',
+    'sensor_humidity': 'org.thingpedia.iot.humidity',
+    'sensor_illuminance': 'org.thingpedia.iot.illuminance',
     'sensor_motion': 'org.thingpedia.iot.motion',
-    //'sensor_occupancy': 'org.thingpedia.iot.occupancy',
-    //'sensor_sound': 'org.thingpedia.iot.sound',
-    'switch': 'org.thingpedia.iot.switch',
     'sensor_temperature': 'org.thingpedia.iot.temperature',
     'sensor_uv': 'org.thingpedia.iot.uv'
-    //'vacuum': 'org.thingpedia.iot.vacuum'
+    //'sensor_air': 'org.thingpedia.iot.air',
+    //'sensor_heat': 'org.thingpedia.iot.heat',
+    //'sensor_moisture': 'org.thingpedia.iot.moisture',
+    //'sensor_plug': 'org.thingpedia.iot.plug',
+    //'sensor_occupancy': 'org.thingpedia.iot.occupancy',
+    //'sensor_sound': 'org.thingpedia.iot.sound',
 };
 
 // provide implementations for various abstract & embedded Thingpedia devices
@@ -66,12 +71,9 @@ const SUBDEVICES = {
     'org.thingpedia.iot.fan': HomeAssistantFan,
     'org.thingpedia.iot.light-bulb': HomeAssistantLightbulb,
     'org.thingpedia.iot.media-player': HomeAssistantMediaPlayer,
-    //'org.thingpedia.iot.occupancy': HomeAssistantOccupancy,
-    //'org.thingpedia.iot.sound': HomeAssistantSound,
     'org.thingpedia.iot.switch': HomeAssistantSwitch,
     'org.thingpedia.iot.vacuum': HomeAssistantVacuum
 };
-
 Object.entries(DOMAIN_TO_TP_KIND).forEach(([key,value]) => {
     if (key.includes('sensor') && !(value in SUBDEVICES))
         SUBDEVICES[value] = class extends HomeAssistantSensor {};
