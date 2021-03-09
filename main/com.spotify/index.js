@@ -74,6 +74,14 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         }
     }
 
+    async updateOAuth2Token(accessToken, refreshToken, extraData) {
+        if (this.platform.type === "server" && this.accessToken != accessToken) {
+            this.spotifyd.token = accessToken;
+            this.spotifyd.reload();
+        }
+        super.updateOAuth2Token(accessToken, refreshToken, extraData);
+    }
+
     http_get(url) {
         return Tp.Helpers.Http.get(url, {
             accept: "application/json",
