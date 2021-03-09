@@ -1901,3 +1901,18 @@ AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
 U: what about the other ones?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: [geo] of @com.yelp.restaurant() filter !(id == "vhfPni9pci29SEHrN1OtRg"^^com.yelp:restaurant("Ramen Nagi"));
+====
+# log-dev/7640
+U: computer the restaurant.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant();
+====
+# log-dev/7585
+U: tell me if there's a subway nearby
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == $location.current_location && id =~ "subway";
+====
+# log-dev/7294
+U: almond can you find yelp?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant();
