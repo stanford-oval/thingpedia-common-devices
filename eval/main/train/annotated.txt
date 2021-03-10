@@ -123,3 +123,45 @@ AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
 U: what is the weather like there?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.weather.current(location=new Location(37.8801315387818, -122.269357296486, "1512 Shattuck Ave, Berkeley, CA 94709"));
+====
+# recording/ed3ace50937bcbe1b0e7d09427a1b375
+U: tell me the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.433014400000005, -122.17087506623025, "Cantor Arts Center"))
+C: #[results=[
+C:   { temperature=11.1C, wind_speed=3.6mps, humidity=50.8, cloudiness=39.1, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=3;content_type=image/png"^^tt:picture, location=new Location(37.433014400000005, -122.17087506623025, "Cantor Arts Center") }
+C: ]];
+A: It is cloudy today in Cantor Arts Center and the temperature is 52 F.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: change my location
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.set_location();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.433014400000005, -122.17087506623025, "Cantor Arts Center"))
+C: #[results=[
+C:   { temperature=11.1C, wind_speed=3.6mps, humidity=50.8, cloudiness=39.1, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=3;content_type=image/png"^^tt:picture, location=new Location(37.433014400000005, -122.17087506623025, "Cantor Arts Center") }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.set_location(type=enum current);
+A: What location do you want?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_slot_fill(location);
+AT: @org.thingpedia.builtin.thingengine.builtin.set_location(type=enum current);
+U: Stanford
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.set_location(location=new Location("stanford"));
+====
+# recording/7bc283be6848a55798d4e5ad70b2d202
+U: tell me the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.426540700000004, -122.17029258409187, "Stanford, Palo Alto"))
+C: #[results=[
+C:   { temperature=11C, wind_speed=3.6mps, humidity=50.8, cloudiness=39.1, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=3;content_type=image/png"^^tt:picture, location=new Location(37.426540700000004, -122.17029258409187, "Stanford, Palo Alto") }
+C: ]];
+A: It is cloudy today in Stanford, Palo Alto and the temperature is 51.8 F.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: where am I?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_gps();

@@ -785,3 +785,13 @@ UT: [geo] of @com.yelp.restaurant() filter id =~ "sakoon";
 U: where is sakoon restaurant
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: [geo] of @com.yelp.restaurant() filter id =~ "sakoon";
+====
+# log-dev/7641
+U: computer find a restaurant.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant();
+====
+# log-dev/7394
+U: get restaurant with high rating for indian food
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("indian"));
