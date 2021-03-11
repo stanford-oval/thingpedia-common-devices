@@ -87,9 +87,27 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             accept: "application/json",
             useOAuth2: this,
         }).catch((e) => {
-            if (!e.detail)
-                throw e;
-            throw new Error(JSON.parse(e.detail).error.message);
+            if (e.code !== 503 && e.code !== 429) {
+                if (!e.detail)
+                    throw e;
+                throw new Error(JSON.parse(e.detail).error.message);
+            }
+            //rate handling error
+            let temp = this;
+            return new Promise(function(resolve, reject) {
+                setTimeout(function() {
+                    Tp.Helpers.Http.get(url, {
+                        accept: "application/json",
+                        useOAuth2: temp,
+                    }).then((response) => {
+                        resolve(response);
+                    }).catch((e) => {
+                        reject(e);
+                    });
+                }, 2000);
+            }).catch((e) => {
+                throwError("rate_limit_error");
+            });
         });
     }
 

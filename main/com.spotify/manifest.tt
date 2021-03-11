@@ -124,7 +124,8 @@ class @com.spotify
   #_[canonical_short=["music"]]
   #_[confirmation="playable content on Spotify"]
   #_[on_error={
-    dailymix_error=["spotify doesn't support daily mix playlists at this time"]
+    dailymix_error=["spotify doesn't support daily mix playlists at this time"],
+    rate_limit_error=["spotify is temporarily unavailable"]
   }]
   #[minimal_projection=["id"]]
   #_[formatted=[{type="text",text="${id} by ${artists}"}]]
@@ -178,6 +179,9 @@ class @com.spotify
   #_[canonical=["song", "track", "sound track", "tune"]]
   #_[canonical_short=["song", "track"]]
   #_[confirmation="songs on Spotify"]
+  #_[on_error={
+    rate_limit_error=["spotify is temporarily unavailable"]
+  }]
   #[minimal_projection=["id"]]
   #_[formatted=[{type="text",text="${id} by ${artists}"}]]
   #[doc="search for songs on Spotify"];
@@ -193,6 +197,9 @@ class @com.spotify
                                       }])
   #_[canonical=["album", "good album", "music collection"]]
   #_[confirmation="album on Spotify"]
+  #_[on_error={
+    rate_limit_error=["spotify is temporarily unavailable"]
+  }]
   #[minimal_projection=["id"]]
   #_[formatted=[{type="text",text="${id} by ${artists}"}]]
   #[doc="search for albums on Spotify"];
@@ -209,7 +216,8 @@ class @com.spotify
   #_[canonical=["playlist"]]
   #_[confirmation="playlists on Spotify"]
   #_[on_error={
-    dailymix_error=["spotify doesn't support daily mix playlists at this time"]
+    dailymix_error=["spotify doesn't support daily mix playlists at this time"],
+    rate_limit_error=["spotify is temporarily unavailable"]
   }]
   #[minimal_projection=["id"]]
   #_[formatted=[{type="text",text="${id}"}]]
@@ -226,6 +234,9 @@ class @com.spotify
                                         }])
   #_[canonical=["show", "podcast", "audio podcast", "episodes"]]
   #_[confirmation="show on Spotify"]
+  #_[on_error={
+    rate_limit_error=["spotify is temporarily unavailable"]
+  }]
   #[minimal_projection=["id"]]
   #_[formatted=[{type="text",text="${id}"}]]
   #[doc="search for shows on Spotify"];
@@ -255,7 +266,8 @@ class @com.spotify
     disallowed_action=["failed to play: you must first click play from inside the spotify app , and then i will play songs for you"],
     player_error=["failed to play: you must first click play from inside the spotify app , and then i will play songs for you"],
     dailymix_error=["spotify doesn't support daily mix playlists at this time"],
-    non_premium_account=["you need a spotify premium account to play music"]
+    non_premium_account=["you need a spotify premium account to play music"],
+    rate_limit_error=["spotify is temporarily unavailable"]
   }]
   #[confirm=enum(auto)];
 
@@ -300,6 +312,9 @@ class @com.spotify
                     }])
     #_[canonical=["artist", "composer", "musician", "singer"]]
     #_[confirmation="artists on Spotify"]
+    #_[on_error={
+      rate_limit_error=["spotify is temporarily unavailable"]
+    }]
     #[minimal_projection=["id"]]
     #_[formatted=[{type="text",text="${id}"}]]
     #[doc="search for artists on Spotify"];
@@ -311,7 +326,8 @@ class @com.spotify
     #_[confirmation="the currently playing track name"]
     #_[result=["currently playing ${song}", "the currently playing track is ${song}"]]
     #_[on_error={
-      no_song_playing=["no song is currently playing", "nothing is currently playing"]
+      no_song_playing=["no song is currently playing", "nothing is currently playing"],
+      rate_limit_error=["spotify is temporarily unavailable"]
     }]
     #_[formatted=[{type="text",text="The current playing song is ${song}."}]]
     #[poll_interval=60000ms]
@@ -322,6 +338,9 @@ class @com.spotify
     #_[canonical=["spotify top tracks", "my favorite songs",
                   "my top tracks"]]
     #_[confirmation="my top tracks in Spotify"]
+    #_[on_error={
+      rate_limit_error=["spotify is temporarily unavailable"]
+    }]
     #_[formatted=[{type="text",text="${song}"}]]
     #[poll_interval=3600000ms]
     #[doc="get user's top tracks in the last 4 weeks"];
@@ -331,7 +350,9 @@ class @com.spotify
     #_[confirmation="go to the next song"]
     #_[on_error={no_active_device=["you must open the spotify app first", "no spotify player is active"],
     disallowed_action=["there's no next song"],
-    non_premium_account=["you need a spotify premium account to do this"]}]
+    non_premium_account=["you need a spotify premium account to do this"],
+    rate_limit_error=["spotify is temporarily unavailable"]
+    }]
     #[doc="go to the next song"]
     #[confirm=false];
 
@@ -343,7 +364,9 @@ class @com.spotify
     #_[confirmation="go to the previous song"]
     #_[on_error={no_active_device=["you must open the spotify app first", "no spotify player is active"],
     disallowed_action=["there's no previous song"],
-    non_premium_account=["you need a spotify premium account to do this"]}]
+    non_premium_account=["you need a spotify premium account to do this"],
+    rate_limit_error=["spotify is temporarily unavailable"]
+    }]
     #[doc="go to the previous song"]
     #[confirm=false];
 
@@ -353,7 +376,9 @@ class @com.spotify
     #_[on_error={no_active_device=["you must open the spotify app first", "no spotify player is active"],
     disallowed_action=["music is already playing"],
     player_error=["failed to play: try manually resuming"],
-    non_premium_account=["you need a spotify premium account to do this"]}]
+    non_premium_account=["you need a spotify premium account to do this"],
+    rate_limit_error=["spotify is temporarily unavailable"]
+    }]
     #[doc="resume playback"]
     #[confirm=false];
 
@@ -363,7 +388,9 @@ class @com.spotify
     #_[confirmation_remote="pause $_person's playback"]
     #_[on_error={no_active_device=["you must open the spotify app first", "no spotify player is active"],
     disallowed_action=["music is already paused"],
-    non_premium_account=["you need a spotify premium account to do this"]}]
+    non_premium_account=["you need a spotify premium account to do this"],
+    rate_limit_error=["spotify is temporarily unavailable"]
+    }]
     #[doc="pause playback"]
     #[confirm=false];
 
@@ -378,7 +405,9 @@ class @com.spotify
     #_[confirmation_remote="set the shuffle state"]
     #_[on_error={no_active_device=["you must open the spotify app first", "no spotify player is active"],
     disallowed_action=["failed to change shuffle state: try playing from the spotify app"],
-    non_premium_account=["you need a spotify premium account to do this"]}]
+    non_premium_account=["you need a spotify premium account to do this"],
+    rate_limit_error=["spotify is temporarily unavailable"]
+    }]
     #[doc="set the shuffle state"]
     #[confirm=false];
 
@@ -393,7 +422,9 @@ class @com.spotify
     #_[confirmation_remote="set the repeat state"]
     #_[on_error={no_active_device=["you must open the spotify app first", "no spotify player is active"],
     disallowed_action=["failed to change repeat state: try playing from the spotify app"],
-    non_premium_account=["you need a spotify premium account to do this"]}]
+    non_premium_account=["you need a spotify premium account to do this"],
+    rate_limit_error=["spotify is temporarily unavailable"]
+    }]
     #[doc="set the repeat state"]
     #[confirm=false];
 }
