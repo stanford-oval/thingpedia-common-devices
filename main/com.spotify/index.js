@@ -87,7 +87,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             accept: "application/json",
             useOAuth2: this,
         }).catch((e) => {
-            if (e.code !== "503" && e.code !== "429") {
+            if (e.code !== 503 && e.code !== 429) {
                 if (!e.detail)
                     throw e;
                 throw new Error(JSON.parse(e.detail).error.message);
@@ -106,7 +106,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                     });
                 }, 2000);
             }).catch((e) => {
-                throw new Error("spotify is temporarily unavailable");
+                throwError("rate_limit_error");
             });
         });
     }
