@@ -8,8 +8,9 @@
 "use strict";
 
 const HomeAssistantDevice = require('./base');
+const HomeAssistantSwitch = require('./switch.js');
 
-module.exports = class HomeAssistantLightbulb extends HomeAssistantDevice {
+module.exports = class HomeAssistantLightbulb extends HomeAssistantSwitch {
     async get_power() {
         return [{ power: this.state.state }];
     }
