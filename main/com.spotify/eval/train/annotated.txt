@@ -648,3 +648,43 @@ UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("b
 U: play rolling stones
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("rolling stones")) => @com.spotify.play(playable=id);
+====
+# log/158064
+U: play song madeline
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter id =~ "madeline" => @com.spotify.play(playable=id);
+====
+# log/158063
+U: play songs by madeline
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter contains(artists, null^^com.spotify:artist("madeline")) => @com.spotify.play(playable=id);
+====
+# log/158062
+U: play madeline by artist tickle me pink
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("tickle me pink")) && id =~ "madeline" => @com.spotify.play(playable=id);
+====
+# log/158061
+U: play madeline by tickle me pink
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("tickle me pink")) && id =~ "madeline" => @com.spotify.play(playable=id);
+====
+# log/158059
+U: play the song madeline
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter id =~ "madeline" => @com.spotify.play(playable=id);
+====
+# log/158032
+U: play love story by artist taylor swift
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("taylor swift")) && id =~ "love story" => @com.spotify.play(playable=id);
+====
+# log/158031
+U: play love story by taylor swift
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("taylor swift")) && id =~ "love story" => @com.spotify.play(playable=id);
+====
+# log/158030
+U: play the song love story by taylor swift
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter contains(artists, null^^com.spotify:artist("taylor swift")) && id =~ "love story" => @com.spotify.play(playable=id);

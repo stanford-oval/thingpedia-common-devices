@@ -5475,3 +5475,90 @@ UT: sort(release_date desc of @com.spotify.song() filter contains(artists, null^
 U: play metallica
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("metallica")) => @com.spotify.play(playable=id);
+====
+# recording/8873e94e06440dd9d5d018e51390e6ea
+U: let's listen some music!
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() => @com.spotify.play(playable=id);
+====
+# recording/80a8af7f1f827859cd3d89e2c783a0a9
+U: Play waving flag on this computer.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter id =~ "waving flag" => @com.spotify.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter id =~ "waving flag")[1] => @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[]]
+C: #[error=enum no_active_device];
+A: Sorry, you must open the Spotify app first.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
+U: Do the last command.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter id =~ "waving flag" => @com.spotify.play(playable=id);
+====
+# recording/ef9eed3d8de76b17f92a7c04dbc56595
+U: Play waving flag on this computer.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter id =~ "waving flag" => @com.spotify.play(playable=id);
+====
+# recording/113bb13954f5ecf844768f5717b1a2b0
+U: Play waving flag by Khan on Spotify.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("khan")) && id =~ "waving flag" => @com.spotify.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:6mQfAAqZGBzIfrmlZCeaYT"^^com.spotify:artist("Chaka Khan")) && id =~ "waving flag")[1] => @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[]];
+A: Sorry, there are no music matching your request.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_empty_search;
+U: Play waving flag by KHAAN on this computer.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("khaan")) && id =~ "waving flag" => @com.spotify.play(playable=id);
+====
+# recording/528e9810202c3415584e134d31fda0d2
+U: Turn shuffle on.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_shuffle(shuffle=enum on);
+====
+# log/158258
+U: change music to lounge
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains~(genres, "lounge") => @com.spotify.play(playable=id);
+====
+# log/158067
+U: play tickle me pink, madeline
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter id =~ "tickle me pink , madeline" => @com.spotify.play(playable=id);
+====
+# log/158060
+U: play madeline by pink
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("pink")) && id =~ "madeline" => @com.spotify.play(playable=id);
+====
+# log/158058
+U: play madeline song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter id =~ "madeline" => @com.spotify.play(playable=id);
+====
+# log/158056
+U: play sia song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter contains(artists, null^^com.spotify:artist("sia")) => @com.spotify.play(playable=id);
+====
+# log/158055
+U: play sia
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("sia")) => @com.spotify.play(playable=id);
+====
+# log/158028
+U: play love story by taylor
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("taylor")) && id =~ "love story" => @com.spotify.play(playable=id);
+====
+# log/158026
+U: play love story by swift
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("swift")) && id =~ "love story" => @com.spotify.play(playable=id);
+====
+# log/158025
+U: play love story swift
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("swift")) && id =~ "love story" => @com.spotify.play(playable=id);

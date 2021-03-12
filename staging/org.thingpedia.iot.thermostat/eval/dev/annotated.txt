@@ -133,3 +133,13 @@ UT: @org.thingpedia.iot.thermostat.set_hvac_mode(mode=enum heat);
 U: set temperature to 13 f on my thermostat
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.thermostat.set_target_temperature(value=13F);
+====
+# log/158437
+U: turn off heating
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.thermostat.set_hvac_mode(mode=enum off);
+====
+# log/158035
+U: the state of my hvac
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.thermostat.get_hvac_state();
