@@ -7,7 +7,6 @@
 // See LICENSE for details
 "use strict";
 
-const HomeAssistantDevice = require('./base');
 const HomeAssistantSwitch = require('./switch.js');
 
 module.exports = class HomeAssistantLightbulb extends HomeAssistantSwitch {
