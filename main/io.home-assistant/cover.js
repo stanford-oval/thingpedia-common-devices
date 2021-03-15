@@ -7,23 +7,9 @@
 // See LICENSE for details
 "use strict";
 
-const HomeAssistantDevice = require('./base');
+const HomeAssistantSensor = require('./sensor');
 
-module.exports = class HomeAssistantCover extends HomeAssistantDevice {
-    constructor(engine, state, master, entityId) {
-        super(engine, state, master, entityId);
-        const [domain,] = entityId.split('.');
-        this.domain = domain;
-    }
-    async get_state() {
-        return [{ state: this.state.state }];
-    }
-    // note: subscribe_ must NOT be async, or an ImplementationError will occur at runtime
-    subscribe_state() {
-        return this._subscribeState(() => {
-            return { state: this.state.state };
-        });
-    }
+module.exports = class HomeAssistantCover extends HomeAssistantSensor {
     async do_set_openclose({ state }) {
         if (this.domain === 'cover') {
             if (state === 'open')

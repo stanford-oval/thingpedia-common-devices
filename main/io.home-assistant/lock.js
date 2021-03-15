@@ -7,30 +7,21 @@
 // See LICENSE for details
 "use strict";
 
-const HomeAssistantDevice = require('./base');
+const HomeAssistantSensor = require('./sensor');
 
-module.exports = class HomeAssistantLock extends HomeAssistantDevice {
-    constructor(engine, state, master, entityId) {
-        super(engine, state, master, entityId);
-        const [domain,] = entityId.split('.');
-        this.domain = domain;
-    }
+module.exports = class HomeAssistantLock extends HomeAssistantSensor {
     async get_state() {
         if (this.domain === 'lock')
             throw new Error('Sorry! Your lock doesn\'t seem to support querying.');
         else
-            return [{ state: this.state.state }];
+            return super.get_state();
     }
     // note: subscribe_ must NOT be async, or an ImplementationError will occur at runtime
     subscribe_state() {
-        if (this.domain === 'lock') {
+        if (this.domain === 'lock')
             throw new Error('Sorry! Your lock doesn\'t seem to support querying.');
-        }
-        else {
-            return this._subscribeState(() => {
-                return { state: this.state.state };
-            });
-        }
+        else
+            return super.subscribe_state();
     }
     async do_set_state({ state, code }) {
         if (this.domain === 'lock') {
