@@ -36,7 +36,7 @@ class @info.owlbot
 #[subcategory="service"]
 {
   import loader from @org.thingpedia.v2();
-  import config from @org.thingpedia.config.none(api_key=$?);
+  import config from @org.thingpedia.config.none();
 
   query get(in req word: String
             #_[canonical= {base = ["term", "word"],preposition = ["of #"]}]
@@ -46,5 +46,9 @@ class @info.owlbot
             #[string_values="tt:long_free_text"])
   #_[result=["${definition}"]]
   #_[canonical=["definition", "meaning", "word", "term"]]
-  #_[confirmation="definition"];
+  #_[confirmation="definition"]
+  #_[on_error={
+      unknown_definition=["No definition for this word! Please try again with another word."],
+      other_error=["Sorry, we have an error. Please try again later!"]
+  }];
 }
