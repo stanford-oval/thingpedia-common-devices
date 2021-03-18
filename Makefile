@@ -28,9 +28,9 @@ staging_pkgfiles := $(universe_pkgfiles) $(call pkgfiles_fn,staging)
 template_file ?= thingtalk/en/dialogue.genie
 dataset_file ?= eval/$(release)/dataset.tt
 schema_file ?= eval/$(release)/schema.tt
-paraphrases_user ?= eval/$(release)/paraphrase.tsv $(foreach d,$($(release)_devices),$(d)/eval/paraphrase.tsv)
-eval_files ?= eval/$(release)/$(eval_set)/annotated.txt $(foreach d,$($(release)_devices),$(d)/eval/$(eval_set)/annotated.txt)
-fewshot_train_files ?= eval/$(release)/train/annotated.txt $(foreach d,$($(release)_devices),$(d)/eval/train/annotated.txt)
+paraphrases_user ?= $(wildcard eval/$(release)/paraphrase.tsv $(foreach d,$($(release)_devices),$(d)/eval/paraphrase.tsv))
+eval_files ?= $(wildcard eval/$(release)/$(eval_set)/annotated.txt $(foreach d,$($(release)_devices),$(d)/eval/$(eval_set)/annotated.txt))
+fewshot_train_files ?= $(wildcard eval/$(release)/train/annotated.txt $(foreach d,$($(release)_devices),$(d)/eval/train/annotated.txt))
 
 synthetic_flags ?= \
 	dialogues \
