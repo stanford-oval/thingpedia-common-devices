@@ -138,7 +138,7 @@ eval/$(release)/constants.tsv: $(schema_file) parameter-datasets.tsv
 	  $(auto_annotate_custom_flags)
 	mv $@.tmp $@
 
-eval/$(release)/database-map.tsv: $(addsuffix /database-map.tsv,$($(release)_devices))
+eval/$(release)/database-map.tsv: $(wildcard (addsuffix /database-map.tsv,$($(release)_devices)))
 	for f in $^ ; do \
 	  sed 's|\t|\t../../'`dirname $$f`'/|g' $$f >> $@.tmp ; \
 	done
