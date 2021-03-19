@@ -1,7 +1,7 @@
 # 1-basic
 U: \t @com.yelp.restaurant();
 
-A: I (see|have( found)?) Ramen Nagi, Evvia Estiatorio and Zareen's. (All of them are|They're) 4.5 star restaurants?.
+A: I (see|have( found)?) Ramen Nagi, Evvia Estiatorio and Zareen's. (All of them are|They're) restaurants rated 4.5 stars?.
 A: rdl: Ramen Nagi https://www.yelp.com/biz/ramen-nagi-palo-alto.*
 A: rdl: Evvia Estiatorio https://www.yelp.com/biz/evvia-estiatorio-palo-alto.*
 A: rdl: Zareen's https://www.yelp.com/biz/zareens-palo-alto.*
@@ -12,7 +12,7 @@ A: >> expecting = command
 # 2-by-location
 U: \t @com.yelp.restaurant() filter geo == new Location(37.442156, -122.1634471, "Palo Alto, California");
 
-A: I (see|have( found)?) Ramen Nagi or Evvia Estiatorio. (All of them are|They're) 4.5 star restaurants?.
+A: I (see|have( found)?) Ramen Nagi (and|or) Evvia Estiatorio. (All of them are|They're) restaurants rated 4.5 stars?.
 A: rdl: Ramen Nagi https://www.yelp.com/biz/ramen-nagi-palo-alto.*
 A: rdl: Evvia Estiatorio https://www.yelp.com/biz/evvia-estiatorio-palo-alto.*
 A: >> expecting = command
@@ -39,6 +39,6 @@ A: >> expecting = null
 # 5-ask-for-address
 U: \t [geo] of @com.yelp.restaurant() filter geo == new Location(37.442156, -122.1634471, "Palo Alto, California");
 
-A: I have one, it is Ramen Nagi\. It is a restaurant near 541 Bryant St, Palo Alto, CA 94301\.
+A: I (see|have( found)?) Ramen Nagi\. It is a restaurant near 541 Bryant St, Palo Alto, CA 94301\.
 A: >> expecting = null
 

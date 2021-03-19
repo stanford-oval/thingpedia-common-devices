@@ -15,7 +15,7 @@ U: find me the song despacito
 #U: now => (@com.spotify.song(), id =~ ("despacito")) => notify;
 
 # FIXME need a template for song by {artist 1} and {artist 2}
-A: I (see|have( found)?) Despacito( or Despacito - Remix|, Despacito - Live (and|or) Despacito - Remix). (All of them are|They're) (puerto rican pop|latin pop|latin|tropical)s? (tracks?|songs?|musics?) by (Luis Fonsi|Daddy Yankee).
+A: I (see|have( found)?) Despacito( (and|or) Despacito - Remix|, Despacito - Live (and|or) Despacito - Remix). (All of them are|They're) (puerto rican pop|latin pop|latin|tropical)s? (tracks?|songs?|musics?) by (Luis Fonsi|Daddy Yankee).
 A: >> expecting = command
 
 ====
@@ -24,7 +24,7 @@ A: >> expecting = command
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.song(), contains(artists, null^^com.spotify:artist("taylor swift"))) => @com.spotify.play(playable=id);
 
-A: I played songs by Taylor Swift on Spotify for you\.
+A: I played songs by Taylor Swift on Spotify( for you)?\.
 A: >> expecting = null
 
 ====
@@ -33,7 +33,7 @@ U: find me songs by britney spears
 #U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 #U: now => (@com.spotify.song(), contains(artists, null^^com.spotify:artist("britney spears"))) => notify;
 
-A: I (see|have( found)?) .*, .*,? (or|and) .*. (They're|They are|All of them are) both pop rap and posts?-teen pop (song|track)s? by Britney Spears.
+A: I (see|have( found)?) .*, .*,? (or|and) .*. (They're|They are|All of them are) both pop rap and (post-teen|dance) pop (song|track)s by Britney Spears.
 A: >> expecting = command
 
 ====
@@ -124,7 +124,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => sort release_date desc of (@com.spotify.playable(), contains(artists, null^^com.spotify:artist("beyonce")))[1] => notify;
 
-A: I have Crazy In Love \(feat. Jay-Z\)\. (It's|It is)( a)? dance pop music by Beyonc.\. Would you like to play it on Spotify\?
+A: I (see|have( found)?) Crazy In Love \(feat. Jay-Z\)\. (It's|It is)( a)? dance pop music by Beyonc.\. Would you like to play it on Spotify\?
 A: >> expecting = command
 
 ====
@@ -204,7 +204,7 @@ U: repeat this song
 #U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 #U: now => @com.spotify.player_repeat(repeat=enum(track));
 
-A: I repeated this song( for you)?\.
+A: I set the repeat state to track( for you)?\.
 A: >> expecting = null
 
 ====
@@ -257,7 +257,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.playable(), release_date >= makeDate(2000, 1, 1) && release_date <= makeDate(2000, 1, 1) + 1year) => notify;
 
-A: I have (found|one, it is) Yellow. It is a( pop)? music by Coldplay( released in July 9, 2000)?\. Would you like to play it on Spotify\?
+A: I (see|have( found)?)(one, it is)? Yellow. It is( a)?( pop)? music by Coldplay( released in July 9, 2000)?\. Would you like to play it on Spotify\?
 A: >> expecting = command
 
 ====
@@ -289,7 +289,7 @@ A: >> expecting = command
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.playable(), id =~ ("totally fake non-existent song")) => @com.spotify.play(playable=id);
 
-A: Sorry, I cannot find any music like that\.
+A: Sorry, (there are no music matching your request|I cannot find any music like that)\.
 A: >> expecting = command
 
 ====

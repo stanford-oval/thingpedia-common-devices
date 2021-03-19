@@ -42,6 +42,15 @@ module.exports = class DictionaryAPIDevice extends Tp.BaseDevice {
     return client.define(word).then((result) => {
       let temp =  result["definitions"][0]["definition"];
       return [{"definition": temp}];
+    }).catch((e) => {
+      const error = new Error();
+      if (e.response.statusText == "Not Found") {
+        console.log("Throwing unknown definition!")
+        error.code = "unknown_definition";
+      } else {
+        error.code = "other_error";
+      }
+      throw error;
     });
   }
 };
