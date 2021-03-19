@@ -86,7 +86,7 @@ module.exports = class SpotifyDaemon {
         this.destroy();
         setTimeout(() => {
             this._killed = false;
-            this._init()
+            this._init();
         }, 1500);
     }
 
