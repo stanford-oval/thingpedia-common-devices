@@ -78,6 +78,18 @@ module.exports = class SpotifyDaemon {
         this._init();
     }
 
+    set token(token) {
+        this.options.token = token;
+    }
+
+    reload() {
+        this.destroy();
+        setTimeout(() => {
+            this._killed = false;
+            this._init()
+        }, 1500);
+    }
+
     get deviceId() {
         return crypto.createHash('sha1').update(this.options.username).digest('hex'); // same protocol spotifyd uses
     }

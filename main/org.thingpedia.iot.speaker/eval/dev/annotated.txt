@@ -14,21 +14,6 @@ U: pump up the volume
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => @org.thingpedia.iot.speaker.raise_volume();
 ====
-# online/1435521
-U: play music
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.speaker.play_music();
-====
-# online/1448721
-U: play something on my speaker
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.speaker.play_music();
-====
-# online/1471844
-U: play some music
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.speaker.play_music();
-====
 # online/1657826
 U: adjust speaker volume
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
@@ -43,11 +28,6 @@ UT: now => @org.thingpedia.iot.speaker.raise_volume();
 U: set volume on my speaker to 13 %
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => @org.thingpedia.iot.speaker.set_volume(volume=13);
-====
-# online/121356
-U: play something on the speaker
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.speaker.play_music();
 ====
 # online/1511124
 U: turn up the volume on the speaker
@@ -68,58 +48,63 @@ UT: now => @org.thingpedia.iot.speaker.raise_volume();
 U: increase volume
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => @org.thingpedia.iot.speaker.raise_volume();
-====
+#====
 # online/62731642
-U: turn on amplifier
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.speaker.set_power(power=enum(on));
-====
+#U: turn on amplifier
+#UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+#UT: now => @org.thingpedia.iot.speaker.set_power(power=enum(on));
+#====
 # online/62731644
-U: turn off the sound system
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.speaker.set_power(power=enum(on));
-====
-# log/11567
-U: play something on my bluetooth speaker
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.iot.speaker(name="bluetooth").play_music();
+#U: turn off the sound system
+#UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+#UT: now => @org.thingpedia.iot.speaker.set_power(power=enum(on));
 ====
 # log/83132
 U: turn on sound
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.speaker.unmute();
 ====
-# log/118140
-U: play on plex
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.iot.speaker(name="plex").play_music();
-====
-# log/119298
-U: play spotify on home speakers
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.iot.speaker(name="home").play_music();
-====
-# log/127461
-U: turn casse_cucina on
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.iot.speaker(name="casse_cucina").set_power(power=enum on);
-====
-# log/111741
-U: what is the state of plex
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.iot.speaker(name="plex").power();
-====
-# log/71921
-U: start plex
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.iot.speaker(name="plex").play_music();
-====
-# log/129027
-U: play music on my living room tv
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.iot.speaker(name="living room").play_music();
-====
 # log/10002
 U: mute
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.speaker.mute();
+====
+# log-dev/7881
+U: set my speaker muted
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.speaker.mute();
+====
+# log-dev/7880
+U: mute the speaker
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.speaker.mute();
+====
+# log-dev/7879
+U: unmute the speaker
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.speaker.unmute();
+====
+# log-dev/7877
+U: turn off sound
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.speaker.mute();
+====
+# log-dev/7873
+U: set the volume to 13
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.speaker.set_volume(volume=13);
+====
+# log-dev/7872
+U: lower the volume
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.speaker.lower_volume();
+====
+# log-dev/7693
+U: turn up the volume
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.speaker.raise_volume();
+====
+# log-dev/7332
+U: raise the volume.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.speaker.raise_volume();

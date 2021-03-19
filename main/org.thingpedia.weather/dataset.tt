@@ -41,6 +41,22 @@ dataset @org.thingpedia.weather language "en" {
     #_[utterances=["the humidity in ${p_location}"]]
     #[name="HumidityOfWeatherWithLocation"];
 
+    query (p_location :Location, p_date :Date) := [temperature] of @org.thingpedia.weather.forecast(location=p_location, date=p_date)
+    #_[utterances=["the temperature in ${p_location} on ${p_date}"]]
+    #[name="TemperatureOfWeatherForecastWithLocation"];
+
+    query (p_location :Location, p_date :Date) := [humidity] of @org.thingpedia.weather.forecast(location=p_location, date=p_date)
+    #_[utterances=["the humidity in ${p_location} on ${p_date}"]]
+    #[name="HumidityOfWeatherForecastWithLocation"];
+
+    query (p_date :Date) := @org.thingpedia.weather.forecast(date=p_date)
+    #_[utterances=["the weather on ${p_date}"]]
+    #[name="WeatherForecastWithTime"];
+
+    query () := @org.thingpedia.weather.forecast(date=$end_of(day))
+    #_[utterances=["the weather tomorrow"]]
+    #[name="WeatherForecastWithTimeTomorrow"];
+
     query () := [humidity] of @org.thingpedia.weather.current()
     #_[utterances=["the humidity outside"]]
     #[name="HumidityOfWeather"];

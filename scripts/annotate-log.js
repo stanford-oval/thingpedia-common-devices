@@ -304,16 +304,6 @@ class Trainer {
         return [dev, train];
     }
 
-    async _getParaphraseFile(key, directory) {
-        await pfs.mkdir(path.resolve(directory), { recursive: true });
-
-        const out = new Genie.DatasetStringifier();
-        out.pipe(fs.createWriteStream(path.resolve(directory, 'paraphrase.tsv'), { flags: 'a' }));
-
-        this._outputs.set(key, out);
-        return out;
-    }
-
     async _getFile(device) {
         assert(typeof device === 'string');
         if (this._outputs.has(device))
