@@ -47,7 +47,6 @@ module.exports = class DictionaryAPIDevice extends Tp.BaseDevice {
       if (e.response.statusText == "Not Found") {
         console.log("Throwing unknown definition!")
         error.code = "unknown_definition";
-        throw error;
       } else {
         error.code = "other_error";
       }
