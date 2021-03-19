@@ -75,7 +75,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     }
 
     async updateOAuth2Token(accessToken, refreshToken, extraData) {
-        if (this.platform.type === "server" && this.accessToken != accessToken) {
+        if (this.platform.type === "server" && this.accessToken !== accessToken) {
             this.spotifyd.token = accessToken;
             this.spotifyd.reload();
         }
@@ -94,8 +94,8 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             }
             //rate handling error
             let temp = this;
-            return new Promise(function(resolve, reject) {
-                setTimeout(function() {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
                     Tp.Helpers.Http.get(url, {
                         accept: "application/json",
                         useOAuth2: temp,
@@ -962,9 +962,9 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         let deviceState = this._deviceState.get(env.app.uniqueId);
         let device;
 
-        if (this._testMode()) {
-            device = new Tp.Value.Entity('mock', 'Coolest Computer')
-        }
+        if (this._testMode())
+            device = new Tp.Value.Entity('mock', 'Coolest Computer');
+
 
         if (!deviceState && !device) {
             let devices = await this.get_get_available_devices();
@@ -973,9 +973,9 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 throwError('no_active_device');
 
             this._deviceState.set(env.app.uniqueId, [deviceId, deviceName]);
-            device = new Tp.Value.Entity(deviceId, deviceName)
+            device = new Tp.Value.Entity(deviceId, deviceName);
         } else if (deviceState && !device) {
-            device = new Tp.Value.Entity(deviceState[0], deviceState[1])
+            device = new Tp.Value.Entity(deviceState[0], deviceState[1]);
         }
 
         let progstate = this._state.get(env.app.uniqueId);
