@@ -327,11 +327,13 @@ clean:
 	done
 
 lint:
+	any_error=0 ; \
 	for d in $($(release)_devices) ; do \
 		echo $$d ; \
-		$(thingpedia_cli) lint-device --manifest $$d/manifest.tt --dataset $$d/dataset.tt ; \
-		test ! -f $$d/package.json || $(eslint) $$d/*.js ; \
-	done
+		$(thingpedia_cli) lint-device --manifest $$d/manifest.tt --dataset $$d/dataset.tt || any_error=$$? ; \
+		test ! -f $$d/package.json || $(eslint) $$d/*.js || any_error=$$? ; \
+	done ; \
+	exit $$any_error
 
 
 evaluate: eval/$(release)/$(eval_set)/$(model).dialogue.results eval/$(release)/$(eval_set)/$(model).nlu.results
