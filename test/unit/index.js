@@ -51,6 +51,13 @@ class MockExecEnvironment {
     }
 }
 
+async function collectAll(iterable) {
+    const array = [];
+    for await (const element of iterable)
+        array.push(element);
+    return array;
+}
+
 class TestRunner {
     constructor() {
         this._platform = new Platform();
@@ -107,7 +114,7 @@ class TestRunner {
             input = input(instance);
 
         const env = new MockExecEnvironment();
-        const result = await instance['get_' + functionName](input, hints, env);
+        const result = await collectAll(await instance['get_' + functionName](input, hints, env));
         if (typeof expected === 'function') {
             expected(result, input, hints, instance);
             return;

@@ -49,7 +49,8 @@ class @com.smartnews
                                    base = ["title", "news title", "name"],
                                    property = ["news #", "title #"]
                                  }],
-                                 out audio: Entity(tt:url),
+                                 out link : Entity(tt:url),
+                                 out audio_url: Entity(tt:url),
                                  out date: Date
                                  #_[canonical={
                                     default="passive_verb",
@@ -95,12 +96,16 @@ class @com.smartnews
                                  )
   #_[canonical=["news articles", "news reports"]]
   #_[confirmation="news articles"]
-  #_[result=["the latest news is ${title}"]]
-  #_[formatted=[{
-     type="rdl",
-    webCallback="${url}",
-    displayTitle= "${title}"
-  }]]
+  #_[result={
+    top="the latest news is ${title}",
+    list="here are the news"
+  }]
+  #_[formatted=[
+    { type="rdl", webCallback="${link}", displayTitle="${title}" },
+    { type="sound", name="bell", exclusive=true },
+    { type="audio", url="${audio_url}" }
+  ]]
   #[poll_interval=3600000ms]
+  #[minimal_projection=["id", "title", "link", "audio_url"]]
   #[doc="get news articles from SmartNews api"];
 }
