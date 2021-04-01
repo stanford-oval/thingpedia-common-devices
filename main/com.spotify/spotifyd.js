@@ -153,13 +153,15 @@ module.exports = class SpotifyDaemon {
         if (!this._checkIfInstalled())
             await this._download();
 
+        let envs = Object.assign({}, process.env);
+        envs['PULSE_PROP'] = 'media.role=music';
         this._child = child_process.spawn(this.spotifydPath, [
             "--username", this.options.username,
             "--device-name", this.options.device_name,
             "--token", this.options.token,
             "--no-daemon",
             "--backend", process.arch.match('arm') ? "alsa" : "pulseaudio"
-        ], { stdio: ['inherit', 'inherit', 'inherit'] });
+        ], { stdio: ['inherit', 'inherit', 'inherit'], env: envs });
 
         this._child.on('error', (err) => {
             console.error('Failed to spawn spotifyd:', err);
