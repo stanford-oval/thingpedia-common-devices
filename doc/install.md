@@ -3,32 +3,23 @@
 In the most basic form, you can install all dependencies for this repository
 with the command:
 ```bash
-yarn
+npm ci
 ```
 
-You need at least node 10.* to run the code in this repository.
+You need at least node 12.* to run the code in this repository.
 
-If you plan to develop genie-toolkit, you should also clone that, and separately
-clone thingtalk, install both, then use `yarn link` to link everything together:
+If you plan to develop genie-toolkit, you should also clone that, then use `npm link` to link everything together:
 
 ```bash
-git clone https://github.com/stanford-oval/thingtalk
-cd thingtalk
-yarn
-yarn link
-cd ..
-
 git clone https://github.com/stanford-oval/genie-toolkit
 cd genie-toolkit
-yarn link thingtalk
-yarn
-yarn link
+npm ci
+npm link
 cd ..
 
 cd thingpedia-common-devices
-yarn link thingtalk
-yarn link genie-toolkit
-yarn
+npm ci
+npm link genie-toolkit
 ```
 
 ## Configuration
