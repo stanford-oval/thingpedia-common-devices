@@ -14,9 +14,8 @@ U: find me the song despacito
 #U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 #U: now => (@com.spotify.song(), id =~ ("despacito")) => notify;
 
-# FIXME need a template for song by {artist 1} and {artist 2}
-A: I (see|have( found)?) Despacito( (and|or) Despacito - Remix|, Despacito - Live (and|or) Despacito - Remix). (All of them are|They're) (puerto rican pop|latin pop|latin|tropical)s? (tracks?|songs?|musics?) by (Luis Fonsi|Daddy Yankee).
-A: >> expecting = command
+A: Both Despacito and Despacito - Remix are songs by Luis Fonsi in the tropical genre\.
+A: >> expecting = null
 
 ====
 # 3-by-artist (req=com.spotify)
@@ -34,7 +33,7 @@ U: find me songs by britney spears
 #U: now => (@com.spotify.song(), contains(artists, null^^com.spotify:artist("britney spears"))) => notify;
 
 A: I (see|have( found)?) .*, .*,? (or|and) .*. (They're|They are|All of them are) ((post-teen|dance) pop|both pop rap and (post-teen|dance) pop) (song|track)s by Britney Spears.
-A: >> expecting = command
+A: >> expecting = null
 
 ====
 # 5-song-artist (req=com.spotify)
@@ -69,8 +68,8 @@ U: what songs are in the album the wall
 #U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 #U: now => (@com.spotify.song(), album == null^^com.spotify:album("the wall")) => notify;
 
-A: I (see|have) In the Flesh\?, The Thin Ice (or|and) Another Brick in the Wall, Pt\. 1\. (All of them are|They're) songs? in the album The Wall by Pink Floyd\.
-A: >> expecting = command
+A: I (see|have) In the Flesh\?, The Thin Ice,? (or|and) Another Brick in the Wall, Pt\. 1\. (All of them are|They're) songs? by Pink Floyd in the album The Wall\.
+A: >> expecting = null
 
 ====
 # 9-from-album-artist (req=com.spotify)
@@ -88,8 +87,8 @@ U: what songs are in the album folklore by taylor swift
 #U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 #U: now => (@com.spotify.song(), album == null^^com.spotify:album("folklore") && contains(artists, null^^com.spotify:artist("taylor swift"))) => notify;
 
-A: I (see|have( found)?) the 1, cardigan (or|and) the last great american dynasty\. (All of them are|They're|They are) songs? in the album folklore by Taylor Swift\.
-A: >> expecting = command
+A: I (see|have( found)?) the 1, cardigan,? (or|and) the last great american dynasty\. (All of them are|They're|They are) songs? (in the album folklore )?by Taylor Swift\.
+A: >> expecting = null
 
 ====
 # 11-sort-popularity-artist (req=com.spotify)
@@ -106,7 +105,7 @@ U: what is justin bieber's most popular song
 #U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 #U: now => sort popularity desc of (@com.spotify.song(), contains(artists, null^^com.spotify:artist("justin bieber")))[1] => notify;
 
-A: The most popular song is .*\. It is (a )?song (in( the album)? .*|from [0-9/]+) by Justin Bieber ?\.
+A: The (most popular song|answer) is .*\. It is (a )?song (in( the album)? .*|from [0-9/]+) by Justin Bieber\.
 A: >> expecting = null
 
 ====
@@ -280,7 +279,7 @@ U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.playable(), contains~(genres, "rock") && release_date >= makeDate(1960, 1, 1) && release_date <= makeDate(1960, 1, 1) + 1year) => notify;
 
 A: I (see|have( found)?) Breaking Up Is Hard to Do, C’Mon Everybody,? (or|and) (Pocketful of Rainbows|I'm Sorry). (All of them are|They are|They're) (adult standards|rockabill(y|ies)|brill building pop)s? music\.
-A: >> expecting = command
+A: >> expecting = null
 
 ====
 # 30-song-failure (req=com.spotify)
