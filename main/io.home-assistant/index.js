@@ -28,9 +28,9 @@ const DOMAIN_TO_TP_KIND = {
     // devices with dedicated APIs
     'light': 'org.thingpedia.iot.light-bulb',
     'switch': 'org.thingpedia.iot.switch',
+    'vacuum': 'org.thingpedia.iot.vacuum',
     //'lock': 'org.thingpedia.iot.lock',
     //'climate': 'io.home-assistant.climate',
-    //'vacuum': 'org.thingpedia.iot.vacuum',
     //'cover_active': 'org.thingpedia.iot.cover',
     //'fan': 'org.thingpedia.iot.fan',
 

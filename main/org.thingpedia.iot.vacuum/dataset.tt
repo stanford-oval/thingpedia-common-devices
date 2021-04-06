@@ -1,7 +1,5 @@
 dataset @org.thingpedia.iot.vacuum language "en" {
-    program  := {
-  now => @org.thingpedia.iot.vacuum.state() => notify;
-}
+    program  := @org.thingpedia.iot.vacuum.state()
     #_[utterances=["is my vacuum on?",
                    "check if my vacuum is on",
                    "is the vacuum turned on?",
@@ -33,13 +31,13 @@ dataset @org.thingpedia.iot.vacuum language "en" {
     #[id=54343304]
     #[name="MonitorState"];
 
-    stream (p_state :Enum(on,off,docked))  := edge (monitor (@org.thingpedia.iot.vacuum.state())) on state == p_state
+    stream (p_state :Enum(on,off,docked))  := monitor (@org.thingpedia.iot.vacuum.state()), state == p_state
     #_[utterances=["when my vacuum is ${p_state}",
                    "when the vacuum cleaner is ${p_state}"]]
     #[id=54343306]
     #[name="MonitorStateByState"];
 
-    stream  := edge (monitor (@org.thingpedia.iot.vacuum.state())) on state == enum(on)
+    stream  := monitor (@org.thingpedia.iot.vacuum.state()), state == enum(on)
     #_[utterances=["when my vacuum turns on",
                    "once my vacuum switches on",
                    "when the vacuum is on",
@@ -48,7 +46,7 @@ dataset @org.thingpedia.iot.vacuum language "en" {
     #[id=54343308]
     #[name="MonitorStateByStateOn"];
 
-    stream  := edge (monitor (@org.thingpedia.iot.vacuum.state())) on state == enum(off)
+    stream  := monitor (@org.thingpedia.iot.vacuum.state()), state == enum(off)
     #_[utterances=["when the vacuum turns off",
                    "once my vacuum turns off",
                    "once the vacuum switches off",
@@ -58,7 +56,7 @@ dataset @org.thingpedia.iot.vacuum language "en" {
     #[id=54343313]
     #[name="MonitorStateByStateOff"];
 
-    stream  := edge (monitor (@org.thingpedia.iot.vacuum.state())) on state == enum(docked)
+    stream  := monitor (@org.thingpedia.iot.vacuum.state()), state == enum(docked)
     #_[utterances=["when the vacuum is docking",
                    "once my vacuum returns to base",
                    "once the vacuum gets docked",
@@ -126,9 +124,7 @@ dataset @org.thingpedia.iot.vacuum language "en" {
     #[id=54343350]
     #[name="Stop"];
 
-    program (p_name :String)  := {
-  now => @org.thingpedia.iot.vacuum(name=p_name).state() => notify;
-}
+    program (p_name :String)  := @org.thingpedia.iot.vacuum(name=p_name).state()
     #_[utterances=["is my ${p_name} vacuum on?",
                    "check if my ${p_name} vacuum is on",
                    "is the ${p_name} vacuum turned on?",
@@ -160,13 +156,13 @@ dataset @org.thingpedia.iot.vacuum language "en" {
     #[id=54343372]
     #[name="MonitorState1"];
 
-    stream (p_name :String, p_state :Enum(on,off,docked))  := edge (monitor (@org.thingpedia.iot.vacuum(name=p_name).state())) on state == p_state
+    stream (p_name :String, p_state :Enum(on,off,docked))  := monitor (@org.thingpedia.iot.vacuum(name=p_name).state()), state == p_state
     #_[utterances=["when my ${p_name} vacuum is ${p_state}",
                    "when the ${p_name} vacuum cleaner is ${p_state}"]]
     #[id=54343374]
     #[name="MonitorStateByState1"];
 
-    stream (p_name :String)  := edge (monitor (@org.thingpedia.iot.vacuum(name=p_name).state())) on state == enum(on)
+    stream (p_name :String)  := monitor (@org.thingpedia.iot.vacuum(name=p_name).state()), state == enum(on)
     #_[utterances=["when my ${p_name} vacuum turns on",
                    "once my ${p_name} vacuum switches on",
                    "when the ${p_name} vacuum is on",
@@ -175,7 +171,7 @@ dataset @org.thingpedia.iot.vacuum language "en" {
     #[id=54343376]
     #[name="MonitorStateByStateOn1"];
 
-    stream (p_name :String)  := edge (monitor (@org.thingpedia.iot.vacuum(name=p_name).state())) on state == enum(off)
+    stream (p_name :String)  := monitor (@org.thingpedia.iot.vacuum(name=p_name).state()), state == enum(off)
     #_[utterances=["when the ${p_name} vacuum turns off",
                    "once my ${p_name} vacuum turns off",
                    "once the ${p_name} vacuum switches off",
@@ -185,7 +181,7 @@ dataset @org.thingpedia.iot.vacuum language "en" {
     #[id=54343381]
     #[name="MonitorStateByStateOff1"];
 
-    stream (p_name :String)  := edge (monitor (@org.thingpedia.iot.vacuum(name=p_name).state())) on state == enum(docked)
+    stream (p_name :String)  := monitor (@org.thingpedia.iot.vacuum(name=p_name).state()), state == enum(docked)
     #_[utterances=["when the ${p_name} vacuum is docking",
                    "once my ${p_name} vacuum returns to base",
                    "once the ${p_name} vacuum gets docked",
