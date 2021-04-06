@@ -1,0 +1,20 @@
+# 1-basic-level
+#U: Which is the status of the vacuum?
+
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => (@org.thingpedia.iot.vacuum.state());
+
+A: (The vacuum is (on|off|docked)\.)
+A: >> expecting = null
+
+====
+# 2-send_base
+#U: Send the vacuum back to the base
+
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => (@org.thingpedia.iot.vacuum.return_to_base());
+
+A: (The vacuum is on its way to the base\.)
+A: >> expecting = null
+
+====
