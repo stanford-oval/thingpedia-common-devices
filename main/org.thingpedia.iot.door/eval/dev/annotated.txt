@@ -723,3 +723,13 @@ UT: monitor(@org.thingpedia.iot.door(name="bedroom").state()) filter state == en
 U: alert me when somebody opens the door
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: monitor(@org.thingpedia.iot.door.state()) filter state == enum open;
+====
+# log/54623
+U: tell me if my backyard door is open or not
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.door(name="backyard").state();
+====
+# log/54934
+U: tell me the moment the window gets shut
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.door.state()) filter state == enum closed;

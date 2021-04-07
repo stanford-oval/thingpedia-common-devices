@@ -48,3 +48,13 @@ UT: @co.alphavantage.get_price(company=null^^tt:stock_id("gamestop"));
 U: monitor red hat stock price
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: monitor(@co.alphavantage.get_price(company=null^^tt:stock_id("red hat")));
+====
+# log/58766
+U: let me know when google share price is less than $2
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@co.alphavantage.get_price(company=null^^tt:stock_id("google"))) filter price <= 2$usd;
+====
+# log/84204
+U: monitor limelight networks stock
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@co.alphavantage.get_price(company=null^^tt:stock_id("limelight networks")));

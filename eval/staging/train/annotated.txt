@@ -166,3 +166,18 @@ UT: monitor(@org.thingpedia.iot.fan.state()) filter any(@org.thingpedia.builtin.
 U: auto translate all new washington post articles to italian
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: monitor(@com.washingtonpost.get_article()) => @com.yandex.translate.translate(target_language=null^^tt:iso_lang_code("italian"), text=title);
+====
+# log/54331
+U: close the shades when the temperature is above 13 degrees
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.weather.current()) filter temperature >= 13defaultTemperature => @org.thingpedia.iot.cover.set_openclose(state=enum close);
+====
+# log/108641
+U: message me on slack when a new article appears on the new york times front page
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.nytimes.get_front_page()) => @com.slack.send();
+====
+# log/158336
+U: when the temperature changes turn on the air con
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.temperature.temperature()) => @org.thingpedia.iot.thermostat.set_hvac_mode(mode=enum cool);

@@ -884,7 +884,7 @@ U: what's the weather tomorrow
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.weather.forecast();
 ====
-# log/log-dev/7509
+# log-dev/7509
 U: what will the weather be in palo alto tomorrow
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.weather.forecast(location=new Location("palo alto"));
@@ -1103,3 +1103,8 @@ UT: monitor(@org.thingpedia.weather.current(location=$location.home));
 U: notify me when the temperature in san francisco goes below 13 degrees
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: monitor(@org.thingpedia.weather.current(location=new Location("san francisco")) filter temperature <= 13defaultTemperature);
+====
+# log/41285
+U: monitor weather at home
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.weather.current(location=$location.home));

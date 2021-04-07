@@ -138,3 +138,8 @@ UT: monitor(@com.slack.channel_history() filter channel == "random"^^tt:hashtag)
 U: when i receive a message on slack str:HASHTAG::0:, reply with sorry not now
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: monitor(@com.slack.channel_history() filter channel == "str:HASHTAG::0:"^^tt:hashtag) => @com.slack.send(channel="str:HASHTAG::0:"^^tt:hashtag, message="sorry not now");
+====
+# log/40508
+U: when i receive a message from ruben seggers, get last slack messages
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.slack.channel_history() filter sender == "ruben seggers"^^tt:username) => @com.slack.channel_history();

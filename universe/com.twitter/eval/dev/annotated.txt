@@ -514,3 +514,23 @@ UT: monitor(@com.twitter.home_timeline() filter author == "onlyporridge"^^tt:use
 U: tweet that i'm at work and i'm bored
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.twitter.post(status="i 'm at work and i 'm bored");
+====
+# log/1198
+U: notify me if i receive a tweet with hashtag str:HASHTAG::0:
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.twitter.home_timeline() filter contains(hashtags, "str:HASHTAG::0:"^^tt:hashtag));
+====
+# log/3286
+U: when someone i follow tweets
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.twitter.home_timeline());
+====
+# log/111969
+U: when user str:USERNAME::0: tweets get tweet id
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.twitter.tweet() filter author == "str:USERNAME::0:"^^tt:username);
+====
+# log/111975
+U: do tweet ( when user str:USERNAME::0: tweets )
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.twitter.home_timeline() filter author == "str:USERNAME::0:"^^tt:username) => @com.twitter.post();

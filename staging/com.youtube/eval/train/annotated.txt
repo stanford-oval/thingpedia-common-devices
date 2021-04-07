@@ -58,3 +58,8 @@ UT: @com.youtube.list_subscriptions();
 U: search dandara in youtube
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.youtube.search_videos(query="dandara");
+====
+# log/64151
+U: when a new youtube video is released from channel "str:QUOTED_STRING::0:" notify me
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.youtube.list_videos() filter channel_title == "str:QUOTED_STRING::0:");

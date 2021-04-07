@@ -1288,3 +1288,28 @@ UT: @org.thingpedia.iot.light-bulb.power();
 U: are there any lights on?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.light-bulb(all=true).power();
+====
+# log/56410
+U: when i turn the theater lights off
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.light-bulb(name="theater").power()) filter power == enum off;
+====
+# log/58472
+U: at 0:0 turn off the light
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: attimer(time=[new Time(0, 0)]) => @org.thingpedia.iot.light-bulb.set_power(power=enum off);
+====
+# log/90856
+U: switch all lights off at 0:0
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: attimer(time=[new Time(0, 0)]) => @org.thingpedia.iot.light-bulb(all=true).set_power(power=enum off);
+====
+# log/158251
+U: turn lights off at
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb.set_power(power=enum off);
+====
+# log/158300
+U: switch on led lamp every day at 0:0
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: attimer(time=[new Time(0, 0)]) => @org.thingpedia.iot.light-bulb(name="led").set_power(power=enum on);

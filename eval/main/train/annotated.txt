@@ -215,3 +215,18 @@ UT: monitor(@org.thingpedia.iot.door.state()) filter any(@org.thingpedia.builtin
 U: update me if i am not at home and someone opens my door
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: monitor(@org.thingpedia.iot.door.state()) filter any(@org.thingpedia.builtin.thingengine.builtin.get_gps() filter !(location == $location.home)) && state == enum open;
+====
+# log/54730
+U: turn the light on when motion is detected
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.motion.motion()) filter state == enum detecting => @org.thingpedia.iot.light-bulb.set_power(power=enum on);
+====
+# log/59476
+U: if movement in room office, turn on light
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.motion(name="office").motion()) filter state == enum detecting => @org.thingpedia.iot.light-bulb(name="room office").set_power(power=enum on);
+====
+# log/76789
+U: when i arrive home turn on the lights
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.builtin.thingengine.builtin.get_gps()) filter location == $location.home => @org.thingpedia.iot.light-bulb.set_power(power=enum on);

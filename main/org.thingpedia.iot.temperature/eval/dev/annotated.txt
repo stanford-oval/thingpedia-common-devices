@@ -253,3 +253,23 @@ UT: monitor(@org.thingpedia.iot.temperature.temperature()) filter value <= 5C;
 U: notify me if my nest temperature changes.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: monitor(@org.thingpedia.iot.temperature(name="nest").temperature());
+====
+# log/46
+U: alert me if the thermostat is above 13 c
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.temperature.temperature()) filter value >= 13C;
+====
+# log/47
+U: alert me if the thermostat is below 13 c
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.temperature.temperature()) filter value <= 13C;
+====
+# log/5324
+U: monitor the temperature and notify me if it is above 13 c
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.temperature.temperature()) filter value >= 13C;
+====
+# log/135638
+U: when the home temperature changes notify me
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.temperature.temperature());

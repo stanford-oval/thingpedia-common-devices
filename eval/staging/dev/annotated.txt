@@ -492,3 +492,23 @@ UT: monitor(@com.fitbit.getsteps()) filter steps >= 13 => @com.facebook.post(sta
 U: when there is a new video by mkbhd, shoot an email
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: monitor(@com.youtube.list_videos() filter channel_title =~ "mkbhd") => @com.gmail.send_email();
+====
+# log/2267
+U: every day at 0:0, send a cat url to str:EMAIL_ADDRESS::0: with subject "str:QUOTED_STRING::0:"
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: attimer(time=[new Time(0, 0)]) => @com.thecatapi.cat() => @com.gmail.send_picture(picture_url=picture_url, subject="str:QUOTED_STRING::0:", to="str:EMAIL_ADDRESS::0:"^^tt:email_address);
+====
+# log/2635
+U: turn off my tv if there is no person in the room
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.occupancy.occupancy()) filter state == enum not_detecting => @org.thingpedia.iot.tv.set_power(power=enum off);
+====
+# log/8095
+U: when price of str:ENTITY_tt:cryptocurrency_code::0: changes say hi
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.cryptonator.get_price(currency="str:ENTITY_tt:cryptocurrency_code::0:"^^tt:cryptocurrency_code)) => @org.thingpedia.builtin.thingengine.builtin.say(message="hi");
+====
+# log/56465
+U: turn on couch light when front door lock is unlocked
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.lock(name="front").state()) filter state == enum unlocked => @org.thingpedia.iot.light-bulb(name="couch").set_power(power=enum on);

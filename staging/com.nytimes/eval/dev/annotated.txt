@@ -163,3 +163,13 @@ UT: monitor(@com.nytimes.get_front_page());
 U: notify me for new articles about tech in new york times business section
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: monitor(@com.nytimes.get_section_page(section=enum business) filter title =~ "tech");
+====
+# log/39113
+U: get new york times updates at 0:0
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: attimer(time=[new Time(0, 0)]) => @com.nytimes.get_front_page();
+====
+# log/39951
+U: monitor the new york times
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.nytimes.get_front_page());
