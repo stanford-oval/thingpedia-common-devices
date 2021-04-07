@@ -36,7 +36,6 @@ synthetic_flags ?= \
 	dialogues \
 	aggregation \
 	multifilters \
-	nostream \
 	notablejoin \
 	projection \
 	projection_with_filter \
