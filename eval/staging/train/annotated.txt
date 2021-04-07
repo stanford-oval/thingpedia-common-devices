@@ -16,3 +16,153 @@ U: if there is a file in "str:QUOTED_STRING::0:" in my dropbox which is not a fo
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => (@com.dropbox.list_folder(folder_name="str:QUOTED_STRING::0:")), ((file_size <= 13KB && is_folder == false) && modified_time == new Date("2018-01-02T08:00:00.000Z")) => notify;
 UT: now => @com.twitter.post_picture(caption=$?, picture_url=$?);
+====
+# online/120499
+U: if i receive a tweet with hashtag bdaycelebrationscontinu then send a message on slack
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.twitter.home_timeline() filter contains(hashtags, "bdaycelebrationscontinu"^^tt:hashtag)) => @com.slack.send();
+====
+# online/120586
+U: send me wall street journal technology on gmail
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.wsj.get(section=enum technology)) => @com.gmail.send_email(message=$result);
+====
+# online/121042
+U: tweet wall street journal headlines
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.wsj.get(section=enum opinions)) => @com.twitter.post(status=$result);
+====
+# online/121060
+U: post my instagram pictures on twitter
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.instagram.get_pictures()) => @com.twitter.post_picture(picture_url=picture_url);
+====
+# online/121071
+U: post my new instagram pictures on tumblr
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.instagram.get_pictures()) => @com.tumblr.blog.post_picture(picture_url=picture_url);
+====
+# online/121082
+U: post on tumblr "str:QUOTED_STRING::0:" if the temperature is more than 13 f
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.temperature.temperature()) filter value >= 13F => @com.tumblr.blog.post_text(title="str:QUOTED_STRING::0:");
+====
+# online/121084
+U: post on tumblr if the temperature is more than 13 f
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.temperature.temperature()) filter value >= 13F => @com.tumblr.blog.post_text();
+====
+# online/121103
+U: if someone tweets with hashtag foreverjuntas then post it on facebook
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.twitter.home_timeline() filter contains(hashtags, "foreverjuntas"^^tt:hashtag)) => @com.facebook.post(status=$result);
+====
+# online/121550
+U: post my ig pictures on twitter
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.instagram.get_pictures()) => @com.twitter.post_picture(picture_url=picture_url);
+====
+# online/121552
+U: ig pictures to facebook
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.instagram.get_pictures()) => @com.facebook.post_picture(picture_url=picture_url);
+====
+# online/123118
+U: translate new wall street journal technology posts
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.wsj.get(section=enum technology)) => @com.yandex.translate.translate(text=$result);
+====
+# online/127890
+U: get the washington post and translate it to xhosa
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.washingtonpost.get_article()) => @com.yandex.translate.translate(target_language=null^^tt:iso_lang_code("xhosa"), text=$result);
+====
+# online/131798
+U: if someone commits to github and the message contains "str:QUOTED_STRING::0:" then play "str:QUOTED_STRING::1:" from youtube
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.github.get_commit() filter message =~ "str:QUOTED_STRING::0:") => @com.youtube.search_videos(query="str:QUOTED_STRING::1:") => @org.thingpedia.iot.tv.play_url(url=video_url);
+====
+# online/141671
+U: get the washington post and translate it to str:ENTITY_tt:iso_lang_code::0:
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.washingtonpost.get_article()) => @com.yandex.translate.translate(target_language="str:ENTITY_tt:iso_lang_code::0:"^^tt:iso_lang_code, text=$result);
+====
+# online/359917
+U: if i receive a gmail and its title has "str:QUOTED_STRING::0:" in it, send the content to twitter
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(email_id of @com.gmail.inbox() filter subject =~ "str:QUOTED_STRING::0:") => @com.twitter.post(status=$result);
+====
+# online/359919
+U: if i send a new picture to instagram, send this new picture to facebook
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.instagram.get_pictures()) => @com.facebook.post_picture(picture_url=picture_url);
+====
+# online/1448703
+U: get my calendar events when i move to palo alto
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.builtin.thingengine.builtin.get_gps()) filter location == new Location("palo alto") => @org.thingpedia.icalendar.list_events();
+====
+# online/1448704
+U: get my calendar events when i move to
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.builtin.thingengine.builtin.get_gps()) filter location == new Location(2, 2) => @org.thingpedia.icalendar.list_events();
+====
+# online/1520128
+U: tweet my instagram pictures
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.instagram.get_pictures()) => @com.twitter.post_picture(picture_url=picture_url);
+====
+# online/1684068
+U: share your instagram pics as native twitter photos
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.instagram.get_pictures()) => @com.twitter.post_picture(caption=caption, picture_url=picture_url);
+====
+# online/1684094
+U: send new york times breaking news to str:EMAIL_ADDRESS::0:
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.nytimes.get_front_page()) => @com.gmail.send_email(message=$result, subject=title, to="str:EMAIL_ADDRESS::0:"^^tt:email_address);
+====
+# online/53256259
+U: when i upload a new instagram picture with hashtag 45likes, post it to twitter
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.instagram.get_pictures() filter contains(hashtags, "45likes"^^tt:hashtag)) => @com.twitter.post_picture(picture_url=picture_url);
+====
+# online/55592357
+U: open the window if smoke is detected
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.air.state()) filter state == enum smoke => @org.thingpedia.iot.cover.set_openclose(state=enum open);
+====
+# online/55592384
+U: close my shutter when the temperature is above 13 degrees
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.weather.current()) filter temperature >= 13C => @org.thingpedia.iot.cover.set_openclose(state=enum close);
+====
+# online/55592495
+U: close my damper when the temperature is below 13 degrees
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.weather.current()) filter temperature <= 13C => @org.thingpedia.iot.cover.set_openclose(state=enum close);
+====
+# online/55592641
+U: open my windows when smoke is detected
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.air.state()) filter state == enum smoke => @org.thingpedia.iot.cover.set_openclose(state=enum open);
+====
+# online/55592649
+U: open my living room window if smoke is detected
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.air.state()) filter state == enum smoke => @org.thingpedia.iot.cover(name="living room").set_openclose(state=enum open);
+====
+# online/57061574
+U: turn off the vacuum when i enter the room
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.occupancy.occupancy()) filter state == enum detecting => @org.thingpedia.iot.vacuum.set_power(power=enum off);
+====
+# online/57061594
+U: send an alert when i leave home and the fan is on
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.fan.state()) filter any(@org.thingpedia.builtin.thingengine.builtin.get_gps() filter !(location == $location.home)) && state == enum on;
+====
+# online/62110233
+U: auto translate all new washington post articles to italian
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.washingtonpost.get_article()) => @com.yandex.translate.translate(target_language=null^^tt:iso_lang_code("italian"), text=title);

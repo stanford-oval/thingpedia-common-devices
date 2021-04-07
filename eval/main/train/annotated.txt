@@ -165,3 +165,53 @@ AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
 U: where am I?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.builtin.thingengine.builtin.get_gps();
+====
+# online/55592327
+U: notify me when the door opens and i am not home
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.door.state()) filter any(@org.thingpedia.builtin.thingengine.builtin.get_gps() filter !(location == $location.home)) && state == enum open;
+====
+# online/55592330
+U: notify me when someone opens the door and i am not home
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.door.state()) filter any(@org.thingpedia.builtin.thingengine.builtin.get_gps() filter !(location == $location.home)) && state == enum open;
+====
+# online/55592331
+U: notify me when someone opens the door while i am not home
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.door.state()) filter any(@org.thingpedia.builtin.thingengine.builtin.get_gps() filter !(location == $location.home)) && state == enum open;
+====
+# online/55592610
+U: alert me when somebody opens the door and i am not home
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.door.state()) filter any(@org.thingpedia.builtin.thingengine.builtin.get_gps() filter !(location == $location.home)) && state == enum open;
+====
+# online/55592613
+U: update me when my door is opened and i am not home
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.door.state()) filter any(@org.thingpedia.builtin.thingengine.builtin.get_gps() filter !(location == $location.home)) && state == enum open;
+====
+# online/55592615
+U: tell me when my door is opened and i am out of home
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.door.state()) filter any(@org.thingpedia.builtin.thingengine.builtin.get_gps() filter !(location == $location.home)) && state == enum open;
+====
+# online/55592686
+U: if i am not at home and my door is open, alert me
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.door.state()) filter any(@org.thingpedia.builtin.thingengine.builtin.get_gps() filter !(location == $location.home)) && state == enum open;
+====
+# online/55592697
+U: tell me if i am not at home and someone opens the door
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.door.state()) filter any(@org.thingpedia.builtin.thingengine.builtin.get_gps() filter !(location == $location.home)) && state == enum open;
+====
+# online/55592700
+U: alert me if i am not at home and someone opens the door
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.door.state()) filter any(@org.thingpedia.builtin.thingengine.builtin.get_gps() filter !(location == $location.home)) && state == enum open;
+====
+# online/55592702
+U: update me if i am not at home and someone opens my door
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.door.state()) filter any(@org.thingpedia.builtin.thingengine.builtin.get_gps() filter !(location == $location.home)) && state == enum open;

@@ -188,3 +188,23 @@ UT: @org.thingpedia.icalendar.list_events();
 U: calendar
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.icalendar.list_events();
+====
+# online/120539
+U: notify me when event begins containing immunized
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.icalendar.list_events() filter summary =~ "immunized") filter status == enum started;
+====
+# online/120978
+U: notify me when my next work meeting starts on my calendar
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.icalendar.list_events() filter summary =~ "work meeting") filter status == enum started;
+====
+# online/1647347
+U: notify me when the "str:QUOTED_STRING::0:" ends on my calendar
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.icalendar.list_events() filter summary =~ "str:QUOTED_STRING::0:") filter status == enum ended;
+====
+# online/62110348
+U: alert everybody when the meeting is over
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.icalendar.list_events()) filter status == enum ended;

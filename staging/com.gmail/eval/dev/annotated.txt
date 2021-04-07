@@ -352,3 +352,93 @@ UT: @com.gmail.send_email(to="str:EMAIL_ADDRESS::0:"^^tt:email_address);
 U: check gmail
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.gmail.inbox();
+====
+# online/120469
+U: notify me if i receive an email with label school
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(email_id of @com.gmail.inbox() filter contains(labels, "school"));
+====
+# online/120470
+U: notify me if i receive an email with label "str:QUOTED_STRING::0:"
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(email_id of @com.gmail.inbox() filter contains(labels, "str:QUOTED_STRING::0:"));
+====
+# online/120482
+U: notify me if i receive an email on gmail
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(email_id of @com.gmail.inbox());
+====
+# online/120550
+U: notify me if i receive an email from str:EMAIL_ADDRESS::0: where subject contains late notice
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(email_id of @com.gmail.inbox() filter sender_address == "str:EMAIL_ADDRESS::0:"^^tt:email_address && subject =~ "late notice");
+====
+# online/120660
+U: notify me if i receive an email on gmail from str:EMAIL_ADDRESS::0:
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(email_id of @com.gmail.inbox() filter sender_address == "str:EMAIL_ADDRESS::0:"^^tt:email_address);
+====
+# online/120783
+U: notify me if i receive an email with subject contains department of geology
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(email_id of @com.gmail.inbox() filter subject =~ "department of geology");
+====
+# online/120785
+U: notify me if i receive an email on gmail from str:EMAIL_ADDRESS::0: where subject contains new payment received
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(email_id of @com.gmail.inbox() filter sender_address == "str:EMAIL_ADDRESS::0:"^^tt:email_address && subject =~ "new payment received");
+====
+# online/120886
+U: notify me if i receive an important email on gmail from str:EMAIL_ADDRESS::0:
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(email_id of @com.gmail.inbox(is_important=true) filter sender_address == "str:EMAIL_ADDRESS::0:"^^tt:email_address);
+====
+# online/120900
+U: notify me if i receive an email where subject contains meeting today
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(email_id of @com.gmail.inbox() filter subject =~ "meeting today");
+====
+# online/121363
+U: notify me if i receive an important email on gmail
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(email_id of @com.gmail.inbox(is_important=true));
+====
+# online/121420
+U: notify me if i receive an important email on gmail where subject contains job application
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(email_id of @com.gmail.inbox(is_important=true) filter subject =~ "job application");
+====
+# online/121516
+U: auto reply to my emails
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(email_id of @com.gmail.inbox()) => @com.gmail.reply(email_id=email_id);
+====
+# online/121590
+U: notify me when i got a gmail with subject bills
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(email_id of @com.gmail.inbox() filter subject =~ "bills");
+====
+# online/121591
+U: notify me when i got a gmail with subject "str:QUOTED_STRING::0:"
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(email_id of @com.gmail.inbox() filter subject == "str:QUOTED_STRING::0:");
+====
+# online/121592
+U: notify me when i got a gmail with subject contains invoice
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(email_id of @com.gmail.inbox() filter subject =~ "invoice");
+====
+# online/122801
+U: notify me if i receive an email on gmail where the subject contains bank statement
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(email_id of @com.gmail.inbox() filter subject =~ "bank statement");
+====
+# online/122862
+U: receive a gmail where the subject contains bank statement
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(email_id of @com.gmail.inbox() filter subject =~ "bank statement");
+====
+# online/1545460
+U: when receive an email on gmail
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(email_id of @com.gmail.inbox());

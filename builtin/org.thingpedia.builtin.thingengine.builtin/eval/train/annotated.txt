@@ -478,3 +478,28 @@ UT: @org.thingpedia.builtin.thingengine.builtin.say(message="lior");
 U: help.me
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
+====
+# online/120571
+U: every minute show notification
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: timer(base=$now, interval=1min) => @org.thingpedia.builtin.thingengine.builtin.say();
+====
+# online/1647560
+U: notify me when i move slower than 13 km/h
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.builtin.thingengine.builtin.get_gps()) filter speed <= 13kmph;
+====
+# online/9597120
+U: remind me to take my medicines every morning
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: timer(base=$now, interval=1day) => @org.thingpedia.builtin.thingengine.builtin.say(message="to take my medicines");
+====
+# online/16013795
+U: new account google
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.configure(device="com.google"^^tt:device);
+====
+# online/21774056
+U: configure twitter
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.configure(device="com.twitter"^^tt:device);

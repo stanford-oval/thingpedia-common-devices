@@ -93,3 +93,28 @@ UT: @gov.nasa.apod();
 U: curiosity rovercuriosity rover
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @gov.nasa.rover();
+====
+# online/120723
+U: monitor asteroids
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@gov.nasa.asteroid());
+====
+# online/121478
+U: every day at 0:0 give me the nasa astronomical picture of the day
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: attimer(time=[new Time(0, 0)]) => @gov.nasa.apod();
+====
+# online/1528009
+U: nasa asteroid notify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@gov.nasa.asteroid());
+====
+# online/1647462
+U: warn me when an asteroid is close
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@gov.nasa.asteroid());
+====
+# online/1647464
+U: warn me when a dangerous asteroid is close
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@gov.nasa.asteroid() filter is_dangerous == true);

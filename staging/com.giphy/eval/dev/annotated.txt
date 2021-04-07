@@ -138,3 +138,13 @@ UT: @com.giphy.get(tag="str:HASHTAG::0:"^^tt:hashtag);
 U: get anoher str:HASHTAG::0: gif
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.giphy.get(tag="str:HASHTAG::0:"^^tt:hashtag);
+====
+# online/120961
+U: send a me random gif every 2 ms
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: timer(base=$now, interval=2ms) => @com.giphy.get();
+====
+# online/120962
+U: send a me random itsathursday gif every 2 ms
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: timer(base=$now, interval=2ms) => @com.giphy.get(tag="itsathursday"^^tt:hashtag);

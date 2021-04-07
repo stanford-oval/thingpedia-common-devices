@@ -298,3 +298,33 @@ UT: @org.thingpedia.iot.cover.set_openclose(state=enum open);
 U: open curtains
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.cover.set_openclose(state=enum open);
+====
+# online/55592665
+U: tell me when my curtain lowers
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.cover.state()) filter state == enum closed;
+====
+# online/55592668
+U: notify me when my curtains are closed
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.cover.state()) filter state == enum closed;
+====
+# online/57061579
+U: open the blinds at 0:0
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: attimer(time=[new Time(0, 0)]) => @org.thingpedia.iot.cover.set_openclose(state=enum open);
+====
+# online/57061580
+U: open the shades at 0:0
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: attimer(time=[new Time(0, 0)]) => @org.thingpedia.iot.cover.set_openclose(state=enum open);
+====
+# online/57061582
+U: alert me when somebody opens the window
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.cover.state()) filter state == enum open;
+====
+# online/57061591
+U: send an alert when somebody opens the window
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.cover.state()) filter state == enum open;

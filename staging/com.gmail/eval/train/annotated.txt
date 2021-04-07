@@ -143,3 +143,43 @@ UT: @com.gmail.inbox();
 U: open gmail
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.gmail.inbox();
+====
+# online/120801
+U: notify me if i receive an email on gmail from str:EMAIL_ADDRESS::0: where subject contains "str:QUOTED_STRING::0:"
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(email_id of @com.gmail.inbox() filter sender_address == "str:EMAIL_ADDRESS::0:"^^tt:email_address && subject =~ "str:QUOTED_STRING::0:");
+====
+# online/120809
+U: notify me if i receive an important email on gmail from str:EMAIL_ADDRESS::0: with label please review
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(email_id of @com.gmail.inbox(is_important=true) filter contains(labels, "please review") && sender_address == "str:EMAIL_ADDRESS::0:"^^tt:email_address);
+====
+# online/121016
+U: if i receive an email on gmail then reply to it saying accelerated personal conflagration
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(email_id of @com.gmail.inbox()) => @com.gmail.reply(email_id=email_id, subject="accelerated personal conflagration");
+====
+# online/121271
+U: notify me if i receive an email on gmail with label payments
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(email_id of @com.gmail.inbox() filter contains(labels, "payments"));
+====
+# online/121358
+U: notify me if i receive an email on gmail where subject contains upcoming events
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(email_id of @com.gmail.inbox() filter subject =~ "upcoming events");
+====
+# online/121593
+U: notify me if i get a gmail with subject containing w-2
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(email_id of @com.gmail.inbox() filter subject =~ "w-2");
+====
+# online/122799
+U: monitor email
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(email_id of @com.gmail.inbox());
+====
+# online/359895
+U: notify me if a mail has label important
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(email_id of @com.gmail.inbox(is_important=true));

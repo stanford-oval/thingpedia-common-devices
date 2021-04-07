@@ -68,3 +68,13 @@ UT: @org.thingpedia.iot.temperature.temperature();
 U: what is the current temperature in the house
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.temperature.temperature();
+====
+# online/120565
+U: monitor if temperature greater than 95 f
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.temperature.temperature()) filter value >= 95F;
+====
+# online/121113
+U: monitor if the temperature is between 55 f and 99 f
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.temperature.temperature()) filter value <= 99F && value >= 55F;
