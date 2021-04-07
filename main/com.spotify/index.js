@@ -1101,11 +1101,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         let song_uris = [];
         let album_uris = [];
         let album_tracks = {};
-        try {
-            await this.do_player_shuffle("false", env);
-        } catch (error) {
-            throwError("disallowed_action");
-        }
 
         for (const playable of music) {
             const uri = String(playable);
@@ -1235,7 +1230,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
     async do_player_shuffle({
         shuffle
-    }, env) {
+    }) {
 
         shuffle = shuffle === 'on' ? 'true' : 'false';
         console.log("setting shuffle: " + shuffle);
@@ -1245,17 +1240,10 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (this.state.product !== "premium" && this.state.product !== undefined)
             throwError("non_premium_account");
 
-        let deviceId;
-        let deviceState = this._deviceState.get(env.app.uniqueId);
-        if (!deviceState) {
-            let devices = await this.get_get_available_devices();
-            deviceId = await this._findActiveDevice(devices)[0];
-            if (deviceId === null)
-                throwError('no_active_device');
-        } else {
-            deviceId = deviceState[0];
-        }
-
+        let devices = await this.get_get_available_devices();
+        const deviceId = (await this._findActiveDevice(devices))[0];
+        if (deviceId === null)
+            throwError('no_active_device');
         let shuffleURL = SHUFFLE_URL + querystring.stringify({
             state: shuffle,
             device_id: deviceId
