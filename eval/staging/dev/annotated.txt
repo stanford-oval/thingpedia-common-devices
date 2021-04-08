@@ -512,3 +512,28 @@ UT: monitor(@com.cryptonator.get_price(currency="str:ENTITY_tt:cryptocurrency_co
 U: turn on couch light when front door lock is unlocked
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: monitor(@org.thingpedia.iot.lock(name="front").state()) filter state == enum unlocked => @org.thingpedia.iot.light-bulb(name="couch").set_power(power=enum on);
+====
+# online/121045
+U: tweet the new work if the thermostat says more than 13 c
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.temperature.temperature()) filter value >= 13C => @com.twitter.post(status="the new work");
+====
+# online/121075
+U: tweet girls if the temperature is less than 13 f
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.temperature.temperature()) filter value <= 13F => @com.twitter.post(status="girls");
+====
+# online/121076
+U: tweet if the temperature is less than 13 f
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.temperature.temperature()) filter value <= 13F => @com.twitter.post();
+====
+# online/121077
+U: tweet "str:QUOTED_STRING::0:" if the temperature is less than 13 f
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.temperature.temperature()) filter value <= 13F => @com.twitter.post(status="str:QUOTED_STRING::0:");
+====
+# online/121080
+U: tweet pretty hot in here if the temperature is more than 13 f
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.temperature.temperature()) filter value >= 13F => @com.twitter.post(status="pretty hot in here");

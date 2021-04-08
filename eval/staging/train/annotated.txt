@@ -181,3 +181,18 @@ UT: monitor(@com.nytimes.get_front_page()) => @com.slack.send();
 U: when the temperature changes turn on the air con
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: monitor(@org.thingpedia.iot.temperature.temperature()) => @org.thingpedia.iot.thermostat.set_hvac_mode(mode=enum cool);
+====
+# recording/f106519ffba8bc870e58396d5c99e032
+U: tell me a joke
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.icanhazdadjoke.get();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="6hqHJmyPmyd"^^com.icanhazdadjoke:id, text="What kind of music do mummy's like? Rap" }
+C: ]];
+A: What kind of music do mummy's like? Rap.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: post it on twitter
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.twitter.post(status="What kind of music do mummy's like? Rap");
