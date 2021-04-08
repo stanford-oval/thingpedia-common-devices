@@ -11,13 +11,14 @@
 const Tp = require('thingpedia');
 const MongoClient = require('mongodb');
 
-const DB_URL = "mongodb://localhost:27017";
+const DB_URL = process.env.MONGODB_URL || "mongodb://localhost:27017";
 const DB_NAME = "pharmacy_vaccines";
 const COLLECTION_NAME = "appointments";
 
 module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
 
     async _mongodb_client() {
+        console.log(`Connect to ${DB_URL}`);
         return new MongoClient(DB_URL, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
