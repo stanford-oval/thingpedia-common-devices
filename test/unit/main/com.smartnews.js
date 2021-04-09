@@ -15,9 +15,16 @@ function assertNonEmptyString(what) {
 module.exports = [
     ['query', 'article', {}, (results) => {
         for (const res of results) {
+            assert(res.id.value);
             assertNonEmptyString(res.title);
             assert(res.date instanceof Date);
-            assertNonEmptyString(res.source);
+            if (res.source !== null)
+                assertNonEmptyString(res.source);
+            if (res.author !== null)
+                assertNonEmptyString(res.author);
+            assert(typeof res.content === 'string');
+            assert(typeof res.link === 'string');
+            assert(res.audio_url === undefined || typeof res.audio_url === 'string');
         }
     }]
     // ['query', 'reading_list', {}, (results) => {
