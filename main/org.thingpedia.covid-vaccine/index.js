@@ -1,9 +1,6 @@
 // -*- mode: js; indent-tabs-mode: nil; js-basic-offset: 4 -*-
 //
-// Copyright 2016 Giovanni Campagna <gcampagn@cs.stanford.edu>
-//                Silei Xu <silei@cs.stanford.edu>
-//                Andrei Bajenov <abajenov@stanford.edu>
-//                Darshan Kapashi <darshank@stanford.edu>
+// Copyright 2021 Chaofei Fan <stfan@stanford.edu>
 //
 // See LICENSE for details
 "use strict";
@@ -15,6 +12,16 @@ const DB_URL = process.env.MONGODB_URL || "mongodb://localhost:27017";
 const DB_NAME = "pharmacy_vaccines";
 const COLLECTION_NAME = "appointments";
 
+function prettyprintAddress(appointment) {
+    return [
+        appointment.properties.name,
+        appointment.properties.address,
+        appointment.properties.city,
+        appointment.properties.state,
+        appointment.properties.postal_code,
+    ].filter((i) => i.length > 0).join(', ');
+}
+
 module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
 
     async _mongodb_client() {
@@ -25,15 +32,13 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
         });
     }
 
-    async get_appointment({ location, date, distance }) {
-        if (date == undefined || date == null)
-            date = new Date();
+    async get_appointment({ location, distance }) {
         if (distance == undefined || distance == null)
             distance = 10.0;
-        console.log(location, date, distance);
+        console.log(location, distance);
 
         // TODO: Find a better way to mock.
-        if (process.env.CI == true) {
+        if (process.env.CI) {
             return [
                 {
                   name: 'Safeway 2948',
@@ -59,7 +64,7 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
                             type: "Point",
                             coordinates: [location.x, location.y]
                         },
-                        $maxDistance: distance * 1610,
+                        $maxDistance: distance * 1610,  // Mile to meter
                     },
                 },
                 "properties.appointments_available": true
@@ -68,13 +73,15 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
             const cursor = coll.find(query);
             let appointments = await cursor.toArray();
             appointments = appointments.map((appt) => {
+                const id = new Tp.Value.Entity(appt._id.toString(), appt.properties.name);
+                const geo = new Tp.Value.Location(
+                    appt.geometry.coordinates[1],
+                    appt.geometry.coordinates[0],
+                    prettyprintAddress(appt));
                 return {
-                    name: appt.properties.name,
-                    address: appt.properties.address,
-                    city: appt.properties.city,
-                    state: appt.properties.state,
-                    postal_code: appt.properties.postal_code,
-                    url: appt.properties.url
+                    id: id,
+                    geo: geo,
+                    link: appt.properties.url
                 };
             });
 
@@ -82,8 +89,8 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
             console.log(appointments);
             return appointments;
         } catch (error) {
-            console.log(error);
-            return [];
+            console.error(error);
+            throw new Error("Failed to get vaccine appointments");
         } finally {
             await client.close();
         }

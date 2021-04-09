@@ -38,6 +38,8 @@ class @org.thingpedia.covid-vaccine
   import loader from @org.thingpedia.v2();
   import config from @org.thingpedia.config.none();
 
+  entity vaccine_appointment #_[description="Vaccine appointment ID"] #[has_ner=false];
+
   monitorable list query appointment(in opt location: Location
                                      #_[prompt="what location do you want vaccine appointments for?"]
                                      #_[canonical={
@@ -47,34 +49,29 @@ class @org.thingpedia.covid-vaccine
                                        preposition=["in #", "at #", "around #", "for location #", "for #"]
                                      }]
                                      #[default=$location.current_location],
-                                     in opt date: Date
-                                     #_[canonical={
-                                       default="preposition",
-                                       base=["date"],
-                                       preposition=["on #"]
-                                     }],
                                      in opt distance: Measure(m)
                                      #_[canonical={
                                        default="preposition",
                                        base=["miles"],
                                        preposition=["within #, in #"]
                                      }],
-                                     out name: String
-                                     #_[canonical="store name"],
-                                     out address: String
-                                     #_[canonical="address"],
-                                     out city: String
-                                     #_[canonical="city"],
-                                     out state: String
-                                     #_[canonical="state"],
-                                     out postal_code: String
-                                     #_[canonical="postal code"],
-                                     out url: String
-                                     #_[canonical="url"])
-  #_[result=["Vaccine appointments available at ${name}, ${address}, ${city}, ${url}"]]
+                                     out id : Entity(org.thingpedia.covid-vaccine:vaccine_appointment)
+                                     #[unique=true]
+                                     #[filterable=false]
+                                     #_[canonical={
+                                        base=["id"],
+                                     }],
+                                     out geo: Location
+                                     #_[canonical={
+                                       default="preposition",
+                                       base=["address", "location"],
+                                       preposition=["near #", "in #", "around #"]
+                                     }],
+                                     out link: Entity(tt:url) #_[canonical="link"]
+                                    )
   #_[canonical=["COVID vaccine appointment, vaccine appointment, appointment, vaccine"]]
-  #_[confirmation="COVID vaccine appointment for $location within $distance"]
-  #[minimal_projection=["name", "address"]]
+  #_[confirmation="COVID-19 vaccine appointment for $geo"]
+  #[minimal_projection=["geo", "link"]]
   #[poll_interval=86400000ms]
   #[doc="Information about COVID vaccine appointments"];
 }
