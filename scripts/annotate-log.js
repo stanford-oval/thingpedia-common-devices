@@ -239,10 +239,10 @@ class Trainer {
             }
         }
 
-        for (const r of RELEASES) {
-            await this._tryLoadExistingDataset(path.resolve('eval', r, 'dev/annotated.txt'));
-            await this._tryLoadExistingDataset(path.resolve('eval', r, 'train/annotated.txt'));
+        await this._tryLoadExistingDataset(path.resolve('eval', 'everything', 'dev/annotated.txt'));
+        await this._tryLoadExistingDataset(path.resolve('eval', 'everything', 'train/annotated.txt'));
 
+        for (const r of RELEASES) {
             for (const d of await pfs.readdir(path.resolve(r))) {
                 if (!await existsSafe(path.resolve(r, d, 'manifest.tt')))
                     continue;
@@ -352,9 +352,7 @@ class Trainer {
             return this._outputs.get(device);
 
         if (RELEASES.indexOf(device) >= 0) {
-            const release = device;
-
-            return this._getManualFile(device, path.resolve('eval', release));
+            return this._getManualFile(device, path.resolve('eval', 'everything'));
         } else {
             const release = this._devices.get(device);
             if (!release)

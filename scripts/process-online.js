@@ -122,14 +122,13 @@ class Processor extends stream.Writable {
             }
         }
 
+        if (this._type === 'manual') {
+            await this._tryLoadExistingDataset(path.resolve('eval', 'everything', 'dev/annotated.txt'));
+            await this._tryLoadExistingDataset(path.resolve('eval', 'everything', 'train/annotated.txt'));
+        } else {
+            await this._tryLoadExistingDataset(path.resolve('eval', 'everything', 'paraphrase.tsv'));
+        }
         for (const r of RELEASES) {
-            if (this._type === 'manual') {
-                await this._tryLoadExistingDataset(path.resolve('eval', r, 'dev/annotated.txt'));
-                await this._tryLoadExistingDataset(path.resolve('eval', r, 'train/annotated.txt'));
-            } else {
-                await this._tryLoadExistingDataset(path.resolve('eval', r, 'paraphrase.tsv'));
-            }
-
             for (const d of await pfs.readdir(path.resolve(r))) {
                 if (!await existsSafe(path.resolve(r, d, 'manifest.tt')))
                     continue;
@@ -213,12 +212,10 @@ class Processor extends stream.Writable {
             return this._outputs.get(device);
 
         if (RELEASES.indexOf(device) >= 0) {
-            const release = device;
-
             if (this._type === 'manual')
-                return this._getManualFile(device, path.resolve('eval', release));
+                return this._getManualFile(device, path.resolve('eval', 'everything'));
             else
-                return this._getParaphraseFile(device, path.resolve('eval', release));
+                return this._getParaphraseFile(device, path.resolve('eval', 'everything'));
         } else {
             const release = this._devices.get(device);
             if (!release)
