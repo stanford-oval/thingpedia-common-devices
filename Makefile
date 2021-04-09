@@ -36,7 +36,6 @@ synthetic_flags ?= \
 	dialogues \
 	aggregation \
 	multifilters \
-	nostream \
 	notablejoin \
 	projection \
 	projection_with_filter \
@@ -76,7 +75,6 @@ evalflags ?=
 
 # configuration (should be set in config.mk)
 eslint ?= node_modules/.bin/eslint
-thingpedia_cli ?= node_modules/.bin/thingpedia
 
 geniedir ?= node_modules/genie-toolkit
 memsize ?= 8500
@@ -145,14 +143,13 @@ eval/$(release)/database-map.tsv: $(wildcard $(addsuffix /database-map.tsv,$($(r
 	if test -f $@ && cmp $@.tmp $@ ; then rm $@.tmp ; else mv $@.tmp $@ ; fi
 
 entities.json:
-	$(thingpedia_cli) --url $(thingpedia_url) --developer-key $(developer_key) --access-token invalid \
-	  download-entities -o $@
+	$(genie) download-entities --thingpedia-url $(thingpedia_url) --developer-key $(developer_key) -o $@
 
 parameter-datasets.tsv:
-	$(thingpedia_cli) --url $(thingpedia_url) --developer-key $(developer_key) --access-token invalid \
-	  download-entity-values --manifest $@.tmp --append-manifest -d parameter-datasets
-	$(thingpedia_cli) --url $(thingpedia_url) --developer-key $(developer_key) --access-token invalid \
-	  download-string-values --manifest $@.tmp --append-manifest -d parameter-datasets
+	$(genie) download-entity-values --thingpedia-url $(thingpedia_url) --developer-key $(developer_key) \
+	   --manifest $@.tmp --append-manifest -d parameter-datasets
+	$(genie) download-string-values --thingpedia-url $(thingpedia_url) --developer-key $(developer_key) \
+	   --manifest $@.tmp --append-manifest -d parameter-datasets
 	mv $@.tmp $@
 
 .embeddings/paraphraser-bart:
@@ -328,9 +325,9 @@ clean:
 
 lint:
 	any_error=0 ; \
-	for d in $($(release)_devices) ; do \
+	for d in $(devices) ; do \
 		echo $$d ; \
-		$(thingpedia_cli) --url $(thingpedia_url) lint-device --manifest $$d/manifest.tt --dataset $$d/dataset.tt || any_error=$$? ; \
+		$(genie) lint-device --thingpedia-url $(thingpedia_url) --manifest $$d/manifest.tt --dataset $$d/dataset.tt || any_error=$$? ; \
 		test ! -f $$d/package.json || $(eslint) $$d/*.js || any_error=$$? ; \
 	done ; \
 	exit $$any_error

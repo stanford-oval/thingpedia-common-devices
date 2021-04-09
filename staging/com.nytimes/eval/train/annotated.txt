@@ -53,3 +53,8 @@ UT: @com.nytimes.get_front_page() filter updated >= $start_of(day);
 U: open new york times
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.nytimes.get_front_page();
+====
+# online/27565808
+U: when the new york times has an article about china notify me
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.nytimes.get_front_page() filter title =~ "china");

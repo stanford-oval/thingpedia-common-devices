@@ -413,3 +413,58 @@ UT: @org.thingpedia.weather.current();
 U: can you give me the weather
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.weather.current();
+====
+# online/341538
+U: notify me if it rains
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.weather.current()) filter status == enum raining;
+====
+# online/341542
+U: notify me if it's snowing weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.weather.current()) filter status == enum snowy;
+====
+# online/341548
+U: if the weather is raining, let me know
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.weather.current()) filter status == enum raining;
+====
+# online/359900
+U: if it is going to rain alert me
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.weather.current()) filter status == enum raining;
+====
+# online/1435541
+U: tell me when it's going to rain in remind me to bring an umbrella
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.weather.current()) filter status == enum raining;
+====
+# online/1473565
+U: show me the weather at 0:0
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: attimer(time=[new Time(0, 0)]) => @org.thingpedia.weather.current();
+====
+# online/1473991
+U: get the weather at 0:0
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: attimer(time=[new Time(0, 0)]) => @org.thingpedia.weather.current();
+====
+# online/1684071
+U: get me weather everyday 0:0
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: attimer(time=[new Time(0, 0)]) => @org.thingpedia.weather.current();
+====
+# online/62110259
+U: tell me when it starts raining
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.weather.current()) filter status == enum raining;
+====
+# online/62110296
+U: warn me if it is going to snow
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.weather.current()) filter status == enum snowy;
+====
+# log/41974
+U: notify me when it's raining
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.weather.current()) filter status == enum raining;

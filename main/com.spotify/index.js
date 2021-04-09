@@ -965,7 +965,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (this._testMode())
             device = new Tp.Value.Entity('mock', 'Coolest Computer');
 
-
         if (!deviceState && !device) {
             let devices = await this.get_get_available_devices();
             const [deviceId, deviceName] = await this._findActiveDevice(devices);
@@ -1102,11 +1101,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         let song_uris = [];
         let album_uris = [];
         let album_tracks = {};
-        try {
-            await this.do_player_shuffle("false");
-        } catch (error) {
-            throwError("disallowed_action");
-        }
 
         for (const playable of music) {
             const uri = String(playable);

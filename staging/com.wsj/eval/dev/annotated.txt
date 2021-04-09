@@ -58,3 +58,23 @@ UT: @com.wsj.get(section=enum world_news);
 U: what's happening in the world today according to the wall street journal?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.wsj.get(section=enum world_news) filter updated >= $start_of(day);
+====
+# online/341572
+U: monitor wsj news about google
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.wsj.get() filter title =~ "google");
+====
+# online/1440690
+U: monitor wall street journal
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.wsj.get(section=enum opinions));
+====
+# online/1479651
+U: monitor wsj world news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.wsj.get(section=enum world_news));
+====
+# online/27565813
+U: when the wall street journal has an article about china notify me
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.wsj.get(section=enum world_news) filter title =~ "china");

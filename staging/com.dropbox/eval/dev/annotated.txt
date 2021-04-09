@@ -173,3 +173,13 @@ UT: @com.dropbox.list_folder();
 U: move file "str:QUOTED_STRING::0:" to "str:QUOTED_STRING::1:" in dropbox
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.dropbox.move(new_name="str:QUOTED_STRING::1:", old_name="str:QUOTED_STRING::0:");
+====
+# online/120590
+U: notify me if i'm using more than 1 gb on dropbox
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.dropbox.get_space_usage()) filter used_space >= 1GB;
+====
+# online/121188
+U: notify me if i'm using more than 13 mb on dropbox
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.dropbox.get_space_usage()) filter used_space >= 13MB;

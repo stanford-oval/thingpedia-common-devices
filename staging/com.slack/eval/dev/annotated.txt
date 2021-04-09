@@ -108,3 +108,38 @@ UT: @com.slack.send();
 U: set the topic for channel str:HASHTAG::0: to "str:QUOTED_STRING::0:" on slack
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.slack.updateChannelTopic(channel="str:HASHTAG::0:"^^tt:hashtag, topic="str:QUOTED_STRING::0:");
+====
+# online/120866
+U: send a message on slack to str:HASHTAG::0: if every fixed interval and interval is 13 h
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: timer(base=$now, interval=13h) => @com.slack.send(channel="str:HASHTAG::0:"^^tt:hashtag);
+====
+# online/121020
+U: auto reply to slack
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.slack.channel_history()) => @com.slack.send(channel=channel);
+====
+# online/121430
+U: every 2 ms send message on slack to tenuous
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: timer(base=$now, interval=2ms) => @com.slack.send(channel="tenuous"^^tt:hashtag);
+====
+# online/359893
+U: notify me if a message on slack has "str:QUOTED_STRING::0:"
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.slack.channel_history() filter message =~ "str:QUOTED_STRING::0:");
+====
+# online/1544502
+U: when i receive a message in channel random on slack.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.slack.channel_history() filter channel == "random"^^tt:hashtag);
+====
+# online/15252556
+U: when i receive a message on slack str:HASHTAG::0:, reply with sorry not now
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.slack.channel_history() filter channel == "str:HASHTAG::0:"^^tt:hashtag) => @com.slack.send(channel="str:HASHTAG::0:"^^tt:hashtag, message="sorry not now");
+====
+# log/40508
+U: when i receive a message from ruben seggers, get last slack messages
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.slack.channel_history() filter sender == "ruben seggers"^^tt:username) => @com.slack.channel_history();

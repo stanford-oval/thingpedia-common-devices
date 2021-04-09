@@ -58,3 +58,8 @@ UT: @org.thingpedia.iot.vacuum.start();
 U: stop my vacuum
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.vacuum.stop();
+====
+# online/57061573
+U: turn off the vacuum at 0:0
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: attimer(time=[new Time(0, 0)]) => @org.thingpedia.iot.vacuum.set_power(power=enum off);

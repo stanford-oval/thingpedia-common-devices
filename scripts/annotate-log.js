@@ -111,6 +111,8 @@ class Trainer {
         this._existingDataset = new Set;
         this._sentenceCache = new Map;
         this._editExisting = options.edit_existing;
+        this._editExistingSet = new Set;
+        this._editExistingRemap = new Map;
 
         this._devices = new Map;
         this._idQueries = new Map;
@@ -135,6 +137,11 @@ class Trainer {
 
             if (line === 'h' || line === '?') {
                 this._help();
+                return;
+            }
+
+            if (line === 'q') {
+                this._quit();
                 return;
             }
 
@@ -222,10 +229,13 @@ class Trainer {
         if (fs.existsSync(this._droppedFilename)) {
             for await (const row of fs.createReadStream(this._droppedFilename).pipe(csvparse({ delimiter: '\t' }))) {
                 const [id, sentence, comment] = row;
-                this._existingDataset.add(id);
-
-                if (sentence !== '<redacted>')
-                    this._sentenceCache.set(sentence, { dropped: comment });
+                if (this._editExisting && this._editExisting === comment) {
+                    this._editExistingSet.add(id);
+                } else {
+                    this._existingDataset.add(id);
+                    if (sentence !== '<redacted>')
+                        this._sentenceCache.set(sentence, { dropped: comment });
+                }
             }
         }
 
@@ -265,27 +275,59 @@ class Trainer {
         await this._loadAllExistingDatasets();
 
         this._droppedOut = csvstringify({ delimiter: '\t' });
-        this._droppedOut.pipe(fs.createWriteStream(this._droppedFilename, { flags: 'a' }));
+        this._droppedOutFile = fs.createWriteStream(this._droppedFilename, { flags: 'a' });
+        this._droppedOut.pipe(this._droppedOutFile);
         await this._parser.start();
     }
 
     async _quit() {
-        this._rl.close();
-
         for (let [f1, f2] of this._outputs.values()) {
             f1.end();
             f2.end();
         }
         this._droppedOut.end();
+        await StreamUtils.waitFinish(this._droppedOutFile);
+
+        if (this._editExisting) {
+            // rewrite the dropped-log file to remove any sentence that was edited out
+
+            const newFile = [];
+            for await (const row of fs.createReadStream(this._droppedFilename).pipe(csvparse({ delimiter: '\t' }))) {
+                const [id,] = row;
+                if (this._editExistingRemap.has(id)) {
+                    const newComment = this._editExistingRemap.get(id);
+                    if (newComment === null)
+                        continue;
+                    row[2] = newComment;
+                    if (newComment === 'redacted')
+                        row[1] = '<redacted>';
+                }
+                newFile.push(row);
+            }
+
+            this._droppedOut = csvstringify({ delimiter: '\t' });
+            this._droppedOutFile = fs.createWriteStream(this._droppedFilename, { flags: 'w' });
+            this._droppedOut.pipe(this._droppedOutFile);
+            for (const row of newFile)
+                this._droppedOut.write(row);
+            this._droppedOut.end();
+            await StreamUtils.waitFinish(this._droppedOutFile);
+        }
+
+        this._rl.close();
         await this._parser.stop();
     }
 
     _drop(comment = '') {
-        if (comment === 'redacted') {
-            this._droppedOut.write([this._id, '<redacted>', comment]);
+        if (this._editExisting) {
+            this._editExistingRemap.set(this._id, comment);
         } else {
-            this._sentenceCache.set(this._preprocessed, { dropped: comment });
-            this._droppedOut.write([this._id, this._preprocessed, comment]);
+            if (comment === 'redacted') {
+                this._droppedOut.write([this._id, '<redacted>', comment]);
+            } else {
+                this._sentenceCache.set(this._preprocessed, { dropped: comment });
+                this._droppedOut.write([this._id, this._preprocessed, comment]);
+            }
         }
 
         this.next();
@@ -365,11 +407,6 @@ class Trainer {
                     sel.kind = DEVICES_REMAP[sel.kind];
                 return true;
             }
-            visitExternalBooleanExpression(expr) {
-                if (expr.kind in DEVICES_REMAP)
-                    expr.kind = DEVICES_REMAP[expr.kind];
-                return true;
-            }
         });
     }
 
@@ -421,6 +458,9 @@ class Trainer {
         }
         console.log(`Learned: ${targetCode}`);
         this._sentenceCache.set(this._preprocessed, { parsed: targetCode });
+
+        if (this._editExisting)
+            this._editExistingRemap.set(this._id, null);
 
         const device = this._getDevice(dialoguestate);
 
@@ -524,13 +564,9 @@ class Trainer {
         this._preprocessed = preprocessed;
         this._entities = Genie.EntityUtils.makeDummyEntities(preprocessed);
 
-        if (this._existingDataset.has(this._id)) {
+        if (this._existingDataset.has(this._id) ||
+            (this._editExisting && !this._editExistingSet.has(this._id))) {
             process.nextTick(() => this._next());
-            return;
-        }
-
-        if (this._editExisting && this._editExisting !== target_code) {
-            this._drop(target_code);
             return;
         }
 
@@ -563,6 +599,26 @@ class Trainer {
         return this._handleSentence(utterance);
     }
 
+    _parsePrediction(code, entities) {
+        let parsed;
+        try {
+            // first try parsing using normal tokenized syntax
+            parsed = ThingTalk.Syntax.parse(code, ThingTalk.Syntax.SyntaxType.Tokenized, entities);
+        } catch(e1) {
+            // if that fails, try with legacy NN syntax
+            if (e1.name !== 'SyntaxError')
+                throw e1;
+            try {
+                parsed = ThingTalk.Syntax.parse(code, ThingTalk.Syntax.SyntaxType.LegacyNN, entities);
+            } catch(e2) {
+                if (e2.name !== 'SyntaxError')
+                    throw e2;
+                throw e1; // use the first error not the second in case both fail
+            }
+        }
+        return parsed;
+    }
+
     async _handleSentence(utterance, target_code) {
         this._utterance = utterance;
 
@@ -578,23 +634,21 @@ class Trainer {
         }
 
         let olddialoguestate;
-        if (target_code && !this._editExisting) {
+        if (target_code) {
             let oldprogram;
             try {
-                oldprogram = await ThingTalkUtils.parsePrediction(target_code.split(' '), parsed.entities, {
-                    thingpediaClient: this._tpClient,
-                    schemaRetriever: this._schemas
-                }, true);
+                oldprogram = this._parsePrediction(target_code.split(' '), parsed.entities);
+                this._adjustDevices(oldprogram);
+                await oldprogram.typecheck(this._schemas, true);
             } catch(e) {
                 console.log(`Sentence ${this._id}'s existing code is incorrect: ${e}`); //'
+                oldprogram = undefined;
             }
             if (oldprogram) {
                 olddialoguestate = toDialogueState(oldprogram, this._idQueries);
                 if (typeof olddialoguestate === 'string') {
                     console.log(`Sentence ${this._id}'s existing code is unusable: ${olddialoguestate}`);
                     olddialoguestate = undefined;
-                } else {
-                    this._adjustDevices(olddialoguestate);
                 }
             }
         }
