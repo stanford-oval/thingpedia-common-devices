@@ -39,11 +39,18 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
 
         // TODO: Find a better way to mock.
         if (process.env.CI) {
-            return [{
-                id: new Tp.Value.Entity("0", "id"),
-                geo: new Tp.Value.Location(37, -122, "address"),
-                link: 'http://www.vaccine.com'
-            }]
+            return [
+                {
+                    id: new Tp.Value.Entity("0", "Safeway"),
+                    geo: new Tp.Value.Location(37, -122, "Safeway, Palo Alto"),
+                    link: 'http://www.safeway.com'
+                },
+                {
+                    id: new Tp.Value.Entity("1", "Walmart"),
+                    geo: new Tp.Value.Location(37, -122, "Walmart, Palo Alto"),
+                    link: 'http://www.walmart.com'
+                }
+            ]
         }
 
         const client = await this._mongodb_client();
