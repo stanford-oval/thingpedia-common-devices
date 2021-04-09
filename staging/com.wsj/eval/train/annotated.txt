@@ -18,3 +18,13 @@ UT: now => @com.wsj.get(section=$?) => notify;
 U: get wall street journal headlines
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => @com.wsj.get(section=$?) => notify;
+====
+# online/341573
+U: monitor wsj news on coronavirus
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.wsj.get() filter title =~ "coronavirus");
+====
+# online/1441256
+U: monitor wsj
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.wsj.get(section=enum technology));

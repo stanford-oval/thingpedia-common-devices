@@ -43,3 +43,23 @@ UT: @org.thingpedia.icalendar.list_events();
 U: schedule
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.icalendar.list_events();
+====
+# online/120977
+U: notify me when my next appointment starts on my calendar
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.icalendar.list_events()) filter status == enum started;
+====
+# online/121431
+U: notify me when a urgent event is about to start
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.icalendar.list_events() filter summary =~ "urgent") filter status == enum started;
+====
+# online/1647349
+U: notify me when the meeting with "str:QUOTED_STRING::0:" ends on my calendar
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.icalendar.list_events() filter organizer =~ "str:QUOTED_STRING::0:") filter status == enum ended;
+====
+# online/62110278
+U: tell me when the meeting starts
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.icalendar.list_events()) filter status == enum started;

@@ -618,3 +618,8 @@ UT: @org.thingpedia.iot.light-bulb(name="b-lights").set_power(power=enum on);
 U: is the lamp on?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.light-bulb.power();
+====
+# log/57073
+U: turn livingroom lights on at 0:0
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: attimer(time=[new Time(0, 0)]) => @org.thingpedia.iot.light-bulb(name="livingroom").set_power(power=enum on);

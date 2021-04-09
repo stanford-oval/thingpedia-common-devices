@@ -73,3 +73,8 @@ UT: @com.tesla.car.set_air_conditioning(power=enum off);
 U: where is my tesla car?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.tesla.car.get_drive_state();
+====
+# online/1658803
+U: when the temperature of my tesla car becomes 13 c, turn on the air conditioner of my tesla.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.tesla.car.get_climate_state()) filter inside_temperature >= 13C => @com.tesla.car.set_air_conditioning(power=enum on);

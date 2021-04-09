@@ -268,11 +268,6 @@ class Processor extends stream.Writable {
                     sel.kind = DEVICES_REMAP[sel.kind];
                 return true;
             }
-            visitExternalBooleanExpression(expr) {
-                if (expr.kind in DEVICES_REMAP)
-                    expr.kind = DEVICES_REMAP[expr.kind];
-                return true;
-            }
         });
     }
 
@@ -281,10 +276,6 @@ class Processor extends stream.Writable {
         dialogueState.visit(new class extends ThingTalk.Ast.NodeVisitor {
             visitDeviceSelector(sel) {
                 devices.add(sel.kind);
-                return true;
-            }
-            visitExternalBooleanExpression(expr) {
-                devices.add(expr.kind);
                 return true;
             }
         });
