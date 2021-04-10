@@ -29,38 +29,16 @@
 // OF THE POSSIBILITY OF SUCH DAMAGE.
 
 dataset @com.smartnews language "en" {
-    query := @com.smartnews.article()
-    #_[utterances=["smartnews",
-                   "smart news",
-                   "news",
-                   "top news",
-                   "news from smartnews",
-                   "news on smartnews",
-                   "breaking news",
-                   "global news",
-                   "hot topic",
-                   "high rank news",
-                   "article",
-                   "story",
-                   "news story",
-                   "news report"]]
-    #[id=61614268]
-    #[name="TopArticles"];
-
     query (p_count :Number) := @com.smartnews.article()[1 : p_count]
-    #_[utterances=["$p_count smartnews",
-                   "$p_count smart news",
-                   "$p_count news",
-                   "$p_count top news",
-                   "$p_count news from smartnews",
-                   "$p_count news on smartnews",
-                   "$p_count breaking news",
-                   "$p_count important news",
-                   "$p_count global news",
-                   "$p_count hot topic",
-                   "$p_count news sotry",
-                   "$p_count news report",
-                   "$p_count story"
+    #_[utterances=["${p_count:const} news",
+                   "${p_count:const} top news",
+                   "${p_count:const} breaking news",
+                   "${p_count:const} important news",
+                   "${p_count:const} global news",
+                   "${p_count:const} hot topic",
+                   "${p_count:const} news sotry",
+                   "${p_count:const} news report",
+                   "${p_count:const} story"
                    ]]
     #[id=62725774]
     #[name="TopArticlesWithCount"];
