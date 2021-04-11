@@ -1027,6 +1027,35 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         }
     }
 
+    async do_add_song_to_playlist({
+        song,
+        playlist
+    }) {
+        if (this.state.product !== "premium" && this.state.product !== undefined)
+            throwError("non_premium_account");
+
+        let playListURI = String(playlist);
+        playListURI = playListURI.substring(playListURI.indexOf("playlist:") + 9);
+        let data = {
+            "uris": [String(song)]
+        };
+        return this.add_uris_to_playlist(playListURI, data);
+    }
+
+    async add_uris_to_playlist(playlistURL, uris) {
+        let addingURL = `https://api.spotify.com/v1/users/${this.state.id}/playlists/${playlistURL}/tracks`;
+        console.log("url is " + addingURL);
+        console.log(typeof addingURL);
+        console.log(JSON.stringify(uris));
+        if (this._testMode())
+                    return;
+        try {
+            await this.http_post_default_options(addingURL.toString(), JSON.stringify(uris));
+        }  catch (error) {
+            throwError('disallowed_action');
+        }
+    }
+
     async do_play_artist({
         artist
     }, env) {

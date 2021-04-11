@@ -271,6 +271,18 @@ class @com.spotify
   }]
   #[confirm=enum(auto)];
 
+  action add_song_to_playlist(in req song : Entity(com.spotify:song),
+			      in req playlist: Entity(com.spotify:playlist))
+  #_[canonical=["add a song to a playlist", "add a track to a playlist"]]
+  #_[confirmation="add the song $song to the playlist $playlist"]
+  #_[on_error={
+    disallowed_action=["you can't add songs to this playlist"],
+    non_premium_account=["you need a spotify premium account to do this"],
+    rate_limit_error=["spotify is temporarily unavailable"]
+  }]
+  #[confirm=enum auto]
+  #[minimal_projection=[]];
+
   list query artist(out id: Entity(com.spotify:artist)
                     #[string_values="tt:song_artist"]
                     #[unique=true]

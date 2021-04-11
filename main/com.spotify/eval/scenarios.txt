@@ -327,3 +327,12 @@ U: now => (@com.spotify.playable(), id =~ ("yellow brick road")) => @com.spotify
 
 A: I played Goodbye Yellow Brick Road - Remastered 2014 on Spotify\.
 A: >> expecting = null
+
+====
+# 35-add-song-to-playlist (req=com.spotify)
+#U: add despacito to my playlist
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => (@com.spotify().song(), id =~ "despacito")[1] => @com.spotify().add_song_to_playlist(playlist=null^^com.spotify:playlist ("my playlist"), song=id);
+
+A: I added a song to a playlist with playlist My playlist\.
+A: >> expecting = null
