@@ -1031,8 +1031,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         song,
         playlist
     }) {
-        if (this.state.product !== "premium" && this.state.product !== undefined)
-            throwError("non_premium_account");
 
         let playListURI = String(playlist);
         playListURI = playListURI.substring(playListURI.indexOf("playlist:") + 9);
@@ -1043,15 +1041,28 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     }
 
     async add_uris_to_playlist(playlistURL, uris) {
-        let addingURL = `https://api.spotify.com/v1/users/${this.state.id}/playlists/${playlistURL}/tracks`;
-        console.log("url is " + addingURL);
-        console.log(typeof addingURL);
-        console.log(JSON.stringify(uris));
+        const url = `https://api.spotify.com/v1/users/${this.state.id}/playlists/${playlistURL}/tracks`;
         if (this._testMode())
                     return;
         try {
-            await this.http_post_default_options(addingURL.toString(), JSON.stringify(uris));
+            await this.http_post_default_options(url.toString(), JSON.stringify(uris));
         }  catch (error) {
+            throwError('disallowed_action');
+        }
+    }
+
+    async do_create_playlist({
+        playlistName
+    }) {
+        if (this._testMode())
+                    return;
+        const url = `https://api.spotify.com/v1/users/${this.state.id}/playlists`
+        let data = {
+            name: playlistName,
+        };
+        try {
+            await this.http_post_default_options(url.toString(), JSON.stringify(data));
+        } catch (error) {
             throwError('disallowed_action');
         }
     }

@@ -283,6 +283,16 @@ class @com.spotify
   #[confirm=enum auto]
   #[minimal_projection=[]];
 
+  action create_playlist(in req playlistName : String)
+  #_[canonical=["create a new playlist", "create playlist"]]
+  #_[confirmation="create a playlist named $playlistName"]
+  #_[on_error={
+    disallowed_action=["failed to create a playlist"],
+    rate_limit_error=["spotify is temporarily unavailable"]
+  }]
+  #[confirm=enum auto]
+  #[minimal_projection=[]];
+
   list query artist(out id: Entity(com.spotify:artist)
                     #[string_values="tt:song_artist"]
                     #[unique=true]
