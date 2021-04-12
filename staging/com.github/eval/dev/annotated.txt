@@ -43,3 +43,23 @@ UT: now => @com.github.get_file(file_name="str:QUOTED_STRING::0:", repo_name="st
 U: comment issue on github
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.github.comment_issue();
+====
+# online/120735
+U: monitor github issue 13
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.github.get_issue() filter number == 13);
+====
+# online/120865
+U: monitor github issues
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.github.get_issue());
+====
+# online/121149
+U: notify me if someone commits to github and the message contains fixed nasty bug
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.github.get_commit() filter message =~ "fixed nasty bug");
+====
+# online/32553131
+U: notify me when someone files a bug in github
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.github.get_issue());

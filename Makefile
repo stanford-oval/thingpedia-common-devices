@@ -28,15 +28,14 @@ staging_pkgfiles := $(universe_pkgfiles) $(call pkgfiles_fn,staging)
 template_file ?= thingtalk/en/dialogue.genie
 dataset_file ?= eval/$(release)/dataset.tt
 schema_file ?= eval/$(release)/schema.tt
-paraphrases_user ?= $(wildcard eval/$(release)/paraphrase.tsv $(foreach d,$($(release)_devices),$(d)/eval/paraphrase.tsv))
-eval_files ?= $(wildcard eval/$(release)/$(eval_set)/annotated.txt $(foreach d,$($(release)_devices),$(d)/eval/$(eval_set)/annotated.txt))
-fewshot_train_files ?= $(wildcard eval/$(release)/train/annotated.txt $(foreach d,$($(release)_devices),$(d)/eval/train/annotated.txt))
+paraphrases_user ?= eval/$(release)/paraphrase.tsv $(wildcard $(foreach d,$($(release)_devices),$(d)/eval/paraphrase.tsv))
+eval_files ?= eval/$(release)/$(eval_set)/annotated.txt $(wildcard $(foreach d,$($(release)_devices),$(d)/eval/$(eval_set)/annotated.txt))
+fewshot_train_files ?= eval/$(release)/train/annotated.txt $(wildcard $(foreach d,$($(release)_devices),$(d)/eval/train/annotated.txt))
 
 synthetic_flags ?= \
 	dialogues \
 	aggregation \
 	multifilters \
-	nostream \
 	notablejoin \
 	projection \
 	projection_with_filter \
@@ -125,6 +124,13 @@ eval/$(release)/constants.tsv: $(schema_file) parameter-datasets.tsv
 	  --thingpedia $(schema_file) \
 	  --parameter-datasets parameter-datasets.tsv
 	if test -f $@ && cmp $@.tmp $@ ; then rm $@.tmp ; else mv $@.tmp $@ ; fi
+
+eval/$(release)/paraphrase.tsv : eval/everything/paraphrase.tsv
+	node ./scripts/subset-multidevice.js paraphrase $(release) $(custom_devices)
+
+eval/$(release)/%/annotated.txt : eval/everything/%/annotated.txt
+	mkdir -p $(dir $@)
+	node ./scripts/subset-multidevice.js $* $(release) $(custom_devices)
 
 %/manifest.auto.tt: %/manifest.tt eval/$(release)/constants.tsv parameter-datasets.tsv .embeddings/paraphraser-bart
 	$(genie) auto-annotate -o $@.tmp --thingpedia $< \
@@ -326,7 +332,7 @@ clean:
 
 lint:
 	any_error=0 ; \
-	for d in $(devices) ; do \
+	for d in $($(release)_devices) ; do \
 		echo $$d ; \
 		$(genie) lint-device --thingpedia-url $(thingpedia_url) --manifest $$d/manifest.tt --dataset $$d/dataset.tt || any_error=$$? ; \
 		test ! -f $$d/package.json || $(eslint) $$d/*.js || any_error=$$? ; \

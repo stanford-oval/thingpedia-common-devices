@@ -93,3 +93,23 @@ UT: @com.cryptonator.get_price(currency=null^^tt:cryptocurrency_code("bitcoin"))
 U: what is bitcoin price
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.cryptonator.get_price(currency=null^^tt:cryptocurrency_code("bitcoin"));
+====
+# online/1687503
+U: alert me when bitcoin is over $2
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.cryptonator.get_price(currency=null^^tt:cryptocurrency_code("bitcoin"))) filter price >= 2$usd;
+====
+# online/1687826
+U: if bitcoin price goes above $2, notify me
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.cryptonator.get_price(currency=null^^tt:cryptocurrency_code("bitcoin"))) filter price >= 2$usd;
+====
+# online/13722306
+U: alert me when the price of bitcoin is below $2
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.cryptonator.get_price(currency=null^^tt:cryptocurrency_code("bitcoin"))) filter price <= 2$usd;
+====
+# online/62728038
+U: get price of a btc and notify me
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.cryptonator.get_price(currency=null^^tt:cryptocurrency_code("btc")));

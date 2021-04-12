@@ -108,3 +108,8 @@ UT: sort(release_date desc of @com.xkcd.comic())[1];
 U: get xkcd 16
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.xkcd.comic() filter id == 16;
+====
+# online/1515830
+U: every 2 ms get a random xkcd
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: timer(base=$now, interval=2ms) => @com.xkcd.random_comic();

@@ -123,3 +123,23 @@ UT: @org.thingpedia.iot.cover.set_openclose(state=enum open);
 U: open volet vaness
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.cover(name="volet vaness").set_openclose(state=enum open);
+====
+# online/55592509
+U: notify me when my shutter closes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.cover.state()) filter state == enum closed;
+====
+# online/55592666
+U: notify me when my curtain lowers
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.cover.state()) filter state == enum closed;
+====
+# online/55592667
+U: notify me the moment my curtain lowers
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.cover.state()) filter state == enum closed;
+====
+# online/57061578
+U: open the window at 0:0
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: attimer(time=[new Time(0, 0)]) => @org.thingpedia.iot.cover.set_openclose(state=enum open);

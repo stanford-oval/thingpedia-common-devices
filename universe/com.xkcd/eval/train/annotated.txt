@@ -23,3 +23,13 @@ UT: sort(release_date asc of @com.xkcd.comic())[1];
 U: get today's xkcd
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.xkcd.comic(), release_date==$start_of(day);
+====
+# online/1435530
+U: get an xkcd everyday.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: timer(base=$now, interval=1day) => @com.xkcd.random_comic();
+====
+# log/17871
+U: at 0:0, get me an xkcd comic
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: attimer(time=[new Time(0, 0)]) => @com.xkcd.random_comic();

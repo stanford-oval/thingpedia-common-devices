@@ -48,3 +48,28 @@ UT: @com.instagram.get_pictures() filter contains(hashtags, "hamster"^^tt:hashta
 U: find me my last 13 lo-fi instagram pictures
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.instagram.get_pictures(count=13) filter filter_ == null^^com.instagram:filter_("lo-fi");
+====
+# online/121053
+U: monitor my new instagram pictures
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.instagram.get_pictures());
+====
+# online/121119
+U: if i post a picture on instagram with hashtag cali then notify me
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.instagram.get_pictures() filter contains(hashtags, "cali"^^tt:hashtag));
+====
+# online/121542
+U: when i post a picture on instagram notify me
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.instagram.get_pictures());
+====
+# online/121547
+U: if i post a picture on instagram with hashtag str:HASHTAG::0: then notify me
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.instagram.get_pictures() filter contains(hashtags, "str:HASHTAG::0:"^^tt:hashtag));
+====
+# online/153898
+U: new pictures on instagram
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.instagram.get_pictures());

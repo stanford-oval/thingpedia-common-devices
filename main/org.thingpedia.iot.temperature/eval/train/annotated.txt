@@ -68,3 +68,23 @@ UT: @org.thingpedia.iot.temperature.temperature();
 U: what is the current temperature in the house
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.temperature.temperature();
+====
+# online/120565
+U: monitor if temperature greater than 95 f
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.temperature.temperature()) filter value >= 95F;
+====
+# online/121113
+U: monitor if the temperature is between 55 f and 99 f
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.temperature.temperature()) filter value <= 99F && value >= 55F;
+====
+# log/6681
+U: notify my if the temperature on my nest is above 13
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.temperature(name="nest").temperature()) filter value >= 13defaultTemperature;
+====
+# log/158221
+U: alert me when the temperature falls below 13 degrees
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.temperature.temperature()) filter value <= 13defaultTemperature;

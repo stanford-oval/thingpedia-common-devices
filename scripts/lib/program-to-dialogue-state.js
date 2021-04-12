@@ -46,9 +46,27 @@ function isTableJoin(table) {
     throw new TypeError(table.constructor.name);
 }
 
+class AdjustDefaultParametersVisitor extends Ast.NodeVisitor {
+    visitInvocation(invocation) {
+        invocation.in_params = invocation.in_params.filter((ip) => {
+            const arg = invocation.schema.getArgument(ip.name);
+            const _default = arg.impl_annotations.default;
+            if (_default && ip.value.equals(_default))
+                return false;
+            return true;
+        });
+        return false;
+    }
+}
+
+function adjustDefaultParameters(stmt) {
+    stmt.visit(new AdjustDefaultParametersVisitor());
+    return stmt;
+}
+
 function adjustStatementsForInitialRequest(stmt, idQueries) {
     if (stmt.stream)
-        return 'has stream';
+        return [adjustDefaultParameters(stmt)];
 
     if (isTableJoin(stmt.expression))
         return 'has table join';
@@ -82,6 +100,7 @@ function adjustStatementsForInitialRequest(stmt, idQueries) {
             in_param.value = new Ast.Value.Undefined(true);
         }
         const actionStmt = new Ast.ExpressionStatement(null, newAction);
+        adjustDefaultParameters(actionStmt);
         newStatements.push(actionStmt);
     } else if (stmt.expression.schema.functionType === 'action') {
         const action = stmt.last;
@@ -116,8 +135,10 @@ function adjustStatementsForInitialRequest(stmt, idQueries) {
                 }
             }
         }
+        adjustDefaultParameters(stmt);
         newStatements.push(stmt);
     } else {
+        adjustDefaultParameters(stmt);
         newStatements.push(stmt);
     }
 

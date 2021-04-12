@@ -881,6 +881,11 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 await new Promise((resolve) => setTimeout(resolve, 20000));
                 devices = await this.get_get_available_devices();
             }
+            if (this.spotifyd) {
+                // wait 3 seconds for spotifyd to eventually reload
+                await new Promise((resolve) => setTimeout(resolve, 3000));
+                devices = await this.get_get_available_devices();
+            }
             if (devices.length === 0)
                 return [null, null];
         }
