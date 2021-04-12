@@ -43,6 +43,16 @@ dataset @com.spotify language "en" {
                    "play ${p_genre:const} music"]]
     ;
 
+    program (p_song :String, p_playlist :Entity(com.spotify:playlist)) := (@com.spotify.song(), id =~ p_song) => @com.spotify.add_song_to_playlist(song=id, playlist=p_playlist)
+    #_[utterances=["add ${p_song:no-undefined} to ${p_playlist}",
+                   "put ${p_song:no-undefined} in ${p_playlist}"]]
+    ;
+
+    action (p_playlist :Entity(com.spotify:playlist)) := @com.spotify.add_this_song_to_playlist(playlist=p_playlist)
+    #_[utterances=["add this song to ${p_playlist}",
+                   "put this song in ${p_playlist}"]]
+    ;
+
     action (p_state :Enum(on,off)) := @com.spotify.player_shuffle(shuffle=p_state)
     #_[utterances=["turn shuffle ${p_state}",
                    "turn ${p_state} shuffle"]]
