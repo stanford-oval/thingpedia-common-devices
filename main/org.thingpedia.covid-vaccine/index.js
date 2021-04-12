@@ -33,7 +33,7 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
     }
 
     async get_appointment({ location, distance }) {
-        if (distance == undefined || distance == null)
+        if (distance === undefined || distance === null)
             distance = 10.0;
         console.log(location, distance);
 
