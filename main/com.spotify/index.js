@@ -1046,24 +1046,24 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         const currentlyPlaying = await this.get_get_currently_playing();
         if (currentlyPlaying.length === 0) {
             throwError("no_song_error");
-        } else {
-            let playListURI = String(playlist);
-            playListURI = playListURI.substring(playListURI.indexOf("playlist:") + 9);
-            let song = String(currentlyPlaying[0]["song"]);
-            let data = {
-                "uris": [song]
-            };
-            return this.add_uris_to_playlist(playListURI, data);
         }
+        let playListURI = String(playlist);
+        playListURI = playListURI.substring(playListURI.indexOf("playlist:") + 9);
+        let song = String(currentlyPlaying[0]["song"]);
+        let data = {
+            "uris": [song]
+        };
+        return this.add_uris_to_playlist(playListURI, data);
+
     }
 
     async add_uris_to_playlist(playlistURL, uris) {
         const url = `https://api.spotify.com/v1/users/${this.state.id}/playlists/${playlistURL}/tracks`;
         if (this._testMode())
-                    return;
+            return;
         try {
             await this.http_post_default_options(url.toString(), JSON.stringify(uris));
-        }  catch (error) {
+        } catch (error) {
             throwError('disallowed_action');
         }
     }
@@ -1072,8 +1072,8 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         name
     }) {
         if (this._testMode())
-                    return;
-        const url = `https://api.spotify.com/v1/users/${this.state.id}/playlists`
+            return;
+        const url = `https://api.spotify.com/v1/users/${this.state.id}/playlists`;
         let data = {
             name,
         };
