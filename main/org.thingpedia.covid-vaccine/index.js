@@ -50,7 +50,7 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
                     geo: new Tp.Value.Location(37, -122, "Walmart, Palo Alto"),
                     link: 'http://www.walmart.com'
                 }
-            ]
+            ];
         }
 
         const client = await this._mongodb_client();
