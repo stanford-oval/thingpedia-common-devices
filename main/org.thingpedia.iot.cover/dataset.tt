@@ -1,7 +1,5 @@
 dataset @org.thingpedia.iot.cover language "en" {
-    program  := {
-  now => @org.thingpedia.iot.cover.state() => notify;
-}
+    program  := @org.thingpedia.iot.cover.state() 
     #_[utterances=["is my curtain open?",
                    "are my curtains closed?",
                    "check if my curtain is raised",
@@ -128,7 +126,7 @@ dataset @org.thingpedia.iot.cover language "en" {
     #[id=54932453]
     #[name="MonitorState"];
 
-    stream (p_state :Enum(open,closed))  := edge (monitor (@org.thingpedia.iot.cover.state())) on state == p_state
+    stream (p_state :Enum(opened,closed))  := monitor (@org.thingpedia.iot.cover.state()), state == p_state
     #_[utterances=["when the curtains are ${p_state}",
                    "when my curtains gets ${p_state}",
                    "when my awning is ${p_state}",
@@ -146,7 +144,7 @@ dataset @org.thingpedia.iot.cover language "en" {
     #[id=54932460]
     #[name="MonitorStateByState"];
 
-    stream  := edge (monitor (@org.thingpedia.iot.cover.state())) on state == enum(open)
+    stream  := monitor (@org.thingpedia.iot.cover.state()), state == enum(opened)
     #_[utterances=["when my curtains are raised",
                    "when the curtains are put up",
                    "when I bring up my curtains",
@@ -169,7 +167,7 @@ dataset @org.thingpedia.iot.cover language "en" {
     #[id=54932474]
     #[name="MonitorStateByStateOpen"];
 
-    stream  := edge (monitor (@org.thingpedia.iot.cover.state())) on state == enum(closed)
+    stream  := monitor (@org.thingpedia.iot.cover.state()), state == enum(closed)
     #_[utterances=["when my curtains lower",
                    "when the curtains get lowered",
                    "the moment the curtains get put down",
@@ -244,9 +242,7 @@ dataset @org.thingpedia.iot.cover language "en" {
     #[id=54932550]
     #[name="SetOpencloseWithStateClose"];
 
-    program (p_name :String)  := {
-  now => @org.thingpedia.iot.cover(name=p_name).state() => notify;
-}
+    program (p_name :String)  := @org.thingpedia.iot.cover(name=p_name).state()
     #_[utterances=["are my ${p_name} curtains open?",
                    "are my ${p_name} curtains closed?",
                    "check if my ${p_name} curtains are raised",
@@ -328,7 +324,7 @@ dataset @org.thingpedia.iot.cover language "en" {
     #[id=54932631]
     #[name="MonitorState1"];
 
-    stream (p_name :String, p_state :Enum(open,closed))  := edge (monitor (@org.thingpedia.iot.cover(name=p_name).state())) on state == p_state
+    stream (p_name :String, p_state :Enum(opened,closed))  := monitor (@org.thingpedia.iot.cover(name=p_name).state()), state == p_state
     #_[utterances=["when the ${p_name} curtains are ${p_state}",
                    "when my ${p_name} curtains gets ${p_state}",
                    "when the ${p_name} blinds are ${p_state}",
@@ -344,7 +340,7 @@ dataset @org.thingpedia.iot.cover language "en" {
     #[id=54932638]
     #[name="MonitorStateByState1"];
 
-    stream (p_name :String)  := edge (monitor (@org.thingpedia.iot.cover(name=p_name).state())) on state == enum(open)
+    stream (p_name :String)  := monitor (@org.thingpedia.iot.cover(name=p_name).state()), state == enum(opened)
     #_[utterances=["when my ${p_name} curtains are raised",
                    "when the ${p_name} curtains are put up",
                    "once I bring up my ${p_name} curtains",
@@ -363,7 +359,7 @@ dataset @org.thingpedia.iot.cover language "en" {
     #[id=54932650]
     #[name="MonitorStateByStateOpen1"];
 
-    stream (p_name :String)  := edge (monitor (@org.thingpedia.iot.cover(name=p_name).state())) on state == enum(closed)
+    stream (p_name :String)  := monitor (@org.thingpedia.iot.cover(name=p_name).state()), state == enum(closed)
     #_[utterances=["when my ${p_name} curtains lower",
                    "when the ${p_name} curtains get lowered",
                    "the moment the ${p_name} curtains get put down",

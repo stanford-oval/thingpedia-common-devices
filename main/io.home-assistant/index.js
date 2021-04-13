@@ -15,6 +15,7 @@ const HomeAssistantClimate = require('./climate');
 const HomeAssistantCover = require('./cover');
 const HomeAssistantFan = require('./fan');
 const HomeAssistantLightbulb = require('./light-bulb');
+const HomeAssistantLock = require('./lock');
 const HomeAssistantMediaPlayer = require('./media-player');
 const HomeAssistantSensor = require('./sensor');
 const HomeAssistantSwitch = require('./switch');
@@ -26,14 +27,14 @@ const HASS_URL = 'http://hassio.local:8123';
 // map to a Home Assistant domain to a specific Thingpedia device
 const DOMAIN_TO_TP_KIND = {
     // devices with dedicated APIs
+    'cover': 'org.thingpedia.iot.cover',
+    'fan': 'org.thingpedia.iot.fan',
     'light': 'org.thingpedia.iot.light-bulb',
+    'lock': 'org.thingpedia.iot.lock',
     'switch': 'org.thingpedia.iot.switch',
-    'vacuum': 'org.thingpedia.iot.vacuum',
-    //'lock': 'org.thingpedia.iot.lock',
-    //'climate': 'io.home-assistant.climate',
-    //'cover_active': 'org.thingpedia.iot.cover',
-    //'fan': 'org.thingpedia.iot.fan',
-
+    'climate': 'org.thingpedia.iot.climate',
+    'vacuum': 'org.thingpedia.iot.vacuum', 
+    
     // media players
     //'media_player': 'org.thingpedia.iot.media-player',
     //'media_player_speaker': 'org.thingpedia.iot.speaker',
@@ -46,6 +47,7 @@ const DOMAIN_TO_TP_KIND = {
     'sensor_humidity': 'org.thingpedia.iot.humidity',
     'sensor_illuminance': 'org.thingpedia.iot.illuminance',
     'sensor_motion': 'org.thingpedia.iot.motion',
+    'sensor_smoke': 'org.thingpedia.iot.smoke',
     'sensor_temperature': 'org.thingpedia.iot.temperature',
     'sensor_uv': 'org.thingpedia.iot.uv'
     //'sensor_air': 'org.thingpedia.iot.air',
@@ -66,10 +68,11 @@ const DOMAIN_TO_TP_KIND = {
 // note that we need to create distinct JS classes for each Thingpedia class because the
 // Thingpedia loading code will attach metadata to the JS class
 const SUBDEVICES = {
-    'io.home-assistant.climate': HomeAssistantClimate,
     'org.thingpedia.iot.cover': HomeAssistantCover,
+    'org.thingpedia.iot.climate': HomeAssistantClimate,
     'org.thingpedia.iot.fan': HomeAssistantFan,
     'org.thingpedia.iot.light-bulb': HomeAssistantLightbulb,
+    'org.thingpedia.iot.lock': HomeAssistantLock,
     'org.thingpedia.iot.media-player': HomeAssistantMediaPlayer,
     'org.thingpedia.iot.switch': HomeAssistantSwitch,
     'org.thingpedia.iot.vacuum': HomeAssistantVacuum
@@ -106,19 +109,23 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
         const [domain,] = entityId.split('.');
         let kind = undefined;
         if (domain === 'binary_sensor' && ['smoke', 'gas', 'CO', 'CO2'].includes(attributes.device_class))
-            kind = DOMAIN_TO_TP_KIND['sensor_air'];
+            kind = DOMAIN_TO_TP_KIND['air'];
+        else if (domain === 'sensor' && ['smoke'].includes(attributes.device_class))
+            kind = DOMAIN_TO_TP_KIND['sensor_smoke'];   
         else if (domain === 'lock' || attributes.device_class === 'lock')
             kind = DOMAIN_TO_TP_KIND['lock'];
         else if (domain === 'binary_sensor' && ['heat', 'cold'].includes(attributes.device_class))
-            kind = DOMAIN_TO_TP_KIND['sensor_heat'];
-        else if (domain === 'binary_sensor' && attributes.device_class === 'window')
-            kind = DOMAIN_TO_TP_KIND['cover_active'];
-        else if ((domain === 'cover' && attributes.device_class === 'garage') || domain === 'binary_sensor' && attributes.device_class === 'garage_door')
+            kind = DOMAIN_TO_TP_KIND['heat'];
+        else if ((domain === 'sensor' || domain === 'binary_sensor') && attributes.device_class === 'battery')
+            kind = DOMAIN_TO_TP_KIND['sensor_battery'];
+        else if (domain === 'binary_sensor' && (attributes.device_class === 'window' || attributes.device_class === 'garage_door' || attributes.device_class === 'door'))
             kind = DOMAIN_TO_TP_KIND['sensor_door'];
-        else if ((domain === 'sensor') || (domain === 'binary_sensor') || (domain === 'cover' && attributes.device_class === 'door'))
+        else if ((domain === 'sensor') || (domain === 'binary_sensor'))
             kind = DOMAIN_TO_TP_KIND[`sensor_${attributes.device_class}`];
-        else if (domain === 'cover')
-            kind = DOMAIN_TO_TP_KIND['cover_active'];
+        /*else if (domain === 'cover')
+            kind = DOMAIN_TO_TP_KIND['cover'];
+            else if (domain === 'cover')
+            kind = DOMAIN_TO_TP_KIND['cover'];*/
         else if (domain === 'media_player')
             kind = DOMAIN_TO_TP_KIND[`media_player_${attributes.device_class}`];
         else
