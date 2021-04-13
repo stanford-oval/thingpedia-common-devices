@@ -42,6 +42,4 @@ module.exports = class HomeAssistantLightbulb extends HomeAssistantSwitch {
     async do_color_loop() {
         await this._callService('light', 'turn_on', { effect: 'colorloop' });
     }
-    
-    
 };
