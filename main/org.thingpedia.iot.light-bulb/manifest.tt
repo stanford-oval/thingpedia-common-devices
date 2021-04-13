@@ -30,12 +30,26 @@ abstract class @org.thingpedia.iot.light-bulb extends @org.thingpedia.iot.switch
   #[confirm=false];
 
   action set_power(in req power: Enum(on,off)
-                   #_[prompt=["do you want to turn it on or off"]]
-                   #_[canonical={
-                      base=["power"],
-                      property=[]
-                   }])
+                   #_[prompt="do you want to turn it on or off"]
+                   #_[canonical="power"])
   #_[canonical=["set the power on the lights", "set the power on the lamp"]]
   #_[confirmation="turn $power ${__device}"]
   #[confirm=false];
+
+  action set_color(in req color: Enum(white,black,red,orange,yellow,green,blue,purple,pink,brown,gray,chartreuse,cyan,azure,violet,magenta,rose,amber,teal,indigo)
+                   #_[prompt="do you want to change color to the light"]
+                   #_[canonical="color"])
+  #_[canonical=["set the color on the lights", "set the color on the lamp"]]
+  #_[confirmation="set ${__device} $color"]
+  #[confirm=false];
+
+  action set_brightness(in req pct: Number #_[prompt="from 0 to 100, which brightness do you want to set"]
+                    #_[canonical={
+                      base=["brightness", "value"],
+                      preposition=["to %"]
+                    }])
+  #_[canonical=["set the brightness on the lights", "set the brightness on the lamp"]]
+  #_[confirmation="set ${__device} $pct"]
+  #[confirm=false];
+
 }
