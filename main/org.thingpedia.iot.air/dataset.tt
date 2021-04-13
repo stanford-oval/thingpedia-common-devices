@@ -1,0 +1,295 @@
+dataset @org.thingpedia.iot.air language "en" {
+    program  := @org.thingpedia.iot.air.state() 
+    #_[utterances=["is there any carbon dioxide?",
+                   "check if there is any carbon monoxide",
+                   "check whether CO is detected",
+                   "is there any gas?",
+                   "check if the sensor is detecting any gas",
+                   "check if gas is leaking",
+                   "do you smell CO2?",
+                   "is there a CO leak?",
+                   "is there carbon monoxide?",
+                   "there is presence of particulate matter?",
+                   "is there any monoxide or dioxide in the air?"]]
+    #[id=54300068]
+    #[name="StateThenNotify"];
+
+    query  := @org.thingpedia.iot.air.state()
+    #_[utterances=["if the sensor is detecting any CO2",
+                   "whether the sensor is detecting carbon dioxide",
+                   "if the CO detector is catching any carbon monoxide",
+                   "if the gas sensor is detecting gas",
+                   "whether the gas sensor is detecting any gas",
+                   "whether there is any CO",
+                   "if there is gas leaking",
+                   "whether there is dioxide",
+                   "where there is monoxide"]]
+    #[id=54300077]
+    #[name="State"];
+
+    stream  := monitor (@org.thingpedia.iot.air.state())
+    #_[utterances=["when the air quality detector starts or stops detecting any monoxide",
+                   "when the gas detector starts or stops detecting gas",
+                   "when the air quality detector starts or stops detecting any dioxide",
+                   "when the quality of the air is affected by presence of any particulate matter"]]
+    #[id=54300085]
+    #[name="MonitorState"];
+
+    stream (p_state :Enum(gas,PM01,PM25,PM10,AQI,O3,CO,CO2,SO2,N2O,NO,NO2,nothing))  := monitor (@org.thingpedia.iot.air.state()), state == p_state
+    #_[utterances=["when my sensor starts detecting ${p_state}",
+                   "when my detector is detecting ${p_state}",
+                   "the moment my sensor detects ${p_state}"]]
+    #[id=54300088]
+    #[name="MonitorStateByState"];
+
+    stream  := monitor (@org.thingpedia.iot.air.state()), state == enum(gas)
+    #_[utterances=["when gas is detected",
+                   "when there is gas",
+                   "when a gas leak is detected",
+                   "when there is a gas leak",
+                   "when you smell gas"]]
+    #[id=54300091]
+    #[name="MonitorStateByStateGas"];
+
+    stream  := monitor (@org.thingpedia.iot.air.state()), state == enum(PM01)
+    #_[utterances=["when PM0.1 is detected",
+                   "when there is particulate matter 0.1",
+                   "when you smell PM0.1"]]
+    #[id=5430009111]
+    #[name="MonitorStateByStatePM01"];
+
+    stream  := monitor (@org.thingpedia.iot.air.state()), state == enum(PM25)
+    #_[utterances=["when PM2.5 is detected",
+                   "when there is particulate matter 2.5",
+                   "when you smell PM2.5"]]
+    #[id=5430009112]
+    #[name="MonitorStateByStatePM25"];
+
+    stream  := monitor (@org.thingpedia.iot.air.state()), state == enum(PM10)
+    #_[utterances=["when PM10 is detected",
+                   "when there is particulate matter 10",
+                   "when you smell PM10"]]
+    #[id=5430009113]
+    #[name="MonitorStateByStatePM10"];
+
+    stream  := monitor (@org.thingpedia.iot.air.state()), state == enum(AQI)
+    #_[utterances=["when AQI variation is detected",
+                   "when there is air quality index reported"]]
+    #[id=5430009114]
+    #[name="MonitorStateByStateAQI"];
+
+stream  := monitor (@org.thingpedia.iot.air.state()), state == enum(O3)
+    #_[utterances=["when O3 is detected",
+                   "when there is high ozone",
+                   "when you smell O3"]]
+    #[id=5430009115]
+    #[name="MonitorStateByStateO3"];
+
+    stream  := monitor (@org.thingpedia.iot.air.state()), state == enum(CO)
+    #_[utterances=["when CO is detected",
+                   "when there is carbon monoxide",
+                   "when you smell CO",
+                   "when there is carbon monoxide in the air"]]
+    #[id=5430009116]
+    #[name="MonitorStateByStateCO"];
+
+    stream  := monitor (@org.thingpedia.iot.air.state()), state == enum(CO2)
+    #_[utterances=["when CO2 is detected",
+                   "when there is carbon dioxide",
+                   "when you smell CO2",
+                   "when there is carbon dioxide in the air"]]
+    #[id=5430009117]
+    #[name="MonitorStateByStateCO2"];
+
+    stream  := monitor (@org.thingpedia.iot.air.state()), state == enum(SO2)
+    #_[utterances=["when SO2 is detected",
+                   "when there is sulphur dioxide",
+                   "when you smell SO2"]]
+    #[id=5430009118]
+    #[name="MonitorStateByStateSO2"];
+
+    stream  := monitor (@org.thingpedia.iot.air.state()), state == enum(N2O)
+    #_[utterances=["when N2O is detected",
+                   "when there is nitrogen oxide",
+                   "when you smell N2O"]]
+    #[id=5430009119]
+    #[name="MonitorStateByStateN2O"];
+
+    stream  := monitor (@org.thingpedia.iot.air.state()), state == enum(NO)
+    #_[utterances=["when NO is detected",
+                   "when there is nitrogen monoxide",
+                   "when you smell NO"]]
+    #[id=5430009120]
+    #[name="MonitorStateByStateNO"];
+
+stream  := monitor (@org.thingpedia.iot.air.state()), state == enum(NO2)
+    #_[utterances=["when NO2 is detected",
+                   "when there is nitrogen dioxide",
+                   "when you smell NO2"]]
+    #[id=5430009121]
+    #[name="MonitorStateByStateNO2"];
+
+    stream  := monitor (@org.thingpedia.iot.air.state()), state == enum(nothing)
+    #_[utterances=["when no particulate matter is detected",
+                   "when no PM is detected",
+                   "when O3 is not detected anymore",
+                   "when gas is not detected anymore",
+                   "when there is no more gas",
+                   "when there is no N20",
+                   "when there is no NO",
+                   "when there is no CO2",
+                   "when the carbon dioxide clears",
+                   "when the carbon monoxide goes away",
+                   "when the NO2 is gone",
+                   "when there is no more nitrogen based gas"]]
+    #[id=54300101]
+    #[name="MonitorStateByStateNothing"];
+
+    program (p_name :String)  := @org.thingpedia.iot.air(name=p_name).state()
+
+    #_[utterances=["is there any monoxide detected by the ${p_name} sensor?",
+                   "check if there is any dioxide detected by the ${p_name} sensor",
+                   "check whether particulate matter is detected by my ${p_name} sensor",
+                   "is there any gas being detected by my ${p_name} sensor?",
+                   "check if the ${p_name} sensor is detecting any oxide",
+                   "is there any ozone being detected by my ${p_name} sensor?"]]
+    #[id=54300111]
+    #[name="StateThenNotify1"];
+
+    query (p_name :String)  := @org.thingpedia.iot.air(name=p_name).state()
+    #_[utterances=["if the ${p_name} sensor is detecting any dioxide",
+                   "whether the ${p_name} sensor is detecting monoxide",
+                   "if the ${p_name} detecting something",
+                   "if the ${p_name} sensor is detecting particulate matter",
+                   "whether the ${p_name} gas sensor is detecting ozone"]]
+    #[id=54300116]
+    #[name="State1"];
+
+    stream (p_name :String)  := monitor (@org.thingpedia.iot.air(name=p_name).state())
+    #_[utterances=["when the ${p_name} starts or stops detecting dioxide",
+                   "whenever the ${p_name} detector starts or stops detecting any monoxide",
+                   "when the ${p_name} gas detector starts or stops detecting gas",
+                   "when the ${p_name} particulate matter sensor starts or stops detecting anything"]]
+    #[id=54300121]
+    #[name="MonitorState1"];
+
+    stream (p_name :String)  := monitor (@org.thingpedia.iot.air(name=p_name).state()), state == enum(gas)
+    #_[utterances=["when gas is detected by the ${p_name} sensor",
+                   "when there is gas detected by the ${p_name} sensor",
+                   "when my ${p_name} sensor detects a gas leak",
+                   "when there is a gas leak detected by the ${p_name} sensor",
+                   "when my ${p_name} sensor smell gas"]]
+    #[id=54300127]
+    #[name="MonitorStateByStateGas1"];
+
+stream (p_name :String)  := monitor (@org.thingpedia.iot.air(name=p_name).state()), state == enum(PM01)
+    #_[utterances=["when particulate matter 1.0 is detected by the ${p_name} sensor",
+                   "when there is PM0.1 by the ${p_name} sensor",
+                   "when my ${p_name} sensor says it gets saturated by PM0.1",
+                   "when my ${p_name} sensor smells particulate matter 0.1"]]
+    #[id=54300132]
+    #[name="MonitorStateByStatePM011"];
+
+    stream (p_name :String)  := monitor (@org.thingpedia.iot.air(name=p_name).state()), state == enum(PM25)
+    #_[utterances=["when particulate matter 2.5 is detected by the ${p_name} sensor",
+                   "when there is PM2.5 by the ${p_name} sensor",
+                   "when my ${p_name} sensor says it gets saturated by PM2.5",
+                   "when my ${p_name} sensor smells particulate matter 2.5"]]
+    #[id=54300132]
+    #[name="MonitorStateByStatePM251"];
+
+    stream (p_name :String)  := monitor (@org.thingpedia.iot.air(name=p_name).state()), state == enum(PM10)
+    #_[utterances=["when particulate matter 10is detected by the ${p_name} sensor",
+                   "when there is PM10 by the ${p_name} sensor",
+                   "when my ${p_name} sensor says it gets saturated by PM10",
+                   "when my ${p_name} sensor smells particulate matter 10"]]
+    #[id=54300132]
+    #[name="MonitorStateByStatePM101"];
+
+    stream (p_name :String)  := monitor (@org.thingpedia.iot.air(name=p_name).state()), state == enum(AQI)
+    #_[utterances=["when air quality index is readed by the ${p_name} sensor",
+                   "when there is AQI reading by the ${p_name} sensor",
+                   "when my ${p_name} sensor says that AQI changed",
+                   "when my ${p_name} sensor get air quality index variation"]]
+    #[id=54300132]
+    #[name="MonitorStateByStateAQI1"];
+
+    stream (p_name :String)  := monitor (@org.thingpedia.iot.air(name=p_name).state()), state == enum(O3)
+    #_[utterances=["when ozone is detected by the ${p_name} sensor",
+                   "when there is O3 by the ${p_name} sensor",
+                   "when my ${p_name} sensor says it gets saturated by ozone",
+                   "when my ${p_name} sensor smells O3"]]
+    #[id=54300132]
+    #[name="MonitorStateByStateO31"];
+
+    stream (p_name :String)  := monitor (@org.thingpedia.iot.air(name=p_name).state()), state == enum(CO)
+    #_[utterances=["when carbon monoxide is detected by the ${p_name} sensor",
+                   "when there is CO by the ${p_name} sensor",
+                   "when my ${p_name} sensor says it gets saturated by CO",
+                   "when my ${p_name} sensor smells carbon monoxide"]]
+    #[id=54300132]
+    #[name="MonitorStateByStateCO1"];
+
+    stream (p_name :String)  := monitor (@org.thingpedia.iot.air(name=p_name).state()), state == enum(CO2)
+    #_[utterances=["when carbon dioxide is detected by the ${p_name} sensor",
+                   "when there is CO2 by the ${p_name} sensor",
+                   "when my ${p_name} sensor says it gets saturated by CO2",
+                   "when my ${p_name} sensor smells carbon dioxide"]]
+    #[id=54300132]
+    #[name="MonitorStateByStateCO21"];
+
+    stream (p_name :String)  := monitor (@org.thingpedia.iot.air(name=p_name).state()), state == enum(SO2)
+    #_[utterances=["when sulphur dioxide is detected by the ${p_name} sensor",
+                   "when there is SO2 by the ${p_name} sensor",
+                   "when my ${p_name} sensor says it gets saturated by SO2",
+                   "when my ${p_name} sensor smells sulphur dioxide"]]
+    #[id=54300132]
+    #[name="MonitorStateByStateSO21"];
+
+    stream (p_name :String)  := monitor (@org.thingpedia.iot.air(name=p_name).state()), state == enum(N2O)
+    #_[utterances=["when nitrogen oxide is detected by the ${p_name} sensor",
+                   "when there is N2O by the ${p_name} sensor",
+                   "when my ${p_name} sensor says it gets saturated by N2O",
+                   "when my ${p_name} sensor smells nitrogen oxide"]]
+    #[id=54300132]
+    #[name="MonitorStateByStateN2O1"];
+
+    stream (p_name :String)  := monitor (@org.thingpedia.iot.air(name=p_name).state()), state == enum(NO)
+    #_[utterances=["when nitrogen monoxide is detected by the ${p_name} sensor",
+                   "when there is NO by the ${p_name} sensor",
+                   "when my ${p_name} sensor says it gets saturated by NO",
+                   "when my ${p_name} sensor smells nitrogen monoxide"]]
+    #[id=54300132]
+    #[name="MonitorStateByStateNO1"];
+
+    stream (p_name :String)  := monitor (@org.thingpedia.iot.air(name=p_name).state()), state == enum(NO2)
+    #_[utterances=["when nitrogen dioxide is detected by the ${p_name} sensor",
+                   "when there is NO2 by the ${p_name} sensor",
+                   "when my ${p_name} sensor says it gets saturated by NO2",
+                   "when my ${p_name} sensor smells nitrogen dioxide"]]
+    #[id=54300132]
+    #[name="MonitorStateByStateNO21"];
+
+    stream (p_name :String)  := monitor (@org.thingpedia.iot.air(name=p_name).state()), state == enum(nothing)
+    #_[utterances=["when no gas is detected by the ${p_name} sensor",
+                   "when no monoxide gas is detected by the ${p_name} sensor",
+                   "when the ${p_name} sensor is not detecting any dioxide",
+                   "when the ${p_name} sensor is not detecting anymore ozone",
+                   "when there is no more particulate matter detected by the ${p_name} sensor",
+                   "when there is no SO2 detected by the ${p_name} sensor",
+                   "when my ${p_name} sensor detects that the CO is cleared",
+                   "when my ${p_name} sensor detects that the CO2 has gone away",
+                   "when my ${p_name} sensor detects that the N20 is gone",
+                   "when there is no more O3 detected by the ${p_name} sensor"]]
+    #[id=54300136]
+    #[name="MonitorStateByStateNothing1"];
+
+    stream (p_name :String, p_state :Enum(gas,PM01,PM25,PM10,AQI,O3,CO,CO2,SO2,N2O,NO,NO2,nothing))  := monitor (@org.thingpedia.iot.air(name=p_name).state()), state == p_state
+    #_[utterances=["when my ${p_name} sensor starts detecting ${p_state}",
+                   "when my ${p_name} detector is detecting ${p_state}",
+                   "once my ${p_name} detector is detecting ${p_state}",
+                   "the moment my ${p_name} sensor detects ${p_state}"]]
+    #[id=54948396]
+    #[name="MonitorStateByState1"];
+
+}

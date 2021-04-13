@@ -6,10 +6,11 @@ abstract class @org.thingpedia.iot.cover
 #[license_gplcompatible=true]
 #[subcategory="home"]
 {
-  monitorable query state(out state : Enum(open,closed))
+  monitorable query state(out state : Enum(opened,closed))
   #_[canonical="cover state"]
   #_[confirmation="the state of $__device"]
-  #_[formatted=["It is ${state}"]];
+  #[confirm=false]
+  #_[result=["the cover is ${state}"]];
 
   action set_openclose(in req state: Enum(open,close) #_[prompt="Do you want to open or close it?"] #_[canonical="state"])
   #_[canonical="open or close cover"]

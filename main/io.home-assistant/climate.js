@@ -9,7 +9,7 @@
 
 const HomeAssistantDevice = require('./base');
 
-module.exports = class HomeAssistantThermostat extends HomeAssistantDevice {
+module.exports = class HomeAssistantClimate extends HomeAssistantDevice {
     constructor(engine, state, master, entityId) {
         super(engine, state, master, entityId);
         const [domain,] = entityId.split('.');
