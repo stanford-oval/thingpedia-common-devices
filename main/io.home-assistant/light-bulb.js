@@ -27,6 +27,14 @@ module.exports = class HomeAssistantLightbulb extends HomeAssistantSwitch {
             await this._callService('light', 'turn_off');
     }
 
+    async do_set_color({ color }) {
+            await this._callService('light', 'turn_on', { color_name: color });
+    }
+
+    async do_set_brightness({ pct }) {
+        await this._callService('light', 'turn_on', { brightness_pct: pct });
+    }
+
     async do_alert_long() {
         await this._callService('light', 'turn_on', { flash: 'long' });
     }
