@@ -10,6 +10,7 @@
 const HomeAssistantSwitch = require('./switch.js');
 
 module.exports = class HomeAssistantLightbulb extends HomeAssistantSwitch {
+    
     async get_power() {
         return [{ power: this.state.state }];
     }
@@ -33,6 +34,14 @@ module.exports = class HomeAssistantLightbulb extends HomeAssistantSwitch {
 
     async do_set_brightness({ pct }) {
         await this._callService('light', 'turn_on', { brightness_pct: pct });
+    }
+
+    async do_raise_brightness() {
+        await this._callService('light', 'turn_on', { brightness_step_pct: (+10) });
+    }
+
+    async do_lower_brightness() {
+        await this._callService('light', 'turn_on', { brightness_step_pct: (-10) });
     }
 
     async do_alert_long() {

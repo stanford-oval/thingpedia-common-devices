@@ -90,6 +90,24 @@ dataset @org.thingpedia.iot.light-bulb language "en" {
     #[id=52298599]
     #[name="SetBrigthnessNoChoice"];
 
+    action = @org.thingpedia.iot.light-bulb.raise_brightness()
+    #_[utterances=["raise the intensity for the lights",
+                   "turn to higher brightness all my light bulb brightness",
+                   "set higher britghness the lamp intensity",
+                   "move to higher the brightness",
+                   "raise the light brightness"]]
+    #[id=522985991]
+    #[name="RaiseBrightnessNoChoice"];
+
+    action = @org.thingpedia.iot.light-bulb.lower_brightness()
+    #_[utterances=["lower the intensity for the lights",
+                   "turn to lower brightness all my light bulb brightness",
+                   "set lower britghness the lamp intensity",
+                   "move to lower the brightness",
+                   "lower the light brightness"]]
+    #[id=522985991]
+    #[name="LowerBrightnessNoChoice"];
+
     action (p_color :Enum(white,black,red,orange,yellow,green,blue,purple,pink,brown,gray,chartreuse,cyan,azure,violet,magenta,rose,amber,teal,indigo)) = @org.thingpedia.iot.light-bulb(all=true).set_color(color=p_color)
     #_[utterances=["set ${p_color} all the lights",
                    "turn ${p_color} all my light bulbs",
@@ -99,11 +117,25 @@ dataset @org.thingpedia.iot.light-bulb language "en" {
     #[name="SetAllColorNoChoice"];
 
     action (p_brt :Number) = @org.thingpedia.iot.light-bulb(all=true).set_brightness(pct=p_brt)
-    #_[utterances=["set ${p_brt} brightness all the lights",
-                   "turn to ${p_brt} the brightness of all my light bulbs",
-                   "change all the lamps brightness to  ${p_brt}"]]
+    #_[utterances=["set ${p_brt} percent brightness all the lights",
+                   "turn to ${p_brt} percent the brightness of all my light bulbs",
+                   "change all the lamps brightness to ${p_brt} percent"]]
     #[id=52298580]
     #[name="SetAllBrightnessNoChoice"];
+
+    action = @org.thingpedia.iot.light-bulb(all=true).raise_brightness()
+    #_[utterances=["raise the brightness of all the lights",
+                   "turn up the brightness of all my light bulbs",
+                   "change all the lamps brightness to higher value"]]
+    #[id=52298580]
+    #[name="SetRaiseBrightnessNoChoice"];
+
+    action = @org.thingpedia.iot.light-bulb(all=true).lower_brightness()
+    #_[utterances=["lower the brightness of all the lights",
+                   "turn down the brightness of all my light bulbs",
+                   "change all the lamps brightness to lower value"]]
+    #[id=52298580]
+    #[name="SetLowerBrightnessNoChoice"];
 
     action (p_power :Enum(on,off)) = @org.thingpedia.iot.light-bulb(all=true).set_power(power=p_power)
     #_[utterances=["set ${p_power} all the lights",
@@ -183,9 +215,9 @@ dataset @org.thingpedia.iot.light-bulb language "en" {
     #[name="AllColorSet"];
 
     action (p_name :String, p_brt :Number) = @org.thingpedia.iot.light-bulb(all=true, name=p_name).set_brightness(pct=p_brt)
-    #_[utterances=["set all my ${p_name:const} light bulbs brightness to ${p_brt}",
-                   "turn ${p_brt} brightness for all the ${p_name:const} lights",
-                   "set to ${p_brt} brightness all the ${p_name:const} lamps"]]
+    #_[utterances=["set all my ${p_name:const} light bulbs brightness to ${p_brt} percent",
+                   "turn ${p_brt} percent the brightness for all the ${p_name:const} lights",
+                   "set to ${p_brt} percent brightness all the ${p_name:const} lamps"]]
     #[id=54033647]                   
     #[name="AllBrightnessSet"];
 
@@ -195,8 +227,16 @@ dataset @org.thingpedia.iot.light-bulb language "en" {
                    "start disco lights for my ${p_name:const} lights",
                    "color loop on ${p_name:const}",
                    "loop colors on ${p_name:const}"]]
-    #[id=54033639]
+    #[id=5403363923]
     #[name="ColorLoop"];
+
+    action  = @org.thingpedia.iot.light-bulb(all=true).color_loop()
+    #_[utterances=["color loop all the lights",
+                   "loop the color of my light bulbs",
+                   "start disco lights for my lights",
+                   "loop colors on all lamps"]]
+    #[id=5229857922]
+    #[name="ColorLoopAll"];
 
     action (p_name :String, p_color :Enum(white,black,red,orange,yellow,green,blue,purple,pink,brown,gray,chartreuse,cyan,azure,violet,magenta,rose,amber,teal,indigo)) = @org.thingpedia.iot.light-bulb(name=p_name).set_color(color=p_color)
     #_[utterances=["set ${p_color} the ${p_name:const} light",
@@ -209,6 +249,12 @@ dataset @org.thingpedia.iot.light-bulb language "en" {
                    "alert me by flashing the ${p_name:const} lights"]]
     #[id=54033642]
     #[name="AlertLong"];
+
+    action  = @org.thingpedia.iot.light-bulb(all=true).alert_long()
+    #_[utterances=["flash all the lights",
+                   "alert me by flashing all the ligh bulbs"]]
+    #[id=540336424]
+    #[name="AlertLongAll"];
 
     action (p_name :String) = @org.thingpedia.iot.light-bulb(name=p_name).set_power(power=enum(off))
     #_[utterances=["shut down the ${p_name:const} lights"]]

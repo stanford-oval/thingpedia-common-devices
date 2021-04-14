@@ -48,7 +48,20 @@ abstract class @org.thingpedia.iot.light-bulb extends @org.thingpedia.iot.switch
                       base=["brightness", "value"],
                       preposition=["to %"]
                     }])
-  #_[canonical=["set the brightness of the light", "set the brightness on the lamp"]]
-  #_[confirmation="set ${__device} $pct"]
+  #_[canonical=["change the brightness of the light", "set the brightness on the lamp"]]
+  #_[confirmation="set ${__device} $pct percent"]
+  #[min_number=0]
+  #[max_number=100] 
   #[confirm=false];
+
+  action raise_brightness()
+  #_[canonical=["raise the light brightness", "increasing the brightness of the lamp"]]
+  #_[confirmation="raise brightness on ${__device}"]
+  #[confirm=false];
+
+  action lower_brightness()
+  #_[canonical=["lower the light brightness", "decrease the brightness of the lamp"]]
+  #_[confirmation="lower brightness on ${__device}"]
+  #[confirm=false];
+
 }
