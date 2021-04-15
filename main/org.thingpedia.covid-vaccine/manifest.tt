@@ -40,22 +40,32 @@ class @org.thingpedia.covid-vaccine
 
   entity vaccine_appointment #_[description="Vaccine appointment ID"] #[has_ner=false];
 
-  monitorable list query appointment(in opt location: Location
-                                     #_[prompt="what location do you want vaccine appointments for?"]
+  monitorable list query appointment(in req location: Location
+                                     #_[prompt="what is your address"]
                                      #_[canonical={
                                        default="preposition",
                                        base=["location", "position", "place"],
                                        property=[],
                                        preposition=["in #", "at #", "around #", "for location #", "for #"]
-                                     }]
-                                     #[default=$location.current_location],
-                                     in opt distance: Measure(m)
+                                     }],
+                                     in req dose: Enum(first, second, any)
+                                     #_[prompt="is this your first or second dose"]
+                                     #_[canonical={
+                                       base=["dose"]
+                                     }],
+                                     in opt vaccine_type: Enum(moderna, pfizer, johnson_and_johnson, astra_zeneca)
+                                     #_[prompt="what type of vaccine are you looking for"]
+                                     #_[canonical={
+                                       base=["vaccine type"],
+                                     }],
+                                    in opt distance: Measure(m)
+                                     #_[prompt="within what distance do you want to look for appointments"]
                                      #_[canonical={
                                        default="preposition",
                                        base=["miles"],
                                        preposition=["within #, in #"]
                                      }],
-                                     out id : Entity(org.thingpedia.covid-vaccine:vaccine_appointment)
+                                     out id: Entity(org.thingpedia.covid-vaccine:vaccine_appointment)
                                      #[unique=true]
                                      #[filterable=false]
                                      #_[canonical={
@@ -69,8 +79,8 @@ class @org.thingpedia.covid-vaccine
                                      }],
                                      out link: Entity(tt:url) #_[canonical="link"]
                                     )
-  #_[canonical=["COVID vaccine appointment, vaccine appointment, appointment, vaccine"]]
-  #_[confirmation="COVID-19 vaccine appointment for $geo"]
+  #_[result=["Here are the earliest appointments, starting with the closest ones: ${geo}"]]
+  #_[confirmation="COVID vaccine appointment for $geo"]
   #[minimal_projection=["geo", "link"]]
   #[poll_interval=86400000ms]
   #[doc="Information about COVID vaccine appointments"];

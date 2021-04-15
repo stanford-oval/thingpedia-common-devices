@@ -3,14 +3,27 @@
 // Copyright 2021 Chaofei Fan <stfan@stanford.edu>
 //
 // See LICENSE for details
-"use strict";
+'use strict';
 
 const Tp = require('thingpedia');
 const MongoClient = require('mongodb');
 
-const DB_URL = process.env.MONGODB_URL || "mongodb://localhost:27017";
-const DB_NAME = "pharmacy_vaccines";
-const COLLECTION_NAME = "appointments";
+const DB_URL = process.env.MONGODB_URL || 'mongodb://localhost:27017';
+const DB_NAME = 'pharmacy_vaccines';
+const COLLECTION_NAME = 'appointments';
+const MOCK_RESPONSE = [
+    {
+        id: new Tp.Value.Entity('0', 'Safeway'),
+        geo: new Tp.Value.Location(37, -122, 'Safeway, Palo Alto'),
+        link: 'http://www.safeway.com'
+    },
+    {
+        id: new Tp.Value.Entity('1', 'Walmart'),
+        geo: new Tp.Value.Location(37, -122, 'Walmart, Palo Alto'),
+        link: 'http://www.walmart.com'
+    }
+];
+
 
 function prettyprintAddress(appointment) {
     return [
@@ -19,7 +32,7 @@ function prettyprintAddress(appointment) {
         appointment.properties.city,
         appointment.properties.state,
         appointment.properties.postal_code,
-    ].filter((i) => i.length > 0).join(', ');
+    ].filter((i) => i !== null && i.length > 0).join(', ');
 }
 
 module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
@@ -32,26 +45,14 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
         });
     }
 
-    async get_appointment({ location, distance }) {
+    async get_appointment({ location, distance, dose, vaccine_type }) {
         if (distance === undefined || distance === null)
             distance = 10.0;
-        console.log(location, distance);
+        console.log(location, distance, dose, vaccine_type);
 
         // TODO: Find a better way to mock.
-        if (process.env.CI) {
-            return [
-                {
-                    id: new Tp.Value.Entity("0", "Safeway"),
-                    geo: new Tp.Value.Location(37, -122, "Safeway, Palo Alto"),
-                    link: 'http://www.safeway.com'
-                },
-                {
-                    id: new Tp.Value.Entity("1", "Walmart"),
-                    geo: new Tp.Value.Location(37, -122, "Walmart, Palo Alto"),
-                    link: 'http://www.walmart.com'
-                }
-            ];
-        }
+        if (process.env.CI)
+            return MOCK_RESPONSE;
 
         const client = await this._mongodb_client();
         try {
@@ -60,17 +61,39 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
             const coll = db.collection(COLLECTION_NAME);
 
             const query = {
-                "geometry.coordinates": {
+                'geometry.coordinates': {
                     $near: {
                         $geometry: {
-                            type: "Point",
+                            type: 'Point',
                             coordinates: [location.x, location.y]
                         },
                         $maxDistance: distance * 1610,  // Mile to meter
                     },
                 },
-                "properties.appointments_available": true
+                'properties.appointments_available': true,
             };
+
+            if (dose === 'first' || dose === 'any')
+                query['properties.appointments_available_all_doses'] = true;
+            else
+                query['properties.appointments_available_2nd_dose_only'] = true;
+
+            if (vaccine_type !== null && vaccine_type !== undefined) {
+                if (vaccine_type === 'moderna') {
+                    query.$or = [
+                        {'properties.appointment_vaccine_types.moderna': true},
+                        {'properties.appointment_vaccine_types.unknown': true}
+                    ];
+                } else if (vaccine_type === 'pfizer') {
+                    query.$or = [
+                        {'properties.appointment_vaccine_types.pfizer': true},
+                        {'properties.appointment_vaccine_types.unknown': true}
+                    ];
+                } else {
+                    // TODO: does API support other vaccine types?
+                    throw new Error(`Unknown vaccine type ${vaccine_type}`);
+                }
+            }
 
             const cursor = coll.find(query);
             let appointments = await cursor.toArray();
@@ -92,7 +115,7 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
             return appointments;
         } catch (error) {
             console.error(error);
-            throw new Error("Failed to get vaccine appointments");
+            throw new Error('Failed to get vaccine appointments');
         } finally {
             await client.close();
         }
