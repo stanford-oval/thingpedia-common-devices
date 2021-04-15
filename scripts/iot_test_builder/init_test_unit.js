@@ -51,11 +51,11 @@ const t_help = "\n\nnode init_test_unit.js [options] \n\n" +
                " EXAMPLE  node init_test_unit.js -B -h /home/user/almond/ -o /home/user/.homeassistant/configuration.yaml -d [0] \n" +
                " ------------ \n\n" +
                " -S: start environment set previously. \n" +
-               "      -h: HomeAssistant environment folder, to start it. No trailing slash. i.e. '-h /home/user/' \n\n" +
-               " EXAMPLE  node init_test_unit.js -S -h /home/user/almond/ \n" +
+               "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/home-assistant/' \n\n" +
+               " EXAMPLE  node init_test_unit.js -S -h /home/user/home-assistant/ \n" +
                " ------------ \n\n" +
                " -U: apply new setup to environment previously set \n" +
-               "      -h: HomeAssistant environment folder, to start it. No trailing slash. i.e. '-h /home/user/' \n" +
+               "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/' \n" +
                "      -o: HomeAssistant configuration file, the folder which contain HomeAssistant 'configuration.yaml'. i.e. '-o /home/user/.homeassistant/' \n\n" +
                "      -c: add virtual devices available in the folder (main|staging|universe) as listed in 'env_set.js' (alternately to '-d' ooption). i.e. '-c /home/user/oval/almond/thingpedia-common-devices/main/' \n" +
                "    or \n" +
@@ -87,6 +87,19 @@ function f_write ( dest, cont ) {
     return;
 }
 
+function f_read ( path ){
+    try {
+        var conf_file = (fs.readFileSync( path , "utf8")).trim();
+      } catch (err) {
+        if (err.code === 'ENOENT') {
+            cl( " File " + path + " not found", false );
+          } else {
+            throw err;
+          }
+      }
+    return conf_file;
+}
+
 function r_folder () {
     var d_list = new Array();
     var str_st = "org.thingpedia.iot.";
@@ -102,6 +115,13 @@ function r_folder () {
     return d_list;
 }
 
+function man_trail ( str ){
+    str = str.trim();
+    if ( !str.endsWith("/") ) { 
+        str = str + '/';
+    }
+    return str
+}
 function gen_sens_list( cont, st_l ){
 
     var arr_to_run = new Array;
@@ -138,7 +158,7 @@ function gen_sens_list( cont, st_l ){
 
 function ha_cmd ( stp, dest ){
     var arr_stp = [
-                    'sudo dnf -y install python3-devel python3-wheel python3-virtualenv libjpeg-devel',
+                    'sudo dnf -y install python3-devel python3-wheel python3-virtualenv libjpeg-devel && cd ' + dest + ' && git clone https://github.com/home-assistant/core home-assistant && cd ' + dest + 'home-assistant && virtualenv venv && . ./venv/bin/activate && pip3 install -r requirements.txt && deactivate',
                     'cd ' + dest + ' && git clone https://github.com/home-assistant/core home-assistant && cd ' + dest + 'home-assistant && virtualenv venv && . ./venv/bin/activate && pip3 install -r requirements.txt && deactivate',  
                     'cd ' + dest + ' && . ./venv/bin/activate && python3 -m homeassistant &'
                   ];
@@ -157,7 +177,7 @@ function ha_cmd ( stp, dest ){
         }
     });
 
-    cl( `Done ! `, true );   
+    cl( `Done with the HA installation ! `, true );   
     return;
 }
 
@@ -169,7 +189,7 @@ if ( myArgs[0] === "-M" ) {
     if ( myArgs[1] === "-h" ) {
         if ( typeof myArgs[2] === 'string' ) {
             cl( " Running HA from: " + myArgs[2], true );
-            ha_cmd ( 1 , myArgs[2] );
+            ha_cmd ( 2 , myArgs[2] );
         } else {
             cl( " Wrong path. Please provide the HA folder to start it from. ", false );
         }        
@@ -179,8 +199,10 @@ if ( myArgs[0] === "-M" ) {
 } else if ( myArgs[0] === "-B" ) {
     if ( myArgs[1] === "-h" ) {
         if ( typeof myArgs[2] === 'string' ) {
+            myArgs[2] = man_trail( myArgs[2] );
             if ( myArgs[3] === "-o" ) {
                     if ( typeof myArgs[4] === 'string' ) {
+                        myArgs[4] = man_trail( myArgs[4] );
                         var got_list; //list of virtual device to add to configuration
                         if ( myArgs[5] === "-d" ) {
                             if ( (typeof myArgs[6] !== 'string') || !Array.isArray(JSON.parse(myArgs[6]))) {
@@ -194,7 +216,7 @@ if ( myArgs[0] === "-M" ) {
 
                             if ( ls_dev.length === 1 ) {
                                 if ( ls_dev[0] === 0 ) {
-                                    cl( " Running using all devices from list " + devices, true );
+                                    cl( " Running using all devices from list " , true );
                                     got_list = gen_sens_list( devices, 'd' );
                                 } else {
                                     cl( " Running using only 1 device from list ", true );
@@ -220,21 +242,23 @@ if ( myArgs[0] === "-M" ) {
                             cl( " Wrong argument. Expected '-c' or '-d'. ", false );
                         }
 
-                        f_write ( "/home/user/oval/test.yaml", got_list );
-                        cl( " done: " + got_list, false );
-
                         cl( " Running HA installation on: " + myArgs[2], true );
                         ha_cmd ( 0 , myArgs[2] );
 
-                        var conf_file = (fs.readFileSync( myArgs[4] , "utf8")).trim();
-                
-                        if ( !conf_file.endsWith(sens_entry) ) { 
-                            conf_file = conf_file + '\n\n' + sens_entry;
+                        cl( " till here ", false );
+
+                        // write specific sensor's file
+                        f_write ( myArgs[4] + "sensor.yaml", got_list );
+
+                        // adding integration file to HA configuration
+                        let conf_dest = myArgs[4] + "configuration.yaml"
+                        let cont_file = f_read( conf_dest );
+                        
+                        if ( !cont_file.endsWith(sens_entry) ) { 
+                            cont_file = cont_file + '\n\n' + sens_entry;
                         }
 
-                        cl( " Writing HA configuration on: " + myArgs[2], true );
-                        f_write ( conf_dest, conf_file );
-                        
+                        f_write ( conf_dest, cont_file );
                     } else {
                         cl( " Wrong path. Please provide the destination folder for HA configuration file.", false );
                     }        
@@ -250,21 +274,3 @@ if ( myArgs[0] === "-M" ) {
 } else {
     cl( " Wrong argument. Expected '-M' or '-U' or '-S' or '-B'. ----> -M for man", false );
 }
-
-
-/*
-function f_append ( fl_name, to_wr ) {
-    fs.appendFile( fl_name , to_wr, (err) => {
-        if (err) {
-            console.log( 'Some error occurred' + err);
-        } else {
-            // Get the file contents after the append operation
-            console.log("\nFile Contents of file after append:",
-            fs.readFileSync("example_file.txt", "utf8"));
-        }
-    });
-}
-*/
-
-
-
