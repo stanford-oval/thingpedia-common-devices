@@ -64,9 +64,9 @@ A: >> expecting = null
 
 ====
 # 8-from-album-search (req=com.spotify)
-U: what songs are in the album the wall
-#U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-#U: now => (@com.spotify.song(), album == null^^com.spotify:album("the wall")) => notify;
+#U: what songs are in the album the wall
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => (@com.spotify.song(), album == null^^com.spotify:album("the wall")) => notify;
 
 A: I (see|have) In the Flesh\?, The Thin Ice,? (or|and) Another Brick in the Wall, Pt\. 1\. (All of them are|They're) songs? by Pink Floyd in the album The Wall\.
 A: >> expecting = null
@@ -83,9 +83,9 @@ A: >> expecting = null
 ====
 # 10-from-album-artist-search-2 (req=com.spotify)
 
-U: what songs are in the album folklore by taylor swift
-#U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-#U: now => (@com.spotify.song(), album == null^^com.spotify:album("folklore") && contains(artists, null^^com.spotify:artist("taylor swift"))) => notify;
+#U: what songs are in the album folklore by taylor swift
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => (@com.spotify.song(), album == null^^com.spotify:album("folklore") && contains(artists, null^^com.spotify:artist("taylor swift"))) => notify;
 
 A: I (see|have( found)?) the 1, cardigan,? (or|and) the last great american dynasty\. (All of them are|They're|They are) songs? (in the album folklore )?by Taylor Swift\.
 A: >> expecting = null
@@ -163,7 +163,7 @@ U: resume playing
 #U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 #U: now => @com.spotify.player_play();
 
-A: I continued playback( for you)?\.?
+A: I (continued|resumed) (playback|playing)( for you)?\.?
 A: >> expecting = null
 
 ====
@@ -256,8 +256,9 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.playable(), release_date >= makeDate(2000, 1, 1) && release_date <= makeDate(2000, 1, 1) + 1year) => notify;
 
-A: I (see|have( found)?)(one, it is)? Yellow. It is( a)?( pop)? music by Coldplay( released in July 9, 2000)?\. Would you like to play it on Spotify\?
-A: >> expecting = command
+A: I (see|have( found)?) Yellow and The Real Slim Shady\. Yellow is a music by Coldplay, while The Real Slim Shady Eminem wrote\.
+
+A: >> expecting = null
 
 ====
 # 28-by-genre-date (req=com.spotify)
@@ -334,7 +335,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify().song(), id =~ "despacito")[1] => @com.spotify().add_song_to_playlist(playlist="my playlist", song=id);
 
-A: I added a song to a playlist named My playlist \#1\.
+A: I added a song to a playlist named my playlist( \#1)?\.
 A: >> expecting = null
 
 ====
@@ -343,5 +344,5 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => @com.spotify().create_playlist(name="new playlist");
 
-A: I created a new playlist named new playlist\.
+A: I created a new playlist( for you)? named new playlist\.
 A: >> expecting = null
