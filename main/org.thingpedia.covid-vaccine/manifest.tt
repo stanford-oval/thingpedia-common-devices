@@ -46,7 +46,7 @@ class @org.thingpedia.covid-vaccine
                                        default="preposition",
                                        base=["location", "position", "place"],
                                        property=[],
-                                       preposition=["in #", "at #", "around #", "for location #", "for #"]
+                                       preposition=["near #", "in #", "at #", "around #", "for location #", "for #"]
                                      }],
                                      in req dose: Enum(first, second)
                                      #_[prompt="is this your first or second dose"]
@@ -71,7 +71,9 @@ class @org.thingpedia.covid-vaccine
                                        default="preposition",
                                        base=["address", "location"],
                                        preposition=["near #", "in #", "around #"]
-                                     }],
+                                     }]
+                                     // filtering this unfortunately conflicts with location input parameter
+                                     #[filterable=false],
                                      out link: Entity(tt:url) #_[canonical="link"]
                                     )
   #[canonical=["appointment", "vaccine appointment", "vaccination slot",
