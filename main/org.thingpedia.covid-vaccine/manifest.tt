@@ -48,22 +48,17 @@ class @org.thingpedia.covid-vaccine
                                        property=[],
                                        preposition=["in #", "at #", "around #", "for location #", "for #"]
                                      }],
-                                     in req dose: Enum(first, second, any)
+                                     in req dose: Enum(first, second)
                                      #_[prompt="is this your first or second dose"]
                                      #_[canonical={
-                                       base=["dose"]
+                                       base=["dose"],
+                                       preposition=["for my # dose"],
                                      }],
                                      in opt vaccine_type: Enum(moderna, pfizer, johnson_and_johnson, astra_zeneca)
-                                     #_[prompt="what type of vaccine are you looking for"]
+                                     #[required_if=["dose=second"]]
+                                     #_[prompt="what type of vaccine did you receive at the first dose"]
                                      #_[canonical={
                                        base=["vaccine type"],
-                                     }],
-                                    in opt distance: Measure(m)
-                                     #_[prompt="within what distance do you want to look for appointments"]
-                                     #_[canonical={
-                                       default="preposition",
-                                       base=["miles"],
-                                       preposition=["within #, in #"]
                                      }],
                                      out id: Entity(org.thingpedia.covid-vaccine:vaccine_appointment)
                                      #[unique=true]
@@ -79,10 +74,18 @@ class @org.thingpedia.covid-vaccine
                                      }],
                                      out link: Entity(tt:url) #_[canonical="link"]
                                     )
-  #_[result=["Here are the earliest appointments, starting with the closest ones: ${geo}"]]
-  #_[confirmation="COVID vaccine appointment for $geo"]
-  #[minimal_projection=["geo", "link"]]
+  #[canonical=["appointment", "vaccine appointment", "vaccination slot",
+               "appointment to get a vaccine"]]
+  #_[result={
+    list=["Here are the earliest appointments, starting with the closest ones."]
+  }]
+  #_[formatted=[{
+    type="rdl",
+    displayText="${geo}",
+    webCallback="${link}"
+  }]]
+  #[minimal_projection=["id"]]
+  #[initial=true]
   #[poll_interval=86400000ms]
   #[doc="Information about COVID vaccine appointments"];
 }
-
