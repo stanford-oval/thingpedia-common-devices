@@ -34,21 +34,21 @@ const fs = require('fs');
 
 const devices = require('./env_set.js');
 
-const myArgs = process.argv.slice(2);
+const myArgs = process.argv.slice(1);
 
 const sens_entry = 'sensor: !include sensor.yaml';
 
 const t_help = "\n\nnode init_test_unit.js [options] \n\n" +
                " Options (case sensitive): \n\n" +
                " -B: build environment and start it (install Home Assistant on provided folder and setup the IoT environment with chosen devices). \n" +
-               "      -h: HomeAssistant destination environment folder.  i.e. '-h /home/user/' \n" +
-               "      -o: HomeAssistant configuration file, the folder which contain HomeAssistant 'configuration.yaml'. i.e. '-o /home/user/.homeassistant/' \n\n" +
+               "      -h: HomeAssistant destination environment folder.  i.e. '-h /home/user/ha_installation_destination/' \n" +
+               "      -o: HomeAssistant configuration file, the folder which will contain the HomeAssistant configuration folder '.homeassistant'. i.e. '-o /home/user/' \n\n" +
                "      -c: add virtual devices available in the folder (main|staging|universe) as listed in 'env_set.js' (alternately to '-d' ooption). i.e. '-c /home/user/oval/almond/thingpedia-common-devices/main/' \n" +
                "    or \n" +
                "      -d: add virtual devices listed in 'env_set.js' (alternately to '-c' ooption). i.e.  \n" +
                "        [0]      : all devices \n" +
                "        [1,2,3,n]: specifc subset of devices \n\n" +
-               " EXAMPLE  node init_test_unit.js -B -h /home/user/almond/ -o /home/user/.homeassistant/configuration.yaml -d [0] \n" +
+               " EXAMPLE  node init_test_unit.js -B -h /home/user/ha_installation_destination/ -o /home/user/.homeassistant/ -d [0] \n" +
                " ------------ \n\n" +
                " -S: start environment set previously. \n" +
                "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/home-assistant/' \n\n" +
@@ -56,7 +56,7 @@ const t_help = "\n\nnode init_test_unit.js [options] \n\n" +
                " ------------ \n\n" +
                " -U: apply new setup to environment previously set \n" +
                "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/' \n" +
-               "      -o: HomeAssistant configuration file, the folder which contain HomeAssistant 'configuration.yaml'. i.e. '-o /home/user/.homeassistant/' \n\n" +
+               "      -o: HomeAssistant configuration file, the folder which contain HomeAssistant 'configuration.yaml'. i.e. '-o /home/user/' \n\n" +
                "      -c: add virtual devices available in the folder (main|staging|universe) as listed in 'env_set.js' (alternately to '-d' ooption). i.e. '-c /home/user/oval/almond/thingpedia-common-devices/main/' \n" +
                "    or \n" +
                "      -d: add virtual devices listed in 'env_set.js' (alternately to '-c' ooption). i.e.  \n" +
@@ -122,6 +122,7 @@ function man_trail ( str ){
     }
     return str
 }
+
 function gen_sens_list( cont, st_l ){
 
     var arr_to_run = new Array;
@@ -156,59 +157,71 @@ function gen_sens_list( cont, st_l ){
     return st_bl;
 }
 
-function ha_cmd ( stp, dest ){
+function do_cmd ( stp, dest, orig ){
     var arr_stp = [
-                    'sudo dnf -y install python3-devel python3-wheel python3-virtualenv libjpeg-devel && cd ' + dest + ' && git clone https://github.com/home-assistant/core home-assistant && cd ' + dest + 'home-assistant && virtualenv venv && . ./venv/bin/activate && pip3 install -r requirements.txt && deactivate',
+                    'sudo dnf -y install python3-devel python3-wheel python3-virtualenv libjpeg-devel',
                     'cd ' + dest + ' && git clone https://github.com/home-assistant/core home-assistant && cd ' + dest + 'home-assistant && virtualenv venv && . ./venv/bin/activate && pip3 install -r requirements.txt && deactivate',  
+                    'unzip -d ' + dest + ' ' + orig,
                     'cd ' + dest + ' && . ./venv/bin/activate && python3 -m homeassistant &'
                   ];
     
-    var r_cmd = arr_stp[stp];
+    var arr_cmd = stp.split("|");
+
+    arr_cmd.forEach(s_stp => {
+            var r_cmd = arr_stp[s_stp]
+            cl( " Executing: " + r_cmd, true );
+
+            require('child_process').execSync( r_cmd,(error, stdout, stderr) =>{ 
+                if (error ) {            
+                    cl( "ERROR in installing node-cmd: " + error.message, false );
+                } else if ( stderr !== '' ){
+                    cl( "ERROR in installing node-cmd: " + stderr, false );
+                } else {
+                    cl( "OUTPUT : " + stdout, true );
+                }
+            });
+
+            cl( `Done ! `, true );   
+    }); 
     
-    cl( " Executing: " + r_cmd, true );
-
-    require('child_process').execSync( r_cmd,(error, stdout, stderr) =>{ 
-        if (error ) {            
-            cl( "ERROR in installing node-cmd: " + error.message, false );
-        } else if ( stderr !== '' ){
-            cl( "ERROR in installing node-cmd: " + stderr, false );
-        } else {
-            cl( "OUTPUT : " + stdout, true );
-        }
-    });
-
-    cl( `Done with the HA installation ! `, true );   
     return;
+    /*
+    var spawn = require('child_process').spawn;
+
+    console.log("to txt...");
+
+    var child = spawn('cmd', { detached: true, stdio: 'inherit' });
+    */
 }
 
-if ( myArgs[0] === "-M" ) {
+if ( myArgs[1] === "-M" ) {
     cl( t_help, false );
-} else if ( myArgs[0] === "-U" ) {
+} else if ( myArgs[1] === "-U" ) {
 
-} else if ( myArgs[0] === "-S" ) {
-    if ( myArgs[1] === "-h" ) {
-        if ( typeof myArgs[2] === 'string' ) {
-            cl( " Running HA from: " + myArgs[2], true );
-            ha_cmd ( 2 , myArgs[2] );
+} else if ( myArgs[1] === "-S" ) {
+    if ( myArgs[2] === "-h" ) {
+        if ( typeof myArgs[3] === 'string' ) {
+            cl( " Running HA from: " + myArgs[3], true );
+            do_cmd ( 3 , myArgs[3] );
         } else {
             cl( " Wrong path. Please provide the HA folder to start it from. ", false );
         }        
     } else {
         cl( " Wrong argument. Expected '-h'. ", false );
     } 
-} else if ( myArgs[0] === "-B" ) {
-    if ( myArgs[1] === "-h" ) {
-        if ( typeof myArgs[2] === 'string' ) {
-            myArgs[2] = man_trail( myArgs[2] );
-            if ( myArgs[3] === "-o" ) {
-                    if ( typeof myArgs[4] === 'string' ) {
-                        myArgs[4] = man_trail( myArgs[4] );
+} else if ( myArgs[1] === "-B" ) {
+    if ( myArgs[2] === "-h" ) {
+        if ( typeof myArgs[3] === 'string' ) {
+            myArgs[3] = man_trail( myArgs[3] );
+            if ( myArgs[4] === "-o" ) {
+                    if ( typeof myArgs[5] === 'string' ) {
+                        myArgs[5] = man_trail( myArgs[5] );
                         var got_list; //list of virtual device to add to configuration
-                        if ( myArgs[5] === "-d" ) {
-                            if ( (typeof myArgs[6] !== 'string') || !Array.isArray(JSON.parse(myArgs[6]))) {
+                        if ( myArgs[6] === "-d" ) {
+                            if ( (typeof myArgs[7] !== 'string') || !Array.isArray(JSON.parse(myArgs[7]))) {
                                 cl( " Wrong option for -d", false );
                             }
-                            var ls_dev = JSON.parse(myArgs[6]);
+                            var ls_dev = JSON.parse(myArgs[7]);
 
                             if ( ls_dev.length < 1 ) {
                                 cl( " Wrong option length for -d ", false );
@@ -220,7 +233,7 @@ if ( myArgs[0] === "-M" ) {
                                     got_list = gen_sens_list( devices, 'd' );
                                 } else {
                                     cl( " Running using only 1 device from list ", true );
-                                    got_list = gen_sens_list( devices[ls_dev[0]], 'd' );
+                                    got_list = gen_sens_list( ls_dev, 'd' );
                                 }
                             } else {
                                 cl( " Running using subset of devices from list ", true );
@@ -231,27 +244,30 @@ if ( myArgs[0] === "-M" ) {
                                 got_list = gen_sens_list( arr_sens_list, 'd' );
                             }
 
-                        } else if ( myArgs[5] === "-c") {
-                            if ( typeof myArgs[6] !== 'string' ) {
+                        } else if ( myArgs[6] === "-c") {
+                            if ( typeof myArgs[7] !== 'string' ) {
                                 cl( " Wrong option for -c ", false );
                             }
-                            s_fol = myArgs[6];
-                            cl( " Running with devices from Thingpedia-common-devices: " + myArgs[6] + " \n\n ", true );
-                            got_list = gen_sens_list( r_folder( myArgs[2] ), 'c' );
+                            s_fol = myArgs[7];
+                            cl( " Running with devices from Thingpedia-common-devices: " + myArgs[7] + " \n\n ", true );
+                            got_list = gen_sens_list( r_folder( myArgs[3] ), 'c' );
                         } else {
                             cl( " Wrong argument. Expected '-c' or '-d'. ", false );
                         }
 
-                        cl( " Running HA installation on: " + myArgs[2], true );
-                        ha_cmd ( 0 , myArgs[2] );
+                        cl( " Running HA installation on: " + myArgs[3], false );
+                        
+                        var origi = myArgs[3].split("/")
+
+                        do_cmd ( "0|1|2" , myArgs[3],  origi[(origi.length) - 1]);
 
                         cl( " till here ", false );
 
                         // write specific sensor's file
-                        f_write ( myArgs[4] + "sensor.yaml", got_list );
+                        f_write ( myArgs[5] + "sensor.yaml", got_list );
 
                         // adding integration file to HA configuration
-                        let conf_dest = myArgs[4] + "configuration.yaml"
+                        let conf_dest = myArgs[5] + "configuration.yaml"
                         let cont_file = f_read( conf_dest );
                         
                         if ( !cont_file.endsWith(sens_entry) ) { 
