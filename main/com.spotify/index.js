@@ -1038,28 +1038,12 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         let data = {
             "uris": [String(song)]
         };
-        return this.add_uris_to_playlist(playListURI, data);
-    }
-
-    async do_add_this_song_to_playlist({
-        playlist
-    }) {
-        const currentlyPlaying = await this.get_get_currently_playing();
-        if (currentlyPlaying.length === 0)
-            throwError("no_song_error");
-        let playListURI = await this.findPlaylist(playlist);
-        playListURI = playListURI.substring(playListURI.indexOf("playlist:") + 9);
-        let song = String(currentlyPlaying[0]["song"]);
-        let data = {
-            "uris": [song]
-        };
-        return this.add_uris_to_playlist(playListURI, data);
-
+        await this.add_uris_to_playlist(playListURI, data);
     }
 
     async findPlaylist(name) {
         const searchResults = await this.search(name, "playlist", 1);
-        if (!Object.prototype.hasOwnProperty.call(searchResults, 'playlists') || searchResults.playlists.total === 0) throwError('disallowed_action');
+        if (!Object.prototype.hasOwnProperty.call(searchResults, 'playlists') || searchResults.playlists.total === 0) throwError('no_playlist');
         const playlist = searchResults.playlists.items[0];
         if (playlist.owner.id === this.state.id)
             return playlist.uri;

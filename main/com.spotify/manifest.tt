@@ -292,27 +292,9 @@ class @com.spotify
   #_[canonical=["add a song to a playlist", "add a track to a playlist"]]
   #_[confirmation="add the song $song to the playlist $playlist"]
   #_[on_error={
-    disallowed_action=["you can't add songs to this playlist"],
+    disallowed_action=["you cannot add songs to this playlist"],
+    no_playlist=["could not find this playlist"],
     rate_limit_error=["spotify is temporarily unavailable"]
-  }]
-  #[confirm=enum auto]
-  #[minimal_projection=[]];
-
-  action add_this_song_to_playlist(in req playlist: String
-                                    #[string_values="com.spotify:playlist"]
-                                    #_[prompt=["what playlist do you want to add to"]]
-                                    #_[canonical={
-                                      default="base",
-                                      base=["name"],
-                                      preposition=["named #", "called #", "titled #"],
-                                      property=["name #", "title #"]
-                                    }])
-  #_[canonical=["add this song to a playlist", "add this track to a playlist"]]
-  #_[confirmation="add this song to the playlist $playlist"]
-  #_[on_error={
-    disallowed_action=["you can't add songs to this playlist"],
-    rate_limit_error=["spotify is temporarily unavailable"],
-    no_song_error=["there's currently no song playing"]
   }]
   #[confirm=enum auto]
   #[minimal_projection=[]];
