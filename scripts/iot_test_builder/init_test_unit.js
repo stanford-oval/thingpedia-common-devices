@@ -32,10 +32,9 @@
 
 const fs = require('fs');
 
-const devices = require('./env_set.js');
-
 const myArgs = process.argv.slice(1);
 
+const devices = require('./env_set.js');
 const sens_entry = 'sensor: !include sensor.yaml';
 
 const t_help = "\n\nnode init_test_unit.js [options] \n\n" +
@@ -89,7 +88,7 @@ function f_write ( dest, cont ) {
 
 function f_read ( path ){
     try {
-        var conf_file = (fs.readFileSync( path , "utf8")).trim();
+        var the_file = (fs.readFileSync( path , "utf8")).trim();
       } catch (err) {
         if (err.code === 'ENOENT') {
             cl( " File " + path + " not found", false );
@@ -97,7 +96,7 @@ function f_read ( path ){
             throw err;
           }
       }
-    return conf_file;
+    return the_file;
 }
 
 function r_folder () {
@@ -157,41 +156,167 @@ function gen_sens_list( cont, st_l ){
     return st_bl;
 }
 
-function do_cmd ( stp, dest, orig ){
+function do_cmd ( arr_cmd , ke){
+
+    switch ( ke ){
+        case 'execSync':
+            arr_cmd.forEach(s_cmd => {
+                cl( " Executing: " + s_cmd, true );
+
+                require('child_process').execSync( s_cmd,(error, stdout, stderr) =>{ 
+                    if (error ) {            
+                        cl( "ERROR in installing node-cmd: " + error.message, false );
+                    } else if ( stderr !== '' ){
+                        cl( "ERROR in installing node-cmd: " + stderr, false );
+                    } else {
+                        cl( "OUTPUT : " + stdout, true );
+                    }
+                });
+                
+                cl( `Done ! `, true );   
+            }); 
+        break;
+        case 'spawn':
+            arr_cmd.forEach(s_cmd => {
+                cl( " Executing: " + s_cmd, true );
+
+                var spawn = require('child_process').spawn;
+
+                var child = spawn(s_cmd, { detached: true, stdio: 'inherit' });
+                
+                cl( `Done ! `, true ); 
+            }); 
+            
+        break;
+    }   
+
+    return;
+}
+
+function make_calls ( path ){
+    const https = require('https')
+
+    var k_tk = f_read ( path );
+
+    //const data = JSON.stringify({
+    //todo: 'Buy the milk'
+    //})
+
+    const options = {
+                        hostname: 'localhost',
+                        port: 8123,
+                        path: '/todos',
+                        method: 'POST',
+                        headers: {
+                                    'Content-Type': 'application/json',
+                                    'Content-Length': data.length
+                                }
+                    };
+
+    const req = https.request(options, res => {
+                                                cl( " statusCode: " + res.statusCode, true );
+                                                res.on('data', d => {
+                                                                        process.stdout.write(d)
+                                                                    });
+                                            })
+
+    req.on('error', error => {
+                                cl( " Error: " + error, false );
+                            });
+
+    req.write(data);
+    req.end();
+}
+
+function master_exec ( m_cmd, e_var ) {
+
     var arr_stp = [
                     'sudo dnf -y install python3-devel python3-wheel python3-virtualenv libjpeg-devel',
                     'cd ' + dest + ' && git clone https://github.com/home-assistant/core home-assistant && cd ' + dest + 'home-assistant && virtualenv venv && . ./venv/bin/activate && pip3 install -r requirements.txt && deactivate',  
-                    'unzip -d ' + dest + ' ' + orig,
+                    'unzip -d ' + dest_z + ' ' + orig,
                     'cd ' + dest + ' && . ./venv/bin/activate && python3 -m homeassistant &'
                   ];
-    
-    var arr_cmd = stp.split("|");
 
-    arr_cmd.forEach(s_stp => {
-            var r_cmd = arr_stp[s_stp]
-            cl( " Executing: " + r_cmd, true );
+    switch( m_cmd ){
+        case 1: // Installation of HA env.
+            cl( " Running HA installation on: " + myArgs[3], false );
+            // HA installation
+            do_cmd( "0|1", myArgs[3] , ke);
+        break;
+        case 2: // Installation of HA env., setup of HA env. by addind the conf. folder.
 
-            require('child_process').execSync( r_cmd,(error, stdout, stderr) =>{ 
-                if (error ) {            
-                    cl( "ERROR in installing node-cmd: " + error.message, false );
-                } else if ( stderr !== '' ){
-                    cl( "ERROR in installing node-cmd: " + stderr, false );
-                } else {
-                    cl( "OUTPUT : " + stdout, true );
-                }
-            });
+            // HA installation && setup HA env
+            do_cmd( "0|1|2", myArgs[3], myArgs[5] , ke);
+        break;
+        case 3: // Installation of HA env., setup of HA env. by addind the conf. folder, setup IoT devices in HA.
+            
+            // HA installation && setup HA env
 
-            cl( `Done ! `, true );   
-    }); 
-    
+            // setup IoT devices
+
+            /*
+
+                                            var origi = myArgs[3].split("/")
+
+                                //8do_cmd ( "0|1|2" , myArgs[3],  origi[(origi.length) - 1]);
+
+                                //cl( " till here ", false );
+
+                                // write specific sensor's file
+                                f_write ( myArgs[5] + "sensor.yaml", got_list );
+
+                                // adding integration file to HA configuration
+                                let conf_dest = myArgs[5] + "configuration.yaml"
+                                let cont_file = f_read( conf_dest );
+                                
+                                if ( !cont_file.endsWith(sens_entry) ) { 
+                                    cont_file = cont_file + '\n\n' + sens_entry;
+                                }
+
+                                f_write ( conf_dest, cont_file );
+            */
+        break;
+        case 4: // Start the test env. as previously set.
+
+            // start
+
+        break;
+        case 5: // Start HA env. without IoT devices (delete IoT devices if present).
+
+            // delete IoT devices if any
+
+            // start
+
+        break;
+        case 6: // Start HA env. and setting new IoT devices.
+
+            // change IoT devices
+
+            // start
+
+        break;
+        case 7: // Start a fresh HA env. by replacing the conf folder but keeping IoT devices previously set.
+
+            // preserve set IoT devices
+
+            // replace conf folder
+
+            // put back IoT devices
+
+            // start
+
+        break;
+        case 8: // Start a fresh HA env. by replacing the conf folder and setting new IoT devices.
+
+            // replace conf folder
+
+            // setting new IoT devices
+
+            // start
+
+        break;
+    }
     return;
-    /*
-    var spawn = require('child_process').spawn;
-
-    console.log("to txt...");
-
-    var child = spawn('cmd', { detached: true, stdio: 'inherit' });
-    */
 }
 
 if ( myArgs[1] === "-M" ) {
@@ -209,83 +334,74 @@ if ( myArgs[1] === "-M" ) {
     } else {
         cl( " Wrong argument. Expected '-h'. ", false );
     } 
-} else if ( myArgs[1] === "-B" ) {
+} else if ( myArgs[1] === "-B1" || myArgs[1] === "-B2" || myArgs[1] === "-B3") {
     if ( myArgs[2] === "-h" ) {
         if ( typeof myArgs[3] === 'string' ) {
             myArgs[3] = man_trail( myArgs[3] );
-            if ( myArgs[4] === "-o" ) {
-                    if ( typeof myArgs[5] === 'string' ) {
-                        myArgs[5] = man_trail( myArgs[5] );
-                        var got_list; //list of virtual device to add to configuration
-                        if ( myArgs[6] === "-d" ) {
-                            if ( (typeof myArgs[7] !== 'string') || !Array.isArray(JSON.parse(myArgs[7]))) {
-                                cl( " Wrong option for -d", false );
-                            }
-                            var ls_dev = JSON.parse(myArgs[7]);
 
-                            if ( ls_dev.length < 1 ) {
-                                cl( " Wrong option length for -d ", false );
-                            }
-
-                            if ( ls_dev.length === 1 ) {
-                                if ( ls_dev[0] === 0 ) {
-                                    cl( " Running using all devices from list " , true );
-                                    got_list = gen_sens_list( devices, 'd' );
-                                } else {
-                                    cl( " Running using only 1 device from list ", true );
-                                    got_list = gen_sens_list( ls_dev, 'd' );
-                                }
-                            } else {
-                                cl( " Running using subset of devices from list ", true );
-                                var arr_sens_list = new Array;
-                                ls_dev.forEach( function(cur_val) {
-                                    arr_sens_list.push( devices[cur_val] )
-                                });
-                                got_list = gen_sens_list( arr_sens_list, 'd' );
-                            }
-
-                        } else if ( myArgs[6] === "-c") {
-                            if ( typeof myArgs[7] !== 'string' ) {
-                                cl( " Wrong option for -c ", false );
-                            }
-                            s_fol = myArgs[7];
-                            cl( " Running with devices from Thingpedia-common-devices: " + myArgs[7] + " \n\n ", true );
-                            got_list = gen_sens_list( r_folder( myArgs[3] ), 'c' );
-                        } else {
-                            cl( " Wrong argument. Expected '-c' or '-d'. ", false );
-                        }
-
-                        cl( " Running HA installation on: " + myArgs[3], false );
-                        
-                        var origi = myArgs[3].split("/")
-
-                        do_cmd ( "0|1|2" , myArgs[3],  origi[(origi.length) - 1]);
-
-                        cl( " till here ", false );
-
-                        // write specific sensor's file
-                        f_write ( myArgs[5] + "sensor.yaml", got_list );
-
-                        // adding integration file to HA configuration
-                        let conf_dest = myArgs[5] + "configuration.yaml"
-                        let cont_file = f_read( conf_dest );
-                        
-                        if ( !cont_file.endsWith(sens_entry) ) { 
-                            cont_file = cont_file + '\n\n' + sens_entry;
-                        }
-
-                        f_write ( conf_dest, cont_file );
-                    } else {
-                        cl( " Wrong path. Please provide the destination folder for HA configuration file.", false );
-                    }        
+            if ( myArgs[1] === "-B1" ) {
+                master_exec ( 1 );
             } else {
-                cl( " Wrong argument. Expected '-h' or '-o'. ", false );
-            }
+                if ( myArgs[4] === "-o" ) {
+                        if ( typeof myArgs[5] === 'string' ) {
+                            myArgs[5] = man_trail( myArgs[5] );
+
+                            if ( myArgs[1] === "-B2" ) {
+                                master_exec ( 2 );
+                            } else {
+                                var got_list; //list of virtual device to add to configuration
+
+                                if ( myArgs[6] === "-d" ) {
+                                    if ( (typeof myArgs[7] !== 'string') || !Array.isArray(JSON.parse(myArgs[7]))) {
+                                        cl( " Wrong option for -d", false );
+                                    }
+                                    var ls_dev = JSON.parse(myArgs[7]);
+
+                                    if ( ls_dev.length < 1 ) {
+                                        cl( " Wrong option length for -d ", false );
+                                    }
+
+                                    if ( ls_dev.length === 1 ) {
+                                        if ( ls_dev[0] === 0 ) {
+                                            cl( " Running using all devices from list " , true );
+                                            got_list = gen_sens_list( devices, 'd' );
+                                        } else {
+                                            cl( " Running using only 1 device from list ", true );
+                                            got_list = gen_sens_list( ls_dev, 'd' );
+                                        }
+                                    } else {
+                                        cl( " Running using subset of devices from list ", true );
+                                        var arr_sens_list = new Array;
+                                        ls_dev.forEach( function(cur_val) {
+                                            arr_sens_list.push( devices[cur_val] )
+                                        });
+                                        got_list = gen_sens_list( arr_sens_list, 'd' );
+                                    }
+
+                                } else if ( myArgs[6] === "-c") {
+                                    if ( typeof myArgs[7] !== 'string' ) {
+                                        cl( " Wrong option for -c ", false );
+                                    }
+                                    s_fol = myArgs[7];
+                                    cl( " Running with devices from Thingpedia-common-devices: " + myArgs[7] + " \n\n ", true );
+                                    got_list = gen_sens_list( r_folder( myArgs[3] ), 'c' );
+                                } else {
+                                    cl( " Wrong argument. Expected '-c' or '-d'. ", false );
+                                }
+                                master_exec ( 3 , got_list ); 
+                            }
+                        } else {
+                            cl( " Wrong path. Please provide the destination folder for HA configuration file.", false );
+                        }        
+                } else {
+                    cl( " Wrong argument. Expected '-o'. ", false );
+                }
+            }            
         } else {
             cl( " Wrong path. Please provide the destination folder for HA installation. ", false );
         }        
     } else {
-        cl( " Wrong argument. Expected '-h' or '-o'. ", false );
+        cl( " Wrong argument. Expected '-h'. ", false );
     } 
 } else {
     cl( " Wrong argument. Expected '-M' or '-U' or '-S' or '-B'. ----> -M for man", false );
