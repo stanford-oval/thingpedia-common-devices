@@ -46,9 +46,9 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
         });
     }
 
-    async get_appointment({ location, dose, vaccine_type }) {
+    async get_appointment({ zip_code, dose, vaccine_type }) {
         const distance = 10.0;
-        console.log(location, distance, dose, vaccine_type);
+        console.log(zip_code, distance, dose, vaccine_type);
 
         // TODO: Find a better way to mock.
         if (process.env.CI)
@@ -62,7 +62,8 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
 
             // Get all providers within distance
             const query = {
-                'geo.coordinates': {
+                // TODO
+                /*'geometry.coordinates': {
                     $near: {
                         $geometry: {
                             type: 'Point',
@@ -70,7 +71,7 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
                         },
                         $maxDistance: distance * 1610,  // Mile to meter
                     },
-                },
+                },*/
             };
             let cursor = provider_collection.find(query);
             const providers = await cursor.toArray();

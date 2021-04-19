@@ -40,13 +40,14 @@ class @org.thingpedia.covid-vaccine
 
   entity vaccine_appointment #_[description="Vaccine appointment ID"] #[has_ner=false];
 
-  monitorable list query appointment(in req location: Location
-                                     #_[prompt="what is your address"]
+  monitorable list query appointment(in req zip_code: String
+                                     #[string_values="tt:us_postal_code"]
+                                     #_[prompt="what is your zip code"]
                                      #_[canonical={
                                        default="preposition",
-                                       base=["location", "position", "place"],
+                                       base=["zip code", "post code", "postal code"],
                                        property=[],
-                                       preposition=["near #", "in #", "at #", "around #", "for location #", "for #"]
+                                       preposition=["in the # zip code", "near #", "in #", "at #", "around #", "for location #", "for #"]
                                      }],
                                      in req dose: Enum(first, second)
                                      #_[prompt="is this your first or second dose"]
@@ -71,9 +72,7 @@ class @org.thingpedia.covid-vaccine
                                        default="preposition",
                                        base=["address", "location"],
                                        preposition=["near #", "in #", "around #"]
-                                     }]
-                                     // filtering this unfortunately conflicts with location input parameter
-                                     #[filterable=false],
+                                     }],
                                      out link: Entity(tt:url) #_[canonical="link"]
                                     )
   #[canonical=["appointment", "vaccine appointment", "vaccination slot",
