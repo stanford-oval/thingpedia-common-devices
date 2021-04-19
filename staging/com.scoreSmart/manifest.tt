@@ -1,0 +1,16 @@
+class @com.scoreSmart {
+  import loader from @org.thingpedia.v2();
+  import config from @org.thingpedia.config.none();
+
+  monitorable list query standings(in req league_id: String #_[prompt="what league standings do you want out check?"],
+                        out Team: String,
+                        out Rank: Number,
+                        out Form: String,
+                        out Points: Number)
+  #_[canonical="get league standings"]
+  #_[confirmation="league standings of $league_id"]
+  #_[formatted=[{type="text",text="${Rank}. Team: ${Team} | Pts:  ${Points} | Form: ${Form}"}]]
+  #[poll_interval=3600000ms]
+  #[doc="Get the standings of a league"];
+}
+
