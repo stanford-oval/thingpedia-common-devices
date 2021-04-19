@@ -9,8 +9,9 @@ const Tp = require('thingpedia');
 const MongoClient = require('mongodb');
 
 const DB_URL = process.env.MONGODB_URL || 'mongodb://localhost:27017';
-const DB_NAME = 'pharmacy_vaccines';
-const COLLECTION_NAME = 'appointments';
+const DB_NAME = 'test_vaccines';
+const PROVIDER_COLLECTION = 'provider';
+const APPOINTMENT_COLLECTION = 'appointment';
 const MOCK_RESPONSE = [
     {
         id: new Tp.Value.Entity('0', 'Safeway'),
@@ -27,11 +28,11 @@ const MOCK_RESPONSE = [
 
 function prettyprintAddress(appointment) {
     return [
-        appointment.properties.name,
-        appointment.properties.address,
-        appointment.properties.city,
-        appointment.properties.state,
-        appointment.properties.postal_code,
+        appointment.name,
+        appointment.address,
+        appointment.city,
+        appointment.state,
+        appointment.postal_code,
     ].filter((i) => i !== null && i.length > 0).join(', ');
 }
 
@@ -45,9 +46,8 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
         });
     }
 
-    async get_appointment({ location, distance, dose, vaccine_type }) {
-        if (distance === undefined || distance === null)
-            distance = 10.0;
+    async get_appointment({ location, dose, vaccine_type }) {
+        const distance = 10.0;
         console.log(location, distance, dose, vaccine_type);
 
         // TODO: Find a better way to mock.
@@ -58,10 +58,11 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
         try {
             await client.connect();
             const db = client.db(DB_NAME);
-            const coll = db.collection(COLLECTION_NAME);
+            const provider_collection = db.collection(PROVIDER_COLLECTION);
 
+            // Get all providers within distance
             const query = {
-                'geometry.coordinates': {
+                'geo.coordinates': {
                     $near: {
                         $geometry: {
                             type: 'Point',
@@ -70,47 +71,63 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
                         $maxDistance: distance * 1610,  // Mile to meter
                     },
                 },
-                'properties.appointments_available': true,
             };
+            let cursor = provider_collection.find(query);
+            const providers = await cursor.toArray();
+            await cursor.close();
 
-            if (dose === 'first' || dose === 'any')
-                query['properties.appointments_available_all_doses'] = true;
-            else
-                query['properties.appointments_available_2nd_dose_only'] = true;
+            // For each provider, find available appointments
+            let appointments = providers.map(async (p) => {
+                // Fetch the latest appointment
+                const query = {
+                    $query: {
+                        'provider': p._id,
+                        'available': true
+                    },
+                    $orderby: {
+                        'fetched': -1
+                    }
+                };
 
-            if (vaccine_type !== null && vaccine_type !== undefined) {
-                if (vaccine_type === 'moderna') {
-                    query.$or = [
-                        {'properties.appointment_vaccine_types.moderna': true},
-                        {'properties.appointment_vaccine_types.unknown': true}
-                    ];
-                } else if (vaccine_type === 'pfizer') {
-                    query.$or = [
-                        {'properties.appointment_vaccine_types.pfizer': true},
-                        {'properties.appointment_vaccine_types.unknown': true}
-                    ];
-                } else {
-                    // TODO: does API support other vaccine types?
-                    throw new Error(`Unknown vaccine type ${vaccine_type}`);
+                const appointment_collection = db.collection(APPOINTMENT_COLLECTION);
+                let cursor = appointment_collection.find(query).limit(1);
+                let appointment = (await cursor.toArray());
+                await cursor.close();
+
+                if (appointment.length === 0)
+                    return null;
+                appointment = appointment[0];
+
+                // Filter by dose
+                if (dose === 'second' && !appointment.second_dose_available)
+                    return null;
+
+                // Filter by vaccine type
+                if (vaccine_type !== null && vaccine_type !== undefined) {
+                    let found = false;
+                    for (const vt of appointment.vaccine_types) {
+                        if (vt === vaccine_type || vt === 'unknown') {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found)
+                        return null;
                 }
-            }
 
-            const cursor = coll.find(query);
-            let appointments = await cursor.toArray();
-            appointments = appointments.map((appt) => {
-                const id = new Tp.Value.Entity(appt._id.toString(), appt.properties.name);
+                const id = new Tp.Value.Entity(p._id, p.name);
                 const geo = new Tp.Value.Location(
-                    appt.geometry.coordinates[1],
-                    appt.geometry.coordinates[0],
-                    prettyprintAddress(appt));
+                    p.geo.coordinates[1],
+                    p.geo.coordinates[0],
+                    prettyprintAddress(p));
                 return {
                     id: id,
                     geo: geo,
-                    link: appt.properties.url
+                    link: p.url
                 };
             });
 
-            await cursor.close();
+            appointments = (await Promise.all(appointments)).filter((p) => p !== null);
             console.log(appointments);
             return appointments;
         } catch (error) {

@@ -9,7 +9,7 @@ const assert = require('assert');
 const Tp = require('thingpedia');
 
 module.exports = [
-    ['query', 'appointment', { location: { x: -122.153461, y: 37.427776 }, distance: 10, dose: 'first', vaccine_type: 'moderna' }, (result) => {
+    ['query', 'appointment', { location: { x: -122.153461, y: 37.427776 }, dose: 'first', vaccine_type: 'pfizer' }, (result) => {
         result.forEach((r) => {
             assert(typeof r.geo.display === 'string');
             assert(typeof r.link === 'string');
