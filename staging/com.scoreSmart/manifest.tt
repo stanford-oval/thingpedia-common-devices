@@ -2,7 +2,7 @@ class @com.scoreSmart {
   import loader from @org.thingpedia.v2();
   import config from @org.thingpedia.config.none();
 
-  monitorable list query standings(in req league_id: String #_[prompt="what league standings do you want out check?"],
+  monitorable list query standings(in req league_id: String #_[prompt="what league standings do you want out check out?"],
                         out Team: String,
                         out Rank: Number,
                         out Form: String,
@@ -12,5 +12,16 @@ class @com.scoreSmart {
   #_[formatted=[{type="text",text="${Rank}. Team: ${Team} | Pts:  ${Points} | Form: ${Form}"}]]
   #[poll_interval=3600000ms]
   #[doc="Get the standings of a league"];
+
+  monitorable list query teamFixtures(in req team_id: String #_[prompt="what team do you want out check out?"],
+                        out League: String,
+                        out Team1: String,
+                        out Team2: String,
+                        out Venue: String)
+  #_[canonical="get team fixtures"]
+  #_[confirmation=fixtures of $team_id"]
+  #_[formatted=[{type="text",text="${League} | ${Team1} vs ${Team2} @ ${Venue}"}]]
+  #[poll_interval=3600000ms]
+  #[doc="Get the fixtures of the team"];
 }
 
