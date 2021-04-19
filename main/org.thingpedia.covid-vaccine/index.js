@@ -7,7 +7,9 @@
 
 const Tp = require('thingpedia');
 const MongoClient = require('mongodb');
+const NodeGeocoder = require('node-geocoder');
 
+const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY || '';
 const DB_URL = process.env.MONGODB_URL || 'mongodb://localhost:27017';
 const DB_NAME = 'test_vaccines';
 const PROVIDER_COLLECTION = 'provider';
@@ -60,18 +62,26 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
             const db = client.db(DB_NAME);
             const provider_collection = db.collection(PROVIDER_COLLECTION);
 
+            // Zip code to geo location
+            const geocoder = NodeGeocoder({
+                provider: 'google',
+                apiKey: GOOGLE_API_KEY
+            });
+            const geocoder_res = await geocoder.geocode(zip_code);
+            console.log(geocoder_res);
+
             // Get all providers within distance
             const query = {
-                // TODO
-                /*'geometry.coordinates': {
+                'geo.coordinates': {
                     $near: {
                         $geometry: {
                             type: 'Point',
-                            coordinates: [location.x, location.y]
+                            coordinates: [geocoder_res[0].longitude,
+                                          geocoder_res[0].latitude]
                         },
                         $maxDistance: distance * 1610,  // Mile to meter
                     },
-                },*/
+                }
             };
             let cursor = provider_collection.find(query);
             const providers = await cursor.toArray();
