@@ -927,13 +927,15 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (deviceId === null)
             throwError('no_active_device');
 
-        await this.engine.audio.requestAudio(this, async () => {
-            console.log("stopping audio");
-            let pauseURL = PAUSE_URL + querystring.stringify({
-                device_id: deviceId
+        if (this.spotifyd) {
+            await this.engine.audio.requestAudio(this, async () => {
+                console.log("stopping audio");
+                let pauseURL = PAUSE_URL + querystring.stringify({
+                    device_id: deviceId
+                });
+                await this.http_put_default_options(pauseURL, '');
             });
-            await this.http_put_default_options(pauseURL, '');
-        });
+        }
 
         try {
             await this.http_put(PLAY_URL + `?device_id=${deviceId}`, data, options);
