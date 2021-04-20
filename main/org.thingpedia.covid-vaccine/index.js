@@ -49,7 +49,7 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
     }
 
     async get_appointment({ zip_code, dose, vaccine_type }) {
-        const distance = 100.0;
+        const distance = 10.0;
         console.log(zip_code, distance, dose, vaccine_type);
 
         // TODO: Find a better way to mock.
@@ -87,7 +87,6 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
             const providers = await cursor.toArray();
             await cursor.close();
 
-            console.log(providers);
             // For each provider, find available appointments
             let appointments = providers.map(async (p) => {
                 // Fetch the latest appointment
