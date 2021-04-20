@@ -11,7 +11,7 @@ const NodeGeocoder = require('node-geocoder');
 
 const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY || '';
 const DB_URL = process.env.MONGODB_URL || 'mongodb://localhost:27017';
-const DB_NAME = 'test_vaccines';
+const DB_NAME = 'vaccines';
 const PROVIDER_COLLECTION = 'provider';
 const APPOINTMENT_COLLECTION = 'appointment';
 const MOCK_RESPONSE = [
@@ -49,7 +49,7 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
     }
 
     async get_appointment({ zip_code, dose, vaccine_type }) {
-        const distance = 10.0;
+        const distance = 100.0;
         console.log(zip_code, distance, dose, vaccine_type);
 
         // TODO: Find a better way to mock.
@@ -87,6 +87,7 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
             const providers = await cursor.toArray();
             await cursor.close();
 
+            console.log(providers);
             // For each provider, find available appointments
             let appointments = providers.map(async (p) => {
                 // Fetch the latest appointment
