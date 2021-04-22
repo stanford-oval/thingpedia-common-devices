@@ -14,6 +14,7 @@ const DB_URL = process.env.MONGODB_URL || 'mongodb://localhost:27017';
 const DB_NAME = 'vaccines';
 const PROVIDER_COLLECTION = 'provider';
 const APPOINTMENT_COLLECTION = 'appointment';
+const SAMPLING_STRATEGY = 'most_likely';
 const MOCK_RESPONSE = [
     {
         id: new Tp.Value.Entity('0', 'Safeway'),
@@ -36,6 +37,23 @@ function prettyprintAddress(appointment) {
         appointment.state,
         appointment.postal_code,
     ].filter((i) => i !== null && i.length > 0).join(', ');
+}
+
+function indexOfMax(arr) {
+    if (arr.length === 0)
+        return -1;
+
+    var max = arr[0];
+    var maxIndex = 0;
+
+    for (var i = 1; i < arr.length; i++) {
+        if (arr[i] > max) {
+            maxIndex = i;
+            max = arr[i];
+        }
+    }
+
+    return maxIndex;
 }
 
 function randomChoice(p) {
@@ -163,7 +181,11 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
                 retval = [appointments[random_idx]];
             } else {
                 // Sample one based on probability
-                const sample_idx = randomChoices(availability_rates, 1);
+                var sample_idx;
+                if (SAMPLING_STRATEGY === 'most_likely')
+                    sample_idx = indexOfMax(availability_rates);
+                else
+                    sample_idx = randomChoices(availability_rates, 1);
                 retval = [appointments[sample_idx]];
             }
 
