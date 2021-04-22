@@ -38,6 +38,15 @@ function prettyprintAddress(appointment) {
     ].filter((i) => i !== null && i.length > 0).join(', ');
 }
 
+function randomChoice(p) {
+    let rnd = p.reduce( (a, b) => a + b ) * Math.random();
+    return p.findIndex( (a) => (rnd -= a) < 0 );
+}
+
+function randomChoices(p, count) {
+    return Array.from(Array(count), randomChoice.bind(null, p));
+}
+
 module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
 
     async _mongodb_client() {
@@ -134,13 +143,32 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
                 return {
                     id: id,
                     geo: geo,
-                    link: p.url
+                    link: p.url,
+                    availability_rate: p.availability_rate || 0
                 };
             });
 
             appointments = (await Promise.all(appointments)).filter((p) => p !== null);
             console.log(appointments);
-            return appointments;
+
+            let retval = [];
+            if (appointments.length === 0)
+                return [];
+
+            // Sample one most likely one.
+            const availability_rates = appointments.map((appt) => appt.availability_rate);
+            if (availability_rates.reduce((a, b) => a + b, 0) === 0) {
+                // If all provider has 0 success_rate
+                const random_idx = Math.floor(Math.random() * availability_rates.length);
+                retval = [appointments[random_idx]];
+            } else {
+                // Sample one based on probability
+                const sample_idx = randomChoices(availability_rates, 1);
+                retval = [appointments[sample_idx]];
+            }
+
+            console.log(retval);
+            return retval;
         } catch (error) {
             console.error(error);
             throw new Error('Failed to get vaccine appointments');
