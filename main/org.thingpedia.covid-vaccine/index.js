@@ -198,4 +198,8 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
             await client.close();
         }
     }
+
+    async do_mark_valid({ appointment, validity }) {
+        // TODO
+    }
 };
