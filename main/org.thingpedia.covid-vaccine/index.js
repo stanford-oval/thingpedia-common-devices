@@ -14,7 +14,7 @@ const DB_URL = process.env.MONGODB_URL || 'mongodb://localhost:27017';
 const DB_NAME = 'vaccines';
 const PROVIDER_COLLECTION = 'provider';
 const APPOINTMENT_COLLECTION = 'appointment';
-const SAMPLING_STRATEGY = 'most_likely';
+const SAMPLING_STRATEGY = 'probabilistic';
 const MOCK_RESPONSE = [
     {
         id: new Tp.Value.Entity('0', 'Safeway'),
@@ -153,7 +153,7 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
                         return null;
                 }
 
-                const id = new Tp.Value.Entity(p._id, p.name);
+                const id = new Tp.Value.Entity(appointment._id, p.name);
                 const geo = new Tp.Value.Location(
                     p.geo.coordinates[1],
                     p.geo.coordinates[0],
@@ -166,17 +166,29 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
                 };
             });
 
-            appointments = (await Promise.all(appointments)).filter((p) => p !== null);
+            // Filter appointments
+            appointments = (await Promise.all(appointments)).filter((p) => {
+                if (p === null)
+                    return false;
+                // If no user marked validity
+                if (p.user_marked_validity === undefined)
+                    return true;
+                // If user marks it valid
+                if (p.user_marked_validity !== undefined && p.user_marked_validity)
+                    return true;
+                return false;
+            });
             console.log(appointments);
 
             let retval = [];
             if (appointments.length === 0)
                 return [];
 
-            // Sample one most likely one.
+
+            // Sample one appointment based on availability rate.
             const availability_rates = appointments.map((appt) => appt.availability_rate);
             if (availability_rates.reduce((a, b) => a + b, 0) === 0) {
-                // If all provider has 0 success_rate
+                // If all provider has 0 success_rate, return a random one.
                 const random_idx = Math.floor(Math.random() * availability_rates.length);
                 retval = [appointments[random_idx]];
             } else {
@@ -200,6 +212,26 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
     }
 
     async do_mark_valid({ appointment, validity }) {
-        // TODO
+        console.log(appointment, validity);
+
+        if (process.env.CI)
+            return;
+
+        const client = await this._mongodb_client();
+        try {
+            await client.connect();
+            const db = client.db(DB_NAME);
+            const appointment_collection = db.collection(APPOINTMENT_COLLECTION);
+
+            const query = { _id: appointment.value };
+            const update = { $set: { user_marked_validity: validity } };
+            const resp = await appointment_collection.updateOne(query, update);
+            console.log(resp);
+        } catch (error) {
+            console.error(error);
+            throw new Error('Failed to mark appointment');
+        } finally {
+            await client.close();
+        }
     }
 };
