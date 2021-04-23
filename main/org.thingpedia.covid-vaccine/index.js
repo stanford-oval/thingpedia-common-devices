@@ -228,7 +228,7 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
             const query = { _id: appointment.value };
             const update = { $set: { user_marked_validity: validity } };
             const resp = await appointment_collection.updateOne(query, update);
-            console.log(resp);
+            console.log(resp.modifiedCount);
         } catch (error) {
             console.error(error);
             throw new Error('Failed to mark appointment');
