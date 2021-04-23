@@ -31,10 +31,11 @@
 "use strict";
 
 const fs = require('fs');
+const { PassThrough } = require('stream');
 
 const myArgs = process.argv.slice(1);
 
-const devices = require('./env_set.js');
+const devices = require('./data/env_set.js');
 const sens_entry = 'sensor: !include sensor.yaml';
 
 const t_help = "\n\nnode init_test_unit.js [options] \n\n" +
@@ -78,6 +79,14 @@ function cl( msg, rtn ) {
     }
 }
 
+function man_trail ( str ){
+    str = str.trim();
+    if ( !str.endsWith("/") ) { 
+        str = str + '/';
+    }
+    return str
+}
+
 function f_write ( dest, cont ) {
     fs.writeFileSync( dest, cont, 'utf8', (err) => {
         console.log('There was an error writing the file ' + dest + ' -> ' + err);
@@ -114,14 +123,6 @@ function r_folder () {
     return d_list;
 }
 
-function man_trail ( str ){
-    str = str.trim();
-    if ( !str.endsWith("/") ) { 
-        str = str + '/';
-    }
-    return str
-}
-
 function gen_sens_list( cont, st_l ){
 
     var arr_to_run = new Array;
@@ -156,7 +157,18 @@ function gen_sens_list( cont, st_l ){
     return st_bl;
 }
 
-function do_cmd ( arr_cmd , ke){
+/*
+"attributes": {
+        "next_rising":"2016-05-31T03:39:14+00:00",
+        "next_setting":"2016-05-31T19:16:42+00:00"
+    },
+    "entity_id": "sun.sun",
+    "last_changed": "2016-05-30T21:43:29.204838+00:00",
+    "last_updated": "2016-05-30T21:47:30.533530+00:00",
+    "state": "below_horizon"
+*/
+
+function do_cli ( arr_cmd , ke){
 
     switch ( ke ){
         case 'execSync':
@@ -193,24 +205,29 @@ function do_cmd ( arr_cmd , ke){
     return;
 }
 
-function make_calls ( path ){
+function make_calls ( chm ){
+
     const https = require('https')
 
-    var k_tk = f_read ( path );
+    var k_tk = f_read ( "./data/tk" );
 
-    //const data = JSON.stringify({
-    //todo: 'Buy the milk'
-    //})
+    var chs =[{
+                pth = "/api",
+                mtd = 'POST'
+            },{
+                pth = "/api/states/" + e_id,
+                mtd = 'POST'
+            }];
 
     const options = {
                         hostname: 'localhost',
+                        path: chs[chm].pth,
                         port: 8123,
-                        path: '/todos',
-                        method: 'POST',
-                        headers: {
-                                    'Content-Type': 'application/json',
-                                    'Content-Length': data.length
-                                }
+                        method: chs[chm].mtd,
+                        headers = {
+                            "Authorization": "Bearer " + k_tk,
+                            "content-type" : "application/json",
+                        }
                     };
 
     const req = https.request(options, res => {
@@ -241,12 +258,12 @@ function master_exec ( m_cmd, e_var ) {
         case 1: // Installation of HA env.
             cl( " Running HA installation on: " + myArgs[3], false );
             // HA installation
-            do_cmd( "0|1", myArgs[3] , ke);
+            do_cli( "0|1", myArgs[3] , ke);
         break;
         case 2: // Installation of HA env., setup of HA env. by addind the conf. folder.
 
             // HA installation && setup HA env
-            do_cmd( "0|1|2", myArgs[3], myArgs[5] , ke);
+            do_cli( "0|1|2", myArgs[3], myArgs[5] , ke);
         break;
         case 3: // Installation of HA env., setup of HA env. by addind the conf. folder, setup IoT devices in HA.
             
