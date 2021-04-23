@@ -84,7 +84,7 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
     }
 
     async get_appointment({ zip_code, dose, vaccine_type }) {
-        const distance = 10.0;
+        const distance = 100.0;
         console.log(zip_code, distance, dose, vaccine_type);
 
         // TODO: Find a better way to mock.
@@ -118,6 +118,7 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
                             coordinates: [geocoder_res[0].longitude,
                                           geocoder_res[0].latitude]
                         },
+                        $maxDistance: distance * 1610  // Mile to meter
                     },
                 }
             };
