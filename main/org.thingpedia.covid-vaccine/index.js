@@ -118,11 +118,10 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
                             coordinates: [geocoder_res[0].longitude,
                                           geocoder_res[0].latitude]
                         },
-                        $maxDistance: distance * 1610,  // Mile to meter
                     },
                 }
             };
-            let cursor = provider_collection.find(query);
+            let cursor = provider_collection.find(query).limit(25);
             const providers = await cursor.toArray();
             console.timeEnd('query provider');
             await cursor.close();
@@ -148,7 +147,9 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
                 const p = pa[0];
                 const appointment = pa[1];
 
-                if (appointment.available === undefined || appointment.available === false)
+                if (appointment === undefined ||
+                    appointment.available === undefined ||
+                    appointment.available === false)
                     return null;
 
                 if (dose === 'second' && !appointment.second_dose_available)
