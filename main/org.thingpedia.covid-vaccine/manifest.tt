@@ -79,8 +79,8 @@ class @org.thingpedia.covid-vaccine
   #[canonical=["appointment", "vaccine appointment", "vaccination slot",
                "appointment to get a vaccine"]]
   #_[result={
-    top=["Here is a location near you that has reported available appointments:"],
-    empty=["I cannot find any available appointments in your area."],
+    top=["Here is a location near you that has reported available appointments {|${geo} ${link}}"],
+    empty=["I cannot find any available appointments in your area"],
   }]
   #_[on_error={
     invalid_zipcode=["this is not a valid zip code, please re-enter it"],
@@ -107,5 +107,6 @@ class @org.thingpedia.covid-vaccine
                     }])
   #[canonical=["mark an appointment", "record an appointment"]]
   #_[result=["${validity:select:true{Great, congratulations on getting your appointment! Please tell your friends about us.} false{Sorry that did not work out.}}"]]
-  #[follow_up="org.thingpedia.covid-vaccine.mark_valid if validity=false"];
+  #[follow_up="org.thingpedia.covid-vaccine.appointment(zip_code,dose,vaccine_type) if validity=false"]
+  #[confirm=false];
 }
