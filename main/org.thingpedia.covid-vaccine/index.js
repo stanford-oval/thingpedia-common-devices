@@ -65,14 +65,22 @@ function randomChoices(p, count) {
     return Array.from(Array(count), randomChoice.bind(null, p));
 }
 
-module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
+async function connect_mongodb(uri) {
+    console.log(`Connect to ${uri}`);
+    const client = await (new MongoClient(uri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    }));
+    await client.connect();
+    return client;
+}
 
-    async _mongodb_client() {
-        console.log(`Connect to ${DB_URL}`);
-        return new MongoClient(DB_URL, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
+
+module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
+    constructor(engine, state) {
+        super(engine, state);
+
+        this._mongo_client = connect_mongodb(DB_URL);
     }
 
     async get_appointment({ zip_code, dose, vaccine_type }) {
@@ -83,24 +91,26 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
         if (process.env.CI)
             return MOCK_RESPONSE;
 
-        const client = await this._mongodb_client();
         try {
-            await client.connect();
+            const client = await this._mongo_client;
             const db = client.db(DB_NAME);
             const provider_collection = db.collection(PROVIDER_COLLECTION);
 
             // Zip code to geo location
+            console.time('geocoder');
             const geocoder = NodeGeocoder({
                 provider: 'google',
                 apiKey: GOOGLE_API_KEY
             });
             const geocoder_res = await geocoder.geocode(zip_code);
             console.log(geocoder_res);
+            console.timeEnd('geocoder');
             if (geocoder_res.length === 0)
                 throw new Error("Invalid zip code");
 
+            console.time('query provider');
             // Get all providers within distance
-            const query = {
+            let query = {
                 'geo.coordinates': {
                     $near: {
                         $geometry: {
@@ -114,31 +124,33 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
             };
             let cursor = provider_collection.find(query);
             const providers = await cursor.toArray();
+            console.timeEnd('query provider');
             await cursor.close();
 
-            // For each provider, find available appointments
-            let appointments = providers.map(async (p) => {
-                // Fetch the latest appointment
-                const query = {
-                    $query: {
-                        'provider': p._id,
-                        'available': true
-                    },
-                    $orderby: {
-                        'fetched': -1
-                    }
-                };
+            console.time('query appointments');
+            const appointment_ids = providers.map((p) => `${p._id}:${p.appointments_last_fetched.getTime()}`);
+            query = {
+                '_id': {
+                    $in: appointment_ids
+                }
+            };
+            const appointment_collection = db.collection(APPOINTMENT_COLLECTION);
+            cursor = appointment_collection.find(query);
+            let appointments = (await cursor.toArray());
+            await cursor.close();
 
-                const appointment_collection = db.collection(APPOINTMENT_COLLECTION);
-                let cursor = appointment_collection.find(query).limit(1);
-                let appointment = (await cursor.toArray());
-                await cursor.close();
+            // Zip provider and appointment
+            const provider_appointment = providers.map((e, i) => {
+                return [e, appointments[i]];
+              });
 
-                if (appointment.length === 0)
+            appointments = provider_appointment.map((pa) => {
+                const p = pa[0];
+                const appointment = pa[1];
+
+                if (appointment.available === undefined || appointment.available === false)
                     return null;
-                appointment = appointment[0];
 
-                // Filter by dose
                 if (dose === 'second' && !appointment.second_dose_available)
                     return null;
 
@@ -166,10 +178,7 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
                     link: p.url,
                     availability_rate: p.availability_rate || 0
                 };
-            });
-
-            // Filter appointments
-            appointments = (await Promise.all(appointments)).filter((p) => {
+            }).filter((p) => {
                 if (p === null)
                     return false;
                 // If no user marked validity
@@ -181,11 +190,11 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
                 return false;
             });
             console.log(appointments);
+            console.timeEnd('query appointments');
 
             let retval = [];
             if (appointments.length === 0)
                 return [];
-
 
             // Sample one appointment based on availability rate.
             const availability_rates = appointments.map((appt) => appt.availability_rate);
@@ -208,8 +217,6 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
         } catch (error) {
             console.error(error);
             throw new Error('Failed to get vaccine appointments');
-        } finally {
-            await client.close();
         }
     }
 
@@ -219,10 +226,10 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
         if (process.env.CI)
             return;
 
-        const client = await this._mongodb_client();
         try {
-            await client.connect();
+            const client = await this._mongo_client;
             const db = client.db(DB_NAME);
+
             const appointment_collection = db.collection(APPOINTMENT_COLLECTION);
 
             const query = { _id: appointment.value };
@@ -232,8 +239,6 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
         } catch (error) {
             console.error(error);
             throw new Error('Failed to mark appointment');
-        } finally {
-            await client.close();
         }
     }
 };
