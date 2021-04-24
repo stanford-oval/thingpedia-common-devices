@@ -81,6 +81,7 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
         super(engine, state);
 
         this._mongo_client = connect_mongodb(DB_URL);
+        this._geo_cache = {};
     }
 
     async get_appointment({ zip_code, dose, vaccine_type }) {
@@ -98,16 +99,21 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
 
             // Zip code to geo location
             console.time('geocoder');
-            const geocoder = NodeGeocoder({
-                provider: 'google',
-                apiKey: GOOGLE_API_KEY
-            });
-            const geocoder_res = await geocoder.geocode(zip_code);
-            console.log(geocoder_res);
-            console.timeEnd('geocoder');
-            if (geocoder_res.length === 0)
-                throw new Error("Invalid zip code");
-
+            let geocoder_res = null;
+            if (zip_code in this._geo_cache) {
+                geocoder_res = this._geo_cache[zip_code];
+            } else {
+                const geocoder = NodeGeocoder({
+                    provider: 'google',
+                    apiKey: GOOGLE_API_KEY
+                });
+                geocoder_res = await geocoder.geocode(zip_code);
+                console.log(geocoder_res);
+                console.timeEnd('geocoder');
+                if (geocoder_res.length === 0)
+                    throw new Error("Invalid zip code");
+                this._geo_cache[zip_code] = geocoder_res;
+            }
             console.time('query provider');
             // Get all providers within distance
             let query = {
