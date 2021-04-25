@@ -145,15 +145,11 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
             let appointments = (await cursor.toArray());
             await cursor.close();
 
-            // Zip provider and appointment
-            const provider_appointment = providers.map((e, i) => {
-                return [e, appointments[i]];
-              });
+            const provider_map = {};
+            for (const p of providers)
+                provider_map[p._id] = p;
 
-            appointments = provider_appointment.map((pa) => {
-                const p = pa[0];
-                const appointment = pa[1];
-
+            appointments = appointments.map((appointment) => {
                 if (appointment === undefined ||
                     appointment.available === undefined ||
                     appointment.available === false)
@@ -175,6 +171,7 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
                         return null;
                 }
 
+                const p = provider_map[appointment.provider];
                 const id = new Tp.Value.Entity(appointment._id, p.name);
                 const geo = new Tp.Value.Location(
                     p.geo.coordinates[1],
