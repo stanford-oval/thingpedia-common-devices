@@ -110,8 +110,11 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
                 geocoder_res = await geocoder.geocode(zip_code);
                 console.log(geocoder_res);
                 console.timeEnd('geocoder');
-                if (geocoder_res.length === 0)
-                    throw new Error("Invalid zip code");
+                if (geocoder_res.length === 0) {
+                    const error = new Error();
+                    error.code = 'invalid_zipcode';
+                    throw error;
+                }
                 this._geo_cache[zip_code] = geocoder_res;
             }
             console.time('query provider');
