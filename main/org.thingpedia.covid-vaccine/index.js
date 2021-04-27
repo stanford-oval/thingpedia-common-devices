@@ -157,7 +157,8 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
 
                 if (appointment === undefined ||
                     appointment.available === undefined ||
-                    appointment.available === false)
+                    appointment.available === false ||
+                    (appointment.user_marked_validity !== undefined && !appointment.user_marked_validity))
                     return null;
 
                 if (dose === 'second' && !appointment.second_dose_available)
@@ -187,17 +188,7 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
                     link: p.url,
                     availability_rate: p.availability_rate || 0
                 };
-            }).filter((p) => {
-                if (p === null)
-                    return false;
-                // If no user marked validity
-                if (p.user_marked_validity === undefined)
-                    return true;
-                // If user marks it valid
-                if (p.user_marked_validity !== undefined && p.user_marked_validity)
-                    return true;
-                return false;
-            });
+            }).filter((p) => p !== null);
             console.log(appointments);
             console.timeEnd('query appointments');
 
