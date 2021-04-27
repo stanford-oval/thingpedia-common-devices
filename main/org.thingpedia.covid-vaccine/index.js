@@ -196,22 +196,7 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
             if (appointments.length === 0)
                 return [];
 
-            // Sample one appointment based on availability rate.
-            const availability_rates = appointments.map((appt) => appt.availability_rate);
-            if (availability_rates.reduce((a, b) => a + b, 0) === 0) {
-                // If all provider has 0 success_rate, return a random one.
-                const random_idx = Math.floor(Math.random() * availability_rates.length);
-                retval = [appointments[random_idx]];
-            } else {
-                // Sample one based on probability
-                var sample_idx;
-                if (SAMPLING_STRATEGY === 'most_likely')
-                    sample_idx = indexOfMax(availability_rates);
-                else
-                    sample_idx = randomChoices(availability_rates, 1);
-                retval = [appointments[sample_idx]];
-            }
-
+            retval = [appointments[0]];
             console.log(retval);
             return retval;
         } catch (error) {
