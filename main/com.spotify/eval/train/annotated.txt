@@ -377,7 +377,7 @@ A: The most popular track is Here Comes The Sun - Remastered 2009. It is a track
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
 U: what's the latest song by the weeknd
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: sort(release_date desc of @com.spotify.song() filter contains(artists, null^^com.spotify:artist("weeknd")))[1];
+UT: sort(release_date desc of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, null^^com.spotify:artist("weeknd")))[1];
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
 C: sort(popularity desc of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, "spotify:artist:3WrFJ7ztbogyGnTHbHJFl2"^^com.spotify:artist("The Beatles")))[1]
 C: #[results=[
@@ -391,7 +391,7 @@ A: The most recent track is Save Your Tears. It is a track in the album The High
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
 U: play it
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.spotify.play(playable="spotify:track:06fglfpCAtDtmlyfJYgA01"^^com.spotify:song("Save Your Tears"));
+UT: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable="spotify:track:06fglfpCAtDtmlyfJYgA01"^^com.spotify:song("Save Your Tears"));
 ====
 # recording/99f71bd4f4bb085eccdc65198005055e
 U: next song
@@ -410,7 +410,7 @@ A: Sorry, failed to play: you must first click play from inside the Spotify app,
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
 U: play some music
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.spotify.playable() => @com.spotify.play(playable=id);
+UT: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() => @com.spotify.play(playable=id);
 ====
 # recording/428c23dd6aa15d049f7e808caff5aab1
 U: who is the most popular artist
@@ -425,7 +425,7 @@ A: The most popular singers is Juice WRLD. It is a melodic rap singers.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
 U: play a song by them
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.spotify.song() filter contains(artists, "spotify:artist:4MCBfE4596Uoi2O4DtmEMz"^^com.spotify:artist("Juice WRLD")) => @com.spotify.play(playable=id);
+UT: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, "spotify:artist:4MCBfE4596Uoi2O4DtmEMz"^^com.spotify:artist("Juice WRLD")) => @com.spotify.play(playable=id);
 ====
 # recording/825b7345ebf5ec71f86bd41d9410a96e
 U: Pause playback.
@@ -469,7 +469,7 @@ A: Sorry, failed to play: try playing from the Spotify app.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
 U: play jay chou
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("jay chou")) => @com.spotify.play(playable=id);
+UT: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, null^^com.spotify:artist("jay chou")) => @com.spotify.play(playable=id);
 ====
 # recording/318f03dd9330025140e70b88d7a3b8b6
 U: play hello by adele
@@ -497,7 +497,7 @@ A: Sorry, there are no music like that.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_empty_search;
 U: play two out of three aint bad
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.spotify.playable() filter id =~ "2 out of 3 aint bad" => @com.spotify.play(playable=id);
+UT: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter id =~ "2 out of 3 aint bad" => @com.spotify.play(playable=id);
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
 C: (@com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter id =~ "2 out of 3 ain't bad")[1] => @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
 C: #[results=[]];
@@ -507,7 +507,7 @@ A: Sorry, I cannot find any music like that.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_empty_search;
 U: play bats out of hell
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.spotify.playable() filter id =~ "bats out of hell" => @com.spotify.play(playable=id);
+UT: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter id =~ "bats out of hell" => @com.spotify.play(playable=id);
 ====
 # recording/1999dcc2b0b020af126b7c41a82b68d0
 U: play yellow brick road by elton john
@@ -536,7 +536,7 @@ A: Sorry, failed to play: you must first click play from inside the Spotify app,
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
 U: Play the Queens.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("queens")) => @com.spotify.play(playable=id);
+UT: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, null^^com.spotify:artist("queens")) => @com.spotify.play(playable=id);
 ====
 # recording/b695a61f2ad9dd9e9bc18178d9ba9027
 U: play Random Access Memories
