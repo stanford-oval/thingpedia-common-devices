@@ -147,7 +147,7 @@ dataset @org.thingpedia.iot.climate language "en" {
                    "set humidity of my hvac"]];
 
     action (p_value :Number) := @org.thingpedia.iot.climate.set_target_humidity(value=p_value)
-    #_[utterances=["set humidity on my thermostat to $p_value",
+    #_[utterances=["set humidity on my thermostat to ${p_value:const}",
                    "set my thermostat to ${p_value:const}",
                    "set the humidity to ${p_value:const} on my thermostat"]];
 
@@ -276,7 +276,7 @@ dataset @org.thingpedia.iot.climate language "en" {
                    "switch swing to diffuse"]];
 
     action (f_value :Enum(on,off)) := @org.thingpedia.iot.climate.set_aux_heat(value=f_value)
-    #_[utterances=["set the auxiliary heater to $f_value"]];
+    #_[utterances=["set the auxiliary heater to ${f_value}"]];
 
     action := @org.thingpedia.iot.climate.set_aux_heat(value=enum(on)) 
     #_[utterances=["turn the auxiliary heater on",
@@ -405,7 +405,7 @@ dataset @org.thingpedia.iot.climate language "en" {
                    "set humidity of my ${p_name:const} "]];
 
     action (p_name : String, p_value :Number) := @org.thingpedia.iot.climate(name=p_name).set_target_humidity(value=p_value)
-    #_[utterances=["set humidity on my ${p_name:const}  to $p_value",
+    #_[utterances=["set humidity on my ${p_name:const}  to ${p_value:const}",
                    "set my ${p_name:const}  to ${p_value:const}",
                    "set the humidity to ${p_value:const} on my ${p_name:const} "]];
 
@@ -519,7 +519,7 @@ dataset @org.thingpedia.iot.climate language "en" {
                    "switch ${p_name:const} auxiliary heater off"]];
 
     action (p_name : String, f_value :Enum(on,off)) := @org.thingpedia.iot.climate(name=p_name).set_hvac_onoff(value=f_value)
-    #_[utterances=["set the ${p_name:const} to $f_value"]];
+    #_[utterances=["set the ${p_name:const} to ${f_value}"]];
 
     action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_hvac_onoff(value=enum(on)) 
     #_[utterances=["turn the ${p_name:const} on",
