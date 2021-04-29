@@ -12,12 +12,12 @@ UT: now => @org.thingpedia.iot.climate.set_minmax_temperature(high=14C, low=13C)
 # online/123034
 U: is my heating on in my thermostat
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.climate.get_hvac_state() => notify;
+UT: now => @org.thingpedia.iot.climate.hvac_action() => notify;
 ====
 # online/123036
 U: is the heater on
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.climate.get_hvac_state() => notify;
+UT: now => @org.thingpedia.iot.climate.hvac_action() => notify;
 ====
 # online/1657822
 U: 13 s
@@ -32,7 +32,7 @@ UT: now => @org.thingpedia.iot.climate.set_hvac_mode(mode=enum(cool));
 # online/123028
 U: get hvac state
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.climate.get_hvac_state() => notify;
+UT: now => @org.thingpedia.iot.climate.hvac_action() => notify;
 ====
 # online/1519396
 U: set min temperature to 13 f on my thermostat
@@ -77,4 +77,4 @@ UT: @org.thingpedia.iot.climate.set_target_temperature(value=13defaultTemperatur
 # log/158036
 U: the state of my heater
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.iot.climate.get_hvac_state();
+UT: @org.thingpedia.iot.climate.hvac_action();
