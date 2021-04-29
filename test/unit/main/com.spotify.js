@@ -21,7 +21,7 @@ module.exports = [
             new Tp.Value.Entity('spotify:artist:4VMYDCV2IEDYJArk749S6m', 'Daddy Yankee'),
         ]);
         assert.deepStrictEqual(result[0].album, new Tp.Value.Entity('spotify:album:5C0YLr4OoRGFDaqdMQmkeH', 'VIDA'));
-        assert.deepStrictEqual(result[0].genres, ['latin', 'latin pop', 'puerto rican pop', 'tropical']);
+        assert.deepStrictEqual(result[0].genres, ['latin', 'latin pop', 'puerto rican pop']);
         // 65.5
         assert(result[0].danceability >= 60 && result[0].danceability <= 70);
         // 79.7
