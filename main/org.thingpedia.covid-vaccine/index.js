@@ -28,7 +28,6 @@ const MOCK_RESPONSE = [
     }
 ];
 
-
 function prettyprintAddress(appointment) {
     return [
         appointment.name,
@@ -37,32 +36,6 @@ function prettyprintAddress(appointment) {
         appointment.state,
         appointment.postal_code,
     ].filter((i) => i !== null && i.length > 0).join(', ');
-}
-
-function indexOfMax(arr) {
-    if (arr.length === 0)
-        return -1;
-
-    var max = arr[0];
-    var maxIndex = 0;
-
-    for (var i = 1; i < arr.length; i++) {
-        if (arr[i] > max) {
-            maxIndex = i;
-            max = arr[i];
-        }
-    }
-
-    return maxIndex;
-}
-
-function randomChoice(p) {
-    let rnd = p.reduce( (a, b) => a + b ) * Math.random();
-    return p.findIndex( (a) => (rnd -= a) < 0 );
-}
-
-function randomChoices(p, count) {
-    return Array.from(Array(count), randomChoice.bind(null, p));
 }
 
 async function connect_mongodb(uri) {
@@ -132,9 +105,20 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
                 }
             };
             let cursor = provider_collection.find(query).limit(25);
-            const providers = await cursor.toArray();
+            var providers = await cursor.toArray();
             console.timeEnd('query provider');
             await cursor.close();
+
+            // Sort providers by zipcode.
+            var providers_same_zip = [];
+            var providers_diff_zip = [];
+            for (const p of providers) {
+                if (p.postal_code === zip_code)
+                    providers_same_zip.push(p);
+                else
+                    providers_diff_zip.push(p);
+            }
+            providers = providers_same_zip.concat(providers_diff_zip);
 
             console.time('query appointments');
             const appointment_ids = providers.map((p) => `${p._id}:${p.appointments_last_fetched.getTime()}`);
