@@ -1077,19 +1077,19 @@ UT: @com.bing.image_search(query="woman");
 U: check temperature on thermostat, if it is below 13 change it to 14
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => (@org.thingpedia.iot.temperature.temperature()), value <= 13F => notify;
-UT: now => @org.thingpedia.iot.thermostat.set_target_temperature(value=14F);
+UT: now => @org.thingpedia.iot.climate.set_target_temperature(value=14F);
 ====
 # online/121049
 U: if the weather is colder than 13 c then set my thermostat to 14 c
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => (@org.thingpedia.weather.current(location=$?)), temperature <= 13C => notify;
-UT: now => @org.thingpedia.iot.thermostat.set_target_temperature(value=14C);
+UT: now => @org.thingpedia.iot.climate.set_target_temperature(value=14C);
 ====
 # online/121527
 U: if the weather is colder than 13 c then set my thermostat to 14 f
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => (@org.thingpedia.weather.current(location=$?)), temperature <= 13C => notify;
-UT: now => @org.thingpedia.iot.thermostat.set_target_temperature(value=14F);
+UT: now => @org.thingpedia.iot.climate.set_target_temperature(value=14F);
 ====
 # log/40989
 U: news summaries from bbc comma huffington post
@@ -1495,42 +1495,42 @@ UT: monitor(@org.thingpedia.builtin.thingengine.builtin.get_gps()) filter !(loca
 # online/57061581
 U: turn off the fan when i open the window
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: monitor(@org.thingpedia.iot.cover.state()) filter state == enum open => @org.thingpedia.iot.fan.set_power(power=enum off);
+UT: monitor(@org.thingpedia.iot.cover.state()) filter state == enum opened => @org.thingpedia.iot.fan.set_power(power=enum off);
 ====
 # online/57061583
 U: alert me when somebody opens the window and i am not home
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: monitor(@org.thingpedia.iot.cover.state()) filter any(@org.thingpedia.builtin.thingengine.builtin.get_gps() filter !(location == $location.home)) && state == enum open;
+UT: monitor(@org.thingpedia.iot.cover.state()) filter any(@org.thingpedia.builtin.thingengine.builtin.get_gps() filter !(location == $location.home)) && state == enum opened;
 ====
 # online/57061584
 U: alert me when the window is opened and i am not home
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: monitor(@org.thingpedia.iot.cover.state()) filter any(@org.thingpedia.builtin.thingengine.builtin.get_gps() filter !(location == $location.home)) && state == enum open;
+UT: monitor(@org.thingpedia.iot.cover.state()) filter any(@org.thingpedia.builtin.thingengine.builtin.get_gps() filter !(location == $location.home)) && state == enum opened;
 ====
 # online/57061585
 U: alert me when the window is opened while i am not home
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: monitor(@org.thingpedia.iot.cover.state()) filter any(@org.thingpedia.builtin.thingengine.builtin.get_gps() filter !(location == $location.home)) && state == enum open;
+UT: monitor(@org.thingpedia.iot.cover.state()) filter any(@org.thingpedia.builtin.thingengine.builtin.get_gps() filter !(location == $location.home)) && state == enum opened;
 ====
 # online/57061586
 U: alert me when the window is opened while i am away
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: monitor(@org.thingpedia.iot.cover.state()) filter any(@org.thingpedia.builtin.thingengine.builtin.get_gps() filter !(location == $location.home)) && state == enum open;
+UT: monitor(@org.thingpedia.iot.cover.state()) filter any(@org.thingpedia.builtin.thingengine.builtin.get_gps() filter !(location == $location.home)) && state == enum opened;
 ====
 # online/57061587
 U: alert me when the window is opened while i am away from home
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: monitor(@org.thingpedia.iot.cover.state()) filter any(@org.thingpedia.builtin.thingengine.builtin.get_gps() filter !(location == $location.home)) && state == enum open;
+UT: monitor(@org.thingpedia.iot.cover.state()) filter any(@org.thingpedia.builtin.thingengine.builtin.get_gps() filter !(location == $location.home)) && state == enum opened;
 ====
 # online/57061592
 U: send an alert when i leave home and the window is open
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: monitor(@org.thingpedia.iot.cover.state()) filter any(@org.thingpedia.builtin.thingengine.builtin.get_gps() filter !(location == $location.home)) && state == enum open;
+UT: monitor(@org.thingpedia.iot.cover.state()) filter any(@org.thingpedia.builtin.thingengine.builtin.get_gps() filter !(location == $location.home)) && state == enum opened;
 ====
 # online/57061593
 U: send an alert when i leave home and the door is open
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: monitor(@org.thingpedia.iot.cover.state()) filter any(@org.thingpedia.builtin.thingengine.builtin.get_gps() filter !(location == $location.home)) && state == enum open;
+UT: monitor(@org.thingpedia.iot.cover.state()) filter any(@org.thingpedia.builtin.thingengine.builtin.get_gps() filter !(location == $location.home)) && state == enum opened;
 ====
 # online/62110232
 U: order me a large latte when i get to work

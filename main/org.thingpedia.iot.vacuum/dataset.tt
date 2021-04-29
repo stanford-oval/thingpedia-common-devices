@@ -125,126 +125,126 @@ dataset @org.thingpedia.iot.vacuum language "en" {
     #[name="Stop"];
 
     program (p_name :String)  := @org.thingpedia.iot.vacuum(name=p_name).state()
-    #_[utterances=["is my ${p_name} vacuum on?",
-                   "check if my ${p_name} vacuum is on",
-                   "is the ${p_name} vacuum turned on?",
-                   "is the ${p_name} vacuum switched on?",
-                   "check if my ${p_name} vacuum is turned on or off",
-                   "is my ${p_name} vacuum switched on or switched off?",
-                   "is the ${p_name} vacuum cleaning?",
-                   "is the ${p_name} vacuum charging?",
-                   "is the ${p_name} vacuum docked?",
-                   "what is my ${p_name} vacuum doing?",
-                   "what is my ${p_name} vacuum up to?"]]
+    #_[utterances=["is my ${p_name:const} vacuum on?",
+                   "check if my ${p_name:const} vacuum is on",
+                   "is the ${p_name:const} vacuum turned on?",
+                   "is the ${p_name:const} vacuum switched on?",
+                   "check if my ${p_name:const} vacuum is turned on or off",
+                   "is my ${p_name:const} vacuum switched on or switched off?",
+                   "is the ${p_name:const} vacuum cleaning?",
+                   "is the ${p_name:const} vacuum charging?",
+                   "is the ${p_name:const} vacuum docked?",
+                   "what is my ${p_name:const} vacuum doing?",
+                   "what is my ${p_name:const} vacuum up to?"]]
     #[id=54343354]
     #[name="StateThenNotify1"];
 
     query (p_name :String)  := @org.thingpedia.iot.vacuum(name=p_name).state()
-    #_[utterances=["if the ${p_name} vacuum is on or off",
-                   "whether my ${p_name} vacuum is on or off",
-                   "if the ${p_name} vacuum is turned on or off",
-                   "whether my ${p_name} vacuum is switched on or switched off",
-                   "whether my ${p_name} vacuum is cleaning",
-                   "whether my ${p_name} vacuum getting charged",
-                   "whether my ${p_name} vacuum is docked"]]
+    #_[utterances=["if the ${p_name:const} vacuum is on or off",
+                   "whether my ${p_name:const} vacuum is on or off",
+                   "if the ${p_name:const} vacuum is turned on or off",
+                   "whether my ${p_name:const} vacuum is switched on or switched off",
+                   "whether my ${p_name:const} vacuum is cleaning",
+                   "whether my ${p_name:const} vacuum getting charged",
+                   "whether my ${p_name:const} vacuum is docked"]]
     #[id=54343365]
     #[name="State1"];
 
     stream (p_name :String)  := monitor (@org.thingpedia.iot.vacuum(name=p_name).state())
-    #_[utterances=["when my ${p_name} vacuum turns on or off",
-                   "when my ${p_name} vacuum starts or stops cleaning"]]
+    #_[utterances=["when my ${p_name:const} vacuum turns on or off",
+                   "when my ${p_name:const} vacuum starts or stops cleaning"]]
     #[id=54343372]
     #[name="MonitorState1"];
 
     stream (p_name :String, p_state :Enum(on,off,docked))  := monitor (@org.thingpedia.iot.vacuum(name=p_name).state()), state == p_state
-    #_[utterances=["when my ${p_name} vacuum is ${p_state}",
-                   "when the ${p_name} vacuum cleaner is ${p_state}"]]
+    #_[utterances=["when my ${p_name:const} vacuum is ${p_state}",
+                   "when the ${p_name:const} vacuum cleaner is ${p_state}"]]
     #[id=54343374]
     #[name="MonitorStateByState1"];
 
     stream (p_name :String)  := monitor (@org.thingpedia.iot.vacuum(name=p_name).state()), state == enum(on)
-    #_[utterances=["when my ${p_name} vacuum turns on",
-                   "once my ${p_name} vacuum switches on",
-                   "when the ${p_name} vacuum is on",
-                   "once my ${p_name} vacuum is switched on",
-                   "when I turn on my ${p_name} vacuum"]]
+    #_[utterances=["when my ${p_name:const} vacuum turns on",
+                   "once my ${p_name:const} vacuum switches on",
+                   "when the ${p_name:const} vacuum is on",
+                   "once my ${p_name:const} vacuum is switched on",
+                   "when I turn on my ${p_name:const} vacuum"]]
     #[id=54343376]
     #[name="MonitorStateByStateOn1"];
 
     stream (p_name :String)  := monitor (@org.thingpedia.iot.vacuum(name=p_name).state()), state == enum(off)
-    #_[utterances=["when the ${p_name} vacuum turns off",
-                   "once my ${p_name} vacuum turns off",
-                   "once the ${p_name} vacuum switches off",
-                   "when my ${p_name} vacuum is off",
-                   "when I turn off the ${p_name} vacuum",
-                   "when my ${p_name} vacuum gets switched off"]]
+    #_[utterances=["when the ${p_name:const} vacuum turns off",
+                   "once my ${p_name:const} vacuum turns off",
+                   "once the ${p_name:const} vacuum switches off",
+                   "when my ${p_name:const} vacuum is off",
+                   "when I turn off the ${p_name:const} vacuum",
+                   "when my ${p_name:const} vacuum gets switched off"]]
     #[id=54343381]
     #[name="MonitorStateByStateOff1"];
 
     stream (p_name :String)  := monitor (@org.thingpedia.iot.vacuum(name=p_name).state()), state == enum(docked)
-    #_[utterances=["when the ${p_name} vacuum is docking",
-                   "once my ${p_name} vacuum returns to base",
-                   "once the ${p_name} vacuum gets docked",
-                   "when my ${p_name} vacuum starts charging",
-                   "when I dock the ${p_name} vacuum",
-                   "when my ${p_name} vacuum goes back to base"]]
+    #_[utterances=["when the ${p_name:const} vacuum is docking",
+                   "once my ${p_name:const} vacuum returns to base",
+                   "once the ${p_name:const} vacuum gets docked",
+                   "when my ${p_name:const} vacuum starts charging",
+                   "when I dock the ${p_name:const} vacuum",
+                   "when my ${p_name:const} vacuum goes back to base"]]
     #[id=54343387]
     #[name="MonitorStateByStateDocked1"];
 
     action (p_name :String, p_power :Enum(on,off))  := @org.thingpedia.iot.vacuum(name=p_name).set_power(power=p_power)
-    #_[utterances=["turn ${p_power} my ${p_name} vacuum",
-                   "switch ${p_power} the ${p_name} vacuum",
-                   "${p_power} the ${p_name} vacuum"]]
+    #_[utterances=["turn ${p_power} my ${p_name:const} vacuum",
+                   "switch ${p_power} the ${p_name:const} vacuum",
+                   "${p_power} the ${p_name:const} vacuum"]]
     #[id=54343393]
     #[name="SetPowerWithPower1"];
 
     action (p_name :String)  := @org.thingpedia.iot.vacuum(name=p_name).set_power(power=enum(on))
-    #_[utterances=["turn on my ${p_name} vacuum",
-                   "switch on the ${p_name} vacuum cleaner",
-                   "help me switch on my ${p_name} vacuum",
-                   "turn on my ${p_name} vacuum cleaner for me"]]
+    #_[utterances=["turn on my ${p_name:const} vacuum",
+                   "switch on the ${p_name:const} vacuum cleaner",
+                   "help me switch on my ${p_name:const} vacuum",
+                   "turn on my ${p_name:const} vacuum cleaner for me"]]
     #[id=54343396]
     #[name="SetPowerWithPowerOn1"];
 
     action (p_name :String)  := @org.thingpedia.iot.vacuum(name=p_name).set_power(power=enum(off))
-    #_[utterances=["turn off the ${p_name} vacuum cleaner",
-                   "turn off my ${p_name} vacuum cleaner",
-                   "switch off my ${p_name} vacuum for me",
-                   "switch off the ${p_name} vacuum"]]
+    #_[utterances=["turn off the ${p_name:const} vacuum cleaner",
+                   "turn off my ${p_name:const} vacuum cleaner",
+                   "switch off my ${p_name:const} vacuum for me",
+                   "switch off the ${p_name:const} vacuum"]]
     #[id=54343400]
     #[name="SetPowerWithPowerOff1"];
 
     action (p_name :String)  := @org.thingpedia.iot.vacuum(name=p_name).return_to_base()
-    #_[utterances=["dock my ${p_name} vacuum",
-                   "charge the ${p_name} vacuum",
-                   "return my ${p_name} vacuum to base",
-                   "tell the ${p_name} vacuum to return to base",
-                   "ask my ${p_name} vacuum to return to base"]]
+    #_[utterances=["dock my ${p_name:const} vacuum",
+                   "charge the ${p_name:const} vacuum",
+                   "return my ${p_name:const} vacuum to base",
+                   "tell the ${p_name:const} vacuum to return to base",
+                   "ask my ${p_name:const} vacuum to return to base"]]
     #[id=54343404]
     #[name="ReturnToBase1"];
 
     action (p_name :String)  := @org.thingpedia.iot.vacuum(name=p_name).start()
-    #_[utterances=["start my ${p_name} vacuum",
-                   "make the ${p_name} vacuum start cleaning",
-                   "tell my ${p_name} vacuum to start cleaning the house",
-                   "ask the ${p_name} vacuum to start cleaning"]]
+    #_[utterances=["start my ${p_name:const} vacuum",
+                   "make the ${p_name:const} vacuum start cleaning",
+                   "tell my ${p_name:const} vacuum to start cleaning the house",
+                   "ask the ${p_name:const} vacuum to start cleaning"]]
     #[id=54343409]
     #[name="Start1"];
 
     action (p_name :String)  := @org.thingpedia.iot.vacuum(name=p_name).pause()
-    #_[utterances=["pause my ${p_name} vacuum",
-                   "make the ${p_name} vacuum pause cleaning",
-                   "ask my ${p_name} vacuum cleaner to pause",
-                   "tell the ${p_name} vacuum to pause cleaning",
-                   "ask my ${p_name} vacuum to wait"]]
+    #_[utterances=["pause my ${p_name:const} vacuum",
+                   "make the ${p_name:const} vacuum pause cleaning",
+                   "ask my ${p_name:const} vacuum cleaner to pause",
+                   "tell the ${p_name:const} vacuum to pause cleaning",
+                   "ask my ${p_name:const} vacuum to wait"]]
     #[id=54343413]
     #[name="Pause1"];
 
     action (p_name :String)  := @org.thingpedia.iot.vacuum(name=p_name).stop()
-    #_[utterances=["stop the ${p_name} vacuum cleaner",
-                   "make my ${p_name} vacuum stop cleaning",
-                   "tell my ${p_name} vacuum cleaner to stop",
-                   "ask my ${p_name} vacuum to stop cleaning"]]
+    #_[utterances=["stop the ${p_name:const} vacuum cleaner",
+                   "make my ${p_name:const} vacuum stop cleaning",
+                   "tell my ${p_name:const} vacuum cleaner to stop",
+                   "ask my ${p_name:const} vacuum to stop cleaning"]]
     #[id=54343418]
     #[name="Stop1"];
 
