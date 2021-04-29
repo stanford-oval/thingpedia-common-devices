@@ -1,25 +1,35 @@
-class @com.goal_smart {
+class @com.goal_smart 
+  #_[thingpedia_name="GoalSmart"]
+  #_[thingpedia_description="Keep up with the latest in soccer."]
+  #_[description="Keep up with the latest in soccer."]
+  #[license="MIT"]
+  #[license_gplcompatible=true]
+  #[subcategory="home"]
+
+{
+
   import loader from @org.thingpedia.v2();
-  import config from @org.thingpedia.config.none();
   import config from @org.thingpedia.config.none(api_key=$?);
 
 
   entity soccer_team #_[description="Soccer Teams in the World"];
   entity soccer_league #_[description="Soccer Leagues in the World"];
 
+  
+
   monitorable list query standings(in req league_id: Entity(com.goal_smart:soccer_league) #_[prompt="what league standings do you want out check out?"],
-                        out league : Entity(com.goal_smart:soccer_league),
+                        out team : String,
                         out rank: Number,
                         out form: String,
                         out points: Number)
   #_[result = ["${rank}. ${team} | Form: ${form} | Points: ${points}"]]
   #_[canonical="league standings, league rankings, soccer rankings, league table, soccer table"]
-  #_[confirmation="league standings of $league_id"]
+  #_[confirmation="league standings of $league"]
   #[poll_interval=3600000ms]
   #[doc="Get the standings of a league"];
 
   monitorable list query teamFixtures(in req team_id: Entity(com.goal_smart:soccer_team) #_[prompt="what team do you want out check out?"],
-                        out team : Entity(com.goal_smart:soccer_team),
+                        out league : String,
                         out team1: String,
                         out team2: String,
                         out venue: String)
@@ -28,4 +38,6 @@ class @com.goal_smart {
   #_[result=["${team1} vs ${team2} at ${venue} for the ${league}"]]
   #[poll_interval=3600000ms]
   #[doc="Get the fixtures of the team"];
+
+  
 }

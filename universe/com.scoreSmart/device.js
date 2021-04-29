@@ -1,7 +1,6 @@
 "use strict";
 
 const Tp = require('thingpedia');
-const unirest = require("unirest");
 
 module.exports = class GoalDevice extends Tp.BaseDevice {
   constructor(engine, state) {
