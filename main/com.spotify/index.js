@@ -881,6 +881,11 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 await new Promise((resolve) => setTimeout(resolve, 20000));
                 devices = await this.get_get_available_devices();
             }
+            if (this.spotifyd) {
+                // wait 3 seconds for spotifyd to eventually reload
+                await new Promise((resolve) => setTimeout(resolve, 3000));
+                devices = await this.get_get_available_devices();
+            }
             if (devices.length === 0)
                 return [null, null];
         }
@@ -921,6 +926,17 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         const [deviceId, deviceName] = await this._findActiveDevice(devices);
         if (deviceId === null)
             throwError('no_active_device');
+
+        if (this.spotifyd) {
+            await this.engine.audio.requestAudio(this, async () => {
+                console.log("stopping audio");
+                let pauseURL = PAUSE_URL + querystring.stringify({
+                    device_id: deviceId
+                });
+                await this.http_put_default_options(pauseURL, '');
+            });
+        }
+
         try {
             await this.http_put(PLAY_URL + `?device_id=${deviceId}`, data, options);
         } catch (error) {
@@ -1024,6 +1040,56 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             return {
                 device: new Tp.Value.Entity(deviceState[0], deviceState[1])
             };
+        }
+    }
+
+    async do_add_song_to_playlist({
+        song,
+        playlist
+    }) {
+        if (this._testMode())
+            return;
+        let playListURI = await this.findPlaylist(playlist);
+        playListURI = playListURI.substring(playListURI.indexOf("playlist:") + 9);
+        let data = {
+            "uris": [String(song)]
+        };
+        await this.add_uris_to_playlist(playListURI, data);
+    }
+
+    async findPlaylist(name) {
+        const searchResults = await this.search(name, "playlist", 1);
+        if (!Object.prototype.hasOwnProperty.call(searchResults, 'playlists') || searchResults.playlists.total === 0) throwError('no_playlist');
+        const playlist = searchResults.playlists.items[0];
+        if (playlist.owner.id === this.state.id)
+            return playlist.uri;
+        else
+            throwError('disallowed_action');
+        return [];
+    }
+
+    async add_uris_to_playlist(playlistURL, uris) {
+        const url = `https://api.spotify.com/v1/users/${this.state.id}/playlists/${playlistURL}/tracks`;
+        try {
+            await this.http_post_default_options(url.toString(), JSON.stringify(uris));
+        } catch (error) {
+            throwError('disallowed_action');
+        }
+    }
+
+    async do_create_playlist({
+        name
+    }) {
+        if (this._testMode())
+            return;
+        const url = `https://api.spotify.com/v1/users/${this.state.id}/playlists`;
+        let data = {
+            name,
+        };
+        try {
+            await this.http_post_default_options(url.toString(), JSON.stringify(data));
+        } catch (error) {
+            throwError('disallowed_action');
         }
     }
 

@@ -1,0 +1,78 @@
+// Copyright 2016 Andrei Bajenov, Darshan Kapashi
+//           2016-2020 The Board of Trustees of the Leland Stanford Junior University
+//
+// Redistribution and use in source and binary forms, with or
+// without modification, are permitted provided that the following
+// conditions are met:
+//
+// 1. Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+// 2. Redistributions in binary form must reproduce the above
+//    copyright notice, this list of conditions and the following
+//    disclaimer in the documentation and/or other materials
+//    provided with the distribution.
+// 3. Neither the name of the copyright holder nor the names of its
+//    contributors may be used to endorse or promote products derived
+//    from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+// OF THE POSSIBILITY OF SUCH DAMAGE.
+
+class @org.thingpedia.covid-vaccine
+#_[thingpedia_name="COVID Vaccine"]
+#_[thingpedia_description="COVID Vaccine Finder"]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="service"]
+{
+  import loader from @org.thingpedia.v2();
+  import config from @org.thingpedia.config.none();
+
+  entity vaccine_appointment #_[description="Vaccine appointment ID"] #[has_ner=false];
+
+  monitorable list query appointment(in opt location: Location
+                                     #_[prompt="what location do you want vaccine appointments for?"]
+                                     #_[canonical={
+                                       default="preposition",
+                                       base=["location", "position", "place"],
+                                       property=[],
+                                       preposition=["in #", "at #", "around #", "for location #", "for #"]
+                                     }]
+                                     #[default=$location.current_location],
+                                     in opt distance: Measure(m)
+                                     #_[canonical={
+                                       default="preposition",
+                                       base=["miles"],
+                                       preposition=["within #, in #"]
+                                     }],
+                                     out id : Entity(org.thingpedia.covid-vaccine:vaccine_appointment)
+                                     #[unique=true]
+                                     #[filterable=false]
+                                     #_[canonical={
+                                        base=["id"],
+                                     }],
+                                     out geo: Location
+                                     #_[canonical={
+                                       default="preposition",
+                                       base=["address", "location"],
+                                       preposition=["near #", "in #", "around #"]
+                                     }],
+                                     out link: Entity(tt:url) #_[canonical="link"]
+                                    )
+  #_[canonical=["COVID vaccine appointment, vaccine appointment, appointment, vaccine"]]
+  #_[confirmation="COVID-19 vaccine appointment for $geo"]
+  #[minimal_projection=["geo", "link"]]
+  #[poll_interval=86400000ms]
+  #[doc="Information about COVID vaccine appointments"];
+}
+

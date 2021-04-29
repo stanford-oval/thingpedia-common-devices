@@ -55,11 +55,11 @@ C:   { id="spotify:track:127QTOFJsJQp5LbJbu3A1y"^^com.spotify:song("Toosie Slide
 C: ]];
 A: his most popular song right now is toosie slide . would you like to play this song ?
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
-AT: now => @com.spotify.play(playable="spotify:track:127QTOFJsJQp5LbJbu3A1y"^^com.spotify:song("Toosie Slide"))
+AT: now => @com.spotify(id="com.spotify-001").play(playable="spotify:track:127QTOFJsJQp5LbJbu3A1y"^^com.spotify:song("Toosie Slide"))
 AT: #[confirm=enum(proposed)];
 U: i don't know that song . when was it released ?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => [release_date] of (sort popularity desc of (@com.spotify.song(), id == "spotify:track:127QTOFJsJQp5LbJbu3A1y"^^com.spotify:song("Toosie Slide") && contains(artists,"spotify:artist:3TVXtAsR1Inumwj472S9r4"^^com.spotify:artist("Drake"))))[1] => notify;
+UT: now => [release_date] of (sort popularity desc of (@com.spotify(id="com.spotify-001").song(), id == "spotify:track:127QTOFJsJQp5LbJbu3A1y"^^com.spotify:song("Toosie Slide") && contains(artists,"spotify:artist:3TVXtAsR1Inumwj472S9r4"^^com.spotify:artist("Drake"))))[1] => notify;
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
 C: now => (sort popularity desc of (@com.spotify(id="com.spotify-001").song(), contains(artists,"spotify:artist:3TVXtAsR1Inumwj472S9r4"^^com.spotify:artist("Drake"))))[1] => notify
 C: #[results=[
@@ -85,7 +85,7 @@ C:   { id="spotify:track:6habFhsOp2NvshLv26DqMb"^^com.spotify:song("Despacito"),
 C: ]];
 A: the danceability is 65 out of 100 . would you like me to play this song ?
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
-AT: now => @com.spotify.play(playable="spotify:track:6habFhsOp2NvshLv26DqMb"^^com.spotify:song("Despacito"))
+AT: now => @com.spotify(id="com.spotify-001").play(playable="spotify:track:6habFhsOp2NvshLv26DqMb"^^com.spotify:song("Despacito"))
 AT: #[confirm=enum(proposed)];
 U: no thank you, maybe later .
 UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
@@ -106,11 +106,11 @@ C:   { id="spotify:track:6AyI8UGx8Y4peb7pLOy2pf"^^com.spotify:song("7 rings (fea
 C: ]];
 A: 7 rings was written by ariana grande . would you like me to play this song ?
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
-AT: now => @com.spotify.play(playable="spotify:track:6ocbgoVGwYJhOv1GgI9NsF"^^com.spotify:song("7 rings"))
+AT: now => @com.spotify(id="com.spotify-001").play(playable="spotify:track:6ocbgoVGwYJhOv1GgI9NsF"^^com.spotify:song("7 rings"))
 AT: #[confirm=enum(proposed)];
 U: no thank you . what other songs has she released ?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@com.spotify.song()), contains(artists, "spotify:artist:66CXWjxzNUsdJxJ2JdwvnR"^^com.spotify:artist("Ariana Grande")) => notify;
+UT: now => (@com.spotify(id="com.spotify-001").song()), contains(artists, "spotify:artist:66CXWjxzNUsdJxJ2JdwvnR"^^com.spotify:artist("Ariana Grande")) => notify;
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
 C: now => [artists] of ((@com.spotify(id="com.spotify-001").song()), id =~ "7 rings") => notify
 C: #[results=[
@@ -139,7 +139,7 @@ A: i found stuck with u(with justin bieber), no tears left to cry, and thank u, 
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_three;
 U: no . out of those 3 songs which one is the most popular ?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (sort popularity desc of (@com.spotify.song(), contains(artists, "spotify:artist:66CXWjxzNUsdJxJ2JdwvnR"^^com.spotify:artist("Ariana Grande"))))[1] => notify;
+UT: now => (sort popularity desc of (@com.spotify(id="com.spotify-001").song(), contains(artists, "spotify:artist:66CXWjxzNUsdJxJ2JdwvnR"^^com.spotify:artist("Ariana Grande"))))[1] => notify;
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
 C: now => [artists] of ((@com.spotify(id="com.spotify-001").song()), id =~ "7 rings") => notify
 C: #[results=[
@@ -4337,7 +4337,7 @@ UT: @com.spotify.playable() filter id =~ "spider-man" => @com.spotify.play(playa
 # log-dev/5237
 U: play gigi d'agostino
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("gigi d'agostino")) => @com.spotify.play(playable=id);
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("gigi d 'agostino")) => @com.spotify.play(playable=id);
 ====
 # log-dev/5130
 U: play the most popular song right now
@@ -4397,7 +4397,7 @@ UT: @com.spotify.song() filter id =~ "we are the champions" => @com.spotify.play
 # log-dev/5257
 U: play the artist gigi d'agostino
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.spotify.song() filter contains(artists, null^^com.spotify:artist("gigi d'agostino")) => @com.spotify.play(playable=id);
+UT: @com.spotify.song() filter contains(artists, null^^com.spotify:artist("gigi d 'agostino")) => @com.spotify.play(playable=id);
 ====
 # log-dev/5344
 U: what is the release date of boys by charli xcx
@@ -4488,7 +4488,7 @@ A: Sorry, failed to play: try playing from the Spotify app.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
 U: play never gonna give you up
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.spotify.playable() filter id =~ "never gonna give you up" => @com.spotify.play(playable=id);
+UT: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter id =~ "never gonna give you up" => @com.spotify.play(playable=id);
 ====
 # recording/b2c4a4039f67c3ca39ecf4c6a879e33f
 U: play spiderman into the spiderverse
@@ -4552,7 +4552,7 @@ A: I have Love Story or Love Story (Taylor’s Version). All of them are music b
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_two;
 U: what is beatles's top hit
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: sort(popularity desc of @com.spotify.song() filter contains(artists, null^^com.spotify:artist("beatles")))[1];
+UT: sort(popularity desc of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, null^^com.spotify:artist("beatles")))[1];
 ====
 # recording/a72002e65e77a86dc77c5a25aafebd7c
 U: resume playback
@@ -4599,7 +4599,7 @@ A: I'm sorry, I cannot find any show matching your request.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_empty_search;
 U: play the neoliberal podcast
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.spotify.show() filter id =~ "neoliberal" => @com.spotify.play(playable=id);
+UT: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).show() filter id =~ "neoliberal" => @com.spotify.play(playable=id);
 ====
 # recording/250ccb85220072d307429f57d3f8e4a7
 U: play songs by Cascada
@@ -4624,7 +4624,7 @@ A: The most popular singers is Juice WRLD. It is a melodic rap singers.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
 U: play a song by them
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.spotify.song() filter contains(artists, "spotify:artist:4MCBfE4596Uoi2O4DtmEMz"^^com.spotify:artist("Juice WRLD")) => @com.spotify.play(playable=id);
+UT: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, "spotify:artist:4MCBfE4596Uoi2O4DtmEMz"^^com.spotify:artist("Juice WRLD")) => @com.spotify.play(playable=id);
 ====
 # recording/3acc88acea9ac21f32ed8d8dba30b955
 U: next song
@@ -4698,7 +4698,7 @@ A: Sorry, failed to play: try playing from the Spotify app.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
 U: Play a song.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.spotify.song() => @com.spotify.play(playable=id);
+UT: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() => @com.spotify.play(playable=id);
 ====
 # recording/be4d6e56040ebf45a6ac76f409099e5f
 U: play a song
@@ -4722,7 +4722,7 @@ A: Sorry, failed to play: try playing from the Spotify app.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
 U: play a song
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.spotify.song() => @com.spotify.play(playable=id);
+UT: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() => @com.spotify.play(playable=id);
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
 C: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() => @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
 C: #[results=[]]
@@ -4746,7 +4746,7 @@ A: Sorry, failed to play: try playing from the Spotify app.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
 U: play a song
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.spotify.song() => @com.spotify.play(playable=id);
+UT: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() => @com.spotify.play(playable=id);
 ====
 # recording/504d2270531a6cc70b5af73874e369b0
 U: play another song
@@ -4781,7 +4781,7 @@ A: The most popular track is Rocket Man (I Think It's Going To Be A Long, Long T
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
 U: what is the biggest hit by Taylor swift
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: sort(popularity desc of @com.spotify.song() filter contains(artists, null^^com.spotify:artist("taylor swift")))[1];
+UT: sort(popularity desc of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, null^^com.spotify:artist("taylor swift")))[1];
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
 C: sort(popularity desc of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, "spotify:artist:3PhoLpVuITZKcymswpck5b"^^com.spotify:artist("Elton John")))[1]
 C: #[results=[
@@ -4795,7 +4795,7 @@ A: The most popular track is willow. It is a track in the album evermore by Tayl
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
 U: who sings shake it off
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: [artists] of @com.spotify.playable() filter id =~ "shake it off";
+UT: [artists] of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter id =~ "shake it off";
 ====
 # recording/f39b42d4f8fe18b504a7c3b28796db4e
 U: Name the singer of the Piano man album
@@ -4827,7 +4827,7 @@ A: The most popular singers is Juice WRLD. It is a melodic rap singers.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
 U: play the beatles
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.spotify.song() filter contains(artists, null^^com.spotify:artist("beatles")) => @com.spotify.play(playable=id);
+UT: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, null^^com.spotify:artist("beatles")) => @com.spotify.play(playable=id);
 ====
 # recording/71c8b187b0b9d1e8138d488111c20658
 U: play a song
@@ -4841,7 +4841,7 @@ A: Sorry, failed to play: try playing from the Spotify app.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
 U: play queen
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.spotify.song() filter contains(artists, null^^com.spotify:artist("queen")) => @com.spotify.play(playable=id);
+UT: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, null^^com.spotify:artist("queen")) => @com.spotify.play(playable=id);
 ====
 # recording/81aaec26692917513ce3b40e47156cf1
 U: play the artist queen
@@ -4921,7 +4921,7 @@ A: I have found Godspeed, Mile High (feat. Travis Scott & Metro Boomin) and Retr
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_three;
 U: what is the most popular song by James Blake on spotify
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: sort(popularity desc of @com.spotify.song() filter contains(artists, null^^com.spotify:artist("james blake")))[1];
+UT: sort(popularity desc of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, null^^com.spotify:artist("james blake")))[1];
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
 C: sort(popularity desc of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, "spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake")))
 C: #[results=[
@@ -4945,7 +4945,7 @@ A: The most popular song is Godspeed. It is a song in the album Godspeed by Jame
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
 U: what is the most popular song by Burial on Spotify
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: sort(popularity desc of @com.spotify.song() filter contains(artists, null^^com.spotify:artist("burial")))[1];
+UT: sort(popularity desc of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, null^^com.spotify:artist("burial")))[1];
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
 C: sort(popularity desc of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, "spotify:artist:53KwLdlmrlCelAZMaLVZqU"^^com.spotify:artist("James Blake")))
 C: #[results=[
@@ -4973,7 +4973,7 @@ A: The most popular song is Her Revolution. It is a song in the album Her Revolu
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
 U: play Burial's most popular song on Spotify
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: sort(popularity desc of @com.spotify.song() filter contains(artists, null^^com.spotify:artist("burial")))[1] => @com.spotify.play(playable=id);
+UT: sort(popularity desc of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, null^^com.spotify:artist("burial")))[1] => @com.spotify.play(playable=id);
 ====
 # recording/85a71140a96d4e097fb65eff100e1d07
 U: play the most popular song by Burial on Spotify
@@ -5068,7 +5068,7 @@ A: The most popular track is Sweater Weather. It is a track in the album I Love 
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
 U: what is the most popular taiwanese song
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: sort(popularity desc of @com.spotify.song() filter contains~(genres, "taiwanese"))[1];
+UT: sort(popularity desc of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains~(genres, "taiwanese"))[1];
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
 C: sort(popularity desc of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains~(genres, "rock"))[1]
 C: #[results=[
@@ -5082,7 +5082,7 @@ A: The most popular track is 浪子回頭. It is a track in the album 卡通人�
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
 U: play juice wrld
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("juice wrld")) => @com.spotify.play(playable=id);
+UT: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, null^^com.spotify:artist("juice wrld")) => @com.spotify.play(playable=id);
 ====
 # recording/df62065a89b14ea949eae744fc570aa0
 U: play juice wrld
@@ -5122,7 +5122,7 @@ A: The most popular track is Here Comes The Sun - Remastered 2009. It is a track
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
 U: play rap songs
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.spotify.song() filter contains~(genres, "rap") => @com.spotify.play(playable=id);
+UT: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains~(genres, "rap") => @com.spotify.play(playable=id);
 ====
 # recording/8f2d9948e31b7a790db4d325e4282551
 U: play the playlist today's top hits
@@ -5176,7 +5176,7 @@ A: Sorry, failed to play: try playing from the Spotify app.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
 U: i want to listen to dead mau5
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("dead mau5")) => @com.spotify.play(playable=id);
+UT: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, null^^com.spotify:artist("dead mau5")) => @com.spotify.play(playable=id);
 ====
 # recording/242e09544f9019caa251b95048cd08c1
 U: i want to listen to deadmau5
@@ -5201,7 +5201,7 @@ A: The most recent song is BELIEVE IT. It is a song in the album BELIEVE IT by R
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
 U: can you play it?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.spotify.play(playable="spotify:track:6mulQVtiyAO551KgUuJI8Q"^^com.spotify:song("BELIEVE IT"));
+UT: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable="spotify:track:6mulQVtiyAO551KgUuJI8Q"^^com.spotify:song("BELIEVE IT"));
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
 C: sort(release_date desc of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, "spotify:artist:5pKCCKE2ajJHZ9KAiaK11H"^^com.spotify:artist("Rihanna")))[1]
 C: #[results=[
@@ -5214,7 +5214,7 @@ A: Sorry, failed to play: you must first click play from inside the Spotify app,
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
 U: can you try playing it now?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.spotify.play(playable="spotify:track:6mulQVtiyAO551KgUuJI8Q"^^com.spotify:song("BELIEVE IT"));
+UT: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable="spotify:track:6mulQVtiyAO551KgUuJI8Q"^^com.spotify:song("BELIEVE IT"));
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
 C: sort(release_date desc of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, "spotify:artist:5pKCCKE2ajJHZ9KAiaK11H"^^com.spotify:artist("Rihanna")))[1]
 C: #[results=[
@@ -5232,7 +5232,7 @@ A: Sorry, failed to play: you must first click play from inside the Spotify app,
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
 U: please try playing it again
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.spotify.play(playable="spotify:track:6mulQVtiyAO551KgUuJI8Q"^^com.spotify:song("BELIEVE IT"));
+UT: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable="spotify:track:6mulQVtiyAO551KgUuJI8Q"^^com.spotify:song("BELIEVE IT"));
 ====
 # recording/b5366564777e4d4805c4e10eb87c195d
 U: play music
@@ -5493,7 +5493,7 @@ A: Sorry, you must open the Spotify app first.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
 U: Do the last command.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.spotify.playable() filter id =~ "waving flag" => @com.spotify.play(playable=id);
+UT: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter id =~ "waving flag" => @com.spotify.play(playable=id);
 ====
 # recording/ef9eed3d8de76b17f92a7c04dbc56595
 U: Play waving flag on this computer.
@@ -5511,7 +5511,7 @@ A: Sorry, there are no music matching your request.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_empty_search;
 U: Play waving flag by KHAAN on this computer.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("khaan")) && id =~ "waving flag" => @com.spotify.play(playable=id);
+UT: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, null^^com.spotify:artist("khaan")) && id =~ "waving flag" => @com.spotify.play(playable=id);
 ====
 # recording/528e9810202c3415584e134d31fda0d2
 U: Turn shuffle on.
@@ -5573,7 +5573,7 @@ U: i'm feeling nostalgic. play me a song from the 1980s .
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => (@com.spotify.song()), (release_date >= new Date("1980-01-01T08:00:00.000Z") && release_date <= new Date("1980-01-01T08:00:00.000Z") + 10year) => notify;
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: now => (@com.spotify.song()), (release_date >= new Date("1980-01-01T08:00:00.000Z") && release_date <= new Date("1980-01-01T08:00:00.000Z") + 10year) => notify
+C: now => (@com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song()), (release_date >= new Date("1980-01-01T08:00:00.000Z") && release_date <= new Date("1980-01-01T08:00:00.000Z") + 10year) => notify
 C: #[results=[
 C:   { id="spotify:track:2374M0fQpWi3dLnB54qaLX"^^com.spotify:song("Africa"), artists=["spotify:artist:0PFtn5NtBbbUNbU9EAmIWF"^^com.spotify:artist("TOTO")], release_date=new Date("1982-04-08T00:00:00.000Z"), popularity=83, energy=37, danceability=67 },
 C:   { id="spotify:track:0mHyWYXmmCB9iQyK18m3FQ"^^com.spotify:song("Hello"), artists=["spotify:artist:3gMaNLQm7D9MornNILzdSl"^^com.spotify:artist("Lionel Richie")], release_date=new Date("1983-01-01T00:00:00.000Z"), popularity=59, energy=24, danceability=48 },
@@ -5589,13 +5589,13 @@ C: ]]
 C: #[count=20];
 A: i found africa by toto . would you like me to play this song ?
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
-AT: now => @com.spotify.play(playable="spotify:track:2374M0fQpWi3dLnB54qaLX"^^com.spotify:song("Africa"))
+AT: now => @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable="spotify:track:2374M0fQpWi3dLnB54qaLX"^^com.spotify:song("Africa"))
 AT: #[confirm=enum(proposed)];
 U: actually, why don't we try the '70s instead .
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@com.spotify.song()), (release_date >= new Date("1970-01-01T08:00:00.000Z") && release_date <= new Date("1970-01-01T08:00:00.000Z") + 10year) => notify;
+UT: now => (@com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song()), (release_date >= new Date("1970-01-01T08:00:00.000Z") && release_date <= new Date("1970-01-01T08:00:00.000Z") + 10year) => notify;
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: now => (@com.spotify.song()), (release_date >= new Date("1980-01-01T08:00:00.000Z") && release_date <= new Date("1980-01-01T08:00:00.000Z") + 10year) => notify
+C: now => (@com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song()), (release_date >= new Date("1980-01-01T08:00:00.000Z") && release_date <= new Date("1980-01-01T08:00:00.000Z") + 10year) => notify
 C: #[results=[
 C:   { id="spotify:track:2374M0fQpWi3dLnB54qaLX"^^com.spotify:song("Africa"), artists=["spotify:artist:0PFtn5NtBbbUNbU9EAmIWF"^^com.spotify:artist("TOTO")], release_date=new Date("1982-04-08T00:00:00.000Z"), popularity=83, energy=37, danceability=67 },
 C:   { id="spotify:track:0mHyWYXmmCB9iQyK18m3FQ"^^com.spotify:song("Hello"), artists=["spotify:artist:3gMaNLQm7D9MornNILzdSl"^^com.spotify:artist("Lionel Richie")], release_date=new Date("1983-01-01T00:00:00.000Z"), popularity=59, energy=24, danceability=48 },
@@ -5609,7 +5609,7 @@ C:   { id="spotify:track:7snQQk1zcKl8gZ92AnueZW"^^com.spotify:song("Sweet Child 
 C:   { id="spotify:track:43btz2xjMKpcmjkuRsvxyg"^^com.spotify:song("Jack & Diane"), artists=["spotify:artist:3lPQ2Fk5JOwGWAF3ORFCqH"^^com.spotify:artist("John Mellencamp")], release_date=new Date("1982-01-01T00:00:00.000Z"), popularity=75, energy=41, danceability=81 }
 C: ]]
 C: #[count=20];
-C: now => (@com.spotify.song()), (release_date >= new Date("1970-01-01T08:00:00.000Z") && release_date <= new Date("1970-01-01T08:00:00.000Z") + 10year) => notify
+C: now => (@com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song()), (release_date >= new Date("1970-01-01T08:00:00.000Z") && release_date <= new Date("1970-01-01T08:00:00.000Z") + 10year) => notify
 C: #[results=[
 C:   { id="spotify:track:6vmAgl2y9MpoZKrVUXrPe5"^^com.spotify:song("Hello Darlin'"), artists=["spotify:artist:7gi3jmwpUpNWdswT8eEprF"^^com.spotify:artist("Conway Twitty")], release_date=new Date("1970-03-23T00:00:00.000Z"), popularity=60, energy=23, danceability=27 },
 C:   { id="spotify:track:0ofHAoxe9vBkTCp2UQIavz"^^com.spotify:song("Dreams - 2004 Remaster"), artists=["spotify:artist:08GQAI4eElDnROBrJRGE0X"^^com.spotify:artist("Fleetwood Mac")], release_date=new Date("1977-02-04T00:00:00.000Z"), popularity=80, energy=49, danceability=82 },
@@ -5625,11 +5625,11 @@ C: ]]
 C: #[count=21];
 A: i found dreams by fleetwood mac . should i play this instead ?
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
-AT: now => @com.spotify.play(playable="spotify:track:0ofHAoxe9vBkTCp2UQIavz"^^com.spotify:song("Dreams - 2004 Remaster"))
+AT: now => @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable="spotify:track:0ofHAoxe9vBkTCp2UQIavz"^^com.spotify:song("Dreams - 2004 Remaster"))
 AT: #[confirm=enum(proposed)];
 U: absolutely, i love this song .
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.spotify.play(playable="spotify:track:0ofHAoxe9vBkTCp2UQIavz"^^com.spotify:song("Dreams - 2004 Remaster"));
+UT: now => @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable="spotify:track:0ofHAoxe9vBkTCp2UQIavz"^^com.spotify:song("Dreams - 2004 Remaster"));
 ====
 # snips-nlu/spotify-34
 U: play laura love songs from 1959

@@ -4,7 +4,7 @@ set -e
 set -x
 set -o pipefail
 
-THINGPEDIA_CLI=node_modules/.bin/thingpedia
+THINGPEDIA_CLI=node_modules/.bin/genie
 
 for release in "$@" ; do
 
