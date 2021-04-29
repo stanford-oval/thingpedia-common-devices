@@ -24,7 +24,7 @@ module.exports = [
                 assertNonEmptyString(res.author);
             assert(typeof res.content === 'string');
             assert(typeof res.link === 'string');
-            assert(res.audio_url === undefined || typeof res.audio_url === 'string');
+            assert(res.audio_url === undefined || res.audio_url.startsWith('http'));
         }
     }]
     // ['query', 'reading_list', {}, (results) => {
