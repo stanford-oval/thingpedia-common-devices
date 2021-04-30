@@ -1,7 +1,5 @@
 dataset @org.thingpedia.iot.occupancy language "en" {
-    program  := {
-  now => @org.thingpedia.iot.occupancy.occupancy() => notify;
-}
+    program  := @org.thingpedia.iot.occupancy.occupancy()
     #_[utterances=["is the room occupied?",
                    "check if living room is occupied or empty",
                    "is the bedroom empty?",
@@ -45,9 +43,7 @@ dataset @org.thingpedia.iot.occupancy language "en" {
                    "when there is no one left in the living room",
                    "once everyone leaves the room"]];
 
-    program (p_name :String)  := {
-  now => @org.thingpedia.iot.occupancy(name=p_name).occupancy() => notify;
-}
+    program (p_name :String)  := @org.thingpedia.iot.occupancy(name=p_name).occupancy() 
     #_[utterances=["does the ${p_name} sensor say the room occupied?",
                    "check if ${p_name} says the living room is occupied or empty",
                    "is the bedroom empty according to my ${p_name} sensor?",
