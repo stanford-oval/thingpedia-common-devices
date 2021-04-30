@@ -1,10 +1,21 @@
-# 1-vaccine-appointments
-U: \t @org.thingpedia.covid-vaccine.appointment(location=new Location(37.442156, -122.1634471, "Palo Alto, California"));
+# 1-basic
+U: \t @org.thingpedia.covid-vaccine.appointment(location=new Location(37.442156, -122.1634471, "Palo Alto, California"), dose=enum(first));
 A: I see (Safeway.+|Rite Aid|Walgreens|Walmart).+.
 A: >> expecting = null
 
-# 2-vaccine-appointments
-#U: Find vaccines near me
-#A: Vaccine appointments available at .+, .+, .+, .+\.
-#A: >> expecting = null
+====
+# 2-basic-slot-filling
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute; @org.thingpedia.covid-vaccine.appointment();
+A: What location would you like\?
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute; @org.thingpedia.covid-vaccine.appointment(location=new Location("palo alto, california"));
+A: is this your first or second dose\?
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute; @org.thingpedia.covid-vaccine.appointment(location=new Location("palo alto, california"), dose=enum(first));
+A: I see (Safeway.+|Rite Aid|Walgreens|Walmart).+.
+A: >> expecting = null
 
+====
+# 3-basic-validity-feedback
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => (@org.thingpedia.covid-vaccine:vaccine_appointment(), id =~ ("test:0:1618911855735")) => @org.thingpedia.covid-vaccine.mark_valid(appointment=id, validity=true);
+A: Great, congratulations on getting your appointment! Please tell your friends about us\.
+A: >> expecting = null
