@@ -14,7 +14,6 @@ const DB_URL = process.env.MONGODB_URL || 'mongodb://localhost:27017';
 const DB_NAME = 'vaccines';
 const PROVIDER_COLLECTION = 'provider';
 const APPOINTMENT_COLLECTION = 'appointment';
-const SAMPLING_STRATEGY = 'probabilistic';
 const MOCK_RESPONSE = [
     {
         id: new Tp.Value.Entity('0', 'Safeway'),
@@ -53,7 +52,9 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
     constructor(engine, state) {
         super(engine, state);
 
-        this._mongo_client = connect_mongodb(DB_URL);
+        // TODO: Find a better way to mock.
+        if (!process.env.CI)
+            this._mongo_client = connect_mongodb(DB_URL);
         this._geo_cache = {};
     }
 

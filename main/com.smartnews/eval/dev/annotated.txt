@@ -194,3 +194,23 @@ UT: sort(date desc of @com.smartnews.article())[1 : 10];
 U: what are the top news stories?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.smartnews.article();
+====
+# manual/1
+U: get news about coronavirus
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter title =~ "coronavirus";
+====
+# manual/2
+U: get news from yesterday
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter date >= $start_of(day) - 1day;
+====
+# manual/3
+U: get news in the last 3 hours
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter date >= $now - 3h;
+====
+# manual/4
+U: get news from the guardian
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter source =~ "guardian";
