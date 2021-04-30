@@ -14,7 +14,6 @@ const DB_URL = process.env.MONGODB_URL || 'mongodb://localhost:27017';
 const DB_NAME = 'vaccines';
 const PROVIDER_COLLECTION = 'provider';
 const APPOINTMENT_COLLECTION = 'appointment';
-const SAMPLING_STRATEGY = 'probabilistic';
 const MOCK_RESPONSE = [
     {
         id: new Tp.Value.Entity('0', 'Safeway'),
