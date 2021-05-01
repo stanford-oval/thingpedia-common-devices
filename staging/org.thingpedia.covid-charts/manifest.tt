@@ -1,0 +1,143 @@
+
+class @org.thingpedia.covid-charts
+#_[thingpedia_name="Covid Charts"]
+#_[thingpedia_description="Provides and charts a variety of COVID data"]
+#[subcategory="service"]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+{
+  import loader from @org.thingpedia.v2();
+  import config from @org.thingpedia.config.none();
+
+  query cases(in req location: String
+                    #_[prompt="What location do you want to check?"]
+                    #_[canonical={
+                        default="preposition",
+                        base=["county", "state", "area"],
+                        preposition=["in #", "for #", "around #"],
+                    }],
+              out cases: Number
+              )
+  #_[canonical=["covid cases", "cases", "total cases", "total covid cases"]]
+  #_[result=["the total covid cases in ${location} is ${cases}"]]
+  #[doc="Get total cases"];
+
+  query new_cases(in req location: String
+                    #_[prompt="What location do you want to check?"]
+                    #_[canonical={
+                        default="preposition",
+                        base=["county", "state", "area"],
+                        preposition=["in #", "for #", "around #"],
+                    }],
+              out new_cases: Number
+              )
+  #_[canonical=["new covid cases", "new cases", "cases today", "covid cases today"]]
+  #_[result=["Today's case count in ${location} is ${new_cases}"]]
+  #[doc="Get new cases"];
+
+  query deaths(in req location: String
+                    #_[prompt="What location do you want to check?"]
+                    #_[canonical={
+                        default="preposition",
+                        base=["county", "state", "area"],
+                        preposition=["in #", "for #", "around #"],
+                    }],
+              out deaths: Number
+              )
+  #_[canonical=["covid deaths", "deaths", "total deaths", "total covid deaths"]]
+  #_[result=["the total covid deaths in ${location} is ${deaths}"]]
+  #[doc="Get total deaths"];
+
+  query new_deaths(in req location: String
+                    #_[prompt="What location do you want to check?"]
+                    #_[canonical={
+                        default="preposition",
+                        base=["county", "state", "area"],
+                        preposition=["in #", "for #", "around #"],
+                    }],
+              out new_deaths: Number
+              )
+  #_[canonical=["new covid deaths", "new deaths", "deaths today", "covid deaths today"]]
+  #_[result=["Today's deaths count in ${location} is ${new_deaths}"]]
+  #[doc="Get new deaths"];
+
+  query vaccines_initiated(in req location: String
+                    #_[prompt="What location do you want to check?"]
+                    #_[canonical={
+                        default="preposition",
+                        base=["county", "state", "area"],
+                        preposition=["in #", "for #", "around #"],
+                    }],
+              out vaccines_initiated: Number
+              )
+  #_[canonical=["vaccinations initiated"]]
+  #_[result=["The number of vaccines initiated in ${location} is ${vaccines_initiated}"]]
+  #[doc="Get vaccines initiated"];
+
+  query vaccines_completed(in req location: String
+                    #_[prompt="What location do you want to check?"]
+                    #_[canonical={
+                        default="preposition",
+                        base=["county", "state", "area"],
+                        preposition=["in #", "for #", "around #"],
+                    }],
+              out vaccines_completed: Number
+              )
+  #_[canonical=["vaccinations completed"]]
+  #_[result=["The number of vaccines initiated in ${location} is ${vaccines_completed}"]]
+  #[doc="Get vaccines completed"];
+
+  query case_density(in req location: String
+                    #_[prompt="What location do you want to check?"]
+                    #_[canonical={
+                        default="preposition",
+                        base=["county", "state", "area"],
+                        preposition=["in #", "for #", "around #"],
+                    }],
+              out case_density: Number
+              )
+  #_[canonical=["case density", "cases per 100k"]]
+  #_[result=["The case_density in ${location} is ${case_density}"]]
+  #[doc="Get case density"];
+
+  query icu_capacity(in req location: String
+                    #_[prompt="What location do you want to check?"]
+                    #_[canonical={
+                        default="preposition",
+                        base=["county", "state", "area"],
+                        preposition=["in #", "for #", "around #"],
+                    }],
+              out icu_capacity: Number
+              )
+  #_[canonical=["icu capacity ratio", "icu capacity", "number of icu beds", "icu beds", "free icus"]]
+  #_[result=["The ICU capacity ratio in ${location} is ${icu_capacity}"]]
+  #[doc="Get ICU capacity"];
+
+  query infection_rate(in req location: String
+                    #_[prompt="What location do you want to check?"]
+                    #_[canonical={
+                        default="preposition",
+                        base=["county", "state", "area"],
+                        preposition=["in #", "for #", "around #"],
+                    }],
+              out infection_rate: Number
+              )
+  #_[canonical=["infection rate", "COVID spread per person", "number of people infected per positive case",
+  "new people each positive person will infect"]]
+  #_[result=["The infection rate in ${location} is ${infection_rate} people infected per COVID positive person"]]
+  #[doc="Get infection rate"];
+
+  query positivity_rate(in req location: String
+                    #_[prompt="What location do you want to check?"]
+                    #_[canonical={
+                        default="preposition",
+                        base=["county", "state", "area"],
+                        preposition=["in #", "for #", "around #"],
+                    }],
+              out positivity_rate: Number
+              )
+  #_[canonical=["test positivity rate", "percentage positive test cases", "percentage of covid cases positive"]]
+  #_[result=["The positivity rate in ${location} is ${positivity_rate}% of COVID tests"]]
+  #[doc="Get test positivity rate"];
+
+}
