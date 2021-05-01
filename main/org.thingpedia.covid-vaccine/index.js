@@ -14,7 +14,6 @@ const DB_URL = process.env.MONGODB_URL || 'mongodb://localhost:27017';
 const DB_NAME = 'vaccines';
 const PROVIDER_COLLECTION = 'provider';
 const APPOINTMENT_COLLECTION = 'appointment';
-const SAMPLING_STRATEGY = 'probabilistic';
 const MOCK_RESPONSE = [
     {
         id: new Tp.Value.Entity('0', 'Safeway'),
@@ -28,7 +27,6 @@ const MOCK_RESPONSE = [
     }
 ];
 
-
 function prettyprintAddress(appointment) {
     return [
         appointment.name,
@@ -37,32 +35,6 @@ function prettyprintAddress(appointment) {
         appointment.state,
         appointment.postal_code,
     ].filter((i) => i !== null && i.length > 0).join(', ');
-}
-
-function indexOfMax(arr) {
-    if (arr.length === 0)
-        return -1;
-
-    var max = arr[0];
-    var maxIndex = 0;
-
-    for (var i = 1; i < arr.length; i++) {
-        if (arr[i] > max) {
-            maxIndex = i;
-            max = arr[i];
-        }
-    }
-
-    return maxIndex;
-}
-
-function randomChoice(p) {
-    let rnd = p.reduce( (a, b) => a + b ) * Math.random();
-    return p.findIndex( (a) => (rnd -= a) < 0 );
-}
-
-function randomChoices(p, count) {
-    return Array.from(Array(count), randomChoice.bind(null, p));
 }
 
 async function connect_mongodb(uri) {
@@ -92,132 +64,123 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
         if (process.env.CI)
             return MOCK_RESPONSE;
 
-        try {
-            const client = await this._mongo_client;
-            const db = client.db(DB_NAME);
-            const provider_collection = db.collection(PROVIDER_COLLECTION);
+        const client = await this._mongo_client;
+        const db = client.db(DB_NAME);
+        const provider_collection = db.collection(PROVIDER_COLLECTION);
 
-            // Zip code to geo location
-            console.time('geocoder');
-            let geocoder_res = null;
-            if (zip_code in this._geo_cache) {
-                geocoder_res = this._geo_cache[zip_code];
-            } else {
-                const geocoder = NodeGeocoder({
-                    provider: 'google',
-                    apiKey: GOOGLE_API_KEY
-                });
-                geocoder_res = await geocoder.geocode(zip_code);
-                console.log(geocoder_res);
-                console.timeEnd('geocoder');
-                if (geocoder_res.length === 0) {
-                    const error = new Error();
-                    error.code = 'invalid_zipcode';
-                    throw error;
-                }
-                this._geo_cache[zip_code] = geocoder_res;
+        // Zip code to geo location
+        console.time('geocoder');
+        let geocoder_res = null;
+        if (zip_code in this._geo_cache) {
+            geocoder_res = this._geo_cache[zip_code];
+        } else {
+            const geocoder = NodeGeocoder({
+                provider: 'google',
+                apiKey: GOOGLE_API_KEY
+            });
+            geocoder_res = await geocoder.geocode(zip_code);
+            console.log(geocoder_res);
+            console.timeEnd('geocoder');
+            if (geocoder_res.length === 0) {
+                const error = new Error();
+                error.code = 'invalid_zipcode';
+                throw error;
             }
-            console.time('query provider');
-            // Get all providers within distance
-            let query = {
-                'geo.coordinates': {
-                    $near: {
-                        $geometry: {
-                            type: 'Point',
-                            coordinates: [geocoder_res[0].longitude,
-                                          geocoder_res[0].latitude]
-                        },
-                        $maxDistance: distance * 1610  // Mile to meter
-                    },
-                }
-            };
-            let cursor = provider_collection.find(query).limit(25);
-            const providers = await cursor.toArray();
-            console.timeEnd('query provider');
-            await cursor.close();
-
-            console.time('query appointments');
-            const appointment_ids = providers.map((p) => `${p._id}:${p.appointments_last_fetched.getTime()}`);
-            query = {
-                '_id': {
-                    $in: appointment_ids
-                }
-            };
-            const appointment_collection = db.collection(APPOINTMENT_COLLECTION);
-            cursor = appointment_collection.find(query);
-            let appointments_all = (await cursor.toArray());
-            await cursor.close();
-
-            const appointments_map = {};
-            for (const a of appointments_all)
-                appointments_map[a.provider] = a;
-
-            const appointments = providers.map((p, i) => {
-                const appointment = appointments_map[p._id];
-
-                if (appointment === undefined ||
-                    appointment.available === undefined ||
-                    appointment.available === false ||
-                    (appointment.user_marked_validity !== undefined && !appointment.user_marked_validity))
-                    return null;
-
-                if (dose === 'second' && !appointment.second_dose_available)
-                    return null;
-
-                // Filter by vaccine type
-                if (vaccine_type !== null && vaccine_type !== undefined) {
-                    let found = false;
-                    for (const vt of appointment.vaccine_types) {
-                        if (vt === vaccine_type || vt === 'unknown') {
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found)
-                        return null;
-                }
-
-                const id = new Tp.Value.Entity(appointment._id, p.name);
-                const geo = new Tp.Value.Location(
-                    p.geo.coordinates[1],
-                    p.geo.coordinates[0],
-                    prettyprintAddress(p));
-                return {
-                    id: id,
-                    geo: geo,
-                    link: p.url,
-                    availability_rate: p.availability_rate || 0
-                };
-            }).filter((p) => p !== null);
-            console.log(appointments);
-            console.timeEnd('query appointments');
-
-            let retval = [];
-            if (appointments.length === 0)
-                return [];
-
-            // Sample one appointment based on availability rate.
-            const availability_rates = appointments.map((appt) => appt.availability_rate);
-            if (availability_rates.reduce((a, b) => a + b, 0) === 0) {
-                // If all provider has 0 success_rate, return a random one.
-                const random_idx = Math.floor(Math.random() * availability_rates.length);
-                retval = [appointments[random_idx]];
-            } else {
-                // Sample one based on probability
-                var sample_idx;
-                if (SAMPLING_STRATEGY === 'most_likely')
-                    sample_idx = indexOfMax(availability_rates);
-                else
-                    sample_idx = randomChoices(availability_rates, 1);
-                retval = [appointments[sample_idx]];
-            }
-
-            console.log(retval);
-            return retval;
-        } catch (error) {
-            console.error(error);
-            throw new Error('Failed to get vaccine appointments');
+            this._geo_cache[zip_code] = geocoder_res;
         }
+        console.time('query provider');
+        // Get all providers within distance
+        let query = {
+            'geo.coordinates': {
+                $near: {
+                    $geometry: {
+                        type: 'Point',
+                        coordinates: [geocoder_res[0].longitude,
+                                      geocoder_res[0].latitude]
+                    },
+                    $maxDistance: distance * 1610  // Mile to meter
+                },
+            }
+        };
+        let cursor = provider_collection.find(query).limit(25);
+        var providers = await cursor.toArray();
+        console.timeEnd('query provider');
+        await cursor.close();
+
+        // Sort providers by zipcode.
+        var providers_same_zip = [];
+        var providers_diff_zip = [];
+        for (const p of providers) {
+            if (p.postal_code === zip_code)
+                providers_same_zip.push(p);
+            else
+                providers_diff_zip.push(p);
+        }
+        providers = providers_same_zip.concat(providers_diff_zip);
+
+        console.time('query appointments');
+        const appointment_ids = providers.map((p) => `${p._id}:${p.appointments_last_fetched.getTime()}`);
+        query = {
+            '_id': {
+                $in: appointment_ids
+            }
+        };
+        const appointment_collection = db.collection(APPOINTMENT_COLLECTION);
+        cursor = appointment_collection.find(query);
+        let appointments_all = (await cursor.toArray());
+        await cursor.close();
+
+        const appointments_map = {};
+        for (const a of appointments_all)
+            appointments_map[a.provider] = a;
+
+        const appointments = providers.map((p, i) => {
+            const appointment = appointments_map[p._id];
+
+            if (appointment === undefined ||
+                appointment.available === undefined ||
+                appointment.available === false ||
+                (appointment.user_marked_validity !== undefined && !appointment.user_marked_validity))
+                return null;
+
+            if (dose === 'second' && !appointment.second_dose_available)
+                return null;
+
+            // Filter by vaccine type
+            if (vaccine_type !== null && vaccine_type !== undefined) {
+                let found = false;
+                for (const vt of appointment.vaccine_types) {
+                    if (vt === vaccine_type || vt === 'unknown') {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                    return null;
+            }
+
+            const id = new Tp.Value.Entity(appointment._id, p.name);
+            const geo = new Tp.Value.Location(
+                p.geo.coordinates[1],
+                p.geo.coordinates[0],
+                prettyprintAddress(p));
+            return {
+                id: id,
+                geo: geo,
+                link: p.url,
+                availability_rate: p.availability_rate || 0
+            };
+        }).filter((p) => p !== null);
+        console.log(appointments);
+        console.timeEnd('query appointments');
+
+        let retval = [];
+        if (appointments.length === 0)
+            return [];
+
+        retval = [appointments[0]];
+        console.log(retval);
+        return retval;
     }
 
     async do_mark_valid({ appointment, validity }) {
@@ -226,19 +189,14 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
         if (process.env.CI)
             return;
 
-        try {
-            const client = await this._mongo_client;
-            const db = client.db(DB_NAME);
+        const client = await this._mongo_client;
+        const db = client.db(DB_NAME);
 
-            const appointment_collection = db.collection(APPOINTMENT_COLLECTION);
+        const appointment_collection = db.collection(APPOINTMENT_COLLECTION);
 
-            const query = { _id: appointment.value };
-            const update = { $set: { user_marked_validity: validity } };
-            const resp = await appointment_collection.updateOne(query, update);
-            console.log(resp.modifiedCount);
-        } catch (error) {
-            console.error(error);
-            throw new Error('Failed to mark appointment');
-        }
+        const query = { _id: appointment.value };
+        const update = { $set: { user_marked_validity: validity } };
+        const resp = await appointment_collection.updateOne(query, update);
+        console.log(resp.modifiedCount);
     }
 };
