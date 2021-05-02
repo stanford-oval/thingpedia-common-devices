@@ -7,24 +7,19 @@ class @com.goal_smart
   #[subcategory="home"]
 
 {
-
   import loader from @org.thingpedia.v2();
   import config from @org.thingpedia.config.none(api_key=$?);
-
-
   entity soccer_team #_[description="Soccer Teams in the World"];
   entity soccer_league #_[description="Soccer Leagues in the World"];
-
   
-
   monitorable list query standings(in req league_id: Entity(com.goal_smart:soccer_league) #_[prompt="what league standings do you want out check out?"],
                         out team : String,
                         out rank: Number,
                         out form: String,
                         out points: Number)
-  #_[result = ["${rank}. ${team} | Form: ${form} | Points: ${points}"]]
   #_[canonical="league standings, league rankings, soccer rankings, league table, soccer table"]
   #_[confirmation="league standings of $league"]
+  #_[result = ["${rank} . ${team} Form: ${form} Points: ${points}"]]
   #[poll_interval=3600000ms]
   #[doc="Get the standings of a league"];
 

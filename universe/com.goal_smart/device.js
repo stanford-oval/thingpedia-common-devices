@@ -40,8 +40,7 @@ module.exports = class GoalDevice extends Tp.BaseDevice {
   }
   get_teamFixtures({ team_id }) {
 
-    return Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/fixtures/' + team_id, {
-
+    return Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/fixtures?team='+ team_id + '&next=50', {
       extraHeaders: {
         'x-rapidapi-key': this.constructor.metadata.auth.api_key,
         'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
