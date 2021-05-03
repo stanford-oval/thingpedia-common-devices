@@ -1,0 +1,30 @@
+dataset @org.thingpedia.iot.conductivity language "en" {
+
+  program := @org.thingpedia.iot.conductivity.state()
+  #_[utterances=["check the soil conductivity",
+                 "what is the ground conductivity?",
+                 "how is the earth conductivity?"]];
+
+  query := @org.thingpedia.iot.conductivity.state()
+  #_[utterances=["the state of the soil conductivity",
+                 "the ground conductivity",
+                 "how vassel conductivity is"]];
+
+  stream := monitor(@org.thingpedia.iot.conductivity.state())
+  #_[utterances=["when the conductivity changes",
+                 "when the is a variation in conductivity precentage"]];
+
+  program (p_name : String) := @org.thingpedia.iot.conductivity(name=p_name).state()
+  #_[utterances=["what does the ${p_name} conductivity sensor say?",
+                 "what is the ${p_name} conductivity sensor level?",
+                 "which percentage the ${p_name} conductivity sensor is reading"]];
+
+  query (p_name : String) := @org.thingpedia.iot.conductivity(name=p_name).state()
+  #_[utterances=["what does the ${p_name} conductivity sensor say?",
+                 "what is the ${p_name} conductivity sensor level?",
+                 "which percentage the ${p_name} conductivity sensor is reading"]];
+
+  stream (p_name : String) := monitor(@org.thingpedia.iot.conductivity(name=p_name).state())
+  #_[utterances=["when the ${p_name} conductivity changes",
+                 "when the ${p_name} conductivity level has a variation"]];
+}

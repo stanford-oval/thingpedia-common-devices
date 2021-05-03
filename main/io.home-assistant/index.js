@@ -43,6 +43,7 @@ const DOMAIN_TO_TP_KIND = {
     // sensors and binary sensors (implemented by HomeAssistantSensor)
     'sensor_air': 'org.thingpedia.iot.air',
     'sensor_battery': 'org.thingpedia.iot.battery',
+    'sensor_conductivity': 'org.thingpedia.iot.conductivity',
     'sensor_door': 'org.thingpedia.iot.door',
     'sensor_flood': 'org.thingpedia.iot.flood',
     'sensor_humidity': 'org.thingpedia.iot.humidity',
@@ -110,7 +111,8 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
 
         const [domain, ] = entityId.split('.');
         let kind = undefined;
-        if (domain === 'binary_sensor' && ['smoke', 'gas', 'CO', 'CO2'].includes(attributes.device_class))
+
+        if (domain === 'binary_sensor' && ['gas', 'PM01', 'PM25', 'PM10', 'AQI', 'O3', 'CO', 'CO2', 'SO2', 'N2O', 'NO', 'NO2'].includes(attributes.device_class))
             kind = DOMAIN_TO_TP_KIND['air'];
         else if (domain === 'sensor' && ['smoke'].includes(attributes.device_class))
             kind = DOMAIN_TO_TP_KIND['sensor_smoke'];
@@ -128,6 +130,8 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
             kind = DOMAIN_TO_TP_KIND[`media_player_${attributes.device_class}`];
         else
             kind = DOMAIN_TO_TP_KIND[domain];
+
+
 
         if (kind === undefined) { //ADD auto-discover
             if (!this._warned.has(entityId)) {
