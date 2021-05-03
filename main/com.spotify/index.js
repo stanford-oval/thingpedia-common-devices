@@ -62,6 +62,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         this._state = new Map();
         this._queryResults = new Map();
         this._deviceState = new Map();
+        this._tokenizer = engine.langPack.getTokenizer();
 
         this._launchedSpotify = false;
         if (this.platform.type === "server") {
@@ -240,7 +241,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             const release_date = new Date(tracks[i].album.release_date);
             const artists = tracks[i].artists.map((artist) => new Tp.Value.Entity(artist.uri, artist.name));
             const album = new Tp.Value.Entity(tracks[i].album.uri, tracks[i].album.name);
-            const id = new Tp.Value.Entity(tracks[i].uri, tracks[i].name);
+            const id = new Tp.Value.Entity(tracks[i].uri, this.formatTitle(tracks[i].name));
             //You can't get the audio features for some songs, so we're setting 0.5 as a default value
             var energy = 0.5;
             var danceability = 0.5;
@@ -274,6 +275,29 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         return songs;
     }
 
+    //convert all instances of numbers to digits
+    formatTitle(title) {
+        function hasNumbers(str) {
+            var regex = /\d/g;
+            return regex.test(str);
+        }
+
+        let result = "";
+        const words = title.split(" ");
+        for (const word of words) {
+            const parsed = this._tokenizer._parseWordNumber(word);
+            if (hasNumbers(word))
+                result += word + " ";
+            else if (isNaN(parsed))
+                result += word + " ";
+            else if (parsed === 0 && (word !== "zero" || word !== "zeroth" || word !== "zeroeth"))
+                result += word + " ";
+            else
+                result += parsed + " ";
+        }
+        return result.trim();
+    }
+
     //songs + albums + podcasts ...
     async music_by_search(query, limit = 5) {
         const searchResults = await this.search(query, "track,album,playlist,show", limit);
@@ -302,7 +326,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             for (let i = 0; i < tracks.length; i++) {
                 const release_date = new Date(tracks[i].album.release_date);
                 const artists = tracks[i].artists.map((artist) => new Tp.Value.Entity(artist.uri, artist.name));
-                const id = new Tp.Value.Entity(tracks[i].uri, tracks[i].name);
+                const id = new Tp.Value.Entity(tracks[i].uri, this.formatTitle(tracks[i].name));
                 const songObj = {
                     id,
                     artists,
@@ -323,7 +347,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             for (let i = 0; i < albums.length; i++) {
                 const release_date = new Date(albums[i].release_date);
                 const artists = albums[i].artists.map((artist) => new Tp.Value.Entity(artist.uri, artist.name));
-                const id = new Tp.Value.Entity(albums[i].uri, albums[i].name);
+                const id = new Tp.Value.Entity(albums[i].uri, this.formatTitle(albums[i].name));
                 const popularity = albumPopularities[i];
                 const albumObj = {
                     id,
@@ -466,7 +490,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         for (let i = 0; i < albumItems.length; i++) {
             const release_date = new Date(albumItems[i].release_date);
             const artists = albumItems[i].artists.map((artist) => new Tp.Value.Entity(artist.uri, artist.name));
-            const id = new Tp.Value.Entity(albumItems[i].uri, albumItems[i].name);
+            const id = new Tp.Value.Entity(albumItems[i].uri, this.formatTitle(albumItems[i].name));
             const albumObj = {
                 id,
                 artists,
@@ -692,7 +716,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (!Object.prototype.hasOwnProperty.call(searchResults, 'artists') || searchResults.artists.total === 0) return [];
         var artists = [];
         for (const artist of searchResults.artists.items) {
-            const id = new Tp.Value.Entity(artist.uri, artist.name);
+            const id = new Tp.Value.Entity(artist.uri, this.formatTitle(artist.name));
             const artistObj = {
                 id,
                 genres: artist.genres,
@@ -800,7 +824,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (!Object.prototype.hasOwnProperty.call(searchResults, 'shows') || searchResults.shows.total === 0) return [];
         var shows = [];
         for (const show of searchResults.shows.items) {
-            const id = new Tp.Value.Entity(show.uri, show.name);
+            const id = new Tp.Value.Entity(show.uri, this.formatTitle(show.name));
             const showObj = {
                 id,
                 publisher: show.publisher
@@ -927,7 +951,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (deviceId === null)
             throwError('no_active_device');
 
-        if (this.spotifyd) {
+        if (this.spotifyd && this.engine.audio) {
             await this.engine.audio.requestAudio(this, async () => {
                 console.log("stopping audio");
                 let pauseURL = PAUSE_URL + querystring.stringify({
