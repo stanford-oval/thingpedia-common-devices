@@ -36,19 +36,19 @@ const DOMAIN_TO_TP_KIND = {
     'vacuum': 'org.thingpedia.iot.vacuum', 
     
     // media players
-    'media_player': 'org.thingpedia.iot.media-player',
+    //'media_player': 'org.thingpedia.iot.media-player',
     //'media_player_speaker': 'org.thingpedia.iot.speaker',
     //'media_player_tv': 'org.thingpedia.iot.tv',
 
     // sensors and binary sensors (implemented by HomeAssistantSensor)
-    'sensor_air': 'org.thingpedia.iot.air',
+    //'sensor_air': 'org.thingpedia.iot.air',
     'sensor_battery': 'org.thingpedia.iot.battery',
     'sensor_door': 'org.thingpedia.iot.door',
     'sensor_flood': 'org.thingpedia.iot.flood',
     'sensor_humidity': 'org.thingpedia.iot.humidity',
     'sensor_illuminance': 'org.thingpedia.iot.illuminance',
     'sensor_motion': 'org.thingpedia.iot.motion',
-    'sensor_smoke': 'org.thingpedia.iot.smoke',
+    //'sensor_smoke': 'org.thingpedia.iot.smoke',
     'sensor_temperature': 'org.thingpedia.iot.temperature',
     'sensor_uv': 'org.thingpedia.iot.uv'
     
