@@ -687,3 +687,38 @@ UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("t
 U: play the song love story by taylor swift
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.spotify.song() filter contains(artists, null^^com.spotify:artist("taylor swift")) && id =~ "love story" => @com.spotify.play(playable=id);
+====
+# recording/146a856432c263375c3fc8589adf10da
+U: play playlist named songs
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playlist() filter id =~ "songs" => @com.spotify.play(playable=id);
+====
+# recording/745924f10e485b3467fa25e7ba8e0587
+U: play songs
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() => @com.spotify.play(playable=id);
+====
+# recording/d1e31ae1f4a9020e43b247449d4d44c6
+U: add this song to playlist
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.get_currently_playing() => @com.spotify.add_song_to_playlist(song=song);
+====
+# recording/e4950027175faf3cb56eeca25c1444bc
+U: create a playlist named my playlist
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.create_playlist(name="my playlist");
+====
+# recording/cb3e0a9f6fd0a0674ca7d2679e2bbbbd
+U: add despacito to My Playlist
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter id =~ "despacito" => @com.spotify.add_song_to_playlist(playlist="my playlist", song=id);
+====
+# recording/985af44b211fcebfc31a1f4d5a30700c
+U: add despacito to my playlist
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter id =~ "despacito" => @com.spotify.add_song_to_playlist(song=id);
+====
+# recording/a9c87f38a924a889782735d69616a4bd
+U: add despacito to playlist
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter id =~ "despacito" => @com.spotify.add_song_to_playlist(song=id);

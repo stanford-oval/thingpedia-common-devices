@@ -6407,3 +6407,56 @@ UT: now => (@com.spotify.playable(), id =~ "miami 2017" && contains(artists, nul
 U: notify you when the currently playing track name changes
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: monitor(@com.spotify.get_currently_playing());
+====
+# recording/7563f4171a03964d8e8b186fe9ffe424
+U: pause playback
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_pause();
+====
+# recording/f8c0bd632461107384cc95e929fa593b
+U: can you play some music?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() => @com.spotify.play(playable=id);
+====
+# recording/f380c66fa6a6e8f1b58a72344cf253e0
+U: play my playlist songs
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playlist() => @com.spotify.play(playable=id);
+====
+# recording/11b8d8c569d4bc5d9ad737bcacc8de56
+U: add this to playlist
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.get_currently_playing() => @com.spotify.add_song_to_playlist(song=song);
+====
+# recording/61759f28c85549af58394e5794d978b8
+U: add this song to playlist named songs
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.get_currently_playing() => @com.spotify.add_song_to_playlist(playlist="songs", song=song);
+====
+# recording/726dce685c1bd77f6cf40fb5e93621cd
+U: add despacito to playlist
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter id =~ "despacito" => @com.spotify.add_song_to_playlist(song=id);
+====
+# recording/84f4e7ea25a3107230fdf09a96765a74
+U: add despacito to songs
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter id =~ "despacito" => @com.spotify.add_song_to_playlist(playlist="songs", song=id);
+====
+# recording/fe6df6731e918208f88363b6e5ea5e6d
+U: add despacito to a playlist
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter id =~ "despacito" => @com.spotify.add_song_to_playlist(song=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter id =~ "despacito")[1] => @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).add_song_to_playlist(song=id);
+A: What playlist do you want to add to?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_slot_fill(playlist);
+AT: (@com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter id =~ "despacito")[1] => @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).add_song_to_playlist(song=id);
+U: my playlist
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: (@com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter id =~ "despacito")[1] => @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).add_song_to_playlist(playlist="my playlist", song=id);
+====
+# recording/05b170cac1b5c691cfb52c2267974b6b
+U: music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable();
