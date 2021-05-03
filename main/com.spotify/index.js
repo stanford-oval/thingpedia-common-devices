@@ -1209,8 +1209,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         let song_uris = [];
         let album_uris = [];
         let album_tracks = {};
-        let podcast_uris = [];
-        let podcast_tracks = {};
 
         for (const playable of music) {
             const uri = String(playable);
@@ -1233,25 +1231,14 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             }
         }
 
-        // if (podcast_uris.length >= 1) {
-        //     const podcastIds = podcast_uris.map((uri) => uri.split("spotify:show:")[1]);
-        //     const podcastTracks = (await this.shows_get_by_id(podcastIds)).shows;
-        //     for (const podcast of podcastTracks) {
-        //         console.log(podcast);
-        //         const uris = podcast.episodes.items.map((track) => track.uri);
-        //         podcast_tracks[podcast.uri] = uris;
-        //     }
-        // }
-
         for (const playable of music) {
             const uri = String(playable);
             if (uri.includes("track"))
                 song_uris.push(uri);
             else if (uri.includes("album"))
                 song_uris = song_uris.concat(album_tracks[uri]);
-            // else if (uri.includes("show"))
-            //     song_uris = song_uris.concat(podcast_tracks[uri]);
         }
+
         console.log("URIS: " + song_uris)
         return this.player_play_helper(JSON.stringify({
             'uris': song_uris
