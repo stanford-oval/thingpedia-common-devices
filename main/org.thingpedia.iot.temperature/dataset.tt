@@ -24,25 +24,25 @@ dataset @org.thingpedia.iot.temperature language "en" {
                    "when the inside temperature of the sensor goes below $p_temperature"]];
 
   program (p_name : String) := @org.thingpedia.iot.temperature(name=p_name).temperature()
-  #_[utterances=["what does the ${p_name} indoor temperature sensor say?"]];
+  #_[utterances=["what does the ${p_name:const} indoor temperature sensor say?"]];
 
   query (p_name : String) := @org.thingpedia.iot.temperature(name=p_name).temperature()
-  #_[utterances=["what the ${p_name} home temperature sensor says",
-                 "the temperature of the ${p_name} temperature sensor",
-                 "the temperature of the ${p_name}",
-                 "the temperature in the ${p_name}",
-                 "the ${p_name} temperatue"]];
+  #_[utterances=["what the ${p_name:const} home temperature sensor says",
+                 "the temperature of the ${p_name:const} temperature sensor",
+                 "the temperature of the ${p_name:const}",
+                 "the temperature in the ${p_name:const}",
+                 "the ${p_name:const} temperatue"]];
 
   stream (p_name : String) := monitor(@org.thingpedia.iot.temperature(name=p_name).temperature())
-  #_[utterances=["when the ${p_name} temperature changes"]];
+  #_[utterances=["when the ${p_name:const} temperature changes"]];
 
   stream (p_name : String, p_temperature :Measure(C)) :=  monitor (@org.thingpedia.iot.temperature(name=p_name).temperature()), value >= p_temperature
-  #_[utterances=["when the ${p_name} sensor 's room temperature is hotter than $p_temperature",
-                   "if the temperature inside of the ${p_name} sensor is higher than $p_temperature",
-                   "when the temperature inside of the ${p_name} sensor goes above $p_temperature"]];
+  #_[utterances=["when the ${p_name:const} sensor 's room temperature is hotter than $p_temperature",
+                   "if the temperature inside of the ${p_name:const} sensor is higher than $p_temperature",
+                   "when the temperature inside of the ${p_name:const} sensor goes above $p_temperature"]];
 
   stream (p_name : String, p_temperature :Measure(C)) := monitor (@org.thingpedia.iot.temperature(name=p_name).temperature()), value <= p_temperature
-  #_[utterances=["when the ${p_name} sensor 's indoor temperature is colder than $p_temperature",
-                   "if the temperature of the ${p_name} sensor is lower than $p_temperature",
-                   "when the temperature of the ${p_name} sensor goes below $p_temperature"]];
+  #_[utterances=["when the ${p_name:const} sensor 's indoor temperature is colder than $p_temperature",
+                   "if the temperature of the ${p_name:const} sensor is lower than $p_temperature",
+                   "when the temperature of the ${p_name:const} sensor goes below $p_temperature"]];
 }

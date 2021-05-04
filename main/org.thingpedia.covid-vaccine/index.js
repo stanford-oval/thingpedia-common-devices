@@ -52,7 +52,9 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
     constructor(engine, state) {
         super(engine, state);
 
-        this._mongo_client = connect_mongodb(DB_URL);
+        // TODO: Find a better way to mock.
+        if (!process.env.CI)
+            this._mongo_client = connect_mongodb(DB_URL);
         this._geo_cache = {};
     }
 

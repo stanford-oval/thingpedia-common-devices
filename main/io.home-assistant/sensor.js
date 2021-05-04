@@ -21,6 +21,14 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
                     on: 'low',
                     off: 'normal'
                 },
+                carbon_monoxide: {
+                    on: 'detecting',
+                    off: 'not_detecting'
+                },
+                carbon_dioxide: {
+                    on: 'detecting',
+                    off: 'not_detecting'
+                },
                 cold: {
                     on: 'cold',
                     off: 'normal'
@@ -33,15 +41,15 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
                     on: 'open',
                     off: 'closed'
                 },
+                flood: {
+                    on: 'flooding',
+                    off: 'not_flooding'
+                },
                 garage: {
                     on: 'open',
                     off: 'closed'
                 },
                 garage_door: {
-                    on: 'open',
-                    off: 'closed'
-                },
-                window: {
                     on: 'open',
                     off: 'closed'
                 },
@@ -53,13 +61,13 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
                     on: 'hot',
                     off: 'normal'
                 },
-                moisture: {
-                    on: 'wet',
-                    off: 'dry'
-                },
                 humidity: {
                     on: 'humid',
                     off: 'normal',
+                },                
+                moisture: {
+                    on: 'wet',
+                    off: 'dry'
                 },
                 motion: {
                     on: 'detecting',
@@ -73,18 +81,17 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
                     on: 'plugged',
                     off: 'unplugged'
                 },
-                smoke: {
-                    on: 'detecting',
-                    off: 'not_detecting'
-                },
                 sound: {
                     on: 'detecting',
                     off: 'not_detecting'
                 },
-                flood: {
-                    // FIXME???
-                    on: 'on',
-                    off: 'off'
+                smoke: {
+                    on: 'detecting',
+                    off: 'nothing'
+                },
+                 window: {
+                    on: 'open',
+                    off: 'closed'
                 }
             };
             this.deviceStateMapping = supportedDeviceClasses[this.device_class] || {on: 'on', off: 'off'};
@@ -96,7 +103,7 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
             return [{state: undefined, value: value}];
         } else if (this.domain === 'binary_sensor') {
             let state = this.deviceStateMapping[this.state.state];
-            if (['gas', 'smoke'].includes(this.device_class))
+            if (['gas', 'CO', 'CO2', 'smoke'].includes(this.device_class))
                 state = state === 'detecting' ? this.device_class : 'nothing';
             return [{state: state, value: undefined}];
         } else {
@@ -112,7 +119,7 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
         } else if (this.domain === 'binary_sensor') {
             return this._subscribeState(() => {
                 let state = this.deviceStateMapping[this.state.state];
-                if (['gas', 'smoke'].includes(this.device_class))
+                if (['gas', 'CO', 'CO2', 'smoke'].includes(this.device_class))
                     state = state === 'detecting' ? this.device_class : 'nothing';
                 return {state: state, value: undefined};
             });
