@@ -21,13 +21,12 @@ module.exports = class GoalDevice extends Tp.BaseDevice {
       accept: 'application/json'
     }).then((tempResponse) => {
       const a = JSON.parse(tempResponse);
-      const b = a.response;
+      const b = a.response[0].league.standings[0];
       return b.map((obj) => {
         const r = obj.rank;
         const n = obj.team.name;
         const f = obj.form;
         const p = obj.points;
-        console.log(r + ". " + n + " | Form " + f + " | Points: " + p);
         return ({
           team: n,
           rank: r,
@@ -39,8 +38,7 @@ module.exports = class GoalDevice extends Tp.BaseDevice {
     });
   }
   get_teamFixtures({ team_id }) {
-
-    return Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/fixtures?team='+ team_id + '&next=50', {
+    return Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/fixtures?team='+ team_id + '&next=5', {
       extraHeaders: {
         'x-rapidapi-key': this.constructor.metadata.auth.api_key,
         'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
@@ -55,14 +53,14 @@ module.exports = class GoalDevice extends Tp.BaseDevice {
         const n1 = obj.teams.home.name;
         const n2 = obj.teams.away.name;
         const v = obj.fixture.venue.name;
-        return [{
+        return ({
           league: l,
           team1: n1,
           team2: n2,
           venue: v
-        }]
+        });
 
-      })
+      });
 
     });
 

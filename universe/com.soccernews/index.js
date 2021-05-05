@@ -1,12 +1,11 @@
 "use strict";
 
 const Tp = require('thingpedia');
-const unirest = require("unirest");
 
 module.exports = class NewsDevice extends Tp.BaseDevice {
     constructor(engine, state) {
         super(engine, state);
-        this.uniqueId = 'com.soccer_news';
+        this.uniqueId = 'com.soccernews';
         this.name = 'SoccerNews';
         this.description = 'Keep up with the latest in soccer';
     }
@@ -23,6 +22,7 @@ module.exports = class NewsDevice extends Tp.BaseDevice {
             const a = JSON.parse(tempResponse);
             return a.map((obj) => {
                 const t = obj.title;
+                console.log(t);
                 const u = obj.url;
                 const d = obj.description;
                 const s = obj.source;
@@ -37,5 +37,5 @@ module.exports = class NewsDevice extends Tp.BaseDevice {
 
         });
     }
-}
+};
 

@@ -1,17 +1,7 @@
 ====
-# 1-basic (req=com.goal_smart)
-# epl standings
-#U: get standings of premier league
-U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: now => (@com.goal_smart.standings(), league_id == ("39"^^com.goal_smart:soccer_league("premier league")));
-A: I found the standings for the Engligh Premier League?\.
-A: >> expecting = null
+U: \t @com.goal_smart.standings(league_id = ("39"^^com.goal_smart:soccer_league("premier league")));
+A: \b I found the standings for the Engligh Premier League?\.\b
 
 ====
-# 1-basic (req=com.goal_smart)
-# barcelona fixtures
-#U: get fixtures of barcelona
-U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: now => (@com.goal_smart.teamFixtures(), team_id == ("39"^^com.goal_smart:soccer_team("barcelona")));
-A: I found the upcoming fixtures for barcelona?\.
-A: >> expecting = null
+U: \t @com.goal_smart.teamFixtures(team_id = ("529"^^com.goal_smart:soccer_team("barcelona")));
+A: \b I found the upcoming fixtures for barcelona?\.\b 
