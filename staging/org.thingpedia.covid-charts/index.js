@@ -16,6 +16,7 @@ module.exports = class CovidCharts extends Tp.BaseDevice {
 
     interpret_location(loc) {
         let location = {};
+        loc = String(loc);
 
         if (STATES_HASH[loc.toUpperCase()]) {
             location.type = 'state';
@@ -27,7 +28,10 @@ module.exports = class CovidCharts extends Tp.BaseDevice {
         let all_loc = Object.keys(STATES).concat(Object.keys(COUNTIES));
         let match = stringSimilarity.findBestMatch(loc, all_loc);
         if (match.bestMatch.rating < 0.4) {
-            return "bad input";
+            location.type = 'country';
+            location.name = 'US';
+            location.canonical = 'US';
+            return location;
         } else {
             match = match.bestMatch.target;
             if (STATES[match]) {
@@ -37,7 +41,7 @@ module.exports = class CovidCharts extends Tp.BaseDevice {
                 location.type = 'county';
                 location.name =COUNTIES[match];
             } else {
-                return "bad input 2";
+                return "bad input";
             }
             location.canonical = match;
         }
