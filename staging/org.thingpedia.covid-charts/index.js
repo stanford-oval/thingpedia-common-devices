@@ -68,54 +68,54 @@ module.exports = class CovidCharts extends Tp.BaseDevice {
 
     }
 
-    async get_cases(loc) {
-        let data = await this.pullData(loc);
-        return [data.actuals.cases];
+    async get_cases(params) {
+        let data = await this.pullData(params.location);
+        return [{cases: data.actuals.cases}];
     }
 
-    async get_new_cases(loc) {
-        let data = await this.pullData(loc);
-        return [data.actuals.newCases];
+    async get_new_cases(params) {
+        let data = await this.pullData(params.location);
+        return [{new_cases: data.actuals.newCases}];
     }
 
-    async get_deaths(loc) {
-        let data = await this.pullData(loc);
-        return [data.actuals.deaths];
+    async get_deaths(params) {
+        let data = await this.pullData(params.location);
+        return [{deaths: data.actuals.deaths}];
     }
 
-    async get_new_deaths(loc) {
-        let data = await this.pullData(loc);
-        return [data.actuals.newDeaths];
+    async get_new_deaths(params) {
+        let data = await this.pullData(params.location);
+        return [{new_deaths: data.actuals.newDeaths}];
     }
 
-    async get_vaccines_initiated(loc) {
-        let data = await this.pullData(loc);
-        return [data.actuals.vaccinationsInitiated];
+    async get_vaccines_initiated(params) {
+        let data = await this.pullData(params.location);
+        return [{vaccines_initiated: data.actuals.vaccinationsInitiated}];
     }
 
-    async get_vaccines_completed(loc) {
-        let data = await this.pullData(loc);
-        return [data.actuals.vaccinationsCompleted];
+    async get_vaccines_completed(params) {
+        let data = await this.pullData(params.location);
+        return [{vaccines_completed: data.actuals.vaccinationsCompleted}];
     }
 
-    async get_case_density(loc) {
-        let data = await this.pullData(loc);
-        return [data.metrics.caseDensity];
+    async get_case_density(params) {
+        let data = await this.pullData(params.location);
+        return [{case_density: data.metrics.caseDensity}];
     }
 
-    async get_icu_capacity(loc) {
-        let data = await this.pullData(loc);
-        return [data.metrics.icuCapacityRatio];
+    async get_icu_capacity(params) {
+        let data = await this.pullData(params.location);
+        return [{icu_capacity: data.metrics.icuCapacityRatio}];
     }
 
-    async get_infection_rate(loc) {
-        let data = await this.pullData(loc);
-        return [data.metrics.infectionRate];
+    async get_infection_rate(params) {
+        let data = await this.pullData(params.location);
+        return [{infection_rate: data.metrics.infectionRate}];
     }
 
-    async get_positivity_rate(loc) {
-        let data = await this.pullData(loc);
-        return [data.metrics.testPositivityRatio];
+    async get_positivity_rate(params) {
+        let data = await this.pullData(params.location);
+        return [{positivity_rate: data.metrics.testPositivityRatio * 100}];
     }
 };
 
