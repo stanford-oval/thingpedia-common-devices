@@ -180,10 +180,10 @@ class Trainer {
             }
         }
 
-        for (const r of RELEASES) {
-            await this._tryLoadExistingDataset(path.resolve('eval', r, 'dev/annotated.txt'));
-            await this._tryLoadExistingDataset(path.resolve('eval', r, 'train/annotated.txt'));
+        await this._tryLoadExistingDataset(path.resolve('eval/everything/dev/annotated.txt'));
+        await this._tryLoadExistingDataset(path.resolve('eval/everything/train/annotated.txt'));
 
+        for (const r of RELEASES) {
             for (const d of await pfs.readdir(path.resolve(r))) {
                 if (!fs.existsSync(path.resolve(r, d, 'manifest.tt')))
                     continue;
@@ -229,6 +229,7 @@ class Trainer {
                         if (dlg.length === 0)
                             continue;
                         dlg.id = await this._computeId(userId, conversationId, i++);
+                        dlg.filename = filepath;
 
                         const visitor = new RemoveSensitiveInfoVisitor();
                         for (const turn of dlg) {
@@ -312,10 +313,8 @@ class Trainer {
         if (this._outputs.has(device))
             return this._outputs.get(device);
 
-        if (RELEASES.indexOf(device) >= 0) {
-            const release = device;
-
-            return this._getManualFile(device, path.resolve('eval', release));
+        if (device === 'everything') {
+            return this._getManualFile(device, path.resolve('eval/everything'));
         } else {
             const release = this._devices.get(device);
             if (!release)
@@ -344,22 +343,7 @@ class Trainer {
         if (devices.size === 1)
             return Array.from(devices)[0];
 
-        // find the largest release that contains all the devices
-        // we'll add this training sample to the multiskill dev/train sets for that release
-
-        let rank = 0, release = 'builtin';
-        for (let d of devices) {
-            const drelease = this._devices.get(d);
-            if (!drelease)
-                throw new Error(`Cannot find device ${d} in repo`);
-            const drank = RELEASES.indexOf(drelease);
-            assert(drank >= 0);
-            if (drank > rank) {
-                rank = drank;
-                release = drelease;
-            }
-        }
-        return release;
+        return 'everything';
     }
 
     async _learnProgram(prediction) {
@@ -467,7 +451,7 @@ class Trainer {
         }
 
         console.log('====');
-        console.log(`Dialogue #${this._serial} (${this._id})`);
+        console.log(`Dialogue #${this._serial} (${this._id}; ${this._dialogues[this._serial].filename})`);
         this._outputDialogue = [];
         await this._nextTurn();
     }

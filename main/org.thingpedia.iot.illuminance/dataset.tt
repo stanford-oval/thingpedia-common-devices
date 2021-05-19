@@ -30,22 +30,22 @@ dataset @org.thingpedia.iot.illuminance language "en" {
                    "when the inside illuminance of the sensor goes below $p_illuminance"]];
 
   program (p_name : String) := @org.thingpedia.iot.illuminance(name=p_name).illuminance()
-  #_[utterances=["what does the ${p_name} indoor illuminance sensor say?"]];
+  #_[utterances=["what does the ${p_name:const} indoor illuminance sensor say?"]];
 
   query (p_name : String) := @org.thingpedia.iot.illuminance(name=p_name).illuminance()
-  #_[utterances=["what the ${p_name} home illuminance sensor says",
-                 "the illuminance of the ${p_name} room illuminance sensor"]];
+  #_[utterances=["what the ${p_name:const} home illuminance sensor says",
+                 "the illuminance of the ${p_name:const} room illuminance sensor"]];
 
   stream (p_name : String) := monitor(@org.thingpedia.iot.illuminance(name=p_name).illuminance())
-  #_[utterances=["when the ${p_name} room illuminance changes"]];
+  #_[utterances=["when the ${p_name:const} room illuminance changes"]];
 
   stream (p_name : String, p_illuminance :Measure(lx)) := monitor (@org.thingpedia.iot.illuminance(name=p_name).illuminance()), value >= p_illuminance
-  #_[utterances=["when the ${p_name} sensor 's room illuminance is hotter than $p_illuminance",
-                   "if the illuminance inside of the ${p_name} sensor is higher than $p_illuminance",
-                   "when the illuminance inside of the ${p_name} sensor goes above $p_illuminance"]];
+  #_[utterances=["when the ${p_name:const} sensor 's room illuminance is hotter than $p_illuminance",
+                   "if the illuminance inside of the ${p_name:const} sensor is higher than $p_illuminance",
+                   "when the illuminance inside of the ${p_name:const} sensor goes above $p_illuminance"]];
 
   stream (p_name : String, p_illuminance :Measure(lx)) := monitor (@org.thingpedia.iot.illuminance(name=p_name).illuminance()), value <= p_illuminance
-  #_[utterances=["when the ${p_name} sensor 's indoor illuminance is lower than $p_illuminance",
-                   "if the illuminance of the ${p_name} room sensor is lower than $p_illuminance",
-                   "when the illuminance of the ${p_name} home sensor goes below $p_illuminance"]];
+  #_[utterances=["when the ${p_name:const} sensor 's indoor illuminance is lower than $p_illuminance",
+                   "if the illuminance of the ${p_name:const} room sensor is lower than $p_illuminance",
+                   "when the illuminance of the ${p_name:const} home sensor goes below $p_illuminance"]];
 }

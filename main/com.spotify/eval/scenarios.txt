@@ -14,7 +14,7 @@ U: find me the song despacito
 #U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 #U: now => (@com.spotify.song(), id =~ ("despacito")) => notify;
 
-A: Both Despacito and Despacito - Remix are songs by Luis Fonsi in the tropical genre\.
+A: Both Despacito and Despacito - Remix are( (latin( pop)?|tropical|puerto rican pop))? songs by Luis Fonsi( in the tropical genre)?\.
 A: >> expecting = null
 
 ====
@@ -51,7 +51,7 @@ U: find me the box by roddy ricch
 #U: now => (@com.spotify.song(), id =~ ("the box") && contains(artists, null^^com.spotify:artist("roddy ricch"))) => notify;
 
 A: The Box is a rap music by Roddy Ricch\. Would you like to play it on Spotify\?
-A: >> expecting = command
+A: >> expecting = yesno
 
 ====
 # 7-from-album (req=com.spotify)
@@ -124,7 +124,7 @@ U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => sort release_date desc of (@com.spotify.playable(), contains(artists, null^^com.spotify:artist("beyonce")))[1] => notify;
 
 A: I (see|have( found)?) Crazy In Love \(feat. Jay-Z\)\. (It's|It is)( a)? dance pop music by Beyonc.\. Would you like to play it on Spotify\?
-A: >> expecting = command
+A: >> expecting = yesno
 
 ====
 # 15-sort-energy (req=com.spotify)
@@ -256,9 +256,8 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.playable(), release_date >= makeDate(2000, 1, 1) && release_date <= makeDate(2000, 1, 1) + 1year) => notify;
 
-A: I (see|have( found)?) Yellow and The Real Slim Shady\. Yellow is a music released in July 9, 2000, while The Real Slim Shady is released in May 22, 2000\.
-
-A: >> expecting = null
+A: I see Yellow\. (It is|It's) a music by Coldplay released in July 9, 2000\. Would you like to play it on Spotify\?
+A: >> expecting = yesno
 
 ====
 # 28-by-genre-date (req=com.spotify)
@@ -290,7 +289,7 @@ U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.playable(), id =~ ("totally fake non-existent song")) => @com.spotify.play(playable=id);
 
 A: Sorry, (there are no music matching your request|I cannot find any music like that)\.
-A: >> expecting = command
+A: >> expecting = null
 
 ====
 # 31-play-playlist (req=com.spotify)
@@ -333,7 +332,7 @@ A: >> expecting = null
 # 35-add-song-to-playlist (req=com.spotify)
 #U: add despacito to my playlist
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: now => (@com.spotify().song(), id =~ "despacito")[1] => @com.spotify().add_song_to_playlist(playlist="my playlist", song=id);
+U: now => (@com.spotify.song(), id =~ ("despacito")) => @com.spotify.add_song_to_playlist(playlist="my playlist", song=id);
 
 A: I added a song to a playlist named my playlist( \#1)?\.
 A: >> expecting = null
@@ -342,7 +341,16 @@ A: >> expecting = null
 # 36-create-playlist (req=com.spotify)
 #U: create a playlist named new playlist
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: now => @com.spotify().create_playlist(name="new playlist");
+U: now => @com.spotify.create_playlist(name="new playlist");
 
 A: Your request was completed successfully\.
+A: >> expecting = null
+
+====
+# 37-numbers to digits (req=com.spotify)
+U: play 2 out of 3 aint bad
+#U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+#U: now => (@com.spotify().playable(), id =~ ("2 out of 3 aint bad")) => @com.spotify.play(playable=id);
+
+A: I played 2 Out of 3 Ain't Bad on Spotify\.
 A: >> expecting = null

@@ -5,11 +5,29 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.covid-vaccine.appointment();
 ====
 # manual/2
-U: vaccine appointments around palo alto
+U: vaccine appointments around 94305
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.covid-vaccine.appointment(location=new Location("palo alto"));
+UT: @org.thingpedia.covid-vaccine.appointment(zip_code="94305");
 ====
 # manual/3
 U: help me find vaccines
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.covid-vaccine.appointment();
+====
+# manual/4
+U: first dose vaccine appointments in zip code 94062
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.covid-vaccine.appointment(zip_code="94062", dose=enum first);
+====
+# recording/d53b5a60c0d0113cbe2192d02a9430b6
+U: can you find me a covid vaccine appointment
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.covid-vaccine.appointment();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.covid-vaccine.appointment();
+A: What is your zip code?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_slot_fill(zip_code);
+AT: @org.thingpedia.covid-vaccine.appointment();
+U: 94305
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.covid-vaccine.appointment(zip_code="94305");

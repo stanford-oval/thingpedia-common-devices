@@ -6,8 +6,9 @@ abstract class @org.thingpedia.iot.air
 #[license_gplcompatible=true]
 #[subcategory="home"]
 {
-  monitorable query state(out state : Enum(gas,smoke,nothing))
-  #_[canonical="air sensor state"]
+  monitorable query state(out state : Enum(gas,PM01,PM25,PM10,AQI,O3,CO,CO2,SO2,N2O,NO,NO2,nothing))
+  #_[canonical="air quality sensor state"]
   #_[confirmation="the state of $__device"]
-  #_[formatted=["The sensor is detecting ${state:enum}."]];
+  #[confirm=false]
+  #_[result=["the sensor is detecting ${state:enum}"]];
 }
