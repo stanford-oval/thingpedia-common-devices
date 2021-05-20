@@ -1190,12 +1190,12 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
         for (const playable of music) {
             const uri = String(playable);
-            if (uri.includes("album"))
+            if (uri.includes("album")) {
                 album_uris.push(uri);
-            else if (uri.includes("show")) {
+            } else if (uri.includes("show")) {
                 return this.player_play_helper(JSON.stringify({
                     'context_uri': uri
-                }));    
+                }));
             }
         }
         if (album_uris.length >= 1) {
