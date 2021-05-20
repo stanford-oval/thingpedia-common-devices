@@ -41,12 +41,12 @@ const zip_folder = "data/c_f.zip";
 
 const t_help = "\n\nnode init_test_unit.js [options] \n\n" +
     " Options (case sensitive): \n\n" +
-    " -B1: build environment (install Home Assistant on provided folder). \n" +
+    " -B1: build environment (install Home Assistant on provided folder, to be configured manually). \n" +
     "       -h: HomeAssistant destination environment folder.  i.e. '-h /home/user/ha_installation_destination/' \n" +
-    " -B2: build environment (install Home Assistant on provided folder, and setup the IoT environment with chosen devices). \n" +
+    " -B2: build environment (install Home Assistant on provided folder, and setup it with preconfigured setup [user: user, password: password]). \n" +
     "       -h: HomeAssistant destination environment folder.  i.e. '-h /home/user/ha_installation_destination/' \n" +
     "       -o: HomeAssistant configuration file, the folder which will contain the HomeAssistant configuration folder '.homeassistant'. i.e. '-o /home/user/' \n\n" +
-    " -B3: build environment and start it (install Home Assistant on provided folder and setup the IoT environment with chosen devices). \n" +
+    " -B3: build environment (install Home Assistant on provided folder, setup it with preconfigured setup [user: user, password: password]) and setup the IoT environment with chosen devices). \n" +
     "       -h: HomeAssistant destination environment folder.  i.e. '-h /home/user/ha_installation_destination/' \n" +
     "       -o: HomeAssistant configuration file, the folder which will contain the HomeAssistant configuration folder '.homeassistant'. i.e. '-o /home/user/' \n\n" +
     "       -c: add virtual devices available in the folder (main|staging|universe) as listed in 'env_set.js' (alternately to '-d' ooption). i.e. '-c /home/user/oval/almond/thingpedia-common-devices/main/' \n" +
@@ -56,12 +56,15 @@ const t_help = "\n\nnode init_test_unit.js [options] \n\n" +
     "        [1,2,3,n]: specifc subset of devices \n\n" +
     " EXAMPLE  node init_test_unit.js -B3 -h /home/user/ha_installation_destination/ -o /home/user/.homeassistant/ -d [0] \n" +
     " ------------ \n\n" +
-    " -S1: start environment set previously and send inizialization data for the IoT devices \n" +
+    " -S1: start environment previously set and send inizialization data for the IoT devices \n" +
     "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/home-assistant/' \n\n" +
-    " -S2: start environment without IoT devices" +
+    " -S2: start environment previously set without configuration (reconfigure manually)" +
     "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/' \n" +
     "      -o: HomeAssistant configuration file, the folder which contain HomeAssistant 'configuration.yaml'. i.e. '-o /home/user/' \n\n" +
-    " -S3: start environment with new IoT devices and send inizialization data \n" +
+    " -S3: start environment previously set without IoT devices" +
+    "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/' \n" +
+    "      -o: HomeAssistant configuration file, the folder which contain HomeAssistant 'configuration.yaml'. i.e. '-o /home/user/' \n\n" +
+    " -S4: start environment previously set with new IoT devices and send inizialization data \n" +
     "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/' \n" +
     "      -o: HomeAssistant configuration file, the folder which contain HomeAssistant 'configuration.yaml'. i.e. '-o /home/user/' \n\n" +
     "      -c: add virtual devices available in the folder (main|staging|universe) as listed in 'env_set.js' (alternately to '-d' ooption). i.e. '-c /home/user/oval/almond/thingpedia-common-devices/main/' \n" +
@@ -71,10 +74,13 @@ const t_help = "\n\nnode init_test_unit.js [options] \n\n" +
     "        [1,2,3,n]: specifc subset of devices \n\n" +
     " EXAMPLE  node init_test_unit.js -S3 -h /home/user/home-assistant/ -o /home/user/.homeassistant/ -d [0] \n" +
     " ------------ \n\n" +
-    " -U1: update environment deleting IoT devices" +
+    " -U1: update environment previously set deleting configuration folder (to be set manually)" +
     "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/' \n" +
     "      -o: HomeAssistant configuration file, the folder which contain HomeAssistant 'configuration.yaml'. i.e. '-o /home/user/' \n\n" +
-    " -U2: update environment with new IoT devices" +
+    " -U2: update environment previously set deleting IoT devices" +
+    "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/' \n" +
+    "      -o: HomeAssistant configuration file, the folder which contain HomeAssistant 'configuration.yaml'. i.e. '-o /home/user/' \n\n" +
+    " -U3: update environment previously set with new IoT devices" +
     "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/' \n" +
     "      -o: HomeAssistant configuration file, the folder which contain HomeAssistant 'configuration.yaml'. i.e. '-o /home/user/' \n\n" +
     "      -c: add virtual devices available in the folder (main|staging|universe) as listed in 'env_set.js' (alternately to '-d' ooption). i.e. '-c /home/user/oval/almond/thingpedia-common-devices/main/' \n" +
@@ -93,7 +99,7 @@ var myArgs_0_v = myArgs[0].split("/");
 var myArgs_0 = myArgs[0].replace(myArgs_0_v[myArgs_0_v.length - 1], '');
 
 function cl(msg, rtn) {
-    console.log(msg);
+    console.log(msg + "\n");
 
     if (rtn) {
         return;
@@ -232,12 +238,13 @@ function make_calls(chm, obj_tosend) {
 
     const http = require('http')
 
-    var k_tk = f_read('./data/tk');
+    //var k_tk = f_read('./data/tk');
+    var k_tk = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIwMjVjOGQwMTM5MTA0NDEzOTRjMzZkYzc3NDIyYTU4MCIsImlhdCI6MTYyMTQyMDUxNSwiZXhwIjoxOTM2NzgwNTE1fQ.Vi-_NC_IQQjloWrMKkoO1ao87DNTKhB0hwA2i5bFzB8";
     var data = JSON.stringify(obj_tosend);
 
     var chs = [{
-        pth: '/api/error_log',
-        mtd: 'GET'
+        pth: '/api',
+        mtd: 'POST'
     }, {
         pth: '/api/states/' + obj_tosend.entity_id,
         mtd: 'POST'
@@ -250,7 +257,7 @@ function make_calls(chm, obj_tosend) {
         method: chs[chm].mtd,
         headers: {
             "Authorization": "Bearer " + k_tk,
-            "content-type": "application/json",
+            "content-type": "application/json"
         }
     };
 
@@ -401,6 +408,7 @@ function master_exec(m_cmd) {
             }
             break;
         case 8: // Start a fresh HA env. by replacing the conf folder and setting new IoT devices.
+
             cl(" Starting a fresh HA and change configuration folder but keeping IoT devices previously set", true);
 
             // replace conf folder
@@ -415,6 +423,18 @@ function master_exec(m_cmd) {
             // start
             do_cli([rr_stp[3]], 'execSync');
             break;
+        case 9: // Start HA env. without configuration (reconfigure manually).
+            cl(" Deleting HA configuration and starting HA", true);
+
+            // delete conf folder and start the environment
+            do_cli([arr_stp[4], arr_stp[3]], 'execSync');
+            break;
+        case 10: // Start HA env. without configuration (reconfigure manually).
+            cl(" Deleting HA configuration", true);
+
+            // delete conf folder
+            do_cli([arr_stp[4]], 'execSync');
+            break;
     }
 
     return;
@@ -426,7 +446,7 @@ if (myArgs[1] === "-T") {
 } else {
     if (myArgs[1] === "-M") {
         cl(t_help, false);
-    } else if (myArgs[1] === "-U1" || myArgs[1] === "-U2") {
+    } else if (myArgs[1] === "-U1" || myArgs[1] === "-U2" || myArgs[1] === "-U3") {
         if (myArgs[2] === "-h") {
             if (typeof myArgs[3] === 'string') {
                 myArgs[3] = man_trail(myArgs[3]);
@@ -436,9 +456,11 @@ if (myArgs[1] === "-T") {
                         myArgs[5] = man_trail(myArgs[5]);
 
                         if (myArgs[1] === "-U1") {
+                            master_exec(10);
+                        } else if (myArgs[1] === "-U2") {
                             master_exec(7);
                         } else {
-                            var got_list; //list of virtual device to add to configuration
+                            var got_list;
 
                             if (myArgs[6] === "-d") {
                                 if ((typeof myArgs[7] !== 'string') || !Array.isArray(JSON.parse(myArgs[7]))) {
@@ -491,7 +513,7 @@ if (myArgs[1] === "-T") {
         } else {
             cl(" Missing argument. Expected '-h'. ", false);
         }
-    } else if (myArgs[1] === "-S1" || myArgs[1] === "-S2" || myArgs[1] === "-S3") {
+    } else if (myArgs[1] === "-S1" || myArgs[1] === "-S2" || myArgs[1] === "-S3" || myArgs[1] === "-S4") {
         if (myArgs[2] === "-h") {
             if (typeof myArgs[3] === 'string') {
                 myArgs[3] = man_trail(myArgs[3]);
@@ -504,6 +526,8 @@ if (myArgs[1] === "-T") {
                             myArgs[5] = man_trail(myArgs[5]);
 
                             if (myArgs[1] === "-S2") {
+                                master_exec(9);
+                            } else if (myArgs[1] === "-S3") {
                                 master_exec(5);
                             } else {
                                 var got_list;
