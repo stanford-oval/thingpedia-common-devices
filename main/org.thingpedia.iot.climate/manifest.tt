@@ -10,13 +10,13 @@ abstract class @org.thingpedia.iot.climate
   #_[canonical="get hvac current action"]
   #_[confirmation="what is doing your HVAC system"]
   #[confirm=false]
-  #_[result=["the HVAC system is ${action}"]];
-  
-  monitorable query hvac_modes_aval(out modes : Array(Enum(off,heat,cool,heat_cool,auto,dry,fan_only))) 
+  #_[result=["the {${__device}|} HVAC system is ${action}"]];
+
+  monitorable query hvac_modes_aval(out modes : Array(Enum(off,heat,cool,heat_cool,auto,dry,fan_only)))
   #_[canonical="get available HVAC modes"]
   #_[confirmation="the modes available for your HVAC system"]
   #[confirm=false]
-  #_[result=["the available modes are ${modes}"]];
+  #_[result=["the available modes {on ${__device}|} are ${modes}"]];
 
   action set_hvac_mode(in req mode: Enum(heat,cool,heat_cool,off,auto,dry,fan_only) #_[prompt="What mode do you want to set?"] #_[canonical="mode"])
   #_[canonical="set HVAC mode"]
@@ -27,13 +27,13 @@ abstract class @org.thingpedia.iot.climate
   #_[canonical="get hvac current preset"]
   #_[confirmation="how is set your HVAC system"]
   #[confirm=false]
-  #_[result=["the HVAC system is set to ${preset}"]];
+  #_[result=["the {${__device}|} HVAC system is set to ${preset}"]];
 
-  monitorable query hvac_presets_aval(out presets : Array(Enum(eco,away,boost,comfort,home,sleep,activity))) 
+  monitorable query hvac_presets_aval(out presets : Array(Enum(eco,away,boost,comfort,home,sleep,activity)))
   #_[canonical="get available HVAC presets"]
   #_[confirmation="the presets available for your HVAC system"]
   #[confirm=false]
-  #_[result=["the available presets are ${presets}"]];
+  #_[result=["the available presets {on ${__device}|} are ${presets}"]];
 
   action set_hvac_preset(in req preset: Enum(eco,away,boost,comfort,home,sleep,activity) #_[prompt="What preset do you want to set?"] #_[canonical="preset"])
   #_[canonical="set HVAC preset"]
@@ -44,13 +44,13 @@ abstract class @org.thingpedia.iot.climate
   #_[canonical="get current temperature"]
   #_[confirmation="the temperature from your thermostat"]
   #[confirm=false]
-  #_[result=["the temperature is ${value}"]];
+  #_[result=["the temperature {reported by ${__device}|} is ${value}"]];
 
   monitorable query target_temperature(out value : Measure(C))
   #_[canonical="get current target temperature set"]
   #_[confirmation="the target temperature set on your thermostat"]
   #[confirm=false]
-  #_[result=["the target temperature is set to ${value}"]];
+  #_[result=["the target temperature {on ${__device}|} is set to ${value}"]];
 
   action set_target_temperature(in req value: Measure(C))
   #_[canonical="set target temperature on thermostat"]
@@ -67,25 +67,25 @@ abstract class @org.thingpedia.iot.climate
   #_[canonical="get minimum temperature limit set"]
   #_[confirmation="the minimun range limit of temperatures set on your thermostat"]
   #[confirm=false]
-  #_[result=["the minimun temperature is set to ${low}"]];
+  #_[result=["the minimum temperature {on ${__device}|} is set to ${low}"]];
 
   monitorable query max_temperature(out high : Measure(C))
   #_[canonical="get maximum temperature limit set"]
   #_[confirmation="the maximum range limit of temperatures set on your thermostat"]
   #[confirm=false]
-  #_[result=["the maximum temperature is set to  ${high} "]];
+  #_[result=["the maximum temperature {on ${__device}|} is set to  ${high} "]];
 
   monitorable query current_humidity(out value : Number)
   #_[canonical="get current humidity"]
   #_[confirmation="the humidity from your thermostat"]
   #[confirm=false]
-  #_[result=["the humidity is ${value}"]];
+  #_[result=["the humidity {reported by ${__device}|} is ${value}"]];
 
   monitorable query target_humidity(out value : Number)
   #_[canonical="get current target humidity set"]
   #_[confirmation="the target humidity set on your thermostat"]
   #[confirm=false]
-  #_[result=["the target humidity is set to ${value}"]];
+  #_[result=["the target humidity {on ${__device}|} is set to ${value}"]];
 
   action set_target_humidity(in req value: Number)
   #_[canonical="set target humidity on thermostat"]
@@ -96,25 +96,25 @@ abstract class @org.thingpedia.iot.climate
   #_[canonical="get minimum humidity limit set"]
   #_[confirmation="the minimun range limit of humidity set on your thermostat"]
   #[confirm=false]
-  #_[result=["the minimun humidity is set to ${low}"]];
+  #_[result=["the minimun humidity {on ${__device}|} is set to ${low}"]];
 
   monitorable query max_humidity(out high : Number)
   #_[canonical="get maximum humidity limit set"]
   #_[confirmation="the maximum range limit of humidity set on your thermostat"]
   #[confirm=false]
-  #_[result=["the maximum humidity is set to  ${high} "]];
+  #_[result=["the maximum humidity {on ${__device}|} is set to  ${high} "]];
 
   monitorable query fan_mode(out mode: Enum(on,off,auto,low,medium,high,middle,focus,diffuse))
   #_[canonical="get current fan mode"]
   #_[confirmation="how is set your fan mode"]
   #[confirm=false]
-  #_[result=["the fan mode is set to ${mode}"]];
+  #_[result=["the fan mode {on ${__device}|} is set to ${mode}"]];
 
-  monitorable query fan_modes_aval(out modes : Array(Enum(on,off,auto,low,medium,high,middle,focus,diffuse))) 
+  monitorable query fan_modes_aval(out modes : Array(Enum(on,off,auto,low,medium,high,middle,focus,diffuse)))
   #_[canonical="get available fan modes"]
   #_[confirmation="the fan modes available for your system"]
   #[confirm=false]
-  #_[result=["the available fan modes are ${modes}"]];
+  #_[result=["the available fan modes {on ${__device}|} are ${modes}"]];
 
   action set_fan_mode(in req mode: Enum(on,off,auto,low,medium,high,middle,focus,diffuse))
   #_[canonical="set fan mode"]
@@ -125,13 +125,13 @@ abstract class @org.thingpedia.iot.climate
   #_[canonical="get current swing mode"]
   #_[confirmation="how is set your swing mode"]
   #[confirm=false]
-  #_[result=["the swing mode is set to ${mode}"]];
+  #_[result=["the swing mode {on ${__device}|} is set to ${mode}"]];
 
-  monitorable query swing_modes_aval(out modes : Array(Enum(on,off,auto,low,medium,high,middle,focus,diffuse))) 
+  monitorable query swing_modes_aval(out modes : Array(Enum(on,off,auto,low,medium,high,middle,focus,diffuse)))
   #_[canonical="get available swing modes"]
   #_[confirmation="the swing modes available for your system"]
   #[confirm=false]
-  #_[result=["the available swing modes are ${modes}"]];
+  #_[result=["the available swing modes {on ${__device}|} are ${modes}"]];
 
   action set_swing_mode(in req mode: Enum(on,off,auto,low,medium,high,middle,focus,diffuse))
   #_[canonical="set swing mode"]
