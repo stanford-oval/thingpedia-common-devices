@@ -83,6 +83,11 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         super.updateOAuth2Token(accessToken, refreshToken, extraData);
     }
 
+    async start() {
+        // make a harmless GET request to start so we'll refresh the access token
+        await this.http_get('https://api.spotify.com/v1/me');
+    }
+
     http_get(url) {
         return Tp.Helpers.Http.get(url, {
             accept: "application/json",
