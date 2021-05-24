@@ -14,7 +14,7 @@ U: find me the song despacito
 #U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 #U: now => (@com.spotify.song(), id =~ ("despacito")) => notify;
 
-A: Both Despacito and Despacito - Remix are( (latin( pop)?|tropical|puerto rican pop))? songs by Luis Fonsi( in the tropical genre)?\.
+A: Both Despacito and Despacito - Remix are( (latin( pop)?|tropical|puerto rican pop))? songs by (Daddy Yankee|Luis Fonsi)( in the tropical genre)?\.
 A: >> expecting = null
 
 ====
@@ -50,7 +50,7 @@ U: find me the box by roddy ricch
 #U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 #U: now => (@com.spotify.song(), id =~ ("the box") && contains(artists, null^^com.spotify:artist("roddy ricch"))) => notify;
 
-A: The Box is a rap music by Roddy Ricch\. Would you like to play it on Spotify\?
+A: The Box is a (rap )?music by Roddy Ricch( released in December 5, 2019)?\. Would you like to play it on Spotify\?
 A: >> expecting = yesno
 
 ====
@@ -123,7 +123,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => sort release_date desc of (@com.spotify.playable(), contains(artists, null^^com.spotify:artist("beyonce")))[1] => notify;
 
-A: I (see|have( found)?) Crazy In Love \(feat. Jay-Z\)\. (It's|It is)( a)? dance pop music by Beyonc.\. Would you like to play it on Spotify\?
+A: I (see|have( found)?) Crazy In Love \(feat. Jay-Z\)\. (It's|It is)( a)? (dance pop )?music by Beyonc.( released in June 23, 2003)?\. Would you like to play it on Spotify\?
 A: >> expecting = yesno
 
 ====
@@ -256,7 +256,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@com.spotify.playable(), release_date >= makeDate(2000, 1, 1) && release_date <= makeDate(2000, 1, 1) + 1year) => notify;
 
-A: I see Yellow and The Real Slim Shady\. Yellow Coldplay wrote, while The Real Slim Shady Eminem wrote\.
+A: I see Yellow and The Real Slim Shady\. Yellow is a music by Coldplay, while The Real Slim Shady Eminem wrote\.
 A: >> expecting = null
 
 ====
