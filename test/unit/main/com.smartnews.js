@@ -8,12 +8,12 @@
 
 const assert = require('assert');
 
-function assertNonEmptyString(what) {
+/*function assertNonEmptyString(what) {
     assert(typeof what === 'string' && what, 'Expected a non-empty string, got ' + what);
-}
+}*/
 
 module.exports = [
-    ['query', 'article', {}, (results) => {
+    /*['query', 'article', {}, (results) => {
         for (const res of results) {
             assert(res.id.value);
             assertNonEmptyString(res.title);
@@ -26,7 +26,7 @@ module.exports = [
             assert(typeof res.link === 'string');
             assert(res.audio_url === undefined || res.audio_url.startsWith('http'));
         }
-    }]
+    }]*/
     // ['query', 'reading_list', {}, (results) => {
     //     console.log(results);
     //     assert(true, 'something');

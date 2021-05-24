@@ -54,6 +54,13 @@ function s3tohttp(url) {
     return Url.format(parsed);
 }
 
+class UnavailableError extends Error {
+    constructor(message) {
+        super(message);
+        this.code = 'unavailable';
+    }
+}
+
 module.exports = class SmartNewsDevice extends Tp.BaseDevice {
     constructor(engine, state) {
         super(engine, state);
@@ -68,24 +75,34 @@ module.exports = class SmartNewsDevice extends Tp.BaseDevice {
             const date = `${now.getYear()-100}${now.getMonth() < 9 ? '0' : ''}${now.getMonth()+1}${now.getDate()<10 ? '0': ''}${now.getDate()}`;
             const url = `https://oval-project.s3-ap-northeast-1.amazonaws.com/data/${date}/summary_${date}.jsonl`;
 
-            const stream = (await Tp.Helpers.Http.getStream(url)).setEncoding('utf8').pipe(byline());
-            for await (const line of stream) {
-                const article = JSON.parse(line);
-                if (article['articleViewStyle'] !== 'SMART')
-                    continue;
-                if (article['title'] === 'coronavirus_push_landingpage')
-                    continue;
-                yield {
-                    id: new Tp.Value.Entity(String(article.link_id), null),
-                    link: article.url,
-                    title: article.title,
-                    date: new Date(article.publishedTimestamp * 1000),
-                    source: article.site ? article.site.name : null,
-                    author: article.author ? article.author.name : null,
-                    audio_url: s3tohttp(article.summary_mp3_file),
-                    content: article.body,
-                };
+            let anyNews = false;
+            try {
+                const stream = (await Tp.Helpers.Http.getStream(url)).setEncoding('utf8').pipe(byline());
+                for await (const line of stream) {
+                    const article = JSON.parse(line);
+                    if (article['articleViewStyle'] !== 'SMART')
+                        continue;
+                    if (article['title'] === 'coronavirus_push_landingpage')
+                        continue;
+                    anyNews = true;
+                    yield {
+                        id: new Tp.Value.Entity(String(article.link_id), null),
+                        link: article.url,
+                        title: article.title,
+                        date: new Date(article.publishedTimestamp * 1000),
+                        source: article.site ? article.site.name : null,
+                        author: article.author ? article.author.name : null,
+                        audio_url: s3tohttp(article.summary_mp3_file),
+                        content: article.body,
+                    };
+                }
+            } catch(e) {
+                if (e.code === 404 || e.code === 403)
+                    throw new UnavailableError('summary missing');
+                throw e;
             }
+            if (!anyNews)
+                throw new UnavailableError('summary empty');
         } else {
             const device_token = DEVICE_TOKEN;
             let url = API_URL + "/top?deviceToken=" + device_token;

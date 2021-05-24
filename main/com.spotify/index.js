@@ -83,6 +83,11 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         super.updateOAuth2Token(accessToken, refreshToken, extraData);
     }
 
+    async start() {
+        // make a harmless GET request to start so we'll refresh the access token
+        await this.http_get('https://api.spotify.com/v1/me');
+    }
+
     http_get(url) {
         return Tp.Helpers.Http.get(url, {
             accept: "application/json",
@@ -385,7 +390,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     }
 
     async songs_by_artist(artists, sortDirection) {
-
         let artistID;
         if (artists[0] instanceof Tp.Value.Entity) {
             artistID = String(artists[0]);
@@ -522,7 +526,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     }
 
     async get_playable(params, hints, env) {
-
         var idFilter = '';
         var yearFilter = '';
         var artistFilter = '';
@@ -835,7 +838,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     }
 
     async get_playlist(params, hints, env) {
-
         var id = '';
         if (hints && hints.filter) {
             for (let [pname, op, value] of hints.filter) {
@@ -995,7 +997,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     async do_play({
         playable
     }, env) {
-
         if (this.state.product !== "premium" && this.state.product !== undefined)
             throwError("non_premium_account");
 
@@ -1194,16 +1195,18 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
         for (const playable of music) {
             const uri = String(playable);
-            if (uri.includes("album"))
+            if (uri.includes("album")) {
                 album_uris.push(uri);
-
+            } else if (uri.includes("show")) {
+                return this.player_play_helper(JSON.stringify({
+                    'context_uri': uri
+                }));
+            }
         }
-
         if (album_uris.length >= 1) {
             const albumIds = album_uris.map((uri) => uri.split("spotify:album:")[1]);
             const albumTracks = (await this.albums_get_by_id(albumIds)).albums;
             for (const album of albumTracks) {
-
                 const uris = album.tracks.items.map((track) => track.uri);
                 album_tracks[album.uri] = uris;
             }
@@ -1215,7 +1218,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 song_uris.push(uri);
             else if (uri.includes("album"))
                 song_uris = song_uris.concat(album_tracks[uri]);
-
         }
 
         return this.player_play_helper(JSON.stringify({
@@ -1321,7 +1323,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     async do_player_shuffle({
         shuffle
     }) {
-
         shuffle = shuffle === 'on' ? 'true' : 'false';
         console.log("setting shuffle: " + shuffle);
         if (this._testMode())
