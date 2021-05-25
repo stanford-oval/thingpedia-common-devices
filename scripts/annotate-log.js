@@ -51,7 +51,7 @@ async function existsSafe(path) {
     }
 }
 
-const FEW_SHOT_TRAIN_PROBABILITY = 0.3;
+const FEW_SHOT_TRAIN_PROBABILITY = 0.5;
 
 // must be in inheritance order
 const RELEASES = ['builtin', 'main', 'universe', 'staging'];
@@ -712,7 +712,7 @@ async function main() {
     const tpClient = new Tp.HttpClient(platform, 'https://dev.almond.stanford.edu/thingpedia');
 
     const lines = await readAllLines(args.input)
-        .pipe(new Genie.DatasetParser())
+        .pipe(new Genie.DatasetParser({ contextual: true }))
         .pipe(new StreamUtils.ArrayAccumulator())
         .read();
 

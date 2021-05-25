@@ -875,3 +875,53 @@ UT: sort(rating desc of @com.yelp.restaurant())[1 : 2];
 U: I'm hungry
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.yelp.restaurant();
+====
+# log-dev/3119
+U: show me restaurants in taiwan rated at least 13 stars
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("taiwan") && rating >= 13;
+====
+# log-dev/3636
+U: show me restaurants in new york city rated at least 13 stars
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("new york city") && rating >= 13;
+====
+# log-dev/4491
+U: show me restaurants in seattle
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("seattle");
+====
+# log-dev/3093
+U: show restaurants in taipei rated higher than 13
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("taipei") && rating >= 13;
+====
+# log-dev/3683
+U: find restaurants
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant();
+====
+# log-dev/2140
+U: what's the best restaurant in palo alto
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating desc of @com.yelp.restaurant() filter geo == new Location("palo alto"))[1];
+====
+# log-dev/3359
+U: show restaurants in taiwan rated higher than 13
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("taiwan") && rating >= 13;
+====
+# log-dev/8072
+U: help search for restaurant in san ramon.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("san ramon");
+====
+# log-dev/2167
+U: what s the top-rated restaurant in palo alto
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating desc of @com.yelp.restaurant() filter geo == new Location("palo alto"))[1];
+====
+# log-dev/621
+U: search on yelp
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant();

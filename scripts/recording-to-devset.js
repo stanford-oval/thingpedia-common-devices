@@ -39,7 +39,7 @@ const Platform = require('./lib/platform');
 const { readAllLines } = require('./lib/argutils');
 const { coin } = require('./lib/random');
 
-const FEW_SHOT_TRAIN_PROBABILITY = 0.3;
+const FEW_SHOT_TRAIN_PROBABILITY = 0.5;
 
 // must be in inheritance order
 const RELEASES = ['builtin', 'main', 'universe', 'staging'];

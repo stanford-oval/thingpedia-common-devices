@@ -6460,3 +6460,218 @@ UT: (@com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter id =~ "
 U: music
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.spotify.playable();
+====
+# log-dev/5315
+U: play songs from 13
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter release_date <= new Date("2013-01-01T08:00:00.000Z") + 1year && release_date >= new Date("2013-01-01T08:00:00.000Z") => @com.spotify.play(playable=id);
+====
+# log-dev/5750
+U: play pop music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains~(genres, "pop") => @com.spotify.play(playable=id);
+====
+# log-dev/5045
+U: play radioactive by imagine dragons
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("imagine dragons")) && id =~ "radioactive" => @com.spotify.play(playable=id);
+====
+# log-dev/9190
+U: acdc
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.artist() filter id =~ "acdc";
+====
+# log-dev/8251
+U: play the playlist classics
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playlist() filter id =~ "classics" => @com.spotify.play(playable=id);
+====
+# log-dev/4330
+U: play the previous song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_previous();
+====
+# log-dev/8876
+U: play queen
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("queen")) => @com.spotify.play(playable=id);
+====
+# log-dev/7183
+U: what is currently playing?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.get_currently_playing();
+====
+# log-dev/5096
+U: play the album the wall
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.album() filter id =~ "the wall" => @com.spotify.play(playable=id);
+====
+# log-dev/7145
+U: play megadeth tornado of souls
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("megadeth")) && id =~ "tornado of souls" => @com.spotify.play(playable=id);
+====
+# log-dev/8443
+U: play sara bareilles
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("sara bareilles")) => @com.spotify.play(playable=id);
+====
+# log-dev/5789
+U: what's the latest song by taylor swift
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(release_date desc of @com.spotify.song() filter contains(artists, null^^com.spotify:artist("taylor swift")))[1];
+====
+# log-dev/8417
+U: play viva la vida
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter id =~ "viva la vida" => @com.spotify.play(playable=id);
+====
+# log-dev/5127
+U: play taylor swift's most popular song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(popularity desc of @com.spotify.song() filter contains(artists, null^^com.spotify:artist("taylor swift")))[1] => @com.spotify.play(playable=id);
+====
+# log-dev/9418
+U: play dance monkey
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter id =~ "dance monkey" => @com.spotify.play(playable=id);
+====
+# log-dev/5405
+U: play all the good things
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter id =~ "all the good things" => @com.spotify.play(playable=id);
+====
+# log-dev/5366
+U: play lady gaga
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("lady gaga")) => @com.spotify.play(playable=id);
+====
+# log-dev/5074
+U: play the latest song by kanye
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(release_date desc of @com.spotify.song() filter contains(artists, null^^com.spotify:artist("kanye")))[1] => @com.spotify.play(playable=id);
+====
+# log-dev/5530
+U: find call me maybe by carly rae japsen
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("carly rae japsen")) && id =~ "call me maybe";
+====
+# log-dev/5771
+U: get me songs with popular under 13
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter popularity <= 13;
+====
+# log-dev/5339
+U: play the most popular song by charlie xcx
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(popularity desc of @com.spotify.song() filter contains(artists, null^^com.spotify:artist("charlie xcx")))[1] => @com.spotify.play(playable=id);
+====
+# log-dev/5390
+U: play some atzen
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("atzen")) => @com.spotify.play(playable=id);
+====
+# log-dev/4967
+U: play me music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() => @com.spotify.play(playable=id);
+====
+# log-dev/5469
+U: play uptown funk
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter id =~ "uptown funk" => @com.spotify.play(playable=id);
+====
+# log-dev/5299
+U: play the most recent song by rihanna
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(release_date desc of @com.spotify.song() filter contains(artists, null^^com.spotify:artist("rihanna")))[1] => @com.spotify.play(playable=id);
+====
+# log-dev/5321
+U: play some daft punk
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("daft punk")) => @com.spotify.play(playable=id);
+====
+# log-dev/5298
+U: play the most recent song by sia
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(release_date desc of @com.spotify.song() filter contains(artists, null^^com.spotify:artist("sia")))[1] => @com.spotify.play(playable=id);
+====
+# log-dev/6951
+U: play the album reputation by taylor swift
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.album() filter contains(artists, null^^com.spotify:artist("taylor swift")) && id =~ "reputation" => @com.spotify.play(playable=id);
+====
+# log-dev/5186
+U: play as long as you love me
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter id =~ "as long as you love me" => @com.spotify.play(playable=id);
+====
+# log-dev/6322
+U: play fa fa by guster
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("guster")) && id =~ "fa fa" => @com.spotify.play(playable=id);
+====
+# log-dev/5214
+U: play ariana grande
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("ariana grande")) => @com.spotify.play(playable=id);
+====
+# log-dev/5568
+U: play happy songs
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter contains~(genres, "happy") => @com.spotify.play(playable=id);
+====
+# log-dev/8423
+U: play sunday morning.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter id =~ "sunday morning" => @com.spotify.play(playable=id);
+====
+# log-dev/5026
+U: play the latest by taylor swift
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(release_date desc of @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("taylor swift")))[1] => @com.spotify.play(playable=id);
+====
+# log-dev/4973
+U: play a song release by drake
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter contains(artists, null^^com.spotify:artist("drake")) => @com.spotify.play(playable=id);
+====
+# log-dev/5204
+U: yes, show me information of jay chou
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.artist() filter id == null^^com.spotify:artist("jay chou");
+====
+# log-dev/8754
+U: d rock classic.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains~(genres, "rock classic");
+====
+# log-dev/6961
+U: what's the most recent song by cardi b
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(release_date desc of @com.spotify.song() filter contains(artists, null^^com.spotify:artist("cardi b")))[1];
+====
+# log-dev/5132
+U: play the most popular song of 13
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(popularity desc of @com.spotify.song() filter release_date <= new Date("2013-01-01T08:00:00.000Z") + 1year && release_date >= new Date("2013-01-01T08:00:00.000Z"))[1] => @com.spotify.play(playable=id);
+====
+# log-dev/5071
+U: play the most popular by justin bieber
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(popularity desc of @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("justin bieber")))[1] => @com.spotify.play(playable=id);
+====
+# log-dev/8038
+U: play metallica on spotify.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("metallica")) => @com.spotify.play(playable=id);
+====
+# log-dev/5779
+U: play most energetic songs
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(energy desc of @com.spotify.song())[1] => @com.spotify.play(playable=id);
+====
+# log-dev/8823
+U: play i love you baby
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter id =~ "i love you baby" => @com.spotify.play(playable=id);
