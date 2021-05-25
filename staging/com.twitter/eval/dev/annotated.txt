@@ -534,3 +534,12 @@ UT: monitor(@com.twitter.tweet() filter author == "str:USERNAME::0:"^^tt:usernam
 U: do tweet ( when user str:USERNAME::0: tweets )
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: monitor(@com.twitter.home_timeline() filter author == "str:USERNAME::0:"^^tt:username) => @com.twitter.post();
+====
+# recording/50bf7a3187fe66bbfea4fafbe8e22d65
+U: Tweet this.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.twitter.post();
+====
+# log-dev/4920
+U: search for super bowl on twitter
+UT: @com.twitter.tweet() filter text =~ "super bowl";
