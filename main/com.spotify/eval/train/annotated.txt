@@ -832,3 +832,33 @@ UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("s
 U: play dance monkey.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.spotify.playable() filter id =~ "dance monkey" => @com.spotify.play(playable=id);
+====
+# log/117784
+U: play playlist chillhop radio
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playlist() filter id =~ "chillhop radio" => @com.spotify.play(playable=id);
+====
+# log/42073
+U: what is my most played spotify track?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.get_user_top_tracks();
+====
+# log/50115
+U: show me spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable();
+====
+# log/9782
+U: play spotify random
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_play();
+====
+# log/44283
+U: play my playlist billy
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playlist() filter id =~ "billy" => @com.spotify.play(playable=id);
+====
+# log/44252
+U: put vienna song on my playlist bill
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter id =~ "vienna" => @com.spotify.add_song_to_playlist(playlist="bill", song=id);

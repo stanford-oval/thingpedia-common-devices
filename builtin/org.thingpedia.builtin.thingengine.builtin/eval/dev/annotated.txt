@@ -1630,3 +1630,13 @@ UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum iot_help
 U: who made you
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_identity);
+====
+# log/108376
+U: set a reminder for 0:0
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: attimer(time=[new Time(0, 0)]) => @org.thingpedia.builtin.thingengine.builtin.say();
+====
+# log/17348
+U: remind me that i have to jog every day
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: timer(base=$now, interval=1day) => @org.thingpedia.builtin.thingengine.builtin.say(message="to jog every day");

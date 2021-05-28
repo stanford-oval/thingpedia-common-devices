@@ -2315,3 +2315,8 @@ UT: @com.yelp.restaurant() filter geo == new Location("taiwan") && rating >= 13;
 U: find the highest rated restaurant in san diego with more than 13 reviews
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: sort(rating desc of @com.yelp.restaurant() filter geo == new Location("san diego") && review_count >= 13)[1];
+====
+# log/4418
+U: show me chinese restaurants
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese"));

@@ -712,7 +712,7 @@ async function main() {
     const tpClient = new Tp.HttpClient(platform, 'https://dev.almond.stanford.edu/thingpedia');
 
     const lines = await readAllLines(args.input)
-        .pipe(new Genie.DatasetParser({ contextual: true }))
+        .pipe(new Genie.DatasetParser({ contextual: false }))
         .pipe(new StreamUtils.ArrayAccumulator())
         .read();
 

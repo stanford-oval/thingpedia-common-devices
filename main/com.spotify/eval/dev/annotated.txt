@@ -6675,3 +6675,18 @@ UT: sort(energy desc of @com.spotify.song())[1] => @com.spotify.play(playable=id
 U: play i love you baby
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.spotify.playable() filter id =~ "i love you baby" => @com.spotify.play(playable=id);
+====
+# log/4978
+U: play song by imagine dragons
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter contains(artists, null^^com.spotify:artist("imagine dragons")) => @com.spotify.play(playable=id);
+====
+# log/7977
+U: classical music.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter contains~(genres, "classical");
+====
+# log/110487
+U: play my daily mix 1 on spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable() filter id =~ "daily mix 1" => @com.spotify.play(playable=id);
