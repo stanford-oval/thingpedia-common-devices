@@ -118,7 +118,7 @@ function man_trail(str) {
 
 function f_write(dest, cont) {
     fs.writeFileSync(dest, cont, 'utf8', (err) => {
-        console.log('There was an error writing the file ' + dest + ' -> ' + err);
+        cl('There was an error writing the file ' + dest + ' -> ' + err, true)
     });
     cl("FILE " + dest + " written correctly ", true);
     return;
@@ -238,8 +238,8 @@ function make_calls(chm, obj_tosend) {
 
     const http = require('http')
 
-    //var k_tk = f_read('./data/tk');
-    var k_tk = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIwMjVjOGQwMTM5MTA0NDEzOTRjMzZkYzc3NDIyYTU4MCIsImlhdCI6MTYyMTQyMDUxNSwiZXhwIjoxOTM2NzgwNTE1fQ.Vi-_NC_IQQjloWrMKkoO1ao87DNTKhB0hwA2i5bFzB8";
+    var k_tk = f_read('./data/tk');
+    //var k_tk = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIwMjVjOGQwMTM5MTA0NDEzOTRjMzZkYzc3NDIyYTU4MCIsImlhdCI6MTYyMTQyMDUxNSwiZXhwIjoxOTM2NzgwNTE1fQ.Vi-_NC_IQQjloWrMKkoO1ao87DNTKhB0hwA2i5bFzB8";
     var data = JSON.stringify(obj_tosend);
 
     var chs = [{
@@ -360,18 +360,20 @@ function master_exec(m_cmd) {
             do_cli([arr_stp[3]], 'execSync');
             break;
         case 5: // Start HA env. without IoT devices (delete IoT devices if present).
-            cl(" Starting HA and delete IoT devices previously set", true);
+            {
+                cl(" Starting HA and delete IoT devices previously set", true);
 
-            //check if devices already present and delete it
-            let f_dest = myArgs[5] + '.homeassistant/configuration.yaml'
-            let chk_sens = f_read(f_dest);
+                //check if devices already present and delete it
+                let f_dest = myArgs[5] + '.homeassistant/configuration.yaml'
+                let chk_sens = f_read(f_dest);
 
-            if (chk_sens.includes(sens_entry)) {
-                let new_content = chk_sens.replace(sens_entry, '');
-                f_write(f_dest, new_content)
+                if (chk_sens.includes(sens_entry)) {
+                    let new_content = chk_sens.replace(sens_entry, '');
+                    f_write(f_dest, new_content)
+                }
+                //starting HA
+                do_cli([arr_stp[5], arr_stp[3]], 'execSync');
             }
-            //starting HA
-            do_cli([arr_stp[5], arr_stp[3]], 'execSync');
             break;
         case 6: // Start HA env. and setting new IoT devices.
             cl(" Starting HA and change IoT devices previously set", true);
