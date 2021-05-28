@@ -343,10 +343,10 @@ function master_exec(m_cmd) {
                 do_cli([arr_stp[0], arr_stp[1], arr_stp[2]], 'execSync');
 
                 // write specific sensor's file
-                f_write(myArgs[5] + "sensor.yaml", got_list.file);
+                f_write(myArgs[5] + ".homeassistant/sensor.yaml", got_list.file);
 
                 // adding integration file to HA configuration
-                let conf_dest = myArgs[5] + "configuration.yaml"
+                let conf_dest = myArgs[5] + ".homeassistant/configuration.yaml"
                 let cont_file = f_read(conf_dest);
 
                 if (!cont_file.endsWith(sens_entry)) {
@@ -399,7 +399,7 @@ function master_exec(m_cmd) {
 
                 // put back IoT devices
                 // adding integration file to HA configuration
-                let conf_dest = myArgs[5] + "configuration.yaml"
+                let conf_dest = myArgs[5] + ".homeassistant/configuration.yaml"
                 let cont_file = f_read(conf_dest);
 
                 if (!cont_file.endsWith(sens_entry)) {
