@@ -343,7 +343,7 @@ function master_exec(m_cmd) {
                 do_cli([arr_stp[0], arr_stp[1], arr_stp[2]], 'execSync');
 
                 // write specific sensor's file
-                f_write(myArgs[5] + ".homeassistant/sensor.yaml", got_list.file);
+                f_write(myArgs[5] + ".homeassistant/sensors.yaml", got_list.file);
 
                 // adding integration file to HA configuration
                 let conf_dest = myArgs[5] + ".homeassistant/configuration.yaml"
@@ -384,7 +384,7 @@ function master_exec(m_cmd) {
             do_cli([arr_stp[5]], 'execSync');
 
             // write new devices
-            f_write(myArgs[5] + "sensor.yaml", got_list.file);
+            f_write(myArgs[5] + ".homeassistant/sensors.yaml", got_list.file);
 
             // start
             iot_init();
@@ -422,7 +422,7 @@ function master_exec(m_cmd) {
             do_cli([arr_stp[5]], 'execSync');
 
             // write new devices
-            f_write(myArgs[5] + "sensor.yaml", got_list.file);
+            f_write(myArgs[5] + ".homeassistant/sensor.yaml", got_list.file);
 
             // start
             do_cli([rr_stp[3]], 'execSync');
