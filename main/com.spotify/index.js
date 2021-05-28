@@ -46,12 +46,13 @@ const ALBUM_URL = 'https://api.spotify.com/v1/albums?';
 const TRACK_URL = 'https://api.spotify.com/v1/tracks?';
 const ARTIST_URL = 'https://api.spotify.com/v1/artists?';
 const SHOW_URL = 'https://api.spotify.com/v1/shows?';
+const SHOW_EPISODES_URL = 'https://api.spotify.com/v1/shows/{id}/episodes';
+const PLAYLIST_ITEMS_URL = 'https://api.spotify.com/v1/playlists/{id}/tracks';
 const SHUFFLE_URL = 'https://api.spotify.com/v1/me/player/shuffle?';
 const PAUSE_URL = 'https://api.spotify.com/v1/me/player/pause?';
 const NEXT_URL = 'https://api.spotify.com/v1/me/player/next?';
 const PREVIOUS_URL = 'https://api.spotify.com/v1/me/player/previous?';
 const REPEAT_URL = 'https://api.spotify.com/v1/me/player/repeat?';
-const QUEUE_URL = "https://api.spotify.com/v1/me/player/queue";
 const PLAYER_INFO_URL = "https://api.spotify.com/v1/me/player";
 
 module.exports = class SpotifyDevice extends Tp.BaseDevice {
@@ -1069,50 +1070,78 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         }
     }
 
+    async playlist_get_tracks_by_id(playlistId) {
+        const data = JSON.stringify(await this.http_get(PLAYLIST_ITEMS_URL.replace('{id}', playlistId)));
+        return data.items.map((item) => {
+            return item.episode ? item.episode.uri : item.track.uri;
+        });
+    }
+
+    async shows_get_unplayed_episodes(showId) {
+        const data = JSON.stringify(await this.http_get(SHOW_EPISODES_URL.replace('{id}', showId)));
+        return data.items.filter((item) => {
+            if (item.resume_point && item.resume_point.fully_played)
+                return false;
+
+            return true;
+        }).map((item) => item.uri);
+    }
+
     async _flushPlay(env) {
         if (this.state.product !== "premium" && this.state.product !== undefined)
             throwError("non_premium_account");
 
         const music = this._state.get(env.app.uniqueId);
-        if (String(music[0]).includes("playlist")) {
-            let data = {
-                context_uri: String(music[0]),
-            };
+
+        // if we have exactly one thing to play, we use context_uri for album/playlist/song
+        if (music.length === 1) {
+            const uri = String(music[0]);
+            let data;
+            if (uri.includes("episode") || uri.includes("song"))
+                data = { uris: [uri] };
+            else
+                data = { context_uri: uri };
             return this.player_play_helper(JSON.stringify(data));
         }
-        let song_uris = [];
-        let album_uris = [];
-        let album_tracks = {};
+
+        const albumUris = [];
+        const playlistUris = [];
+        const showUris = [];
+        const albumTracks = {};
 
         for (const playable of music) {
             const uri = String(playable);
-            if (uri.includes("album")) {
-                album_uris.push(uri);
-            } else if (uri.includes("show")) {
-                return this.player_play_helper(JSON.stringify({
-                    'context_uri': uri
-                }));
-            }
+            if (uri.includes("album"))
+                albumUris.push(uri);
+            else if (uri.includes("show"))
+                showUris.push(uri);
+            else if (uri.includes("playlist"))
+                playlistUris.push(uri);
         }
-        if (album_uris.length >= 1) {
-            const albumIds = album_uris.map((uri) => uri.split("spotify:album:")[1]);
+        if (albumUris.length > 0) {
+            const albumIds = albumUris.map((uri) => uri.split("spotify:album:")[1]);
             const albumTracks = (await this.albums_get_by_id(albumIds)).albums;
             for (const album of albumTracks) {
                 const uris = album.tracks.items.map((track) => track.uri);
-                album_tracks[album.uri] = uris;
+                albumTracks[album.uri] = uris;
             }
         }
 
+        let songUris = [];
         for (const playable of music) {
             const uri = String(playable);
-            if (uri.includes("track"))
-                song_uris.push(uri);
+            if (uri.includes("track") || uri.includes("episode"))
+                songUris.push(uri);
             else if (uri.includes("album"))
-                song_uris = song_uris.concat(album_tracks[uri]);
+                songUris = songUris.concat(albumTracks[uri]);
+            else if (uri.includes("show"))
+                songUris = songUris.concat(await this.shows_get_unplayed_episodes(uri));
+            else if (uri.includes("playlist"))
+                songUris = songUris.concat(await this.playlist_get_tracks_by_id(uri));
         }
 
         return this.player_play_helper(JSON.stringify({
-            'uris': song_uris
+            'uris': songUris
         }));
     }
 
