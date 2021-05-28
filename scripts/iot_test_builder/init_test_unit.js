@@ -49,9 +49,9 @@ const t_help = "\n\nnode init_test_unit.js [options] \n\n" +
     " -B3: build environment (install Home Assistant on provided folder, setup it with preconfigured data [user: user, password: password]) and setup the IoT environment with chosen devices). \n" +
     "       -h: HomeAssistant destination environment folder.  i.e. '-h /home/user/ha_installation_destination/' \n" +
     "       -o: HomeAssistant configuration file, the folder which will contain the HomeAssistant configuration folder '.homeassistant'. i.e. '-o /home/user/' \n\n" +
-    "       -c: add virtual devices available in the folder (main|staging|universe) as listed in 'env_set.js' (alternately to '-d' ooption). i.e. '-c /home/user/oval/almond/thingpedia-common-devices/main/' \n" +
+    "       -c: add virtual devices available in the folder (main|staging|universe) as listed in 'env_set.js' (alternately to '-d' option). i.e. '-c /home/user/oval/almond/thingpedia-common-devices/main/' \n" +
     "    or \n" +
-    "       -d: add virtual devices listed in 'env_set.js' (alternately to '-c' ooption). i.e.  \n" +
+    "       -d: add virtual devices listed in 'env_set.js' (alternately to '-c' option). i.e.  \n" +
     "        [0]      : all devices \n" +
     "        [1,2,3,n]: specifc subset of devices \n\n" +
     " EXAMPLE  node init_test_unit.js -B3 -h /home/user/ha_installation_destination/ -o /home/user/.homeassistant/ -d [0] \n" +
@@ -69,9 +69,9 @@ const t_help = "\n\nnode init_test_unit.js [options] \n\n" +
     " -S4: start environment previously set with new IoT devices and send inizialization data \n" +
     "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/' \n" +
     "      -o: HomeAssistant configuration file, the folder which contain HomeAssistant 'configuration.yaml'. i.e. '-o /home/user/' \n\n" +
-    "      -c: add virtual devices available in the folder (main|staging|universe) as listed in 'env_set.js' (alternately to '-d' ooption). i.e. '-c /home/user/oval/almond/thingpedia-common-devices/main/' \n" +
+    "      -c: add virtual devices available in the folder (main|staging|universe) as listed in 'env_set.js' (alternately to '-d' option). i.e. '-c /home/user/oval/almond/thingpedia-common-devices/main/' \n" +
     "    or \n" +
-    "      -d: add virtual devices listed in 'env_set.js' (alternately to '-c' ooption). i.e.  \n" +
+    "      -d: add virtual devices listed in 'env_set.js' (alternately to '-c' option). i.e.  \n" +
     "        [0]      : all devices \n" +
     "        [1,2,3,n]: specifc subset of devices \n\n" +
     " EXAMPLE  node init_test_unit.js -S3 -h /home/user/home-assistant/ -o /home/user/.homeassistant/ -d [0] \n" +
@@ -85,17 +85,15 @@ const t_help = "\n\nnode init_test_unit.js [options] \n\n" +
     " -U3: update environment previously set with new IoT devices (delete old put new)" +
     "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/' \n" +
     "      -o: HomeAssistant configuration file, the folder which contain HomeAssistant 'configuration.yaml'. i.e. '-o /home/user/' \n\n" +
-    "      -c: add virtual devices available in the folder (main|staging|universe) as listed in 'env_set.js' (alternately to '-d' ooption). i.e. '-c /home/user/oval/almond/thingpedia-common-devices/main/' \n" +
+    "      -c: add virtual devices available in the folder (main|staging|universe) as listed in 'env_set.js' (alternately to '-d' option). i.e. '-c /home/user/oval/almond/thingpedia-common-devices/main/' \n" +
     "    or \n" +
-    "      -d: add virtual devices listed in 'env_set.js' (alternately to '-c' ooption). i.e.  \n" +
+    "      -d: add virtual devices listed in 'env_set.js' (alternately to '-c' option). i.e.  \n" +
     "        [0]      : all devices \n" +
     "        [1,2,3,n]: specifc subset of devices \n\n" +
     " EXAMPLE  node init_test_unit.js -U2 -h /home/user/almond/ -o /home/user/.homeassistant/configuration.yaml -d [0] \n" +
     " ------------ \n\n" +
     " -M: show this help \n" +
     " ------------ \n\n";
-
-var s_fol = "";
 
 var myArgs_0_v = myArgs[0].split("/");
 var myArgs_0 = myArgs[0].replace(myArgs_0_v[myArgs_0_v.length - 1], '');
@@ -139,7 +137,7 @@ function f_read(path) {
     return the_file;
 }
 
-function r_folder() {
+function r_folder(s_fol) {
     var d_list = new Array();
     var str_st = "org.thingpedia.iot.";
 
@@ -165,15 +163,16 @@ function gen_sens_list(cont, st_l) {
     if (st_l === 'd') {
         arr_to_run = cont;
     } else {
-        if (s_fol !== '') {
-            arr_to_run = r_folder();
-        } else {
+        arr_to_run = r_folder(cont);
+
+        if (arr_to_run.constructor !== Array) {
             cl(" Something went wrong: ", false);
         }
     }
 
     arr_to_run.forEach(function(cur_val) {
         let um = '';
+
         if (cur_val.ha.hasOwnProperty('unit_of_measurement')) {
             //if (typeof cur_val.ha.unit_of_measurement !== undefined) {
             um = '      unit_of_measurement: "' + cur_val.ha.unit_of_measurement + '"\n';
@@ -504,9 +503,8 @@ if (myArgs[1] === "-T") {
                                 if (typeof myArgs[7] !== 'string') {
                                     cl(" Wrong option for -c ", false);
                                 }
-                                s_fol = myArgs[7];
                                 cl(" Updating with devices from Thingpedia-common-devices: " + myArgs[7] + " \n\n ", true);
-                                got_list = gen_sens_list(r_folder(myArgs[3]), 'c');
+                                got_list = gen_sens_list(myArgs[7], 'c');
                             } else {
                                 cl(" Missing argument. Expected '-c' or '-d'. ", false);
                             }
@@ -576,9 +574,8 @@ if (myArgs[1] === "-T") {
                                     if (typeof myArgs[7] !== 'string') {
                                         cl(" Wrong option for -c ", false);
                                     }
-                                    s_fol = myArgs[7];
                                     cl(" Running with new devices from Thingpedia-common-devices: " + myArgs[7] + " \n\n ", true);
-                                    got_list = gen_sens_list(r_folder(myArgs[3]), 'c');
+                                    got_list = gen_sens_list(myArgs[7], 'c');
                                 } else {
                                     cl(" Missing argument. Expected '-c' or '-d'. ", false);
                                 }
@@ -645,9 +642,8 @@ if (myArgs[1] === "-T") {
                                     if (typeof myArgs[7] !== 'string') {
                                         cl(" Wrong option for -c ", false);
                                     }
-                                    s_fol = myArgs[7];
                                     cl(" Running with devices from Thingpedia-common-devices: " + myArgs[7] + " \n\n ", true);
-                                    got_list = gen_sens_list(r_folder(myArgs[3]), 'c');
+                                    got_list = gen_sens_list(myArgs[7], 'c');
                                 } else {
                                     cl(" Wrong argument. Expected '-c' or '-d'. ", false);
                                 }
