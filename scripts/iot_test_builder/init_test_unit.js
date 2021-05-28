@@ -43,10 +43,10 @@ const t_help = "\n\nnode init_test_unit.js [options] \n\n" +
     " Options (case sensitive): \n\n" +
     " -B1: build environment (install Home Assistant on provided folder, to be configured manually). \n" +
     "       -h: HomeAssistant destination environment folder.  i.e. '-h /home/user/ha_installation_destination/' \n" +
-    " -B2: build environment (install Home Assistant on provided folder, and setup it with preconfigured setup [user: user, password: password]). \n" +
+    " -B2: build environment (install Home Assistant on provided folder, and setup it with preconfigured data [user: user, password: password]). \n" +
     "       -h: HomeAssistant destination environment folder.  i.e. '-h /home/user/ha_installation_destination/' \n" +
     "       -o: HomeAssistant configuration file, the folder which will contain the HomeAssistant configuration folder '.homeassistant'. i.e. '-o /home/user/' \n\n" +
-    " -B3: build environment (install Home Assistant on provided folder, setup it with preconfigured setup [user: user, password: password]) and setup the IoT environment with chosen devices). \n" +
+    " -B3: build environment (install Home Assistant on provided folder, setup it with preconfigured data [user: user, password: password]) and setup the IoT environment with chosen devices). \n" +
     "       -h: HomeAssistant destination environment folder.  i.e. '-h /home/user/ha_installation_destination/' \n" +
     "       -o: HomeAssistant configuration file, the folder which will contain the HomeAssistant configuration folder '.homeassistant'. i.e. '-o /home/user/' \n\n" +
     "       -c: add virtual devices available in the folder (main|staging|universe) as listed in 'env_set.js' (alternately to '-d' ooption). i.e. '-c /home/user/oval/almond/thingpedia-common-devices/main/' \n" +
@@ -56,6 +56,8 @@ const t_help = "\n\nnode init_test_unit.js [options] \n\n" +
     "        [1,2,3,n]: specifc subset of devices \n\n" +
     " EXAMPLE  node init_test_unit.js -B3 -h /home/user/ha_installation_destination/ -o /home/user/.homeassistant/ -d [0] \n" +
     " ------------ \n\n" +
+    " -S0: start environment previously set\n" +
+    "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/home-assistant/' \n\n" +
     " -S1: start environment previously set and send inizialization data for the IoT devices \n" +
     "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/home-assistant/' \n\n" +
     " -S2: start environment previously set without configuration (reconfigure manually)" +
@@ -74,13 +76,13 @@ const t_help = "\n\nnode init_test_unit.js [options] \n\n" +
     "        [1,2,3,n]: specifc subset of devices \n\n" +
     " EXAMPLE  node init_test_unit.js -S3 -h /home/user/home-assistant/ -o /home/user/.homeassistant/ -d [0] \n" +
     " ------------ \n\n" +
-    " -U1: update environment previously set deleting configuration folder (to be set manually)" +
+    " -U1: update environment previously set, deleting configuration folder (to be set manually)" +
     "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/' \n" +
     "      -o: HomeAssistant configuration file, the folder which contain HomeAssistant 'configuration.yaml'. i.e. '-o /home/user/' \n\n" +
-    " -U2: update environment previously set deleting IoT devices" +
+    " -U2: update environment previously set, deleting IoT devices" +
     "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/' \n" +
     "      -o: HomeAssistant configuration file, the folder which contain HomeAssistant 'configuration.yaml'. i.e. '-o /home/user/' \n\n" +
-    " -U3: update environment previously set with new IoT devices" +
+    " -U3: update environment previously set with new IoT devices (delete old put new)" +
     "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/' \n" +
     "      -o: HomeAssistant configuration file, the folder which contain HomeAssistant 'configuration.yaml'. i.e. '-o /home/user/' \n\n" +
     "      -c: add virtual devices available in the folder (main|staging|universe) as listed in 'env_set.js' (alternately to '-d' ooption). i.e. '-c /home/user/oval/almond/thingpedia-common-devices/main/' \n" +
@@ -323,17 +325,17 @@ function master_exec(m_cmd) {
     ];
 
     switch (m_cmd) {
-        case 1: // Installation of HA env.
+        case 1: // B1 - Installation of HA env.
             cl(" Running HA installation on: " + myArgs[3], true);
             // HA installation
             do_cli([arr_stp[0], arr_stp[1]], 'execSync');
             break;
-        case 2: // Installation of HA env., setup of HA env. by addind the conf. folder.
+        case 2: // B2 - Installation of HA env., setup of HA env. by addind the conf. folder.
             cl(" Running HA installation on: " + myArgs[3] + ", setup in " + myArgs[5], true);
             // HA installation && setup HA env
             do_cli([arr_stp[0], arr_stp[1], arr_stp[2]], 'execSync');
             break;
-        case 3: // Installation of HA env., setup of HA env. by addind the conf. folder, setup IoT devices in HA.
+        case 3: // B3 - Installation of HA env., setup of HA env. by addind the conf. folder, setup IoT devices in HA.
             {
                 cl(" Running HA installation on: " + myArgs[3] + ", setup in " + myArgs[5] + ", and configuration of IoT devices ", true);
 
@@ -353,13 +355,13 @@ function master_exec(m_cmd) {
                 }
             }
             break;
-        case 4: // Start the test env. as previously set and send new inizialization data.
+        case 4: // S1 - Start the test env. as previously set and send new inizialization data.
             cl(" Starting HA ", true);
             // start
             iot_init();
             do_cli([arr_stp[3]], 'execSync');
             break;
-        case 5: // Start HA env. without IoT devices (delete IoT devices if present).
+        case 5: // S3 - Start HA env. without IoT devices (delete IoT devices if present).
             {
                 cl(" Starting HA and delete IoT devices previously set", true);
 
@@ -375,7 +377,7 @@ function master_exec(m_cmd) {
                 do_cli([arr_stp[5], arr_stp[3]], 'execSync');
             }
             break;
-        case 6: // Start HA env. and setting new IoT devices.
+        case 6: // S4 - Start HA env. and setting new IoT devices.
             cl(" Starting HA and change IoT devices previously set", true);
 
             // delete IoT devices
@@ -388,7 +390,7 @@ function master_exec(m_cmd) {
             iot_init();
             do_cli([rr_stp[3]], 'execSync');
             break;
-        case 7: // Start a fresh HA env. by replacing the conf folder but keeping IoT devices previously set.
+        case 7: // U2 - Update HA env. by replacing the conf folder but keeping IoT devices previously set.
             {
                 cl(" Starting a fresh HA and change configuration folder but keeping IoT devices previously set", true);
 
@@ -409,7 +411,7 @@ function master_exec(m_cmd) {
                 do_cli([rr_stp[3]], 'execSync');
             }
             break;
-        case 8: // Start a fresh HA env. by replacing the conf folder and setting new IoT devices.
+        case 8: // U3 - Update HA env. by replacing the conf folder and setting new IoT devices.
 
             cl(" Starting a fresh HA and change configuration folder but keeping IoT devices previously set", true);
 
@@ -425,17 +427,23 @@ function master_exec(m_cmd) {
             // start
             do_cli([rr_stp[3]], 'execSync');
             break;
-        case 9: // Start HA env. without configuration (reconfigure manually).
+        case 9: // S2 - Start HA env. without configuration (reconfigure manually). 
             cl(" Deleting HA configuration and starting HA", true);
 
             // delete conf folder and start the environment
             do_cli([arr_stp[4], arr_stp[3]], 'execSync');
             break;
-        case 10: // Start HA env. without configuration (reconfigure manually).
+        case 10: // U1 - Update HA env. without configuration (reconfigure manually).
             cl(" Deleting HA configuration", true);
 
             // delete conf folder
             do_cli([arr_stp[4]], 'execSync');
+            break;
+        case 11: // S0 - Start HA env.
+            cl(" Starting HA ", true);
+
+            // Start ha
+            do_cli([arr_stp[3]], 'execSync');
             break;
     }
 
@@ -515,12 +523,14 @@ if (myArgs[1] === "-T") {
         } else {
             cl(" Missing argument. Expected '-h'. ", false);
         }
-    } else if (myArgs[1] === "-S1" || myArgs[1] === "-S2" || myArgs[1] === "-S3" || myArgs[1] === "-S4") {
+    } else if (myArgs[1] === "-S0" || myArgs[1] === "-S1" || myArgs[1] === "-S2" || myArgs[1] === "-S3" || myArgs[1] === "-S4") {
         if (myArgs[2] === "-h") {
             if (typeof myArgs[3] === 'string') {
                 myArgs[3] = man_trail(myArgs[3]);
 
-                if (myArgs[1] === "-S1") {
+                if (myArgs[1] === "-S0") {
+                    master_exec(11);
+                } else if (myArgs[1] === "-S1") {
                     master_exec(4);
                 } else {
                     if (myArgs[4] === "-o") {
