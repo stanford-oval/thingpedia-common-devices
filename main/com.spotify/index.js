@@ -875,19 +875,12 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         });
     }
 
-    get_get_currently_playing() {
-        return this.http_get(CURRENTLY_PLAYING_URL).then((response) => {
-            if (response === '' || response.length === 0)
-                return [];
+    async get_get_currently_playing() {
+        const parsed = JSON.parse(this.http_get(CURRENTLY_PLAYING_URL));
+        if (parsed.is_playing === false || !parsed.device || !parsed.item || !parsed.item.uri)
+            throwError('no_song_playing');
 
-            const parsed = JSON.parse(response);
-            if (parsed.is_playing === false)
-                return [];
-
-            return [{
-                song: new Tp.Value.Entity(parsed.item.uri, parsed.item.name)
-            }];
-        });
+        return this.parse_tracks(await this.tracks_get_by_id([parsed.item.uri]));
     }
 
     _testMode() {
