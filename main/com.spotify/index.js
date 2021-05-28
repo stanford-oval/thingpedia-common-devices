@@ -981,18 +981,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             device: new Tp.Value.Entity(deviceId, deviceName)
         };
     }
-    async player_queue_helper(uri, [deviceId, deviceName]) {
-        if (this._testMode()) {
-            return {
-                device: new Tp.Value.Entity('mock', 'Coolest Computer')
-            };
-        }
-
-        await this.http_post_default_options(QUEUE_URL + `?uri=${encodeURIComponent(uri)}&device_id=${deviceId}`, '');
-        return {
-            device: new Tp.Value.Entity(deviceId, deviceName)
-        };
-    }
 
     async do_play({
         playable
@@ -1029,43 +1017,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         }
 
         return device;
-    }
-
-    async do_play_song({
-        song
-    }, env) {
-        let progstate = this._state.get(env.app.uniqueId);
-        if (!progstate) {
-            env.addExitProcedureHook(async () => {
-                await this._flushPlaySong(env);
-            });
-            this._state.set(env.app.uniqueId, [song]);
-        } else {
-            progstate.push(song);
-        }
-
-        if (this._testMode()) {
-            return {
-                device: new Tp.Value.Entity('mock', 'Coolest Computer')
-            };
-        }
-
-        let deviceState = this._deviceState.get(env.app.uniqueId);
-        if (!deviceState) {
-            let devices = await this.get_get_available_devices();
-            const [deviceId, deviceName] = await this._findActiveDevice(devices);
-            if (deviceId === null)
-                throwError('no_active_device');
-
-            this._deviceState.set(env.app.uniqueId, [deviceId, deviceName]);
-            return {
-                device: new Tp.Value.Entity(deviceId, deviceName)
-            };
-        } else {
-            return {
-                device: new Tp.Value.Entity(deviceState[0], deviceState[1])
-            };
-        }
     }
 
     async do_add_song_to_playlist({
@@ -1118,66 +1069,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         }
     }
 
-    async do_play_artist({
-        artist
-    }, env) {
-        const uri = String(artist);
-        let data = {
-            context_uri: uri,
-        };
-        console.log("data is " + JSON.stringify(data));
-        return this.player_play_helper(JSON.stringify(data));
-    }
-
-    async do_play_album({
-        album
-    }, env) {
-        const uri = String(album);
-        let data = {
-            context_uri: uri,
-        };
-        console.log("data is " + JSON.stringify(data));
-        return this.player_play_helper(JSON.stringify(data));
-    }
-
-    async do_play_show({
-        show
-    }, env) {
-        const uri = String(show);
-        let data = {
-            context_uri: uri,
-        };
-        console.log("data is " + JSON.stringify(data));
-        return this.player_play_helper(JSON.stringify(data));
-    }
-
-    async _flushPlaySong(env) {
-        if (this.state.product !== "premium" && this.state.product !== undefined)
-            throwError("non_premium_account");
-
-        const songs = this._state.get(env.app.uniqueId);
-        const album = this._findCommonAlbum(songs, env);
-        try {
-            await this.do_player_shuffle("false");
-        } catch (error) {
-            throwError("disallowed_action");
-        }
-
-        if (album && songs.length > 1) {
-            let data = {
-                context_uri: album,
-            };
-            return this.player_play_helper(JSON.stringify(data));
-        } else {
-            const song_uris = songs.map((song) => {
-                return String(song);
-            });
-            return this.player_play_helper(JSON.stringify({
-                'uris': song_uris
-            }));
-        }
-    }
-
     async _flushPlay(env) {
         if (this.state.product !== "premium" && this.state.product !== undefined)
             throwError("non_premium_account");
@@ -1223,27 +1114,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         return this.player_play_helper(JSON.stringify({
             'uris': song_uris
         }));
-
-    }
-
-    _findCommonAlbum(songs, env) {
-        var album;
-        const songObjs = this._queryResults.get(env.app.uniqueId);
-        if (!songObjs)
-            return null;
-
-        for (const song of songs) {
-            const result = songObjs[String(song)];
-            if (!result) {
-                return null;
-            } else {
-                if (!album)
-                    album = String(result.album);
-                else if (album !== String(result.album))
-                    return null;
-            }
-        }
-        return album;
     }
 
     async do_player_pause() {
