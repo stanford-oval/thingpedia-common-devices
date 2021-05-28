@@ -19,6 +19,15 @@ module.exports = [{
     },
     "i_val": "220"
 }, {
+    "a_id": "climate",
+    "ha": {
+        "templating": "sensor:\n  - platform: template\n    sensors:",
+        "friendly_name": "Smart Thermostat",
+        "device_class": "thermostat",
+        "domain": "climate"
+    },
+    "i_val": "off"
+}, {
     "a_id": "cover",
     "ha": {
         "templating": "cover:\n  - platform: template\n    covers:",
@@ -37,6 +46,15 @@ module.exports = [{
     },
     "i_val": "closed"
 
+}, {
+    "a_id": "fan",
+    "ha": {
+        "templating": "fan:\n  - platform: template\n    fans:",
+        "friendly_name": "Smart Fan",
+        "device_class": "fan",
+        "domain": "fan"
+    },
+    "i_val": "off"
 }, {
     "a_id": "flood",
     "ha": {
@@ -76,11 +94,29 @@ module.exports = [{
     },
     "i_val": "on"
 }, {
+    "a_id": "lock",
+    "ha": {
+        "templating": "lock:\n  - platform: template\n    locks:",
+        "friendly_name": "Smart Lock",
+        "device_class": "lock",
+        "domain": "lock"
+    },
+    "i_val": "on"
+}, {
     "a_id": "motion",
     "ha": {
-        "templating": "binary_sensor:\n  - platform: template\n    sensors:",
+        "templating": "binary_sensor:\n  - platform: template\n    binary_sensor:",
         "friendly_name": "Motion Sensor",
         "device_class": "motion",
+        "domain": "binary_sensor"
+    },
+    "i_val": "on"
+}, {
+    "a_id": "smoke",
+    "ha": {
+        "templating": "binary_sensor:\n  - platform: template\n    binary_sensor:",
+        "friendly_name": "Smoke Sensor",
+        "device_class": "smoke",
         "domain": "binary_sensor"
     },
     "i_val": "on"
@@ -123,23 +159,14 @@ module.exports = [{
     },
     "i_val": "120"
 }, {
-    "a_id": "fan",
+    "a_id": "vacuum",
     "ha": {
-        "templating": "fam:\n  - platform: template\n    fans:",
-        "friendly_name": "Smart Fan",
-        "device_class": "fan",
-        "domain": "fan"
+        "templating": "vacuum:\n  - platform: template\n    vacuums:",
+        "friendly_name": "Vacuum Cleaner",
+        "device_class": "vacuum",
+        "domain": "vacuum"
     },
     "i_val": "off"
-}, {
-    "a_id": "lock",
-    "ha": {
-        "templating": "lock:\n  - platform: template\n    locks:",
-        "friendly_name": "Smart Lock",
-        "device_class": "lock",
-        "domain": "lock"
-    },
-    "i_val": "on"
 }, {
     "a_id": "moisture",
     "ha": {
@@ -187,15 +214,6 @@ module.exports = [{
     },
     "i_val": "off"
 }, {
-    "a_id": "thermostat",
-    "ha": {
-        "templating": "sensor:\n  - platform: template\n    sensors:",
-        "friendly_name": "Smart Thermostat",
-        "device_class": "thermostat",
-        "domain": "climate"
-    },
-    "i_val": "off"
-}, {
     "a_id": "tv",
     "ha": {
         "templating": "media_player:\n  - platform: template\n    tv:",
@@ -204,13 +222,4 @@ module.exports = [{
         "domain": "tv"
     },
     "i_val": "on"
-}, {
-    "a_id": "vacuum",
-    "ha": {
-        "templating": "vacuum:\n  - platform: template\n    vacuums:",
-        "friendly_name": "Vacuum Cleaner",
-        "device_class": "vacuum",
-        "domain": "vacuum"
-    },
-    "i_val": "off"
 }];
