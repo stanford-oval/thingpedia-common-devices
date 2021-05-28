@@ -174,7 +174,8 @@ function gen_sens_list(cont, st_l) {
 
     arr_to_run.forEach(function(cur_val) {
         let um = '';
-        if (typeof cur_val.ha.unit_of_measurement !== undefined) {
+        if (cur_val.ha.hasOwnProperty('unit_of_measurement')) {
+            //if (typeof cur_val.ha.unit_of_measurement !== undefined) {
             um = '      unit_of_measurement: "' + cur_val.ha.unit_of_measurement + '"\n';
         }
 
