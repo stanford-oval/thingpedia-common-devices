@@ -10,7 +10,7 @@
             },
             "attrib": {
                 "friendly_name": "Smart lock",
-                "device_class": "lock",
+                "device_class": "lock"
             }
         }
     }

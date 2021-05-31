@@ -11,7 +11,7 @@
             "attrib": {
                 "friendly_name": "Illuminance Sensor",
                 "unit_of_measurement": "lx",
-                "device_class": "luminance",
+                "device_class": "luminance"
             }
         }
     }

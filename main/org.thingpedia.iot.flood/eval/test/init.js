@@ -11,7 +11,7 @@
             "attrib": {
                 "friendly_name": "Water flooding level",
                 "unit_of_measurement": "%",
-                "device_class": "flood",
+                "device_class": "flood"
             }
         }
     }
@@ -27,7 +27,7 @@
             },
             "attrib": {
                 "friendly_name": "Water flooding state",
-                "device_class": "flood",
+                "device_class": "flood"
             }
         }
     }

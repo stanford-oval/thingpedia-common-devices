@@ -10,7 +10,7 @@
             },
             "attrib": {
                 "friendly_name": "Smart switch",
-                "device_class": "switch",
+                "device_class": "switch"
             }
         }
     }

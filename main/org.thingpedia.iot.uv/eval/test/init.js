@@ -11,7 +11,7 @@
             "attrib": {
                 "friendly_name": "Ultraviolet Sensor",
                 "unit_of_measurement": "uv",
-                "device_class": "uv",
+                "device_class": "uv"
             }
         }
     }

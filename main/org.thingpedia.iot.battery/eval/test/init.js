@@ -11,7 +11,7 @@
             "attrib": {
                 "friendly_name": "UPS",
                 "unit_of_measurement": "%",
-                "device_class": "battery",
+                "device_class": "battery"
             }
         }
     }
@@ -27,7 +27,7 @@
             },
             "attrib": {
                 "friendly_name": "Sensor's Battery State",
-                "device_class": "battery",
+                "device_class": "battery"
             }
         }
     }
