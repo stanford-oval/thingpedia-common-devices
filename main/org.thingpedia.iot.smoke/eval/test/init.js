@@ -21,7 +21,7 @@
         "domain": "binary_sensor",
         "entity_id": "smoke_state",
         "init_call": {
-            "i_val": {
+            "i_state": {
                 "rng": "detecting,nothing",
                 "k": "state"
             },

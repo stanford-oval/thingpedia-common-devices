@@ -4,7 +4,7 @@
         "domain": "vacuum",
         "entity_id": "vacuum_bot",
         "init_call": {
-            "i_val": {
+            "i_state": {
                 "rng": "on,off,docked",
                 "k": "state"
             },

@@ -4,7 +4,7 @@
         "domain": "light",
         "entity_id": "smart_lamp",
         "init_call": {
-            "i_val": {
+            "i_state": {
                 "rng": "on,off",
                 "k": "state"
             },

@@ -4,7 +4,7 @@
         "domain": "sensor",
         "entity_id": "motion_sensor",
         "init_call": {
-            "i_val": {
+            "i_state": {
                 "rng": "detecting,not_detecting",
                 "k": "state"
             },

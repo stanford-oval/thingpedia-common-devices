@@ -4,7 +4,7 @@
         "domain": "switch",
         "entity_id": "smart_switch",
         "init_call": {
-            "i_val": {
+            "i_state": {
                 "rng": "on,off",
                 "k": "state"
             },

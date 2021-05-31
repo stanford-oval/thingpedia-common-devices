@@ -4,7 +4,7 @@
         "domain": "lock",
         "entity_id": "smart_lock",
         "init_call": {
-            "i_val": {
+            "i_state": {
                 "rng": "locked,unlocked",
                 "k": "state"
             },

@@ -21,7 +21,7 @@
         "domain": "binary_sensor",
         "entity_id": "flood_state",
         "init_call": {
-            "i_val": {
+            "i_state": {
                 "rng": "flooding,not_flooding",
                 "k": "state"
             },

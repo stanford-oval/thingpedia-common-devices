@@ -44,10 +44,10 @@ const t_help = "\n\nnode init_test_unit.js [options] \n\n" +
     "       -h: HomeAssistant destination environment folder.  i.e. '-h /home/user/ha_installation_destination/' \n" +
     " -B2: build environment (install Home Assistant on provided folder, and setup it with preconfigured data [user: user, password: password]). \n" +
     "       -h: HomeAssistant destination environment folder.  i.e. '-h /home/user/ha_installation_destination/' \n" +
-    "       -o: HomeAssistant configuration file, the folder which will contain the HomeAssistant configuration folder '.homeassistant'. i.e. '-o /home/user/' \n\n" +
+    "       -o: HomeAssistant configuration folder, the folder which will contain the HomeAssistant configuration folder '.homeassistant'. i.e. '-o /home/user/' \n\n" +
     " -B3: build environment (install Home Assistant on provided folder, setup it with preconfigured data [user: user, password: password]) and setup the IoT environment with chosen devices). \n" +
     "       -h: HomeAssistant destination environment folder.  i.e. '-h /home/user/ha_installation_destination/' \n" +
-    "       -o: HomeAssistant configuration file, the folder which will contain the HomeAssistant configuration folder '.homeassistant'. i.e. '-o /home/user/' \n\n" +
+    "       -o: HomeAssistant configuration folder, the folder which will contain the HomeAssistant configuration folder '.homeassistant'. i.e. '-o /home/user/' \n\n" +
     "       -f: add virtual devices available in the specific folder (main|staging|universe) (alternately to '-d' option). i.e. '-f /home/user/oval/almond/thingpedia-common-devices/main/' \n" +
     "    or \n" +
     "       -d: add virtual devices by provided list (alternately to '-f' option). i.e.  \n" +
@@ -55,12 +55,12 @@ const t_help = "\n\nnode init_test_unit.js [options] \n\n" +
     " EXAMPLE  node init_test_unit.js -B3 -h /home/user/ha_installation_destination/ -o /home/user/.homeassistant/ -d ['air','temperature','vacuum'] /home/user/oval/almond/thingpedia-common-devices/main/ \n" +
     " ------------ \n\n" +
     " -S1: start environment previously set\n" +
-    "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/home-assistant/' \n\n" +
+    "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/ha_installation_destination/' \n\n" +
     " -S2: start environment previously set without configuration (reconfigure manually)" +
-    "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/' \n" +
-    "      -o: HomeAssistant configuration file, the folder which contain HomeAssistant 'configuration.yaml'. i.e. '-o /home/user/' \n\n" +
+    "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/ha_installation_destination/' \n" +
+    "      -o: HomeAssistant configuration folder, the folder which will contain the HomeAssistant configuration folder '.homeassistant'. i.e. '-o /home/user/' \n\n" +
     " -S3: start environment previously set with new IoT devices and send inizialization data \n" +
-    "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/' \n" +
+    "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/ha_installation_destination/' \n" +
     "      -o: HomeAssistant configuration file, the folder which contain HomeAssistant 'configuration.yaml'. i.e. '-o /home/user/' \n\n" +
     "      -f: add virtual devices available in the specific folder (main|staging|universe)  (alternately to '-d' option). i.e. '-f /home/user/oval/almond/thingpedia-common-devices/main/' \n" +
     "    or \n" +
@@ -174,13 +174,16 @@ function gen_sens_list(dfolder, mode, sublist) {
     arr_to_run.forEach(function(cur_val) {
 
         let set_file = dfolder + base_dev_folder + cur_val + base_test;
-        let content = JSON.stringify(f_read(set_file));
+        let content = JSON.parse(f_read(set_file));
 
-        list_to_api.push({
-            "entity_id": content.ha.domain + "." + content.ha.entity_id,
-            "state": init_data_generator(content.ha.init_call.i_state),
-            "attributes": content.ha.init_call.attrib
+        content.forEach(function(obj) {
+            list_to_api.push({
+                "entity_id": obj.ha.domain + "." + obj.ha.entity_id,
+                "state": init_data_generator(obj.ha.init_call.i_state),
+                "attributes": obj.ha.init_call.attrib
+            })
         })
+
     });
 
     return list_to_api;

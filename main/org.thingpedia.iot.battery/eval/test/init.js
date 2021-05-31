@@ -21,7 +21,7 @@
         "domain": "binary_sensor",
         "entity_id": "sensor_battery_state",
         "init_call": {
-            "i_val": {
+            "i_state": {
                 "rng": "low,normal",
                 "k": "state"
             },
