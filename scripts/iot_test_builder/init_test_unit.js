@@ -54,17 +54,12 @@ const t_help = "\n\nnode init_test_unit.js [options] \n\n" +
     "        ['dev1','dev2','dev3','devn']: specifc subset of devices \n\n" +
     " EXAMPLE  node init_test_unit.js -B3 -h /home/user/ha_installation_destination/ -o /home/user/.homeassistant/ -d ['air','temperature','vacuum'] /home/user/oval/almond/thingpedia-common-devices/main/ \n" +
     " ------------ \n\n" +
-    " -S0: start environment previously set\n" +
-    "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/home-assistant/' \n\n" +
-    " -S1: start environment previously set and send inizialization data for the IoT devices \n" +
+    " -S1: start environment previously set\n" +
     "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/home-assistant/' \n\n" +
     " -S2: start environment previously set without configuration (reconfigure manually)" +
     "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/' \n" +
     "      -o: HomeAssistant configuration file, the folder which contain HomeAssistant 'configuration.yaml'. i.e. '-o /home/user/' \n\n" +
-    " -S3: start environment previously set without IoT devices" +
-    "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/' \n" +
-    "      -o: HomeAssistant configuration file, the folder which contain HomeAssistant 'configuration.yaml'. i.e. '-o /home/user/' \n\n" +
-    " -S4: start environment previously set with new IoT devices and send inizialization data \n" +
+    " -S3: start environment previously set with new IoT devices and send inizialization data \n" +
     "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/' \n" +
     "      -o: HomeAssistant configuration file, the folder which contain HomeAssistant 'configuration.yaml'. i.e. '-o /home/user/' \n\n" +
     "      -f: add virtual devices available in the specific folder (main|staging|universe)  (alternately to '-d' option). i.e. '-f /home/user/oval/almond/thingpedia-common-devices/main/' \n" +
@@ -76,10 +71,7 @@ const t_help = "\n\nnode init_test_unit.js [options] \n\n" +
     " -U1: update environment previously set, deleting configuration folder (to be set manually)" +
     "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/' \n" +
     "      -o: HomeAssistant configuration file, the folder which contain HomeAssistant 'configuration.yaml'. i.e. '-o /home/user/' \n\n" +
-    " -U2: update environment previously set, deleting IoT devices" +
-    "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/' \n" +
-    "      -o: HomeAssistant configuration file, the folder which contain HomeAssistant 'configuration.yaml'. i.e. '-o /home/user/' \n\n" +
-    " -U3: update environment previously set with new IoT devices (delete old put new)" +
+    " -U2: update environment previously set with new IoT devices (delete old put new)" +
     "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/' \n" +
     "      -o: HomeAssistant configuration file, the folder which contain HomeAssistant 'configuration.yaml'. i.e. '-o /home/user/' \n\n" +
     "      -f: add virtual devices available in the specific folder (main|staging|universe)  (alternately to '-d' option). i.e. '-f /home/user/oval/almond/thingpedia-common-devices/main/' \n" +
@@ -331,129 +323,66 @@ function master_exec(m_cmd, the_list) {
         'cd ' + myArgs[3] + ' && git clone https://github.com/home-assistant/core home-assistant && cd ' + myArgs[3] + 'home-assistant && virtualenv venv && . ./venv/bin/activate && pip3 install -r requirements.txt && deactivate',
         'unzip -d ' + myArgs[5] + ' ' + myArgs_0 + zip_folder,
         'cd ' + myArgs[3] + ' && . ./venv/bin/activate && python3 -m homeassistant &',
-        'sudo rm -r ' + myArgs[5] + '.homeassistant',
-        'sudo rm ' + myArgs[5] + '.homeassistant/sensors.yaml'
+        'sudo rm -r ' + myArgs[5] + '.homeassistant'
     ];
 
     switch (m_cmd) {
         case 1: // B1 - Installation of HA env.
             cl(" Running HA installation on: " + myArgs[3], true);
+
             // HA installation
             do_cli([arr_stp[0], arr_stp[1]], 'execSync');
             break;
         case 2: // B2 - Installation of HA env., setup of HA env. by adding the conf. folder.
             cl(" Running HA installation on: " + myArgs[3] + ", setup in " + myArgs[5], true);
+
             // HA installation && setup HA env
             do_cli([arr_stp[0], arr_stp[1], arr_stp[2]], 'execSync');
             break;
         case 3: // B3 - Installation of HA env., setup of HA env. by addind the conf. folder, setup IoT devices in HA.
-            {
-                cl(" Running HA installation on: " + myArgs[3] + ", setup in " + myArgs[5] + ", and configuration of IoT devices ", true);
+            cl(" Running HA installation on: " + myArgs[3] + ", setup in " + myArgs[5] + ", and configuration of IoT devices ", true);
 
-                // HA installation && setup HA env
-                do_cli([arr_stp[0], arr_stp[1], arr_stp[2]], 'execSync');
+            // HA installation && 
+            do_cli([arr_stp[0], arr_stp[1], arr_stp[2]], 'execSync');
 
-                /*/ adding integration file to HA configuration
-                let conf_dest = myArgs[5] + ".homeassistant/configuration.yaml";
-                let cont_file = (f_read(conf_dest)).trim;
-
-
-                if (!cont_file.endsWith(sens_entry)) {
-                    cont_file = cont_file + '\n\n' + sens_entry;
-                    f_write(conf_dest, cont_file);
-                }*/
-                iot_init(the_list);
-            }
-            break;
-        case 4: // S1 - Start the test env. as previously set and send new inizialization data.
-            cl(" Starting HA ", true);
-            // start
+            // setup HA env
             iot_init(the_list);
-            do_cli([arr_stp[3]], 'execSync');
             break;
-        case 5: // S3 - Start HA env. without IoT devices (delete IoT devices if present).
-            { // to be deleted
-                cl(" Starting HA and delete IoT devices previously set", true);
-
-                //check if devices already present and delete it
-                let f_dest = myArgs[5] + '.homeassistant/configuration.yaml'
-                let chk_sens = f_read(f_dest);
-
-                if (chk_sens.includes(sens_entry)) {
-                    let new_content = chk_sens.replace(sens_entry, '');
-                    f_write(f_dest, new_content)
-                }
-                //starting HA
-                do_cli([arr_stp[5], arr_stp[3]], 'execSync');
-            }
-            break;
-        case 6: // S4 - Start HA env. and setting new IoT devices.
-            cl(" Starting HA and change IoT devices previously set", true);
-
-            // delete IoT devices
-            //do_cli([arr_stp[5]], 'execSync');
-
-            // write new devices
-            //f_write(myArgs[5] + ".homeassistant/sensors.yaml", the_list.file);
-
-            // start
-            iot_init();
-            do_cli([arr_stp[3]], 'execSync');
-            break;
-        case 7: // U2 - Update HA env. by replacing the conf folder but keeping IoT devices previously set.
-            {
-                cl(" Starting a fresh HA and change configuration folder but keeping IoT devices previously set", true);
-
-                // replace conf folder
-                do_cli([arr_stp[4], arr_stp[2]], 'execSync');
-
-                // put back IoT devices
-                // adding integration file to HA configuration
-                let conf_dest = myArgs[5] + ".homeassistant/configuration.yaml"
-                let cont_file = f_read(conf_dest);
-
-                if (!cont_file.endsWith(sens_entry)) {
-                    cont_file = cont_file + '\n\n' + sens_entry;
-                    f_write(conf_dest, cont_file);
-                }
-
-                // start
-                do_cli([rr_stp[3]], 'execSync');
-            }
-            break;
-        case 8: // U3 - Update HA env. by replacing the conf folder and setting new IoT devices.
-
-            cl(" Starting a fresh HA and change configuration folder but keeping IoT devices previously set", true);
-
-            // replace conf folder
-            do_cli([arr_stp[4], arr_stp[2]], 'execSync');
-
-            // delete IoT devices
-            do_cli([arr_stp[5]], 'execSync');
-
-            // write new devices
-            f_write(myArgs[5] + ".homeassistant/sensor.yaml", the_list.file);
-
-            // start
-            do_cli([rr_stp[3]], 'execSync');
-            break;
-        case 9: // S2 - Start HA env. without configuration (reconfigure manually). 
-            cl(" Deleting HA configuration and starting HA", true);
-
-            // delete conf folder and start the environment
-            do_cli([arr_stp[4], arr_stp[3]], 'execSync');
-            break;
-        case 10: // U1 - Update HA env. without configuration (reconfigure manually).
-            cl(" Deleting HA configuration", true);
-
-            // delete conf folder
-            do_cli([arr_stp[4]], 'execSync');
-            break;
-        case 11: // S0 - Start HA env.
+        case 4: // S1 - Start the test env. as previously set.
             cl(" Starting HA ", true);
 
             // Start ha
             do_cli([arr_stp[3]], 'execSync');
+            break;
+        case 5: // S2 - Start the test env. as previously set without configuration
+            cl(" Deleting HA configuration and starting", true);
+
+            // Delete and Start ha
+            do_cli([arr_stp[4], arr_stp[3]], 'execSync');
+            break;
+        case 6: // S3 - Start HA env. and setting new IoT devices.
+            cl(" Starting HA and send inizialization IoT devices data", true);
+
+            // start
+            do_cli([arr_stp[3]], 'execSync');
+
+            // inizialize data
+            iot_init();
+            break;
+        case 7: // U1 - Update HA env. without configuration (reconfigure manually).
+            cl(" Update HA env. without configuration", true);
+
+            // delete conf folder
+            do_cli([arr_stp[4]], 'execSync');
+            break;
+        case 8: // U2 - Update HA env. by replacing the conf folder and setting new IoT devices.
+            cl(" Update HA env.  refreshing configuration folder and IoT devices", true);
+
+            // replace conf folder
+            do_cli([arr_stp[4], arr_stp[2], arr_stp[3]], 'execSync');
+
+            // inizialize data
+            iot_init(the_list);
             break;
     }
 
@@ -467,7 +396,7 @@ if (myArgs[1] === "-T") { //this code is just executed
 } else {
     if (myArgs[1] === "-M") {
         cl(t_help, false);
-    } else if (myArgs[1] === "-U1" || myArgs[1] === "-U2" || myArgs[1] === "-U3") {
+    } else if (myArgs[1] === "-U1" || myArgs[1] === "-U2") {
         if (myArgs[2] === "-h") {
             if (typeof myArgs[3] === 'string') {
                 myArgs[3] = man_trail(myArgs[3]);
@@ -477,9 +406,7 @@ if (myArgs[1] === "-T") { //this code is just executed
                         myArgs[5] = man_trail(myArgs[5]);
 
                         if (myArgs[1] === "-U1") {
-                            master_exec(10);
-                        } else if (myArgs[1] === "-U2") {
-                            master_exec(7);
+                            master_exec(7, '');
                         } else {
                             if (myArgs[6] === "-d") {
                                 if ((typeof myArgs[7] !== 'string') || !Array.isArray(JSON.parse(myArgs[7]))) {
@@ -523,14 +450,12 @@ if (myArgs[1] === "-T") { //this code is just executed
         } else {
             cl(" Missing argument. Expected '-h'. ", false);
         }
-    } else if (myArgs[1] === "-S0" || myArgs[1] === "-S1" || myArgs[1] === "-S2" || myArgs[1] === "-S3" || myArgs[1] === "-S4") {
+    } else if (myArgs[1] === "-S1" || myArgs[1] === "-S2" || myArgs[1] === "-S3") {
         if (myArgs[2] === "-h") {
             if (typeof myArgs[3] === 'string') {
                 myArgs[3] = man_trail(myArgs[3]);
 
-                if (myArgs[1] === "-S0") {
-                    master_exec(11);
-                } else if (myArgs[1] === "-S1") {
+                if (myArgs[1] === "-S1") {
                     master_exec(4);
                 } else {
                     if (myArgs[4] === "-o") {
@@ -538,8 +463,6 @@ if (myArgs[1] === "-T") { //this code is just executed
                             myArgs[5] = man_trail(myArgs[5]);
 
                             if (myArgs[1] === "-S2") {
-                                master_exec(9);
-                            } else if (myArgs[1] === "-S3") {
                                 master_exec(5);
                             } else {
                                 if (myArgs[6] === "-d") {
