@@ -120,7 +120,7 @@ function f_read(path) {
         var the_file = (fs.readFileSync(path, "utf8")).trim();
     } catch (err) {
         if (err.code === 'ENOENT') {
-            cl(" File " + path + " not found", false);
+            cl(" File " + path + " not found", true);
         } else {
             throw err;
         }
