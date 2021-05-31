@@ -46,12 +46,13 @@ const ALBUM_URL = 'https://api.spotify.com/v1/albums?';
 const TRACK_URL = 'https://api.spotify.com/v1/tracks?';
 const ARTIST_URL = 'https://api.spotify.com/v1/artists?';
 const SHOW_URL = 'https://api.spotify.com/v1/shows?';
+const SHOW_EPISODES_URL = 'https://api.spotify.com/v1/shows/{id}/episodes';
+const PLAYLIST_ITEMS_URL = 'https://api.spotify.com/v1/playlists/{id}/tracks';
 const SHUFFLE_URL = 'https://api.spotify.com/v1/me/player/shuffle?';
 const PAUSE_URL = 'https://api.spotify.com/v1/me/player/pause?';
 const NEXT_URL = 'https://api.spotify.com/v1/me/player/next?';
 const PREVIOUS_URL = 'https://api.spotify.com/v1/me/player/previous?';
 const REPEAT_URL = 'https://api.spotify.com/v1/me/player/repeat?';
-const QUEUE_URL = "https://api.spotify.com/v1/me/player/queue";
 const PLAYER_INFO_URL = "https://api.spotify.com/v1/me/player";
 
 module.exports = class SpotifyDevice extends Tp.BaseDevice {
@@ -874,19 +875,12 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         });
     }
 
-    get_get_currently_playing() {
-        return this.http_get(CURRENTLY_PLAYING_URL).then((response) => {
-            if (response === '' || response.length === 0)
-                return [];
+    async get_get_currently_playing() {
+        const parsed = JSON.parse(this.http_get(CURRENTLY_PLAYING_URL));
+        if (parsed.is_playing === false || !parsed.device || !parsed.item || !parsed.item.uri)
+            throwError('no_song_playing');
 
-            const parsed = JSON.parse(response);
-            if (parsed.is_playing === false)
-                return [];
-
-            return [{
-                song: new Tp.Value.Entity(parsed.item.uri, parsed.item.name)
-            }];
-        });
+        return this.parse_tracks(await this.tracks_get_by_id([parsed.item.uri]));
     }
 
     _testMode() {
@@ -981,18 +975,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             device: new Tp.Value.Entity(deviceId, deviceName)
         };
     }
-    async player_queue_helper(uri, [deviceId, deviceName]) {
-        if (this._testMode()) {
-            return {
-                device: new Tp.Value.Entity('mock', 'Coolest Computer')
-            };
-        }
-
-        await this.http_post_default_options(QUEUE_URL + `?uri=${encodeURIComponent(uri)}&device_id=${deviceId}`, '');
-        return {
-            device: new Tp.Value.Entity(deviceId, deviceName)
-        };
-    }
 
     async do_play({
         playable
@@ -1029,43 +1011,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         }
 
         return device;
-    }
-
-    async do_play_song({
-        song
-    }, env) {
-        let progstate = this._state.get(env.app.uniqueId);
-        if (!progstate) {
-            env.addExitProcedureHook(async () => {
-                await this._flushPlaySong(env);
-            });
-            this._state.set(env.app.uniqueId, [song]);
-        } else {
-            progstate.push(song);
-        }
-
-        if (this._testMode()) {
-            return {
-                device: new Tp.Value.Entity('mock', 'Coolest Computer')
-            };
-        }
-
-        let deviceState = this._deviceState.get(env.app.uniqueId);
-        if (!deviceState) {
-            let devices = await this.get_get_available_devices();
-            const [deviceId, deviceName] = await this._findActiveDevice(devices);
-            if (deviceId === null)
-                throwError('no_active_device');
-
-            this._deviceState.set(env.app.uniqueId, [deviceId, deviceName]);
-            return {
-                device: new Tp.Value.Entity(deviceId, deviceName)
-            };
-        } else {
-            return {
-                device: new Tp.Value.Entity(deviceState[0], deviceState[1])
-            };
-        }
     }
 
     async do_add_song_to_playlist({
@@ -1118,64 +1063,21 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         }
     }
 
-    async do_play_artist({
-        artist
-    }, env) {
-        const uri = String(artist);
-        let data = {
-            context_uri: uri,
-        };
-        console.log("data is " + JSON.stringify(data));
-        return this.player_play_helper(JSON.stringify(data));
+    async playlist_get_tracks_by_id(playlistId) {
+        const data = JSON.stringify(await this.http_get(PLAYLIST_ITEMS_URL.replace('{id}', playlistId)));
+        return data.items.map((item) => {
+            return item.episode ? item.episode.uri : item.track.uri;
+        });
     }
 
-    async do_play_album({
-        album
-    }, env) {
-        const uri = String(album);
-        let data = {
-            context_uri: uri,
-        };
-        console.log("data is " + JSON.stringify(data));
-        return this.player_play_helper(JSON.stringify(data));
-    }
+    async shows_get_unplayed_episodes(showId) {
+        const data = JSON.stringify(await this.http_get(SHOW_EPISODES_URL.replace('{id}', showId)));
+        return data.items.filter((item) => {
+            if (item.resume_point && item.resume_point.fully_played)
+                return false;
 
-    async do_play_show({
-        show
-    }, env) {
-        const uri = String(show);
-        let data = {
-            context_uri: uri,
-        };
-        console.log("data is " + JSON.stringify(data));
-        return this.player_play_helper(JSON.stringify(data));
-    }
-
-    async _flushPlaySong(env) {
-        if (this.state.product !== "premium" && this.state.product !== undefined)
-            throwError("non_premium_account");
-
-        const songs = this._state.get(env.app.uniqueId);
-        const album = this._findCommonAlbum(songs, env);
-        try {
-            await this.do_player_shuffle("false");
-        } catch (error) {
-            throwError("disallowed_action");
-        }
-
-        if (album && songs.length > 1) {
-            let data = {
-                context_uri: album,
-            };
-            return this.player_play_helper(JSON.stringify(data));
-        } else {
-            const song_uris = songs.map((song) => {
-                return String(song);
-            });
-            return this.player_play_helper(JSON.stringify({
-                'uris': song_uris
-            }));
-        }
+            return true;
+        }).map((item) => item.uri);
     }
 
     async _flushPlay(env) {
@@ -1183,67 +1085,57 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             throwError("non_premium_account");
 
         const music = this._state.get(env.app.uniqueId);
-        if (String(music[0]).includes("playlist")) {
-            let data = {
-                context_uri: String(music[0]),
-            };
+
+        // if we have exactly one thing to play, we use context_uri for album/playlist/song
+        if (music.length === 1) {
+            const uri = String(music[0]);
+            let data;
+            if (uri.includes("episode") || uri.includes("song"))
+                data = { uris: [uri] };
+            else
+                data = { context_uri: uri };
             return this.player_play_helper(JSON.stringify(data));
         }
-        let song_uris = [];
-        let album_uris = [];
-        let album_tracks = {};
+
+        const albumUris = [];
+        const playlistUris = [];
+        const showUris = [];
+        const albumTracks = {};
 
         for (const playable of music) {
             const uri = String(playable);
-            if (uri.includes("album")) {
-                album_uris.push(uri);
-            } else if (uri.includes("show")) {
-                return this.player_play_helper(JSON.stringify({
-                    'context_uri': uri
-                }));
-            }
+            if (uri.includes("album"))
+                albumUris.push(uri);
+            else if (uri.includes("show"))
+                showUris.push(uri);
+            else if (uri.includes("playlist"))
+                playlistUris.push(uri);
         }
-        if (album_uris.length >= 1) {
-            const albumIds = album_uris.map((uri) => uri.split("spotify:album:")[1]);
+        if (albumUris.length > 0) {
+            const albumIds = albumUris.map((uri) => uri.split("spotify:album:")[1]);
             const albumTracks = (await this.albums_get_by_id(albumIds)).albums;
             for (const album of albumTracks) {
                 const uris = album.tracks.items.map((track) => track.uri);
-                album_tracks[album.uri] = uris;
+                albumTracks[album.uri] = uris;
             }
         }
 
+        let songUris = [];
         for (const playable of music) {
             const uri = String(playable);
-            if (uri.includes("track"))
-                song_uris.push(uri);
+            if (uri.includes("track") || uri.includes("episode"))
+                songUris.push(uri);
             else if (uri.includes("album"))
-                song_uris = song_uris.concat(album_tracks[uri]);
+                songUris = songUris.concat(albumTracks[uri]);
+            else if (uri.includes("show"))
+                songUris = songUris.concat(await this.shows_get_unplayed_episodes(uri));
+            else if (uri.includes("playlist"))
+                songUris = songUris.concat(await this.playlist_get_tracks_by_id(uri));
         }
 
         return this.player_play_helper(JSON.stringify({
-            'uris': song_uris
+            'uris': songUris
         }));
-
-    }
-
-    _findCommonAlbum(songs, env) {
-        var album;
-        const songObjs = this._queryResults.get(env.app.uniqueId);
-        if (!songObjs)
-            return null;
-
-        for (const song of songs) {
-            const result = songObjs[String(song)];
-            if (!result) {
-                return null;
-            } else {
-                if (!album)
-                    album = String(result.album);
-                else if (album !== String(result.album))
-                    return null;
-            }
-        }
-        return album;
     }
 
     async do_player_pause() {

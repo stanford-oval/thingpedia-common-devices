@@ -182,7 +182,7 @@ UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("j
 # log/17719
 U: get the energy of this song
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.spotify.get_currently_playing() => [energy] of @com.spotify.song() filter id == song;
+UT: [energy] of @com.spotify.get_currently_playing();
 ====
 # log/110499
 U: play bon jovi on spotify
@@ -701,7 +701,7 @@ UT: @com.spotify.song() => @com.spotify.play(playable=id);
 # recording/d1e31ae1f4a9020e43b247449d4d44c6
 U: add this song to playlist
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.spotify.get_currently_playing() => @com.spotify.add_song_to_playlist(song=song);
+UT: @com.spotify.get_currently_playing() => @com.spotify.add_song_to_playlist(song=id);
 ====
 # recording/e4950027175faf3cb56eeca25c1444bc
 U: create a playlist named my playlist
@@ -832,3 +832,33 @@ UT: @com.spotify.playable() filter contains(artists, null^^com.spotify:artist("s
 U: play dance monkey.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.spotify.playable() filter id =~ "dance monkey" => @com.spotify.play(playable=id);
+====
+# log/117784
+U: play playlist chillhop radio
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playlist() filter id =~ "chillhop radio" => @com.spotify.play(playable=id);
+====
+# log/42073
+U: what is my most played spotify track?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.get_user_top_tracks();
+====
+# log/50115
+U: show me spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playable();
+====
+# log/9782
+U: play spotify random
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.player_play();
+====
+# log/44283
+U: play my playlist billy
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.playlist() filter id =~ "billy" => @com.spotify.play(playable=id);
+====
+# log/44252
+U: put vienna song on my playlist bill
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.song() filter id =~ "vienna" => @com.spotify.add_song_to_playlist(playlist="bill", song=id);

@@ -48,7 +48,7 @@ dataset @com.spotify language "en" {
                    "put ${p_song:no-undefined} in ${p_playlist}"]]
     ;
 
-    program (p_playlist :String) := (@com.spotify.get_currently_playing()) => @com.spotify.add_song_to_playlist(song=song, playlist=p_playlist)
+    program (p_playlist :String) := (@com.spotify.get_currently_playing()) => @com.spotify.add_song_to_playlist(song=id, playlist=p_playlist)
     #_[utterances=["add this song to ${p_playlist}",
                    "put this song in ${p_playlist}"]]
     ;
@@ -139,11 +139,6 @@ dataset @com.spotify language "en" {
     #_[utterances=["when my top tracks changes",
                    "when I have new favorite songs"]]
     #[id=27924898]
-    ;
-
-    stream := monitor (@com.spotify.get_currently_playing())
-    #_[utterances=["when a song is playing"]]
-    #[id=27924900]
     ;
 
     program := @com.spotify.get_currently_playing()
