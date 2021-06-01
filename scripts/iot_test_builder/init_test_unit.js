@@ -71,7 +71,7 @@ const t_help = "\n\nnode init_test_unit.js [options] \n\n" +
     " -U1: update environment previously set, deleting configuration folder (to be set manually)" +
     "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/' \n" +
     "      -o: HomeAssistant configuration file, the folder which contain HomeAssistant 'configuration.yaml'. i.e. '-o /home/user/' \n\n" +
-    " -U2: update environment previously set with new IoT devices (delete old put new)" +
+    " -U2: update environment previously set with new IoT devices " +
     "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/' \n" +
     "      -o: HomeAssistant configuration file, the folder which contain HomeAssistant 'configuration.yaml'. i.e. '-o /home/user/' \n\n" +
     "      -f: add virtual devices available in the specific folder (main|staging|universe)  (alternately to '-d' option). i.e. '-f /home/user/oval/almond/thingpedia-common-devices/main/' \n" +
@@ -383,7 +383,13 @@ function master_exec(m_cmd, the_list) {
             cl(" Update HA env.  refreshing configuration folder and IoT devices", true);
 
             // replace conf folder
-            do_cli([arr_stp[4], arr_stp[2], arr_stp[3]], 'execSync');
+            do_cli([arr_stp[4], arr_stp[2]], 'execSync');
+
+            // inizialize data
+            iot_init(the_list);
+            break;
+        case 9: // U3 - Update HA env. by setting new IoT devices.
+            cl(" Update HA env. refreshing IoT devices", true);
 
             // inizialize data
             iot_init(the_list);
@@ -400,15 +406,13 @@ if (myArgs[1] === "-T") { //this code is just executed
 } else {
     if (myArgs[1] === "-M") {
         cl(t_help, false);
-    } else if (myArgs[1] === "-U1" || myArgs[1] === "-U2") {
+    } else if (myArgs[1] === "-U1" || myArgs[1] === "-U2" || myArgs[1] === "-U3") {
         if (myArgs[2] === "-h") {
             if (typeof myArgs[3] === 'string') {
                 myArgs[3] = man_trail(myArgs[3]);
-
                 if (myArgs[4] === "-o") {
                     if (typeof myArgs[5] === 'string') {
                         myArgs[5] = man_trail(myArgs[5]);
-
                         if (myArgs[1] === "-U1") {
                             master_exec(7);
                         } else {
@@ -450,8 +454,37 @@ if (myArgs[1] === "-T") { //this code is just executed
             } else {
                 cl(" Wrong path. Please provide the destination folder for HA installation. ", false);
             }
+        } else if (myArgs[2] === "-d" || myArgs[2] === "-f") {
+            if (myArgs[2] === "-d") {
+                if ((typeof myArgs[3] !== 'string') || !Array.isArray(JSON.parse(myArgs[7]))) {
+                    cl(" Wrong option for -d", false);
+                } else if (typeof myArgs[4] !== 'string') {
+                    cl(" Wrong path. Please provide the path to Thingpedia-common-devices.", false);
+                }
+
+                myArgs[4] = man_trail(myArgs[4]);
+                sub_list = JSON.parse(myArgs[3]);
+
+                if (sub_list.length < 1) {
+                    cl(" Wrong option length for -d ", false);
+                }
+
+                cl(" Updating using subset of devices", true);
+
+                got_list = gen_sens_list(myArgs[4], 'd', sub_list);
+
+            } else if (myArgs[2] === "-f") {
+                if (typeof myArgs[3] !== 'string') {
+                    cl(" Wrong option for -f ", false);
+                }
+                cl(" Updating with devices from Thingpedia-common-devices: " + myArgs[3] + " \n\n ", true);
+                got_list = gen_sens_list(myArgs[3], 'f');
+            } else {
+                cl(" Missing argument. Expected '-f' or '-d'. ", false);
+            }
+            master_exec(9, got_list);
         } else {
-            cl(" Missing argument. Expected '-h'. ", false);
+            cl(" Missing argument. Expected '-h || -d || -f'. ", false);
         }
     } else if (myArgs[1] === "-S1" || myArgs[1] === "-S2" || myArgs[1] === "-S3") {
         if (myArgs[2] === "-h") {
