@@ -190,18 +190,24 @@ function gen_sens_list(dfolder, mode, sublist) {
 }
 
 function init_data_generator(rules) {
+    let val_range = (rules.rng).split(',');
     let to_ret;
+
     switch (rules.k) {
         case 'state':
-            let rnd_generator = Math.floor(Math.random() * rules.rng.length);
-            to_ret = rules.rng[rnd_generator - 1];
+            let rnd_generator = Math.floor(Math.random() * ((val_range.length - 1) - 0) + 0);
+
+            to_ret = val_range[rnd_generator];
             break;
         case 'number':
-            to_ret = Math.floor(Math.random() * (rules.rng[1] - rules.rng[0] + 1)) + rules.rng[0];
+            let min = Math.ceil(val_range[0]);
+            let max = Math.floor(val_range[1]);
+
+            to_ret = Math.floor(Math.random() * (max - min + 1) + min);
             break;
     }
-
     return to_ret;
+
 }
 
 function do_cli(arr_cmd, ke) {
@@ -317,6 +323,27 @@ async function iot_init(data_to_send) {
 
     cl(" IoT data correctly set", true);
     return res;
+}
+
+function iot_init(data_to_send) {
+    var man_connex = false;
+    while (!man_connex) {
+        setTimeout(() => {
+            data_to_send.forEach((obj) => {
+                let makecalls = make_calls(0, '');
+                if (makecalls === 200 || makecalls === 201) {
+                    make_calls(1, data_to_send);
+                    man_connex = true;
+                    return man_connex;
+                } else {
+                    cl(" Not connected yet, wait 5 secs more", true);
+                }
+            });
+        }, 5000);
+    }
+
+    cl(" IoT data correctly set", true);
+    return;
 }
 
 function master_exec(m_cmd, the_list) {
