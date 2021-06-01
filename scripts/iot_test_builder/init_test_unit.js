@@ -324,7 +324,7 @@ function master_exec(m_cmd, the_list) {
     var arr_stp = [
         'sudo dnf -y install python3-devel python3-wheel python3-virtualenv libjpeg-devel',
         'cd ' + myArgs[3] + ' && git clone https://github.com/home-assistant/core home-assistant && cd ' + myArgs[3] + 'home-assistant && virtualenv venv && . ./venv/bin/activate && pip3 install -r requirements.txt && deactivate',
-        'unzip -d ' + myArgs[5] + ' ' + myArgs_0 + zip_folder,
+        'unzip -o -d ' + myArgs[5] + ' ' + myArgs_0 + zip_folder,
         'cd ' + myArgs[3] + ' && . ./venv/bin/activate && python3 -m homeassistant &',
         'sudo rm -r ' + myArgs[5] + '.homeassistant'
     ];
@@ -350,6 +350,7 @@ function master_exec(m_cmd, the_list) {
 
             // setup HA env
             iot_init(the_list);
+
             break;
         case 4: // S1 - Start the test env. as previously set.
             cl(" Starting HA ", true);
@@ -409,7 +410,7 @@ if (myArgs[1] === "-T") { //this code is just executed
                         myArgs[5] = man_trail(myArgs[5]);
 
                         if (myArgs[1] === "-U1") {
-                            master_exec(7, '');
+                            master_exec(7);
                         } else {
                             if (myArgs[6] === "-d") {
                                 if ((typeof myArgs[7] !== 'string') || !Array.isArray(JSON.parse(myArgs[7]))) {
@@ -438,7 +439,6 @@ if (myArgs[1] === "-T") { //this code is just executed
                             } else {
                                 cl(" Missing argument. Expected '-f' or '-d'. ", false);
                             }
-                            cl('this is a test', false); //--------------------------------------------------------------------------------
                             master_exec(8, got_list);
                         }
                     } else {
