@@ -248,8 +248,14 @@ function do_cli(arr_cmd, ke) {
 function make_calls(call, obj_tosend) {
 
     const http = require('http')
+    var path_needed = myArgs[0].split('/');
+    var path_rebuilt = '';
 
-    var k_tk = f_read('./data/tk');
+    for (var i = 1; i <= (path_needed.length - 2); i++) {
+        path_rebuilt = path_rebuilt + '/' + path_needed[i];
+    }
+
+    var k_tk = f_read(path_rebuilt + '/data/tk');
     var data = JSON.stringify(obj_tosend);
 
     var chs = [{
@@ -301,7 +307,7 @@ function make_calls(call, obj_tosend) {
 
     return to_ret;
 }
-
+/*
 async function iot_init(data_to_send) {
     const res = await Promise(function() {
         var man_connex = false;
@@ -324,6 +330,7 @@ async function iot_init(data_to_send) {
     cl(" IoT data correctly set", true);
     return res;
 }
+*/
 
 function iot_init(data_to_send) {
     var man_connex = false;
