@@ -33,8 +33,8 @@ const DOMAIN_TO_TP_KIND = {
     'lock': 'org.thingpedia.iot.lock',
     'switch': 'org.thingpedia.iot.switch',
     'climate': 'org.thingpedia.iot.climate',
-    'vacuum': 'org.thingpedia.iot.vacuum', 
-    
+    'vacuum': 'org.thingpedia.iot.vacuum',
+
     // media players
     //'media_player': 'org.thingpedia.iot.media-player',
     //'media_player_speaker': 'org.thingpedia.iot.speaker',
@@ -43,15 +43,20 @@ const DOMAIN_TO_TP_KIND = {
     // sensors and binary sensors (implemented by HomeAssistantSensor)
     'sensor_air': 'org.thingpedia.iot.air',
     'sensor_battery': 'org.thingpedia.iot.battery',
+    'sensor_current': 'org.thingpedia.iot.current',
     'sensor_door': 'org.thingpedia.iot.door',
+    'sensor_enerdy': 'org.thingpedia.iot.energy',
     'sensor_flood': 'org.thingpedia.iot.flood',
     'sensor_humidity': 'org.thingpedia.iot.humidity',
     'sensor_illuminance': 'org.thingpedia.iot.illuminance',
     'sensor_motion': 'org.thingpedia.iot.motion',
+    'sensor_power': 'org.thingpedia.iot.power',
+    'sensor_power_factor': 'org.thingpedia.iot.power_factor',
     'sensor_smoke': 'org.thingpedia.iot.smoke',
     'sensor_temperature': 'org.thingpedia.iot.temperature',
+    'sensor_voltage': 'org.thingpedia.iot.voltage',
     'sensor_uv': 'org.thingpedia.iot.uv'
-    
+
     //'sensor_heat': 'org.thingpedia.iot.heat',
     //'sensor_moisture': 'org.thingpedia.iot.moisture',
     //'sensor_plug': 'org.thingpedia.iot.plug',
@@ -78,7 +83,7 @@ const SUBDEVICES = {
     'org.thingpedia.iot.switch': HomeAssistantSwitch,
     'org.thingpedia.iot.vacuum': HomeAssistantVacuum
 };
-Object.entries(DOMAIN_TO_TP_KIND).forEach(([key,value]) => {
+Object.entries(DOMAIN_TO_TP_KIND).forEach(([key, value]) => {
     if (key.includes('sensor') && !(value in SUBDEVICES))
         SUBDEVICES[value] = class extends HomeAssistantSensor {};
 });
@@ -98,7 +103,8 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
         if (existing) {
             existing.updateState({
                 kind: existing.state.kind,
-                state, attributes
+                state,
+                attributes
             });
             return;
         }
@@ -107,12 +113,12 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
         if (!attributes.friendly_name)
             return;
 
-        const [domain,] = entityId.split('.');
+        const [domain, ] = entityId.split('.');
         let kind = undefined;
         if (domain === 'binary_sensor' && ['smoke', 'gas', 'CO', 'CO2'].includes(attributes.device_class))
             kind = DOMAIN_TO_TP_KIND['air'];
         else if (domain === 'sensor' && ['smoke'].includes(attributes.device_class))
-            kind = DOMAIN_TO_TP_KIND['sensor_smoke'];   
+            kind = DOMAIN_TO_TP_KIND['sensor_smoke'];
         else if (domain === 'lock' || attributes.device_class === 'lock')
             kind = DOMAIN_TO_TP_KIND['lock'];
         else if (domain === 'binary_sensor' && ['heat', 'cold'].includes(attributes.device_class))
@@ -202,7 +208,8 @@ module.exports = class HomeAssistantGateway extends Tp.BaseDevice {
             kind: 'io.home-assistant',
 
             hassUrl: HASS_URL,
-            accessToken, refreshToken,
+            accessToken,
+            refreshToken,
             accessTokenExpires: expires,
         });
     }
@@ -236,8 +243,8 @@ module.exports = class HomeAssistantGateway extends Tp.BaseDevice {
 
     async _reconnect() {
         try {
-            await this._connection.setSocket(await this._createSocket({ setupRetry: 10}));
-        } catch(e) {
+            await this._connection.setSocket(await this._createSocket({ setupRetry: 10 }));
+        } catch (e) {
             console.error(`Failed to reconnect to Home Assistant: ` + e);
         }
     }
@@ -255,10 +262,10 @@ module.exports = class HomeAssistantGateway extends Tp.BaseDevice {
 
     queryInterface(iface) {
         switch (iface) {
-        case 'subdevices':
-            return this._subdevices;
-        default:
-            return super.queryInterface(iface);
+            case 'subdevices':
+                return this._subdevices;
+            default:
+                return super.queryInterface(iface);
         }
     }
 
@@ -269,7 +276,7 @@ module.exports = class HomeAssistantGateway extends Tp.BaseDevice {
                 setupRetry: 10,
             });
             await this._subdevices.start();
-        } catch(e) {
+        } catch (e) {
             console.error(e);
         }
     }
@@ -317,12 +324,12 @@ module.exports = class HomeAssistantGateway extends Tp.BaseDevice {
                     // try again in a second
                     setTimeout(() => connect(newTries), 1000);
                 };
-                const onOpen = async () => {
+                const onOpen = async() => {
                     try {
                         if (this._accessTokenExpired)
                             await this.refreshCredentials();
                         socket.send(JSON.stringify({ type: 'auth', access_token: this.accessToken }));
-                    } catch(e) {
+                    } catch (e) {
                         console.error('failed to send auth message', e);
                         invalidAuth = true;
                         socket.close();
@@ -332,17 +339,17 @@ module.exports = class HomeAssistantGateway extends Tp.BaseDevice {
                     const message = JSON.parse(data);
 
                     switch (message.type) {
-                    case 'auth_invalid':
-                        invalidAuth = true;
-                        socket.close();
-                        break;
+                        case 'auth_invalid':
+                            invalidAuth = true;
+                            socket.close();
+                            break;
 
-                    case 'auth_ok':
-                        socket.removeListener('close', onClose);
-                        socket.removeListener('open', onOpen);
-                        socket.removeListener('message', onMessage);
-                        resolve(socket);
-                        break;
+                        case 'auth_ok':
+                            socket.removeListener('close', onClose);
+                            socket.removeListener('open', onOpen);
+                            socket.removeListener('message', onMessage);
+                            resolve(socket);
+                            break;
                     }
                 };
 

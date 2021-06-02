@@ -10,9 +10,9 @@
 const HomeAssistantDevice = require('./base');
 
 module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
-	constructor(engine, state, master, entityId) {
+    constructor(engine, state, master, entityId) {
         super(engine, state, master, entityId);
-        const [domain,] = entityId.split('.');
+        const [domain, ] = entityId.split('.');
         this.domain = domain;
         this.device_class = this.state.attributes.device_class;
         if (['binary_sensor', 'cover'].includes(this.domain)) {
@@ -64,7 +64,7 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
                 humidity: {
                     on: 'humid',
                     off: 'normal',
-                },                
+                },
                 moisture: {
                     on: 'wet',
                     off: 'dry'
@@ -89,48 +89,48 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
                     on: 'detecting',
                     off: 'nothing'
                 },
-                 window: {
+                window: {
                     on: 'open',
                     off: 'closed'
                 }
             };
-            this.deviceStateMapping = supportedDeviceClasses[this.device_class] || {on: 'on', off: 'off'};
+            this.deviceStateMapping = supportedDeviceClasses[this.device_class] || { on: 'on', off: 'off' };
         }
     }
     async get_state() {
-        if (this.domain === 'sensor') {
-            let value = parseFloat(this.state.state);
-            return [{state: undefined, value: value}];
-        } else if (this.domain === 'binary_sensor') {
-            let state = this.deviceStateMapping[this.state.state];
-            if (['gas', 'CO', 'CO2', 'smoke'].includes(this.device_class))
-                state = state === 'detecting' ? this.device_class : 'nothing';
-            return [{state: state, value: undefined}];
-        } else {
-            throw new Error (`Unexpected Home Assistant domain ${this.domain}`);
-        }
-    }
-    // note: subscribe_ must NOT be async, or an ImplementationError will occur at runtime
-    subscribe_state() {
-        if (this.domain === 'sensor') {
-            return this._subscribeState(() => {
-                return {state: undefined, value: parseFloat(this.state.state)};
-            });
-        } else if (this.domain === 'binary_sensor') {
-            return this._subscribeState(() => {
+            if (this.domain === 'sensor') {
+                let value = parseFloat(this.state.state);
+                return [{ state: undefined, value: value }];
+            } else if (this.domain === 'binary_sensor') {
                 let state = this.deviceStateMapping[this.state.state];
                 if (['gas', 'CO', 'CO2', 'smoke'].includes(this.device_class))
                     state = state === 'detecting' ? this.device_class : 'nothing';
-                return {state: state, value: undefined};
-            });
-        } else {
-            throw new Error (`Unexpected Home Assistant domain ${this.domain}`);
+                return [{ state: state, value: undefined }];
+            } else {
+                throw new Error(`Unexpected Home Assistant domain ${this.domain}`);
+            }
         }
-    }
-    // Specific query methods for sensors that use a different Thingpedia function name
-    // than the generic state
-    // (in other gateways/APIs, a single device can implement multiple of these interfaces,
-    // so we give them different names so they don't conflict)
+        // note: subscribe_ must NOT be async, or an ImplementationError will occur at runtime
+    subscribe_state() {
+            if (this.domain === 'sensor') {
+                return this._subscribeState(() => {
+                    return { state: undefined, value: parseFloat(this.state.state) };
+                });
+            } else if (this.domain === 'binary_sensor') {
+                return this._subscribeState(() => {
+                    let state = this.deviceStateMapping[this.state.state];
+                    if (['gas', 'CO', 'CO2', 'smoke'].includes(this.device_class))
+                        state = state === 'detecting' ? this.device_class : 'nothing';
+                    return { state: state, value: undefined };
+                });
+            } else {
+                throw new Error(`Unexpected Home Assistant domain ${this.domain}`);
+            }
+        }
+        // Specific query methods for sensors that use a different Thingpedia function name
+        // than the generic state
+        // (in other gateways/APIs, a single device can implement multiple of these interfaces,
+        // so we give them different names so they don't conflict)
     async get_motion() {
         return this.get_state();
     }

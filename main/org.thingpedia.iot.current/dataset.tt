@@ -1,0 +1,72 @@
+dataset @org.thingpedia.iot.current language "en" {
+
+  program := @org.thingpedia.iot.current.state()
+  #_[utterances=["which is the actual current consumption ",
+                "tell me the current absorbed",
+                "which is the current level reading"]]
+  #[name="StateThenNotify"];
+
+  query := @org.thingpedia.iot.current.state()
+  #_[utterances=["the current reading",
+                 "the value of the current",
+                 "the current level",
+                 "the current consumption"]]
+  #[name="State"];
+
+  stream := monitor(@org.thingpedia.iot.current.state())
+  #_[utterances=["when the current value change",
+                "when the current consumption rise",
+                "if the current level lower",
+                "when the current consumption updates"]]
+  #[name="MonitorState"];
+
+  stream (p_check : Number) := monitor(@org.thingpedia.iot.current.state()), current >= p_check
+  #_[utterances=["when the current value go over ${p_check}",
+                "when the current consumption rise more than ${p_check}",
+                "if the current level is higher of ${p_check}",
+                "when the current consumption goes above ${p_check}"]]
+  #[name="MonitorStateCheckGreater"];
+
+  stream (p_check : Number) := monitor(@org.thingpedia.iot.current.state()), current <= p_check
+  #_[utterances=["when the current value go over ${p_check}",
+                "when the current consumption drops under ${p_check}",
+                "if the current level is lower of ${p_check}",
+                "when the current consumption goes below ${p_check}"]]
+  #[name="MonitorStateCheckless"];
+
+  program (p_name : String) := @org.thingpedia.iot.current.state()
+  #_[utterances=["what does the ${p_name} reads as actual current consumption ",
+                "How many current is absorbed according to my ${p_name} ?",
+                "Check the ${p_name} current reading",
+                "which is the current level reading from ${p_name}",
+                "what is my ${p_name} current consumption?"]]
+  #[name="StateThenNotifyName"];
+
+  query (p_name : String) := @org.thingpedia.iot.current.state()
+  #_[utterances=["the current reading according to my ${p_name}",
+                 "the value of the current from the ${p_name}",
+                 "the current level read by ${p_name}",
+                 "the current consumption gathered from ${p_name}"]]
+  #[name="StateName"];
+
+  stream (p_name : String) := monitor(@org.thingpedia.iot.current.state())
+  #_[utterances=["when the current value of ${p_name} change",
+                "when the current consumption read by ${p_name} rise",
+                "if the current level from ${p_name} lowers",
+                "when the ${p_name}'s current consumption reading updates"]]
+  #[name="MonitorStateName"];
+
+  stream (p_name : String, p_check : Number) := monitor(@org.thingpedia.iot.current.state()), current >= p_check
+  #_[utterances=["when the current value of ${p_name} go over ${p_check}",
+                "when the current consumption read by ${p_name} rise more than ${p_check}",
+                "if the current level from ${p_name} is higher of ${p_check}",
+                "when the ${p_name}'s current consumption goes above ${p_check}"]]
+  #[name="MonitorStateCheckGreaterName"];
+
+  stream (p_name : String, p_check : Number) := monitor(@org.thingpedia.iot.current.state()), current <= p_check
+  #_[utterances=["when the current value of ${p_name} go over ${p_check}",
+                "when the current consumption read by ${p_name} drops under ${p_check}",
+                "if the current level from ${p_name} is lower of ${p_check}",
+                "when the ${p_name}'s current consumption goes below ${p_check}"]]
+  #[name="MonitorStateChecklessName"];
+}

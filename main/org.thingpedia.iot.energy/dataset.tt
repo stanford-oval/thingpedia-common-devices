@@ -1,0 +1,73 @@
+dataset @org.thingpedia.iot.energy language "en" {
+
+  program := @org.thingpedia.iot.energy.state()
+  #_[utterances=["which is the energy consumption ",
+                "tell me the energy absorbed",
+                "which is the energy level reading",
+                "check the energy consumption"]]
+  #[name="StateThenNotify"];
+
+  query := @org.thingpedia.iot.energy.state()
+  #_[utterances=["the energy reading",
+                 "the value of the energy",
+                 "the energy level",
+                 "the energy consumption"]]
+  #[name="State"];
+
+  stream := monitor(@org.thingpedia.iot.energy.state())
+  #_[utterances=["when the energy value change",
+                "when the energy consumption rise",
+                "if the energy level lower",
+                "when the energy consumption updates"]]
+  #[name="MonitorState"];
+
+  stream (p_check : Number) := monitor(@org.thingpedia.iot.energy.state()), energy >= p_check
+  #_[utterances=["when the energy value go over ${p_check}",
+                "when the energy consumption rise more than ${p_check}",
+                "if the energy level is higher of ${p_check}",
+                "when the energy consumption goes above ${p_check}"]]
+  #[name="MonitorStateCheckGreater"];
+
+  stream (p_check : Number) := monitor(@org.thingpedia.iot.energy.state()), energy <= p_check
+  #_[utterances=["when the energy value go over ${p_check}",
+                "when the energy consumption drops under ${p_check}",
+                "if the energy level is lower of ${p_check}",
+                "when the  energy consumption goes below ${p_check}"]]
+  #[name="MonitorStateCheckless"];
+
+  program (p_name : String) := @org.thingpedia.iot.energy.state()
+  #_[utterances=["what does the ${p_name} reads as actual energy consumption ",
+                "How many energy is absorbed according to my ${p_name} ?",
+                "Check the ${p_name} energy reading",
+                "which is the energy level reading from ${p_name}",
+                "what is my ${p_name} energy consumption?"]]
+  #[name="StateThenNotifyName"];
+
+  query (p_name : String) := @org.thingpedia.iot.energy.state()
+  #_[utterances=["the energy reading according to my ${p_name}",
+                 "the value of the energy from the ${p_name}",
+                 "the energy level read by ${p_name}",
+                 "the energy consumption gathered from ${p_name}"]]
+  #[name="StateName"];
+
+  stream (p_name : String) := monitor(@org.thingpedia.iot.energy.state())
+  #_[utterances=["when the energy value of ${p_name} change",
+                "when the energy consumption read by ${p_name} rise",
+                "if the energy level from ${p_name} lowers",
+                "when the ${p_name}'s energy consumption reading updates"]]
+  #[name="MonitorStateName"];
+
+  stream (p_name : String, p_check : Number) := monitor(@org.thingpedia.iot.energy.state()), energy >= p_check
+  #_[utterances=["when the energy value of ${p_name} go over ${p_check}",
+                "when the energy consumption read by ${p_name} rise more than ${p_check}",
+                "if the energy level from ${p_name} is higher of ${p_check}",
+                "when the ${p_name}'s energy consumption goes above ${p_check}"]]
+  #[name="MonitorStateCheckGreaterName"];
+
+  stream (p_name : String, p_check : Number) := monitor(@org.thingpedia.iot.energy.state()), energy <= p_check
+  #_[utterances=["when the energy value of ${p_name} go over ${p_check}",
+                "when the energy consumption read by ${p_name} drops under ${p_check}",
+                "if the energy level from ${p_name} is lower of ${p_check}",
+                "when the ${p_name}'s energy consumption goes below ${p_check}"]]
+  #[name="MonitorStateChecklessName"];
+}
