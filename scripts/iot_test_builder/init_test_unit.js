@@ -244,57 +244,59 @@ function do_cli(arr_cmd, ke) {
     }
     return;
 }
-
+/*
 function make_calls(call, obj_tosend) {
 
     const http = require('http')
-    var path_needed = myArgs[0].split('/');
-    var path_rebuilt = '';
+    let path_needed = myArgs[0].split('/');
+    let path_rebuilt = '';
 
     for (var i = 1; i <= (path_needed.length - 2); i++) {
         path_rebuilt = path_rebuilt + '/' + path_needed[i];
     }
 
-    var k_tk = f_read(path_rebuilt + '/data/tk');
-    var data = JSON.stringify(obj_tosend);
+    let k_tk = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJkMDk3NjQ0ZjdlYTU0OGNlOWVjNWNjZDNlMDJmMzgwNyIsImlhdCI6MTYyMjQ0NDU4MSwiZXhwIjoxOTM3ODA0NTgxfQ.RFv8BAnaQJqrlz2ikhvFxvaayBpEltTpVFhGWrDBglM';
+    //f_read(path_rebuilt + '/data/tk');
+    let data = JSON.stringify(obj_tosend);
 
-    var chs = [{
-        pth: '/api/',
-        mtd: 'GET'
-    }, {
-        pth: '/api/states/' + obj_tosend.entity_id,
-        mtd: 'POST'
-    }];
+    let pth, mtd;
+
+    if (call === 0) {
+        pth = '/api/';
+        mtd = 'GET';
+    } else {
+        pth = '/api/states/' + obj_tosend.entity_id;
+        mtd = 'POST';
+    }
 
     const options = {
         hostname: 'localhost',
-        path: chs[call].pth,
+        path: pth,
         port: 8123,
-        method: chs[call].mtd,
+        method: mtd,
         headers: {
             "Authorization": "Bearer " + k_tk,
             "content-type": "application/json"
         }
     };
 
-    var to_ret;
-    var callback = (response) => {
-        cl(" statusCode: " + response.statusCode, true);
-        to_ret = response.statusCode;
-        //var str = ''
+    let to_ret;
+    let callback = (response) => {
+        let chunks_of_data = [];
+
         response.on('data', (chunk) => {
-            //str += chunk
-            process.stdout.write(chunk);
+            chunks_of_data.push(chunk);
         });
 
         response.on('error', (error) => {
             cl(" Error: " + error, false);
         });
-        /*
-                response.on('end', function () {
-                    console.log(str);
-                });
-                */
+
+        response.on('end', () => {
+            let response_body = Buffer.concat(chunks_of_data);
+            console.log(response_body.toString());
+        });
+
     }
 
     const req = http.request(options, callback);
@@ -304,50 +306,130 @@ function make_calls(call, obj_tosend) {
     }
 
     req.end();
-
-    return to_ret;
-}
+}*/
 /*
-async function iot_init(data_to_send) {
-    const res = await Promise(function() {
-        var man_connex = false;
-        while (!man_connex) {
-            setTimeout(() => {
-                data_to_send.forEach((obj) => {
-                    let makecalls = make_calls(0, '');
-                    if (makecalls === 200 || makecalls === 201) {
-                        make_calls(1, data_to_send);
-                        man_connex = true;
-                        return man_connex;
-                    } else {
-                        cl(" Not connected yet, wait 5 secs more", true);
-                    }
-                });
-            }, 5000);
-        }
-    })
+function make_calls(call, obj_tosend) {
+    const http = require('http');
 
-    cl(" IoT data correctly set", true);
-    return res;
+    var path_needed = myArgs[0].split('/');
+    var path_rebuilt = '';
+
+    for (var i = 1; i <= (path_needed.length - 2); i++) {
+        path_rebuilt = path_rebuilt + '/' + path_needed[i];
+    }
+
+    var k_tk = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJkMDk3NjQ0ZjdlYTU0OGNlOWVjNWNjZDNlMDJmMzgwNyIsImlhdCI6MTYyMjQ0NDU4MSwiZXhwIjoxOTM3ODA0NTgxfQ.RFv8BAnaQJqrlz2ikhvFxvaayBpEltTpVFhGWrDBglM';
+    //f_read(path_rebuilt + '/data/tk');
+    var data = JSON.stringify(obj_tosend);
+
+    var pth, mtd;
+
+    if (call === 0) {
+        pth = '/api/';
+        mtd = 'GET';
+    } else {
+        pth = '/api/states/' + obj_tosend.entity_id;
+        mtd = 'POST';
+    }
+
+    const options = {
+        hostname: 'localhost',
+        path: pth,
+        port: 8123,
+        method: mtd,
+        headers: {
+            "Authorization": "Bearer " + k_tk,
+            "content-type": "application/json"
+        }
+    };
+
+    // function returns a Promise
+    function getPromise() {
+        return new Promise((resolve, reject) => {
+            http.request(options, (response) => {
+                let chunks_of_data = [];
+                status_code = response.statusCode;
+                response.on('data', (fragments) => {
+                    chunks_of_data.push(fragments);
+                });
+
+                response.on('end', () => {
+                    let response_body = Buffer.concat(chunks_of_data);
+                    resolve(response_body.toString());
+                });
+
+                response.on('error', (error) => {
+                    reject(error);
+                });
+            });
+        });
+    }
+
+    // async function to make http request
+    async function makeSynchronousRequest(request) {
+        try {
+            let http_promise = getPromise();
+            let response_body = await http_promise;
+
+            // holds response from server that is passed when Promise is resolved
+            if (call === 1) {
+                console.log(response_body);
+            }
+        } catch (error) {
+            // Promise rejected
+            console.log(error);
+        }
+    }
+
+    console.log(1);
+
+    // anonymous async function to execute some code synchronously after http request
+    (async function() {
+        // wait to http request to finish
+        await makeSynchronousRequest();
+
+        // below code will be executed after http request is finished
+        console.log(2);
+        return status_code;
+    })();
+
 }
 */
 
+function make_calls(call) {
+    const http = require("https");
+    const url = 'https://my-json-server.typicode.com/edurekaDemo/noderequest/db';
+    http.get(url, res => {
+        res.setEncoding("utf8");
+        let body = "";
+        res.on("data", data => {
+            body += data;
+        });
+        res.on("end", () => {
+            body = JSON.parse(body);
+            console.log(body);
+        });
+    });
+}
+
 function iot_init(data_to_send) {
     var man_connex = false;
+
     while (!man_connex) {
         setTimeout(() => {
-            data_to_send.forEach((obj) => {
-                let makecalls = make_calls(0, '');
-                if (makecalls === 200 || makecalls === 201) {
-                    make_calls(1, data_to_send);
-                    man_connex = true;
-                    return man_connex;
-                } else {
-                    cl(" Not connected yet, wait 5 secs more", true);
-                }
-            });
+            let makecalls = make_calls(0);
+            if (makecalls === 200 || makecalls === 201) {
+                man_connex = true;
+            } else {
+                cl(" Not connected yet, wait 5 secs more", true);
+            }
         }, 5000);
     }
+
+    data_to_send.forEach((obj) => {
+        make_calls(1, obj);
+        //return man_connex;
+    });
 
     cl(" IoT data correctly set", true);
     return;
@@ -436,6 +518,20 @@ function master_exec(m_cmd, the_list) {
 if (myArgs[1] === "-T") { //this code is just executed
     cl(" TEST PATH - START ", true);
     // code here
+    const http = require("http");
+    const url = 'http://my-json-server.typicode.com/edurekaDemo/noderequest/db';
+    http.get(url, res => {
+        res.setEncoding("utf8");
+        let body = "";
+        res.on("data", data => {
+            body += data;
+        });
+        res.on("end", () => {
+            body = JSON.parse(body);
+            console.log(body);
+        });
+    });
+    // make_calls(0);
     cl(" TEST PATH - FINISH ", false);
 } else {
     if (myArgs[1] === "-M") {
