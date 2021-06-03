@@ -1,40 +1,40 @@
-dataset @org.thingpedia.iot.power_factor language "en" {
+dataset @org.thingpedia.iot.power-factor language "en" {
 
-  program := @org.thingpedia.iot.power_factor.state()
+  program := @org.thingpedia.iot.power-factor.state()
   #_[utterances=["which is the actual power factor",
                 "tell me the power factor value",
                 "which is the power factor level reading",
                 "check the power factor index"]]
   #[name="StateThenNotify"];
 
-  query := @org.thingpedia.iot.power_factor.state()
+  query := @org.thingpedia.iot.power-factor.state()
   #_[utterances=["the power factor reading",
                  "the value of the power factor",
                  "the power factor level"]]
   #[name="State"];
 
-  stream := monitor(@org.thingpedia.iot.power_factor.state())
+  stream := monitor(@org.thingpedia.iot.power-factor.state())
   #_[utterances=["when the power factor value change",
                 "when the power factor rise",
                 "if the power factor level lower",
                 "when the power factor updates"]]
   #[name="MonitorState"];
 
-  stream (p_check : Number) := monitor(@org.thingpedia.iot.power_factor.state()), power >= p_check
+  stream (p_check : Number) := monitor(@org.thingpedia.iot.power-factor.state()), power >= p_check
   #_[utterances=["when the power factor value go over ${p_check}",
                 "when the power factor rise more than ${p_check}",
                 "if the power factor level is higher of ${p_check}",
                 "when the power factor goes above ${p_check}"]]
   #[name="MonitorStateCheckGreater"];
 
-  stream (p_check : Number) := monitor(@org.thingpedia.iot.power_factor.state()), power <= p_check
+  stream (p_check : Number) := monitor(@org.thingpedia.iot.power-factor.state()), power <= p_check
   #_[utterances=["when the power factor value go over ${p_check}",
                 "when the power factor drops under ${p_check}",
                 "if the power factor level is lower of ${p_check}",
                 "when the power factor goes below ${p_check}"]]
   #[name="MonitorStateCheckless"];
 
-  program (p_name : String) := @org.thingpedia.iot.power_factor.state()
+  program (p_name : String) := @org.thingpedia.iot.power-factor.state()
   #_[utterances=["what does the ${p_name} reads as actual power factor",
                 "How many power factor is absorbed according to my ${p_name} ?",
                 "Check the ${p_name} power factor reading",
@@ -42,28 +42,28 @@ dataset @org.thingpedia.iot.power_factor language "en" {
                 "what is my ${p_name} power factor?"]]
   #[name="StateThenNotifyName"];
 
-  query (p_name : String) := @org.thingpedia.iot.power_factor.state()
+  query (p_name : String) := @org.thingpedia.iot.power-factor.state()
   #_[utterances=["the power factor reading according to my ${p_name}",
                  "the value of the power factor from the ${p_name}",
                  "the power factor level read by ${p_name}",
                  "the power factor gathered from ${p_name}"]]
   #[name="StateName"];
 
-  stream (p_name : String) := monitor(@org.thingpedia.iot.power_factor.state())
+  stream (p_name : String) := monitor(@org.thingpedia.iot.power-factor.state())
   #_[utterances=["when the power factor value of ${p_name} change",
                 "when the power factor read by ${p_name} rise",
                 "if the power factor level from ${p_name} lowers",
                 "when the ${p_name}'s power factor reading updates"]]
   #[name="MonitorStateName"];
 
-  stream (p_name : String, p_check : Number) := monitor(@org.thingpedia.iot.power_factor.state()), power >= p_check
+  stream (p_name : String, p_check : Number) := monitor(@org.thingpedia.iot.power-factor.state()), power >= p_check
   #_[utterances=["when the power factor value of ${p_name} go over ${p_check}",
                 "when the power factor read by ${p_name} rise more than ${p_check}",
                 "if the power factor level from ${p_name} is higher of ${p_check}",
                 "when the ${p_name}'s power factor goes above ${p_check}"]]
   #[name="MonitorStateCheckGreaterName"];
 
-  stream (p_name : String, p_check : Number) := monitor(@org.thingpedia.iot.power_factor.state()), power <= p_check
+  stream (p_name : String, p_check : Number) := monitor(@org.thingpedia.iot.power-factor.state()), power <= p_check
   #_[utterances=["when the power factor value of ${p_name} go over ${p_check}",
                 "when the power factor read by ${p_name} drops under ${p_check}",
                 "if the power factor level from ${p_name} is lower of ${p_check}",

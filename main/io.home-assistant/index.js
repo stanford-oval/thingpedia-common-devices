@@ -11,6 +11,7 @@ const Tp = require('thingpedia');
 const WebSocket = require('ws');
 const HomeAssistant = require('home-assistant-js-websocket');
 
+const HomeAssistantCamera = require('./camera');
 const HomeAssistantClimate = require('./climate');
 const HomeAssistantCover = require('./cover');
 const HomeAssistantFan = require('./fan');
@@ -27,6 +28,7 @@ const HASS_URL = 'http://hassio.local:8123';
 // map to a Home Assistant domain to a specific Thingpedia device
 const DOMAIN_TO_TP_KIND = {
     // devices with dedicated APIs
+    'camera': 'org.thingpedia.iot.camera',
     'cover': 'org.thingpedia.iot.cover',
     'fan': 'org.thingpedia.iot.fan',
     'light': 'org.thingpedia.iot.light-bulb',
@@ -51,7 +53,7 @@ const DOMAIN_TO_TP_KIND = {
     'sensor_illuminance': 'org.thingpedia.iot.illuminance',
     'sensor_motion': 'org.thingpedia.iot.motion',
     'sensor_power': 'org.thingpedia.iot.power',
-    'sensor_power_factor': 'org.thingpedia.iot.power_factor',
+    'sensor_power-factor': 'org.thingpedia.iot.power-factor',
     'sensor_smoke': 'org.thingpedia.iot.smoke',
     'sensor_temperature': 'org.thingpedia.iot.temperature',
     'sensor_voltage': 'org.thingpedia.iot.voltage',
@@ -74,6 +76,7 @@ const DOMAIN_TO_TP_KIND = {
 // note that we need to create distinct JS classes for each Thingpedia class because the
 // Thingpedia loading code will attach metadata to the JS class
 const SUBDEVICES = {
+    'org.thingpedia.iot.camera': HomeAssistantCamera,
     'org.thingpedia.iot.cover': HomeAssistantCover,
     'org.thingpedia.iot.climate': HomeAssistantClimate,
     'org.thingpedia.iot.fan': HomeAssistantFan,
