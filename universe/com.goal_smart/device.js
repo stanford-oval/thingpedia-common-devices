@@ -49,6 +49,13 @@ module.exports = class GoalDevice extends Tp.BaseDevice {
     }).then((tempResponse) => {
       const a = JSON.parse(tempResponse);
       const b = a.response;
+      if (b==null) {
+        print ("Helloooooooo");
+        print ("Helloooooooo");
+        print ("Helloooooooo");
+        print ("Helloooooooo");
+        print ("Helloooooooo");
+      }
       return b.map((obj) => {
         const l = obj.league.name;
         const n1 = obj.teams.home.name;
@@ -103,7 +110,7 @@ module.exports = class GoalDevice extends Tp.BaseDevice {
 
   // getting league top scorers, given league id
   get_topscorers({ league_id }) {
-    return Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/players/topscorers?league=' + league_id +'&season=2020', {
+    return Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/players/topscorers?league=' + league_id + '&season=2020', {
       extraHeaders: {
         'x-rapidapi-key': this.constructor.metadata.auth.api_key,
         'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
@@ -174,28 +181,12 @@ module.exports = class GoalDevice extends Tp.BaseDevice {
           const oppTeam = n1;
           const ourScore = g1;
           const theirScore = g2;
-          return Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/fixtures?team=' + teamID + '&next=1', {
-            extraHeaders: {
-              'x-rapidapi-key': this.constructor.metadata.auth.api_key,
-              'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
-              useQueryString: true
-            },
-            accept: 'application/json'
-          }).then((tempResponse3) => {
-            const a3 = JSON.parse(tempResponse3);
-            const b3 = a3.response;
-            var n2 = b3[0].teams.home.name;
-            if (n2 == teamName) {
-              n2 = b3[0].teams.away.name;
-            }
-            const nextOpp = n2;
-            const updateFinal = teamName + " is currently numer " + ranking + " in the " + leagueName + ". Their last match was against " + oppTeam + " and the score was " + ourScore + " to " + theirScore + ". Their next match is against " + nextOpp + ".";
 
-            return [{
-              update: updateFinal
-            }];
+          const updateFinal = teamName + " is currently numer " + ranking + " in the " + leagueName + ". Their last match was against " + oppTeam + " and the score was " + ourScore + " to " + theirScore + ".";
 
-          });
+          return [{
+            update: updateFinal
+          }];
         });
       });
     });
