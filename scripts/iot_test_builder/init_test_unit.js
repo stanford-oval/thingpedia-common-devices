@@ -30,6 +30,7 @@
 // OF THE POSSIBILITY OF SUCH DAMAGE.
 "use strict";
 
+const Tp = require('thingpedia');
 const fs = require('fs');
 const { PassThrough } = require('stream');
 
@@ -72,6 +73,12 @@ const t_help = "\n\nnode init_test_unit.js [options] \n\n" +
     "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/' \n" +
     "      -o: HomeAssistant configuration file, the folder which contain HomeAssistant 'configuration.yaml'. i.e. '-o /home/user/' \n\n" +
     " -U2: update environment previously set with new IoT devices " +
+    "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/' \n" +
+    "      -f: add virtual devices available in the specific folder (main|staging|universe)  (alternately to '-d' option). i.e. '-f /home/user/oval/almond/thingpedia-common-devices/main/' \n" +
+    "    or \n" +
+    "      -d: add virtual devices by provided list (alternately to '-f' option). i.e.  \n" +
+    "        ['dev1','dev2','dev3','devn']: specifc subset of devices \n\n" +
+    " -U3: update environment previously set with new configuration folder and new IoT devices " +
     "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/' \n" +
     "      -o: HomeAssistant configuration file, the folder which contain HomeAssistant 'configuration.yaml'. i.e. '-o /home/user/' \n\n" +
     "      -f: add virtual devices available in the specific folder (main|staging|universe)  (alternately to '-d' option). i.e. '-f /home/user/oval/almond/thingpedia-common-devices/main/' \n" +
@@ -219,11 +226,12 @@ function do_cli(arr_cmd, ke) {
 
                 require('child_process').execSync(s_cmd, (error, stdout, stderr) => {
                     if (error) {
-                        cl("ERROR in installing, node-cmd: " + error.message, false);
+                        cl("ERROR in command, node-cmd: " + error.message, false);
                     } else if (stderr !== '') {
-                        cl("ERROR in installing, node-cmd: " + stderr, false);
+                        cl("ERROR in command, node-cmd: " + stderr, false);
                     } else {
                         cl("OUTPUT : " + stdout, true);
+                        return stdout;
                     }
                 });
 
@@ -244,10 +252,12 @@ function do_cli(arr_cmd, ke) {
     }
     return;
 }
-/*
-function make_calls(call, obj_tosend) {
 
-    const http = require('http')
+function make_call(obj_tosend) {
+
+    const Tp = require('thingpedia');
+    const myArgs = process.argv.slice(1);
+
     let path_needed = myArgs[0].split('/');
     let path_rebuilt = '';
 
@@ -257,182 +267,80 @@ function make_calls(call, obj_tosend) {
 
     let k_tk = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJkMDk3NjQ0ZjdlYTU0OGNlOWVjNWNjZDNlMDJmMzgwNyIsImlhdCI6MTYyMjQ0NDU4MSwiZXhwIjoxOTM3ODA0NTgxfQ.RFv8BAnaQJqrlz2ikhvFxvaayBpEltTpVFhGWrDBglM';
     //f_read(path_rebuilt + '/data/tk');
-    let data = JSON.stringify(obj_tosend);
-
-    let pth, mtd;
-
-    if (call === 0) {
-        pth = '/api/';
-        mtd = 'GET';
-    } else {
-        pth = '/api/states/' + obj_tosend.entity_id;
-        mtd = 'POST';
-    }
 
     const options = {
-        hostname: 'localhost',
-        path: pth,
-        port: 8123,
-        method: mtd,
-        headers: {
+        baseURL: 'http://127.0.0.1:8123/api',
+        extraHeaders: {
             "Authorization": "Bearer " + k_tk,
             "content-type": "application/json"
         }
     };
 
-    let to_ret;
-    let callback = (response) => {
-        let chunks_of_data = [];
 
-        response.on('data', (chunk) => {
-            chunks_of_data.push(chunk);
-        });
-
-        response.on('error', (error) => {
-            cl(" Error: " + error, false);
-        });
-
-        response.on('end', () => {
-            let response_body = Buffer.concat(chunks_of_data);
-            console.log(response_body.toString());
-        });
-
-    }
-
-    const req = http.request(options, callback);
-
-    if (call === 1) {
-        req.write(data);
-    }
-
-    req.end();
-}*/
-/*
-function make_calls(call, obj_tosend) {
-    const http = require('http');
-
-    var path_needed = myArgs[0].split('/');
-    var path_rebuilt = '';
-
-    for (var i = 1; i <= (path_needed.length - 2); i++) {
-        path_rebuilt = path_rebuilt + '/' + path_needed[i];
-    }
-
-    var k_tk = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJkMDk3NjQ0ZjdlYTU0OGNlOWVjNWNjZDNlMDJmMzgwNyIsImlhdCI6MTYyMjQ0NDU4MSwiZXhwIjoxOTM3ODA0NTgxfQ.RFv8BAnaQJqrlz2ikhvFxvaayBpEltTpVFhGWrDBglM';
-    //f_read(path_rebuilt + '/data/tk');
-    var data = JSON.stringify(obj_tosend);
-
-    var pth, mtd;
-
-    if (call === 0) {
-        pth = '/api/';
-        mtd = 'GET';
-    } else {
-        pth = '/api/states/' + obj_tosend.entity_id;
-        mtd = 'POST';
-    }
-
-    const options = {
-        hostname: 'localhost',
-        path: pth,
-        port: 8123,
-        method: mtd,
-        headers: {
-            "Authorization": "Bearer " + k_tk,
-            "content-type": "application/json"
-        }
-    };
-
-    // function returns a Promise
-    function getPromise() {
-        return new Promise((resolve, reject) => {
-            http.request(options, (response) => {
-                let chunks_of_data = [];
-                status_code = response.statusCode;
-                response.on('data', (fragments) => {
-                    chunks_of_data.push(fragments);
-                });
-
-                response.on('end', () => {
-                    let response_body = Buffer.concat(chunks_of_data);
-                    resolve(response_body.toString());
-                });
-
-                response.on('error', (error) => {
-                    reject(error);
-                });
-            });
-        });
-    }
-
-    // async function to make http request
-    async function makeSynchronousRequest(request) {
+    let get_web_search = async(count = 0) => {
         try {
-            let http_promise = getPromise();
-            let response_body = await http_promise;
+            const call = await Tp.Helpers.Http.getStream(options.baseURL + "/", options).then(res => {
+                    if (res.statusCode === 200 || res.statusCode === 201) {
+                        cl("Messaging channel ok ", true);
 
-            // holds response from server that is passed when Promise is resolved
-            if (call === 1) {
-                console.log(response_body);
-            }
-        } catch (error) {
-            // Promise rejected
-            console.log(error);
-        }
-    }
+                        //var data_to_send = JSON.parse(obj_tosend);
+                        //cl("is array typeof " + (typeof data_to_send), true);
+                        //cl("data_to_send " + data_to_send, false);
 
-    console.log(1);
+                        obj_tosend.forEach((obj) => {
+                            try {
+                                options.url = '/states/' + obj.entity_id;
+                                return Tp.Helpers.Http.post(options.baseURL + options.url, JSON.stringify(obj), options).then(res => {
+                                        cl(JSON.stringify(obj) + " set", true);
+                                    })
+                                    .catch(err => {
+                                        console.log(err);
+                                    });
 
-    // anonymous async function to execute some code synchronously after http request
-    (async function() {
-        // wait to http request to finish
-        await makeSynchronousRequest();
+                            } catch (err) {
+                                console.error(err);
+                            }
+                        });
 
-        // below code will be executed after http request is finished
-        console.log(2);
-        return status_code;
-    })();
+                        cl(" IoT data correctly set", true);
+                    }
+                })
+                .catch(err => {
+                    if (err || err.code != 200 || err.code != 201) {
+                        let timeo = 5000
+                        cl("Failed, retry in " + (timeo / 1000) + " sec", true);
+                        setTimeout(() => {
+                            if (count++ < 25) {
+                                cl("number of retries done until now: #" + count, true);
+                                return get_web_search(count);
+                            } else {
+                                throw new Error('max retries reached');
+                            };
+                        }, timeo);
+                    } else {
+                        throw err;
+                    }
+                    cl("Error catched: " + err, false);
+                });
+            return call;
 
-}
-*/
-
-function make_calls(call) {
-    const http = require("https");
-    const url = 'https://my-json-server.typicode.com/edurekaDemo/noderequest/db';
-    http.get(url, res => {
-        res.setEncoding("utf8");
-        let body = "";
-        res.on("data", data => {
-            body += data;
-        });
-        res.on("end", () => {
-            body = JSON.parse(body);
-            console.log(body);
-        });
-    });
-}
-
-function iot_init(data_to_send) {
-    var man_connex = false;
-
-    while (!man_connex) {
-        setTimeout(() => {
-            let makecalls = make_calls(0);
-            if (makecalls === 200 || makecalls === 201) {
-                man_connex = true;
+        } catch (err) {
+            if (err || err.status != 200 || err.status != 201) {
+                cl("Call process failed" + err, false);
+                if (count++ < 10) {
+                    console.log(count);
+                    cl("Count: " + count, true);
+                    return get_web_search(count);
+                } else {
+                    cl("max retries ", true);
+                };
             } else {
-                cl(" Not connected yet, wait 5 secs more", true);
+                throw error;
             }
-        }, 5000);
-    }
+        }
+    };
 
-    data_to_send.forEach((obj) => {
-        make_calls(1, obj);
-        //return man_connex;
-    });
-
-    cl(" IoT data correctly set", true);
-    return;
+    get_web_search();
 }
 
 function master_exec(m_cmd, the_list) {
@@ -465,7 +373,7 @@ function master_exec(m_cmd, the_list) {
             do_cli([arr_stp[0], arr_stp[1], arr_stp[2]], 'execSync');
 
             // setup HA env
-            iot_init(the_list);
+            make_call(the_list);
 
             break;
         case 4: // S1 - Start the test env. as previously set.
@@ -487,7 +395,7 @@ function master_exec(m_cmd, the_list) {
             do_cli([arr_stp[2], arr_stp[3]], 'execSync');
 
             // inizialize data
-            iot_init(the_list);
+            make_call(the_list);
             break;
         case 7: // U1 - Update HA env. without configuration (reconfigure manually).
             cl(" Update HA env. without configuration", true);
@@ -495,21 +403,23 @@ function master_exec(m_cmd, the_list) {
             // delete conf folder
             do_cli([arr_stp[4]], 'execSync');
             break;
-        case 8: // U2 - Update HA env. by replacing the conf folder and setting new IoT devices.
+        case 8: // U2 - Update HA env. by setting new IoT devices.
+            cl(" Update HA env. refreshing IoT devices", true);
+
+            // inizialize data
+            make_call(the_list);
+            break;
+        case 9: // U3 - Update HA env. by replacing the conf folder and setting new IoT devices.
+
             cl(" Update HA env.  refreshing configuration folder and IoT devices", true);
 
             // replace conf folder
             do_cli([arr_stp[4], arr_stp[2]], 'execSync');
 
             // inizialize data
-            iot_init(the_list);
+            make_call(the_list);
             break;
-        case 9: // U3 - Update HA env. by setting new IoT devices.
-            cl(" Update HA env. refreshing IoT devices", true);
 
-            // inizialize data
-            iot_init(the_list);
-            break;
     }
 
     return;
@@ -517,21 +427,7 @@ function master_exec(m_cmd, the_list) {
 
 if (myArgs[1] === "-T") { //this code is just executed
     cl(" TEST PATH - START ", true);
-    // code here
-    const http = require("http");
-    const url = 'http://my-json-server.typicode.com/edurekaDemo/noderequest/db';
-    http.get(url, res => {
-        res.setEncoding("utf8");
-        let body = "";
-        res.on("data", data => {
-            body += data;
-        });
-        res.on("end", () => {
-            body = JSON.parse(body);
-            console.log(body);
-        });
-    });
-    // make_calls(0);
+    //code here
     cl(" TEST PATH - FINISH ", false);
 } else {
     if (myArgs[1] === "-M") {
@@ -568,51 +464,51 @@ if (myArgs[1] === "-T") { //this code is just executed
                                 if (typeof myArgs[7] !== 'string') {
                                     cl(" Wrong option for -f ", false);
                                 }
-                                cl(" Updating with devices from Thingpedia-common-devices: " + myArgs[7] + " \n\n ", true);
+                                cl("\n Updating with devices from Thingpedia-common-devices: " + myArgs[7] + " \n ", true);
                                 got_list = gen_sens_list(myArgs[7], 'f');
                             } else {
                                 cl(" Missing argument. Expected '-f' or '-d'. ", false);
                             }
-                            master_exec(8, got_list);
+                            master_exec(9, got_list);
                         }
                     } else {
                         cl(" Wrong path. Please provide the destination folder for HA configuration file.", false);
                     }
+                } else if (myArgs[4] === "-d" || myArgs[4] === "-f") {
+                    if (myArgs[4] === "-d") {
+                        if ((typeof myArgs[6] !== 'string') || !Array.isArray(JSON.parse(myArgs[5]))) {
+                            cl(" Wrong option for -d", false);
+                        } else if (typeof myArgs[6] !== 'string') {
+                            cl(" Wrong path. Please provide the path to Thingpedia-common-devices.", false);
+                        }
+
+                        myArgs[6] = man_trail(myArgs[6]);
+                        sub_list = JSON.parse(myArgs[5]);
+
+                        if (sub_list.length < 1) {
+                            cl(" Wrong option length for -d ", false);
+                        }
+
+                        cl(" Updating using subset of devices", true);
+
+                        got_list = gen_sens_list(myArgs[5], 'd', sub_list);
+
+                    } else if (myArgs[4] === "-f") {
+                        if (typeof myArgs[5] !== 'string') {
+                            cl(" Wrong option for -f ", false);
+                        }
+                        cl("\n Updating with devices from Thingpedia-common-devices: " + myArgs[5] + " \n ", true);
+                        got_list = gen_sens_list(myArgs[5], 'f');
+                    } else {
+                        cl(" Missing argument. Expected '-f' or '-d'. ", false);
+                    }
+                    master_exec(8, got_list);
                 } else {
                     cl(" Missing argument. Expected '-o'. ", false);
                 }
             } else {
                 cl(" Wrong path. Please provide the destination folder for HA installation. ", false);
             }
-        } else if (myArgs[2] === "-d" || myArgs[2] === "-f") {
-            if (myArgs[2] === "-d") {
-                if ((typeof myArgs[3] !== 'string') || !Array.isArray(JSON.parse(myArgs[7]))) {
-                    cl(" Wrong option for -d", false);
-                } else if (typeof myArgs[4] !== 'string') {
-                    cl(" Wrong path. Please provide the path to Thingpedia-common-devices.", false);
-                }
-
-                myArgs[4] = man_trail(myArgs[4]);
-                sub_list = JSON.parse(myArgs[3]);
-
-                if (sub_list.length < 1) {
-                    cl(" Wrong option length for -d ", false);
-                }
-
-                cl(" Updating using subset of devices", true);
-
-                got_list = gen_sens_list(myArgs[4], 'd', sub_list);
-
-            } else if (myArgs[2] === "-f") {
-                if (typeof myArgs[3] !== 'string') {
-                    cl(" Wrong option for -f ", false);
-                }
-                cl(" Updating with devices from Thingpedia-common-devices: " + myArgs[3] + " \n\n ", true);
-                got_list = gen_sens_list(myArgs[3], 'f');
-            } else {
-                cl(" Missing argument. Expected '-f' or '-d'. ", false);
-            }
-            master_exec(9, got_list);
         } else {
             cl(" Missing argument. Expected '-h || -d || -f'. ", false);
         }
@@ -650,7 +546,7 @@ if (myArgs[1] === "-T") { //this code is just executed
                                     if (typeof myArgs[7] !== 'string') {
                                         cl(" Wrong option for -f ", false);
                                     }
-                                    cl(" Running with new devices from Thingpedia-common-devices: " + myArgs[7] + " \n\n ", true);
+                                    cl("\n Running with new devices from Thingpedia-common-devices: " + myArgs[7] + " \n ", true);
                                     got_list = gen_sens_list(myArgs[7], 'f');
                                 } else {
                                     cl(" Missing argument. Expected '-f' or '-d'. ", false);
@@ -703,7 +599,7 @@ if (myArgs[1] === "-T") { //this code is just executed
                                     if (typeof myArgs[7] !== 'string') {
                                         cl(" Wrong option for -f ", false);
                                     }
-                                    cl(" Running with devices from Thingpedia-common-devices: " + myArgs[7] + " \n\n ", true);
+                                    cl("\n Running with devices from Thingpedia-common-devices: " + myArgs[7] + " \n ", true);
                                     got_list = gen_sens_list(myArgs[7], 'f');
                                 } else {
                                     cl(" Wrong argument. Expected '-f' or '-d'. ", false);
