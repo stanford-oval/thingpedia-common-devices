@@ -176,7 +176,7 @@ function gen_sens_list(dfolder, mode, sublist) {
 
     arr_to_run.forEach(function(cur_val) {
 
-        let set_file = dfolder + base_dev_folder + cur_val + base_test;
+        let set_file = man_trail(dfolder) + base_dev_folder + cur_val + base_test;
         let content = JSON.parse(f_read(set_file));
 
         content.forEach(function(obj) {
@@ -258,7 +258,7 @@ function make_call(obj_tosend) {
     let path_rebuilt = '';
 
     for (var i = 1; i <= (path_needed.length - 2); i++) {
-        path_rebuilt = path_rebuilt + '/' + path_needed[i];
+        path_rebuilt = man_trail(path_rebuilt) + path_needed[i];
     }
 
     let k_tk = f_read(path_rebuilt + '/data/tk');
