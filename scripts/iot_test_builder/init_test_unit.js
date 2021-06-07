@@ -182,6 +182,7 @@ function gen_sens_list(dfolder, mode, sublist) {
         content.forEach(function(obj) {
             list_to_api.push({
                 "entity_id": obj.ha.domain + "." + obj.ha.entity_id,
+                "unique_id": obj.ha.domain + "_" + obj.ha.entity_id,
                 "state": init_data_generator(obj.ha.init_call.i_state),
                 "attributes": obj.ha.init_call.attrib
             })
@@ -277,10 +278,6 @@ function make_call(obj_tosend) {
             const call = await Tp.Helpers.Http.getStream(options.baseURL + "/", options).then(res => {
                     if (res.statusCode === 200 || res.statusCode === 201) {
                         cl("Messaging channel ok ", true);
-
-                        //var data_to_send = JSON.parse(obj_tosend);
-                        //cl("is array typeof " + (typeof data_to_send), true);
-                        //cl("data_to_send " + data_to_send, false);
 
                         obj_tosend.forEach((obj) => {
                             try {
