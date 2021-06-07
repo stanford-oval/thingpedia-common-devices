@@ -436,41 +436,41 @@ if (myArgs[1] === "-T") { //this code is just executed
                         myArgs[5] = man_trail(myArgs[5]);
                         if (myArgs[1] === "-U1") {
                             master_exec(7);
-                        } else if (myArgs[1] === "-U2") {
-                            master_exec(8);
                         } else {
-                            if (myArgs[6] === "-d") {
-                                if ((typeof myArgs[7] !== 'string') || !Array.isArray(JSON.parse(myArgs[7]))) {
-                                    cl(" Wrong option for -d", false);
-                                } else if (typeof myArgs[8] !== 'string') {
-                                    cl(" Wrong path. Please provide the path to Thingpedia-common-devices.", false);
-                                }
-
-                                myArgs[8] = man_trail(myArgs[8]);
-                                sub_list = JSON.parse(myArgs[7]);
-
-                                if (sub_list.length < 1) {
-                                    cl(" Wrong option length for -d ", false);
-                                }
-
-                                cl(" Updating using subset of devices", true);
-
-                                got_list = gen_sens_list(myArgs[8], 'd', sub_list);
-
-                            } else if (myArgs[6] === "-f") {
-                                if (typeof myArgs[7] !== 'string') {
-                                    cl(" Wrong option for -f ", false);
-                                }
-                                cl("\n Updating with devices from Thingpedia-common-devices: " + myArgs[7] + " \n ", true);
-                                got_list = gen_sens_list(myArgs[7], 'f');
-                            } else {
-                                cl(" Missing argument. Expected '-f' or '-d'. ", false);
-                            }
-                            master_exec(9, got_list);
+                            master_exec(8);
                         }
                     } else {
                         cl(" Wrong path. Please provide the destination folder for HA configuration file.", false);
                     }
+                } else if (myArgs[4] === "-d" || myArgs[4] === "-f") {
+                    if (myArgs[4] === "-d") {
+                        if ((typeof myArgs[6] !== 'string') || !Array.isArray(JSON.parse(myArgs[5]))) {
+                            cl(" Wrong option for -d", false);
+                        } else if (typeof myArgs[6] !== 'string') {
+                            cl(" Wrong path. Please provide the path to Thingpedia-common-devices.", false);
+                        }
+
+                        myArgs[6] = man_trail(myArgs[6]);
+                        sub_list = JSON.parse(myArgs[5]);
+
+                        if (sub_list.length < 1) {
+                            cl(" Wrong option length for -d ", false);
+                        }
+
+                        cl(" Updating using subset of devices", true);
+
+                        got_list = gen_sens_list(myArgs[5], 'd', sub_list);
+
+                    } else if (myArgs[4] === "-f") {
+                        if (typeof myArgs[5] !== 'string') {
+                            cl(" Wrong option for -f ", false);
+                        }
+                        cl("\n Updating with devices from Thingpedia-common-devices: " + myArgs[5] + " \n ", true);
+                        got_list = gen_sens_list(myArgs[5], 'f');
+                    } else {
+                        cl(" Missing argument. Expected '-f' or '-d'. ", false);
+                    }
+                    master_exec(8, got_list);
                 } else {
                     cl(" Missing argument. Expected '-o'. ", false);
                 }
