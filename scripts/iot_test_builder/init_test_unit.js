@@ -344,7 +344,7 @@ function master_exec(m_cmd, the_list) {
         'sudo dnf -y install python3-devel python3-wheel python3-virtualenv libjpeg-devel',
         'cd ' + myArgs[3] + ' && git clone https://github.com/home-assistant/core home-assistant && cd ' + myArgs[3] + 'home-assistant && virtualenv venv && . ./venv/bin/activate && pip3 install -r requirements.txt && deactivate',
         'unzip -o -d ' + myArgs[5] + ' ' + myArgs_0 + zip_folder,
-        'cd ' + myArgs[3] + ' && . ./venv/bin/activate && python3 -m homeassistant &',
+        'cd ' + myArgs[3] + ' && . ./venv/bin/activate && python3 -m homeassistant',
         'sudo rm -r ' + myArgs[5] + '.homeassistant'
     ];
 
@@ -403,9 +403,6 @@ function master_exec(m_cmd, the_list) {
 
             // replace conf folder
             do_cli([arr_stp[4], arr_stp[2]], 'execSync');
-
-            // inizialize data
-            make_call(the_list);
             break;
         case 9: // U3 - Update HA env. by setting new IoT devices.
             break;
