@@ -163,7 +163,6 @@ function gen_sens_list(dfolder, mode, sublist) {
     var list_to_api = new Array;
 
     if (mode === 'd') {
-        cl(" typeof " + typeof sublist + " str " + sublist, false);
         arr_to_run = r_folder(dfolder, sublist);
     } else {
         arr_to_run = r_folder(dfolder, "");
@@ -283,7 +282,7 @@ function make_call(obj_tosend) {
                             try {
                                 options.url = '/states/' + obj.entity_id;
                                 return Tp.Helpers.Http.post(options.baseURL + options.url, JSON.stringify(obj), options).then(res => {
-                                        cl(JSON.stringify(obj) + " set", true);
+                                        cl(JSON.stringify(obj.entity_id) + " set", true);
                                     })
                                     .catch(err => {
                                         console.log(err);
@@ -300,35 +299,25 @@ function make_call(obj_tosend) {
                 .catch(err => {
                     if (err || err.code != 200 || err.code != 201) {
                         let timeo = 5000
+                        let countex = 25;
                         cl("Failed, retry in " + (timeo / 1000) + " sec", true);
                         setTimeout(() => {
-                            if (count++ < 25) {
-                                cl("number of retries done until now: #" + count, true);
+                            if (count++ < countex) {
+                                cl("number of retries done until now: #" + count + "/" + countex, true);
                                 return get_web_search(count);
                             } else {
-                                throw new Error('max retries reached');
+                                cl('max retries reached', false);
                             };
                         }, timeo);
                     } else {
                         throw err;
                     }
-                    cl("Error catched: " + err, false);
+                    cl("Error catched: " + err, true);
                 });
             return call;
 
         } catch (err) {
-            if (err || err.status != 200 || err.status != 201) {
-                cl("Call process failed" + err, false);
-                if (count++ < 10) {
-                    console.log(count);
-                    cl("Count: " + count, true);
-                    return get_web_search(count);
-                } else {
-                    cl("max retries ", true);
-                };
-            } else {
-                throw error;
-            }
+            throw error;
         }
     };
 
@@ -399,7 +388,7 @@ function master_exec(m_cmd, the_list) {
             cl(" Update HA env. refreshing configuration folder", true);
 
             // replace conf folder
-            do_cli([arr_stp[4], arr_stp[2]], 'execSync');
+            do_cli([arr_stp[2]], 'execSync');
             break;
         case 9: // U3 - Update HA env. by setting new IoT devices.
             cl(" Update HA env. refreshing IoT devices", true);
@@ -429,47 +418,44 @@ if (myArgs[1] === "-T") { //this code is just executed
 
                         if (myArgs[1] === "-U1") {
                             master_exec(7);
-                        } else if (myArgs[1] === "-U2") {
-                            master_exec(8);
                         } else {
-
-                            if (myArgs[4] === "-d") {
-                                if (typeof myArgs[5] !== 'string') {
-                                    cl(" Wrong option for -d", false);
-                                } else if (typeof myArgs[6] !== 'string') {
-                                    cl(" Wrong path. Please provide the path to Thingpedia-common-devices.", false);
-                                }
-
-                                sub_list = myArgs[5].replace('[', '');
-                                sub_list = sub_list.replace(']', '');
-                                sub_list = sub_list.split(',');
-
-                                myArgs[6] = man_trail(myArgs[6]);
-
-                                if (sub_list.length < 1) {
-                                    cl(" Wrong option length for -d ", false);
-                                }
-
-                                cl(" Updating using subset of devices", true);
-
-                                got_list = gen_sens_list(myArgs[6], 'd', sub_list);
-
-                            } else if (myArgs[4] === "-f") {
-                                if (typeof myArgs[5] !== 'string') {
-                                    cl(" Wrong option for -f ", false);
-                                }
-                                cl("\n Updating with devices from Thingpedia-common-devices: " + myArgs[5] + " \n ", true);
-                                got_list = gen_sens_list(myArgs[5], 'f');
-                            } else {
-                                cl(" Missing argument. Expected '-f' or '-d'. ", false);
-                            }
-                            master_exec(9, got_list);
+                            master_exec(8);
                         }
                     } else {
                         cl(" Wrong path. Please provide the destination folder for HA configuration file.", false);
                     }
+                } else if (myArgs[4] === "-d") {
+                    if (typeof myArgs[5] !== 'string') {
+                        cl(" Wrong option for -d", false);
+                    } else if (typeof myArgs[6] !== 'string') {
+                        cl(" Wrong path. Please provide the path to Thingpedia-common-devices.", false);
+                    }
+
+                    sub_list = myArgs[5].replace('[', '');
+                    sub_list = sub_list.replace(']', '');
+                    sub_list = sub_list.split(',');
+
+                    myArgs[6] = man_trail(myArgs[6]);
+
+                    if (sub_list.length < 1) {
+                        cl(" Wrong option length for -d ", false);
+                    }
+
+                    cl(" Updating using subset of devices", true);
+
+                    got_list = gen_sens_list(myArgs[6], 'd', sub_list);
+                    master_exec(9, got_list);
+                } else if (myArgs[4] === "-f") {
+                    if (typeof myArgs[5] !== 'string') {
+                        cl(" Wrong option for -f ", false);
+                    }
+
+                    cl("\n Updating with devices from Thingpedia-common-devices: " + myArgs[5] + " \n ", true);
+
+                    got_list = gen_sens_list(myArgs[5], 'f');
+                    master_exec(9, got_list);
                 } else {
-                    cl(" Missing argument. Expected '-o. ", false);
+                    cl(" Missing argument. Expected '-o', '-f' or '-d'. ", false);
                 }
             } else {
                 cl(" Wrong path. Please provide the destination folder of the HA installation. ", false);
