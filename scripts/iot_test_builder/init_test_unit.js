@@ -41,7 +41,7 @@ const base_dev_folder = "org.thingpedia.iot.";
 
 const t_help = "\n\nnode init_test_unit.js [options] \n\n" +
     " Options (case sensitive): \n\n" +
-    " -B1: build environment (install Home Assistant on provided folder, to be configured manually). \n" +
+    " -B1: build environment (install Home Assistant on provided folder, to be configured manually). \n\n" +
     "       -h: HomeAssistant destination environment folder.  i.e. '-h /home/user/ha_installation_destination/' \n" +
     " -B2: build environment (install Home Assistant on provided folder, and setup it with preconfigured data [user: user, password: password]). \n" +
     "       -h: HomeAssistant destination environment folder.  i.e. '-h /home/user/ha_installation_destination/' \n" +
@@ -57,30 +57,26 @@ const t_help = "\n\nnode init_test_unit.js [options] \n\n" +
     " ------------ \n\n" +
     " -S1: start environment previously set\n" +
     "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/ha_installation_destination/' \n\n" +
-    " -S2: start environment previously set without configuration (reconfigure manually)" +
+    " -S2: start environment previously set without configuration (reconfigure manually) \n" +
     "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/ha_installation_destination/' \n" +
     "      -o: HomeAssistant configuration folder, the folder which will contain the HomeAssistant configuration folder '.homeassistant'. i.e. '-o /home/user/' \n\n" +
     " -S3: start environment previously set with new IoT devices and send inizialization data \n" +
     "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/ha_installation_destination/' \n" +
-    "      -o: HomeAssistant configuration file, the folder which contain HomeAssistant 'configuration.yaml'. i.e. '-o /home/user/' \n\n" +
+    "      -o: HomeAssistant configuration file, the folder which contain HomeAssistant 'configuration.yaml'. i.e. '-o /home/user/' \n" +
     "      -f: add virtual devices available in the specific folder (main|staging|universe)  (alternately to '-d' option). i.e. '-f /home/user/oval/almond/thingpedia-common-devices/main/' \n" +
     "    or \n" +
     "       -d: add virtual devices by provided list (alternately to '-f' option). i.e.  \n" +
     "        ['dev1','dev2','dev3','devn']: specifc subset of devices \n\n" +
     " EXAMPLE  node init_test_unit.js -S4 -h /home/user/ha_installation_destination/ -o /home/user/.homeassistant/ -d ['air','temperature','vacuum'] /home/user/oval/almond/thingpedia-common-devices/main/  \n" +
     " ------------ \n\n" +
-    " -U1: update environment previously set, deleting configuration folder (to be set manually)" +
+    " -U1: update environment previously set, deleting configuration folder (to be set manually). \n" +
     "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/' \n" +
     "      -o: HomeAssistant configuration file, the folder which contain HomeAssistant 'configuration.yaml'. i.e. '-o /home/user/' \n\n" +
-    " -U2: update environment previously set with new IoT devices " +
-    "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/' \n" +
-    "      -f: add virtual devices available in the specific folder (main|staging|universe)  (alternately to '-d' option). i.e. '-f /home/user/oval/almond/thingpedia-common-devices/main/' \n" +
-    "    or \n" +
-    "      -d: add virtual devices by provided list (alternately to '-f' option). i.e.  \n" +
-    "        ['dev1','dev2','dev3','devn']: specifc subset of devices \n\n" +
-    " -U3: update environment previously set with new configuration folder and new IoT devices " +
+    " -U2: update environment previously set with new configuration folder\n" +
     "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/' \n" +
     "      -o: HomeAssistant configuration file, the folder which contain HomeAssistant 'configuration.yaml'. i.e. '-o /home/user/' \n\n" +
+    " -U3: update environment previously set with new IoT devices. \n" +
+    "      -h: HomeAssistant environment folder, to start it.  i.e. '-h /home/user/' \n" +
     "      -f: add virtual devices available in the specific folder (main|staging|universe)  (alternately to '-d' option). i.e. '-f /home/user/oval/almond/thingpedia-common-devices/main/' \n" +
     "    or \n" +
     "      -d: add virtual devices by provided list (alternately to '-f' option). i.e.  \n" +
@@ -265,8 +261,7 @@ function make_call(obj_tosend) {
         path_rebuilt = path_rebuilt + '/' + path_needed[i];
     }
 
-    let k_tk = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJkMDk3NjQ0ZjdlYTU0OGNlOWVjNWNjZDNlMDJmMzgwNyIsImlhdCI6MTYyMjQ0NDU4MSwiZXhwIjoxOTM3ODA0NTgxfQ.RFv8BAnaQJqrlz2ikhvFxvaayBpEltTpVFhGWrDBglM';
-    //f_read(path_rebuilt + '/data/tk');
+    let k_tk = f_read(path_rebuilt + '/data/tk');
 
     const options = {
         baseURL: 'http://127.0.0.1:8123/api',
