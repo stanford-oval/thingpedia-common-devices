@@ -405,8 +405,6 @@ function master_exec(m_cmd, the_list) {
             do_cli([arr_stp[4], arr_stp[2]], 'execSync');
             break;
         case 9: // U3 - Update HA env. by setting new IoT devices.
-            break;
-        case 8:
             cl(" Update HA env. refreshing IoT devices", true);
 
             // inizialize data
@@ -467,7 +465,7 @@ if (myArgs[1] === "-T") { //this code is just executed
                     } else {
                         cl(" Missing argument. Expected '-f' or '-d'. ", false);
                     }
-                    master_exec(8, got_list);
+                    master_exec(9, got_list);
                 } else {
                     cl(" Missing argument. Expected '-o'. ", false);
                 }
