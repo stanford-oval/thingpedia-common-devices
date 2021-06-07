@@ -27,7 +27,8 @@
             },
             "attrib": {
                 "friendly_name": "Sensor's Battery State",
-                "device_class": "battery"
+                "device_class": "battery",
+                "unique_id": "battery_state_sensor"
             }
         }
     }

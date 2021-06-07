@@ -11,7 +11,8 @@
             "attrib": {
                 "friendly_name": "Temperature Sensor",
                 "unit_of_measurement": "°F",
-                "device_class": "temperature"
+                "device_class": "temperature",
+                "unique_id": "temperature_sensor"
             }
         }
     }

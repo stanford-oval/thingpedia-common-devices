@@ -10,7 +10,8 @@
             },
             "attrib": {
                 "friendly_name": "Door/Window Access Control",
-                "device_class": "door"
+                "device_class": "door",
+                "unique_id": "door_sensor"
             }
         }
     }

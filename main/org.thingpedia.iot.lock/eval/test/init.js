@@ -10,7 +10,8 @@
             },
             "attrib": {
                 "friendly_name": "Smart lock",
-                "device_class": "lock"
+                "device_class": "lock",
+                "unique_id": "smart_lock"
             }
         }
     }

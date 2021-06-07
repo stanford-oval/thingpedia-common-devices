@@ -10,7 +10,8 @@
             },
             "attrib": {
                 "friendly_name": "Smart vacuum",
-                "device_class": "vacuum"
+                "device_class": "vacuum",
+                "unique_id": "smart_vacuum"
             }
         }
     }

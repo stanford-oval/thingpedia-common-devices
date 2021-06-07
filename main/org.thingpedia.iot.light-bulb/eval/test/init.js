@@ -10,7 +10,8 @@
             },
             "attrib": {
                 "friendly_name": "Smart lamp",
-                "device_class": "light"
+                "device_class": "light",
+                "unique_id": "smart_light"
             }
         }
     }

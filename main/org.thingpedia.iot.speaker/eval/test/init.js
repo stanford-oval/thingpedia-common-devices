@@ -10,7 +10,8 @@
             },
             "attrib": {
                 "friendly_name": "Smart speaker",
-                "device_class": "speaker"
+                "device_class": "speaker",
+                "unique_id": "smart_speaker"
             }
         }
     }

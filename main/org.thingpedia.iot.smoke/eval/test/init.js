@@ -11,7 +11,8 @@
             "attrib": {
                 "friendly_name": "Smoke level",
                 "unit_of_measurement": "%",
-                "device_class": "smoke"
+                "device_class": "smoke",
+                "unique_id": "smoke_sensor"
             }
         }
     }
@@ -27,7 +28,8 @@
             },
             "attrib": {
                 "friendly_name": "Smoke state",
-                "device_class": "smoke"
+                "device_class": "smoke",
+                "unique_id": "binary_smoke_sensor"
             }
         }
     }

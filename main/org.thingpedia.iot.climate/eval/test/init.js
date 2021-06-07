@@ -10,6 +10,7 @@
             },
             "attrib": {
                 "friendly_name": "Office Thermostat",
+                "unique_id": "office_thermostat",
                 "unit_of_measurement": "°F",
                 "hvac_modes": "off, auto, heat",
                 "min_temp": 41,

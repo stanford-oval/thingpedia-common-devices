@@ -10,7 +10,8 @@
             },
             "attrib": {
                 "friendly_name": "Cover - Level",
-                "current_position": 100
+                "current_position": 100,
+                "unique_id": "cover_controller"
             }
         }
     }

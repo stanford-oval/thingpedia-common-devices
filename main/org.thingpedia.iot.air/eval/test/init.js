@@ -10,7 +10,8 @@
             },
             "attrib": {
                 "friendly_name": "Air quality sensor",
-                "device_class": "carbon_monoxide"
+                "device_class": "carbon_monoxide",
+                "unique_id": "air_quality_sensor"
             }
         }
     }

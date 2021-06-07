@@ -11,7 +11,8 @@
             "attrib": {
                 "friendly_name": "Humidity Sensor",
                 "unit_of_measurement": "%",
-                "device_class": "humidity"
+                "device_class": "humidity",
+                "unique_id": "humidity_level_sensor"
             }
         }
     }
@@ -27,7 +28,8 @@
             },
             "attrib": {
                 "friendly_name": "Humidity State",
-                "device_class": "humidity"
+                "device_class": "humidity",
+                "unique_id": "umidity_level_binary_sensor"
             }
         }
     }

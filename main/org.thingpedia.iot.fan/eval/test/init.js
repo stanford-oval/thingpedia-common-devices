@@ -10,7 +10,8 @@
             },
             "attrib": {
                 "friendly_name": "Air Fan",
-                "device_class": "air"
+                "device_class": "air",
+                "unique_id": "air_fan_control"
             }
         }
     }

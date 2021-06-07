@@ -10,7 +10,8 @@
             },
             "attrib": {
                 "friendly_name": "Motion Sensor",
-                "device_class": "motion"
+                "device_class": "motion",
+                "unique_id": "motion_sensor"
             }
         }
     }
