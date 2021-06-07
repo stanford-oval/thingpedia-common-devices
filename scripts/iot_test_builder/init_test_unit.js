@@ -41,8 +41,8 @@ const base_dev_folder = "org.thingpedia.iot.";
 
 const t_help = "\n\nnode init_test_unit.js [options] \n\n" +
     " Options (case sensitive): \n\n" +
-    " -B1: build environment (install Home Assistant on provided folder, to be configured manually). \n\n" +
-    "       -h: HomeAssistant destination environment folder.  i.e. '-h /home/user/ha_installation_destination/' \n" +
+    " -B1: build environment (install Home Assistant on provided folder, to be configured manually). \n" +
+    "       -h: HomeAssistant destination environment folder.  i.e. '-h /home/user/ha_installation_destination/' \n\n" +
     " -B2: build environment (install Home Assistant on provided folder, and setup it with preconfigured data [user: user, password: password]). \n" +
     "       -h: HomeAssistant destination environment folder.  i.e. '-h /home/user/ha_installation_destination/' \n" +
     "       -o: HomeAssistant configuration folder, the folder which will contain the HomeAssistant configuration folder '.homeassistant'. i.e. '-o /home/user/' \n\n" +
@@ -398,15 +398,8 @@ function master_exec(m_cmd, the_list) {
             // delete conf folder
             do_cli([arr_stp[4]], 'execSync');
             break;
-        case 8: // U2 - Update HA env. by setting new IoT devices.
-            cl(" Update HA env. refreshing IoT devices", true);
-
-            // inizialize data
-            make_call(the_list);
-            break;
-        case 9: // U3 - Update HA env. by replacing the conf folder and setting new IoT devices.
-
-            cl(" Update HA env.  refreshing configuration folder and IoT devices", true);
+        case 8: // U2 - Update HA env. by refreshing the conf folder.
+            cl(" Update HA env. refreshing configuration folder", true);
 
             // replace conf folder
             do_cli([arr_stp[4], arr_stp[2]], 'execSync');
@@ -414,7 +407,14 @@ function master_exec(m_cmd, the_list) {
             // inizialize data
             make_call(the_list);
             break;
+        case 9: // U3 - Update HA env. by setting new IoT devices.
+            break;
+        case 8:
+            cl(" Update HA env. refreshing IoT devices", true);
 
+            // inizialize data
+            make_call(the_list);
+            break;
     }
 
     return;
@@ -436,6 +436,8 @@ if (myArgs[1] === "-T") { //this code is just executed
                         myArgs[5] = man_trail(myArgs[5]);
                         if (myArgs[1] === "-U1") {
                             master_exec(7);
+                        } else if (myArgs[1] === "-U2") {
+                            master_exec(8);
                         } else {
                             if (myArgs[6] === "-d") {
                                 if ((typeof myArgs[7] !== 'string') || !Array.isArray(JSON.parse(myArgs[7]))) {
@@ -469,35 +471,6 @@ if (myArgs[1] === "-T") { //this code is just executed
                     } else {
                         cl(" Wrong path. Please provide the destination folder for HA configuration file.", false);
                     }
-                } else if (myArgs[4] === "-d" || myArgs[4] === "-f") {
-                    if (myArgs[4] === "-d") {
-                        if ((typeof myArgs[6] !== 'string') || !Array.isArray(JSON.parse(myArgs[5]))) {
-                            cl(" Wrong option for -d", false);
-                        } else if (typeof myArgs[6] !== 'string') {
-                            cl(" Wrong path. Please provide the path to Thingpedia-common-devices.", false);
-                        }
-
-                        myArgs[6] = man_trail(myArgs[6]);
-                        sub_list = JSON.parse(myArgs[5]);
-
-                        if (sub_list.length < 1) {
-                            cl(" Wrong option length for -d ", false);
-                        }
-
-                        cl(" Updating using subset of devices", true);
-
-                        got_list = gen_sens_list(myArgs[5], 'd', sub_list);
-
-                    } else if (myArgs[4] === "-f") {
-                        if (typeof myArgs[5] !== 'string') {
-                            cl(" Wrong option for -f ", false);
-                        }
-                        cl("\n Updating with devices from Thingpedia-common-devices: " + myArgs[5] + " \n ", true);
-                        got_list = gen_sens_list(myArgs[5], 'f');
-                    } else {
-                        cl(" Missing argument. Expected '-f' or '-d'. ", false);
-                    }
-                    master_exec(8, got_list);
                 } else {
                     cl(" Missing argument. Expected '-o'. ", false);
                 }
