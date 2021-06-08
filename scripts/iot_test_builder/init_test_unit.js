@@ -369,7 +369,7 @@ function master_exec(m_cmd, the_list) {
             // Delete and Start ha
             do_cli([arr_stp[4], arr_stp[3]], 'execSync');
             break;
-        case 6: // S3 - Start HA env. add configuration folder and setting new IoT devices.
+        case 6: // S3 - Start HA env. and setting new IoT devices.
             cl(" Starting HA and send inizialization IoT devices data", true);
 
             // start
