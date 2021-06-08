@@ -45,12 +45,14 @@ const DOMAIN_TO_TP_KIND = {
     // sensors and binary sensors (implemented by HomeAssistantSensor)
     'sensor_air': 'org.thingpedia.iot.air',
     'sensor_battery': 'org.thingpedia.iot.battery',
+    'sensor_conductivity': 'org.thingpedia.iot.conductivity',
     'sensor_current': 'org.thingpedia.iot.current',
     'sensor_door': 'org.thingpedia.iot.door',
     'sensor_enerdy': 'org.thingpedia.iot.energy',
     'sensor_flood': 'org.thingpedia.iot.flood',
     'sensor_humidity': 'org.thingpedia.iot.humidity',
     'sensor_illuminance': 'org.thingpedia.iot.illuminance',
+    'sensor_moisture': 'org.thingpedia.iot.moisture',
     'sensor_motion': 'org.thingpedia.iot.motion',
     'sensor_power': 'org.thingpedia.iot.power',
     'sensor_power-factor': 'org.thingpedia.iot.power-factor',
@@ -60,7 +62,6 @@ const DOMAIN_TO_TP_KIND = {
     'sensor_uv': 'org.thingpedia.iot.uv'
 
     //'sensor_heat': 'org.thingpedia.iot.heat',
-    //'sensor_moisture': 'org.thingpedia.iot.moisture',
     //'sensor_plug': 'org.thingpedia.iot.plug',
     //'sensor_occupancy': 'org.thingpedia.iot.occupancy',
     //'sensor_sound': 'org.thingpedia.iot.sound',
