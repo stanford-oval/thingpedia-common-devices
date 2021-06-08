@@ -1,0 +1,30 @@
+dataset @org.thingpedia.iot.moisture language "en" {
+
+  program := @org.thingpedia.iot.moisture.state()
+  #_[utterances=["check the soil moisture",
+                 "what is the ground moisture?",
+                 "how is the earth moisture?"]];
+
+  query := @org.thingpedia.iot.moisture.state()
+  #_[utterances=["the state of the soil moisture",
+                 "the ground moisture",
+                 "how vassel moisture is"]];
+
+  stream := monitor(@org.thingpedia.iot.moisture.state())
+  #_[utterances=["when the moisture changes",
+                 "when the is a variation in moisture precentage"]];
+
+  program (p_name : String) := @org.thingpedia.iot.moisture(name=p_name).state()
+  #_[utterances=["what does the ${p_name} moisture sensor say?",
+                 "what is the ${p_name} moisture sensor level?",
+                 "which percentage the ${p_name} moisture sensor is reading"]];
+
+  query (p_name : String) := @org.thingpedia.iot.moisture(name=p_name).state()
+  #_[utterances=["what does the ${p_name} moisture sensor say?",
+                 "what is the ${p_name} moisture sensor level?",
+                 "which percentage the ${p_name} moisture sensor is reading"]];
+
+  stream (p_name : String) := monitor(@org.thingpedia.iot.moisture(name=p_name).state())
+  #_[utterances=["when the ${p_name} moisture changes",
+                 "when the ${p_name} moisture level has a variation"]];
+} 
