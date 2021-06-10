@@ -1,0 +1,40 @@
+class @vikram.hello
+#_[thingpedia_name="Test 1"]
+#_[thingpedia_description="Test 1 for Movies"]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="media"]
+{
+    import loader from @org.thingpedia.v2();
+    import config from @org.thingpedia.config.none();
+
+    entity movie #_[description = "Movie Information"];
+    entity actor #_[description = "People in movie"];
+    monitorable query movie(in req query : String
+                                    #_[canonical={
+                                        base = ["movie", "title"],
+                                        passive_verb = ["titled #", "starring #", "named #"],
+                                    }],
+                                    out movieInfo: Entity(vikram.hello:movie)
+                                    #_[canonical={
+                                        default = "base",
+                                        base = ["movie", "play", "film"],
+                                        passive_verb = ["named #", "titled #", "called #"],
+                                        property = ["name #", "title #"]
+                                    }],
+                                    out description:String
+                                    #_[canonical={
+                                        default = "base",
+                                        base = ["description", "overview", "summary"],
+                                        passive_verb=["summarized"]
+                                    }])  
+    #_[canonical = ["movie"]]
+    #_[confirmation="movies matching $query on TMDB"];
+}   
+
+
+
+
+
+
+
