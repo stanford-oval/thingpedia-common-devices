@@ -44,6 +44,7 @@ const argparse = require('argparse');
 const Genie = require('genie-toolkit');
 
 const StreamUtils = require('../../scripts/lib/stream_utils');
+const { initializeCredentials } = require('../lib/cred-utils');
 const Platform = require('../lib/platform');
 
 let _anyFailed = false;
@@ -271,6 +272,25 @@ async function sleep(timeout) {
     });
 }
 
+async function initializeEngine(platform, engine) {
+    await engine.open();
+
+    await Promise.all([
+        // initialize the credentials from the test directory
+       initializeCredentials(engine),
+
+       (async () => {
+           // if cloud sync is set up, we'll download the credentials of the devices to
+           // test from almond-dev
+           // sleep for 30 seconds while that happens
+           if (platform.getCloudId()) {
+               console.log('Waiting for cloud sync to complete...');
+               await sleep(30000);
+           }
+       })()
+   ]);
+}
+
 async function main() {
     const parser = new argparse.ArgumentParser({
         add_help: true,
@@ -342,14 +362,7 @@ async function main() {
     });
     testRunner.engine = engine;
 
-    await engine.open();
-    // if cloud sync is set up, we'll download the credentials of the devices to
-    // test from almond-dev
-    // sleep for 30 seconds while that happens
-    if (platform.getCloudId()) {
-        console.log('Waiting for cloud sync to complete...');
-        await sleep(30000);
-    }
+    await initializeEngine(platform, engine);
 
     try {
 
