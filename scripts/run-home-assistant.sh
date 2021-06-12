@@ -1,6 +1,6 @@
 #!/bin/bash
 
-srcdir=`dirname $0`
+srcdir=$(realpath `dirname $0`/..)
 . $srcdir/lib.sh
 parse_args "$0" "venv=./tmp/homeassistant-venv config=./tmp/homeassistant-config" "$@"
 shift $n
