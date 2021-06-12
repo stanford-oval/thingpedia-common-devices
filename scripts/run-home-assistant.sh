@@ -1,6 +1,6 @@
 #!/bin/bash
 
-srcdir=$(realpath `dirname $0`/..)
+srcdir=`dirname $0`
 . $srcdir/lib.sh
 parse_args "$0" "venv=./tmp/homeassistant-venv config=./tmp/homeassistant-config" "$@"
 shift $n
@@ -14,5 +14,5 @@ test -d "${venv}" || virtualenv "${venv}"
 pip3 install 'homeassistant==2021.6.3'
 
 mkdir -p $(dirname "${config}")
-test -d "${config}" || cp -r "${srcdir}/test/data/homeassistant" "${config}"
+test -d "${config}" || cp -r "${srcdir}/../test/data/homeassistant" "${config}"
 exec python3 -m homeassistant -c "${config}"
