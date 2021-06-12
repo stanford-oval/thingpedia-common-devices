@@ -25,24 +25,30 @@ that require no authentication or username-password style
 Add the tests in the `test/unit/$release` folder, with a JS file named after your
 device. For example, if you want to test your device named `com.xxx` in the `staging` release,
 create a test file `test/unit/staging/com.xxx.js`.
-If your device needs basic authentication, add a `com.xxx.cred.json` containing
-the username and password (for basic authentication only) in the same folder.
+If your device needs authentication, add a file `com.xxx.json` containing
+the complete device state in the directory `test/credentials/`.
 A couple examples have been added for your reference. 
 
-To run the tests, run `yarn test com.xxx`. Run `yarn test $release` (e.g. `yarn test staging`)
+To run the tests, run `npx node ./test/unit com.xxx`. Run `npx node ./test/unit $release` (e.g. `npx node ./test/unit universe`)
 to run all unit tests for all devices in a certain release.
 
 ### Scenario Testing
 
 Scenario tests will load your device in an complete assistant, and test end-to-end
 that the assistant responds correctly to user's commands. It is a way to catch regressions
-and unexpected failures. _You need a trained model deployed to Thingpedia to run a scenario test._ 
-Currently, only devices with no authentication can have scenario tests.
+and unexpected failures.
+
+At first, you'll write scenario tests using `\t` commands, which emulates the user typing
+ThingTalk code in their chat window directly. You can use these test to check that your skill
+is returning data compatible with the function signatures declared in the manifest, and that the agent
+replies correctly. Later, once a model has been trained for the skill, the user commands can
+be replaced with natural language comamnds, to act as an end-to-end regression test.
 
 To add a scenario test, add a new dialogue in the `eval/scenarios.txt` file in the device folder.
-The format of a dialogue alternates user turns, prefixed with `U:`, and agent turns, prefixed
+Dialogues are separated by `====` (4 equal signs). The format of a dialogue alternates user turns, prefixed with `U:`, and agent turns, prefixed
 with `A:`. The user speaks first, and the agent speaks last.
-Lines starting with `#` are comments, except the first `#` line contains the ID of the test.
+The first line in a dialogue starting with `#` contains the ID of the test, and the other
+`#` lines are comments.
 
 At every turn, the system emulates inputs with the given user utterance, then checks
 that the reply from the agent matches the regular expression indicated in the agent turn.
@@ -116,7 +122,8 @@ Given the two initial models, we can proceed to annotate the data:
   --eval_set dev --offset 1
 ```
 
-See [annotation.md](annotation.md) for the guide to annotate dialogues with their ThingTalk representation.
+See the [ThingTalk guide](https://wiki.almond.stanford.edu/thingtalk/guide) to learn how
+to write ThingTalk.
 At any point, you can interrupt the process by typing `q` or pressing Ctrl-C, and then resume it by passing
 the offset of the dialogue to start from, in the `input.txt` order.
 
@@ -150,8 +157,3 @@ at the first turn. The utterance should be tokenized and in quoted format (that 
 To submit your device for inclusion in Thingpedia, add all your files and prepare a pull
 request. The repository maintainer will review it and then, when approve, upload it to
 Thingpedia.
-
-If the device uses basic authentication and comes with a test, i.e., requires a `.cred.json` file,
-run `travis encrypt-file test/com.xxx.cred.json --add`.
-This will create a file named `com.xxx.cred.json.enc` and update `.travis.yml`.
-Commit both files before your pull request. 
