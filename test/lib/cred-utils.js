@@ -1,6 +1,7 @@
+
 // -*- mode: js; indent-tabs-mode: nil; js-basic-offset: 4 -*-
 //
-// Copyright 2020 The Board of Trustees of the Leland Stanford Junior University
+// Copyright 2021 The Board of Trustees of the Leland Stanford Junior University
 //
 // Redistribution and use in source and binary forms, with or
 // without modification, are permitted provided that the following
@@ -30,24 +31,37 @@
 // OF THE POSSIBILITY OF SUCH DAMAGE.
 "use strict";
 
-const { readAllLines } = require('./lib/argutils');
+const path = require('path');
+const { promises : pfs } = require('fs');
 
-// modern javascript finally looking like python!
-async function main() {
-    for await (const line of readAllLines([process.argv[2]])) {
-        let [id, sentence, target_code] = line.split('\t');
-
-        if (/servesCuisine:String =~ QUOTED_STRING_1/.test(target_code)) {
-            sentence = sentence.replace(/QUOTED_STRING_1/, 'GENERIC_ENTITY_com.yelp:restaurant_cuisine_0');
-            target_code = target_code.replace(/servesCuisine:String =~ QUOTED_STRING_1/, 'cuisines contains GENERIC_ENTITY_com.yelp:restaurant_cuisine_0');
-        } else if (/servesCuisine:String =~ QUOTED_STRING_0/.test(target_code)) {
-            sentence = sentence.replace(/QUOTED_STRING_0/, 'GENERIC_ENTITY_com.yelp:restaurant_cuisine_0');
-            sentence = sentence.replace(/QUOTED_STRING_1/, 'QUOTED_STRING_0');
-            target_code = target_code.replace(/servesCuisine:String =~ QUOTED_STRING_0/, 'cuisines contains GENERIC_ENTITY_com.yelp:restaurant_cuisine_0');
-            target_code = target_code.replace(/QUOTED_STRING_1/, 'QUOTED_STRING_0');
-        }
-
-        console.log(`${id}\t${sentence}\t${target_code}`);
-    }
+async function sleep(timeout) {
+    return new Promise((resolve, reject) => {
+        setTimeout(resolve, timeout);
+    });
 }
-main();
+
+async function initializeCredentials(engine) {
+    const credentialDir = path.resolve(path.dirname(module.filename), '../data/credentials');
+    for (const filename of await pfs.readdir(credentialDir)) {
+        if (!filename.endsWith('.json'))
+            continue;
+
+        try {
+            const data = require(path.resolve(credentialDir, filename));
+            if (!data.kind)
+                throw new Error(`Missing kind property`);
+            await engine.createDevice(data);
+        } catch(e) {
+            // could be encrypted, ignore the error
+            console.error(`Malformed credential file ${filename}: ${e.message}`);
+        }
+    }
+
+    // sleep 10 seconds while newly initialized devices settle
+    // (this is mainly for home assistant)
+    await sleep(10000);
+}
+
+module.exports = {
+    initializeCredentials
+};
