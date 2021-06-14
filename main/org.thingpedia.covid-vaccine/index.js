@@ -53,7 +53,7 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
         super(engine, state);
 
         // TODO: Find a better way to mock.
-        if (!process.env.CI)
+        if (!process.env.TEST_MODE)
             this._mongo_client = connect_mongodb(DB_URL);
         this._geo_cache = {};
     }
@@ -63,7 +63,7 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
         console.log(zip_code, distance, dose, vaccine_type);
 
         // TODO: Find a better way to mock.
-        if (process.env.CI)
+        if (process.env.TEST_MODE)
             return MOCK_RESPONSE;
 
         try {
@@ -193,7 +193,7 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
     async do_mark_valid({ appointment, validity }) {
         console.log(appointment, validity);
 
-        if (process.env.CI)
+        if (process.env.TEST_MODE)
             return;
 
         try {
