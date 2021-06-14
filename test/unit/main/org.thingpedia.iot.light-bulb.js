@@ -13,6 +13,6 @@ const S_STATE = 'on,off'.split(',');
 
 module.exports = [
     ['query', 'power', {}, (result) => {
-        assert(S_STATE.includes(result[0].state), `Invalid light-bulb status ${result[0].state}`);
+        assert(S_STATE.includes(result[0].power), `Invalid light-bulb status ${result[0].power}`);
     }]
 ];

@@ -13,12 +13,10 @@ const S_OSCILLATION = 'oscillating,not_oscillating'.split(',');
 
 module.exports = [
     ['query', 'state', {}, (result) => {
-        assert(typeof result[0].value === 'string');
         assert(S_STATE.includes(result[0].state), `Invalid fan status ${result[0].state}`);
     }],
 
     ['query', 'oscillation', {}, (result) => {
-        assert(typeof result[0].value === 'string');
         assert(S_OSCILLATION.includes(result[0].state), `Invalid fan oscillating status ${result[0].state}`);
     }]
 ];

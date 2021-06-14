@@ -8,11 +8,10 @@
 const assert = require('assert');
 const Tp = require('thingpedia');
 
-const S_STATE = 'opened,closed'.split(',');
+const S_OPENCLOSED = 'open,closed'.split(',');
 
 module.exports = [
     ['query', 'state', {}, (result) => {
-        assert(typeof result[0].value === 'string');
-        assert(S_STATE.includes(result[0].state), `Invalid cover status ${result[0].state}`);
+        assert(S_OPENCLOSED.includes(result[0].state), `Invalid cover status ${result[0].state}`);
     }]
 ];
