@@ -33,8 +33,8 @@ const DOMAIN_TO_TP_KIND = {
     'lock': 'org.thingpedia.iot.lock',
     'switch': 'org.thingpedia.iot.switch',
     'climate': 'org.thingpedia.iot.climate',
-    'vacuum': 'org.thingpedia.iot.vacuum', 
-    
+    'vacuum': 'org.thingpedia.iot.vacuum',
+
     // media players
     //'media_player': 'org.thingpedia.iot.media-player',
     //'media_player_speaker': 'org.thingpedia.iot.speaker',
@@ -51,7 +51,7 @@ const DOMAIN_TO_TP_KIND = {
     //'sensor_smoke': 'org.thingpedia.iot.smoke',
     'sensor_temperature': 'org.thingpedia.iot.temperature',
     'sensor_uv': 'org.thingpedia.iot.uv'
-    
+
     //'sensor_heat': 'org.thingpedia.iot.heat',
     //'sensor_moisture': 'org.thingpedia.iot.moisture',
     //'sensor_plug': 'org.thingpedia.iot.plug',
@@ -112,7 +112,7 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
         if (domain === 'binary_sensor' && ['smoke', 'gas', 'CO', 'CO2'].includes(attributes.device_class))
             kind = DOMAIN_TO_TP_KIND['air'];
         else if (domain === 'sensor' && ['smoke'].includes(attributes.device_class))
-            kind = DOMAIN_TO_TP_KIND['sensor_smoke'];   
+            kind = DOMAIN_TO_TP_KIND['sensor_smoke'];
         else if (domain === 'lock' || attributes.device_class === 'lock')
             kind = DOMAIN_TO_TP_KIND['lock'];
         else if (domain === 'binary_sensor' && ['heat', 'cold'].includes(attributes.device_class))
@@ -156,7 +156,7 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
         for (let entity of existing)
             this._maybeAddEntity(entity.entity_id, entity.state, entity.attributes);
 
-        this._unsubscribe = this.master.connection.subscribeEvents((event) => {
+        this._unsubscribe = await this.master.connection.subscribeEvents((event) => {
             const { entity_id, new_state } = event.data;
             if (new_state)
                 this._maybeAddEntity(entity_id, new_state.state, new_state.attributes);
@@ -283,6 +283,7 @@ module.exports = class HomeAssistantGateway extends Tp.BaseDevice {
 
     async stop() {
         await this._subdevices.stop();
+        this._connection.close();
     }
 
     async _createSocket(options) {

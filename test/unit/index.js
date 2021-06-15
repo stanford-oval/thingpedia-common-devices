@@ -17,6 +17,7 @@ const path = require('path');
 const Genie = require('genie-toolkit');
 
 const Platform = require('../lib/platform');
+const { initializeCredentials } = require('../lib/cred-utils');
 
 function assertNonEmptyString(what) {
     assert(typeof what === 'string' && what, 'Expected a non-empty string, got ' + what);
@@ -71,13 +72,20 @@ class TestRunner {
     async start() {
         await this._engine.open();
 
-        // if cloud sync is set up, we'll download the credentials of the devices to
-        // test from almond-dev
-        // sleep for 30 seconds while that happens
-        if (this._platform.getCloudId()) {
-            console.log('Waiting for cloud sync to complete...');
-            await sleep(30000);
-        }
+        await Promise.all([
+             // initialize the credentials from the test directory
+            initializeCredentials(this._engine),
+
+            (async () => {
+                // if cloud sync is set up, we'll download the credentials of the devices to
+                // test from almond-dev
+                // sleep for 30 seconds while that happens
+                if (this._platform.getCloudId()) {
+                    console.log('Waiting for cloud sync to complete...');
+                    await sleep(30000);
+                }
+            })()
+        ]);
     }
     stop() {
         return this._engine.close();
@@ -96,14 +104,6 @@ class TestRunner {
         const config = manifest.config;
         if (config.module === 'org.thingpedia.config.none')
             return this._engine.createSimpleDevice(deviceKind);
-        if (config.module === 'org.thingpedia.config.basic_auth' ||
-            config.module === 'org.thingpedia.config.form') {
-            // credentials are stored in test/[DEVICE ID].cred.json
-            const credentialsPath = path.resolve('./test', deviceKind + '.cred.json');
-            const args = require(credentialsPath);
-            args.kind = deviceKind;
-            return this._engine.createDevice(args);
-        }
 
         // otherwise do something else...
         return null;
