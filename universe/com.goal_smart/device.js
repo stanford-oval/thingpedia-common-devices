@@ -44,7 +44,11 @@ module.exports = class GoalDevice extends Tp.BaseDevice {
 
   // getting league standings, given league id
   get_standings({ league_id }) {
+    let month = new Date().getMonth();
     let date = new Date().getFullYear() - 1;
+    if (month > 7) {
+      let date = new Date().getFullYear();
+    }
     return Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/standings?season=' + date + '&league=' + league_id, {
       extraHeaders: {
         'x-rapidapi-key': this.constructor.metadata.auth.api_key,
@@ -59,8 +63,8 @@ module.exports = class GoalDevice extends Tp.BaseDevice {
         const n = obj.team.name;
         const t_id = obj.team.id;
         const f = obj.form;
-        var fArray = [];
-        var length = f.length; 
+        let fArray = [];
+        let length = f.length;
         for (let i = 0; i < length; i++) {
           fArray.push(f[i]);
         }
@@ -72,84 +76,6 @@ module.exports = class GoalDevice extends Tp.BaseDevice {
           points: p
         });
       });
-
-    });
-  }
-  get_relegationTeams({ league_id }) {
-    let date = new Date().getFullYear() - 1;
-    return Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/standings?season=' + date + '&league=' + league_id, {
-      extraHeaders: {
-        'x-rapidapi-key': this.constructor.metadata.auth.api_key,
-        'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
-      },
-      accept: 'application/json'
-
-    }).then((tempResponse) => {
-      const a = JSON.parse(tempResponse);
-      var b = a.response[0].league.standings[0];
-      b = b.splice(17, 3)
-      return b.map((obj) => {
-        const r = obj.rank;
-        const n = obj.team.name;
-        const t_id = obj.team.id;
-        const p = obj.points;
-
-
-        return ({
-          team: new Tp.Value.Entity(String(t_id), String(n)),
-          rank: r,
-          points: p
-        });
-
-
-
-      });
-
-    });
-  }
-  get_firstPlace({ league_id }) {
-    let date = new Date().getFullYear() - 1;
-    return Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/standings?season=' + date + '&league=' + league_id, {
-      extraHeaders: {
-        'x-rapidapi-key': this.constructor.metadata.auth.api_key,
-        'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
-      },
-      accept: 'application/json'
-    }).then((tempResponse) => {
-      const a = JSON.parse(tempResponse);
-      const b = a.response[0].league.standings[0];
-      const r = b[0].rank;
-      const n = b[0].team.name;
-      const t_id = b[19].team.id;
-      const f = b[0].form;
-      const p = b[0].points
-      return [{
-        team: new Tp.Value.Entity(String(t_id), String(n)),
-        points: p
-      }];
-
-    });
-  }
-  get_lastPlace({ league_id }) {
-    let date = new Date().getFullYear() - 1;
-    return Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/standings?season=' + date + '&league=' + league_id, {
-      extraHeaders: {
-        'x-rapidapi-key': this.constructor.metadata.auth.api_key,
-        'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
-      },
-      accept: 'application/json'
-    }).then((tempResponse) => {
-      const a = JSON.parse(tempResponse);
-      const b = a.response[0].league.standings[0];
-      const r = b[19].rank;
-      const n = b[19].team.name;
-      const t_id = b[19].team.id;
-      const f = b[19].form;
-      const p = b[19].points
-      return [{
-        team: new Tp.Value.Entity(String(t_id), String(n)),
-        points: p
-      }];
 
     });
   }
@@ -244,39 +170,41 @@ module.exports = class GoalDevice extends Tp.BaseDevice {
       }).then((tempResponse) => {
         const a = JSON.parse(tempResponse);
         const b = a.response;
+
         return b.map((obj) => {
+
           const l = obj.league.name;
           const l_id = obj.league.id;
-          var n1 = obj.teams.home.name;
-          var t1_id = obj.teams.home.id;
-          var t2_id = obj.teams.away.id;
-          
-          var g1 = obj.goals.home;
-          var n2 = obj.teams.away.name;
-          var g1 = obj.goals.home;
-          var g2 = obj.goals.away;
-          var v = obj.fixture.venue.name;
-          if (n1 != teamName) {
-            n1 = teamName;
-            var t1_id = obj.teams.away.id;
-            g1 = obj.goals.away
-            n2 = obj.teams.home.name;
-            var t2_id = obj.teams.home.id;
-            g2 = obj.goals.home;
+          let v = obj.fixture.venue.name;
+          let id1 = obj.teams.home.id;
+          let id2 = obj.teams.away.id;
+          let ourName = obj.teams.home.name;
+          let theirName = obj.teams.away.name;
+          let ourScore = obj.goals.home;
+          let theirScore = obj.goals.away;
+
+          if (team_id != id1) {
+            id1 = obj.teams.away.id;
+            id2 = obj.teams.home.id;
+            ourName = obj.teams.away.name;
+            theirName = obj.teams.home.name;
+            ourScore = obj.goals.away;
+            theirScore = obj.goals.home;
+
           }
-          var r = "tied";
-          if (g1 > g2) {
+          let r = "tied";
+          if (ourScore > theirScore) {
             r = "won";
           }
-          if (g2 > g1) {
+          if (theirScore > ourScore) {
             r = "lost";
           }
           return ({
             league: new Tp.Value.Entity(String(l_id), String(l)),
-            team1: new Tp.Value.Entity(String(t1_id), String(n1)),
-            team2: new Tp.Value.Entity(String(t2_id), String(n2)),
-            score1: g1,
-            score2: g2,
+            our_team: new Tp.Value.Entity(String(id1), String(ourName)),
+            opposition_team: new Tp.Value.Entity(String(id2), String(theirName)),
+            our_score: ourScore,
+            opposition_score: theirScore,
             venue: v,
             result: r
           });
@@ -327,7 +255,7 @@ module.exports = class GoalDevice extends Tp.BaseDevice {
       const a = JSON.parse(tempResponse);
       const b = a.response;
       const teamName = b[0].team.name;
-      var t1_id = b[0].team.id;
+      let t1_id = b[0].team.id;
       return Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/standings?season=2020&team=' + team_id, {
         extraHeaders: {
           'x-rapidapi-key': this.constructor.metadata.auth.api_key,
@@ -349,17 +277,17 @@ module.exports = class GoalDevice extends Tp.BaseDevice {
         }).then((tempResponse2) => {
           const a2 = JSON.parse(tempResponse2);
           const b2 = a2.response;
-          var n1 = b2[0].teams.home.name;
-          var t2_id = b2[0].teams.home.id;
-          
-          var g1 = b2[0].goals.home;
-          var g2 = b2[0].goals.away;
+          let n1 = b2[0].teams.home.name;
+          let t2_id = b2[0].teams.home.id;
+
+          let g1 = b2[0].goals.home;
+          let g2 = b2[0].goals.away;
           if (n1 == teamName) {
             n1 = b2[0].teams.home.away;
-            var t2_id = b2[0].teams.away.id;
+            let t2_id = b2[0].teams.away.id;
           } else {
-            var g1 = b2[0].goals.away;
-            var g2 = b2[0].goals.home;
+            g1 = b2[0].goals.away;
+            g2 = b2[0].goals.home;
           }
           const oppTeam = n1;
           const ourScore = g1;
