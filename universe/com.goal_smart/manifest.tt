@@ -47,24 +47,24 @@ class @com.goal_smart
   
   monitorable list query standings(in req league_id: Entity(com.goal_smart:soccer_league) #_[prompt="what league standings do you want out check out"],
                         out team : Entity(com.goal_smart:soccer_team)
-                        #_[canonical = {
-                        base = ["team"],
-                        property = ["team from #", "# team", "team in the #"],
-                        verb = ["played in #", "ranked in the #", "participated in the #"],
+                        #_[canonical={
+                          base=["team", "side", "group"]
+                          passive_verb=["played by #"],
+                          preposition=["about #"]
                         }],
                         out rank: Number
                         #_[canonical = {
-                        base = ["placement"],
+                        base = ["rank", "placement"],
                         property = ["rankings of #", "# placement", "placement of #"],
                         }],
                         out form: Array(String)
                         #_[canonical = {
-                        base = ["momentum"],
+                        base = ["form", momentum"],
                         property = ["form of he  #"]
                         }],
                         out points: Number
                         #_[canonical = {
-                        base = ["results"],
+                        base = ["results, "points"],
                         property = ["points of #", "# points", "results of #"],
                         }])
   #_[canonical="league standings, league rankings, soccer rankings, league table, soccer table"]
@@ -72,29 +72,6 @@ class @com.goal_smart
   #_[result = ["${rank} . ${team} Form: ${form} Points: ${points}"]]
   #[poll_interval=3600000ms]
   #[doc="Get the standings of a league"];
-
-  monitorable query teamRank(in req team_id: Entity(com.goal_smart:soccer_team) #_[prompt="what team do you want out check out"],
-                        out team : Entity(com.goal_smart:soccer_team)
-                        #_[canonical = {
-                        base = ["team", "side", "group"]
-                        }],
-                        out rank: Number
-                        #_[canonical = {
-                        base = ["placement", "rank", "position", "place"]
-                        }],
-                        out league: Entity(com.goal_smart:soccer_league)
-                        #_[canonical = {
-                        base = ["league", "division"]
-                        }],
-                        out points: Number
-                        #_[canonical = {
-                        base = ["points", "numbers", "results"]
-                        }])
-  #_[canonical="team standings, team rank, team rankings, team performance"]
-  #_[confirmation="league standings of $team"]
-  #_[result = ["${team} is currently number ${rank} in the ${league} with ${points} points"]]
-  #[poll_interval=3600000ms]
-  #[doc="Get the league standings for a team"];
 
 
   monitorable list query teamFixtures(in req team_id: Entity(com.goal_smart:soccer_team) #_[prompt="what team do you want out check out"],
@@ -104,11 +81,11 @@ class @com.goal_smart
                         }],
                         out team1: Entity(com.goal_smart:soccer_team)
                         #_[canonical = {
-                        base = ["team", "side", "group"]
+                        base = ["team one", "side one", "group one"]
                         }],
                         out team2: Entity(com.goal_smart:soccer_team)
                         #_[canonical = {
-                        base = ["team", "side", "group"]
+                        base = ["team two", "side two", "group two"]
                         }],
                         out venue: String
                         #_[canonical = {
@@ -126,20 +103,24 @@ class @com.goal_smart
                         base = ["league", "division"]
                         }],
                         out our_team: Entity(com.goal_smart:soccer_team)
-                        #_[canonical = {
-                        base = ["team", "side", "group"]
+                        #_[canonical={
+                          base=["our team", "our side", "our group"]
+                          passive_verb=["played by #"],
+                          preposition=["about #"]
                         }],
                         out opposition_team: Entity(com.goal_smart:soccer_team)
-                        #_[canonical = {
-                        base = ["team", "side", "group"]
+                        #_[canonical={
+                          base=["opposition team", "opposition side", "opposition group"]
+                          passive_verb=["played against #"],
+                          preposition=["against #"]
                         }],
                         out our_score: Number
                         #_[canonical = {
-                        base = ["goals", "points", "score"]
+                        base = ["our goals", "our points", "our score"]
                         }],
                         out opposition_score: Number
                         #_[canonical = {
-                        base = ["goals", "points", "score"]
+                        base = ["opposition goals", "opposition points", "opposition score"]
                         }],
                         out result: Enum(tied, won, lost)
                         #_[canonical = {
@@ -177,11 +158,11 @@ class @com.goal_smart
                         }],
                         out last_opponent: Entity(com.goal_smart:soccer_team)
                         #_[canonical = {
-                        base = ["team", "side", "group"]
+                        base = ["last opponent", "previous opponent", "last opponent", "last matchup", "opposition team", "opposition side", "opposition group"]
                         }],
                         out score_of_last_match: String
                         #_[canonical = {
-                        base = ["result", "final", "outcome", "score"]
+                        base = ["score of last match", "result", "final", "outcome", "score"]
                         }],
                         out league: Entity(com.goal_smart:soccer_league)
                         #_[canonical = {
@@ -189,7 +170,7 @@ class @com.goal_smart
                         }],
                         out league_ranking: Number
                         #_[canonical = {
-                        base = ["placement", "rank", "position", "place"]
+                        base = ["placement", "rank", "position", "place", "league ranking"]
                         }])
   #_[canonical="team updates, team information, team info"]
   #_[confirmation="overall summary of $team_id"]

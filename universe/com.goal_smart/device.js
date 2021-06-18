@@ -79,42 +79,6 @@ module.exports = class GoalDevice extends Tp.BaseDevice {
 
     });
   }
-  get_teamRank({ team_id }) {
-    return Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/teams?id=' + team_id, {
-      extraHeaders: {
-        'x-rapidapi-key': this.constructor.metadata.auth.api_key,
-        'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
-        useQueryString: true
-      },
-      accept: 'application/json'
-    }).then((tempResponse) => {
-      const a = JSON.parse(tempResponse);
-      const b = a.response;
-      const teamName = b[0].team.name;
-      const t_id = b[0].team.id;
-      return Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/standings?season=2020&team=' + team_id, {
-        extraHeaders: {
-          'x-rapidapi-key': this.constructor.metadata.auth.api_key,
-          'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
-        },
-        accept: 'application/json'
-      }).then((tempResponse1) => {
-        const a1 = JSON.parse(tempResponse1);
-        const b1 = a1.response;
-        const leagueName = b1[1].league.name;
-        const l_id = b1[1].league.id;
-        const ranking = b1[1].league.standings[0][0].rank;
-        const pts = b1[1].league.standings[0][0].points;
-
-        return [{
-          team: new Tp.Value.Entity(String(t_id), String(teamName)),
-          rank: ranking,
-          points: pts,
-          league: new Tp.Value.Entity(String(l_id), String(leagueName))
-        }];
-      });
-    })
-  }
   // getting the upcoming fixtures of a team, given team id
   get_teamFixtures({ team_id }) {
     return Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/fixtures?team=' + team_id + '&next=5', {
