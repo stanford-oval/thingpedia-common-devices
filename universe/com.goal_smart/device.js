@@ -47,7 +47,7 @@ module.exports = class GoalDevice extends Tp.BaseDevice {
     let month = new Date().getMonth();
     let date = new Date().getFullYear() - 1;
     if (month > 7) {
-      let date = new Date().getFullYear();
+      date = new Date().getFullYear();
     }
     return Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/standings?season=' + date + '&league=' + league_id, {
       extraHeaders: {
@@ -124,7 +124,6 @@ module.exports = class GoalDevice extends Tp.BaseDevice {
     }).then((tempResponse1) => {
       const a1 = JSON.parse(tempResponse1);
       const b1 = a1.response;
-      const teamName = b1[0].team.name;
       return Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/fixtures?team=' + team_id + '&last=5', {
         extraHeaders: {
           'x-rapidapi-key': this.constructor.metadata.auth.api_key,
@@ -248,16 +247,11 @@ module.exports = class GoalDevice extends Tp.BaseDevice {
           let g2 = b2[0].goals.away;
           if (n1 == teamName) {
             n1 = b2[0].teams.home.away;
-            let t2_id = b2[0].teams.away.id;
+            t2_id = b2[0].teams.away.id;
           } else {
             g1 = b2[0].goals.away;
             g2 = b2[0].goals.home;
           }
-          const oppTeam = n1;
-          const ourScore = g1;
-          const theirScore = g2;
-
-
           return [{
             team: new Tp.Value.Entity(String(t1_id), String(teamName)),
             last_opponent: new Tp.Value.Entity(String(t2_id), String(n1)),
