@@ -113,65 +113,52 @@ module.exports = class GoalDevice extends Tp.BaseDevice {
   }
   // getting the upcoming fixtures of a team, given team id
   get_previousFixtures({ team_id }) {
-    return Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/teams?id=' + team_id, {
+    return Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/fixtures?team=' + team_id + '&last=5', {
       extraHeaders: {
         'x-rapidapi-key': this.constructor.metadata.auth.api_key,
         'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
-        useQueryString: true
       },
       accept: 'application/json'
+    }).then((tempResponse) => {
+      const a = JSON.parse(tempResponse);
+      const b = a.response;
 
-    }).then((tempResponse1) => {
-      const a1 = JSON.parse(tempResponse1);
-      const b1 = a1.response;
-      return Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/fixtures?team=' + team_id + '&last=5', {
-        extraHeaders: {
-          'x-rapidapi-key': this.constructor.metadata.auth.api_key,
-          'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
-        },
-        accept: 'application/json'
-      }).then((tempResponse) => {
-        const a = JSON.parse(tempResponse);
-        const b = a.response;
+      return b.map((obj) => {
 
-        return b.map((obj) => {
+        const l = obj.league.name;
+        const l_id = obj.league.id;
+        let v = obj.fixture.venue.name;
+        let id1 = obj.teams.home.id;
+        let id2 = obj.teams.away.id;
+        let ourName = obj.teams.home.name;
+        let theirName = obj.teams.away.name;
+        let ourScore = obj.goals.home;
+        let theirScore = obj.goals.away;
 
-          const l = obj.league.name;
-          const l_id = obj.league.id;
-          let v = obj.fixture.venue.name;
-          let id1 = obj.teams.home.id;
-          let id2 = obj.teams.away.id;
-          let ourName = obj.teams.home.name;
-          let theirName = obj.teams.away.name;
-          let ourScore = obj.goals.home;
-          let theirScore = obj.goals.away;
+        if (team_id != id1) {
+          id1 = obj.teams.away.id;
+          id2 = obj.teams.home.id;
+          ourName = obj.teams.away.name;
+          theirName = obj.teams.home.name;
+          ourScore = obj.goals.away;
+          theirScore = obj.goals.home;
 
-          if (team_id != id1) {
-            id1 = obj.teams.away.id;
-            id2 = obj.teams.home.id;
-            ourName = obj.teams.away.name;
-            theirName = obj.teams.home.name;
-            ourScore = obj.goals.away;
-            theirScore = obj.goals.home;
-
-          }
-          let r = "tied";
-          if (ourScore > theirScore) {
-            r = "won";
-          }
-          if (theirScore > ourScore) {
-            r = "lost";
-          }
-          return ({
-            league: new Tp.Value.Entity(String(l_id), String(l)),
-            our_team: new Tp.Value.Entity(String(id1), String(ourName)),
-            opposition_team: new Tp.Value.Entity(String(id2), String(theirName)),
-            our_score: ourScore,
-            opposition_score: theirScore,
-            venue: v,
-            result: r
-          });
-
+        }
+        let r = "tied";
+        if (ourScore > theirScore) {
+          r = "won";
+        }
+        if (theirScore > ourScore) {
+          r = "lost";
+        }
+        return ({
+          league: new Tp.Value.Entity(String(l_id), String(l)),
+          our_team: new Tp.Value.Entity(String(id1), String(ourName)),
+          opposition_team: new Tp.Value.Entity(String(id2), String(theirName)),
+          our_score: ourScore,
+          opposition_score: theirScore,
+          venue: v,
+          result: r
         });
 
       });
