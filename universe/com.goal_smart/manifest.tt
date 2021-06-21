@@ -29,7 +29,7 @@
 // OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-class @com.goal_smart 
+class @com.goal_smart
   #_[thingpedia_name="GoalSmart"]
   #_[thingpedia_description="Keep up with the latest in soccer."]
   #_[description="Keep up with the latest in soccer."]
@@ -44,7 +44,7 @@ class @com.goal_smart
   entity soccer_team #_[description="Soccer Teams in the World"];
   entity soccer_league #_[description="Soccer Leagues in the World"];
   entity soccer_player #_[description="Soccer Players in the World"];
-  
+
   monitorable list query standings(in req league_id: Entity(com.goal_smart:soccer_league) #_[prompt="what league standings do you want out check out"],
                         out team : Entity(com.goal_smart:soccer_team)
                         #_[canonical={
@@ -65,7 +65,7 @@ class @com.goal_smart
                         base = ["results", "points"],
                         property = ["points of #", "# points", "results of #"],
                         }])
-  #_[canonical="league standings, league rankings, soccer rankings, league table, soccer table"]
+  #_[canonical=["league standings", "league rankings", "soccer rankings", "league table", "soccer table"]]
   #_[confirmation="league standings of $league"]
   #_[result = ["${rank} . ${team} Form: ${form} Points: ${points}"]]
   #[poll_interval=3600000ms]
@@ -89,7 +89,7 @@ class @com.goal_smart
                         #_[canonical = {
                         base = ["location", "place", "venue"]
                         }])
-  #_[canonical="team fixtures, team matches, team games"]
+  #_[canonical=["team fixtures", "team matches", "team games"]]
   #_[confirmation="fixtures of $team_id"]
   #_[result=["${team1} vs ${team2} at ${venue} for the ${league}"]]
   #[poll_interval=3600000ms]
@@ -128,13 +128,13 @@ class @com.goal_smart
                         #_[canonical = {
                         base = ["location", "place", "venue"]
                         }])
-  #_[canonical="past team fixtures, previous team matches, past team games"]
+  #_[canonical=["past team fixtures", "previous team matches", "past team games"]]
   #_[confirmation="past fixtures of $team_id"]
   #_[result=["${our_team} ${result} ${opposition_team} at ${venue} for the ${league}. The score was ${our_score}-${opposition_score}"]]
   #[poll_interval=3600000ms]
   #[doc="Get the previous fixtures of the team"];
 
-  monitorable list query topscorers(in req league_id: Entity(com.goal_smart:soccer_league) #_[prompt="what league do you want out check out"],               
+  monitorable list query topscorers(in req league_id: Entity(com.goal_smart:soccer_league) #_[prompt="what league do you want out check out"],
                         out player: String
                         #_[canonical = {
                         base = ["person", "athlete", "teammate", "player"]
@@ -143,7 +143,7 @@ class @com.goal_smart
                         #_[canonical = {
                         base = ["goals", "points", "score"]
                         }])
-  #_[canonical="top goal scorers, goal scorers list, league goal scorers"]
+  #_[canonical=["top goal scorers, goal scorers list, league goal scorers"]]
   #_[confirmation="top scorers of $league_id"]
   #_[result=["${player} has scored ${goals} goals this season"]]
   #[poll_interval=3600000ms]
@@ -170,13 +170,10 @@ class @com.goal_smart
                         #_[canonical = {
                         base = ["placement", "rank", "position", "place", "league ranking"]
                         }])
-  #_[canonical="team updates, team information, team info"]
+  #_[canonical=["team updates", "team information", "team info"]]
   #_[confirmation="overall summary of $team_id"]
   #_[result=["${team} is currently number ${league_ranking} in the ${league}. Their last match was against ${last_opponent} and the score was ${score_of_last_match}"]]
   #[poll_interval=3600000ms]
   #[doc="Get the overall summary on the performance of the team"];
 
-  
-
-  
 }
