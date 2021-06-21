@@ -283,7 +283,8 @@ module.exports = class HomeAssistantGateway extends Tp.BaseDevice {
 
     async stop() {
         await this._subdevices.stop();
-        this._connection.close();
+        if (this._connection)
+            this._connection.close();
     }
 
     async _createSocket(options) {
