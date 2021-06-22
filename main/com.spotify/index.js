@@ -876,11 +876,13 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     }
 
     async get_get_currently_playing() {
-        const parsed = JSON.parse(this.http_get(CURRENTLY_PLAYING_URL));
-        if (parsed.is_playing === false || !parsed.device || !parsed.item || !parsed.item.uri)
+        const parsed = JSON.parse(await this.http_get(CURRENTLY_PLAYING_URL));
+        if (parsed.is_playing === false || !parsed.item || !parsed.item.uri)
             throwError('no_song_playing');
 
-        return this.parse_tracks(await this.tracks_get_by_id([parsed.item.uri]));
+        const id = parsed.item.uri.substring('spotify:track:'.length);
+        const trackItems = await this.tracks_get_by_id([id]);
+        return this.parse_tracks(trackItems.tracks);
     }
 
     _testMode() {
