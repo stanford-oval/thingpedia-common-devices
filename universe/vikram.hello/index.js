@@ -48,7 +48,8 @@ module.exports = class MovieClass extends Tp.BaseDevice {
             return Tp.Helpers.Http.get(sortURL).then((response) => {
                 let parsedResponse = JSON.parse(response);
                 return parsedResponse.results.map((result) => {
-                    const id = new Tp.Value.Entity(result.title);
+                    const castQuery = "https://api.themoviedb.org/3/movie/" + String(result.id) + "/credits?api_key=654083fa9e049ea234e4ae94d3e65774&language=en-US";
+                    let id = new Tp.Value.Entity(String(result.id), result.title);
                     return ({
                         id,
                         description: result.overview,
@@ -65,9 +66,8 @@ module.exports = class MovieClass extends Tp.BaseDevice {
                 if (pname === 'id' && (op === '==' || op === '=~')) {
                     if (value instanceof Tp.Value.Entity)
                         query_term = encodeURIComponent(value);
-                        console.log(query_term);
                 }
-                else if (pname === 'actors' && (op === '==' || op === '=~')) {
+                else if (pname === 'actors' && (op === 'contains' || op === 'contains~')) {
                     query_term = encodeURIComponent(value);
                     searchType = 'actor';
                 }
@@ -80,31 +80,48 @@ module.exports = class MovieClass extends Tp.BaseDevice {
         return Tp.Helpers.Http.get(multiQuery).then((response) => {
             let parsedResponse = JSON.parse(response);
             if (searchType == 'actor'){
-            return parsedResponse.results.known_for.map((result) => {
-                    const id = new Tp.Value.Entity(result.title)
-                    let oneDate = new Date(result.release_date);
-                    return ({
-                        id,
-                        description: result.overview,
-                        release_date: oneDate,
-                        rating_score: Number(result.vote_average),
+                console.log("Hello");
+            return parsedResponse.results[0].known_for.map((result) => {
+                    const castQuery = "https://api.themoviedb.org/3/movie/" + String(result.id) + "/credits?api_key=654083fa9e049ea234e4ae94d3e65774&language=en-US";
+                    return Tp.Helpers.Http.get(castQuery).then((response2) => {
+                        console.log(result2);
+                        let parsedCastQuery = JSON.parse(response2);
+                        return parsedCastQuery.cast.map((result2) => {
+                            let id = new Tp.Value.Entity(String(result.id), String(result.title));
+                            let oneDate = new Date(result.release_date);
+                            return ({
+                                id,
+                                actors: Array(result2.name),
+                                description: result.overview,
+                                release_date: oneDate,
+                                rating_score: Number(result.vote_average),
+                            });
+                        });
                     });
-                }).splice(0,3);
+            }).splice(0,3);
             }
             else {
             return parsedResponse.results.map((result) => {
-                    const id = new Tp.Value.Entity(result.title);
-                    let oneDate = new Date(result.release_date);
-                    return ({
-                        id,
-                        description: result.overview,
-                        release_date: oneDate,
-                        rating_score: Number(result.vote_average),
-                        });
+                    console.log(result);
+                    const castQuery = "https://api.themoviedb.org/3/movie/" + result.id + "/credits?api_key=654083fa9e049ea234e4ae94d3e65774&language=en-US";
+                    return Tp.Helpers.Http.get(castQuery).then((response2) => {
+                        let parsedCastQuery = JSON.parse(response2);
+                        return parsedCastQuery.cast.map((result2) => {
+                            let id = new Tp.Value.Entity(String(result.id), String(result.title));
+                            let oneDate = new Date(result.release_date);
+                            return ({
+                                id,
+                                actors:result2.name,
+                                description: result.overview,
+                                release_date: oneDate,
+                                rating_score: Number(result.vote_average),
+                            });
+                        })
+                     })
             }).splice(0,3);
-        
         }
     })
+    
 }
 
 }
