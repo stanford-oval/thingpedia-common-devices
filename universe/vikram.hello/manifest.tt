@@ -9,7 +9,7 @@ class @vikram.hello
     import config from @org.thingpedia.config.none(api_key="654083fa9e049ea234e4ae94d3e65774");
 
     entity movie #_[description = "Movie Information"];
-    entity actor #_[description = "People in movie"];
+    entity person #_[description = "People in movie"];
     monitorable list query movie(   out id: Entity(vikram.hello:movie)
                                     #_[canonical={
                                         default = "base",
@@ -55,7 +55,7 @@ class @vikram.hello
                                         adjective_argmin = ["worst"],
                                         adjective_argmax = ["best"]
                                     }],
-                                    out actors : Array(String)
+                                    out actors : Array(Entity(vikram.hello:person))
                                     #_[canonical = {
                                         default = "preposition", 
                                         base = ["actor", "actress"],
@@ -72,6 +72,26 @@ class @vikram.hello
     #_[result={
         top = "${id}",
         list_concat = "${id}: ${rating_score}.",
+    }];
+    monitorable list query person( out id: Entity(vikram.hello:person)
+                                    #_[canonical={
+                                        default = "base",
+                                        base = ["actor", "actress", "director", "producer"],
+                                        passive_verb = ["directed by #", "played by #"],
+                                    }],
+                                    out popularity : Number 
+                                    #_[min_number = 0]
+                                    #_[max_number = 10]
+                                    #_[canonical = {
+                                        default = "base",
+                                        base = ["popularity", "fame"],
+                                        adjective_argmin=["least popular", "least famous"],
+                                        adjective_argmax=["most popular", "most famous"]
+                                    }])
+    #_[canonical = ["person"]]
+    #_[result={
+        top = "${id}",
+        list_concat = "${id}",
     }];
 }   
 

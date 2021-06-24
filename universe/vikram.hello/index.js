@@ -7,6 +7,7 @@
 // See LICENSE for details
 "use strict";
 const Tp = require('thingpedia');
+const { ComparisonSubqueryBooleanExpression } = require('thingtalk/dist/ast');
 
 
 const tmdbAccess = "https://api.themoviedb.org/3/";
@@ -123,5 +124,54 @@ module.exports = class MovieClass extends Tp.BaseDevice {
     })
     
 }
+    get_person(params, hints, env){
+        let actorSortUrl = '';
+        let actorQueryURL = "https://api.themoviedb.org/3/search/person?api_key=" + this.constructor.metadata.auth.api_key + "&language=en-US&query=";
+        if (hints && hints.sort){
+            if (hints.sort[0] === 'popularity' && hints.sort[1] === 'desc')
+                actorSortUrl = "https://api.themoviedb.org/3/person/popular?api_key=" + this.constructor.metadata.auth.api_key + "&language=en-US&page=1";
+        }
+        if (actorSortUrl){
+            return Tp.Helpers.Http.get(actorSortUrl).then((response) => {
+                let parsedResponse = JSON.parse(response);
+                return parsedResponse.results.map((result) => {
+                    let id = new Tp.Value.Entity(String(result.id), result.name);
+                    return ({
+                        id,
+                        popularity:result.popularity,
+                    });
+                });
+            });
+        }
+        let actorQuery = '';
+        if (hints && hints.filter){
+            for (let [pname, op, value] of hints.filter) {
+                if (pname === 'id' && (op === '==' || op === '=~')) {
+                    if (value instanceof Tp.Value.Entity)
+                        actorQuery = encodeURIComponent(value);
+                        console.log("Hi");
+                        console.log(actorQuery);
+                }
+            }
+        }
+        if (!actorQuery)
+            console.log("Hi");
+            actorQuery = 'Brad%20Pitt';
+            console.log(actorQuery);
+        actorQueryURL = actorQueryURL + actorQuery + "&page=1&include_adult=false";
+        console.log(actorQueryURL);
+        return Tp.Helpers.Http.get(actorQueryURL).then((response) => {
+            let parsedResponse = JSON.parse(response);
+            console.log(parsedResponse);
+                return parsedResponse.results.map((result) => {
+                    console.log(result.name);
+                    let id = new Tp.Value.Entity(String(result.id), result.name);
+                    return ({
+                        id,
+                        popularity:result.popularity,
+                    });
+                }).splice(0,3);
+        });
+    }
 
 }
