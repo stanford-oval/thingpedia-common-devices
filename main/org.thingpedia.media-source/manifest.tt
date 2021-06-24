@@ -1,0 +1,286 @@
+abstract class @org.thingpedia.media-source
+#_[thingpedia_name="Media Source"]
+#_[thingpedia_description="Media Source Class."]
+#_[description="Interface for extracting media."]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="home"]
+
+{
+
+  entity playable #_[description="Playable content"];
+  entity artist #_[description="Music artists"];
+  entity song extends playable #[has_ner=true] #_[description="Songs"];
+  entity album extends playable #[has_ner=true] #_[description="Albums"];
+  entity playlist extends playable #[has_ner=true] #_[description="Playlists"];
+  entity show extends playable #[has_ner=true] #_[description="Shows"];
+  entity device #_[description="Output device ID"];
+
+  list query playable(out id: Entity(org.thingpedia.media-source:playable)
+                      // use song names to fill ambiguous parameters
+                      // the model doesn't see the different between songs and
+                      // albums anyway, and when we in doubt we should assume song
+                      #[string_values="tt:song_name"]
+                     #_[canonical={
+                       default="base",
+                       base=["name", "title", "track name"],
+                       passive_verb=["named #", "called #", "titled #"],
+                       property=["name #", "title #"]
+                     }],
+                      out artists: Array(Entity(org.thingpedia.media-source:artist))
+                      #[string_values="tt:song_artist"]
+                      #_[canonical={
+                        default="preposition",
+                        base=["artist", "author", "song writer", "band", "artist name",
+                              "singer", "composer"],
+                        property=["artist #", "song writer #"],
+                        preposition=["by #", "from #"],
+                        adjective=["#", "# 's"],
+                        passive_verb=["written by #", "released by #", "produced by #",
+                                      "composed by #", "recorded by #"],
+                        verb = ["# wrote", "# released", "# produced", "# composed",
+                                "# did", "# recorded", "# sang", "# made"],
+                        base_projection=['artist', 'singer', 'band', 'composer'],
+                        passive_verb_projection=['created | by', 'sang | by', 'performed | by',
+                                                 'composed | by', 'recorded | by'],
+                        reverse_verb_projection=['sing', 'sang', 'wrote', 'composed',
+                                                 'recorded']
+                      }],
+                      out popularity: Number
+                      #[min_number=0]
+                      #[max_number=100]
+                      #_[canonical={
+                        default="base",
+                        base=["popularity", "average popularity"],
+                        passive_verb=["rated # popularity"],
+                        property=["# popularity"],
+                        adjective_argmin=["least popular", "most niche"],
+                        adjective_argmax=["most popular", "most well-known", "best", "greatest", "top"],
+                      }],
+                      out release_date : Date
+                      #_[canonical={
+                        default="passive_verb",
+                        base=["date", "release date", "release year", "release day"],
+                        property=["release date #"],
+                        preposition=["from #"],
+                        passive_verb=["released in #", "released #", "published in #"],
+                        adjective_argmin=["least recent", "oldest", "first"],
+                        adjective_argmax=["most recent", "newest", "latest"],
+                        passive_verb_argmax=["released most recently"],
+                        passive_verb_projection=['published | on', 'released | on', 'written | on'],
+                      }],
+                      out genres: Array(String)
+                      #[string_values="com.spotify:genre"]
+                      #_[canonical={
+                        default="adjective",
+                        base=["genres", "type of genre", "type of music", "category"],
+                        adjective=["#"],
+                        preposition=["in the # genre", "in #", "of the # genre",
+                                     "in the # style", "in the # category"],
+                      }])
+  #_[canonical=["music", "good music"]]
+  #_[canonical_short=["music"]]
+  #_[confirmation="playable content"]
+  #_[on_error={
+    dailymix_error=["spotify doesn't support daily mix playlists at this time"],
+    rate_limit_error=["spotify is temporarily unavailable"]
+  }]
+  #[minimal_projection=["id"]]
+  #[doc="search for content"];
+
+  list query song extends playable(out id: Entity(org.thingpedia.media-source:song)
+                                  #[string_values="tt:song_name"]
+                                  #[unique=true]
+                                  #_[canonical={
+                                    default="base",
+                                    base=["name", "title", "track name"],
+                                    passive_verb=["named #", "called #", "titled #"],
+                                    property=["name #", "title #"]
+                                  }],
+                                  out album: Entity(org.thingpedia.media-source:album)
+                                  #[string_values="tt:song_album"]
+                                  #_[canonical={
+                                    default="preposition",
+                                    base=["album"],
+                                    property=["album #"],
+                                    preposition=["in the album #",
+                                                 "in #", "part of #", "from the album #",
+                                                 "from #"],
+                                    base_projection=['album'],
+                                    verb_projection=['appear | in', 'appear | on'],
+                                    reverse_verb_projection=['have', 'has', 'contain', 'contains', 'includes'],
+                                    passive_verb_projection=['included | in', 'included | on'],
+                                    preposition_projection=['in', 'on']
+                                  }],
+                                  out energy : Number
+                                  #[min_number=0]
+                                  #[max_number=100]
+                                  #[filterable=false]
+                                  #_[canonical={
+                                    default="base",
+                                    base=["energy"],
+                                    adjective_argmin=["least energetic"],
+                                    adjective_argmax=["most energetic"],
+                                  }],
+                                  out danceability : Number
+                                  #[min_number=0]
+                                  #[max_number=100]
+                                  #[filterable=false]
+                                  #_[canonical={
+                                    default="base",
+                                    base=["danceability"],
+                                    adjective_argmin=["least danceable"],
+                                    adjective_argmax=["most danceable"],
+                                  }])
+  #_[canonical=["song", "track", "sound track", "tune"]]
+  #_[canonical_short=["song", "track"]]
+  #_[confirmation="songs"]
+  #_[on_error={
+    rate_limit_error=["spotify is temporarily unavailable"]
+  }]
+  #[minimal_projection=["id"]]
+  #[doc="search for songs"];
+
+  list query album extends playable (out id: Entity(org.thingpedia.media-source:album)
+                                      #[string_values="tt:song_album"]
+                                      #[unique=true]
+                                      #_[canonical={
+                                        default="base",
+                                        base=["name", "title"],
+                                        passive_verb=["named #", "called #", "titled #"],
+                                        property=["name #", "title #"]
+                                      }])
+  #_[canonical=["album", "good album", "music collection"]]
+  #_[confirmation="album"]
+  #_[on_error={
+    rate_limit_error=["spotify is temporarily unavailable"]
+  }]
+  #[minimal_projection=["id"]]
+  #[doc="search for albums"];
+
+  list query playlist extends playable (out id: Entity(org.thingpedia.media-source:playlist)
+                                         #[string_values="tt:song_name"]
+                                         #[unique=true]
+                                         #_[canonical={
+                                           default="base",
+                                           base=["name"],
+                                           passive_verb=["named #", "called #", "titled #"],
+                                           property=["name #", "title"]
+                                         }])
+  #_[canonical=["playlist"]]
+  #_[confirmation="playlists"]
+  #_[on_error={
+    dailymix_error=["spotify doesn't support daily mix playlists at this time"],
+    rate_limit_error=["spotify is temporarily unavailable"]
+  }]
+  #[minimal_projection=["id"]]
+  #[doc="search for playlists"];
+
+  list query show extends playable(out id: Entity(org.thingpedia.media-source:show)
+                                        //#[string_values="tt:show"]
+                                        #[unique=true]
+                                        #_[canonical={
+                                          default="base",
+                                          base=["name", "title"],
+                                          passive_verb=["named #", "called #", "titled #"],
+                                          property=["name #", "title #"]
+                                        }])
+  #_[canonical=["show", "podcast", "audio podcast", "episodes"]]
+  #_[confirmation="show"]
+  #_[on_error={
+    rate_limit_error=["spotify is temporarily unavailable"]
+  }]
+  #[minimal_projection=["id"]]
+  #[doc="search for shows"];
+
+  action play (in req playable: Entity(org.thingpedia.media-source:playable)
+                #[string_values="tt:song_name"]
+                #_[prompt=["what song do you want to play"]]
+                #_[canonical={
+                  default="base",
+                  base=["name"],
+                  // FIXME: actions must use "preposition" not "passive_verb"
+                  preposition=["named #", "called #", "titled #"],
+                  property=["name #", "title #"]
+                }],
+                out device : Entity(org.thingpedia.media-source:device)
+                #_[canonical={
+                  default="preposition",
+                  base=["device", "player", "app"], // "can you tell me the app"?
+                  preposition=["on"]
+                }])
+  #_[canonical=["play a song", "play the song", "play a track", "play music",
+                // i would like to...
+                "listen to a song", "hear a song"]]
+  #_[confirmation="play the song $song"]
+  #_[on_error={
+    no_active_device=["you must open the spotify app first", "no spotify player is active"],
+    disallowed_action=["failed to play: you must first click play from inside the spotify app , and then i will play songs for you"],
+    player_error=["failed to play: you must first click play from inside the spotify app , and then i will play songs for you"],
+    dailymix_error=["spotify doesn't support daily mix playlists at this time"],
+    non_premium_account=["you need a spotify premium account to play music"],
+    rate_limit_error=["spotify is temporarily unavailable"]
+  }]
+  #[confirm=enum(auto)];
+
+  list query artist(out id: Entity(org.thingpedia.media-source:artist)
+                    #[string_values="tt:song_artist"]
+                    #[unique=true]
+                    #_[canonical={
+                      default="base",
+                      base=["name"],
+                      passive_verb=["named #", "called #"],
+                      property=["name #"]
+                    }],
+                    out genres: Array(String)
+                    #[string_values="com.spotify:genre"]
+                    #_[canonical={
+                      default="adjective",
+                      base=["genres", "type of genre", "type of music", "category"],
+                      property=["# songs", "# music"],
+                      adjective=["#"],
+                      preposition=["in the # genre", "in #", "of the # genre",
+                                   "in the # style", "in the # category"],
+                      verb=["plays # music", "plays the # genre", "does # music",
+                            "plays # songs", "does the # genre",
+                            "plays the # style", "belongs to the genre #",
+                            "belongs to the # genre", "plays #"],
+                      base_projection=['artist', 'singer', 'band', 'composer'],
+                      passive_verb_projection=['created | by', 'sang | by', 'performed | by',
+                                             'composed | by', 'recorded | by'],
+                      reverse_verb_projection=['sing', 'sang', 'wrote', 'composed',
+                                             'recorded'],
+                    }],
+                    out popularity: Number
+                    #[min_number=0]
+                    #[max_number=100]
+                    #_[canonical={
+                      default="base",
+                      base=["popularity", "average popularity"],
+                      passive_verb=["rated # popularity"],
+                      property=["# popularity"],
+                      adjective_argmin=["least popular", "most niche"],
+                      adjective_argmax=["most popular", "most well-known", "best", "greatest", "top"],
+                    }])
+    #_[canonical=["artist", "composer", "musician", "singer"]]
+    #_[confirmation="artists"]
+    #_[on_error={
+      rate_limit_error=["spotify is temporarily unavailable"]
+    }]
+    #[minimal_projection=["id"]]
+    #[doc="search for artists"];
+
+    monitorable query get_currently_playing extends song()
+    #_[canonical=["currently playing track", "currently playing song",
+                  "song currently playing", "current song", "current track"]]
+    #_[result=["currently playing ${id}", "the currently playing track is ${id}"]]
+    #_[on_error={
+      no_song_playing=["no song is currently playing", "nothing is currently playing"],
+      rate_limit_error=["spotify is temporarily unavailable"]
+    }]
+    #[poll_interval=60000ms]
+    #[doc="retrieve the currently playing track name"];
+	
+ 
+}
+

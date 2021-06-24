@@ -1,0 +1,57 @@
+dataset @org.thingpedia.media-player language "en" {
+
+    action := @org.thingpedia.media-player.player_next()
+    #_[utterances=["play the next song",
+                   "skip this song",
+                   "play the next episode",
+                   "skip this episode"]]
+    #[id=27924859]
+    ;
+
+    action := @org.thingpedia.media-player.player_previous()
+    #_[utterances=["play the previous song",
+                   "go back a song",
+                   "play the previous episode",
+                   "go back an episode"]]
+    #[id=27924859]
+    ;
+
+    action := @org.thingpedia.media-player.player_play()
+    #_[utterances=["continue playback",
+                   "continue playing"]]
+    #[id=27924859]
+    ;
+
+    action := @org.thingpedia.media-player.player_pause()
+    #_[utterances=["pause playback",
+                   "pause playing",
+                   "stop playing",
+                   "stop playback",
+                   "stop the music"]]
+    #[id=27924859]
+    ;
+
+    action := @org.thingpedia.media-player.player_shuffle(shuffle=enum(on))
+    #_[utterances=["start shuffle",
+		   "turn shuffle on"]]
+    #[id=27924856]
+    ;
+
+    action (p_state :Enum(on,off)) := @org.thingpedia.media-player.player_shuffle(shuffle=p_state)
+    #_[utterances=["turn shuffle ${p_state}",
+                   "turn ${p_state} shuffle"]]
+    #[id=27924854]
+    ;
+
+    action := @org.thingpedia.media-player.player_repeat(repeat=enum(track))
+    #_[utterances=["repeat this song",
+                   "turn on repeat"]]
+    #[id=27924857]
+    ;
+
+    action := @org.thingpedia.media-player.player_repeat(repeat=enum(off))
+    #_[utterances=["turn off repeat"]]
+    #[id=27924859]
+    ;
+
+}

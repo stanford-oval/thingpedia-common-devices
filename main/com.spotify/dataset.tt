@@ -53,59 +53,6 @@ dataset @com.spotify language "en" {
                    "put this song in ${p_playlist}"]]
     ;
 
-    action (p_state :Enum(on,off)) := @com.spotify.player_shuffle(shuffle=p_state)
-    #_[utterances=["turn shuffle ${p_state}",
-                   "turn ${p_state} shuffle"]]
-    #[id=27924854]
-    ;
-
-    action := @com.spotify.player_shuffle(shuffle=enum(on))
-    #_[utterances=["shuffle my spotify"]]
-    #[id=27924856]
-    ;
-
-    action := @com.spotify.player_repeat(repeat=enum(track))
-    #_[utterances=["repeat this song",
-                   "turn on repeat"]]
-    #[id=27924857]
-    ;
-
-    action := @com.spotify.player_repeat(repeat=enum(off))
-    #_[utterances=["turn off repeat"]]
-    #[id=27924859]
-    ;
-
-    action := @com.spotify.player_next()
-    #_[utterances=["play the next song",
-                   "skip this song",
-                   "play the next episode",
-                   "skip this episode"]]
-    #[id=27924859]
-    ;
-
-    action := @com.spotify.player_previous()
-    #_[utterances=["play the previous song",
-                   "go back a song",
-                   "play the previous episode",
-                   "go back an episode"]]
-    #[id=27924859]
-    ;
-
-    action := @com.spotify.player_play()
-    #_[utterances=["continue playback",
-                   "continue playing"]]
-    #[id=27924859]
-    ;
-
-    action := @com.spotify.player_pause()
-    #_[utterances=["pause playback",
-                   "pause playing",
-                   "stop playing",
-                   "stop playback",
-                   "stop the music"]]
-    #[id=27924859]
-    ;
-
     // TODO: use "action" here so we can combine with streams
     program (p_artist :Entity(com.spotify:artist)) :=
       @com.spotify.playable(), contains(artists, p_artist) => @com.spotify.play(playable=id)

@@ -36,7 +36,7 @@ const DOMAIN_TO_TP_KIND = {
     'vacuum': 'org.thingpedia.iot.vacuum',
 
     // media players
-    //'media_player': 'org.thingpedia.iot.media-player',
+    'media_player': 'org.thingpedia.iot.media-player',
     //'media_player_speaker': 'org.thingpedia.iot.speaker',
     //'media_player_tv': 'org.thingpedia.iot.tv',
 
@@ -123,8 +123,8 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
             kind = DOMAIN_TO_TP_KIND['sensor_door'];
         else if ((domain === 'sensor') || (domain === 'binary_sensor'))
             kind = DOMAIN_TO_TP_KIND[`sensor_${attributes.device_class}`];
-        //else if (domain === 'media_player' && attributes.device_class !== '')
-        //    kind = DOMAIN_TO_TP_KIND[`media_player_${attributes.device_class}`];
+        else if (domain === 'media_player')
+            kind = DOMAIN_TO_TP_KIND['media_player'];
         else
             kind = DOMAIN_TO_TP_KIND[domain];
 

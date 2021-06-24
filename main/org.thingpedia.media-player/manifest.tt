@@ -1,0 +1,127 @@
+abstract class @org.thingpedia.media-player
+#_[thingpedia_name="Media Player"]
+#_[thingpedia_description="Interface for Media Player."]
+#_[description="Interface for Media Player."]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="home"]
+
+{
+
+    action player_play()
+    #_[canonical=["resume playing", "start playing again", "resume playback"]]
+    #_[confirmation="resume playing"]
+    #_[on_error={no_active_device=["you must open the spotify app first", "no spotify player is active"],
+    disallowed_action=["music is already playing"],
+    player_error=["failed to play: try manually resuming"],
+    non_premium_account=["you need a spotify premium account to do this"],
+    rate_limit_error=["spotify is temporarily unavailable"]
+    }]
+    #[doc="resume playback"]
+    #[confirm=false];
+
+    action player_pause()
+    #_[canonical=["pause playback", "pause my spotify"]]
+    #_[confirmation="pause playback"]
+    #_[on_error={no_active_device=["you must open the spotify app first", "no spotify player is active"],
+    disallowed_action=["music is already paused"],
+    non_premium_account=["you need a spotify premium account to do this"],
+    rate_limit_error=["spotify is temporarily unavailable"]
+    }]
+    #[doc="pause playback"]
+    #[confirm=false];
+
+    action player_next()
+    #_[canonical=["play the next song", "go to the next song", "skip this song"]]
+    #_[confirmation="go to the next song"]
+    #_[on_error={no_active_device=["you must open the spotify app first", "no spotify player is active"],
+    disallowed_action=["there's no next song"],
+    non_premium_account=["you need a spotify premium account to do this"],
+    rate_limit_error=["spotify is temporarily unavailable"]
+    }]
+    #[doc="go to the next song"]
+    #[confirm=false];
+
+    action player_previous()
+    #_[canonical=["play the previous song", "go back",
+                  "play the last song",
+                  "go back to the last song",
+                  "go to the previous song"]]
+    #_[confirmation="go to the previous song"]
+    #_[on_error={no_active_device=["you must open the spotify app first", "no spotify player is active"],
+    disallowed_action=["there's no previous song"],
+    non_premium_account=["you need a spotify premium account to do this"],
+    rate_limit_error=["spotify is temporarily unavailable"]
+    }]
+    #[doc="go to the previous song"]
+    #[confirm=false];
+
+    action player_shuffle(in req shuffle: Enum(on,off)
+                          #_[prompt="should we set the shuffle state to on or off"]
+                          #_[canonical={
+                            base=["shuffle"],
+                            preposition=["to"]
+                          }])
+    #_[canonical="set the shuffle state"]
+    #_[confirmation="set the shuffle state"]
+    #_[confirmation_remote="set the shuffle state"]
+    #_[on_error={no_active_device=["you must open the spotify app first", "no spotify player is active"],
+    disallowed_action=["failed to change shuffle state: try playing from the spotify app"],
+    non_premium_account=["you need a spotify premium account to do this"],
+    rate_limit_error=["spotify is temporarily unavailable"]
+    }]
+    #[doc="set the shuffle state"]
+    #[confirm=false];
+
+    action player_set_volume(in req volume: Number #_[prompt="What percent volume would you like to set?"] #_[canonical="volume"])
+    #_[canonical="set volume"]
+    #_[confirmation="set $__device to $volume percent"]
+    #_[on_error={no_active_device=["you must open the spotify app first", "no spotify player is active"],
+    disallowed_action=["music is already paused"],
+    non_premium_account=["you need a spotify premium account to do this"],
+    rate_limit_error=["spotify is temporarily unavailable"]
+    }]
+    #[doc="set volume"]
+    #[confirm=false];
+
+    action player_mute()
+    #_[canonical=["mute", "mute audio"]]
+    #_[confirmation="mute audio"]
+    #_[on_error={no_active_device=["you must open the spotify app first", "no spotify player is active"],
+    disallowed_action=["music is already paused"],
+    non_premium_account=["you need a spotify premium account to do this"],
+    rate_limit_error=["spotify is temporarily unavailable"]
+    }]
+    #[doc="mute"]
+    #[confirm=false];
+
+    action player_unmute()
+    #_[canonical=["unmute", "unmute audio"]]
+    #_[confirmation="unmute audio"]
+    #_[on_error={no_active_device=["you must open the spotify app first", "no spotify player is active"],
+    disallowed_action=["music is already paused"],
+    non_premium_account=["you need a spotify premium account to do this"],
+    rate_limit_error=["spotify is temporarily unavailable"]
+    }]
+    #[doc="unmute"]
+    #[confirm=false];
+
+    action player_repeat(in req repeat: Enum(track,context,off)
+                         #_[prompt="should we set the repeat state to track, context, or off"]
+                         #_[canonical={
+                           base=["repeat"],
+                           preposition=["to"]
+                         }])
+    #_[canonical="set the repeat state"]
+    #_[confirmation="set the repeat state"]
+    #_[confirmation_remote="set the repeat state"]
+    #_[on_error={no_active_device=["you must open the spotify app first", "no spotify player is active"],
+    disallowed_action=["failed to change repeat state: try playing from the spotify app"],
+    non_premium_account=["you need a spotify premium account to do this"],
+    rate_limit_error=["spotify is temporarily unavailable"]
+    }]
+    #[doc="set the repeat state"]
+    #[confirm=false];
+
+}
+
