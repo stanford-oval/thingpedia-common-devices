@@ -1,42 +1,45 @@
 # 1-basic-state
-U: Which is the battery state?
+U: Which is the UPS battery state?
 A: (The battery charge state is (low|normal)\.)
 A: >> expecting = null
 
 ====
 # 2-with-slot-fill-value
 U: what is my sensor battery level?
-A: Which sensor\?
+A: You have multiple battery devices. Which one do you want to use\?
 A: >> expecting = string
 
-U: Smoke Alarm
-A: (The battery level of the smoke alarm is [0-9\.]+ ?%\.)
+U: UPS
+A: (The battery level of the UPS is [0-9\.]+ ?%\.)
 A: >> expecting = null
 
 ====
 # 3-basic-state-with-name
-U: Which is the door sensor battery level?
+U: Which is the sensor's battery state level?
 A: (The battery level is [0-9\.]+ ?%\.)
 A: >> expecting = null
 
 ====
-# 4-slot-fill-value-with-name
-U: what is the battery level in the living room?
-A: Which sensor\?
+# 4-basic-state-fill
+#U: which are the batteries with a level lower than 50%?
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => @org.thingpedia.iot.battery.state(), value <= 50%;
+
+A: (You have multiple battery devices. Which one do you want to use\?)
 A: >> expecting = string
 
-U: Window Alarm
-A: (The battery level of the window alarm is [0-9\.]+ ?%\.)
+U: UPS
+A: (The UPS battery level is [0-9\.]+ ?%\ or lower.)
 A: >> expecting = null
 
 ====
-# 5-basic-state-sort-all
-U: which are the batteries with a level lower than 50%?
-A: Which sensors\?
-A: >> expecting = string
-
-U: All
-A: (The batteries with a level lower than 50% are .)
-A: >> expecting = null
-
-====
+#FIXME to be added in dataset
+# 5-basic-state-sort-all 
+#U: which are the batteries with a level higher than 60%?
+#U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+#U: now => @org.thingpedia.iot.battery(all=true).state(), value >= p_charge;
+#
+#A: (The batteries with a level higher than 60% (is|are)? (UPS|Sensor's Battery State).)
+#A: >> expecting = null
+#
+#====
