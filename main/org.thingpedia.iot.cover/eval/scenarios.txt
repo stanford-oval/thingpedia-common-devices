@@ -1,60 +1,68 @@
 # 1-basic
 U: Which is the state of the cover?
-A: (The cover is (opened,closed)\.)
+A: (The Cover - Level cover is (open|close)\.)
 A: >> expecting = null
 
 ====
 # 2-basic-set
 U: Close the living room's curtains?
-A: (The curtains are closing.)
+A: (Ok, do you want me to pull the Cover - Level curtains close?\)
+A: >> expecting = yesno
+
+U: Yes
+A: (Ok, I helped to pull the Cover - Level curtains close.)
 A: >> expecting = null
 
 ====
 # 3-with-slot-fill
 U: Did I forgot to close the curtains?
-A: Which one\?
-A: >> expecting = string
-
-U: Bedroom ones
-A: (The bedroom curtains are (opened,closed)\.)
+A: (The Cover - Level cover is open.)
 A: >> expecting = null
 
 ====
 # 4-with-slot-fill-set
-U: Open the cover?
-A: Which one\?
-A: >> expecting = string
+U: Open the covers
+A: (Ok, do you want me to keep your Cover - Level curtains?\)
+A: >> expecting = yesno
 
-U: Office blinds
-A: (The office blinds are opening.)
+U: yes
+A: (The  Cover - Level curtains are opening.)
 A: >> expecting = null
 
 ====
-# 5-basic-state-with-name
-U: Is the garage door open?
-A: (The garage door is (opened,closed)\.)
-A: >> expecting = null
-
-====
+#FIXME ambiguous with door sensor
+# 5-basic-state-with-name 
+#U: Is the garage door open?
+#A: (The garage door is (opened,closed)\.)
+#A: >> expecting = null
+#
+#====
 # 6-basic-state-with-name-set
 U: Close the curtains in the bedroom
-A: (The curtains are closing.)
+A: (Ok, do you want me to pull the Cover - Level curtains close?\)
+A: >> expecting = yesno
+
+U: Yes
+A: (Ok, I pulled the Cover - Level curtains open.)
 A: >> expecting = null
 
 ====
+#FIXME to be added in dataset
 # 7-basic-state-all
-U: Which is the state of the covers?
-A: Which covers\?
-A: >> expecting = null
-
-U: All of them
-A: (All the covers are (opened,closed)\.)
-A: >> expecting = null
-
-====
+#U: Which is the state of the covers?
+#A: Which covers\?
+#A: >> expecting = null
+#
+#U: All of them
+#A: (All the covers are (opened,closed)\.)
+#A: >> expecting = null
+#
+#====
 # 8-basic-state-sort-all
 U: Which covers are open?
-A: The open covers are?
-A: >> expecting = null
+A: (Did you mean Get the cover state?\)
+A: >> expecting = yesno
 
+U: Yes
+A: The covers are (open,close)\.)
 ====
