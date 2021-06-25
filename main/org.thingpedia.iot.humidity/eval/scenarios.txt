@@ -1,38 +1,49 @@
 # 1-basic-state
 U: How humid is it?
-A: (The humidity is (humid,normal)\.)
+A: (You have multiple humidity devices. Which one do you want to use?\)
+A: >> expecting = string
+
+U: Humidity State
+A: (It is (humid,normal)\.)
 A: >> expecting = null
 
 ====
 # 2-with-slot-fill-value
 U: what is the humidity level?
-A: Which sensor\?
+A: (You have multiple humidity devices. Which one do you want to use?\)
 A: >> expecting = string
 
-U: The attic one
-A: (The humidity level in the attic is [0-9\.]+ ?%\.)
+U: Humidity Sensor
+A: (The humidity level is [0-9\.]+ ?%\.)
 A: >> expecting = null
 
 ====
-# 3-basic-state-with-name
-U: Which is the office humidity level?
-A: (The level is [0-9\.]+ ?%\.)
+# 3-basic-level-with-name
+U: Which is the Humidity Sensor level?
+A: (The Humidity Sensor level is [0-9\.]+ ?%\.)
 A: >> expecting = null
 
 ====
-# 4-basic-state-sort-all
-U: Which is the general humidity?
-A: (All the sensors are reporting (humid,normal)\.)
+# 4-basic-state-with-name
+U: What is the reading from the Humidity State sensor?
+A: (The Humidity Sensor state is reporting (humid,normal)\.)
 A: >> expecting = null
 
 ====
-# 5-basic-state-all
-U: Which is the humidity inside?
-A: From which sensor\?
-A: >> expecting = null
-
-U: All of them
-A: (The humidity inside is [0-9\.]+ ?%\.)
-A: >> expecting = null
-
-====
+#FIXME
+# 5-basic-state-sort-all
+#U: Which is the general humidity?
+#A: (All the sensors are reporting (humid,normal)\.)
+#A: >> expecting = null
+#
+#====
+# 6-basic-state-all
+#U: Which is the humidity inside?
+#A: From which sensor\?
+#A: >> expecting = null
+#
+#U: All of them
+#A: (The humidity inside is [0-9\.]+ ?%\.)
+#A: >> expecting = null
+#
+#====
