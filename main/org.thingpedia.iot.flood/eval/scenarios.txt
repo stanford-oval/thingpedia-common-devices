@@ -1,38 +1,33 @@
 # 1-basic-state
 U: Which is the flood sensor state?
-A: (The sensor state is (on|off)\.)
+A: (You have multiple flood devices. Which one do you want to use?\)
+A: >> expecting = string
+
+U: Water flooding state
+A: (The Water flooding state sensor report (on|off)\.)
 A: >> expecting = null
 
 ====
 # 2-with-slot-fill-value
 U: what is my sensor flood level?
-A: Which sensor\?
+A: (You have multiple flood devices. Which one do you want to use?\)
 A: >> expecting = string
 
-U: Basement sensor
-A: (The basement sensor read a level of [0-9\.]+ ?%\.)
+U: Water flooding level
+A: (The ater flooding level sensor read a measure of [0-9\.]+ ?%\.)
 A: >> expecting = null
 
 ====
 # 3-basic-state-with-name
-U: Which is the basement flood sensor level?
-A: (The level is [0-9\.]+ ?%\.)
+U: Which is the Water flooding level reading?
+A: (The Water flooding level is [0-9\.]+ ?%\.)
 A: >> expecting = null
 
 ====
+#FIXME Add all to dataset
 # 4-basic-state-sort-all
-U: There is some flooding in the house?
-A: (All the flood sensors are (on|off)\.)
-A: >> expecting = null
-
-====
-# 5-basic-state-all
-U: Which is the state of the flood sensors?
-A: Which sensor\?
-A: >> expecting = null
-
-U: All of them
-A: (The flooding sensors are (open|closed)\.)
-A: >> expecting = null
-
-====
+#U: There is some flooding in the house?
+#A: (All the flood sensors are (on|off)\.)
+#A: >> expecting = null
+#
+#====
