@@ -23,13 +23,9 @@ A: >> expecting = null
 # 4-basic-state-fill
 #U: which are the batteries with a level lower than 50%?
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: now => @org.thingpedia.iot.battery.state(), value <= 50%;
+U: @org.thingpedia.iot.battery(all=true).state(), perc <= 50%;
 
-A: (You have multiple battery devices. Which one do you want to use\?)
-A: >> expecting = string
-
-U: UPS
-A: (The UPS battery level is [0-9\.]+ ?%\ or lower.)
+A: (The de battery level is [0-9\.]+ ?%\ or lower.)
 A: >> expecting = null
 
 ====
