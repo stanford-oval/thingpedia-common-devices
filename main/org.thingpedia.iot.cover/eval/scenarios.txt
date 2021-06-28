@@ -1,0 +1,70 @@
+# 1-basic
+#U: Which is the state of the cover?
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.iot.cover.state(); 
+A: (The Cover - Level cover is (open|close)\.)
+A: >> expecting = null
+
+====
+# 2-basic-set
+U: Close the living room's curtains?
+A: (Ok, do you want me to pull the Cover - Level curtains close?)
+A: >> expecting = yesno
+
+U: Yes
+A: (Ok, I helped to pull the Cover - Level curtains close.)
+A: >> expecting = null
+
+====
+# 3-with-slot-fill
+U: Did I forgot to close the curtains?
+A: (The Cover - Level cover is open.)
+A: >> expecting = null
+
+====
+# 4-with-slot-fill-set
+U: Open the covers
+A: (Ok, do you want me to keep your Cover - Level curtains?)
+A: >> expecting = yesno
+
+U: yes
+A: (The  Cover - Level curtains are opening.)
+A: >> expecting = null
+
+====
+#FIXME ambiguous with door sensor
+# 5-basic-state-with-name 
+#U: Is the garage door open?
+#A: (The garage door is (opened,closed)\.)
+#A: >> expecting = null
+#
+#====
+# 6-basic-state-with-name-set
+U: Close the curtains in the bedroom
+A: (Ok, do you want me to pull the Cover - Level curtains close?)
+A: >> expecting = yesno
+
+U: Yes
+A: (Ok, I pulled the Cover - Level curtains open.)
+A: >> expecting = null
+
+====
+#FIXME to be added in dataset
+# 7-basic-state-all
+#U: Which is the state of the covers?
+#A: Which covers\?
+#A: >> expecting = null
+#
+#U: All of them
+#A: (All the covers are (opened,closed)\.)
+#A: >> expecting = null
+#
+#====
+# 8-basic-state-sort-all
+U: Which covers are open?
+A: (Did you mean Get the cover state?)
+A: >> expecting = yesno
+
+U: Yes
+A: The covers are (open,close)\.)
+====
