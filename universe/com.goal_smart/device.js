@@ -79,6 +79,7 @@ module.exports = class GoalDevice extends Tp.BaseDevice {
 
     });
   }
+  
   // getting the upcoming fixtures of a team, given team id
   get_teamFixtures({ team_id }) {
     return Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/fixtures?team=' + team_id + '&next=5', {
