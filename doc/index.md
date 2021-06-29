@@ -8,4 +8,5 @@
 - [Training a model](training.md)
 - [Adding a new device](adding-new-device.md)
 - [Maintainer guide](maintainer.md)
+- [Analyzing conversation logs](log-processing.md)
 
