@@ -7,6 +7,10 @@ const url = require('url');
 
 const BASE_URL = 'http://opml.radiotime.com';
 const CONTENT_TYPE = 'application/x-www-form-urlencoded';
+const HTTP_STATUS_OK = 200;
+const SEARCH_PARAM = '/Search.ashx';
+const BROWSE_PARAM = '/Browse.ashx';
+const BROWSE_ITEMS = ['trending', 'music', 'sports', 'talk'];
 
 module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
     constructor(engine, state) {
@@ -72,5 +76,17 @@ module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
             return this._get_channel_info(available_channels.slice(0,count));
     }
 
-    
+    async get_list_trending_channels({count = 0}) {
+        let req = {};
+        req.params = {};
+        req.url = BROWSE_PARAM;
+        req.params.c = 'trending';
+        const available_channels = await this._get_tunein_response(req);
+        if ([undefined, null, 0].includes(count))
+            return this._get_channel_info(available_channels);
+        else
+            return this._get_channel_info(available_channels.slice(0,count));
+    }
+
+
 };
