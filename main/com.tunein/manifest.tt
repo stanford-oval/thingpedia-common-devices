@@ -63,5 +63,28 @@ class @com.tunein
   #_[on_error={streaming_service_unaccessible=["radio streaming service is currently unaccessible"]}]
   #[doc="search a specific internet radio channel"];
 
+  monitorable query list list_local_channels(in req query: String
+                                             #[string_values="tt:search_query"],
+                                             in opt count: Number 
+                                             #_[prompt="How many search results do you want?"],
+                                             out text: String 
+                                             #[string_values="com.tunein:text"],
+                                             out subtext: String 
+                                             #[string_values="com.tunein:subtext"],
+                                             out current_track: String 
+                                             #[string_values="com.tunein:current_track"],
+                                             out now_playing_id: String 
+                                             #[string_values="com.tunein:now_playing_id"], 
+                                             out URL: Entity(tt:url)
+                                             out formats: String 
+                                             #[string_values="com.tunein:formats"],
+                                             image: Entity(tt:picture))
+  #_[canonical="list local radio channels"]
+  #_[confirmation="Here are the available channels in your area"]
+  #_[formatted=[{type="rdl",webCallback="${URL},displayTitle="${title}",displayText="${description}"}, {type="picture",url="${image}"}]]
+  #[poll_interval=100000ms]
+  #_[on_error={streaming_service_unaccessible=["radio streaming service is currently unaccessible"]}]
+  #[doc="list all the available radio channels in your area"];
+
   
 }
