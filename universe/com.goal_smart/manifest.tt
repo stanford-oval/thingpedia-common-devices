@@ -66,7 +66,7 @@ class @com.goal_smart
                         base = ["results", "points"],
                         property = ["points of #", "# points", "results of #"],
                         }])
-  #_[canonical=["league standings", "league rankings", "soccer rankings", "league table", "soccer table"]]
+  #_[canonical=["league standings", "league rankings", "soccer rankings", "league table", "soccer table, league update"]]
   #_[confirmation="league standings of $league"]
   #_[result = ["${rank} . ${team} Form: ${form} Points: ${points}"]]
   #[poll_interval=3600000ms]
@@ -85,6 +85,7 @@ class @com.goal_smart
                         out team2: Entity(com.goal_smart:soccer_team)
                         #_[canonical = {
                         base = ["team two", "side two", "group two"]
+                        verb = ["plays against #", "faces #", "faces against # "]
                         }],
                         out venue: String
                         #_[canonical = {
@@ -92,7 +93,7 @@ class @com.goal_smart
                         }])
   #_[canonical=["team fixtures", "team matches", "team games"]]
   #_[confirmation="fixtures of $team_id"]
-  #_[result=["${team1} vs ${team2} at ${venue} for the ${league}"]]
+  #_[result=["${team1} vs ${team2} at ${venue} for the ${league}."]]
   #[poll_interval=3600000ms]
   #[doc="Get the fixtures of the team"];
 
@@ -131,7 +132,7 @@ class @com.goal_smart
                         }])
   #_[canonical=["past team fixtures", "previous team matches", "past team games"]]
   #_[confirmation="past fixtures of $team_id"]
-  #_[result=["${our_team} ${result} ${opposition_team} at ${venue} for the ${league}. The score was ${our_score}-${opposition_score}"]]
+  #_[result=["${our_team} ${result} against ${opposition_team} at ${venue} for the ${league}. The score was ${our_score}-${opposition_score}"]]
   #[poll_interval=3600000ms]
   #[doc="Get the previous fixtures of the team"];
 
@@ -149,6 +150,36 @@ class @com.goal_smart
   #_[result=["${player} has scored ${goals} goals this season"]]
   #[poll_interval=3600000ms]
   #[doc="Get the top scorers of the league"];
+
+  monitorable list query topassisters(in req league_id: Entity(com.goal_smart:soccer_league) #_[prompt="what league do you want out check out"],
+                        out player: String
+                        #_[canonical = {
+                        base = ["person", "athlete", "teammate", "player"]
+                        }],
+                        out assists: Number
+                        #_[canonical = {
+                        base = ["assists"]
+                        }])
+  #_[canonical=["top assist givers", "assisters list", "league top assisters", "leading assisters"]]
+  #_[confirmation="top assisters of $league_id"]
+  #_[result=["${player} has assisted ${assists} goals this season"]]
+  #[poll_interval=3600000ms]
+  #[doc="Get the top assisters of the league"];
+  
+  monitorable list query topRedCards(in req league_id: Entity(com.goal_smart:soccer_league) #_[prompt="what league do you want out check out"],
+                        out player: String
+                        #_[canonical = {
+                        base = ["person", "athlete", "teammate", "player"]
+                        }],
+                        out red_cards: Number
+                        #_[canonical = {
+                        base = ["red cards", "warnings", "send offs", "ejections"]
+                        }])
+  #_[canonical=["top red card receivers", "top red cards list", "league top red card receivers", "leading red cards", "leading ejection receivers"]]
+  #_[confirmation="top red card receivers of $league_id"]
+  #_[result=["${player} has gotten ${red_cards} red cards this season"]]
+  #[poll_interval=3600000ms]
+  #[doc="Get the top red card receivers of the league"];
 
   monitorable query teamUpdate(in req team_id: Entity(com.goal_smart:soccer_team) #_[prompt="what team do you want out check out "],
                         out team : Entity(com.goal_smart:soccer_team)
