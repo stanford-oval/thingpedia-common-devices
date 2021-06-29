@@ -13,11 +13,14 @@ const BROWSE_PARAM = '/Browse.ashx';
 const BROWSE_ITEMS = ['trending', 'music', 'sports', 'talk'];
 
 module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
-    constructor(engine, state) {
+    constructor(engine, state, args={}) {
          super(engine, state);
          this.uniqueId = 'com.tunein';
          this.name = 'Tunein';
          this.description = 'Stream radio through TuneIn API';
+         axios.defaults.headers.post['Content-Type'] = args.content_type || CONTENT_TYPE;
+         axios.defaults.baseURL = args.protocol || BASE_URL;
+         axios.defaults.params = { render: 'json' };
     }
 
     _get_tunein_response(req) {
