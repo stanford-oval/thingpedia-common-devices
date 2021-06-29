@@ -1,0 +1,25 @@
+dataset @com.tunein language "en" {
+    query (p_query :String)  := @com.tunein.search_channel(query=p_query, count=p_count)
+    #_[utterances=["${p_query:const} channels on the radio",
+                   "radio channels named ${p_query}",
+                   "${p_query:const} radio channel",
+                   "first ${p_count:const} radio channels matching ${p_query:const}",
+                   "top ${p_count:const} radio channels matching ${p_query:const}"]];
+
+    stream  := monitor (@com.tunein.search_channel(query=p_query))
+    #_[utterances=["when there is a new track from the ${p_query:const} channel"]];
+
+    query  := @com.tunein.list_local_channels(count=p_count)
+    #_[utterances=["show me top ${p_count:const} radio channels in my area",
+                   "list radio channels in my area"]];
+
+    query  := @com.tunein.list_trending_channels(count=p_count)
+    #_[utterances=["show me top ${p_count:const} trending radio channels",
+                   "list trending radio channels",
+                   "hottest radio channels",
+                   "most popular radio channels"]];
+
+    action (p_query :String) := @com.tunein.play(query=p_query)
+    #_[utterances=["broadcast ${p_query:const} channel on the radio",
+                   "stream ${p_query:const} radio channel"]];
+}
