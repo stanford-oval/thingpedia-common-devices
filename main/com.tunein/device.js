@@ -42,5 +42,11 @@ module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
         }).catch(err => throwError("streaming_service_unaccessible"));
     }
 
+    _get_channel_info(ch_list) {
+        return ch_list.map(
+            (x) => (({text, subtext='', current_track='', now_playing_id='', URL='', formats='', image=''}) => ({text, subtext, current_track, now_playing_id, URL, formats, image}))(x)
+            );
+    }
+
     
 };
