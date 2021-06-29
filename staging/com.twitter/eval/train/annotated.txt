@@ -183,3 +183,8 @@ UT: @com.twitter.post(status=$context.selection : String);
 U: when i tweet
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: monitor(@com.twitter.tweet() filter from_self == true);
+====
+# log-dev/36
+U: notify me when str:USERNAME::0: tweets
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.twitter.home_timeline() filter author == "str:USERNAME::0:"^^tt:username);
