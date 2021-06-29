@@ -60,5 +60,17 @@ module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
             return this._get_channel_info(available_channels.slice(0,count));
     }
 
+    async get_list_local_channels({count=0}) {
+        let req = {};
+        req.params = {};
+        req.url = BROWSE_PARAM;
+        req.params.c = 'local';
+        const available_channels = await this._get_tunein_response(req);
+        if ([undefined, null, 0].includes(count))
+            return this._get_channel_info(available_channels);
+        else
+            return this._get_channel_info(available_channels.slice(0,count));
+    }
+
     
 };
