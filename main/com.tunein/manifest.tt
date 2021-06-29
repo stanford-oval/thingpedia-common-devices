@@ -109,5 +109,17 @@ class @com.tunein
   #_[on_error={streaming_service_unaccessible=["radio streaming service is currently unaccessible"]}]
   #[doc="list the trending radio channels"];
 
+  action play(in req query: String
+              #[string_values="tt:search_query"]
+              #_[prompt=["which channel would you like to listen to?"]]
+              #_[canonical={
+                 base=["text"],
+                 property=["# radio", "# channel"]}],
+              out URL: Entity(tt:url))
+  #_[canonical=["listen to radio", "broadcast radio", "stream radio"]]
+  #_[confirmation="broadcasting the content on $text"]
+  #_[on_error={streaming_service_unaccessible=["radio streaming service is currently unaccessible"]}]
+  #[confirm=enum(auto)];
+
   
 }
