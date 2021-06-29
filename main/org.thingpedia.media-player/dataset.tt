@@ -54,4 +54,63 @@ dataset @org.thingpedia.media-player language "en" {
     #[id=27924859]
     ;
 
+    program := @org.thingpedia.media-player.play(playable=$?)
+    #[click_count=6]
+    #[like_count=0]
+    #_[utterances=["play some music on spotify",
+                   "open spotify and play some music",
+                   "use spotify to play some music"]]
+    #[id=27924738]
+    ;
+
+    action (p_song :Entity(org.thingpedia.media-source:playable)) := @org.thingpedia.media-player.play(playable=p_song)
+    #_[utterances=["play ${p_song:no-undefined} on spotify",
+                   "play ${p_song:no-undefined}"]]
+    #[id=27924741]
+    ;
+
+    program (p_song :String) := (@org.thingpedia.media-source.playable(), id =~ p_song) => @org.thingpedia.media-player.play(playable=id)
+    #_[utterances=["i would like to hear ${p_song:const}",
+                   "i would like to listen to ${p_song:const}",
+                   "play ${p_song:const} on spotify",
+                   "on spotify play ${p_song:const}",
+                   "play ${p_song:const}"]]
+    ;
+
+    program (p_genre :String) := (@org.thingpedia.media-source.playable(), contains~(genres, p_genre)) => @org.thingpedia.media-player.play(playable=id)
+    #_[utterances=["i would like to hear some ${p_genre:const}",
+                   "i would like to listen to ${p_genre:const} music",
+                   "play ${p_genre:const} on spotify",
+                   "on spotify play ${p_genre:const} music",
+                   "play ${p_genre:const} music"]]
+    ;
+
+        // TODO: use "action" here so we can combine with streams
+    program (p_artist :Entity(org.thingpedia.media-source:artist)) :=
+      @org.thingpedia.media-source.playable(), contains(artists, p_artist) => @org.thingpedia.media-player.play(playable=id)
+    #_[utterances=["play ${p_artist:no-undefined}",
+                   "play some ${p_artist:no-undefined}",
+                   "play the artist ${p_artist:no-undefined}",
+                   "i would like to hear ${p_artist:no-undefined}",
+                   "i would like to listen to ${p_artist:no-undefined}",
+                   "i would like to listen to the artist ${p_artist:no-undefined}"]]
+    #[id=27924875]
+    ;
+
+    program (p_album :String, p_artist :Entity(org.thingpedia.media-source:artist)) :=
+      @org.thingpedia.media-source.album(), id =~ p_album && contains(artists, p_artist) => @org.thingpedia.media-player.play(playable=id)
+    #_[utterances=[/*"play ${p_album:no-undefined} by ${p_artist:no-undefined}",*/
+                   "play the album ${p_album:no-undefined} by ${p_artist:no-undefined}",
+                   "i would like to listen to the album ${p_album:no-undefined} by ${p_artist:no-undefined}",
+                   "i would like to listen to the album ${p_album:no-undefined} from ${p_artist:no-undefined}"]]
+    #[id=27924878]
+    ;
+
+    program (p_show :String) :=
+      @org.thingpedia.media-source.show(), id =~ p_show => @org.thingpedia.media-player.play(playable=id)
+    #_[utterances=["play the podcast ${p_show:no-undefined}", "play the show ${p_show:no-undefined}",
+                   "i would like to listen to the show ${p_show:no-undefined}",
+                   "i would like to listen to the podcast ${p_show:no-undefined}"]]
+    ;
+
 }

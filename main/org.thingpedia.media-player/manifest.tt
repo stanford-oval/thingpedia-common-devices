@@ -73,39 +73,6 @@ abstract class @org.thingpedia.media-player
     #[doc="set the shuffle state"]
     #[confirm=false];
 
-    action player_set_volume(in req volume: Number #_[prompt="What percent volume would you like to set?"] #_[canonical="volume"])
-    #_[canonical="set volume"]
-    #_[confirmation="set $__device to $volume percent"]
-    #_[on_error={no_active_device=["you must open the spotify app first", "no spotify player is active"],
-    disallowed_action=["music is already paused"],
-    non_premium_account=["you need a spotify premium account to do this"],
-    rate_limit_error=["spotify is temporarily unavailable"]
-    }]
-    #[doc="set volume"]
-    #[confirm=false];
-
-    action player_mute()
-    #_[canonical=["mute", "mute audio"]]
-    #_[confirmation="mute audio"]
-    #_[on_error={no_active_device=["you must open the spotify app first", "no spotify player is active"],
-    disallowed_action=["music is already paused"],
-    non_premium_account=["you need a spotify premium account to do this"],
-    rate_limit_error=["spotify is temporarily unavailable"]
-    }]
-    #[doc="mute"]
-    #[confirm=false];
-
-    action player_unmute()
-    #_[canonical=["unmute", "unmute audio"]]
-    #_[confirmation="unmute audio"]
-    #_[on_error={no_active_device=["you must open the spotify app first", "no spotify player is active"],
-    disallowed_action=["music is already paused"],
-    non_premium_account=["you need a spotify premium account to do this"],
-    rate_limit_error=["spotify is temporarily unavailable"]
-    }]
-    #[doc="unmute"]
-    #[confirm=false];
-
     action player_repeat(in req repeat: Enum(track,context,off)
                          #_[prompt="should we set the repeat state to track, context, or off"]
                          #_[canonical={
@@ -122,6 +89,37 @@ abstract class @org.thingpedia.media-player
     }]
     #[doc="set the repeat state"]
     #[confirm=false];
+
+    action play (in req playable: Entity(org.thingpedia.media-source:playable)
+                #[string_values="tt:song_name"]
+                #_[prompt=["what song do you want to play"]]
+                #_[canonical={
+                  default="base",
+                  base=["name"],
+                  // FIXME: actions must use "preposition" not "passive_verb"
+                  preposition=["named #", "called #", "titled #"],
+                  property=["name #", "title #"]
+                }],
+                out device : Entity(org.thingpedia.media-source:device)
+                #_[canonical={
+                  default="preposition",
+                  base=["device", "player", "app"], // "can you tell me the app"?
+                  preposition=["on"]
+                }])
+  #_[canonical=["play a song", "play the song", "play a track", "play music",
+                // i would like to...
+                "listen to a song", "hear a song"]]
+  #_[confirmation="play the song $song"]
+  #_[on_error={
+    no_active_device=["you must open the spotify app first", "no spotify player is active"],
+    disallowed_action=["failed to play: you must first click play from inside the spotify app , and then i will play songs for you"],
+    player_error=["failed to play: you must first click play from inside the spotify app , and then i will play songs for you"],
+    dailymix_error=["spotify doesn't support daily mix playlists at this time"],
+    non_premium_account=["you need a spotify premium account to play music"],
+    rate_limit_error=["spotify is temporarily unavailable"]
+  }]
+  #[confirm=enum(auto)];
+
 
 }
 
