@@ -80,9 +80,124 @@ module.exports = class GoalDevice extends Tp.BaseDevice {
     });
   }
 
-  // getting the upcoming fixtures of a team, given team id
-  get_teamFixtures({ team_id }) {
-    return Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/fixtures?team=' + team_id + '&next=5', {
+  get_playerStats({ league_id }) {
+
+    let i = 0;
+    for (i = 1; i < 39; i++) {
+      return Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/players?league=' + league_id + '&season=2020&page=' + JSON.stringify(i), {
+        extraHeaders: {
+          'x-rapidapi-key': this.constructor.metadata.auth.api_key,
+          'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
+        },
+        accept: 'application/json'
+      }).then((tempResponse) => {
+        const a = JSON.parse(tempResponse);
+        const b = a.response;
+        return b.map((obj) => {
+          const n = obj.player.name;
+          const n_id = obj.player.id;
+          let g = obj.statistics[0].goals.total;
+          if (g == null) {
+            g = 0;
+          }
+          let a = obj.statistics[0].goals.assists;
+          if (a == null) {
+            a = 0;
+          }
+          let rc = obj.statistics[0].cards.red;
+          if (rc == null) {
+            rc = 0;
+          }
+          let yc = obj.statistics[0].cards.yellow;
+          if (yc == null) {
+            yc = 0;
+          }
+          let gms = obj.statistics[0].games.appearances;
+          if (gms == null) {
+            gms = 0;
+          }
+          let mns = obj.statistics[0].games.minutes;
+          if (mns == null) {
+            mns = 0;
+          }
+          let shts = obj.statistics[0].shots.total;
+          if (shts == null) {
+            shts = 0;
+          }
+          let shtsON = obj.statistics[0].shots.on;
+          if (shtsON == null) {
+            shtsON = 0;
+          }
+          let pss = obj.statistics[0].passes.total;
+          if (pss == null) {
+            pss = 0;
+          }
+          let pssAcc = obj.statistics[0].passes.accuracy;
+          if (pssAcc == null) {
+            pssAcc = 0;
+          }
+          let kPss = obj.statistics[0].passes.key;
+          if (kPss == null) {
+            kPss = 0;
+          }
+          let drib = obj.statistics[0].dribbles.attempts;
+          if (drib == null) {
+            drib = 0;
+          }
+          let succDrib = obj.statistics[0].dribbles.success;
+          if (succDrib == null) {
+            succDrib = 0;
+          }
+          let tckles = obj.statistics[0].tackles.total;
+          if (tckles == null) {
+            tckles = 0;
+          }
+          let blcks = obj.statistics[0].tackles.blocks;
+          if (blcks == null) {
+            blcks = 0;
+          }
+          let incpts = obj.statistics[0].tackles.interceptions;
+          if (incpts == null) {
+            incpts = 0;
+          }
+
+          return ({
+            player: new Tp.Value.Entity(String(n_id), String(n)),
+            assists: a,
+            red_cards: rc,
+            yellow_cards: yc,
+            appearances: gms,
+            minutes: mns,
+            shots: shts,
+            shots_on_target: shtsON,
+            passes: pss,
+            key_passes: kPss,
+            pass_accuracy: pssAcc,
+            dribble_attempts: drib,
+            successful_dribbles: succDrib,
+            tackles: tckles,
+            blocks: blcks,
+            interceptions: incpts,
+            goals: g
+          });
+        });
+
+      });
+
+
+    }
+  }
+
+  get_fixtures({ team_id }) {
+
+    let today = new Date();
+    let priorDate = new Date(new Date().setDate(today.getDate() - 30));
+    let pD = priorDate.toISOString().slice(0, 10);
+    let futureDate = new Date(new Date().setDate(today.getDate() + 30));
+    let fD = futureDate.toISOString().slice(0, 10);
+    console.log(fD);
+    console.log(pD)
+    return Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/fixtures?season=2020&team=' + team_id + '&from=' + pD + '&to=' + fD, {
       extraHeaders: {
         'x-rapidapi-key': this.constructor.metadata.auth.api_key,
         'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
@@ -96,42 +211,6 @@ module.exports = class GoalDevice extends Tp.BaseDevice {
 
         const l = obj.league.name;
         const l_id = obj.league.id;
-        const n1 = obj.teams.home.name;
-        const t1_id = obj.teams.home.id;
-        const n2 = obj.teams.away.name;
-        const t2_id = obj.teams.away.id;
-        let v = obj.fixture.venue.name;
-        if (typeof v !== 'undefined') {
-          v = "a location not yet decided"
-        }
-        return ({
-          league: new Tp.Value.Entity(String(l_id), String(l)),
-          team1: new Tp.Value.Entity(String(t1_id), String(n1)),
-          team2: new Tp.Value.Entity(String(t2_id), String(n2)),
-          venue: v
-        });
-
-      });
-
-    });
-
-  }
-  // getting the upcoming fixtures of a team, given team id
-  get_previousFixtures({ team_id }) {
-    return Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/fixtures?team=' + team_id + '&last=5', {
-      extraHeaders: {
-        'x-rapidapi-key': this.constructor.metadata.auth.api_key,
-        'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
-      },
-      accept: 'application/json'
-    }).then((tempResponse) => {
-      const a = JSON.parse(tempResponse);
-      const b = a.response;
-
-      return b.map((obj) => {
-
-        const l = obj.league.name;
-        const l_id = obj.league.id;
         let v = obj.fixture.venue.name;
         let id1 = obj.teams.home.id;
         let id2 = obj.teams.away.id;
@@ -139,6 +218,9 @@ module.exports = class GoalDevice extends Tp.BaseDevice {
         let theirName = obj.teams.away.name;
         let ourScore = obj.goals.home;
         let theirScore = obj.goals.away;
+        const fd1 = obj.fixture.date;
+        const fixtureDate = new Date(fd1);
+        let gameScore = " ";
 
         if (team_id !== id1) {
           id1 = obj.teams.away.id;
@@ -147,8 +229,13 @@ module.exports = class GoalDevice extends Tp.BaseDevice {
           theirName = obj.teams.home.name;
           ourScore = obj.goals.away;
           theirScore = obj.goals.home;
-
         }
+        if (ourScore == null) {
+          gameScore = "has not been recorded yet";
+        } else {
+          gameScore = " was " + ourScore + " - " + theirScore;
+        }
+
         let r = "tied";
         if (ourScore > theirScore)
           r = "won";
@@ -156,13 +243,17 @@ module.exports = class GoalDevice extends Tp.BaseDevice {
         if (theirScore > ourScore)
           r = "lost";
 
+        if (obj.goals.away == null) {
+          r = "play";
+        }
+
         return ({
           league: new Tp.Value.Entity(String(l_id), String(l)),
           our_team: new Tp.Value.Entity(String(id1), String(ourName)),
           opposition_team: new Tp.Value.Entity(String(id2), String(theirName)),
-          our_score: ourScore,
-          opposition_score: theirScore,
+          score: gameScore,
           venue: v,
+          date: fixtureDate,
           result: r
         });
 
@@ -172,74 +263,6 @@ module.exports = class GoalDevice extends Tp.BaseDevice {
 
   }
 
-  // getting league top scorers, given league id
-  get_topscorers({ league_id }) {
-    return Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/players/topscorers?league=' + league_id + '&season=2020', {
-      extraHeaders: {
-        'x-rapidapi-key': this.constructor.metadata.auth.api_key,
-        'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
-      },
-      accept: 'application/json'
-    }).then((tempResponse) => {
-      const a = JSON.parse(tempResponse);
-      const b = a.response;
-      return b.map((obj) => {
-        const n = obj.player.name;
-        const g = obj.statistics[0].goals.total;
-        return ({
-          player: n,
-          goals: g
-        });
-      });
-
-    });
-  }
-
-  get_topassisters({ league_id }) {
-    return Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/players/topassists?league=' + league_id + '&season=2020', {
-      extraHeaders: {
-        'x-rapidapi-key': this.constructor.metadata.auth.api_key,
-        'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
-      },
-      accept: 'application/json'
-    }).then((tempResponse) => {
-      const a = JSON.parse(tempResponse);
-      const b = a.response;
-      return b.map((obj) => {
-        const n = obj.player.name;
-        const g = obj.statistics[0].goals.assists;
-        return ({
-          player: n,
-          assists: g
-        });
-      });
-
-    });
-  }
-
-  get_topRedCards({ league_id }) {
-    return Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/players/topredcards?league=' + league_id + '&season=2020', {
-      extraHeaders: {
-        'x-rapidapi-key': this.constructor.metadata.auth.api_key,
-        'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
-      },
-      accept: 'application/json'
-    }).then((tempResponse) => {
-      const a = JSON.parse(tempResponse);
-      const b = a.response;
-      return b.map((obj) => {
-        const n = obj.player.name;
-        const g = obj.statistics[0].cards.red;
-        return ({
-          player: n,
-          red_cards: g
-        });
-      });
-
-    });
-  }
-
-  
   get_teamUpdate({ team_id }) {
 
     return Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/teams?id=' + team_id, {

@@ -35,20 +35,11 @@ dataset @com.goal_smart language "en" {
     query (p_league_id : Entity(com.goal_smart:soccer_league))  := @com.goal_smart.standings(league_id=p_league_id)
     #_[utterances=["standings of $p_league_id", "$p_league_id's standings","$p_league_id's table"]];
 
-    query (p_team_id : Entity(com.goal_smart:soccer_team))  := @com.goal_smart.teamFixtures(team_id=p_team_id)
-    #_[utterances=["fixtures of $p_team_id", "$p_team_id's fixtures","$p_team_id's matches", "$p_team_id's upcoming fixtures"]];
+    query (p_team_id : Entity(com.goal_smart:soccer_team))  := @com.goal_smart.fixtures(team_id=p_team_id)
+    #_[utterances=["fixtures of $p_team_id", "$p_team_id's upcoming fixtures","$p_team_id's matches", "$p_team_id's fixtures", "matches of $p_team_id"]];
 
-    query (p_team_id : Entity(com.goal_smart:soccer_team))  := @com.goal_smart.previousFixtures(team_id=p_team_id)
-    #_[utterances=["previous fixtures of $p_team_id", "$p_team_id's past fixtures","$p_team_id's past matches", "$p_team_id's previous fixtures"]];
-
-    query (p_league_id : Entity(com.goal_smart:soccer_league))  := @com.goal_smart.topscorers(league_id=p_league_id)
-    #_[utterances=["top scorers of $p_league_id", "$p_league_id's top scorers","$p_league_id's scorers"]];
-
-    query (p_league_id : Entity(com.goal_smart:soccer_league))  := @com.goal_smart.topassisters(league_id=p_league_id)
-    #_[utterances=["top assisters of $p_league_id", "$p_league_id's top assisters","$p_league_id's assisters"]];
-
-    query (p_league_id : Entity(com.goal_smart:soccer_league))  := @com.goal_smart.topRedCards(league_id=p_league_id)
-    #_[utterances=["top red card recievers of $p_league_id", "$p_league_id's top red cards","$p_league_id's red cards"]];
+    query (p_league_id : Entity(com.goal_smart:soccer_league))  := @com.goal_smart.playerStats(league_id=p_league_id)
+    #_[utterances=["players of $p_league_id", "$p_league_id's players","$p_league_id's individuals"]];
 
     query (p_team_id : Entity(com.goal_smart:soccer_team))  := @com.goal_smart.teamUpdate(team_id=p_team_id)
     #_[utterances=["summary of $p_team_id", "$p_team_id's summary","$p_team_id's performance", "$p_team_id's update"]];
