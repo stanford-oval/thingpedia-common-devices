@@ -220,7 +220,7 @@ module.exports = class GoalDevice extends Tp.BaseDevice {
         let theirScore = obj.goals.away;
         const fd1 = obj.fixture.date;
         const fixtureDate = new Date(fd1);
-        let gameScore = " ";
+        let gameScore = "has not been recorded";
 
         if (team_id !== id1) {
           id1 = obj.teams.away.id;
@@ -230,9 +230,7 @@ module.exports = class GoalDevice extends Tp.BaseDevice {
           ourScore = obj.goals.away;
           theirScore = obj.goals.home;
         }
-        if (ourScore == null) {
-          gameScore = "has not been recorded yet";
-        } else {
+        if (ourScore != null) {
           gameScore = " was " + ourScore + " - " + theirScore;
         }
 
