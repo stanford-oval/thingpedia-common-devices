@@ -1095,7 +1095,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (music.length === 1) {
             const uri = String(music[0]);
             let data;
-            if (uri.includes("episode") || uri.includes("song"))
+            if (uri.includes("episode") || uri.includes("track"))
                 data = { uris: [uri] };
             else
                 data = { context_uri: uri };
