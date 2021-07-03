@@ -17,18 +17,7 @@ const finalSearch = "&language=en-US&page=1";
 const topRated = "movie/top_rated?api_key=";
 const nowPlaying = "movie/now_playing?api_key=";
 
-function printMovie (jsonFile) {
-    let parsedArr = jsonFile.results.map((result) => {
-        ({
-            title: result.original_title,
-            description: result.overview,
-            release_date: result.release_date,
-            rating_score: result.vote_average,
-        })
-    });
-    parsedArr = parsedArr[0,3];
 
-}
 module.exports = class MovieClass extends Tp.BaseDevice {
     //constructor taken from Yelp index.js
     constructor(engine, state){
@@ -36,7 +25,7 @@ module.exports = class MovieClass extends Tp.BaseDevice {
         this.uniqueId = "vikram.hello";
     }
 
-    get_movie (params, hints, env) {
+    async get_movie (params, hints, env) {
         // const queryURL = tmdbAccess + multiSearch + this.constructor.metadata.auth.api_key + finalSearch + realquery + "&page=1&include_adult=false";
         let sortURL = '';
         if (hints && hints.sort) {
@@ -46,19 +35,35 @@ module.exports = class MovieClass extends Tp.BaseDevice {
                 sortURL = tmdbAccess + topRated + this.constructor.metadata.auth.api_key + finalSearch;
         }
         if (sortURL) {
-            return Tp.Helpers.Http.get(sortURL).then((response) => {
-                let parsedResponse = JSON.parse(response);
-                return parsedResponse.results.map((result) => {
+            const response1 = await Tp.Helpers.Http.get(sortURL);
+                let parsedResponse = JSON.parse(response1);
+                return Promise.all(parsedResponse.results.map(async (result) => {
                     const castQuery = "https://api.themoviedb.org/3/movie/" + String(result.id) + "/credits?api_key=654083fa9e049ea234e4ae94d3e65774&language=en-US";
                     let id = new Tp.Value.Entity(String(result.id), result.title);
-                    return ({
+                    let oneDate = new Date(Date.now());
+                    if (String(result.release_date) != ''){
+                        oneDate = new Date(result.release_date);
+                    }
+                    const movieObj = {
                         id,
                         description: result.overview,
-                        release_date: new Date(result.release_date),
+                        release_date: oneDate,
                         rating_score: Number(result.vote_average),
-                    });
-                }).splice(0,3);
-            });
+                        actors:[]
+                    }
+                    try{
+                        const actorResponse = await Tp.Helpers.Http.get(castQuery);
+                        const actorsParsed = JSON.parse(actorResponse);
+                        for (const person1 of (actorsParsed.cast)){
+                            movieObj.actors.push(new Tp.Value.Entity(String(person1.id), person1.name));
+                        }
+                    }
+                    catch(err){
+                        var newArr = [];
+                        movieObj.actors.push(newArr);
+                    }
+            return movieObj;           
+            }));
         }
         let query_term = '';
         let searchType = 'movie';
@@ -77,52 +82,67 @@ module.exports = class MovieClass extends Tp.BaseDevice {
         }
         if (!query_term)
             query_term = 'Avengers';
-        const multiQuery = tmdbAccess + multiSearch + this.constructor.metadata.auth.api_key + '&language=en-US&query=' + query_term + '&page=1%include_adult=false';
-        return Tp.Helpers.Http.get(multiQuery).then((response) => {
-            let parsedResponse = JSON.parse(response);
+        const movieQuery = tmdbAccess + movieSearch + this.constructor.metadata.auth.api_key + '&language=en-US&query=' + query_term + '&page=1%include_adult=false';
+        const response1 = await Tp.Helpers.Http.get(movieQuery);
+            let parsedResponse = JSON.parse(response1);
             if (searchType == 'actor'){
-                console.log("Hello");
-            return parsedResponse.results[0].known_for.map((result) => {
+                return Promise.all(parsedResponse.results[0].known_for.map(async (result) => {
                     const castQuery = "https://api.themoviedb.org/3/movie/" + String(result.id) + "/credits?api_key=654083fa9e049ea234e4ae94d3e65774&language=en-US";
-                    return Tp.Helpers.Http.get(castQuery).then((response2) => {
-                        console.log(result2);
-                        let parsedCastQuery = JSON.parse(response2);
-                        return parsedCastQuery.cast.map((result2) => {
-                            let id = new Tp.Value.Entity(String(result.id), String(result.title));
-                            let oneDate = new Date(result.release_date);
-                            return ({
-                                id,
-                                actors: Array(result2.name),
-                                description: result.overview,
-                                release_date: oneDate,
-                                rating_score: Number(result.vote_average),
-                            });
-                        });
-                    });
-            }).splice(0,3);
+                        let id = new Tp.Value.Entity(String(result.id), String(result.title));
+                        let oneDate = new Date(Date.now());
+                        if (String(result.release_date) != ''){
+                            oneDate = new Date(result.release_date);
+                        }
+                        const movieObj = {
+                            id,
+                            description: result.overview,
+                            release_date: oneDate,
+                            rating_score: Number(result.vote_average),
+                            actors:[]
+                        }
+                        try{
+                            const actorResponse = await Tp.Helpers.Http.get(castQuery);
+                            const actorsParsed = JSON.parse(actorResponse);
+                            for (const person1 of (actorsParsed.cast)){
+                                movieObj.actors.push(new Tp.Value.Entity(String(person1.id), person1.name));
+                            }
+                        }
+                        catch(err){
+                            var newArr = [];
+                            movieObj.actors.push(newArr);
+                        }
+                return movieObj;           
+                }));
             }
             else {
-            return parsedResponse.results.map((result) => {
-                    console.log(result);
+            return Promise.all(parsedResponse.results.map(async (result) => {
                     const castQuery = "https://api.themoviedb.org/3/movie/" + result.id + "/credits?api_key=654083fa9e049ea234e4ae94d3e65774&language=en-US";
-                    return Tp.Helpers.Http.get(castQuery).then((response2) => {
-                        let parsedCastQuery = JSON.parse(response2);
-                        return parsedCastQuery.cast.map((result2) => {
-                            let id = new Tp.Value.Entity(String(result.id), String(result.title));
-                            let oneDate = new Date(result.release_date);
-                            return ({
-                                id,
-                                actors:result2.name,
-                                description: result.overview,
-                                release_date: oneDate,
-                                rating_score: Number(result.vote_average),
-                            });
-                        })
-                     })
-            }).splice(0,3);
+                    let oneDate = new Date(Date.now());
+                    if (String(result.release_date) != ''){
+                        oneDate = new Date(result.release_date);
+                    }
+                    const movieObj = {
+                        id: new Tp.Value.Entity(String(result.id), String(result.title)),
+                        description: result.overview,
+                        release_date: oneDate,
+                        rating_score: Number(result.vote_average),
+                        actors:[]
+                    }
+                    try{
+                        const actorResponse = await Tp.Helpers.Http.get(castQuery);
+                        const actorsParsed = JSON.parse(actorResponse);
+                        for (const person1 of (actorsParsed.cast)){
+                            movieObj.actors.push(new Tp.Value.Entity(String(person1.id), person1.name));
+                        }
+                    }
+                    catch(err){
+                        var newArr = [];
+                        movieObj.actors.push(newArr);
+                    }
+                return movieObj;
+            }));
+            
         }
-    })
-    
 }
     get_person(params, hints, env){
         let actorSortUrl = '';
@@ -148,15 +168,15 @@ module.exports = class MovieClass extends Tp.BaseDevice {
             for (let [pname, op, value] of hints.filter) {
                 if (pname === 'id' && (op === '==' || op === '=~')) {
                     if (value instanceof Tp.Value.Entity)
-                        actorQuery = encodeURIComponent(value);
+                        actorQuery = encodeURIComponent(value.display);
                         console.log("Hi");
                         console.log(actorQuery);
                 }
             }
         }
-        if (!actorQuery)
+        if (!actorQuery) {
             console.log("Hi");
-            actorQuery = 'Brad%20Pitt';
+            actorQuery = 'Brad%20Pitt';}
             console.log(actorQuery);
         actorQueryURL = actorQueryURL + actorQuery + "&page=1&include_adult=false";
         console.log(actorQueryURL);
@@ -164,13 +184,12 @@ module.exports = class MovieClass extends Tp.BaseDevice {
             let parsedResponse = JSON.parse(response);
             console.log(parsedResponse);
                 return parsedResponse.results.map((result) => {
-                    console.log(result.name);
                     let id = new Tp.Value.Entity(String(result.id), result.name);
                     return ({
                         id,
                         popularity:result.popularity,
                     });
-                }).splice(0,3);
+                });
         });
     }
 
