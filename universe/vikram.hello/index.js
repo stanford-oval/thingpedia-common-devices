@@ -7,11 +7,9 @@
 // See LICENSE for details
 "use strict";
 const Tp = require('thingpedia');
-const { ComparisonSubqueryBooleanExpression } = require('thingtalk/dist/ast');
 
 
 const tmdbAccess = "https://api.themoviedb.org/3/";
-const multiSearch = "search/multi?api_key="
 const movieSearch = "search/movie?api_key=";
 const finalSearch = "&language=en-US&page=1";
 const topRated = "movie/top_rated?api_key=";
