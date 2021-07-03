@@ -214,16 +214,6 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.end;
 U: hello almon
 UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
 ====
-# online/1517345
-U: every day at 0:0
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: attimer(time=[new Time(0, 0)]);
-====
-# log/7364
-U: notify me in 2 ms
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: timer(base=$now, interval=2ms);
-====
 # recording/e73806f00406cd54c8d2e081d52e4372
 U: what is the sunset time
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
@@ -1853,3 +1843,8 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
 # log-dev/1519
 U: oh stop
 UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# log/54338
+U: open the window if smoke is detected
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.smoke.state()) filter state == enum detecting => @org.thingpedia.iot.cover(name="window").set_openclose(state=enum open);

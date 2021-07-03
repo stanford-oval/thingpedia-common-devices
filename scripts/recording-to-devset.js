@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 // -*- mode: js; indent-tabs-mode: nil; js-basic-offset: 4 -*-
 //
 // This file is part of Genie
@@ -160,7 +161,14 @@ class Trainer {
         console.log(`e $number : edit the selected thingtalk code`);
         console.log(`n : show more candidates`);
         console.log(`t : type in the thingtalk directly`);
-        console.log(`d $comment : drop the turn and truncate the dialogue, with the given reason`);
+        console.log(`d $comment : drop the turn and truncate the dialogue, with the given reason:`);
+        console.log(`- ood : the command is out-of-domain`);
+        console.log(`- \\t : the command was typed as \\t`);
+        console.log(`- bad-agent : the agent misbehaved in a way that makes continuation impossible`);
+        console.log(`- control : the command was a control command (stop, cancel, etc.)`);
+        console.log(`- lost-context : the context was reset due to a bug and the command cannot be interpreted`);
+        console.log(`- asr : the command was unintellegible due to ASR problems`);
+        console.log(`- unintellegible : the command was unintellegible for other reasons`);
 
         this._rl.prompt();
     }

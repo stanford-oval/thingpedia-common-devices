@@ -10,9 +10,9 @@ A: >> expecting = null
 
 ====
 # 2-basic-search (req=com.spotify)
-U: find me the song despacito
-#U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-#U: now => (@org.thingpedia.media-source.song(), id =~ ("despacito")) => notify;
+#U: find me the song despacito
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => (@org.thingpedia.media-source.song(), id =~ ("despacito")) => notify;
 
 A: Both Despacito and Despacito - Remix are( (latin( pop)?|tropical|puerto rican pop))? songs by (Daddy Yankee|Luis Fonsi)( in the tropical genre)?\.
 A: >> expecting = null
@@ -28,9 +28,9 @@ A: >> expecting = null
 
 ====
 # 4-by-artist-search (req=com.spotify)
-U: find me songs by britney spears
-#U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-#U: now => (@org.thingpedia.media-source.song(), contains(artists, null^^org.thingpedia.media-source:artist("britney spears"))) => notify;
+#U: find me songs by britney spears
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => (@org.thingpedia.media-source.song(), contains(artists, null^^org.thingpedia.media-source:artist("britney spears"))) => notify;
 
 A: I (see|have( found)?) .*, .*,? (or|and) .*. (They're|They are|All of them are) songs by Britney Spears\.
 A: >> expecting = null
@@ -46,9 +46,10 @@ A: >> expecting = null
 
 ====
 # 6-song-artist-search (req=com.spotify)
-U: find me the box by roddy ricch
-#U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-#U: now => (@org.thingpedia.media-source.song(), id =~ ("the box") && contains(artists, null^^org.thingpedia.media-source:artist("roddy ricch"))) => notify;
+
+#U: find me the box by roddy ricch
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => (@org.thingpedia.media-source.song(), id =~ ("the box") && contains(artists, null^^org.thingpedia.media-source:artist("roddy ricch"))) => notify;
 
 A: The Box is a (rap )?music by Roddy Ricch( released in December 5, 2019)?\. Would you like to play it on Spotify\?
 A: >> expecting = yesno
@@ -101,9 +102,9 @@ A: >> expecting = null
 
 ====
 # 12-sort-popularity-artist-search (req=com.spotify)
-U: what is justin bieber's most popular song
-#U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-#U: now => sort popularity desc of (@org.thingpedia.media-source.song(), contains(artists, null^^org.thingpedia.media-source:artist("justin bieber")))[1] => notify;
+#U: what is justin bieber's most popular song
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => sort popularity desc of (@org.thingpedia.media-source.song(), contains(artists, null^^org.thingpedia.media-source:artist("justin bieber")))[1] => notify;
 
 A: The (most popular song|answer) is .*\. It is (a )?song (in( the album)? .*|from [0-9/]+) by Justin Bieber\.
 A: >> expecting = null
@@ -149,9 +150,9 @@ A: >> expecting = null
 ====
 # 17-player-pause (req=com.spotify)
 
-U: pause playback
-#U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-#U: now => @org.thingpedia.media-player.player_pause();
+#U: pause playback
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => @org.thingpedia.media-player.player_pause();
 
 A: I paused playback( for you)?\.?
 A: >> expecting = null
@@ -159,9 +160,9 @@ A: >> expecting = null
 ====
 # 18-player-play (req=com.spotify)
 
-U: resume playing
-#U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-#U: now => @org.thingpedia.media-player.player_play();
+#U: resume playing
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => @org.thingpedia.media-player.player_play();
 
 A: I (continued|resumed) (playback|playing)( for you)?\.?
 A: >> expecting = null
@@ -169,9 +170,9 @@ A: >> expecting = null
 ====
 # 19-player-next (req=com.spotify)
 
-U: play the next song
-#U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-#U: now => @org.thingpedia.media-player.player_next();
+#U: play the next song
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => @org.thingpedia.media-player.player_next();
 
 A: I (skipped this song|played the next song)( for you)?\.?
 A: >> expecting = null
@@ -179,9 +180,9 @@ A: >> expecting = null
 ====
 # 20-player-previous (req=com.spotify)
 
-U: play the previous song
-#U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-#U: now => @org.thingpedia.media-player.player_previous();
+#U: play the previous song
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => @org.thingpedia.media-player.player_previous();
 
 A: I played the previous song( for you)?\.?
 A: >> expecting = null
@@ -199,9 +200,9 @@ A: >> expecting = null
 ====
 # 22-player-repeat (req=com.spotify)
 
-U: repeat this song
-#U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-#U: now => @org.thingpedia.media-player.player_repeat(repeat=enum(track));
+#U: repeat this song
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => @org.thingpedia.media-player.player_repeat(repeat=enum(track));
 
 A: I set the repeat state to track( for you)?\.
 A: >> expecting = null
@@ -348,9 +349,9 @@ A: >> expecting = null
 
 ====
 # 37-numbers to digits (req=com.spotify)
-U: play 2 out of 3 aint bad
-#U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-#U: now => (@org.thingpedia.media-source.playable(), id =~ ("2 out of 3 aint bad")) => @org.thingpedia.media-player.play(playable=id);
+#U: play 2 out of 3 aint bad
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => (@org.thingpedia.media-source.playable(), id =~ ("2 out of 3 aint bad")) => @org.thingpedia.media-player.play(playable=id);
 
 A: I played 2 Out of 3 Ain't Bad on Spotify\.
 A: >> expecting = null

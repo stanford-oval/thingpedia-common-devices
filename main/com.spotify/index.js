@@ -876,7 +876,10 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     }
 
     async get_get_currently_playing() {
-        const parsed = JSON.parse(await this.http_get(CURRENTLY_PLAYING_URL));
+        const response = await this.http_get(CURRENTLY_PLAYING_URL);
+        if (!response)
+            throwError('no_song_playing');
+        const parsed = JSON.parse(response);
         if (parsed.is_playing === false || !parsed.item || !parsed.item.uri)
             throwError('no_song_playing');
 
