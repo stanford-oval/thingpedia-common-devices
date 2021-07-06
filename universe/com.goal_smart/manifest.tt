@@ -111,8 +111,8 @@ class @com.goal_smart
   #[doc="Get the fixtures of the team"];
 
 
-  monitorable list query playerStats(in req league_id: Entity(com.goal_smart:soccer_league) #_[prompt="what league do you want out check out"],
-                        out player: Entity(com.goal_smart:soccer_player)
+  monitorable list query player(in req league_id: Entity(com.goal_smart:soccer_league) #_[prompt="what league do you want out check out"],
+                        out id: Entity(com.goal_smart:soccer_player)
                         #_[canonical = {
                           base = ["person", "athlete", "teammate", "player"]
                         }],
@@ -181,8 +181,11 @@ class @com.goal_smart
                           base = ["interception", "collection", "ball won"]
                         }])
   #_[canonical=["player stats", "player list", "league player stats", "individual stats", "player statistics", "player analysis"]]
-  #_[confirmation="top scorers of $league_id"]
-  #_[result=["${player} has scored ${goals} goals this season. They have had ${assists} as well. After playing ${minutes} minutes in ${appearances} appearances in the league, they had ${yellow_cards} yellow cards and ${red_cards} red cards. ${player} took ${shots} shots, ${shots_on_target} of which were on target. They made a total of ${passes} passes, ${key_passes} key passes, with a passing accuracy of ${pass_accuracy} percent. ${player} took ${dribble_attempts} dribble attempts, and ${successful_dribbles} of them were successful. They made ${tackles} tackles, ${interceptions} interceptions, and ${blocks} blocks."]]
+  #_[confirmation="top players of $league_id"]
+  #_[result={
+    top="${id} has scored ${goals} goals this season. They have had ${assists} assists. After playing ${minutes} minutes in ${appearances} appearances in the league, they had ${yellow_cards} yellow cards and ${red_cards} red cards. ${id} took ${shots} shots, ${shots_on_target} of which were on target. They made a total of ${passes} passes, ${key_passes} key passes, with a passing accuracy of ${pass_accuracy} percent. ${id} took ${dribble_attempts} dribble attempts, and ${successful_dribbles} of them were successful. They made ${tackles} tackles, ${interceptions} interceptions, and ${blocks} blocks.",
+    list="${id} has scored ${goals} goals this season. They have had ${assists} assists. After playing ${minutes} minutes in ${appearances} appearances in the league, they had ${yellow_cards} yellow cards and ${red_cards} red cards. ${id} took ${shots} shots, ${shots_on_target} of which were on target. They made a total of ${passes} passes, ${key_passes} key passes, with a passing accuracy of ${pass_accuracy} percent. ${id} took ${dribble_attempts} dribble attempts, and ${successful_dribbles} of them were successful. They made ${tackles} tackles, ${interceptions} interceptions, and ${blocks} blocks."
+  }]
   #[poll_interval=3600000ms]
   #[doc="Get the top scorers of the league"];
 
