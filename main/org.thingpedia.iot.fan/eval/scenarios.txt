@@ -1,0 +1,104 @@
+# 1-basic-state
+U: Which is the fan state?
+A: You have multiple fan devices. Which one do you want to use\?
+A: choice 0: Bedroom Fan
+A: choice 1: Bathroom Fan
+A: >> expecting = choice
+
+U: Bedroom fan
+A: (The Bedroom Fan fan is (on|off)\.)
+A: >> expecting = null
+
+====
+# 2-set-basic-state
+U: Turn the fan off?
+A: You have multiple fan devices. Which one do you want to use\?
+A: choice 0: Bedroom Fan
+A: choice 1: Bathroom Fan
+A: >> expecting = choice
+
+U: Bathroom fan
+A: Ok, do you want me to turn off the Bathroom Fan fan\?
+A: >> expecting = yesno
+
+U: Yes
+A: (I set power on fan\.)
+A: >> expecting = null
+
+====
+# 3-basic-state-name
+U: Turn on the bedroom fan
+A: Ok, do you want me to help you on your Bedroom Fan fan\?
+A: >> expecting = yesno
+
+U: Yes
+A: (I set power on fan\.)
+A: >> expecting = null
+
+====
+# 4-basic-state-all
+U: Turn on all fans
+A: Ok, do you want me to set power on fan with power on\?
+A: >> expecting = yesno
+
+U: Yes
+A: (Your request was completed successfully\.)
+A: >> expecting = null
+
+====
+# 5-basic-oscillation
+U: Which is the fan oscillation state?
+A: You have multiple fan devices. Which one do you want to use\?
+A: choice 0: Bedroom Fan
+A: choice 1: Bathroom Fan
+A: >> expecting = choice
+
+U: Bathroom fan
+A: (The fan is (oscillating,not_oscillating)\.)
+A: >> expecting = null
+
+====
+# 6-basic-oscillation-name
+U: Which oscillation state has the Bedroom fan?
+A: (The fan is (oscillating,not_oscillating)\.)
+A: >> expecting = null
+
+====
+# 7-set-basic-oscillation
+U: Start oscillating the fan
+A: You have multiple fan devices. Which one do you want to use\?
+A: choice 0: Bedroom Fan
+A: choice 1: Bathroom Fan
+A: >> expecting = choice
+
+U: Bedroom fan
+A: Ok, do you want me to oscillate your Bedroom Fan fan\?
+A: >> expecting = yesno
+
+U: Yes
+A: (I set oscillation on fan\.)
+A: >> expecting = null
+
+====
+# 8-set-basic-oscillation-name
+U: Start oscillating the Bathroom Fan
+A: Ok, do you want me to oscillate your Bathroom Fan fan\?
+A: >> expecting = yesno
+
+U: Yes
+A: (I set oscillation on fan\.)
+A: >> expecting = null
+
+====
+# 9-basic-oscillation-all
+#U: Turn off the fans oscillation
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.iot.fan(all=true).set_oscillation(oscillation=enum(off));
+A: Ok, do you want me to set oscillation on fan with oscillation off\?
+A: >> expecting = yesno
+
+U: Yes
+A: (Your request was completed successfully\.)
+A: >> expecting = null
+
+====
