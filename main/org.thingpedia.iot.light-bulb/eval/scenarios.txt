@@ -1,0 +1,96 @@
+# 1-basic-state-name
+U: which is the state of the lamp?
+A: You have multiple light bulb devices. Which one do you want to use\?
+A: choice 0: Smart lamp bedroom
+A: choice 1: Smart lamp kitchen
+A: >> expecting = choice
+
+U: Smart lamp kitchen
+A: Your Smart lamp kitchen lights are (on|off)\.
+A: >> expecting = null
+
+====
+# 2-basic-state-name
+U: which is the power state of my bedroom light?
+A: (Your Smart lamp bedroom lights are (on|off)\.)
+A: >> expecting = null
+
+====
+# 3-power-all-command
+U: Turn on all lights
+
+A: (Your request was completed successfully\.)
+A: >> expecting = null
+
+====
+# 4-power-command
+U: Turn on the light
+A: You have multiple light bulb devices. Which one do you want to use\?
+A: choice 0: Smart lamp bedroom
+A: choice 1: Smart lamp kitchen
+A: >> expecting = choice
+
+U: Smart lamp bedroom
+A: (I set the power (on|off) the lights for you\.)
+A: >> expecting = null
+
+====
+# 5-start-disco-all
+#U: Start the disco lights
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.iot.light-bulb(all=true).color_loop();
+A: (I colored loop all the lights for you\.)
+A: >> expecting = null
+
+====
+# 6-start-alert-by-lights
+#U: Make a all light alert test
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.iot.light-bulb(all=true).alert_long();
+A: (I flashed all the lights for you\.)
+A: >> expecting = null
+
+====
+# 7-brigthness-all-command
+U: Set the brigthness to 80% for all the lights
+
+A: (Your request was completed successfully\.)
+A: >> expecting = null
+
+====
+# 8-brigthness-slot-fill
+U: Set the brigthness of the light bulb to 100%
+A: You have multiple light bulb devices. Which one do you want to use\?
+A: choice 0: Smart lamp bedroom
+A: choice 1: Smart lamp kitchen
+A: >> expecting = choice
+
+U: Smart lamp kitchen    
+A: (I changed the brightness of the light for you\.)
+A: >> expecting = null
+
+====
+# 9-color-all-command
+U: Set the color of the lights to red
+A: You have multiple light bulb devices. Which one do you want to use\?
+A: choice 0: Smart lamp bedroom
+A: choice 1: Smart lamp kitchen
+A: >> expecting = choice
+
+U: Smart lamp bedroom                       
+A: (I set the color on the lights for you\.)
+A: >> expecting = null
+
+====
+# 10-color-slot-fill
+U: Set to green the color of the bulb
+A: You have multiple light bulb devices. Which one do you want to use\?
+A: choice 0: Smart lamp bedroom
+A: choice 1: Smart lamp kitchen
+A: >> expecting = choice
+
+U:  Smart lamp bedroom
+A: (I set the color on the lights for you\.)
+A: >> expecting = null
+
+====
