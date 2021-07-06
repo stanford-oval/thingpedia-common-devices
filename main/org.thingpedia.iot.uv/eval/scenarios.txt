@@ -1,0 +1,26 @@
+# 1-basic-state
+U: What is the ultraviolet level?
+A: You have multiple uv devices. Which one do you want to use\?
+A: choice 0: Garden ultraviolet sensor
+A: choice 1: Roof ultraviolet sensor
+A: >> expecting = choice
+
+U: Garden ultraviolet sensor
+A: The uv level reported by Garden ultraviolet sensor is [0-9\.]+ ?(uv)?\.
+A: >> expecting = null
+
+====
+# 2-with-slot-fill-value
+U: What does the Roof ultraviolet sensor say?
+A: The uv level reported by Roof ultraviolet sensor is [0-9\.]+ ?(uv)?\.
+A: >> expecting = null
+
+====
+# 3-basic-state-all
+#U: Which is the temperature inside?
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.iot.uv(all=true).uv();
+A: The uv level reported by Garden ultraviolet sensor is [0-9\.]+ ?(uv)?\. The uv level reported by Roof ultraviolet sensor is [0-9\.]+ ?(uv)?\.
+A: >> expecting = null
+
+====
