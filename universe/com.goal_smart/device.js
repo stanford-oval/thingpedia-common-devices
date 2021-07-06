@@ -316,7 +316,6 @@ module.exports = class GoalDevice extends Tp.BaseDevice {
             blocks: blcks,
             interceptions: incpts
           });
-          console.log(rv);
           return rv;
         });
 
