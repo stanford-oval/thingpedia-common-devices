@@ -1,0 +1,34 @@
+# 1-basic-state
+U: Which is the Main sensor's battery state?
+A: The Main sensor\'s battery level is (low|normal)\.
+A: >> expecting = null
+
+====
+# 2-with-slot-fill-value
+U: What is my sensor battery level?
+A: You have multiple battery devices. Which one do you want to use\?
+A: choice 0: UPS
+A: choice 1: Phone
+A: choice 2: Main sensor\'s battery
+A: choice 3: Second sensor\'s battery
+A: >> expecting = choice
+
+U: UPS
+A: (The battery level of UPS is [0-9\.]+ ?%\.)
+A: >> expecting = null
+
+====
+# 3-basic-state-sort-all 
+U: which is the state of all batteries ?
+A: The value is [0-9\.]+ ?(%)?\.
+A: >> expecting = null
+
+====
+# 4-basic-state-fill
+#U: which are the batteries with a level lower than 50%?
+#U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+#U: @org.thingpedia.iot.battery().state(), value <= 50%;
+#A: (The de battery level is [0-9\.]+ ?%\ or lower.)
+#A: >> expecting = null
+
+#====
