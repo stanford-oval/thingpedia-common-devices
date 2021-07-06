@@ -1,0 +1,26 @@
+# 1-basic-state
+U: What is the temperature level?
+A: You have multiple temperature devices. Which one do you want to use\?
+A: choice 0: Temperature basement
+A: choice 1: Temperature first floor
+A: >> expecting = choice
+
+U: Temperature basement
+A: (The temperature is [0-9\.]+ ?°F\.)
+A: >> expecting = null
+
+====
+# 2-with-slot-fill-value
+U: What's the reading from the Temperature first floor?
+A: (The Temperature first floor is [0-9\.]+ ?°F\.)
+A: >> expecting = null
+
+====
+# 3-basic-state-all
+#U: Which is the temperature inside?
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.iot.temperature(all=true).temperature();
+A: (The temperature inside is [0-9\.]+ ?°F\.)
+A: >> expecting = null
+
+====
