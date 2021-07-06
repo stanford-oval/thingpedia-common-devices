@@ -1,0 +1,33 @@
+# 1-basic
+#U: Did I lock my door?
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.iot.lock.state();
+A: You have multiple lock devices. Which one do you want to use\?
+A: choice 0: Front lock
+A: choice 1: Back lock
+A: >> expecting = choice
+
+U: Front Lock
+A: (The Front lock lock is unlocked\.)
+A: >> expecting = null
+
+====
+# 2-basic-name
+#U: Is the back lock unlocked?
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.iot.lock(name="Back lock").state(), (state == enum(unlocked));
+
+A: (The Back lock lock is unlocked\.)
+A: >> expecting = null
+
+====
+# 3-basic-all
+U: Lock everything
+A: Ok, do you want me to lock or unlock with state lock\?
+A: >> expecting = yesno
+
+U: Yes
+A: (Your request was completed successfully\.)
+A: >> expecting = null
+
+====
