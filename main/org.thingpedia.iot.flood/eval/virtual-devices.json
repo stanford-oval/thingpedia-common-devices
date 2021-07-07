@@ -2,14 +2,32 @@
     "a_id": "flood",
     "ha": {
         "domain": "sensor",
-        "entity_id": "flood_level",
+        "entity_id": "flood_level_base",
         "init_call": {
             "i_state": {
                 "rng": "0,100",
                 "k": "number"
             },
             "attrib": {
-                "friendly_name": "Water flooding level",
+                "friendly_name": "Basement flooding level",
+                "unit_of_measurement": "%",
+                "device_class": "flood",
+                "unique_id": "flood_level_basement"
+            }
+        }
+    }
+}, {
+    "a_id": "flood",
+    "ha": {
+        "domain": "sensor",
+        "entity_id": "flood_level_patio",
+        "init_call": {
+            "i_state": {
+                "rng": "0,100",
+                "k": "number"
+            },
+            "attrib": {
+                "friendly_name": "Patio flooding level",
                 "unit_of_measurement": "%",
                 "device_class": "flood",
                 "unique_id": "flood_level_sensor"
@@ -20,16 +38,33 @@
     "a_id": "flood",
     "ha": {
         "domain": "binary_sensor",
-        "entity_id": "flood_state",
+        "entity_id": "flood_state_garage",
         "init_call": {
             "i_state": {
                 "rng": "flooding,not_flooding",
                 "k": "state"
             },
             "attrib": {
-                "friendly_name": "Water flooding state",
+                "friendly_name": "Garage flooding state",
                 "device_class": "flood",
-                "unique_id": "flood_binary_sensor"
+                "unique_id": "flood_binary_garage"
+            }
+        }
+    }
+}, {
+    "a_id": "flood",
+    "ha": {
+        "domain": "binary_sensor",
+        "entity_id": "flood_state_pool",
+        "init_call": {
+            "i_state": {
+                "rng": "flooding,not_flooding",
+                "k": "state"
+            },
+            "attrib": {
+                "friendly_name": "Pool side flooding",
+                "device_class": "flood",
+                "unique_id": "flood_binary_pool"
             }
         }
     }

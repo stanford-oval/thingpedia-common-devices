@@ -1,0 +1,51 @@
+# 1-basic-state
+U: Which is the flood sensor state?
+A: You have multiple flood devices\. Which one do you want to use\?
+A: choice 0: Basement flooding level
+A: choice 1: Patio flooding level
+A: choice 2: Garage flooding state
+A: choice 3: Pool side flooding
+A: >> expecting = choice
+
+U: Garage flooding state
+A: (The Garage flooding state sensor report (on|off)\.)
+A: >> expecting = null
+
+====
+# 2-with-slot-fill-value
+U: what is my sensor flood level?
+A: You have multiple flood devices\. Which one do you want to use\?
+A: choice 0: Basement flooding level
+A: choice 1: Patio flooding level
+A: choice 2: Garage flooding state
+A: choice 3: Pool side flooding
+A: >> expecting = choice
+
+U: Basement flooding level
+A: (The flood level reported by Basement flooding level is [0-9\.]+ ?(%)?\.)
+A: >> expecting = null
+
+====
+# 3-basic-state-with-name
+U: Which is the Water flooding level reading?
+A: You have multiple flood devices. Which one do you want to use\?
+A: choice 0: Basement flooding level
+A: choice 1: Patio flooding level
+A: choice 2: Garage flooding state
+A: choice 3: Pool side flooding
+A: >> expecting = choice
+
+U: Patio flooding level
+A: (The flood level reported by Patio flooding level is [0-9\.]+ ?(%)?\.)
+A: >> expecting = null
+
+====
+# 4-basic-state-sort-all
+#U: There is some flooding in the house?
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.iot.flood(all=true).flood();
+
+A: (The value is [0-9\.]+ ?(%)?\.)
+A: >> expecting = null
+
+====
