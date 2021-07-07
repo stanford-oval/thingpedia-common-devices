@@ -9,7 +9,7 @@ class @vikram.hello
     import config from @org.thingpedia.config.none(api_key="654083fa9e049ea234e4ae94d3e65774");
 
     entity movie #_[description = "Movie Information"];
-    entity person #_[description = "People in movie"];
+    entity actor #_[description = "People in movie"];
     monitorable list query movie(   out id: Entity(vikram.hello:movie)
                                     #_[canonical={
                                         default = "base",
@@ -47,8 +47,6 @@ class @vikram.hello
                                         }
                                     }],
                                     out rating_score : Number
-                                    #[min_number=0]
-                                    #[max_number=10]
                                     #_[canonical = {
                                         default = "base",
                                         base = ["rating", "score"],
@@ -68,26 +66,27 @@ class @vikram.hello
                                     out poster: Entity(tt:picture)
                                     #[filterable = false]
                                     #_[canonical="poster"])  
-    #_[canonical = ["movie"]]
+    #_[canonical = ["movie", "film", "flick"]]
+    #[poll_interval=60000ms]
     #_[result={
         top = "${id}",
         list_concat = "${id}: ${release_date}.",
     }];
-    monitorable list query person( out id: Entity(vikram.hello:person)
+    monitorable list query actor( out id: Entity(vikram.hello:actor)
                                     #_[canonical={
                                         default = "base",
-                                        base = ["actor", "actress", "director", "producer"],
-                                        passive_verb = ["directed by #", "played by #"],
+                                        base = ["actor", "actress"],
+                                        passive_verb = ["played by #", "acted by"],
                                     }],
                                     out popularity : Number 
-                                    #_[min_number = 0]
                                     #_[canonical = {
                                         default = "base",
                                         base = ["popularity", "fame"],
                                         adjective_argmin=["least popular", "least famous"],
                                         adjective_argmax=["most popular", "most famous"]
                                     }])
-    #_[canonical = ["person"]]
+    #_[canonical = ["actor", "actress"]]
+    #[poll_interval=60000ms]
     #_[result={
         top = "${id}",
         list_concat = "${id}: ${popularity}",

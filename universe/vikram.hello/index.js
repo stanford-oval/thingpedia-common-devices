@@ -34,33 +34,30 @@ module.exports = class MovieClass extends Tp.BaseDevice {
         }
         if (sortURL) {
             const response1 = await Tp.Helpers.Http.get(sortURL);
-                let parsedResponse = JSON.parse(response1);
-                return Promise.all(parsedResponse.results.map(async (result) => {
-                    const castQuery = "https://api.themoviedb.org/3/movie/" + String(result.id) + "/credits?api_key=654083fa9e049ea234e4ae94d3e65774&language=en-US";
-                    let id = new Tp.Value.Entity(String(result.id), result.title);
-                    let oneDate = new Date(Date.now());
-                    if (String(result.release_date) != ''){
-                        oneDate = new Date(result.release_date);
-                    }
-                    const movieObj = {
-                        id,
-                        description: result.overview,
-                        release_date: oneDate,
-                        rating_score: Number(result.vote_average),
-                        actors:[]
-                    }
-                    try{
-                        const actorResponse = await Tp.Helpers.Http.get(castQuery);
-                        const actorsParsed = JSON.parse(actorResponse);
-                        for (const person1 of (actorsParsed.cast)){
-                            movieObj.actors.push(new Tp.Value.Entity(String(person1.id), person1.name));
-                        }
-                    }
-                    catch(err){
-                        var newArr = [];
-                        movieObj.actors.push(newArr);
-                    }
-            return movieObj;           
+            let parsedResponse = JSON.parse(response1);
+            return Promise.all(parsedResponse.results.map(async (result) => {
+                const castQuery = "https://api.themoviedb.org/3/movie/" + String(result.id) + "/credits?api_key=654083fa9e049ea234e4ae94d3e65774&language=en-US";
+                let id = new Tp.Value.Entity(String(result.id), result.title);
+                let oneDate = new Date(Date.now());
+                if (String(result.release_date) !== '')
+                    oneDate = new Date(result.release_date);
+                const movieObj = {
+                    id,
+                    description: result.overview,
+                    release_date: oneDate,
+                    rating_score: Number(result.vote_average),
+                    actors:[]
+                };
+                try{
+                    const actorResponse = await Tp.Helpers.Http.get(castQuery);
+                    const actorsParsed = JSON.parse(actorResponse);
+                    for (const person1 of (actorsParsed.cast))
+                        movieObj.actors.push(new Tp.Value.Entity(String(person1.id), person1.name));
+                }
+                catch(err){
+                    console.log("Information for one actor could not be found...");
+                }
+                return movieObj;           
             }));
         }
         let query_term = '';
@@ -75,74 +72,68 @@ module.exports = class MovieClass extends Tp.BaseDevice {
                     query_term = encodeURIComponent(value);
                     searchType = 'actor';
                 }
-                
             }
         }
-        if (!query_term)
+        if (!query_term) {
+            console.log("No query term identified; Here's info about The Avengers:");
             query_term = 'Avengers';
+        }
         const movieQuery = tmdbAccess + movieSearch + this.constructor.metadata.auth.api_key + '&language=en-US&query=' + query_term + '&page=1%include_adult=false';
         const response1 = await Tp.Helpers.Http.get(movieQuery);
-            let parsedResponse = JSON.parse(response1);
-            if (searchType == 'actor'){
-                return Promise.all(parsedResponse.results[0].known_for.map(async (result) => {
-                    const castQuery = "https://api.themoviedb.org/3/movie/" + String(result.id) + "/credits?api_key=654083fa9e049ea234e4ae94d3e65774&language=en-US";
-                        let id = new Tp.Value.Entity(String(result.id), String(result.title));
-                        let oneDate = new Date(Date.now());
-                        if (String(result.release_date) != ''){
-                            oneDate = new Date(result.release_date);
-                        }
-                        const movieObj = {
-                            id,
-                            description: result.overview,
-                            release_date: oneDate,
-                            rating_score: Number(result.vote_average),
-                            actors:[]
-                        }
-                        try{
-                            const actorResponse = await Tp.Helpers.Http.get(castQuery);
-                            const actorsParsed = JSON.parse(actorResponse);
-                            for (const person1 of (actorsParsed.cast)){
-                                movieObj.actors.push(new Tp.Value.Entity(String(person1.id), person1.name));
-                            }
-                        }
-                        catch(err){
-                            var newArr = [];
-                            movieObj.actors.push(newArr);
-                        }
+        let parsedResponse = JSON.parse(response1);
+        if (searchType === 'actor'){
+            return Promise.all(parsedResponse.results[0].known_for.map(async (result) => {
+                const castQuery = "https://api.themoviedb.org/3/movie/" + String(result.id) + "/credits?api_key=654083fa9e049ea234e4ae94d3e65774&language=en-US";
+                let id = new Tp.Value.Entity(String(result.id), String(result.title));
+                let oneDate = new Date(Date.now());
+                if (String(result.release_date) !== '')
+                    oneDate = new Date(result.release_date);
+                const movieObj = {
+                    id,
+                    description: result.overview,
+                    release_date: oneDate,
+                    rating_score: Number(result.vote_average),
+                    actors:[]
+                };
+                try{
+                    const actorResponse = await Tp.Helpers.Http.get(castQuery);
+                    const actorsParsed = JSON.parse(actorResponse);
+                    for (const person1 of (actorsParsed.cast))
+                        movieObj.actors.push(new Tp.Value.Entity(String(person1.id), person1.name));
+                }
+                catch(err){
+                    console.log("Information for one actor could not be found...");
+                }
                 return movieObj;           
-                }));
-            }
-            else {
-            return Promise.all(parsedResponse.results.map(async (result) => {
-                    const castQuery = "https://api.themoviedb.org/3/movie/" + result.id + "/credits?api_key=654083fa9e049ea234e4ae94d3e65774&language=en-US";
-                    let oneDate = new Date(Date.now());
-                    if (String(result.release_date) != ''){
-                        oneDate = new Date(result.release_date);
-                    }
-                    const movieObj = {
-                        id: new Tp.Value.Entity(String(result.id), String(result.title)),
-                        description: result.overview,
-                        release_date: oneDate,
-                        rating_score: Number(result.vote_average),
-                        actors:[]
-                    }
-                    try{
-                        const actorResponse = await Tp.Helpers.Http.get(castQuery);
-                        const actorsParsed = JSON.parse(actorResponse);
-                        for (const person1 of (actorsParsed.cast)){
-                            movieObj.actors.push(new Tp.Value.Entity(String(person1.id), person1.name));
-                        }
-                    }
-                    catch(err){
-                        var newArr = [];
-                        movieObj.actors.push(newArr);
-                    }
-                return movieObj;
             }));
-            
         }
-}
-    get_person(params, hints, env){
+        else {
+            return Promise.all(parsedResponse.results.map(async (result) => {
+                const castQuery = "https://api.themoviedb.org/3/movie/" + result.id + "/credits?api_key=654083fa9e049ea234e4ae94d3e65774&language=en-US";
+                let oneDate = new Date(Date.now());
+                if (String(result.release_date) !== '')
+                    oneDate = new Date(result.release_date);
+                const movieObj = {
+                    id: new Tp.Value.Entity(String(result.id), String(result.title)),
+                    description: result.overview,
+                    release_date: oneDate,
+                    rating_score: Number(result.vote_average),
+                    actors:[]
+                };
+                try{
+                    const actorResponse = await Tp.Helpers.Http.get(castQuery);
+                    const actorsParsed = JSON.parse(actorResponse);
+                    for (const person1 of (actorsParsed.cast))
+                        movieObj.actors.push(new Tp.Value.Entity(String(person1.id), person1.name));
+                }
+                catch(err){
+                    console.log("Information for one actor could not be found...");
+                }
+                return movieObj;
+            }));   
+        }
+    }      
+    get_actor(params, hints, env){
         let actorSortUrl = '';
         let actorQueryURL = "https://api.themoviedb.org/3/search/person?api_key=" + this.constructor.metadata.auth.api_key + "&language=en-US&query=";
         if (hints && hints.sort){
@@ -167,15 +158,11 @@ module.exports = class MovieClass extends Tp.BaseDevice {
                 if (pname === 'id' && (op === '==' || op === '=~')) {
                     if (value instanceof Tp.Value.Entity)
                         actorQuery = encodeURIComponent(value.display);
-                        console.log("Hi");
-                        console.log(actorQuery);
                 }
             }
         }
-        if (!actorQuery) {
-            console.log("Hi");
-            actorQuery = 'Brad%20Pitt';}
-            console.log(actorQuery);
+        if (!actorQuery)
+            actorQuery = 'Tom%Cruise';
         actorQueryURL = actorQueryURL + actorQuery + "&page=1&include_adult=false";
         console.log(actorQueryURL);
         return Tp.Helpers.Http.get(actorQueryURL).then((response) => {
@@ -190,5 +177,7 @@ module.exports = class MovieClass extends Tp.BaseDevice {
                 });
         });
     }
+};
 
-}
+
+
