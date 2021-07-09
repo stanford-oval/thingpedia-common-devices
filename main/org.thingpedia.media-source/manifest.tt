@@ -14,7 +14,6 @@ abstract class @org.thingpedia.media-source
   entity album extends playable #[has_ner=true] #_[description="Albums"];
   entity playlist extends playable #[has_ner=true] #_[description="Playlists"];
   entity show extends playable #[has_ner=true] #_[description="Shows"];
-  entity device #_[description="Output device ID"];
 
   list query playable(out id: Entity(org.thingpedia.media-source:playable)
                       // use song names to fill ambiguous parameters
@@ -193,36 +192,6 @@ abstract class @org.thingpedia.media-source
   #[minimal_projection=["id"]]
   #[doc="search for shows"];
 
-  action play (in req playable: Entity(org.thingpedia.media-source:playable)
-                #[string_values="tt:song_name"]
-                #_[prompt=["what song do you want to play"]]
-                #_[canonical={
-                  default="base",
-                  base=["name"],
-                  // FIXME: actions must use "preposition" not "passive_verb"
-                  preposition=["named #", "called #", "titled #"],
-                  property=["name #", "title #"]
-                }],
-                out device : Entity(org.thingpedia.media-source:device)
-                #_[canonical={
-                  default="preposition",
-                  base=["device", "player", "app"], // "can you tell me the app"?
-                  preposition=["on"]
-                }])
-  #_[canonical=["play a song", "play the song", "play a track", "play music",
-                // i would like to...
-                "listen to a song", "hear a song"]]
-  #_[confirmation="play the song $song"]
-  #_[on_error={
-    no_active_device=["you must open the spotify app first", "no spotify player is active"],
-    disallowed_action=["failed to play: you must first click play from inside the spotify app , and then i will play songs for you"],
-    player_error=["failed to play: you must first click play from inside the spotify app , and then i will play songs for you"],
-    dailymix_error=["spotify doesn't support daily mix playlists at this time"],
-    non_premium_account=["you need a spotify premium account to play music"],
-    rate_limit_error=["spotify is temporarily unavailable"]
-  }]
-  #[confirm=enum(auto)];
-
   list query artist(out id: Entity(org.thingpedia.media-source:artist)
                     #[string_values="tt:song_artist"]
                     #[unique=true]
@@ -280,7 +249,7 @@ abstract class @org.thingpedia.media-source
     }]
     #[poll_interval=60000ms]
     #[doc="retrieve the currently playing track name"];
-	
- 
+
+
 }
 
