@@ -27,9 +27,6 @@
 // STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 // OF THE POSSIBILITY OF SUCH DAMAGE.
-
-
-
 "use strict";
 
 const Tp = require('thingpedia');
@@ -219,112 +216,105 @@ module.exports = class GoalDevice extends Tp.BaseDevice {
     let i = 0;
     while (i < 38) {
       i += 1;
-      yield Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/players?league=' + league_id + '&season=2020&page=' + JSON.stringify(i), {
+      const tempResponse = await Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/players?league=' + league_id + '&season=2020&page=' + JSON.stringify(i), {
         extraHeaders: {
           'x-rapidapi-key': this.constructor.metadata.auth.api_key,
           'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
         },
         accept: 'application/json'
-      }).then((tempResponse) => {
-        const a = JSON.parse(tempResponse);
-        const b = a.response;
-        
-        return b.map((obj) => {
-          const n = obj.player.name;
-          const n_id = obj.player.id;
-          let g = obj.statistics[0].goals.total;
-          
-          if (g === null)
-            g = 0;
-          
-          let a = obj.statistics[0].goals.assists;
-          if (a === null)
-            a = 0;
-
-          let rc = obj.statistics[0].cards.red;
-          if (rc === null)
-            rc = 0;
-
-          let yc = obj.statistics[0].cards.yellow;
-          if (yc === null)
-            yc = 0;
-
-          let gms = obj.statistics[0].games.appearences;
-          if (gms === null)
-            gms = 0;
-
-          let mns = obj.statistics[0].games.minutes;
-          if (mns === null)
-            mns = 0;
-
-          let shts = obj.statistics[0].shots.total;
-          if (shts === null)
-            shts = 0;
-
-          let shtsON = obj.statistics[0].shots.on;
-          if (shtsON === null)
-            shtsON = 0;
-
-          let pss = obj.statistics[0].passes.total;
-          if (pss === null)
-            pss = 0;
-
-          let pssAcc = obj.statistics[0].passes.accuracy;
-          if (pssAcc === null)
-            pssAcc = 0;
-
-          let kPss = obj.statistics[0].passes.key;
-          if (kPss === null)
-            kPss = 0;
-
-          let drib = obj.statistics[0].dribbles.attempts;
-          if (drib === null)
-            drib = 0;
-
-          let succDrib = obj.statistics[0].dribbles.success;
-          if (succDrib === null)
-            succDrib = 0;
-
-          let tckles = obj.statistics[0].tackles.total;
-          if (tckles === null)
-            tckles = 0;
-
-          let blcks = obj.statistics[0].tackles.blocks;
-          if (blcks === null)
-            blcks = 0;
-
-          let incpts = obj.statistics[0].tackles.interceptions;
-          if (incpts === null)
-            incpts = 0;
-          
-          const rv = ({
-            id: new Tp.Value.Entity(String(n_id), String(n)),
-            goals: g,
-            assists: a,
-            red_cards: rc,
-            yellow_cards: yc,
-            appearances: gms,
-            minutes: mns,
-            shots: shts,
-            shots_on_target: shtsON,
-            passes: pss,
-            key_passes: kPss,
-            pass_accuracy: pssAcc,
-            dribble_attempts: drib,
-            successful_dribbles: succDrib,
-            tackles: tckles,
-            blocks: blcks,
-            interceptions: incpts
-          });
-          return rv;
-        });
-
-
       });
+      const a = JSON.parse(tempResponse);
+      const b = a.response;
 
+      for (const obj of b) {
+        const n = obj.player.name;
+        const n_id = obj.player.id;
+        let g = obj.statistics[0].goals.total;
 
+        if (g === null)
+          g = 0;
+
+        let a = obj.statistics[0].goals.assists;
+        if (a === null)
+          a = 0;
+
+        let rc = obj.statistics[0].cards.red;
+        if (rc === null)
+          rc = 0;
+
+        let yc = obj.statistics[0].cards.yellow;
+        if (yc === null)
+          yc = 0;
+
+        let gms = obj.statistics[0].games.appearences;
+        if (gms === null)
+          gms = 0;
+
+        let mns = obj.statistics[0].games.minutes;
+        if (mns === null)
+          mns = 0;
+
+        let shts = obj.statistics[0].shots.total;
+        if (shts === null)
+          shts = 0;
+
+        let shtsON = obj.statistics[0].shots.on;
+        if (shtsON === null)
+          shtsON = 0;
+
+        let pss = obj.statistics[0].passes.total;
+        if (pss === null)
+          pss = 0;
+
+        let pssAcc = obj.statistics[0].passes.accuracy;
+        if (pssAcc === null)
+          pssAcc = 0;
+
+        let kPss = obj.statistics[0].passes.key;
+        if (kPss === null)
+          kPss = 0;
+
+        let drib = obj.statistics[0].dribbles.attempts;
+        if (drib === null)
+          drib = 0;
+
+        let succDrib = obj.statistics[0].dribbles.success;
+        if (succDrib === null)
+          succDrib = 0;
+
+        let tckles = obj.statistics[0].tackles.total;
+        if (tckles === null)
+          tckles = 0;
+
+        let blcks = obj.statistics[0].tackles.blocks;
+        if (blcks === null)
+          blcks = 0;
+
+        let incpts = obj.statistics[0].tackles.interceptions;
+        if (incpts === null)
+          incpts = 0;
+
+        const rv = ({
+          id: new Tp.Value.Entity(String(n_id), String(n)),
+          goals: g,
+          assists: a,
+          red_cards: rc,
+          yellow_cards: yc,
+          appearances: gms,
+          minutes: mns,
+          shots: shts,
+          shots_on_target: shtsON,
+          passes: pss,
+          key_passes: kPss,
+          pass_accuracy: pssAcc,
+          dribble_attempts: drib,
+          successful_dribbles: succDrib,
+          tackles: tckles,
+          blocks: blcks,
+          interceptions: incpts
+        });
+        yield rv;
+      }
     }
-
-
   }
 };
