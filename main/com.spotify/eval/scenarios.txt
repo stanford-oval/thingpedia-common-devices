@@ -51,8 +51,8 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@org.thingpedia.media-source.song(), id =~ ("the box") && contains(artists, null^^org.thingpedia.media-source:artist("roddy ricch"))) => notify;
 
-A: The Box is a (rap )?music by Roddy Ricch( released in December 5, 2019)?\. Would you like to play it on Spotify\?
-A: >> expecting = yesno
+A: The Box is a song in the album Please Excuse Me for Being Antisocial by Roddy Ricch\.
+A: >> expecting = null
 
 ====
 # 7-from-album (req=com.spotify)
@@ -104,9 +104,9 @@ A: >> expecting = null
 # 12-sort-popularity-artist-search (req=com.spotify)
 #U: what is justin bieber's most popular song
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: now => sort popularity desc of (@org.thingpedia.media-source.song(), contains(artists, null^^org.thingpedia.media-source:artist("justin bieber")))[1] => notify;
+U: sort(popularity desc of @org.thingpedia.media-source.song(), contains(artists, null^^org.thingpedia.media-source:artist("justin bieber")))[1];
 
-A: The (most popular song|answer) is .*\. It is (a )?song (in( the album)? .*|from [0-9/]+) by Justin Bieber\.
+A: (I see|The (most popular song|answer) is) .*\. It is a song (in( the album)? .*|from [0-9/]+) by Justin Bieber\.
 A: >> expecting = null
 
 ====
@@ -124,8 +124,8 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => sort release_date desc of (@org.thingpedia.media-source.playable(), contains(artists, null^^org.thingpedia.media-source:artist("beyonce")))[1] => notify;
 
-A: I (see|have( found)?) Crazy In Love \(feat\. Jay-Z\)\. (It's|It is)( a)? (dance pop )?music by Beyonc.( released in June 23, 2003)?\. Would you like to play it on Spotify\?
-A: >> expecting = yesno
+A: I (see|have( found)?) Crazy In Love \(feat\. Jay-Z\)\. (It's|It is)( a)? (dance pop )?music by Beyonc.( released in June 23, 2003)?\.
+A: >> expecting = null
 
 ====
 # 15-sort-energy (req=com.spotify)
@@ -344,7 +344,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => @com.spotify.create_playlist(name="new playlist");
 
-A: Your request was completed successfully\.
+A: I created a new playlist for you named new playlist\.
 A: >> expecting = null
 
 ====
@@ -359,7 +359,9 @@ A: >> expecting = null
 ====
 # 38-currently-playing (req=com.spotify)
 
-U: what is currently playing on spotify?
+#U: what is currently playing on spotify?
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.media-source.get_currently_playing();
 
 A: (Sorry, no song is currently playing\.|Currently playing .*)
 A: >> expecting = null
