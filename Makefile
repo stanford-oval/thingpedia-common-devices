@@ -76,7 +76,7 @@ parallel ?= 7
 genie ?= node --experimental_worker --max_old_space_size=$(memsize) $(geniedir)/dist/tool/genie.js
 
 thingpedia_url ?= https://dev.almond.stanford.edu/thingpedia
-developer_key ?= invalid
+developer_key ?= 88c03add145ad3a3aa4074ffa828be5a391625f9d4e1d0b034b445f18c595656
 
 s3_bucket ?=
 genie_k8s_project ?=
