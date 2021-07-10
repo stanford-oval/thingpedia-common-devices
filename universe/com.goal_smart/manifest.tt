@@ -189,16 +189,12 @@ class @com.goal_smart
   #[doc="Get the top scorers of the league"];
 
 
-  monitorable query teamUpdate(in req team_id: Entity(com.goal_smart:soccer_team) #_[prompt="what team do you want out check out "],
-                        out team : Entity(com.goal_smart:soccer_team)
+  monitorable list query teamUpdate(in req team_id: Entity(com.goal_smart:soccer_team) #_[prompt="what team do you want out check out "],
+                        out id : Entity(com.goal_smart:soccer_team)
                         #_[canonical = {
                           base = ["team", "side", "group"]
                         }],
-                        out last_opponent: Entity(com.goal_smart:soccer_team)
-                        #_[canonical = {
-                          base = ["last opponent", "previous opponent", "last opponent", "last matchup", "opposition team", "opposition side", "opposition group"]
-                        }],
-                        out score_of_last_match: String
+                        out score: String
                         #_[canonical = {
                           base = ["score of last match", "result", "final", "outcome", "score"]
                         }],
@@ -206,13 +202,20 @@ class @com.goal_smart
                         #_[canonical = {
                           base = ["league", "division"]
                         }],
-                        out league_ranking: Number
+                        out opponent: Entity(com.goal_smart:soccer_team)
+                        #_[canonical = {
+                          base = ["last opponent", "previous opponent", "last opponent", "last matchup", "opposition team", "opposition side", "opposition group"]
+                        }],
+                        out rank: Number
                         #_[canonical = {
                           base = ["placement", "rank", "position", "place", "league ranking"]
                         }])
   #_[canonical=["team updates", "team information", "team info", "team overview", "team summary"]]
   #_[confirmation="overall summary of $team_id"]
-  #_[result=["${team} is currently number ${league_ranking} in the ${league}. Their last match was against ${last_opponent} and the score was ${score_of_last_match}"]]
+  #_[result={
+    top="${id} is currently number ${rank} in the ${league}. Their last match was against ${opponent} and the score was ${score}.",
+    list="${id} is currently number ${rank} in the ${league}. Their last match was against ${opponent} and the score was ${score}."
+  }]
   #[poll_interval=3600000ms]
   #[doc="Get the overall summary on the performance of the team"];
 
