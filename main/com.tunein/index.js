@@ -44,6 +44,7 @@ const QUERY_PARAM = {
 };
 const CONTENT_KEYS = {
     station: 'station',
+    stations: 'stations',
     audio: 'audio'
 };
 // const BROWSE_ITEMS = {
@@ -68,7 +69,7 @@ module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
 
     async _http_get(url) {
         try {
-            await Tp.Helpers.Http.get(url, {dataContentType: CONTENT_TYPE});
+            return JSON.parse(await Tp.Helpers.Http.get(url, {dataContentType: CONTENT_TYPE}));
         } catch (e) {
             if (!e.detail)
                 throw e; 
@@ -78,8 +79,8 @@ module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
 
     _format_station_output(stations) {
         return stations.map((item) => {
-            const id = new Tp.Value.Entity(item.guide_id, item.text);
-            const show = new Tp.Value.Entity(item.now_playing_id, item.subtext);
+            const id = new Tp.Value.Entity(`station:${item.guide_id.toLowerCase()}`, item.text);
+            const show = new Tp.Value.Entity(`show:${item.now_playing_id.toLowerCase()}`, item.subtext);
             return {
                 id,
                 show,
@@ -89,9 +90,9 @@ module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
         });
     }
 
-    _get_station_details(url) {
-        const content = this._http_get(url).then((response) => {
-            return response.data.body;
+    async _get_station_details(url) {
+        const content = await this._http_get(url).then((response) => {
+            return response.body;
         });
         let stations = [];
         if (typeof content !== 'undefined' && content.length > 0) {
@@ -137,7 +138,7 @@ module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
     }
 
     async get_local_stations() {
-        if (this.platform == 'cloud') {
+        if (this.platform === 'cloud') {
             throw new Error(DEVICE_ERROR.unsupported_version);
         } else {
             const query_string = {

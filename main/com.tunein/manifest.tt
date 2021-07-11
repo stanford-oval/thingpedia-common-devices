@@ -76,7 +76,7 @@ class @com.tunein
   #_[canonical=["radio station", "radio channel", "radio show"]]
   #_[canonical_short=["radio"]]
   #_[on_error={
-    station_not_found=["radio station not found"],
+    station_not_found=["radio station not found"]
   }]
   #[minimal_projection=["id"]]
   #_[formatted=[{
@@ -86,8 +86,9 @@ class @com.tunein
     displayText="Now playing ${show}",
     pictureUrl="${image}"
   }]]
-  #[doc="search a specific internet radio channel from TuneIn"];
-  #[confirm=false];
+  #[doc="search a specific internet radio channel from TuneIn"]
+  #[confirm=false]
+  ;
 
   list query most_popular_stations(out id: Entity(com.tunein:station)
                                    #[unique=true]
@@ -137,8 +138,9 @@ class @com.tunein
     displayText="Now playing ${show}",
     pictureUrl="${image}"
   }]]
-  #[doc="list most popular radio stations"];
-  #[confirm=false];
+  #[doc="list most popular radio stations"]
+  #[confirm=false]
+  ;
 
   list query local_stations(out id: Entity(com.tunein:station)
                             #[unique=true]
@@ -184,8 +186,9 @@ class @com.tunein
     displayText="Now playing ${show}",
     pictureUrl="${image}"
   }]]
-  #[doc="list local radio stations"];
-  #[confirm=false];
+  #[doc="list local radio stations"]
+  #[confirm=false]
+  ;
 
   action radio_play (in req id: Entity(com.tunein:station)
                      #[string_values="com.tunein:station"]
@@ -202,5 +205,6 @@ class @com.tunein
     unsupported_version=["Play radio is not supported with your current genie version"],
     service_unavailable=["radio streaming service is currently unavailable"]
   }]
-  #[confirm=enum(auto)];
+  #[confirm=enum(auto)]
+  ;
 }
