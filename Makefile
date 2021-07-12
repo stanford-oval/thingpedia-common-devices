@@ -25,7 +25,6 @@ universe_pkgfiles := $(main_pkgfiles) $(call pkgfiles_fn,universe)
 staging_pkgfiles := $(universe_pkgfiles) $(call pkgfiles_fn,staging)
 
 # hyperparameters that can be overridden on the cmdline
-template_file ?= dialogue.genie
 dataset_file ?= eval/$(release)/dataset.tt
 schema_file ?= eval/$(release)/schema.tt
 paraphrases_user ?= eval/$(release)/paraphrase.tsv $(wildcard $(foreach d,$($(release)_devices),$(d)/eval/paraphrase.tsv))
@@ -157,7 +156,7 @@ parameter-datasets.tsv:
 	wget -c --no-verbose https://almond-static.stanford.edu/test-data/paraphraser-bart.tar.xz
 	tar -C .embeddings -xvf paraphraser-bart.tar.xz
 
-eval/$(release)/synthetic-%.txt : $(schema_file) $(dataset_file) $(template_deps) entities.json
+eval/$(release)/synthetic-%.txt : $(schema_file) $(dataset_file) entities.json
 	if test $(subsample_thingpedia) = 1 ; then \
 	  cp $(schema_file) eval/$(release)/schema-$*.tt ; \
 	else \
@@ -169,7 +168,6 @@ eval/$(release)/synthetic-%.txt : $(schema_file) $(dataset_file) $(template_deps
 	fi
 	$(genie) generate-dialogs \
 	  --locale en-US --target-language thingtalk \
-	  --template $(template_file) \
 	  --thingpedia eval/$(release)/schema-$*.tt --entities entities.json --dataset $(dataset_file) \
 	  -o $@.tmp -f txt $(generate_flags) --debug $(debug_level) $(custom_gen_flags) --random-seed $@ \
 	  -n $(target_size) -B $(minibatch_size)
