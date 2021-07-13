@@ -190,7 +190,7 @@ class @com.goal_smart
 
 
   monitorable list query teamUpdate(in req team_id: Entity(com.goal_smart:soccer_team) #_[prompt="what team do you want out check out "],
-                        out id : Entity(com.goal_smart:soccer_team)
+                        out team : Entity(com.goal_smart:soccer_team)
                         #_[canonical = {
                           base = ["team", "side", "group"]
                         }],
@@ -212,9 +212,9 @@ class @com.goal_smart
                         }])
   #_[canonical=["team updates", "team information", "team info", "team overview", "team summary"]]
   #_[confirmation="overall summary of $team_id"]
-  #_[result={
-    top="${id} is currently number ${rank} in the ${league}. Their last match was against ${opponent} and the score was ${score}.",
-    list="${id} is currently number ${rank} in the ${league}. Their last match was against ${opponent} and the score was ${score}."
+  #_[result= {
+    top = "${team} is currently number ${rank} in the ${league}. Their last match was against ${opponent} and the score was ${score}",
+    list = "${team} is currently number ${rank} in the ${league}. Their last match was against ${opponent} and the score was ${score}"
   }]
   #[poll_interval=3600000ms]
   #[doc="Get the overall summary on the performance of the team"];
