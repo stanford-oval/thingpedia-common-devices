@@ -45,7 +45,10 @@ const QUERY_PARAM = {
 const CONTENT_KEYS = {
     station: 'station',
     stations: 'stations',
-    audio: 'audio'
+    audio: 'audio',
+    fm: 'fm',
+    am: 'am',
+    internet: 'internet only'
 };
 // const BROWSE_ITEMS = {
 //     trending: 'trending',
@@ -98,6 +101,10 @@ module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
         if (typeof content !== 'undefined' && content.length > 0) {
             if (content.find((item) => item.text.toLowerCase() === CONTENT_KEYS.stations)) {
                 stations = content.filter((item) => item.text.toLowerCase() === CONTENT_KEYS.stations)
+                                  .flatMap(({children}) => children)
+                                  .filter((channel) => (channel.type.toLowerCase() === CONTENT_KEYS.audio && channel.item.toLowerCase() === CONTENT_KEYS.station));
+            } else if (content.find((item) => [CONTENT_KEYS.fm, CONTENT_KEYS.am, CONTENT_KEYS.internet].includes(item.text.toLowerCase()))) {
+                stations = content.filter((item) => [CONTENT_KEYS.fm, CONTENT_KEYS.am, CONTENT_KEYS.internet].includes(item.text.toLowerCase()))
                                   .flatMap(({children}) => children)
                                   .filter((channel) => (channel.type.toLowerCase() === CONTENT_KEYS.audio && channel.item.toLowerCase() === CONTENT_KEYS.station));
             } else {
