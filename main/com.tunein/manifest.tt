@@ -1,0 +1,210 @@
+// Copyright 2021 The Board of Trustees of the Leland Stanford Junior University
+//
+// Redistribution and use in source and binary forms, with or
+// without modification, are permitted provided that the following
+// conditions are met:
+//
+// 1. Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+// 2. Redistributions in binary form must reproduce the above
+//    copyright notice, this list of conditions and the following
+//    disclaimer in the documentation and/or other materials
+//    provided with the distribution.
+// 3. Neither the name of the copyright holder nor the names of its
+//    contributors may be used to endorse or promote products derived
+//    from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+// OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+// Author: Jake Wu <jmhw0123@gmail.com>
+
+class @com.tunein
+#_[thingpedia_name="Tunein"]
+#_[thingpedia_description="Listen to internet radio"]
+#_[canonical="radio"]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="media"]
+{
+  import loader from @org.thingpedia.v2();
+  import config from @org.thingpedia.config.none();
+  
+  entity station #_[description="Radio station information from TuneIn"];
+  entity show #_[description="Current track or show name"];
+
+  list query station(out id: Entity(com.tunein:station)
+                     #[unique=true]
+                     #[string_values="com.tunein:station"]
+                     #_[canonical={
+                       default="base",
+                       base=["name", "title"],
+                       property=["name #", "title #", "channel #"],
+                       passive_verb=["named #", "called #", "titled #"],
+                     }],
+                     out show: Entity(com.tunein:show)
+                     #[unique=true]
+                     #[string_values="com.tunein:show"]
+                     #_[canonical={
+                       default="base",
+                       base=["name", "title", "track", "show", "program", "current show", 
+                             "current program", "now playing", "currently playing"],
+                       passive_verb=["named #", "called #", "titled #", "related to #",
+                                     "now playing #", "currently playing #"],
+                       property=["name #", "title #"]
+                     }],
+                     out link: Entity(tt:url)
+                     #[filterable=false]
+                     #_[canonical=["link", "url"]],
+                     out image: Entity(tt:picture)
+                     #[filterable=false]
+                     #_[canonical={
+                       default="base",
+                       base=["picture", "image", "photo", "cover"]
+                     }]
+  )
+  #_[canonical=["radio station", "radio channel", "radio show"]]
+  #_[canonical_short=["radio"]]
+  #_[on_error={
+    station_not_found=["radio station not found"]
+  }]
+  #[minimal_projection=["id"]]
+  #_[formatted=[{
+    type="rdl",
+    displayTitle="${id}",
+    webCallback="${link}",
+    displayText="Now playing ${show}",
+    pictureUrl="${image}"
+  }]]
+  #[doc="search a specific internet radio channel from TuneIn"]
+  #[confirm=false]
+  ;
+
+  list query most_popular_stations(out id: Entity(com.tunein:station)
+                                   #[unique=true]
+                                   #[string_values="com.tunein:station"]
+                                   #_[canonical={
+                                     default="base",
+                                     base=["name", "title"],
+                                     property=["name #", "title #", "channel #"],
+                                     passive_verb=["named #", "called #", "titled #"],
+                                   }],
+                                   out show: Entity(com.tunein:show)
+                                   #[unique=true]
+                                   #[string_values="com.tunein:show"]
+                                   #_[canonical={
+                                     default="base",
+                                     base=["name", "title", "track", "show", "program", "current show", 
+                                           "current program", "now playing", "currently playing"],
+                                     passive_verb=["named #", "called #", "titled #", "related to #",
+                                                   "now playing #", "currently playing #"],
+                                     property=["name #", "title #"]
+                                   }],
+                                   out link: Entity(tt:url)
+                                   #[filterable=false]
+                                   #_[canonical=["link", "url"]],
+                                   out image: Entity(tt:picture)
+                                   #[filterable=false]
+                                   #_[canonical={
+                                     default="base",
+                                     base=["picture", "image", "photo", "cover"]
+                                   }]
+  )
+  #_[canonical=["most popular radio stations", "most popular radio channels", "most popular stations", "most popular channels",
+                "best radio stations", "best radio channels", "best stations", "best channels",
+                "top radio stations", "top radio channels", "top stations", "top channels",
+                "most famous radio stations", "most famous radio cahnnels", "most famous stations", "most famous channels", 
+                "most beloved radio stations", "most beloved radio channels", "most beloved stations", "most beloved channels",
+                "most trendy radio stations", "most trendy radio cahnnels", "most trendy stations", "most trendy channels", 
+                "popular radio stations", "popular radio channels", "popular stations", "popular channels"]]
+  #_[on_error={
+    station_not_found=["radio service temporarily not available"]
+  }]
+  #[minimal_projection=["id"]]
+  #_[formatted=[{
+    type="rdl",
+    displayTitle="${id}",
+    webCallback="${link}",
+    displayText="Now playing ${show}",
+    pictureUrl="${image}"
+  }]]
+  #[doc="list most popular radio stations"]
+  #[confirm=false]
+  ;
+
+  list query local_stations(out id: Entity(com.tunein:station)
+                            #[unique=true]
+                            #[string_values="com.tunein:station"]
+                            #_[canonical={
+                              default="base",
+                              base=["name", "title"],
+                              property=["name #", "title #", "channel #"],
+                              passive_verb=["named #", "called #", "titled #"],
+                            }],
+                            out show: Entity(com.tunein:show)
+                            #[unique=true]
+                            #[string_values="com.tunein:show"]
+                            #_[canonical={
+                              default="base",
+                              base=["name", "title", "track", "show", "program", "current show", 
+                                    "current program", "now playing", "currently playing"],
+                              passive_verb=["named #", "called #", "titled #", "related to #",
+                                            "now playing #", "currently playing #"],
+                              property=["name #", "title #"]
+                            }],
+                            out link: Entity(tt:url)
+                            #[filterable=false]
+                            #_[canonical=["link", "url"]],
+                            out image: Entity(tt:picture)
+                            #[filterable=false]
+                            #_[canonical={
+                              default="base",
+                              base=["picture", "image", "photo", "cover"]
+                            }]
+  )
+  #_[canonical=["local radio stations", "local radio channels", 
+                "local stations", "local channels", "local radios"]]
+  #_[on_error={
+    station_not_found=["radio service temporarily not available"],
+    unsupported_version=["local radio searches are not available in the cloud version"]
+  }]
+  #[minimal_projection=["id"]]
+  #_[formatted=[{
+    type="rdl",
+    displayTitle="${id}",
+    webCallback="${link}",
+    displayText="Now playing ${show}",
+    pictureUrl="${image}"
+  }]]
+  #[doc="list local radio stations"]
+  #[confirm=false]
+  ;
+
+  action radio_play (in req id: Entity(com.tunein:station)
+                     #[string_values="com.tunein:station"]
+                     #_[prompt=["which channel would you like to listen to"]]
+                     #_[canonical={
+                       default="base",
+                       base=["name", "title"],
+                       property=["name #", "title #", "channel #"],
+                       preposition=["named #", "called #", "titled #"],
+                     }]
+  )
+  #_[canonical=["play radio", "stream radio", "tune radio", "listen to radio"]]
+  #_[on_error={
+    unsupported_version=["Play radio is not supported with your current genie version"],
+    service_unavailable=["radio streaming service is currently unavailable"]
+  }]
+  #[confirm=enum(auto)]
+  ;
+}
