@@ -182,7 +182,7 @@ module.exports = class GoalDevice extends Tp.BaseDevice {
           'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
         },
         accept: 'application/json'
-      })
+      });
       const a2 = JSON.parse(tempResponse2);
       const b2 = a2.response;
       let n1 = b2[0].teams.home.name;
@@ -205,7 +205,7 @@ module.exports = class GoalDevice extends Tp.BaseDevice {
         rank: ranking
       });
       yield rv;
-    };
+    }
 
 
 
