@@ -39,13 +39,12 @@ class @com.tunein
 {
   import loader from @org.thingpedia.v2();
   import config from @org.thingpedia.config.none();
-  
+
   entity station #_[description="Radio station information from TuneIn"];
   entity show #_[description="Current track or show name"];
 
   list query station(out id: Entity(com.tunein:station)
                      #[unique=true]
-                     #[string_values="com.tunein:station"]
                      #_[canonical={
                        default="base",
                        base=["name", "title"],
@@ -57,7 +56,7 @@ class @com.tunein
                      #[string_values="com.tunein:show"]
                      #_[canonical={
                        default="base",
-                       base=["name", "title", "track", "show", "program", "current show", 
+                       base=["name", "title", "track", "show", "program", "current show",
                              "current program", "now playing", "currently playing"],
                        passive_verb=["named #", "called #", "titled #", "related to #",
                                      "now playing #", "currently playing #"],
@@ -92,7 +91,6 @@ class @com.tunein
 
   list query most_popular_stations(out id: Entity(com.tunein:station)
                                    #[unique=true]
-                                   #[string_values="com.tunein:station"]
                                    #_[canonical={
                                      default="base",
                                      base=["name", "title"],
@@ -104,7 +102,7 @@ class @com.tunein
                                    #[string_values="com.tunein:show"]
                                    #_[canonical={
                                      default="base",
-                                     base=["name", "title", "track", "show", "program", "current show", 
+                                     base=["name", "title", "track", "show", "program", "current show",
                                            "current program", "now playing", "currently playing"],
                                      passive_verb=["named #", "called #", "titled #", "related to #",
                                                    "now playing #", "currently playing #"],
@@ -123,9 +121,9 @@ class @com.tunein
   #_[canonical=["most popular radio stations", "most popular radio channels", "most popular stations", "most popular channels",
                 "best radio stations", "best radio channels", "best stations", "best channels",
                 "top radio stations", "top radio channels", "top stations", "top channels",
-                "most famous radio stations", "most famous radio cahnnels", "most famous stations", "most famous channels", 
+                "most famous radio stations", "most famous radio cahnnels", "most famous stations", "most famous channels",
                 "most beloved radio stations", "most beloved radio channels", "most beloved stations", "most beloved channels",
-                "most trendy radio stations", "most trendy radio cahnnels", "most trendy stations", "most trendy channels", 
+                "most trendy radio stations", "most trendy radio cahnnels", "most trendy stations", "most trendy channels",
                 "popular radio stations", "popular radio channels", "popular stations", "popular channels"]]
   #_[on_error={
     station_not_found=["radio service temporarily not available"]
@@ -144,7 +142,6 @@ class @com.tunein
 
   list query local_stations(out id: Entity(com.tunein:station)
                             #[unique=true]
-                            #[string_values="com.tunein:station"]
                             #_[canonical={
                               default="base",
                               base=["name", "title"],
@@ -156,7 +153,7 @@ class @com.tunein
                             #[string_values="com.tunein:show"]
                             #_[canonical={
                               default="base",
-                              base=["name", "title", "track", "show", "program", "current show", 
+                              base=["name", "title", "track", "show", "program", "current show",
                                     "current program", "now playing", "currently playing"],
                               passive_verb=["named #", "called #", "titled #", "related to #",
                                             "now playing #", "currently playing #"],
@@ -172,7 +169,7 @@ class @com.tunein
                               base=["picture", "image", "photo", "cover"]
                             }]
   )
-  #_[canonical=["local radio stations", "local radio channels", 
+  #_[canonical=["local radio stations", "local radio channels",
                 "local stations", "local channels", "local radios"]]
   #_[on_error={
     station_not_found=["radio service temporarily not available"],
@@ -191,7 +188,6 @@ class @com.tunein
   ;
 
   action radio_play (in req id: Entity(com.tunein:station)
-                     #[string_values="com.tunein:station"]
                      #_[prompt=["which channel would you like to listen to"]]
                      #_[canonical={
                        default="base",
