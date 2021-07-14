@@ -65,7 +65,10 @@ module.exports = class MovieClass extends Tp.BaseDevice {
                         query_term = encodeURIComponent(value);
                 }
                 else if (pname === 'actors' && (op === 'contains' || op === 'contains~')) {
-                    query_term = encodeURIComponent(value);
+                    if (value instanceof Tp.Value.Entity)
+                        query_term = encodeURIComponent(value.display);
+                    else
+                        query_term = encodeURIComponent(value);
                     searchType = 'actor';
                 }
             }
