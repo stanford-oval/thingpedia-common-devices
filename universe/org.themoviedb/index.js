@@ -11,6 +11,7 @@ const Tp = require('thingpedia');
 
 const tmdbAccess = "https://api.themoviedb.org/3/";
 const movieSearch = "search/movie?api_key=";
+const multiSearch = "search/multi?api_key="
 const finalSearch = "&language=en-US&page=1";
 const topRated = "movie/top_rated?api_key=";
 const nowPlaying = "movie/now_playing?api_key=";
@@ -74,7 +75,7 @@ module.exports = class MovieClass extends Tp.BaseDevice {
             console.log("No query term identified; Here's info about The Avengers:");
             query_term = 'Avengers';
         }
-        const movieQuery = tmdbAccess + movieSearch + this.constructor.metadata.auth.api_key + '&language=en-US&query=' + query_term + '&page=1%include_adult=false';
+        const movieQuery = tmdbAccess + multiSearch + this.constructor.metadata.auth.api_key + '&language=en-US&query=' + query_term + '&page=1%include_adult=false';
         const response1 = await Tp.Helpers.Http.get(movieQuery);
         let parsedResponse = JSON.parse(response1);
         if (searchType === 'actor'){
