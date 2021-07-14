@@ -7,13 +7,15 @@ A: choice 2: Humidity State
 A: >> expecting = choice
 
 U: Humidity Sensor
-A: (The humidity is [0-9\.]+ ?°F\.)
+A: The humidity level reported by Humidity Sensor is [0-9\.]+ ?(%|percent)?\.
 A: >> expecting = null
 
 ====
 # 2-with-slot-fill-value
-U: What's the reading from the Outside Humidity?
-A: (The Humidity first floor is [0-9\.]+ ?°F\.)
+#U: What's the reading from the Outside Humidity?
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.iot.humidity(name="Outside Humidity").humidity();
+A: The humidity level reported by Outside Humidity is [0-9\.]+ ?(%|percent)?\.
 A: >> expecting = null
 
 ====
@@ -21,7 +23,7 @@ A: >> expecting = null
 #U: Which is the humidity inside?
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: @org.thingpedia.iot.humidity(all=true).humidity();
-A: (The humidity inside is [0-9\.]+ ?°F\.)
+A: The value is [0-9\.]+ ?(%|percent)?\.
 A: >> expecting = null
 
 ====
