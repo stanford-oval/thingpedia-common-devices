@@ -157,6 +157,8 @@ module.exports = class MovieClass extends Tp.BaseDevice {
                 if (pname === 'id' && (op === '==' || op === '=~')) {
                     if (value instanceof Tp.Value.Entity)
                         actorQuery = encodeURIComponent(value.display);
+                    else 
+                        actorQuery = encodeURIComponent(value);
                 }
             }
         }
