@@ -85,8 +85,6 @@ module.exports = class GoalDevice extends Tp.BaseDevice {
     let pD = priorDate.toISOString().slice(0, 10);
     let futureDate = new Date(new Date().setDate(today.getDate() + 30));
     let fD = futureDate.toISOString().slice(0, 10);
-    console.log(fD);
-    console.log(pD);
     return Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/fixtures?season=2020&team=' + team_id + '&from=' + pD + '&to=' + fD, {
       extraHeaders: {
         'x-rapidapi-key': this.constructor.metadata.auth.api_key,
@@ -151,66 +149,68 @@ module.exports = class GoalDevice extends Tp.BaseDevice {
 
   }
 
-  get_teamUpdate({ team_id }) {
+  async *get_teamUpdate({ team_id }) {
 
-    return Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/teams?id=' + team_id, {
+    const tempResponse = await Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/teams?id=' + team_id, {
       extraHeaders: {
         'x-rapidapi-key': this.constructor.metadata.auth.api_key,
         'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
         useQueryString: true
       },
       accept: 'application/json'
-    }).then((tempResponse) => {
-      const a = JSON.parse(tempResponse);
-      const b = a.response;
-      const teamName = b[0].team.name;
-      let t1_id = b[0].team.id;
-      return Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/standings?season=2020&team=' + team_id, {
+    });
+    const a = JSON.parse(tempResponse);
+    const b = a.response;
+    const teamName = b[0].team.name;
+    let t1_id = b[0].team.id;
+    const tempResponse1 = await Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/standings?season=2020&team=' + team_id, {
+      extraHeaders: {
+        'x-rapidapi-key': this.constructor.metadata.auth.api_key,
+        'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
+      },
+      accept: 'application/json'
+    });
+    const a1 = JSON.parse(tempResponse1);
+    const b1 = a1.response;
+    for (const obj of b1) {
+      const leagueName = obj.league.name;
+      const l_id = obj.league.id;
+      const ranking = obj.league.standings[0][0].rank;
+      const tempResponse2 = await Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/fixtures?league=' + l_id + '&team='+t1_id+'&last=1', {
         extraHeaders: {
           'x-rapidapi-key': this.constructor.metadata.auth.api_key,
           'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
         },
         accept: 'application/json'
-      }).then((tempResponse1) => {
-        const a1 = JSON.parse(tempResponse1);
-        const b1 = a1.response;
-        const leagueName = b1[1].league.name;
-        const l_id = b1[1].league.id;
-        const ranking = b1[1].league.standings[0][0].rank;
-        return Tp.Helpers.Http.get('https://api-football-v1.p.rapidapi.com/v3/fixtures?team=' + team_id + '&last=1', {
-          extraHeaders: {
-            'x-rapidapi-key': this.constructor.metadata.auth.api_key,
-            'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
-          },
-          accept: 'application/json'
-        }).then((tempResponse2) => {
-          const a2 = JSON.parse(tempResponse2);
-          const b2 = a2.response;
-          let n1 = b2[0].teams.home.name;
-          let t2_id = b2[0].teams.home.id;
-
-          let g1 = b2[0].goals.home;
-          let g2 = b2[0].goals.away;
-          if (n1 === teamName) {
-            n1 = b2[0].teams.home.away;
-            t2_id = b2[0].teams.away.id;
-          } else {
-            g1 = b2[0].goals.away;
-            g2 = b2[0].goals.home;
-          }
-          return [{
-            team: new Tp.Value.Entity(String(t1_id), String(teamName)),
-            last_opponent: new Tp.Value.Entity(String(t2_id), String(n1)),
-            score_of_last_match: (g1 + " - " + g2),
-            league: new Tp.Value.Entity(String(l_id), String(leagueName)),
-            league_ranking: ranking
-          }];
-        });
       });
+      const a2 = JSON.parse(tempResponse2);
+      const b2 = a2.response;
+      let n1 = b2[0].teams.home.name;
+      let t2_id = b2[0].teams.home.id;
+      let g1 = b2[0].goals.home;
+      let g2 = b2[0].goals.away;
+      if (n1 === teamName) {
+        n1 = b2[0].teams.away.name;
+        t2_id = b2[0].teams.away.id;
+      } else {
+        g1 = b2[0].goals.away;
+        g2 = b2[0].goals.home;
+      }
+      const score_of_last_match = (g1 + " - " + g2);
+      const rv = ({
+        team: new Tp.Value.Entity(String(t1_id), String(teamName)),
+        score: score_of_last_match,
+        league: new Tp.Value.Entity(String(l_id), String(leagueName)),
+        opponent: new Tp.Value.Entity(String(t2_id), String(n1)),
+        rank: ranking
+      });
+      yield rv;
+    }
 
 
-    });
+
   }
+
 
   async *get_player({ league_id }) {
     let i = 0;
