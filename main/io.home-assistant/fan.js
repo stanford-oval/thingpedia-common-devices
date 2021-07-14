@@ -48,10 +48,11 @@ module.exports = class HomeAssistantFan extends HomeAssistantDevice {
         else
             await this._callService('fan', 'turn_off');
     }
+
     async do_set_oscillation({ oscillation }) {
         if (oscillation === 'on')
-            await this._callService('fan', 'oscillate', {oscillating: true});
+            await this._callService('fan', 'set_preset_mode', {preset_mode: "auto"});
         else
-            await this._callService('fan', 'oscillate', {oscillating: false});
+            await this._callService('fan', 'set_preset_mode', {preset_mode: "manual"});
     }
 };

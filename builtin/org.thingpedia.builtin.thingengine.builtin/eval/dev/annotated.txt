@@ -1269,3 +1269,454 @@ UT: @org.thingpedia.builtin.thingengine.builtin.configure(device="io.home-assist
 U: how to activate microphone
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.builtin.thingengine.builtin.set_voice_input(status=enum on);
+====
+# online/120829
+U: show popup saying water up to 130
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.say(message="water up to 130");
+====
+# online/120868
+U: every minute show popup
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: timer(base=$now, interval=1min) => @org.thingpedia.builtin.thingengine.builtin.say();
+====
+# online/1470582
+U: location of device
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.builtin.thingengine.builtin.get_gps());
+====
+# online/1515736
+U: send me a message at 9:30
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[set_time($now, new Time(9, 30))]) => @org.thingpedia.builtin.thingengine.builtin.say();
+====
+# online/1647556
+U: notify me when i move
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.builtin.thingengine.builtin.get_gps());
+====
+# online/1647558
+U: notify me when i move faster than 13 km/h
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.builtin.thingengine.builtin.get_gps()) filter speed >= 13kmph;
+====
+# online/1681145
+U: wake me up at 7:30
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: attimer(time=[new Time(7, 30)]) => @org.thingpedia.builtin.thingengine.builtin.get_time();
+====
+# online/1691492
+U: set an reminder for 12:00
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[set_time($now, new Time(12, 0))]) => @org.thingpedia.builtin.thingengine.builtin.say();
+====
+# online/9805476
+U: remind me to take my medicines every morning at 8:00
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: attimer(time=[new Time(8, 0)]) => @org.thingpedia.builtin.thingengine.builtin.say(message="take my medicines");
+====
+# online/16013793
+U: new account matrtix
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.configure(device="org.thingpedia.builtin.matrix"^^tt:device("matrix"));
+====
+# online/16013794
+U: new account matrix
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.configure(device="org.thingpedia.builtin.matrix"^^tt:device("matrix"));
+====
+# online/16013796
+U: new account gmail
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.configure(device="com.gmail"^^tt:device("gmail"));
+====
+# online/53256250
+U: remind me at 5:30 pm to do homework
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[set_time($now, new Time(17, 30))]) => @org.thingpedia.builtin.thingengine.builtin.say(message="do homework");
+====
+# online/55592324
+U: notify me if the door opens and i am not at home
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.builtin.thingengine.builtin.get_gps()) filter !(location == $location.home);
+====
+# online/62110235
+U: pick a random number between 13 and 14, and if it's exactly 15, say critical hit!
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_random_between(high=14, low=13) filter random == 15;
+UT: @org.thingpedia.builtin.thingengine.builtin.say(message="critical hit !");
+====
+# recording/90292bffdd2765b6a5d79f7d1fde9f9a
+U: what can you do
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
+====
+# recording/a79c1b984f4453c543a760f12b6b96dc
+U: what else can you do
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
+====
+# recording/3a10171dbdabf635e062ba6b43e8fa9b
+U: what iot devices
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum iot_help);
+====
+# recording/a3ea27a5300c6ddc32afa1dd138bba10
+U: set the temperature unit to celsius
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.set_temperature_unit(unit=enum celsius);
+====
+# recording/ae85d5c2df46e37416d607c92c1eba44
+U: set my timezone to rome
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.set_timezone(timezone=null^^tt:timezone("rome"));
+====
+# recording/d9ffb9725b7f856dc15edabb4f1aa1d8
+U: can I use you on Android?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum check_capability_phone);
+====
+# recording/3ab49da5875e182fbfd979f76dd9edee
+U: are you available on Android?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum check_capability_phone);
+====
+# recording/ec45afab2da26c3ff9e93bc69d655b2f
+U: that's ok
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum positive_emotion_thanks);
+====
+# recording/c486b967b9e297f6ff029e76b1fccfcc
+U: what's your name?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_identity);
+====
+# recording/bb5b1a8793fcce10ff79dc8fbb3d3180
+U: what's my name?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_name();
+====
+# recording/ea3f699e553a6ed82b7bc6ebcf519e55
+U: hello
+UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
+C: $dialogue @org.thingpedia.dialogue.transaction.greet;
+A: Hello! How can I help you?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_greet;
+U: how are you today?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you);
+====
+# recording/398cc9c5b2a1b9df32c73c333e83444b
+U: what day is today?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_date();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.get_date()
+C: #[results=[
+C:   { date=new Date("2021-03-18T15:48:12.067Z") }
+C: ]];
+A: The date is today at 4:48 PM.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: what today is?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_date();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.get_date()
+C: #[results=[
+C:   { date=new Date("2021-03-18T15:48:12.067Z") }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.get_date()
+C: #[results=[
+C:   { date=new Date("2021-03-18T15:49:11.375Z") }
+C: ]];
+A: The date is today at 4:49 PM.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: what's the date?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_date();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.get_date()
+C: #[results=[
+C:   { date=new Date("2021-03-18T15:48:12.067Z") }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.get_date()
+C: #[results=[
+C:   { date=new Date("2021-03-18T15:49:11.375Z") }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.get_date()
+C: #[results=[
+C:   { date=new Date("2021-03-18T15:49:40.613Z") }
+C: ]];
+A: The date is today at 4:49 PM.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: what day is it?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_date();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.get_date()
+C: #[results=[
+C:   { date=new Date("2021-03-18T15:48:12.067Z") }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.get_date()
+C: #[results=[
+C:   { date=new Date("2021-03-18T15:49:11.375Z") }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.get_date()
+C: #[results=[
+C:   { date=new Date("2021-03-18T15:49:40.613Z") }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.get_date()
+C: #[results=[
+C:   { date=new Date("2021-03-18T15:50:10.117Z") }
+C: ]];
+A: The date is today at 4:50 PM.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: what day is it?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_date();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.get_date()
+C: #[results=[
+C:   { date=new Date("2021-03-18T15:48:12.067Z") }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.get_date()
+C: #[results=[
+C:   { date=new Date("2021-03-18T15:49:11.375Z") }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.get_date()
+C: #[results=[
+C:   { date=new Date("2021-03-18T15:49:40.613Z") }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.get_date()
+C: #[results=[
+C:   { date=new Date("2021-03-18T15:50:10.117Z") }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.get_date()
+C: #[results=[
+C:   { date=new Date("2021-03-18T15:50:19.045Z") }
+C: ]];
+A: The date is today at 4:50 PM.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: what time is it?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_time();
+====
+# recording/933a13318e13e7d87a8c0468e78d7fff
+U: What's Almond?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_identity);
+====
+# recording/06f894c15e631f779b3025b7f887c97a
+U: Who developed you?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_identity);
+====
+# recording/ecc17e84c6986f6945287850477f9fb3
+U: Are you a bot'
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_identity);
+====
+# recording/1b63c69ed52fa5cece00fb8dac45afed
+U: hi
+UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
+C: $dialogue @org.thingpedia.dialogue.transaction.greet;
+A: Hello! How can I help you?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_greet;
+U: what can you do?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
+====
+# recording/c39eee5b4f5c779a615515efc4d39753
+U: hey, what can you do?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
+====
+# recording/ba314ca756a7e46807313ba1c6273dc4
+U: hi, what can you do?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
+====
+# recording/388b01c92b220ae155bd2bc3a026a3df
+U: hi
+UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
+C: $dialogue @org.thingpedia.dialogue.transaction.greet;
+A: Hello! How can I help you?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_greet;
+U: What can you do?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
+====
+# recording/644f9ff56f760f03dd94fffa5d4fec7b
+U: may I speak to you?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.set_voice_input(status=enum on);
+====
+# recording/b54612babd02bb06d4cf2e07e698a186
+U: I watn to say hi
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.say(message="hi");
+====
+# log-dev/6750
+U: this is awesome.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum positive_emotion_thanks);
+====
+# log-dev/5857
+U: configure home assisant
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.configure(device=null^^tt:device("home assisant"));
+====
+# log-dev/4220
+U: say computer
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.say(message="computer");
+====
+# log-dev/5112
+U: how can i train you
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum how_to_train);
+====
+# log-dev/9161
+U: who are your creators
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_identity);
+====
+# log-dev/9668
+U: slovak
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.set_language(language=null^^tt:iso_lang_code("slovak"));
+====
+# log-dev/9410
+U: waht can you do
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
+====
+# log-dev/7116
+U: set my home address to redwood city, ca.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.set_location(location=new Location("redwood city , ca"), type=enum home);
+====
+# log-dev/8391
+U: which day is it?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_date();
+====
+# log-dev/8860
+U: name me'
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.set_name();
+====
+# log-dev/2612
+U: show me a random number
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_random_between();
+====
+# log-dev/7127
+U: get a random number.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_random_between();
+====
+# log-dev/9478
+U: what iot can you handle?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum iot_help);
+====
+# log-dev/6211
+U: who made you
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_identity);
+====
+# log/108376
+U: set a reminder for 3:30pm
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[set_time($now, new Time(15, 30))]) => @org.thingpedia.builtin.thingengine.builtin.say();
+====
+# log/17348
+U: remind me that i have to jog every day
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: timer(base=$now, interval=1day) => @org.thingpedia.builtin.thingengine.builtin.say(message="to jog every day");
+====
+# log-dev/1165
+U: send me a message 13 times every 2 ms
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: timer(base=$now, frequency=13, interval=2ms) => @org.thingpedia.builtin.thingengine.builtin.say();
+====
+# log-dev/1167
+U: send me a message 13 times every minute
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: timer(base=$now, frequency=13, interval=1min) => @org.thingpedia.builtin.thingengine.builtin.say();
+====
+# log-dev/1177
+U: send me a message at 8am
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[set_time($now, new Time(8, 0))]) => @org.thingpedia.builtin.thingengine.builtin.say();
+====
+# log-dev/1188
+U: send me a message 13 times every day
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: timer(base=$now, frequency=13, interval=1day) => @org.thingpedia.builtin.thingengine.builtin.say();
+====
+# log/41012
+U: wait for 2 hours
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[$now + 2h]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+====
+# log/51266
+U: wake me up at 6:30 each morning
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: attimer(time=[new Time(6, 30)]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+====
+# log/68239
+U: wake me up at 12
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: attimer(time=[new Time(12, 0)]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+====
+# log/77302
+U: wake me up at 8:00
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: attimer(time=[new Time(8, 0)]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+====
+# log/97371
+U: wake me up in 2.5 hours
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[$now + 2.5h]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+====
+# log/122578
+U: wake me up tomorrow morning at 9:45
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[set_time($end_of(day), new Time(9, 45))]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+====
+# log/112571
+U: set a timer for 10 minutes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[$now + 10min]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+====
+# log/7364
+U: notify me in 30 s
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[$now + 30s]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+====
+# log/19296
+U: can you please set my alarm
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=$?) => @org.thingpedia.builtin.thingengine.builtin.alert();
+====
+# log/42153
+U: set an alarm for 5am
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[set_time($now, new Time(5, 0))]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+====
+# log/56523
+U: set alarm in 25 m
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[$now + 25min]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+====
+# log/72700
+U: set an alarm
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=$?) => @org.thingpedia.builtin.thingengine.builtin.alert();
+====
+# log/106707
+U: set an alarm in 5 h from now
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[$now + 5h]) => @org.thingpedia.builtin.thingengine.builtin.alert();

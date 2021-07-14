@@ -38,3 +38,13 @@ UT: @com.cryptonator.get_price(currency=null^^tt:cryptocurrency_code("tcoex"));
 U: get value of 1 btc in usd
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.cryptonator.get_price(currency="btc"^^tt:cryptocurrency_code("btc"));
+====
+# log/74243
+U: if bitcoin goes above 10000 notify me
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.cryptonator.get_price(currency="btc"^^tt:cryptocurrency_code("bitcoin"))) filter price >= 10000$usd;
+====
+# log/101293
+U: notify me when price of btc is over of 13
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.cryptonator.get_price(currency=null^^tt:cryptocurrency_code("btc"))) filter price >= 13$usd;

@@ -8,3 +8,23 @@ UT: @org.thingpedia.iot.battery(name="elixer dome").state();
 U: what's the state of the battery
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.battery.state();
+====
+# log/54961
+U: tell me when the battery becomes low
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.battery.state()) filter state == enum low;
+====
+# log-dev/8968
+U: how's my battery
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.battery.state();
+====
+# log-dev/9168
+U: which is the battery level.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.battery.state();
+====
+# log/84095
+U: what's the battery on my phone
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.battery(name="phone").state();

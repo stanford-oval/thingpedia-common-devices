@@ -1,0 +1,92 @@
+abstract class @org.thingpedia.iot.media-player
+#_[thingpedia_name="Media Player"]
+#_[thingpedia_description="Interface for Media Player."]
+#_[description="Interface for Media Player."]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="home"]
+{
+  monitorable query power(out state : Enum(on,off))
+  #_[canonical="power state"]
+  #_[confirmation="the power state of $__device"]
+  #_[result=["the media player is ${state}"]];
+
+  action set_power(in req power: Enum(on,off) #_[prompt="Do you want to turn it on or off?"] #_[canonical="power"])
+  #_[canonical="turn your media player on or off"]
+  #_[confirmation="turn ${power} $__device"]
+  #[confirm=true]
+  #[doc="turn on or off the media player"];
+
+  action raise_volume()
+  #_[canonical=["increase the volume of the media player",
+                "increase my media player 's volume",
+                "make the media player louder",
+                "increase the media player volume"]]
+  #[confirm=false]
+  #[doc="increase the volume of the media player"];
+
+  action lower_volume()
+  #_[canonical=["decrease the volume of my media player",
+                "decrease my media player 's volume",
+                "reduce the volume of the media player",
+                "reduce my media player 's volume",
+                "make the media player softer"]]
+  #[confirm=false]
+  #[doc="decrease the volume of the media player"];
+
+  action mute()
+  #_[canonical=["mute my media player",
+                "silence my media player 's volume",
+                "turn off the volume of the media player",
+                "switch off the sound for my media player",
+                "mute my media player 's sound",
+                "make my media player silent"]]
+  #[confirm=false]
+  #[doc="mute the media player"];
+
+  action unmute()
+  #_[canonical=["unmute my media player",
+                "unmute the media player 's volume",
+                "unmute my media player 's sound",
+                "turn on the media player sound",
+                "stop muting my media player"]]
+  #[confirm=false]
+  #[doc="unmute the media player"];
+
+  action media_play()
+  #_[canonical=["play media on the media player",
+                "start playing on the media player"]]
+  #[confirm=false]
+  #[doc="play media on the media player"];
+
+  action media_pause()
+  #_[canonical=["pause media on the media player",
+                "pause reproduction on the media player"]]
+  #[confirm=false]
+  #[doc="pause media reproduction on the media player"];
+
+  action media_stop()
+  #_[canonical=["stop media on the media player",
+                "stop playing on the media player"]]
+  #[confirm=false]
+  #[doc="stop media reproduction on the media player"];
+
+  action media_next_track()
+  #_[canonical=["move to next track on the media player"]]
+  #[confirm=false]
+  #[doc="go to next media on the media player"];
+
+  action media_previous_track()
+  #_[canonical=["move to previous media on the media player"]]
+  #[confirm=false]
+  #[doc="go to previous media on the media player"];
+
+  action set_volume(in req volume: Number #_[prompt="from 0 to 100, what volume do you want to set"]
+                    #_[canonical={
+                      base=["volume", "value"],
+                      preposition=["to #"]
+                    }])
+  #_[canonical="set the volume of the media player"]
+  #[confirm=false]
+  #[doc="set the media player volume"];
+}

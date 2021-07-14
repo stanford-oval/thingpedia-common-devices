@@ -884,7 +884,7 @@ U: what's the weather tomorrow
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.weather.forecast();
 ====
-# log/log-dev/7509
+# log-dev/7509
 U: what will the weather be in palo alto tomorrow
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.weather.forecast(location=new Location("palo alto"));
@@ -1033,3 +1033,143 @@ UT: @org.thingpedia.weather.forecast();
 U: run what is the moon phase
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.weather.moon();
+====
+# online/341434
+U: tell me if it will rain in palo alto
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.weather.current(location=new Location("palo alto")));
+====
+# online/341535
+U: notify me if it's raining weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.weather.current()) filter status == enum raining;
+====
+# online/341536
+U: notify me if it's raining
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.weather.current()) filter status == enum raining;
+====
+# online/341539
+U: notify me if it's cloudy weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.weather.current()) filter status == enum cloudy;
+====
+# online/341540
+U: notify me if it's cloudy
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.weather.current()) filter status == enum cloudy;
+====
+# online/341543
+U: notify me if it's snowing
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.weather.current()) filter status == enum snowy;
+====
+# online/341546
+U: notify me if it's snowy
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.weather.current()) filter status == enum snowy;
+====
+# online/359921
+U: give me weather every day
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: timer(base=$now, interval=1day) => @org.thingpedia.weather.current();
+====
+# online/1435474
+U: weather sunny
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.weather.current());
+====
+# online/1435538
+U: whenever it rains remind me to bring an umbrella
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.weather.current()) filter status == enum raining;
+====
+# online/1439555
+U: when it rains remind me to bring my umbrella
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.weather.current()) filter status == enum raining;
+====
+# online/1473566
+U: show me the weather at 0:0 in the morning
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: attimer(time=[new Time(0, 0)]) => @org.thingpedia.weather.current();
+====
+# online/32513051
+U: monitor the weather at home
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.weather.current(location=$location.home));
+====
+# online/62756433
+U: notify me when the temperature in san francisco goes below 13 degrees
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.weather.current(location=new Location("san francisco")) filter temperature <= 13defaultTemperature);
+====
+# log/41285
+U: monitor weather at home
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.weather.current(location=$location.home));
+====
+# recording/0d6593f47f02d3edc2bd53e9eb402ee4
+U: what's the weather in rome tomorrow
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast(location=new Location("rome"));
+====
+# recording/235f51a92deda0f0278135bb963b892a
+U: how's the weather?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# log-dev/7117
+U: what's the weather at home?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=$location.home);
+====
+# log-dev/8328
+U: what's the forecast for tomorrow?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast();
+====
+# log-dev/6932
+U: what time is sunset?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.sunrise();
+====
+# log-dev/5885
+U: is it rainy
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# log-dev/4262
+U: show me the weather in munich
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("munich"));
+====
+# log-dev/5806
+U: what's the weather in new york city
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("new york city"));
+====
+# log-dev/6249
+U: how hot is it in washington, dc?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [temperature] of @org.thingpedia.weather.current(location=new Location("washington , dc"));
+====
+# log-dev/8667
+U: what's the weather in poprad?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("poprad"));
+====
+# log-dev/5883
+U: weather forecast for sofia
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast(location=new Location("sofia"));
+====
+# log/17527
+U: longterm weather namur
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast(location=new Location("namur"));
+====
+# log/63440
+U: will it reain tomorrow
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast();

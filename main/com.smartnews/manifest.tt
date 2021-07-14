@@ -1,0 +1,124 @@
+// Copyright 2020-2021 SmartNews Inc.
+//           2021 The Board of Trustees of the Leland Stanford Junior University
+//
+// Redistribution and use in source and binary forms, with or
+// without modification, are permitted provided that the following
+// conditions are met:
+//
+// 1. Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+// 2. Redistributions in binary form must reproduce the above
+//    copyright notice, this list of conditions and the following
+//    disclaimer in the documentation and/or other materials
+//    provided with the distribution.
+// 3. Neither the name of the copyright holder nor the names of its
+//    contributors may be used to endorse or promote products derived
+//    from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+// OF THE POSSIBILITY OF SUCH DAMAGE.
+
+class @com.smartnews
+#_[thingpedia_name="Smartnews"]
+#_[thingpedia_description="Read news from Smartnews"]
+#_[canonical="smartnews"]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="media"]
+{
+  import loader from @org.thingpedia.v2();
+  import config from @org.thingpedia.config.none();
+
+  entity article #_[description="News Articles on SmartNews"] #[has_ner=false];
+
+  monitorable list query article(out id : Entity(com.smartnews:article),
+                                 out title : String
+                                 #[string_values="tt:news_title"]
+                                 #_[canonical={
+                                   default = "base",
+                                   base = ["title", "news title", "name"],
+                                   property = ["news #", "title #"]
+                                 }],
+                                 out link : Entity(tt:url),
+                                 out audio_url: Entity(tt:url),
+                                 out date: Date
+                                 #_[canonical={
+                                    default="passive_verb",
+                                    base=["date", "published date", "published year", "published day"],
+                                    property=["published date #"],
+                                    preposition=["from #"],
+                                    passive_verb=["published on #", "released #", "published at #"],
+                                    adjective_argmin=["least recent", "oldest", "first"],
+                                    adjective_argmax=["most recent", "newest", "latest"],
+                                    passive_verb_argmax=["published most recently"],
+                                    passive_verb_projection=['published | on', 'released | on', 'written | on']
+                                 }],
+                                 out author: String
+                                 #[string_values="tt:person_full_name"]
+                                 #_[canonical={
+                                    default="preposition",
+                                    base=["author", "reporter"],
+                                    preposition=["by #", "from #"],
+                                    passive_verb=["written by #", "published by #", "authored by #", "reported by #"],
+                                    verb = ["# authored", "# published", "# wrote", "# reported"],
+                                 }],
+                                 out source: String
+                                 #_[canonical={
+                                    default="preposition",
+                                    base=["publisher", "media", "publisher name", "source"],
+                                    property=["publisher #", "media #"],
+                                    preposition=["from #", "by #"],
+                                    adjective=["#", "# 's"],
+                                    passive_verb=["released by #", "published by #"],
+                                    verb = ["# released", "# published", "# announced", "# stated"],
+                                    base_projection=['publisher', 'company', 'media'],
+                                    passive_verb_projection=['published | by', 'released | by'],
+                                    reverse_verb_projection=['released', 'published']
+                                 }],
+                                 out content: String
+                                 #[string_values="tt:long_free_text"]
+                                 #_[canonical={
+                                    default = "base",
+                                    base = ["news content", "content", "body", "article"],
+                                    property = ["news #", "content #", "body #"]
+                                 }]
+                                 #[filterable=false]
+                                 )
+  #_[canonical=["news article", "news report",
+               "news",
+               "top news",
+               "news from smartnews",
+               "news on smartnews",
+               "breaking news",
+               "global news",
+               "hot topic",
+               "high rank news",
+               "article",
+               "story",
+               "news story"]]
+  #_[result={
+    top="the latest news is ${title}",
+    list="here are the news"
+  }]
+  #_[formatted=[
+    { type="rdl", webCallback="${link}", displayTitle="${title}" },
+    { type="sound", name="news-intro", exclusive=true },
+    { type="audio", url="${audio_url}" }
+  ]]
+  #_[on_error={
+    unavailable="the smartnews service is unavailable. please try again later" 
+  }]
+  #[poll_interval=3600000ms]
+  #[minimal_projection=["id", "title", "link", "audio_url"]]
+  #[doc="get news articles from SmartNews api"];
+}

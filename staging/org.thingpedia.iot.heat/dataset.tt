@@ -1,7 +1,6 @@
 dataset @org.thingpedia.iot.heat language "en" {
-    program  := {
-  now => @org.thingpedia.iot.heat.state() => notify;
-}
+    program  := @org.thingpedia.iot.heat.state() 
+
     #_[utterances=["is the heat sensor hot or cold?",
                    "check if the heat sensor is hot",
                    "what does the heat sensor say?",
@@ -23,7 +22,7 @@ dataset @org.thingpedia.iot.heat language "en" {
     #[id=54330244]
     #[name="MonitorState"];
 
-    stream (p_state :Enum(hot,cold,normal))  := edge (monitor (@org.thingpedia.iot.heat.state())) on state == p_state
+    stream (p_state :Enum(hot,cold,normal))  := monitor (@org.thingpedia.iot.heat.state()), state == p_state
     #_[utterances=["when my heat sensor becomes ${p_state}",
                    "if my heat sensor is ${p_state}",
                    "when the heat sensor turns ${p_state}",
@@ -32,14 +31,14 @@ dataset @org.thingpedia.iot.heat language "en" {
     #[id=54330245]
     #[name="MonitorStateByState"];
 
-    stream  := edge (monitor (@org.thingpedia.iot.heat.state())) on state == enum(hot)
+    stream  := monitor (@org.thingpedia.iot.heat.state()), state == enum(hot)
     #_[utterances=["when the heat sensor is heating up",
                    "if the heat sensor is getting heated up",
                    "when the heat sensor grows warm"]]
     #[id=54330250]
     #[name="MonitorStateByStateHot"];
 
-    stream  := edge (monitor (@org.thingpedia.iot.heat.state())) on state == enum(cold)
+    stream  := monitor (@org.thingpedia.iot.heat.state()), state == enum(cold)
     #_[utterances=["when the heat sensor is cooling down",
                    "when the heat sensor is freezing",
                    "when the heat sensor is cold",
@@ -47,16 +46,14 @@ dataset @org.thingpedia.iot.heat language "en" {
     #[id=54330253]
     #[name="MonitorStateByStateCold"];
 
-    stream  := edge (monitor (@org.thingpedia.iot.heat.state())) on state == enum(normal)
+    stream  := monitor (@org.thingpedia.iot.heat.state()), state == enum(normal)
     #_[utterances=["when the heat sensor is normal",
                    "when the heat sensor is not cold",
                    "when the heat sensor is not hot"]]
     #[id=54330257]
     #[name="MonitorStateByStateNormal"];
 
-    program (p_name :String)  := {
-  now => @org.thingpedia.iot.heat(name=p_name).state() => notify;
-}
+    program (p_name :String) := @org.thingpedia.iot.heat(name=p_name).state() 
     #_[utterances=["is the ${p_name} heat sensor hot or cold?",
                    "check if the ${p_name} heat sensor is hot",
                    "check if the ${p_name} heat sensor is cold",
@@ -80,7 +77,7 @@ dataset @org.thingpedia.iot.heat language "en" {
     #[id=54330270]
     #[name="MonitorState1"];
 
-    stream (p_name :String, p_state :Enum(hot,cold,normal))  := edge (monitor (@org.thingpedia.iot.heat(name=p_name).state())) on state == p_state
+    stream (p_name :String, p_state :Enum(hot,cold,normal))  := monitor (@org.thingpedia.iot.heat(name=p_name).state()), state == p_state
     #_[utterances=["when my ${p_name} heat sensor becomes ${p_state}",
                    "if my ${p_name} heat sensor is ${p_state}",
                    "when the ${p_name} heat sensor turns ${p_state}",
@@ -89,21 +86,21 @@ dataset @org.thingpedia.iot.heat language "en" {
     #[id=54330271]
     #[name="MonitorStateByState1"];
 
-    stream (p_name :String)  := edge (monitor (@org.thingpedia.iot.heat(name=p_name).state())) on state == enum(hot)
+    stream (p_name :String)  := monitor (@org.thingpedia.iot.heat(name=p_name).state()), state == enum(hot)
     #_[utterances=["when the ${p_name} heat sensor is heating up",
                    "if the ${p_name} heat sensor is getting heated up",
                    "when the ${p_name} heat sensor grows warm"]]
     #[id=54330276]
     #[name="MonitorStateByStateHot1"];
 
-    stream (p_name :String)  := edge (monitor (@org.thingpedia.iot.heat(name=p_name).state())) on state == enum(cold)
+    stream (p_name :String)  := monitor (@org.thingpedia.iot.heat(name=p_name).state()), state == enum(cold)
     #_[utterances=["when the ${p_name} heat sensor is cooling down",
                    "if the ${p_name} heat sensor is cold",
                    "when the ${p_name} heat sensor grows cool"]]
     #[id=54330279]
     #[name="MonitorStateByStateCold1"];
 
-    stream (p_name :String)  := edge (monitor (@org.thingpedia.iot.heat(name=p_name).state())) on state == enum(normal)
+    stream (p_name :String)  := monitor (@org.thingpedia.iot.heat(name=p_name).state()), state == enum(normal)
     #_[utterances=["when the ${p_name} heat sensor stops heating up",
                    "when the ${p_name} heat sensor is no longer warm",
                    "when the ${p_name} heat sensor is not hot anymore",

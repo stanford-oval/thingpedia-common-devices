@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 // -*- mode: js; indent-tabs-mode: nil; js-basic-offset: 4 -*-
 //
 // This file is part of Genie
@@ -39,7 +40,7 @@ const Platform = require('./lib/platform');
 const { readAllLines } = require('./lib/argutils');
 const { coin } = require('./lib/random');
 
-const FEW_SHOT_TRAIN_PROBABILITY = 0.3;
+const FEW_SHOT_TRAIN_PROBABILITY = 0.5;
 
 // must be in inheritance order
 const RELEASES = ['builtin', 'main', 'universe', 'staging'];
@@ -160,7 +161,14 @@ class Trainer {
         console.log(`e $number : edit the selected thingtalk code`);
         console.log(`n : show more candidates`);
         console.log(`t : type in the thingtalk directly`);
-        console.log(`d $comment : drop the turn and truncate the dialogue, with the given reason`);
+        console.log(`d $comment : drop the turn and truncate the dialogue, with the given reason:`);
+        console.log(`- ood : the command is out-of-domain`);
+        console.log(`- \\t : the command was typed as \\t`);
+        console.log(`- bad-agent : the agent misbehaved in a way that makes continuation impossible`);
+        console.log(`- control : the command was a control command (stop, cancel, etc.)`);
+        console.log(`- lost-context : the context was reset due to a bug and the command cannot be interpreted`);
+        console.log(`- asr : the command was unintellegible due to ASR problems`);
+        console.log(`- unintellegible : the command was unintellegible for other reasons`);
 
         this._rl.prompt();
     }
@@ -180,10 +188,10 @@ class Trainer {
             }
         }
 
-        for (const r of RELEASES) {
-            await this._tryLoadExistingDataset(path.resolve('eval', r, 'dev/annotated.txt'));
-            await this._tryLoadExistingDataset(path.resolve('eval', r, 'train/annotated.txt'));
+        await this._tryLoadExistingDataset(path.resolve('eval/everything/dev/annotated.txt'));
+        await this._tryLoadExistingDataset(path.resolve('eval/everything/train/annotated.txt'));
 
+        for (const r of RELEASES) {
             for (const d of await pfs.readdir(path.resolve(r))) {
                 if (!fs.existsSync(path.resolve(r, d, 'manifest.tt')))
                     continue;
@@ -229,6 +237,7 @@ class Trainer {
                         if (dlg.length === 0)
                             continue;
                         dlg.id = await this._computeId(userId, conversationId, i++);
+                        dlg.filename = filepath;
 
                         const visitor = new RemoveSensitiveInfoVisitor();
                         for (const turn of dlg) {
@@ -312,10 +321,8 @@ class Trainer {
         if (this._outputs.has(device))
             return this._outputs.get(device);
 
-        if (RELEASES.indexOf(device) >= 0) {
-            const release = device;
-
-            return this._getManualFile(device, path.resolve('eval', release));
+        if (device === 'everything') {
+            return this._getManualFile(device, path.resolve('eval/everything'));
         } else {
             const release = this._devices.get(device);
             if (!release)
@@ -344,22 +351,7 @@ class Trainer {
         if (devices.size === 1)
             return Array.from(devices)[0];
 
-        // find the largest release that contains all the devices
-        // we'll add this training sample to the multiskill dev/train sets for that release
-
-        let rank = 0, release = 'builtin';
-        for (let d of devices) {
-            const drelease = this._devices.get(d);
-            if (!drelease)
-                throw new Error(`Cannot find device ${d} in repo`);
-            const drank = RELEASES.indexOf(drelease);
-            assert(drank >= 0);
-            if (drank > rank) {
-                rank = drank;
-                release = drelease;
-            }
-        }
-        return release;
+        return 'everything';
     }
 
     async _learnProgram(prediction) {
@@ -467,7 +459,7 @@ class Trainer {
         }
 
         console.log('====');
-        console.log(`Dialogue #${this._serial} (${this._id})`);
+        console.log(`Dialogue #${this._serial} (${this._id}; ${this._dialogues[this._serial].filename})`);
         this._outputDialogue = [];
         await this._nextTurn();
     }

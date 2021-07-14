@@ -1,0 +1,446 @@
+dataset @org.thingpedia.iot.cover language "en" {
+    program  := @org.thingpedia.iot.cover.state() 
+    #_[utterances=["is my curtain open?",
+                   "are my curtains closed?",
+                   "check if my curtain is raised",
+                   "are my curtains put down?",
+                   "did I raise the curtains?",
+                   "check whether the curtains are lowered",
+                   "is my awning open?",
+                   "are my awnings closed?",
+                   "check if my awning is extended",
+                   "are the awnings out?",
+                   "did I retract the awnings?",
+                   "check whether the awnings are retracted",
+                   "are my blinds open?",
+                   "are my blinds closed?",
+                   "check if my blinds are raised",
+                   "are my blinds put down?",
+                   "did I raise the blinds?",
+                   "check whether the blinds are lowered",
+                   "is my damper open?",
+                   "is my damper closed?",
+                   "are my shades open?",
+                   "are my shades closed?",
+                   "check if my shades are raised",
+                   "are my shades put down?",
+                   "did I raise the shades?",
+                   "check whether the shades are lowered",
+                   "are my shutters open?",
+                   "are my shutters closed?",
+                   "check if my shutters are opened",
+                   "did I close the shutters?",
+                   "is my curtain open?",
+                   "are my curtains closed?",
+                   "check if my curtain is raised",
+                   "are my curtains put down?",
+                   "did I raise the curtains?",
+                   "check whether the curtains are lowered",
+                   "is my awning open?",
+                   "are my awnings closed?",
+                   "check if my awning is extended",
+                   "are the awnings out?",
+                   "did I retract the awnings?",
+                   "check whether the awnings are retracted",
+                   "are my blinds open?",
+                   "are my blinds closed?",
+                   "check if my blinds are raised",
+                   "are my blinds put down?",
+                   "did I raise the blinds?",
+                   "check whether the blinds are lowered",
+                   "is my damper open?",
+                   "is my damper closed?",
+                   "are my shades open?",
+                   "are my shades closed?",
+                   "check if my shades are raised",
+                   "are my shades put down?",
+                   "did I raise the shades?",
+                   "check whether the shades are lowered",
+                   "are my shutters open?",
+                   "are my shutters closed?",
+                   "check if my shutters are opened",
+                   "did I close the shutters?",
+                   "is my window open?",
+                   "is my window closed?",
+                   "check if my window is opened",
+                   "did I close the window?",
+                   "did anyone open the window?",
+                   "did somebody shut the window?"]]
+    #[id=54308273]
+    #[name="StateThenNotify"];
+
+    action (p_state :Enum(open,close))  := @org.thingpedia.iot.cover.set_openclose(state=p_state)
+    #_[utterances=["${p_state} my curtains",
+                   "${p_state} the awning",
+                   "${p_state} my blinds",
+                   "${p_state} the damper",
+                   "${p_state} my shades",
+                   "${p_state} the shutters",
+                   "${p_state} my curtains",
+                   "${p_state} the awning",
+                   "${p_state} my blinds",
+                   "${p_state} the damper",
+                   "${p_state} my shades",
+                   "${p_state} the shutters",
+                   "${p_state} my window",
+                   "${p_state} the window"]]
+    #[id=54308378]
+    #[name="SetOpencloseWithState"];
+
+    query  := @org.thingpedia.iot.cover.state()
+    #_[utterances=["if my curtains are open or closed",
+                   "whether my awnings are open or closed",
+                   "if I raised the curtains",
+                   "if I extended the awning",
+                   "whether the curtains is raised or lowered",
+                   "whether the awning is extended or retracted",
+                   "if my blinds are open or closed",
+                   "whether my blinds are open or closed",
+                   "if I raised the blinds",
+                   "whether the blinds are raised or lowered",
+                   "if my damper is open or closed",
+                   "whether my damper is open or closed",
+                   "if my shades are open or closed",
+                   "whether my shades are open or closed",
+                   "if I raised the shades",
+                   "whether the shades are raised or lowered",
+                   "if my shutters are open or closed",
+                   "whether my shutters are open or closed",
+                   "if I opened the shutters",
+                   "if my window is open or closed",
+                   "whether my window is open or closed",
+                   "if I opened the window",
+                   "whether the window is shut",
+                   "whether anyone closed the window"]]
+    #[id=54932429]
+    #[name="State"];
+
+    stream  := monitor (@org.thingpedia.iot.cover.state())
+    #_[utterances=["when the curtains open or close",
+                   "when my awnings are extended or retracted",
+                   "when the blinds are raised or lowered",
+                   "when the damper is opened or closed",
+                   "when my shades are opened or closed",
+                   "when the shutters are opened or closed",
+                   "when the window is opened or closed"]]
+    #[id=54932453]
+    #[name="MonitorState"];
+
+    stream (p_state :Enum(opened,closed))  := monitor (@org.thingpedia.iot.cover.state()), state == p_state
+    #_[utterances=["when the curtains are ${p_state}",
+                   "when my curtains gets ${p_state}",
+                   "when my awning is ${p_state}",
+                   "when my awning gets ${p_state}",
+                   "when the blinds are ${p_state}",
+                   "when my blinds gets ${p_state}",
+                   "when the damper is ${p_state}",
+                   "when my damper gets ${p_state}",
+                   "when the shades are ${p_state}",
+                   "when my shades gets ${p_state}",
+                   "when the shutters are ${p_state}",
+                   "when my shutters gets ${p_state}",
+                   "when the window is ${p_state}",
+                   "when my window gets ${p_state}"]]
+    #[id=54932460]
+    #[name="MonitorStateByState"];
+
+    stream  := monitor (@org.thingpedia.iot.cover.state()), state == enum(opened)
+    #_[utterances=["when my curtains are raised",
+                   "when the curtains are put up",
+                   "when I bring up my curtains",
+                   "when my awning is open",
+                   "when the awnings are open",
+                   "when I extend my awnings",
+                   "the moment the awnings get extended",
+                   "when my blinds are raised",
+                   "the moment the blinds are put up",
+                   "when I bring up my blinds",
+                   "when my damper is raised",
+                   "when my damper raises",
+                   "the moment my shades are raised",
+                   "when the shades are put up",
+                   "when I bring up my shades",
+                   "when my shutters are open",
+                   "when my window is open",
+                   "when anyone opens the window",
+                   "once somebody opens the window"]]
+    #[id=54932474]
+    #[name="MonitorStateByStateOpen"];
+
+    stream  := monitor (@org.thingpedia.iot.cover.state()), state == enum(closed)
+    #_[utterances=["when my curtains lower",
+                   "when the curtains get lowered",
+                   "the moment the curtains get put down",
+                   "when the curtains finish lowering",
+                   "when my awnings close",
+                   "when the awning becomes closed",
+                   "the moment the awnings get retracted",
+                   "when the awnings finish retracting",
+                   "when my blinds lower",
+                   "when the blinds get lowered",
+                   "the moment the blinds get put down",
+                   "when the blinds finish lowering",
+                   "when my damper is lowered",
+                   "when my damper lowers",
+                   "when my shades lower",
+                   "when the shades get lowered",
+                   "the moment the shades get put down",
+                   "when the shades finish lowering",
+                   "when my shutters close",
+                   "when my window closes",
+                   "when anyone shuts the window",
+                   "once somebody closes the window",
+                   "the moment the window gets shut"]]
+    #[id=54932493]
+    #[name="MonitorStateByStateClosed"];
+
+    action  := @org.thingpedia.iot.cover.set_openclose(state=enum(open))
+    #_[utterances=["keep my curtains",
+                   "pull the curtains open",
+                   "open my curtains for me",
+                   "raise the curtains",
+                   "put the curtains up",
+                   "open my awning for me",
+                   "extend the awnings",
+                   "make the awnings extend",
+                   "open my blinds for me",
+                   "raise the blinds",
+                   "put the blinds up",
+                   "open my damper for me",
+                   "raise the damper",
+                   "put the damper up",
+                   "open my shades for me",
+                   "raise the shades",
+                   "put the shades up",
+                   "open my shutters for me",
+                   "help me open the shutters",
+                   "open my window for me",
+                   "help me open the window"]]
+    #[id=54932529]
+    #[name="SetOpencloseWithStateOpen"];
+
+    action  := @org.thingpedia.iot.cover.set_openclose(state=enum(close))
+    #_[utterances=["pull the curtains close",
+                   "close my curtains",
+                   "lower the curtains",
+                   "put the curtains down",
+                   "close my awning",
+                   "retract the awnings",
+                   "close my blinds",
+                   "lower the blinds",
+                   "put the blinds down",
+                   "close my damper",
+                   "lower the damper",
+                   "put the damper down",
+                   "close my shades",
+                   "lower the shades",
+                   "put the shades down",
+                   "close my shutters",
+                   "bring in the shutters",
+                   "close my window",
+                   "shut the window"]]
+    #[id=54932550]
+    #[name="SetOpencloseWithStateClose"];
+
+    program (p_name :String)  := @org.thingpedia.iot.cover(name=p_name).state()
+    #_[utterances=["are my ${p_name:const} curtains open?",
+                   "are my ${p_name:const} curtains closed?",
+                   "check if my ${p_name:const} curtains are raised",
+                   "are my ${p_name:const} curtains put down?",
+                   "did I raise the ${p_name:const} curtains?",
+                   "check whether the ${p_name:const} curtains are lowered",
+                   "is my ${p_name:const} awning open?",
+                   "are my ${p_name:const} awnings closed?",
+                   "check if my ${p_name:const} awning is extended",
+                   "are the ${p_name:const} awnings out?",
+                   "did I retract the ${p_name:const} awnings?",
+                   "check whether the ${p_name:const} awnings are retracted",
+                   "are my ${p_name:const} blinds open?",
+                   "are my ${p_name:const} blinds closed?",
+                   "check if my ${p_name:const} blinds are raised",
+                   "are my ${p_name:const} blinds put down?",
+                   "did I raise the ${p_name:const} blinds?",
+                   "check whether the ${p_name:const} blinds are lowered",
+                   "is my ${p_name:const} damper open?",
+                   "is the ${p_name:const} damper closed?",
+                   "is my ${p_name:const} damper open?",
+                   "is the ${p_name:const} damper closed?",
+                   "are my ${p_name:const} shades open?",
+                   "are my ${p_name:const} shades closed?",
+                   "check if my ${p_name:const} shades are raised",
+                   "are my ${p_name:const} shades put down?",
+                   "did I raise the ${p_name:const} shades?",
+                   "check whether the ${p_name:const} shades are lowered",
+                   "are my ${p_name:const} shutters open?",
+                   "are my ${p_name:const} shutters closed?",
+                   "check if my ${p_name:const} shutters are opened",
+                   "did I close the ${p_name:const} shutters?",
+                   "is my ${p_name:const} window open?",
+                   "is my ${p_name:const} window closed?",
+                   "check if my ${p_name:const} window is opened",
+                   "did I close the ${p_name:const} window?",
+                   "did anyone open the ${p_name:const} window?",
+                   "did somebody shut the ${p_name:const} window?"]]
+    #[id=54932569]
+    #[name="StateThenNotify2"];
+
+    query (p_name :String)  := @org.thingpedia.iot.cover(name=p_name).state()
+    #_[utterances=["if my ${p_name:const} curtains are open or closed",
+                   "whether my ${p_name:const} awnings are open or closed",
+                   "if I raised the ${p_name:const} curtains",
+                   "if I extended the ${p_name:const} awning",
+                   "whether the ${p_name:const} curtains is raised or lowered",
+                   "whether the ${p_name:const} awning is extended or retracted",
+                   "if my ${p_name:const} blinds are open or closed",
+                   "whether my ${p_name:const} blinds are open or closed",
+                   "if I raised the ${p_name:const} blinds",
+                   "whether the ${p_name:const} blinds is raised or lowered",
+                   "if the ${p_name:const} damper is open or closed",
+                   "whether my ${p_name:const} damper is open or closed",
+                   "if my ${p_name:const} shades are open or closed",
+                   "whether my ${p_name:const} shades are open or closed",
+                   "if I raised the ${p_name:const} shades",
+                   "whether the ${p_name:const} shades is raised or lowered",
+                   "if my ${p_name:const} shutters are open or closed",
+                   "whether my ${p_name:const} shutters are open or closed",
+                   "if I opened the ${p_name:const} shutters",
+                   "if my ${p_name:const} window is open or closed",
+                   "whether my ${p_name:const} window is open or closed",
+                   "if I opened the ${p_name:const} window",
+                   "whether the ${p_name:const} window is shut",
+                   "whether anyone closed the ${p_name:const} window"]]
+    #[id=54932607]
+    #[name="State1"];
+
+    stream (p_name :String)  := monitor (@org.thingpedia.iot.cover(name=p_name).state())
+    #_[utterances=["when the ${p_name:const} curtains are open or close",
+                   "once the ${p_name:const} curtains are open or close",
+                   "when my ${p_name:const} awnings are extended or retracted",
+                   "when the ${p_name:const} blinds are raised or lowered",
+                   "when the ${p_name:const} damper is opened or closed",
+                   "when the ${p_name:const} shades are raised or lowered",
+                   "when the ${p_name:const} shutters are opened or closed",
+                   "when the ${p_name:const} window is opened or closed"]]
+    #[id=54932631]
+    #[name="MonitorState1"];
+
+    stream (p_name :String, p_state :Enum(opened,closed))  := monitor (@org.thingpedia.iot.cover(name=p_name).state()), state == p_state
+    #_[utterances=["when the ${p_name:const} curtains are ${p_state}",
+                   "when my ${p_name:const} curtains gets ${p_state}",
+                   "when the ${p_name:const} blinds are ${p_state}",
+                   "when my ${p_name:const} blinds gets ${p_state}",
+                   "when the ${p_name:const} damper is ${p_state}",
+                   "when my ${p_name:const} damper gets ${p_state}",
+                   "when the ${p_name:const} shades are ${p_state}",
+                   "when my ${p_name:const} shades gets ${p_state}",
+                   "when the ${p_name:const} shutters are ${p_state}",
+                   "when my ${p_name:const} shutters gets ${p_state}",
+                   "when the ${p_name:const} window is ${p_state}",
+                   "when my ${p_name:const} window gets ${p_state}"]]
+    #[id=54932638]
+    #[name="MonitorStateByState1"];
+
+    stream (p_name :String)  := monitor (@org.thingpedia.iot.cover(name=p_name).state()), state == enum(opened)
+    #_[utterances=["when my ${p_name:const} curtains are raised",
+                   "when the ${p_name:const} curtains are put up",
+                   "once I bring up my ${p_name:const} curtains",
+                   "when my ${p_name:const} blinds are raised",
+                   "when the ${p_name:const} blinds are put up",
+                   "when I bring up my ${p_name:const} blinds",
+                   "when my ${p_name:const} damper is raised",
+                   "when the ${p_name:const} damper raises",
+                   "when my ${p_name:const} shades are raised",
+                   "when the ${p_name:const} shades are put up",
+                   "when I bring up my ${p_name:const} shades",
+                   "when my ${p_name:const} shutters are open",
+                   "when my ${p_name:const} window is open",
+                   "when anyone opens the ${p_name:const} window",
+                   "once somebody opens the ${p_name:const} window"]]
+    #[id=54932650]
+    #[name="MonitorStateByStateOpen1"];
+
+    stream (p_name :String)  := monitor (@org.thingpedia.iot.cover(name=p_name).state()), state == enum(closed)
+    #_[utterances=["when my ${p_name:const} curtains lower",
+                   "when the ${p_name:const} curtains get lowered",
+                   "the moment the ${p_name:const} curtains get put down",
+                   "when the ${p_name:const} curtains finish lowering",
+                   "when my ${p_name:const} blinds lower",
+                   "when the ${p_name:const} blinds get lowered",
+                   "the moment the ${p_name:const} blinds get put down",
+                   "when the ${p_name:const} blinds finish lowering",
+                   "when the ${p_name:const} damper is lowered",
+                   "when my ${p_name:const} damper lowers",
+                   "when my ${p_name:const} shades lower",
+                   "once the ${p_name:const} shades get lowered",
+                   "the moment the ${p_name:const} shades get put down",
+                   "when the ${p_name:const} shades finish lowering",
+                   "when my ${p_name:const} shutters close",
+                   "when my ${p_name:const} window closes",
+                   "when anyone shuts the ${p_name:const} window",
+                   "once somebody closes the ${p_name:const} window",
+                   "the moment the ${p_name:const} window gets shut"]]
+    #[id=54932665]
+    #[name="MonitorStateByStateClosed1"];
+
+    action (p_name :String, p_state :Enum(open,close))  := @org.thingpedia.iot.cover(name=p_name).set_openclose(state=p_state)
+    #_[utterances=["${p_state} my ${p_name:const} curtains",
+                   "${p_state} my ${p_name:const} awnings",
+                   "${p_state} the ${p_name:const} blinds",
+                   "${p_state} my ${p_name:const} damper",
+                   "${p_state} the ${p_name:const} shades",
+                   "${p_state} the ${p_name:const} shutters",
+                   "${p_state} my ${p_name:const} curtains",
+                   "${p_state} my ${p_name:const} awnings",
+                   "${p_state} the ${p_name:const} blinds",
+                   "${p_state} my ${p_name:const} damper",
+                   "${p_state} the ${p_name:const} shades",
+                   "${p_state} the ${p_name:const} shutters",
+                   "${p_state} my ${p_name:const} window",
+                   "${p_state} the ${p_name:const} window"]]
+    #[id=54932684]
+    #[name="SetOpencloseWithState2"];
+
+    action (p_name :String)  := @org.thingpedia.iot.cover(name=p_name).set_openclose(state=enum(open))
+    #_[utterances=["keep my ${p_name:const} curtains",
+                   "pull the ${p_name:const} curtains open",
+                   "open my ${p_name:const} curtains for me",
+                   "raise the ${p_name:const} curtains",
+                   "put the ${p_name:const} curtains up",
+                   "open my ${p_name:const} blinds for me",
+                   "raise the ${p_name:const} blinds",
+                   "put the ${p_name:const} blinds up",
+                   "open my ${p_name:const} damper for me",
+                   "raise the ${p_name:const} damper",
+                   "put the ${p_name:const} damper up",
+                   "open my ${p_name:const} shades for me",
+                   "raise the ${p_name:const} shades",
+                   "put the ${p_name:const} shades up",
+                   "open my ${p_name:const} shutters for me",
+                   "help me open the ${p_name:const} shutters",
+                   "open my ${p_name:const} window for me",
+                   "help me open the ${p_name:const} window"]]
+    #[id=54932698]
+    #[name="SetOpencloseWithStateOpen1"];
+
+    action (p_name :String)  := @org.thingpedia.iot.cover(name=p_name).set_openclose(state=enum(close))
+    #_[utterances=["pull the ${p_name:const} curtains close",
+                   "close my ${p_name:const} curtains",
+                   "lower the ${p_name:const} curtains",
+                   "put the ${p_name:const} curtains down",
+                   "close my ${p_name:const} blinds",
+                   "lower the ${p_name:const} blinds",
+                   "put the ${p_name:const} blinds down",
+                   "close my ${p_name:const} damper",
+                   "lower the ${p_name:const} damper",
+                   "put the ${p_name:const} damper down",
+                   "close my ${p_name:const} shades",
+                   "lower the ${p_name:const} shades",
+                   "put the ${p_name:const} shades down",
+                   "close my ${p_name:const} shutters",
+                   "bring in the ${p_name:const} shutters",
+                   "close my ${p_name:const} window",
+                   "shut the ${p_name:const} window"]]
+    #[id=54932716]
+    #[name="SetOpencloseWithStateClose1"];
+
+}

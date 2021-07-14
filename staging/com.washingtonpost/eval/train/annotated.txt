@@ -28,3 +28,18 @@ UT: now => @com.washingtonpost.get_article(section=enum(opinions)) => notify;
 U: get washington post politics
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.washingtonpost.get_article(section=enum politics);
+====
+# online/127940
+U: monitor world views on the washington post
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.washingtonpost.get_blog_post(section=enum world_views));
+====
+# online/129624
+U: monitor washington post with title contains "str:QUOTED_STRING::0:"
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.washingtonpost.get_article() filter title =~ "str:QUOTED_STRING::0:");
+====
+# online/52300224
+U: monitor washington post compost
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.washingtonpost.get_blog_post(section=enum compost));

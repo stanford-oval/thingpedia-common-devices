@@ -148,3 +148,33 @@ UT: @com.nytimes.get_front_page();
 U: show me new york times
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.nytimes.get_front_page();
+====
+# online/27740969
+U: notify me when there is nyt articles about trump
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.nytimes.get_front_page() filter title =~ "trump");
+====
+# online/27740970
+U: notify me when there is nyt articles
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.nytimes.get_front_page());
+====
+# online/29327158
+U: notify me for new articles about tech in new york times business section
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.nytimes.get_section_page(section=enum business) filter title =~ "tech");
+====
+# log/39113
+U: get new york times updates at 0:0
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: attimer(time=[new Time(0, 0)]) => @com.nytimes.get_front_page();
+====
+# log/39951
+U: monitor the new york times
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.nytimes.get_front_page());
+====
+# log-dev/144
+U: show me nyt articles about trump
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.nytimes.get_front_page() filter description =~ "trump";

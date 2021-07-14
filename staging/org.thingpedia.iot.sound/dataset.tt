@@ -1,7 +1,5 @@
 dataset @org.thingpedia.iot.sound language "en" {
-    program  := {
-  now => @org.thingpedia.iot.sound.sound() => notify;
-}
+    program  := @org.thingpedia.iot.sound.sound()
     #_[utterances=["is the sound sensor detecting sound?",
                    "check if the sound sensor is detecting sound or not",
                    "check whether the sound sensor is detecting",
@@ -25,12 +23,12 @@ dataset @org.thingpedia.iot.sound language "en" {
     #[id=54336199]
     #[name="MonitorState"];
 
-    stream (p_state :Enum(detecting,not_detecting))  := edge (monitor (@org.thingpedia.iot.sound.sound())) on state == p_state
+    stream (p_state :Enum(detecting,not_detecting))  := monitor (@org.thingpedia.iot.sound.sound()), state == p_state
     #_[utterances=["when the sound sensor is ${p_state} sound"]]
     #[id=54336200]
     #[name="MonitorStateByState"];
 
-    stream  := edge (monitor (@org.thingpedia.iot.sound.sound())) on state == enum(detecting)
+    stream  := monitor (@org.thingpedia.iot.sound.sound()), state == enum(detecting)
     #_[utterances=["when the sound sensor detects any sound",
                    "the moment the sound sensor hears anything",
                    "when my sound sensor hears a noise",
@@ -39,7 +37,7 @@ dataset @org.thingpedia.iot.sound language "en" {
     #[id=54336201]
     #[name="MonitorStateByStateDetecting"];
 
-    stream  := edge (monitor (@org.thingpedia.iot.sound.sound())) on state == enum(not_detecting)
+    stream  := monitor (@org.thingpedia.iot.sound.sound()), state == enum(not_detecting)
     #_[utterances=["when the sound sensor stops hearing anything",
                    "when my sound sensor hears silence",
                    "when my sound sensor detects nothing",
@@ -47,9 +45,7 @@ dataset @org.thingpedia.iot.sound language "en" {
     #[id=54336206]
     #[name="MonitorStateByStateNotDetecting"];
 
-    program (p_name :String)  := {
-  now => @org.thingpedia.iot.sound(name=p_name).sound() => notify;
-}
+    program (p_name :String)  := @org.thingpedia.iot.sound(name=p_name).sound()
     #_[utterances=["is the ${p_name} sound sensor detecting sound?",
                    "check if the ${p_name} sound sensor is detecting sound or not",
                    "check whether the ${p_name} sound sensor is detecting",
@@ -73,12 +69,12 @@ dataset @org.thingpedia.iot.sound language "en" {
     #[id=54336221]
     #[name="MonitorState1"];
 
-    stream (p_name :String, p_state :Enum(detecting,not_detecting))  := edge (monitor (@org.thingpedia.iot.sound(name=p_name).sound())) on state == p_state
+    stream (p_name :String, p_state :Enum(detecting,not_detecting))  := monitor (@org.thingpedia.iot.sound(name=p_name).sound()), state == p_state
     #_[utterances=["when the ${p_name} sound sensor is ${p_state} sound"]]
     #[id=54336222]
     #[name="MonitorStateByState1"];
 
-    stream (p_name :String)  := edge (monitor (@org.thingpedia.iot.sound(name=p_name).sound())) on state == enum(detecting)
+    stream (p_name :String)  := monitor (@org.thingpedia.iot.sound(name=p_name).sound()), state == enum(detecting)
     #_[utterances=["when the ${p_name} sound sensor detects any sound",
                    "the moment the ${p_name} sound sensor hears anything",
                    "when my ${p_name} sound sensor hears a noise",
@@ -87,7 +83,7 @@ dataset @org.thingpedia.iot.sound language "en" {
     #[id=54336223]
     #[name="MonitorStateByStateDetecting1"];
 
-    stream (p_name :String)  := edge (monitor (@org.thingpedia.iot.sound(name=p_name).sound())) on state == enum(not_detecting)
+    stream (p_name :String)  := monitor (@org.thingpedia.iot.sound(name=p_name).sound()), state == enum(not_detecting)
     #_[utterances=["when the ${p_name} sound sensor stops hearing anything",
                    "when my ${p_name} sound sensor hears silence",
                    "when my ${p_name} sound sensor detects nothing",

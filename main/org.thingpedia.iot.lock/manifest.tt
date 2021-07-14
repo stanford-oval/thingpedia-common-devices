@@ -1,0 +1,19 @@
+abstract class @org.thingpedia.iot.lock
+#_[thingpedia_name="Lock Sensor"]
+#_[thingpedia_description="Interface for Lock Sensor."]
+#_[description="Interface for Lock Sensor."]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="home"]
+{
+  monitorable query state(out state : Enum(unlocked,locked))
+  #_[canonical="lock state"]
+  #_[confirmation="the state of $__device"]
+  #[confirm=false]
+  #_[result=["the {${__device}|} lock is ${state}"]];
+
+  action set_state(in req state: Enum(lock,unlock) #_[prompt="Do you want to lock or unlock?"] #_[canonical="state"])
+  #_[canonical="lock or unlock"]
+  #_[confirmation="$state $__device"]
+  #[confirm=true];
+}

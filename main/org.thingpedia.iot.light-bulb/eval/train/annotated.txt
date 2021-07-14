@@ -618,3 +618,93 @@ UT: @org.thingpedia.iot.light-bulb(name="b-lights").set_power(power=enum on);
 U: is the lamp on?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.light-bulb.power();
+====
+# log/57073
+U: turn livingroom lights on at 0:0
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: attimer(time=[new Time(0, 0)]) => @org.thingpedia.iot.light-bulb(name="livingroom").set_power(power=enum on);
+====
+# log-dev/6537
+U: turn off any lights
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(all=true).set_power(power=enum off);
+====
+# log-dev/8979
+U: what's the status of my lights
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb.power();
+====
+# log-dev/6269
+U: turn off hue lamp 2
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(name="hue lamp 2").set_power(power=enum off);
+====
+# log-dev/6919
+U: turn on the office lamp.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(name="office").set_power(power=enum on);
+====
+# log-dev/8145
+U: which is the state of my lights.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb.power();
+====
+# log-dev/9713
+U: light on büro decke
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(name="büro decke").set_power(power=enum on);
+====
+# log/136241
+U: turn on my bedroom lights to 13 %
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(name="bedroom").set_brightness(pct=13);
+====
+# log/69697
+U: dim the dimmer
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb.set_power(power=enum off);
+====
+# log/74194
+U: set bedroom light to green
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(name="bedroom").set_color(color=enum green);
+====
+# log/58179
+U: led rgb to red
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(name="led").set_color(color=enum red);
+====
+# log/85096
+U: turn on kitchen lights to 13 %
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(name="kitchen").set_brightness(pct=13);
+====
+# log/58585
+U: set bedroom dimmer to 13
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(name="bedroom").set_brightness(pct=13);
+====
+# log/80237
+U: adjust brightness in bedroom to 13 %
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(name="bedroom").set_brightness(pct=13);
+====
+# log/73719
+U: turn on kitchen lights 13 %
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(name="kitchen").set_brightness(pct=13);
+====
+# log/103143
+U: set the lair lights to 13 %
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(name="lair").set_brightness(pct=13);
+====
+# log/76843
+U: hey change 13 color to red
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(name="13").set_color(color=enum red);
+====
+# log/63215
+U: turn onn patio lights in 2 ms
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[$now + 2ms]) => @org.thingpedia.iot.light-bulb(name="patio").set_power(power=enum on);

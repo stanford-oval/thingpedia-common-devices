@@ -238,3 +238,48 @@ UT: @org.thingpedia.iot.temperature(name="bathroom").temperature();
 U: what is the king temperature?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.temperature(name="king").temperature();
+====
+# online/120765
+U: monitor thermostat
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.temperature.temperature());
+====
+# online/121539
+U: if the thermostat says less than 5 c then notify me
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.temperature.temperature()) filter value <= 5C;
+====
+# online/1435477
+U: notify me if my nest temperature changes.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.temperature(name="nest").temperature());
+====
+# log/46
+U: alert me if the thermostat is above 13 c
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.temperature.temperature()) filter value >= 13C;
+====
+# log/47
+U: alert me if the thermostat is below 13 c
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.temperature.temperature()) filter value <= 13C;
+====
+# log/5324
+U: monitor the temperature and notify me if it is above 13 c
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.temperature.temperature()) filter value >= 13C;
+====
+# log/135638
+U: when the home temperature changes notify me
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.temperature.temperature());
+====
+# log-dev/9080
+U: which is the room temperature.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.temperature.temperature();
+====
+# log-dev/8688
+U: get climate temperature
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.temperature.temperature();

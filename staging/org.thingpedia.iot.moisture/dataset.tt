@@ -1,6 +1,6 @@
 dataset @org.thingpedia.iot.moisture language "en" {
 
-  program := now => @org.thingpedia.iot.moisture.state() => notify
+  program := @org.thingpedia.iot.moisture.state()
   #_[utterances=["is the floor wet?",
                  "check if the floor is damp",
                  "check if the corridor is dry",
@@ -20,12 +20,12 @@ dataset @org.thingpedia.iot.moisture language "en" {
                  "if the ground is damp",
                  "whether the ground is dry"]];
 
-  stream := monitor @org.thingpedia.iot.moisture.state()
+  stream := monitor (@org.thingpedia.iot.moisture.state())
   #_[utterances=["when the floor becomes wet or dry",
                  "when the soil becomes wet or dry",
                  "when the ground becomes wet or dry"]];
 
-  stream (p_state : Enum(wet, dry)) := edge( monitor @org.thingpedia.iot.moisture.state()) on (state == p_state)
+  stream (p_state : Enum(wet, dry)) :=  monitor (@org.thingpedia.iot.moisture.state()), (state == p_state)
   #_[utterances=["when my floor becomes ${p_state}",
                  "when my floor is ${p_state}",
                  "when the floor gets ${p_state}",
@@ -36,19 +36,19 @@ dataset @org.thingpedia.iot.moisture language "en" {
                  "when the ground is ${p_state}",
                  "when the ground gets ${p_state}"]];
 
-  stream := edge( monitor @org.thingpedia.iot.moisture.state()) on (state == enum(wet))
+  stream :=  monitor (@org.thingpedia.iot.moisture.state()), (state == enum(wet))
   #_[utterances=["when the floor gets slippery",
                  "when my floor turns damp",
                  "when the soil is moist",
                  "when the soil has been watered"]];
 
-  stream := edge( monitor @org.thingpedia.iot.moisture.state()) on (state == enum(dry))
+  stream :=  monitor (@org.thingpedia.iot.moisture.state()), (state == enum(dry))
   #_[utterances=["when the floor dries",
                  "when the soil dries up",
                  "when the soil is dried up",
                  "when the ground dries"]];
 
-  program (p_name : String) := now => @org.thingpedia.iot.moisture(name=p_name).state() => notify
+  program (p_name : String) := @org.thingpedia.iot.moisture(name=p_name).state()
   #_[utterances=["is the ${p_name} wet?",
                  "check if the ${p_name} is damp",
                  "check if the ${p_name} is dry",
@@ -59,21 +59,21 @@ dataset @org.thingpedia.iot.moisture language "en" {
                  "whether the ${p_name} is damp",
                  "whether the ${p_name} is dry"]];
 
-  stream (p_name : String) := monitor @org.thingpedia.iot.moisture(name=p_name).state()
+  stream (p_name : String) := monitor (@org.thingpedia.iot.moisture(name=p_name).state())
   #_[utterances=["when the ${p_name} becomes wet or dry"]];
 
-  stream (p_name : String , p_state : Enum(wet, dry)) := edge( monitor @org.thingpedia.iot.moisture(name=p_name).state()) on (state == p_state)
+  stream (p_name : String , p_state : Enum(wet, dry)) :=  monitor (@org.thingpedia.iot.moisture(name=p_name).state()), (state == p_state)
   #_[utterances=["when the ${p_name} becomes ${p_state}",
                  "when the ${p_name} is ${p_state}",
                  "when the ${p_name} gets ${p_state}"]];
 
-  stream (p_name : String) := edge( monitor @org.thingpedia.iot.moisture(name=p_name).state()) on (state == enum(wet))
+  stream (p_name : String) := monitor (@org.thingpedia.iot.moisture(name=p_name).state()), (state == enum(wet))
   #_[utterances=["when the ${p_name} gets slippery",
                  "when the ${p_name} turns damp",
                  "when the ${p_name} is moist",
                  "when the ${p_name} has been watered"]];
 
-  stream (p_name : String) := edge( monitor @org.thingpedia.iot.moisture(name=p_name).state()) on (state == enum(dry))
+  stream (p_name : String) := monitor (@org.thingpedia.iot.moisture(name=p_name).state()), (state == enum(dry))
   #_[utterances=["when the ${p_name} dries",
                  "when the ${p_name} dries up",
                  "when the ${p_name} is dried up"]];

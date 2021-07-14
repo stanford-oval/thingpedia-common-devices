@@ -23,3 +23,58 @@ UT: now => @com.washingtonpost.get_article(section=enum(opinions)) => notify;
 U: get me articles from the washington post
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.washingtonpost.get_article();
+====
+# online/127891
+U: monitor the fix on the washington post
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.washingtonpost.get_blog_post(section=enum the_fix));
+====
+# online/127893
+U: monitor politics in the washington post
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.washingtonpost.get_article(section=enum politics));
+====
+# online/127966
+U: monitor the washington post
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.washingtonpost.get_article());
+====
+# online/127967
+U: monitor articles in the washington post
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.washingtonpost.get_article());
+====
+# online/129620
+U: monitor washington post
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.washingtonpost.get_article());
+====
+# online/129621
+U: monitor washington post with title contains nancy pelosi
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.washingtonpost.get_article() filter title =~ "nancy pelosi");
+====
+# online/129622
+U: monitor washington post in section sports with title contains alexandria ocasio cortez
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.washingtonpost.get_article(section=enum sports) filter title =~ "alexandria ocasio cortez");
+====
+# online/129623
+U: monitor washington post in section sports with title contains "str:QUOTED_STRING::0:"
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.washingtonpost.get_article(section=enum sports) filter title =~ "str:QUOTED_STRING::0:");
+====
+# online/1475359
+U: monitor compost blog in washington post
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.washingtonpost.get_blog_post(section=enum compost));
+====
+# online/27565814
+U: when the washington post has an article about china notify me
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.washingtonpost.get_article(section=enum world) filter title =~ "china");
+====
+# online/27565815
+U: when the washington post has an article about iran notify me
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.washingtonpost.get_article(section=enum world) filter title =~ "iran");

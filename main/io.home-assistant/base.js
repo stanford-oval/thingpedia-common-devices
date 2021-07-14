@@ -20,6 +20,7 @@ module.exports = class HomeAssistantDevice extends Tp.BaseDevice {
         this._entityId = entityId;
         this.uniqueId = master.uniqueId + '/' + entityId;
         this.name = this.state.attributes.friendly_name;
+        this.isTransient = true;
 
         this._clock = 0;
     }

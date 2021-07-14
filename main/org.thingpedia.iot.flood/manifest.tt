@@ -6,10 +6,10 @@ abstract class @org.thingpedia.iot.flood
 #[license_gplcompatible=true]
 #[subcategory="home"]
 {
-  monitorable query flood(out state : Enum(on,off), out value : Number)
+  monitorable query flood(out state : Enum(flooding,not_flooding), out value : Number)
   #_[canonical="flood sensor state"]
   #_[confirmation="the flood state from $__device"]
-  #_[result=["the flood level is ${value}", "it is ${state}"]]
+  #_[result=["the flood level {reported by ${__device}|} is ${value}", "the {${__device}|} flood sensor reports ${state}"]]
   #[confirm=false]
   #[minimal_projection=["state", "value"]];
 }

@@ -28,3 +28,8 @@ UT: now => (@com.github.get_commit(repo_name="tensorflow")), user == "bob"^^tt:u
 U: get commits to str:USERNAME::0:'s repository "str:QUOTED_STRING::0:"
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.github.get_commit(repo_name="str:QUOTED_STRING::0:") filter user == "str:USERNAME::0:"^^tt:username;
+====
+# online/62110224
+U: when there is a new issue created on github, comment this repository has been deprecated.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.github.get_issue()) => @com.github.comment_issue(body="this repository has been deprecated", issue_number=number);

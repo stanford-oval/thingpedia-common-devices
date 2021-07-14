@@ -23,3 +23,13 @@ UT: @com.tesla.car.get_charge_state();
 U: wake up my tesla car
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.tesla.car.wake_up();
+====
+# online/1679278
+U: every 2 ms get the charge state of my tesla car
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: timer(base=$now, interval=2ms) => @com.tesla.car.get_charge_state();
+====
+# log/7165
+U: every 2 ms, get the charge state of my tesla
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: timer(base=$now, interval=2ms) => @com.tesla.car.get_vehicle_state();

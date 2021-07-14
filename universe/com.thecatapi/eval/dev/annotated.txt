@@ -208,3 +208,23 @@ UT: @com.thecatapi.cat();
 U: show me some cat pictures
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.thecatapi.cat();
+====
+# log/12042
+U: get cat picture every day at 0:0
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: attimer(time=[new Time(0, 0)]) => @com.thecatapi.cat();
+====
+# log-dev/1169
+U: cat photo
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.thecatapi.cat();
+====
+# log-dev/1136
+U: get cat pictures 13 times every minute
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: timer(base=$now, frequency=13, interval=1min) => @com.thecatapi.cat();
+====
+# log/74767
+U: get a baby cat picture
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.thecatapi.cat();

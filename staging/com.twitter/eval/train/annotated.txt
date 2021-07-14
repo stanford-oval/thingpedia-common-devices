@@ -1,0 +1,190 @@
+====
+# online/ep12
+U: tell somebody to fuck off on twitter
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.twitter.send_direct_message(message="fuck off", to=$?);
+====
+# online/120465
+U: post i'm happy on twitter
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.twitter.post(status="i 'm happy");
+====
+# online/121380
+U: twitter tweet
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.twitter.post(status=$?);
+====
+# online/121453
+U: post a tweet
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.twitter.post(status=$?);
+====
+# online/1474117
+U: search on twitter hashtag havingatrampday
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.twitter.tweet()), contains(hashtags, "havingatrampday"^^tt:hashtag) => notify;
+====
+# online/1474118
+U: tweet for me
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.twitter.post(status=$?);
+====
+# online/1478881
+U: search tweets with gorillalife
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.twitter.tweet()), contains(hashtags, "gorillalife"^^tt:hashtag) => notify;
+====
+# online/ep4
+U: search tweets from realdonaldtrump
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.twitter.tweet()), author == "realdonaldtrump"^^tt:username => notify;
+====
+# online/ep6
+U: show recent tweets
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.twitter.tweet() => notify;
+====
+# online/120858
+U: tweet a message
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.twitter.post(status=$?);
+====
+# online/363765
+U: tweet pictures
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.twitter.post_picture(caption=$?, picture_url=$?);
+====
+# online/1471999
+U: search twitter
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.twitter.tweet() => notify;
+====
+# online/1511309
+U: search kim jong un on twitter
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.twitter.tweet()), text =~ "kim jong un" => notify;
+====
+# online/1647761
+U: show me tweets from drakebell's account
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.twitter.tweet()), author == "drakebell"^^tt:username => notify;
+====
+# online/61553984
+U: ask twitter to make a post
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => @com.twitter.post(status=$?);
+====
+# online/1473814
+U: search tweets from @realdonaldtrump
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: now => (@com.twitter.tweet()), author == "realdonaldtrump"^^tt:username => notify;
+====
+# online/62110311
+U: get my twitter direct messages
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.twitter.direct_messages();
+====
+# log/3160
+U: search "str:QUOTED_STRING::0:" on twitter
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.twitter.tweet() filter text =~ "str:QUOTED_STRING::0:";
+====
+# log/40692
+U: get dms
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.twitter.direct_messages();
+====
+# log/3236
+U: search for "str:QUOTED_STRING::0:" on twitter
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.twitter.tweet() filter text =~ "str:QUOTED_STRING::0:";
+====
+# log/3237
+U: search for tweets with hashtag #cat on twitter
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.twitter.tweet() filter contains(hashtags, "cat"^^tt:hashtag);
+====
+# log-dev/57
+U: follow alice on twitter
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.twitter.follow(user_name="alice"^^tt:username);
+====
+# log-dev/7795
+U: can you post on twitter?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.twitter.post();
+====
+# online/120519
+U: notify me if i receive a tweet from craigyferg with hashtag jornalbrasil
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.twitter.home_timeline() filter author == "craigyferg"^^tt:username && contains(hashtags, "jornalbrasil"^^tt:hashtag));
+====
+# online/120577
+U: monitor twitter
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.twitter.home_timeline());
+====
+# online/120588
+U: notify me if i receive a tweet from kellyosbourne
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.twitter.home_timeline() filter author == "kellyosbourne"^^tt:username);
+====
+# online/120840
+U: monitor tweets with text contains inodes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.twitter.home_timeline() filter text =~ "inodes");
+====
+# online/121093
+U: if it's 0:0 in the morning then post on twitter saying morning my dudes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: attimer(time=[new Time(0, 0)]) => @com.twitter.post(status="morning my dudes");
+====
+# online/121094
+U: if it's 0:0 in the morning then post on twitter saying "str:QUOTED_STRING::0:"
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: attimer(time=[new Time(0, 0)]) => @com.twitter.post(status="str:QUOTED_STRING::0:");
+====
+# online/121100
+U: if someone tweets with hashtag beyonceimpersonation then tweet yass queen
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.twitter.home_timeline() filter contains(hashtags, "beyonceimpersonation"^^tt:hashtag)) => @com.twitter.post(status="yass queen");
+====
+# online/121121
+U: post a tweet at 0:0
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: attimer(time=[new Time(0, 0)]) => @com.twitter.post();
+====
+# online/121153
+U: notify me if someone tweets containing make america great again
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.twitter.home_timeline() filter text =~ "make america great again");
+====
+# online/122834
+U: receive a tweet on twitter
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.twitter.home_timeline());
+====
+# online/135724
+U: monitor tweets from str:USERNAME::0:
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.twitter.home_timeline() filter author == "str:USERNAME::0:"^^tt:username);
+====
+# online/1435506
+U: notify me for tweets with astuzia
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.twitter.home_timeline() filter contains(hashtags, "astuzia"^^tt:hashtag));
+====
+# online/61581910
+U: post the selection on the screen on twitter
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.twitter.post(status=$context.selection : String);
+====
+# log/3288
+U: when i tweet
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.twitter.tweet() filter from_self == true);
+====
+# log-dev/36
+U: notify me when str:USERNAME::0: tweets
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.twitter.home_timeline() filter author == "str:USERNAME::0:"^^tt:username);

@@ -35,7 +35,7 @@ const { readAllLines } = require('./lib/argutils');
 // modern javascript finally looking like python!
 async function main() {
     for await (const line of readAllLines([process.argv[2]])) {
-        let [id, sentence, target_code] = line.split('\t')
+        let [id, sentence, target_code] = line.split('\t');
 
         if (/servesCuisine:String =~ QUOTED_STRING_1/.test(target_code)) {
             sentence = sentence.replace(/QUOTED_STRING_1/, 'GENERIC_ENTITY_com.yelp:restaurant_cuisine_0');

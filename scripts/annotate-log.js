@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 // -*- mode: js; indent-tabs-mode: nil; js-basic-offset: 4 -*-
 //
 // This file is part of Genie
@@ -51,7 +52,7 @@ async function existsSafe(path) {
     }
 }
 
-const FEW_SHOT_TRAIN_PROBABILITY = 0.3;
+const FEW_SHOT_TRAIN_PROBABILITY = 0.5;
 
 // must be in inheritance order
 const RELEASES = ['builtin', 'main', 'universe', 'staging'];
@@ -111,6 +112,8 @@ class Trainer {
         this._existingDataset = new Set;
         this._sentenceCache = new Map;
         this._editExisting = options.edit_existing;
+        this._editExistingSet = new Set;
+        this._editExistingRemap = new Map;
 
         this._devices = new Map;
         this._idQueries = new Map;
@@ -138,11 +141,20 @@ class Trainer {
                 return;
             }
 
+            if (line === 'q') {
+                this._quit();
+                return;
+            }
+
             if (line === 'd' || line.startsWith('d ')) {
                 let comment = line.substring(2).trim();
                 if (!comment && this._comment)
                     comment = this._comment;
                 comment = SHORTHAND_COMMENT[comment] || comment;
+                if (comment.startsWith('nf/'))
+                    comment = 'new function/' + comment.substring(3);
+                else if (comment.startsWith('nd/'))
+                    comment = 'new device/' + comment.substring(3);
                 this._drop(comment);
                 return;
             }
@@ -194,6 +206,8 @@ class Trainer {
         console.log(`d redacted : drop the example, and hide the sentence from the dropped log`);
         for (const key in SHORTHAND_COMMENT)
             console.log(`d ${key} : drop the example as ${SHORTHAND_COMMENT[key]}`);
+        console.log(`d nf/$device : drop the example as new-function, with the device responsible for it`);
+        console.log(`d nd/$domain : drop the example as new-device, with a short string identifying the device`);
 
         this._rl.prompt();
     }
@@ -222,17 +236,20 @@ class Trainer {
         if (fs.existsSync(this._droppedFilename)) {
             for await (const row of fs.createReadStream(this._droppedFilename).pipe(csvparse({ delimiter: '\t' }))) {
                 const [id, sentence, comment] = row;
-                this._existingDataset.add(id);
-
-                if (sentence !== '<redacted>')
-                    this._sentenceCache.set(sentence, { dropped: comment });
+                if (this._editExisting && this._editExisting === comment) {
+                    this._editExistingSet.add(id);
+                } else {
+                    this._existingDataset.add(id);
+                    if (sentence !== '<redacted>')
+                        this._sentenceCache.set(sentence, { dropped: comment });
+                }
             }
         }
 
-        for (const r of RELEASES) {
-            await this._tryLoadExistingDataset(path.resolve('eval', r, 'dev/annotated.txt'));
-            await this._tryLoadExistingDataset(path.resolve('eval', r, 'train/annotated.txt'));
+        await this._tryLoadExistingDataset(path.resolve('eval', 'everything', 'dev/annotated.txt'));
+        await this._tryLoadExistingDataset(path.resolve('eval', 'everything', 'train/annotated.txt'));
 
+        for (const r of RELEASES) {
             for (const d of await pfs.readdir(path.resolve(r))) {
                 if (!await existsSafe(path.resolve(r, d, 'manifest.tt')))
                     continue;
@@ -265,27 +282,59 @@ class Trainer {
         await this._loadAllExistingDatasets();
 
         this._droppedOut = csvstringify({ delimiter: '\t' });
-        this._droppedOut.pipe(fs.createWriteStream(this._droppedFilename, { flags: 'a' }));
+        this._droppedOutFile = fs.createWriteStream(this._droppedFilename, { flags: 'a' });
+        this._droppedOut.pipe(this._droppedOutFile);
         await this._parser.start();
     }
 
     async _quit() {
-        this._rl.close();
-
         for (let [f1, f2] of this._outputs.values()) {
             f1.end();
             f2.end();
         }
         this._droppedOut.end();
+        await StreamUtils.waitFinish(this._droppedOutFile);
+
+        if (this._editExisting) {
+            // rewrite the dropped-log file to remove any sentence that was edited out
+
+            const newFile = [];
+            for await (const row of fs.createReadStream(this._droppedFilename).pipe(csvparse({ delimiter: '\t' }))) {
+                const [id,] = row;
+                if (this._editExistingRemap.has(id)) {
+                    const newComment = this._editExistingRemap.get(id);
+                    if (newComment === null)
+                        continue;
+                    row[2] = newComment;
+                    if (newComment === 'redacted')
+                        row[1] = '<redacted>';
+                }
+                newFile.push(row);
+            }
+
+            this._droppedOut = csvstringify({ delimiter: '\t' });
+            this._droppedOutFile = fs.createWriteStream(this._droppedFilename, { flags: 'w' });
+            this._droppedOut.pipe(this._droppedOutFile);
+            for (const row of newFile)
+                this._droppedOut.write(row);
+            this._droppedOut.end();
+            await StreamUtils.waitFinish(this._droppedOutFile);
+        }
+
+        this._rl.close();
         await this._parser.stop();
     }
 
     _drop(comment = '') {
-        if (comment === 'redacted') {
-            this._droppedOut.write([this._id, '<redacted>', comment]);
+        if (this._editExisting) {
+            this._editExistingRemap.set(this._id, comment);
         } else {
-            this._sentenceCache.set(this._preprocessed, { dropped: comment });
-            this._droppedOut.write([this._id, this._preprocessed, comment]);
+            if (comment === 'redacted') {
+                this._droppedOut.write([this._id, '<redacted>', comment]);
+            } else {
+                this._sentenceCache.set(this._preprocessed, { dropped: comment });
+                this._droppedOut.write([this._id, this._preprocessed, comment]);
+            }
         }
 
         this.next();
@@ -310,9 +359,7 @@ class Trainer {
             return this._outputs.get(device);
 
         if (RELEASES.indexOf(device) >= 0) {
-            const release = device;
-
-            return this._getManualFile(device, path.resolve('eval', release));
+            return this._getManualFile(device, path.resolve('eval', 'everything'));
         } else {
             const release = this._devices.get(device);
             if (!release)
@@ -363,11 +410,6 @@ class Trainer {
             visitDeviceSelector(sel) {
                 if (sel.kind in DEVICES_REMAP)
                     sel.kind = DEVICES_REMAP[sel.kind];
-                return true;
-            }
-            visitExternalBooleanExpression(expr) {
-                if (expr.kind in DEVICES_REMAP)
-                    expr.kind = DEVICES_REMAP[expr.kind];
                 return true;
             }
         });
@@ -421,6 +463,9 @@ class Trainer {
         }
         console.log(`Learned: ${targetCode}`);
         this._sentenceCache.set(this._preprocessed, { parsed: targetCode });
+
+        if (this._editExisting)
+            this._editExistingRemap.set(this._id, null);
 
         const device = this._getDevice(dialoguestate);
 
@@ -524,13 +569,9 @@ class Trainer {
         this._preprocessed = preprocessed;
         this._entities = Genie.EntityUtils.makeDummyEntities(preprocessed);
 
-        if (this._existingDataset.has(this._id)) {
+        if (this._existingDataset.has(this._id) ||
+            (this._editExisting && !this._editExistingSet.has(this._id))) {
             process.nextTick(() => this._next());
-            return;
-        }
-
-        if (this._editExisting && this._editExisting !== target_code) {
-            this._drop(target_code);
             return;
         }
 
@@ -563,6 +604,26 @@ class Trainer {
         return this._handleSentence(utterance);
     }
 
+    _parsePrediction(code, entities) {
+        let parsed;
+        try {
+            // first try parsing using normal tokenized syntax
+            parsed = ThingTalk.Syntax.parse(code, ThingTalk.Syntax.SyntaxType.Tokenized, entities);
+        } catch(e1) {
+            // if that fails, try with legacy NN syntax
+            if (e1.name !== 'SyntaxError')
+                throw e1;
+            try {
+                parsed = ThingTalk.Syntax.parse(code, ThingTalk.Syntax.SyntaxType.LegacyNN, entities);
+            } catch(e2) {
+                if (e2.name !== 'SyntaxError')
+                    throw e2;
+                throw e1; // use the first error not the second in case both fail
+            }
+        }
+        return parsed;
+    }
+
     async _handleSentence(utterance, target_code) {
         this._utterance = utterance;
 
@@ -578,23 +639,21 @@ class Trainer {
         }
 
         let olddialoguestate;
-        if (target_code && !this._editExisting) {
+        if (target_code) {
             let oldprogram;
             try {
-                oldprogram = await ThingTalkUtils.parsePrediction(target_code.split(' '), parsed.entities, {
-                    thingpediaClient: this._tpClient,
-                    schemaRetriever: this._schemas
-                }, true);
+                oldprogram = this._parsePrediction(target_code.split(' '), parsed.entities);
+                this._adjustDevices(oldprogram);
+                await oldprogram.typecheck(this._schemas, true);
             } catch(e) {
                 console.log(`Sentence ${this._id}'s existing code is incorrect: ${e}`); //'
+                oldprogram = undefined;
             }
             if (oldprogram) {
                 olddialoguestate = toDialogueState(oldprogram, this._idQueries);
                 if (typeof olddialoguestate === 'string') {
                     console.log(`Sentence ${this._id}'s existing code is unusable: ${olddialoguestate}`);
                     olddialoguestate = undefined;
-                } else {
-                    this._adjustDevices(olddialoguestate);
                 }
             }
         }
@@ -660,7 +719,7 @@ async function main() {
     const tpClient = new Tp.HttpClient(platform, 'https://dev.almond.stanford.edu/thingpedia');
 
     const lines = await readAllLines(args.input)
-        .pipe(new Genie.DatasetParser())
+        .pipe(new Genie.DatasetParser({ contextual: true }))
         .pipe(new StreamUtils.ArrayAccumulator())
         .read();
 

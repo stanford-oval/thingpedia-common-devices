@@ -1,0 +1,241 @@
+#====
+# log/133457
+#U: get reading list
+#UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+#UT: @com.smartnews.reading_list();
+====
+# log/76848
+U: show me news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log/92543
+U: get top news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log/81352
+#U: get smartnews reading list
+#UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+#UT: @com.smartnews.reading_list();
+====
+# log/86092
+U: get smartnews
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log/80152
+U: show me the news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log/81333
+#U: get my reading list
+#UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+#UT: @com.smartnews.reading_list();
+====
+# log/40334
+U: get news summaries
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log/74544
+U: read me the news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log/86637
+#U: get smartnews list
+#UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+#UT: @com.smartnews.reading_list();
+====
+# log/59089
+U: whats in the news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log/93581
+U: get smart news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log/79791
+U: top news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log/73396
+U: tell me the news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log/86032
+U: get breaking news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log/122534
+U: what are the news today?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(), date >= $start_of(day);
+====
+# log/92103
+U: get smartnews "str:QUOTED_STRING::0:"
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter title =~ "str:QUOTED_STRING::0:";
+====
+# log/66222
+U: current news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log/112314
+U: get news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log/99592
+U: get 3 smartnews
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article()[1 : 3];
+====
+# log/93623
+U: get smart use
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log/95835
+U: get 2 smartnews
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article()[1 : 2];
+====
+# log/79781
+U: smartnews
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log/7616
+U: what is the news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# recording/3d8ce8a090118b4c43d0559e9fa5e947
+U: give me the latest news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(date desc of @com.smartnews.article())[1];
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: sort(date desc of @com.smartnews.article())[1]
+C: #[results=[
+C:   { id="4258479298903550993"^^com.smartnews:article, title="Cuomo advisers reportedly altered Covid nursing-homes report", date=new Date("2021-03-05T05:05:10.000Z"), source="The Hill", url="https://thehill.com/homenews/state-watch/541760-cuomo-advisers-altered-covid-19-nursing-homes-report-wsj" }
+C: ]];
+A: The title is Cuomo advisers reportedly altered Covid nursing-homes report.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: give me the latest news from the new york times
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(date desc of @com.smartnews.article() filter source =~ "new york times")[1];
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: sort(date desc of @com.smartnews.article())[1]
+C: #[results=[
+C:   { id="4258479298903550993"^^com.smartnews:article, title="Cuomo advisers reportedly altered Covid nursing-homes report", date=new Date("2021-03-05T05:05:10.000Z"), source="The Hill", url="https://thehill.com/homenews/state-watch/541760-cuomo-advisers-altered-covid-19-nursing-homes-report-wsj" }
+C: ]];
+C: sort(date desc of @com.smartnews.article() filter source =~ "new york times")[1]
+C: #[results=[]];
+A: Sorry, there are no news articles matching your request.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_empty_search;
+U: give me the latest news from the hill
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(date desc of @com.smartnews.article() filter source =~ "hill")[1];
+====
+# recording/d80b4d81b173398cf89c252678058895
+U: get new stories
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.smartnews.article()
+C: #[results=[
+C:   { id="4257671252782613860"^^com.smartnews:article, title="A billionaire partied through Covid-19. His workers died.", date=new Date("2021-03-08T00:30:31.000Z"), source="BuzzFeed News", url="https://www.buzzfeednews.com/article/karlazabludovsky/ricardo-salinas-pliego-billionaire-mexico-workers-covid" },
+C:   { id="4259440554858785353"^^com.smartnews:article, title="French billionaire politician Olivier Dassault killed in helicopter crash", date=new Date("2021-03-07T18:32:06.000Z"), source="Reuters", author="Reuters Staff", url="https://www.reuters.com/article/uk-people-dassault-idUKKBN2AZ0MB" },
+C:   { id="4258381467706463356"^^com.smartnews:article, title="If These Apps Are Still on Your Phone, Someone May Be Spying on You", date=new Date("2021-03-04T21:00:07.000Z"), source="Reader's Digest", author="Leah Campbell", url="https://www.rd.com/list/phone-apps-spying-on-you/" },
+C:   { id="4258999974420808064"^^com.smartnews:article, title="How Much Were Meghan And Harry Paid For Their Oprah Interview?", date=new Date("2021-03-06T14:21:42.000Z"), source="Nicki Swift", author="Effie Orfanides", url="https://www.nickiswift.com/349250/how-much-were-meghan-and-harry-paid-for-their-oprah-interview/?zsource=smartnews" },
+C:   { id="4258780678323185263"^^com.smartnews:article, title="First Pics from Nicolas Cage's 5th Marriage, to 26-Year-Old in Las Vegas", date=new Date("2021-03-05T23:53:58.000Z"), source="TMZ", url="https://www.tmz.com/2021/03/05/nicolas-cage-married-fifth-time-wedding-las-vegas/" },
+C:   { id="4259053279473830032"^^com.smartnews:article, title="This Is Where You've Seen The New Jake From State Farm Before", date=new Date("2021-03-06T17:52:25.000Z"), source="The List", author="Lindsay Cronin", url="https://www.thelist.com/349353/this-is-where-youve-seen-the-new-jake-from-state-farm-before/?zsource=smartnews" },
+C:   { id="4259469581875158747"^^com.smartnews:article, title="USS Nimitz completes a 99,000-mile journey likely not done since WWII", date=new Date("2021-03-07T21:26:28.000Z"), source="USA TODAY", author="Josh Farley, Kitsap Sun", url="https://www.usatoday.com/story/news/nation/2021/03/07/uss-nimitz-returns-to-us-bremerton-washington-99000-miles/4620329001/" },
+C:   { id="4259336735651012786"^^com.smartnews:article, title="Don't Do This the Night Before Your Vaccine Appointment, Experts Say", date=new Date("2021-03-07T12:29:16.000Z"), source="Best Life", author="Lauren Gray", url="https://bestlifeonline.com/news-vaccine-alcohol/" },
+C:   { id="4259435828356327666"^^com.smartnews:article, title="Sharon Stone stuns in black bustier ahead of her 63rd birthday: 'Va va voom'", date=new Date("2021-03-07T19:16:14.000Z"), source="Yahoo Lifestyle", author="Megan Johnson", url="https://www.yahoo.com/lifestyle/sharon-stone-stuns-dolce-gabbana-bustier-age-62-191614263.html" },
+C:   { id="4258719275369368285"^^com.smartnews:article, title="Katy Perry and Orlando Bloom vacation in Hawaii with baby Daisy Dove", date=new Date("2021-03-05T19:16:05.000Z"), source="Page Six", author="Eileen Reslen", url="https://pagesix.com/2021/03/05/katy-perry-and-orlando-bloom-vacation-with-daisy-dove/" }
+C: ]]
+C: #[count=34];
+A: The latest news is A billionaire partied through Covid-19. His workers died. It is a new articles from BuzzFeed News published on 3/7/2021, 4:30:31 PM.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: tell me more
+UT: $dialogue @org.thingpedia.dialogue.transaction.learn_more;
+====
+# log-dev/7635
+U: give me the latest news from the hill
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(date desc of @com.smartnews.article() filter source =~ "hill")[1];
+====
+# log-dev/7634
+U: give me the latest news from the new york times
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(date desc of @com.smartnews.article() filter source =~ "new york times")[1];
+====
+# log-dev/7619
+U: get the news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# recording/7104b531b300b5fd54265979a92a0fae
+U: 10 latest news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(date desc of @com.smartnews.article())[1 : 10];
+====
+# log/158290
+U: what are the top news stories?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# manual/1
+U: get news about coronavirus
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter title =~ "coronavirus";
+====
+# manual/2
+U: get news from yesterday
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter date >= $start_of(day) - 1day;
+====
+# manual/3
+U: get news in the last 3 hours
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter date >= $now - 3h;
+====
+# manual/4
+U: get news from the guardian
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter source =~ "guardian";
+====
+# recording/204ad84fc61241eba6cdb64582a72c60
+U: what is in the news today?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# recording/a8bda39b52777501334b399c85b69962
+U: where can I get the news from?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log-dev/8637
+U: tell me covid news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter title =~ "covid";
+====
+# log-dev/6979
+U: another news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log-dev/199
+U: show me news about trump
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter title =~ "trump";

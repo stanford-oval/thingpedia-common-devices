@@ -12,7 +12,7 @@ abstract class @org.thingpedia.iot.light-bulb extends @org.thingpedia.iot.switch
                 "light state"]]
   #_[confirmation="the power state of ${__device}"]
   #[confirm=false]
-  #_[result=["your lights are ${power}"]];
+  #_[result=["your {${__device}|} lights are ${power}"]];
 
   action alert_long()
   #_[canonical=["loop the color in my light bulb",
@@ -30,12 +30,38 @@ abstract class @org.thingpedia.iot.light-bulb extends @org.thingpedia.iot.switch
   #[confirm=false];
 
   action set_power(in req power: Enum(on,off)
-                   #_[prompt=["do you want to turn it on or off"]]
-                   #_[canonical={
-                      base=["power"],
-                      property=[]
-                   }])
+                   #_[prompt="do you want to turn it on or off"]
+                   #_[canonical="power"])
   #_[canonical=["set the power on the lights", "set the power on the lamp"]]
   #_[confirmation="turn $power ${__device}"]
   #[confirm=false];
+
+  action set_color(in req color: Enum(white,black,red,orange,yellow,green,blue,purple,pink,brown,gray,chartreuse,cyan,azure,violet,magenta,rose,amber,teal,indigo)
+                   #_[prompt="do you want to change color to the light"]
+                   #_[canonical="color"])
+  #_[canonical=["set the color on the lights", "change the color of the lights"]]
+  #_[confirmation="set ${__device} $color"]
+  #[confirm=false];
+
+  action set_brightness(in req pct: Number #_[prompt="from 0 to 100, which brightness do you want to set"]
+                    #_[canonical={
+                      base=["brightness", "value"],
+                      preposition=["to # %"]
+                    }])
+  #_[canonical=["change the brightness of the light", "set the brightness on the lamp"]]
+  #_[confirmation="set ${__device} $pct percent"]
+  #[min_number=0]
+  #[max_number=100]
+  #[confirm=false];
+
+  action raise_brightness()
+  #_[canonical=["raise the light brightness", "increasing the brightness of the lamp"]]
+  #_[confirmation="raise brightness on ${__device}"]
+  #[confirm=false];
+
+  action lower_brightness()
+  #_[canonical=["lower the light brightness", "decrease the brightness of the lamp"]]
+  #_[confirmation="lower brightness on ${__device}"]
+  #[confirm=false];
+
 }

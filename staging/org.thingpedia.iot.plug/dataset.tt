@@ -1,7 +1,5 @@
 dataset @org.thingpedia.iot.plug language "en" {
-    program  := {
-  now => @org.thingpedia.iot.plug.state() => notify;
-}
+    program  := @org.thingpedia.iot.plug.state() 
     #_[utterances=["is my smart plug connected?",
                    "did my smart plug get disconnected?",
                    "check if my plug is plugged",
@@ -29,13 +27,13 @@ dataset @org.thingpedia.iot.plug language "en" {
     #[id=54336138]
     #[name="MonitorState"];
 
-    stream (p_state :Enum(plugged,unplugged))  := edge (monitor (@org.thingpedia.iot.plug.state())) on state == p_state
+    stream (p_state :Enum(plugged,unplugged))  := monitor (@org.thingpedia.iot.plug.state()), state == p_state
     #_[utterances=["when my smart plug becomes ${p_state}",
                    "when my plug is ${p_state}"]]
     #[id=54336142]
     #[name="MonitorStateByState"];
 
-    stream  := edge (monitor (@org.thingpedia.iot.plug.state())) on state == enum(plugged)
+    stream  := monitor (@org.thingpedia.iot.plug.state()), state == enum(plugged)
     #_[utterances=["when my plug is plugged",
                    "when somebody plugs in my plug",
                    "when the plug gets plugged",
@@ -45,7 +43,7 @@ dataset @org.thingpedia.iot.plug language "en" {
     #[id=54336144]
     #[name="MonitorStateByStatePlugged"];
 
-    stream  := edge (monitor (@org.thingpedia.iot.plug.state())) on state == enum(unplugged)
+    stream  := monitor (@org.thingpedia.iot.plug.state()), state == enum(unplugged)
     #_[utterances=["when my plug is unplugged",
                    "when somebody unplugs my plug",
                    "when anyone takes out my plug",
@@ -56,9 +54,7 @@ dataset @org.thingpedia.iot.plug language "en" {
     #[id=54336150]
     #[name="MonitorStateByStateUnplugged"];
 
-    program (p_name :String)  := {
-  now => @org.thingpedia.iot.plug(name=p_name).state() => notify;
-}
+    program (p_name :String)  := @org.thingpedia.iot.plug(name=p_name).state() 
     #_[utterances=["is my ${p_name} smart plug connected?",
                    "did my ${p_name} smart plug get disconnected?",
                    "check if my ${p_name} plug is plugged",
@@ -86,13 +82,13 @@ dataset @org.thingpedia.iot.plug language "en" {
     #[id=54336169]
     #[name="MonitorState1"];
 
-    stream (p_name :String, p_state :Enum(plugged,unplugged))  := edge (monitor (@org.thingpedia.iot.plug(name=p_name).state())) on state == p_state
+    stream (p_name :String, p_state :Enum(plugged,unplugged))  := monitor (@org.thingpedia.iot.plug(name=p_name).state()), state == p_state
     #_[utterances=["when my ${p_name} smart plug becomes ${p_state}",
                    "when my ${p_name} plug is ${p_state}"]]
     #[id=54336173]
     #[name="MonitorStateByState1"];
 
-    stream (p_name :String)  := edge (monitor (@org.thingpedia.iot.plug(name=p_name).state())) on state == enum(plugged)
+    stream (p_name :String)  := monitor (@org.thingpedia.iot.plug(name=p_name).state()), state == enum(plugged)
     #_[utterances=["when my ${p_name} plug is plugged",
                    "when somebody plugs in my ${p_name} plug",
                    "when the ${p_name} plug gets plugged",
@@ -102,7 +98,7 @@ dataset @org.thingpedia.iot.plug language "en" {
     #[id=54336175]
     #[name="MonitorStateByStatePlugged1"];
 
-    stream (p_name :String)  := edge (monitor (@org.thingpedia.iot.plug(name=p_name).state())) on state == enum(unplugged)
+    stream (p_name :String)  := monitor (@org.thingpedia.iot.plug(name=p_name).state()), state == enum(unplugged)
     #_[utterances=["when my ${p_name} plug is unplugged",
                    "when somebody unplugs my ${p_name} plug",
                    "when anyone takes out my ${p_name} plug",
