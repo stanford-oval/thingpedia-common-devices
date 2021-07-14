@@ -1,66 +1,67 @@
 # 1-basic
 U: Which is the state of the cover?
 A: You have multiple cover devices. Which one do you want to use\?
-A: choice 0: Bedroom Roller
-A: choice 1: Office Shades
+A: choice 0: Kitchen Window
+A: choice 1: Hall Window
+A: choice 2: Living Room Window
+A: choice 3: Garage Door
+A: choice 4: Pergola Roof
 A: >> expecting = choice
 
-U: Bedroom Roller
-A: The Bedroom Roller cover is (open|closed)\.
+U: Pergola Roof
+A: The Pergola Roof cover is (open|closed)\.
 A: >> expecting = null
 
 ====
 # 2-basic-set
-U: Close the Office Shades
-A: Ok, do you want me to pull the Office Shades curtains close\?
+U: Close the Hall Window
+A: Ok, do you want me to pull the Hall Window curtains close\?
 A: >> expecting = yesno
 
 U: Yes
-A: (I opened or close cover\.)
+A: (I pulled the Hall Window curtains close\.)
 A: >> expecting = null
 
 ====
 # 3-with-slot-fill
-U: Did I forgot to close the office shades?
-A: The Office Shades cover is (open|closed)\.
+U: Did I forgot to close the Living Room Window?
+A: The Living Room Window cover is (open|closed)\.
 A: >> expecting = null
 
 ====
 # 4-with-slot-fill-set
-U: Open the covers
-A: You have multiple cover devices. Which one do you want to use\?
-A: choice 0: Bedroom Roller
-A: choice 1: Office Shades
-A: >> expecting = choice
-
-U: Bedroom roller
-A: Ok, do you want me to keep your Bedroom Roller curtains\?
+#U: Open the covers
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.iot.cover(all=true).set_openclose(state=enum(open));
+A: Ok, do you want me to open or close cover with state open\?
 A: >> expecting = yesno
 
 U: yes
-A: (I opened or close cover)\.
+A: (Your request was completed successfully)\.
 A: >> expecting = null
 
 ====
 # 5-basic-state-with-name 
-U: Is the Office Shades open?
-A: The Office Shades cover is (open|closed)\.
+U: Is the Hall Window open?
+A: The Hall Window cover is (opening|closing)\.
 A: >> expecting = null
 
 ====
 # 6-basic-state-with-name-set
-U: Close the roller in the bedroom
-A: Ok, do you want me to pull the Bedroom Roller curtains close\?
+#U: Close the Garage door
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.iot.cover(name="Garage door").set_openclose(state=enum(close));
+A: Ok, do you want me to pull the Garage Door curtains close\?
 A: >> expecting = yesno
 
 U: Yes
-A: I opened or close cover\.
+A: I pulled the Garage Door curtains close\.
 A: >> expecting = null
 
 ====
 # 7-basic-set-all
 U: Which is the state of all the covers?
-A: The Bedroom Roller cover is (open|closed)\. The Office Shades cover is (open|closed)\.
+A: The Kitchen Window cover is (open|closed)\. The Hall Window cover is (open|closed)\. The Living Room Window cover is (open|closed)\. The Garage Door cover is (open|closed)\. The Pergola Roof cover is (open|closed)\.
 A: >> expecting = null
 
 ====

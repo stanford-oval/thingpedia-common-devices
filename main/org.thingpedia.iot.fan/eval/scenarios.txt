@@ -1,38 +1,35 @@
 # 1-basic-state
 U: Which is the fan state?
 A: You have multiple fan devices. Which one do you want to use\?
-A: choice 0: Bedroom Fan
-A: choice 1: Bathroom Fan
+A: choice 0: Living Room Fan
+A: choice 1: Ceiling Fan
+A: choice 2: Percentage Full Fan
+A: choice 3: Percentage Limited Fan
+A: choice 4: Preset Only Limited Fan
 A: >> expecting = choice
 
-U: Bedroom fan
-A: (The Bedroom Fan fan is (on|off)\.)
+U: Living Room Fan
+A: (The Living Room Fan fan is (on|off)\.)
 A: >> expecting = null
 
 ====
 # 2-set-basic-state
-U: Turn the fan off?
-A: You have multiple fan devices. Which one do you want to use\?
-A: choice 0: Bedroom Fan
-A: choice 1: Bathroom Fan
-A: >> expecting = choice
-
-U: Bathroom fan
-A: Ok, do you want me to turn off the Bathroom Fan fan\?
+U: Turn the Ceiling Fan off?
+A: Ok, do you want me to turn off the Ceiling Fan fan\?
 A: >> expecting = yesno
 
 U: Yes
-A: (I set power on fan\.)
+A: (I turned off your Ceiling Fan fan\.)
 A: >> expecting = null
 
 ====
 # 3-basic-state-name
-U: Turn on the bedroom fan
-A: Ok, do you want me to help you on your Bedroom Fan fan\?
+U: Turn on the Ceiling Fan fan
+A: Ok, do you want me to help you on your Ceiling Fan fan\?
 A: >> expecting = yesno
 
 U: Yes
-A: (I set power on fan\.)
+A: (I turned on your Ceiling Fan fan\.)
 A: >> expecting = null
 
 ====
@@ -49,52 +46,60 @@ A: >> expecting = null
 # 5-basic-oscillation
 U: Which is the fan oscillation state?
 A: You have multiple fan devices. Which one do you want to use\?
-A: choice 0: Bedroom Fan
-A: choice 1: Bathroom Fan
+A: choice 0: Living Room Fan
+A: choice 1: Ceiling Fan
+A: choice 2: Percentage Full Fan
+A: choice 3: Percentage Limited Fan
+A: choice 4: Preset Only Limited Fan
 A: >> expecting = choice
 
-U: Bathroom fan
-A: (The fan is (oscillating,not_oscillating)\.)
+U: Percentage Full Fan
+A: The Percentage Full Fan fan is (oscillating|not oscillating)\.
 A: >> expecting = null
 
 ====
 # 6-basic-oscillation-name
-U: Which oscillation state has the Bedroom fan?
-A: (The fan is (oscillating,not_oscillating)\.)
+#U: Which oscillation state has the Percentage Full Fan?
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.iot.fan(name="Percentage Full Fan").oscillation();
+A: The Percentage Full Fan fan is (oscillating|not oscillating)\.
 A: >> expecting = null
 
 ====
 # 7-set-basic-oscillation
 U: Start oscillating the fan
 A: You have multiple fan devices. Which one do you want to use\?
-A: choice 0: Bedroom Fan
-A: choice 1: Bathroom Fan
+A: choice 0: Living Room Fan
+A: choice 1: Ceiling Fan
+A: choice 2: Percentage Full Fan
+A: choice 3: Percentage Limited Fan
+A: choice 4: Preset Only Limited Fan
 A: >> expecting = choice
 
-U: Bedroom fan
-A: Ok, do you want me to oscillate your Bedroom Fan fan\?
+U: Percentage Full Fan
+A: Ok, do you want me to oscillate your Percentage Full Fan fan\?
 A: >> expecting = yesno
 
 U: Yes
-A: (I set oscillation on fan\.)
+A: I oscillated your Percentage Full Fan fan\.
 A: >> expecting = null
 
 ====
 # 8-set-basic-oscillation-name
-U: Start oscillating the Bathroom Fan
-A: Ok, do you want me to oscillate your Bathroom Fan fan\?
+U: Start oscillating the Percentage Full Fan
+A: Ok, do you want me to oscillate your Percentage Full Fan fan\?
 A: >> expecting = yesno
 
 U: Yes
-A: (I set oscillation on fan\.)
+A: I oscillated your Percentage Full Fan fan\.
 A: >> expecting = null
 
 ====
 # 9-basic-oscillation-all
-#U: Turn off the fans oscillation
-U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: @org.thingpedia.iot.fan(all=true).set_oscillation(oscillation=enum(off));
-A: Ok, do you want me to set oscillation on fan with oscillation off\?
+U: Turn off all fans
+#U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+#U: @org.thingpedia.iot.fan(all=true).set_oscillation(oscillation=enum(off));
+A: Ok, do you want me to set power on fan with power off\?
 A: >> expecting = yesno
 
 U: Yes

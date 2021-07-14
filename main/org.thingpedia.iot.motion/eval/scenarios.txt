@@ -1,12 +1,13 @@
 # 1-basic
 U: Which is the motion sensor state?
 A: You have multiple motion devices. Which one do you want to use\?
-A: choice 0: Motion front door
-A: choice 1: Motion backyard
+A: choice 0: Movement Backyard
+A: choice 1: Motion front door
+A: choice 2: Motion corridor
 A: >> expecting = choice
 
 U: Motion front door
-A: (The Motion front door is (detecting,not_detecting) motion\.)
+A: The Motion front door motion detector is (detecting|not detecting) movement\.
 A: >> expecting = null
 
 ====
@@ -15,13 +16,13 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: @org.thingpedia.iot.motion(all=true).motion();
 
-A: (The Motion sensor sensor is (detecting,not_detecting) motion\.)
+A: The Movement Backyard motion detector is (detecting|not detecting) movement. The Motion front door motion detector is (detecting|not detecting) movement. The Motion corridor motion detector is (detecting|not detecting) movement.
 A: >> expecting = null
 
 ====
 # 3-basic-state-with-fill
-U: Is the Motion backyard detecting something?
-A: (The motion sensor is (detecting,not_detecting)\.)
+U: Is the Movement backyard detecting something?
+A: The Movement Backyard motion detector is (detecting|not detecting) movement\.
 A: >> expecting = null
 
 ====

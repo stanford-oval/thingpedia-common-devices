@@ -1,38 +1,41 @@
 # 1-basic
 U: Which is the state of the door?
-A: (The door is (open|closed)\.)
+A: You have multiple door devices. Which one do you want to use\?
+A: choice 0: Door Access Control
+A: choice 1: Window Access Control
+A: choice 2: Garage Access Control
+A: >> expecting = choice
+
+U: Door Access Control
+A: The Door Access Control entrance is (open|closed)\.
 A: >> expecting = null
 
 ====
 # 2-with-slot-fill
-U: Did I forgot to close the door?
-A: Which door\?
-A: >> expecting = string
-
-U: Front door
-A: (The front door is (open|closed)\.)
+#U: Which is the state of the Window Access Control?
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.iot.door(name="Window Access Control").state();
+A: The Window Access Control entrance is (open|closed)\.
 A: >> expecting = null
 
 ====
 # 3-basic-state-with-name
-U: Is the backyard door open?
-A: (The door is (open|closed)\.)
+U: Is the Garage Access Control door open?
+A: The Garage Access Control entrance is (open|closed)\.
 A: >> expecting = null
 
 ====
 # 4-basic-state-all
-U: Which is the state of the doors?
-A: Which door\?
-A: >> expecting = null
-
-U: All of them
-A: (All the doors are (open|closed)\.)
+#U: Which is the state of all doors?
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.iot.door(all=true).state();
+A: The Door Access Control entrance is (open|closed)\. The Window Access Control entrance is (open|closed)\. The Garage Access Control entrance is (open|closed)\.
 A: >> expecting = null
 
 ====
 # 5-basic-state-sort-all
 U: Which doors are open?
-A: The open door\ are?
+A: The Door Access Control entrance is (open|closed)\. The Window Access Control entrance is (open|closed)\. The Garage Access Control entrance is (open|closed)\.
 A: >> expecting = null
 
 ====

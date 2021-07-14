@@ -1,0 +1,27 @@
+# 1-basic-state
+U: What is the humidity level?
+A: You have multiple humidity devices. Which one do you want to use\?
+A: choice 0: Outside Humidity
+A: choice 1: Humidity Sensor
+A: choice 2: Humidity State
+A: >> expecting = choice
+
+U: Humidity Sensor
+A: (The humidity is [0-9\.]+ ?°F\.)
+A: >> expecting = null
+
+====
+# 2-with-slot-fill-value
+U: What's the reading from the Outside Humidity?
+A: (The Humidity first floor is [0-9\.]+ ?°F\.)
+A: >> expecting = null
+
+====
+# 3-basic-state-all
+#U: Which is the humidity inside?
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.iot.humidity(all=true).humidity();
+A: (The humidity inside is [0-9\.]+ ?°F\.)
+A: >> expecting = null
+
+====
