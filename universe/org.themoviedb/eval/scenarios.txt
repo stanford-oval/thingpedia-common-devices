@@ -18,7 +18,7 @@ A: >> expecting = null
 # 3-by-release-date
 U: \t sort(release_date desc of @org.themoviedb.movie());
 
-A: I see Black Widow, The Boss Baby: Family Business, and America: The Motion Picture. Black Widow is a movie released in [^,]*, The Boss Baby: Family Business is released in June 30( 2021)?, and America: The Motion Picture is released in June 29( 2021)?.
+A: I see (.*), (.*), and (.*). \1 is a movie released in .*, \2 is released in (January|February|March|April|May|June|July|August|September|October|November|December) [0-9]{1,2}( 2021)?, and \3 is released in (January|February|March|April|May|June|July|August|September|October|November|December) [0-9]{1,2}( 2021)?.
 A: >> expecting = null
 
 ====
@@ -40,7 +40,7 @@ A: I see Tom Cruise, Tom Cruise, and Tom Cruise Jr.
 # U: who are popular actors?
 U: \t sort(popularity desc of @org.themoviedb.actor());
 
-A: I see Scarlett Johansson, Lyubov Aksyonova, and Annette O'Toole.
+A: I see .*, .*, and .*.
 ====
 # 7-filtered-actor-search
 U: \t @org.themoviedb.actor() filter id=~ "Scarlett Johansson";
