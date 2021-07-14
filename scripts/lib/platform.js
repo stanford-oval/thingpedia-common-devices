@@ -83,7 +83,7 @@ class MockPlatform extends Tp.BasePlatform {
     }
 
     getWritableDir() {
-        return this._filesDir;
+        return os.homedir() + './.config/genie-toolkit';
     }
 
     getTmpDir() {

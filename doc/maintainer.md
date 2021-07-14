@@ -25,11 +25,12 @@ To deploy the new model as the default model for dev.almond.stanford.edu.
 
 Use:
 ```bash
-./scripts/download-dataset.sh -t $type > dataset.tsv
+./scripts/download-dataset.sh --db {prod|dev} --type $type > dataset.tsv
 ```
-where `$type` is `online` for Train Almond and `turking%` for MTurk paraphrasing.
+where `$type` is `online` for Train Almond, `turking%` for MTurk paraphrasing, `log` for
+passively-collected sentences.
 
-You need a working `prod-mysql-run` command to use this script.
+You need a working `prod-mysql-run` or `dev-mysql-run` command to use this script.
 
 For paraphrase, you should requote the dataset:
 ```

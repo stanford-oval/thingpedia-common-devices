@@ -1,0 +1,99 @@
+class @org.themoviedb
+#_[thingpedia_name="The Movie Database"]
+#_[thingpedia_description="Search and recommend movies, actors, and more"]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="media"]
+{
+    import loader from @org.thingpedia.v2();
+    import config from @org.thingpedia.config.none(api_key=$?);
+
+    entity movie #_[description = "Movie Information"];
+    entity actor #_[description = "Movie Actors"];
+
+    monitorable list query movie(   out id: Entity(org.themoviedb:movie)
+                                    #_[canonical={
+                                        default = "base",
+                                        base = ["movie", "play", "film"],
+                                        passive_verb = ["named #", "titled #", "called #"],
+                                        property = ["name #", "title #"]
+                                    }],
+                                    out description : String
+                                    #_[canonical={
+                                        default = "base",
+                                        base = ["description", "overview", "summary"],
+                                        passive_verb=["summarized"]
+                                    }],
+                                    out release_date : Date
+                                    #_[canonical={
+                                        default="passive_verb",
+                                        base = ["date", "release date", "release year", "release day"],
+                                        property=["release date #"],
+                                        preposition=["from"],
+                                        passive_verb=["released in #", "filmed #", "released #"],
+                                        adjective_argmin = ["least recent", "oldest", "first"],
+                                        adjective_argmax = ["most recent", "latest", "newest", "now playing"],
+                                        passive_verb_argmax=["released most recently"],
+                                        passive_verb_projection=['released | on', 'filmed | on'],
+                                    }],
+                                    out rating : Enum(G, PG, PG13, R)
+                                    #_[canonical = {
+                                        default="base",
+                                        base=["rating"],
+                                        passive_verb=["rated #"],
+                                        preposition = ["with # rating"],
+                                        adjective_enum = {
+                                            G = ["mild"],
+                                            R = ["violent", "bloody"]
+                                        },
+                                        passive_verb_enum = {
+                                            G = ["suitable for children"],
+                                            R = ["made for adults"]
+                                        }
+                                    }],
+                                    out rating_score : Number
+                                    #_[canonical = {
+                                        default = "base",
+                                        base = ["rating", "score"],
+                                        adjective_argmin = ["worst"],
+                                        adjective_argmax = ["best"]
+                                    }],
+                                    out actors : Array(Entity(org.themoviedb:actor))
+                                    #_[canonical = {
+                                        default = "preposition",
+                                        base = ["actor", "actress"],
+                                        property = ["actor #", "actress #"],
+                                        preposition = ["by #", "with #"],
+                                        passive_verb = ["acted by #", "played by #", "acted with #"],
+                                        base_projection = ['actor', 'actress'],
+                                        passive_verb_projection = ['acted | by', 'played | by']
+                                    }],
+                                    out poster: Entity(tt:picture)
+                                    #[filterable = false]
+                                    #_[canonical="poster"])
+    #_[canonical = ["movie", "film", "flick"]]
+    #[poll_interval=60000ms];
+
+    monitorable list query actor( out id: Entity(org.themoviedb:actor)
+                                    #_[canonical={
+                                        default = "base",
+                                        base = ["actor", "actress"],
+                                        passive_verb = ["played by #", "acted by"],
+                                    }],
+                                    out popularity : Number
+                                    #_[canonical = {
+                                        default = "base",
+                                        base = ["popularity", "fame"],
+                                        adjective_argmin=["least popular", "least famous"],
+                                        adjective_argmax=["most popular", "most famous"]
+                                    }])
+    #_[canonical = ["actor", "actress"]]
+    #[poll_interval=60000ms];
+}
+
+
+
+
+
+
+
