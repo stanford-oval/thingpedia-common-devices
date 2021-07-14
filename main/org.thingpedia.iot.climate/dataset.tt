@@ -227,53 +227,28 @@ dataset @org.thingpedia.iot.climate language "en" {
     #_[utterances=["the available presets for the swing ",
                    "the swing has the following available presets"]];
 
-    action (f_mode :Enum(on,off,auto,low,medium,high,middle,focus,diffuse)) := @org.thingpedia.iot.climate.set_swing_mode(mode=f_mode)
+    action (f_mode :Enum(off,vertical,horizontal,both)) := @org.thingpedia.iot.climate.set_swing_mode(mode=f_mode)
     #_[utterances=["set the swing to $f_mode"]];
-
-    action := @org.thingpedia.iot.climate.set_swing_mode(mode=enum(on)) 
-    #_[utterances=["turn the swing on",
-                   "set to on the swing",
-                   "switch swing on"]];
 
     action := @org.thingpedia.iot.climate.set_swing_mode(mode=enum(off)) 
     #_[utterances=["turn the swing off",
                    "set to off the swing",
                    "switch swing off"]];
 
-    action := @org.thingpedia.iot.climate.set_swing_mode(mode=enum(auto)) 
-    #_[utterances=["turn the swing on auto",
-                   "set to auto the swing",
-                   "switch swing to auto"]];
+    action := @org.thingpedia.iot.climate.set_swing_mode(mode=enum(vertical)) 
+    #_[utterances=["turn the swing vertical",
+                   "set to vertical the swing",
+                   "switch swing to vertical"]];
 
-    action := @org.thingpedia.iot.climate.set_swing_mode(mode=enum(low)) 
-    #_[utterances=["turn the swing on low",
-                   "set to low the swing",
-                   "switch swing to low"]];
+    action := @org.thingpedia.iot.climate.set_swing_mode(mode=enum(horizontal)) 
+    #_[utterances=["turn the swing horizontal",
+                   "set to horizontal the swing",
+                   "switch swing to horizontal"]];
 
-    action := @org.thingpedia.iot.climate.set_swing_mode(mode=enum(medium)) 
-    #_[utterances=["turn the swing on medium",
-                   "set to medium the swing",
-                   "switch swing to medium"]];
-
-    action := @org.thingpedia.iot.climate.set_swing_mode(mode=enum(high)) 
-    #_[utterances=["turn the swing on high",
-                   "set to high the swing",
-                   "switch swing to high"]];
-
-    action := @org.thingpedia.iot.climate.set_swing_mode(mode=enum(middle)) 
-    #_[utterances=["turn the swing on middle",
-                   "set to middle the swing",
-                   "switch swing to middle"]];
-
-    action := @org.thingpedia.iot.climate.set_swing_mode(mode=enum(focus)) 
-    #_[utterances=["turn the swing on focus",
-                   "set to focus the swing",
-                   "switch swing to focus"]];
-
-    action := @org.thingpedia.iot.climate.set_swing_mode(mode=enum(diffuse)) 
-    #_[utterances=["turn the swing on diffuse",
-                   "set to diffuse the swing",
-                   "switch swing to diffuse"]];
+    action := @org.thingpedia.iot.climate.set_swing_mode(mode=enum(both)) 
+    #_[utterances=["turn the swing on both",
+                   "set to both the swing",
+                   "switch swing to both ways"]];
 
     action (f_value :Enum(on,off)) := @org.thingpedia.iot.climate.set_aux_heat(value=f_value)
     #_[utterances=["set the auxiliary heater to $f_value"]];
@@ -457,53 +432,28 @@ dataset @org.thingpedia.iot.climate language "en" {
                    "set to diffuse the ${p_name} fan",
                    "switch ${p_name} fan to diffuse"]];
 
-    action (p_name : String, f_mode :Enum(on,off,auto,low,medium,high,middle,focus,diffuse)) := @org.thingpedia.iot.climate(name=p_name).set_swing_mode(mode=f_mode)
+    action (p_name : String, f_mode :Enum(off,vertical,horizontal,both)) := @org.thingpedia.iot.climate(name=p_name).set_swing_mode(mode=f_mode)
     #_[utterances=["set the ${p_name} swing to $f_mode"]];
-
-    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_swing_mode(mode=enum(on)) 
-    #_[utterances=["turn the ${p_name} swing on",
-                   "set to on the ${p_name} swing",
-                   "switch ${p_name} swing on"]];
 
     action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_swing_mode(mode=enum(off)) 
     #_[utterances=["turn the ${p_name} swing off",
                    "set to off the ${p_name} swing",
                    "switch ${p_name} swing off"]];
 
-    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_swing_mode(mode=enum(auto)) 
-    #_[utterances=["turn the ${p_name} swing on auto",
-                   "set to auto the ${p_name} swing",
-                   "switch ${p_name} swing to auto"]];
+    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_swing_mode(mode=enum(vertical)) 
+    #_[utterances=["turn the ${p_name} swing vertical",
+                   "set to vertical the ${p_name} swing",
+                   "switch ${p_name} swing to vertical"]];
 
-    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_swing_mode(mode=enum(low)) 
-    #_[utterances=["turn the ${p_name} swing on low",
-                   "set to low the ${p_name} swing",
-                   "switch ${p_name} swing to low"]];
+    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_swing_mode(mode=enum(horizontal)) 
+    #_[utterances=["turn the ${p_name} swing horizontal",
+                   "set to horizontal the ${p_name} swing",
+                   "switch ${p_name} swing to horizontal"]];
 
-    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_swing_mode(mode=enum(medium)) 
-    #_[utterances=["turn the ${p_name} swing on medium",
-                   "set to medium the ${p_name} swing",
-                   "switch ${p_name} swing to medium"]];
-
-    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_swing_mode(mode=enum(high)) 
-    #_[utterances=["turn the ${p_name} swing on high",
-                   "set to high the ${p_name} swing",
-                   "switch ${p_name} swing to high"]];
-
-    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_swing_mode(mode=enum(middle)) 
-    #_[utterances=["turn the ${p_name} swing on middle",
-                   "set to middle the ${p_name} swing",
-                   "switch ${p_name} swing to middle"]];
-
-    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_swing_mode(mode=enum(focus)) 
-    #_[utterances=["turn the ${p_name} swing on focus",
-                   "set to focus the ${p_name} swing",
-                   "switch ${p_name} swing to focus"]];
-
-    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_swing_mode(mode=enum(diffuse)) 
-    #_[utterances=["turn the ${p_name} swing on diffuse",
-                   "set to diffuse the ${p_name} swing",
-                   "switch ${p_name} swing to diffuse"]];
+    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_swing_mode(mode=enum(both)) 
+    #_[utterances=["turn the ${p_name} swing on both ways",
+                   "set to both the ${p_name} swing direction",
+                   "switch ${p_name} swing to both"]];
 
     action (p_name : String,f_value :Enum(on,off)) := @org.thingpedia.iot.climate(name=p_name).set_aux_heat(value=f_value)
     #_[utterances=["set the ${p_name} auxiliary heater to $f_value"]];
