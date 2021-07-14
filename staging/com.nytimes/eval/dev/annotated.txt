@@ -173,3 +173,8 @@ UT: attimer(time=[new Time(0, 0)]) => @com.nytimes.get_front_page();
 U: monitor the new york times
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: monitor(@com.nytimes.get_front_page());
+====
+# log-dev/144
+U: show me nyt articles about trump
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.nytimes.get_front_page() filter description =~ "trump";

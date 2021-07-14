@@ -30,22 +30,22 @@ dataset @org.thingpedia.iot.uv language "en" {
                    "when the inside uv of the sensor goes below $p_uv"]];
 
   program (p_name : String) := @org.thingpedia.iot.uv(name=p_name).uv()
-  #_[utterances=["what does the ${p_name} indoor uv sensor say?"]];
+  #_[utterances=["what does the ${p_name:const} indoor uv sensor say?"]];
 
   query (p_name : String) := @org.thingpedia.iot.uv(name=p_name).uv()
-  #_[utterances=["what the ${p_name} home uv sensor says",
-                 "the uv of the ${p_name} room uv sensor"]];
+  #_[utterances=["what the ${p_name:const} home uv sensor says",
+                 "the uv of the ${p_name:const} room uv sensor"]];
 
   stream (p_name : String) := monitor(@org.thingpedia.iot.uv(name=p_name).uv())
-  #_[utterances=["when the ${p_name} room uv changes"]];
+  #_[utterances=["when the ${p_name:const} room uv changes"]];
 
   stream (p_name : String, p_uv :Number) := monitor (@org.thingpedia.iot.uv(name=p_name).uv()), value >= p_uv
-  #_[utterances=["when the ${p_name} sensor 's room uv is hotter than $p_uv",
-                   "if the uv inside of the ${p_name} sensor is higher than $p_uv",
-                   "when the uv inside of the ${p_name} sensor goes above $p_uv"]];
+  #_[utterances=["when the ${p_name:const} sensor 's room uv is hotter than $p_uv",
+                   "if the uv inside of the ${p_name:const} sensor is higher than $p_uv",
+                   "when the uv inside of the ${p_name:const} sensor goes above $p_uv"]];
 
   stream (p_name : String, p_uv :Number) := monitor (@org.thingpedia.iot.uv(name=p_name).uv()), value <= p_uv
-  #_[utterances=["when the ${p_name} sensor 's indoor uv is lower than $p_uv",
-                   "if the uv of the ${p_name} room sensor is lower than $p_uv",
-                   "when the uv of the ${p_name} home sensor goes below $p_uv"]];
+  #_[utterances=["when the ${p_name:const} sensor 's indoor uv is lower than $p_uv",
+                   "if the uv of the ${p_name:const} room sensor is lower than $p_uv",
+                   "when the uv of the ${p_name:const} home sensor goes below $p_uv"]];
 }

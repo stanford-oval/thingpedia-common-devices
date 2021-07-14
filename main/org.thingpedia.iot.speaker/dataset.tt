@@ -60,88 +60,88 @@ dataset @org.thingpedia.iot.speaker language "en" {
                  "set the speaker 's volume to ${p_volume:const}"]];
 
   /*program (p_name : String) := @org.thingpedia.iot.speaker(name=p_name).power()
-  #_[utterances=["is my ${p_name} speaker on?",
-                "check if my ${p_name} speaker is off",
-                "is the ${p_name} speaker turned on?",
-                "check if my ${p_name} speaker is switched off",
-                "check if my ${p_name} speaker is turned on or off",
-                "check if my ${p_name} speaker is switched on or switched off"]];
+  #_[utterances=["is my ${p_name:const} speaker on?",
+                "check if my ${p_name:const} speaker is off",
+                "is the ${p_name:const} speaker turned on?",
+                "check if my ${p_name:const} speaker is switched off",
+                "check if my ${p_name:const} speaker is turned on or off",
+                "check if my ${p_name:const} speaker is switched on or switched off"]];
 
   query (p_name : String) := @org.thingpedia.iot.speaker(name=p_name).power()
-  #_[utterances=["if my ${p_name} speaker is on or off",
-                 "whether my ${p_name} speaker is switched on or switched off"]];
+  #_[utterances=["if my ${p_name:const} speaker is on or off",
+                 "whether my ${p_name:const} speaker is switched on or switched off"]];
 
   stream (p_name : String) := monitor(@org.thingpedia.iot.speaker(name=p_name).power())
-  #_[utterances=["when my ${p_name} speaker changes state"]];
+  #_[utterances=["when my ${p_name:const} speaker changes state"]];
 
   stream (p_name : String, p_state : Enum(on, off)) := monitor(@org.thingpedia.iot.speaker(name=p_name).power()), (state == p_state)
-  #_[utterances=["when my ${p_name} speaker turns ${p_state}",
-                "if my ${p_name} speaker switches ${p_state}",
-                "when the ${p_name} speaker becomes ${p_state}",
-                "if my ${p_name} speaker is ${p_state}",
-                "when my ${p_name} speaker changes to ${p_state}"]];
+  #_[utterances=["when my ${p_name:const} speaker turns ${p_state}",
+                "if my ${p_name:const} speaker switches ${p_state}",
+                "when the ${p_name:const} speaker becomes ${p_state}",
+                "if my ${p_name:const} speaker is ${p_state}",
+                "when my ${p_name:const} speaker changes to ${p_state}"]];
 
   stream (p_name : String) := monitor(@org.thingpedia.iot.speaker(name=p_name).power()), (state == enum(on))
-  #_[utterances=["when my ${p_name} speaker turns on",
-                "when I switch on the ${p_name} speaker",
-                "if the ${p_name} speaker becomes on",
-                "when my ${p_name} speaker gets switched to on",
-                "if my ${p_name} speaker is on",
-                "when my ${p_name} speaker is turned on",
-                "the moment my ${p_name} speaker is switched on"]];
+  #_[utterances=["when my ${p_name:const} speaker turns on",
+                "when I switch on the ${p_name:const} speaker",
+                "if the ${p_name:const} speaker becomes on",
+                "when my ${p_name:const} speaker gets switched to on",
+                "if my ${p_name:const} speaker is on",
+                "when my ${p_name:const} speaker is turned on",
+                "the moment my ${p_name:const} speaker is switched on"]];
 
   stream (p_name : String) := monitor(@org.thingpedia.iot.speaker(name=p_name).power()), (state == enum(off))
-  #_[utterances=["when my ${p_name} speaker is turned off",
-                "if my ${p_name} speaker switches off",
-                "the moment my ${p_name} speaker becomes off",
-                "if my ${p_name} speaker is off",
-                "when my ${p_name} speaker gets turned off"]];
+  #_[utterances=["when my ${p_name:const} speaker is turned off",
+                "if my ${p_name:const} speaker switches off",
+                "the moment my ${p_name:const} speaker becomes off",
+                "if my ${p_name:const} speaker is off",
+                "when my ${p_name:const} speaker gets turned off"]];
 
   action (p_name : String, p_power :Enum(on,off)) := @org.thingpedia.iot.speaker(name=p_name).set_power(power=p_power)
-  #_[utterances=["turn ${p_power} my ${p_name} speaker",
-                 "switch ${p_power} the ${p_name} speaker",
-                 "${p_power} the ${p_name} speaker"]];
+  #_[utterances=["turn ${p_power} my ${p_name:const} speaker",
+                 "switch ${p_power} the ${p_name:const} speaker",
+                 "${p_power} the ${p_name:const} speaker"]];
 
   action (p_name : String) := @org.thingpedia.iot.speaker(name=p_name).set_power(power=enum(on))
-  #_[utterances=["turn on the ${p_name} speaker",
-                "switch on my ${p_name} speaker",
-                "help me turn on the ${p_name} speaker",
-                "switch on the ${p_name} speaker for me"]];
+  #_[utterances=["turn on the ${p_name:const} speaker",
+                "switch on my ${p_name:const} speaker",
+                "help me turn on the ${p_name:const} speaker",
+                "switch on the ${p_name:const} speaker for me"]];
 
   action (p_name : String) := @org.thingpedia.iot.speaker(name=p_name).set_power(power=enum(off))
-  #_[utterances=["turn off my ${p_name} speaker",
-                "switch off the ${p_name} speaker",
-                "turn off the ${p_name} speaker",
-                "help to off the ${p_name} speaker"]];
+  #_[utterances=["turn off my ${p_name:const} speaker",
+                "switch off the ${p_name:const} speaker",
+                "turn off the ${p_name:const} speaker",
+                "help to off the ${p_name:const} speaker"]];
 
   action (p_name : String) := @org.thingpedia.iot.speaker(name=p_name).raise_volume()
-  #_[utterances=["increase the volume of the ${p_name} speaker",
-                 "increase my ${p_name} speaker 's volume",
-                 "make the ${p_name} speaker louder"]];
+  #_[utterances=["increase the volume of the ${p_name:const} speaker",
+                 "increase my ${p_name:const} speaker 's volume",
+                 "make the ${p_name:const} speaker louder"]];
 
   action (p_name : String) := @org.thingpedia.iot.speaker(name=p_name).lower_volume()
-  #_[utterances=["decrease the volume of my ${p_name} speaker",
-                 "decrease my ${p_name} speaker 's volume",
-                 "reduce the volume of the ${p_name} speaker",
-                 "reduce my ${p_name} speaker 's volume",
-                 "make the ${p_name} speaker softer"]];
+  #_[utterances=["decrease the volume of my ${p_name:const} speaker",
+                 "decrease my ${p_name:const} speaker 's volume",
+                 "reduce the volume of the ${p_name:const} speaker",
+                 "reduce my ${p_name:const} speaker 's volume",
+                 "make the ${p_name:const} speaker softer"]];
 
   action (p_name : String) := @org.thingpedia.iot.speaker(name=p_name).mute()
-  #_[utterances=["mute my ${p_name} speaker",
-                 "silence my ${p_name} speaker 's volume",
-                 "turn off the volume of the ${p_name} speaker",
-                 "switch off the sound for my ${p_name} speaker",
-                 "mute my ${p_name} speaker 's sound",
-                 "make my ${p_name} speaker silent"]];
+  #_[utterances=["mute my ${p_name:const} speaker",
+                 "silence my ${p_name:const} speaker 's volume",
+                 "turn off the volume of the ${p_name:const} speaker",
+                 "switch off the sound for my ${p_name:const} speaker",
+                 "mute my ${p_name:const} speaker 's sound",
+                 "make my ${p_name:const} speaker silent"]];
 
   action (p_name : String) := @org.thingpedia.iot.speaker(name=p_name).unmute()
-  #_[utterances=["unmute my ${p_name} speaker",
-                 "unmute the ${p_name} speaker 's volume",
-                 "unmute my ${p_name} speaker 's sound",
-                 "turn on the ${p_name} speaker sound",
-                 "stop muting my ${p_name} speaker"]];
+  #_[utterances=["unmute my ${p_name:const} speaker",
+                 "unmute the ${p_name:const} speaker 's volume",
+                 "unmute my ${p_name:const} speaker 's sound",
+                 "turn on the ${p_name:const} speaker sound",
+                 "stop muting my ${p_name:const} speaker"]];
 
   action (p_name : String, p_volume : Number) := @org.thingpedia.iot.speaker(name=p_name).set_volume(volume=p_volume)
-  #_[utterances=["turn my ${p_name} speaker sound to ${p_volume:const}",
-                 "set the ${p_name} speaker 's volume to ${p_volume:const}"]];*/
+  #_[utterances=["turn my ${p_name:const} speaker sound to ${p_volume:const}",
+                 "set the ${p_name:const} speaker 's volume to ${p_volume:const}"]];*/
 }

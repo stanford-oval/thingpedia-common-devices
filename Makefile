@@ -25,7 +25,6 @@ universe_pkgfiles := $(main_pkgfiles) $(call pkgfiles_fn,universe)
 staging_pkgfiles := $(universe_pkgfiles) $(call pkgfiles_fn,staging)
 
 # hyperparameters that can be overridden on the cmdline
-template_file ?= thingtalk/en/dialogue.genie
 dataset_file ?= eval/$(release)/dataset.tt
 schema_file ?= eval/$(release)/schema.tt
 paraphrases_user ?= eval/$(release)/paraphrase.tsv $(wildcard $(foreach d,$($(release)_devices),$(d)/eval/paraphrase.tsv))
@@ -50,7 +49,7 @@ subdatasets ?= 6
 subdataset_ids := $(shell seq 1 $(subdatasets))
 max_turns ?= 4
 max_depth ?= 8
-debug_level ?= 1
+debug_level ?= 2
 subsample_thingpedia ?= 1
 update_canonical_flags ?= --algorithm bert,adj,bart --paraphraser-model ./models/paraphraser-bart
 synthetic_expand_factor ?= 1
@@ -65,12 +64,6 @@ auto_annotate_algorithm ?= bert,adj,bart
 auto_annotate_mlm_model ?= bert-large-uncased
 auto_annotate_custom_flags ?=
 
-template_deps = \
-	$(geniedir)/languages-dist/thingtalk/*.js \
-	$(geniedir)/languages-dist/thingtalk/en/*.js \
-	$(geniedir)/languages-dist/thingtalk/en/dlg/*.js \
-	$(geniedir)/languages-dist/thingtalk/dialogue_acts/*.js
-
 evalflags ?=
 
 # configuration (should be set in config.mk)
@@ -82,14 +75,13 @@ parallel ?= 7
 genie ?= node --experimental_worker --max_old_space_size=$(memsize) $(geniedir)/dist/tool/genie.js
 
 thingpedia_url ?= https://dev.almond.stanford.edu/thingpedia
-developer_key ?= invalid
+developer_key ?= 88c03add145ad3a3aa4074ffa828be5a391625f9d4e1d0b034b445f18c595656
 
 s3_bucket ?=
 genie_k8s_project ?=
 genie_k8s_owner ?=
 s3_metrics_output ?=
 metrics_output ?=
-artifacts_ver := $(shell date +%s)
 s3_model_dir ?=
 
 .PRECIOUS: %/node_modules
@@ -164,7 +156,7 @@ parameter-datasets.tsv:
 	wget -c --no-verbose https://almond-static.stanford.edu/test-data/paraphraser-bart.tar.xz
 	tar -C .embeddings -xvf paraphraser-bart.tar.xz
 
-eval/$(release)/synthetic-%.txt : $(schema_file) $(dataset_file) $(template_deps) entities.json
+eval/$(release)/synthetic-%.txt : $(schema_file) $(dataset_file) entities.json
 	if test $(subsample_thingpedia) = 1 ; then \
 	  cp $(schema_file) eval/$(release)/schema-$*.tt ; \
 	else \
@@ -176,9 +168,8 @@ eval/$(release)/synthetic-%.txt : $(schema_file) $(dataset_file) $(template_deps
 	fi
 	$(genie) generate-dialogs \
 	  --locale en-US --target-language thingtalk \
-	  --template $(geniedir)/languages-dist/$(template_file) \
 	  --thingpedia eval/$(release)/schema-$*.tt --entities entities.json --dataset $(dataset_file) \
-	  -o $@.tmp -f txt $(generate_flags) --debug $(debug_level) $(custom_gen_flags) --random-seed $@ \
+	  -o $@.tmp -f txt $(generate_flags) --debug $(debug_level) --log-prefix "$(notdir $@): " $(custom_gen_flags) --random-seed $@ \
 	  -n $(target_size) -B $(minibatch_size)
 	mv $@.tmp $@
 
@@ -334,7 +325,7 @@ lint:
 	any_error=0 ; \
 	for d in $($(release)_devices) ; do \
 		echo $$d ; \
-		$(genie) lint-device --thingpedia-url $(thingpedia_url) --manifest $$d/manifest.tt --dataset $$d/dataset.tt || any_error=$$? ; \
+		$(genie) lint-device --thingpedia-url $(thingpedia_url) --manifest $$d/manifest.tt --dataset $$d/dataset.tt --thingpedia-dir main|| any_error=$$? ; \
 		test ! -f $$d/package.json || $(eslint) $$d/*.js || any_error=$$? ; \
 	done ; \
 	exit $$any_error
@@ -347,10 +338,8 @@ evaluate: eval/$(release)/$(eval_set)/$(model).dialogue.results eval/$(release)/
 evaluate-output-artifacts:
 	mkdir -p `dirname $(s3_metrics_output)`
 	mkdir -p $(metrics_output)
-	for f in {dialogue,nlu}.{results,debug} ; do \
-	  aws s3 cp eval/$(release)/$(eval_set)/$(model).$$f s3://$(s3_bucket)/$(genie_k8s_owner)/workdir/$(genie_k8s_project)/eval/$(release)/$(eval_set)/$(if $(findstring /,$(model)),$(dir $(model)),)$(artifacts_ver)/ ; \
-	done
-	echo s3://$(s3_bucket)/$(genie_k8s_owner)/workdir/$(genie_k8s_project)/eval/$(release)/$(eval_set)/$(if $(findstring /,$(model)),$(dir $(model)),)$(artifacts_ver)/ > $(s3_metrics_output)
+	aws s3 sync eval/$(release)/$(eval_set)/ s3://$(s3_bucket)/$(genie_k8s_owner)/workdir/$(genie_k8s_project)/eval/$(release)/$(eval_set)/
+	echo s3://$(s3_bucket)/$(genie_k8s_owner)/workdir/$(genie_k8s_project)/eval/$(release)/$(eval_set)/ > $(s3_metrics_output)
 	cp -r eval/$(release)/$(eval_set)/* $(metrics_output)
 	python3 scripts/write_ui_metrics_outputs.py eval/$(release)/$(eval_set)/$(model).dialogue.results eval/$(release)/$(eval_set)/$(model).nlu.results
 

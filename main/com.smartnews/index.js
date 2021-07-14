@@ -33,12 +33,33 @@
 
 const Tp = require("thingpedia");
 const byline = require('byline');
+const Url = require('url');
 
 const API_URL = "http://dev-snva.smartnews.com/api/v1";
 const DEVICE_TOKEN = 1;  // use 1 for now
 // const API_URL = "https://039ev0y88l.execute-api.us-west-1.amazonaws.com/test/v2"; //DEMO API
 
 const NEW_API = true;
+
+function s3tohttp(url) {
+    const parsed = Url.parse(url);
+    if (parsed.protocol !== 's3:')
+        return url;
+
+    parsed.protocol = 'https:';
+    if (parsed.host === 'oval-project')
+        parsed.host = parsed.hostname = 'oval-project.s3-ap-northeast-1.amazonaws.com';
+    else
+        parsed.host = parsed.hostname = parsed.host + '.s3.amazonaws.com';
+    return Url.format(parsed);
+}
+
+class UnavailableError extends Error {
+    constructor(message) {
+        super(message);
+        this.code = 'unavailable';
+    }
+}
 
 module.exports = class SmartNewsDevice extends Tp.BaseDevice {
     constructor(engine, state) {
@@ -54,24 +75,34 @@ module.exports = class SmartNewsDevice extends Tp.BaseDevice {
             const date = `${now.getYear()-100}${now.getMonth() < 9 ? '0' : ''}${now.getMonth()+1}${now.getDate()<10 ? '0': ''}${now.getDate()}`;
             const url = `https://oval-project.s3-ap-northeast-1.amazonaws.com/data/${date}/summary_${date}.jsonl`;
 
-            const stream = (await Tp.Helpers.Http.getStream(url)).setEncoding('utf8').pipe(byline());
-            for await (const line of stream) {
-                const article = JSON.parse(line);
-                if (article['articleViewStyle'] !== 'SMART')
-                    continue;
-                if (article['title'] === 'coronavirus_push_landingpage')
-                    continue;
-                yield {
-                    id: new Tp.Value.Entity(String(article.link_id), null),
-                    link: article.url,
-                    title: article.title,
-                    date: new Date(article.publishedTimestamp * 1000),
-                    source: article.site ? article.site.name : null,
-                    author: article.author ? article.author.name : null,
-                    audio_url: article.summary_mp3_file,
-                    content: article.body,
-                };
+            let anyNews = false;
+            try {
+                const stream = (await Tp.Helpers.Http.getStream(url)).setEncoding('utf8').pipe(byline());
+                for await (const line of stream) {
+                    const article = JSON.parse(line);
+                    if (article['articleViewStyle'] !== 'SMART')
+                        continue;
+                    if (article['title'] === 'coronavirus_push_landingpage')
+                        continue;
+                    anyNews = true;
+                    yield {
+                        id: new Tp.Value.Entity(String(article.link_id), null),
+                        link: article.url,
+                        title: article.title,
+                        date: new Date(article.publishedTimestamp * 1000),
+                        source: article.site ? article.site.name : null,
+                        author: article.author ? article.author.name : null,
+                        audio_url: s3tohttp(article.summary_mp3_file),
+                        content: article.body,
+                    };
+                }
+            } catch(e) {
+                if (e.code === 404 || e.code === 403)
+                    throw new UnavailableError('summary missing');
+                throw e;
             }
+            if (!anyNews)
+                throw new UnavailableError('summary empty');
         } else {
             const device_token = DEVICE_TOKEN;
             let url = API_URL + "/top?deviceToken=" + device_token;

@@ -143,3 +143,8 @@ UT: monitor(@org.thingpedia.iot.cover.state()) filter state == enum closed;
 U: open the window at 0:0
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: attimer(time=[new Time(0, 0)]) => @org.thingpedia.iot.cover.set_openclose(state=enum open);
+====
+# log-dev/9184
+U: which is the status of the barrel cover.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.cover(name="barrel").state();

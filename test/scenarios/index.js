@@ -44,6 +44,7 @@ const argparse = require('argparse');
 const Genie = require('genie-toolkit');
 
 const StreamUtils = require('../../scripts/lib/stream_utils');
+const { initializeCredentials } = require('../lib/cred-utils');
 const Platform = require('../lib/platform');
 
 let _anyFailed = false;
@@ -236,14 +237,6 @@ function readAllLines(files, separator = '') {
     return StreamUtils.chain(files.map((f) => fs.createReadStream(f).setEncoding('utf8').pipe(byline())), { objectMode: true, separator });
 }
 
-class TestUser {
-    constructor() {
-        this.name = 'Alice Tester';
-        this.isOwner = true;
-        this.anonymous = false;
-    }
-}
-
 async function execProcess(command, ...args) {
     const child = child_process.spawn(command, args, { stdio: ['ignore', 'inherit', 'inherit'] });
 
@@ -269,6 +262,25 @@ async function sleep(timeout) {
     return new Promise((resolve, reject) => {
         setTimeout(resolve, timeout);
     });
+}
+
+async function initializeEngine(platform, engine) {
+    await engine.open();
+
+    await Promise.all([
+        // initialize the credentials from the test directory
+       initializeCredentials(engine),
+
+       (async () => {
+           // if cloud sync is set up, we'll download the credentials of the devices to
+           // test from almond-dev
+           // sleep for 30 seconds while that happens
+           if (platform.getCloudId()) {
+               console.log('Waiting for cloud sync to complete...');
+               await sleep(30000);
+           }
+       })()
+   ]);
 }
 
 async function main() {
@@ -342,18 +354,11 @@ async function main() {
     });
     testRunner.engine = engine;
 
-    await engine.open();
-    // if cloud sync is set up, we'll download the credentials of the devices to
-    // test from almond-dev
-    // sleep for 30 seconds while that happens
-    if (platform.getCloudId()) {
-        console.log('Waiting for cloud sync to complete...');
-        await sleep(30000);
-    }
+    await initializeEngine(platform, engine);
 
     try {
 
-        const conversation = await engine.assistant.getOrOpenConversation('test', new TestUser, {
+        const conversation = await engine.assistant.getOrOpenConversation('test', {
             debug: true,
             testMode: false,
             showWelcome: false,

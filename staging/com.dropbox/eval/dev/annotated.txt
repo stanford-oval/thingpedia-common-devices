@@ -20,14 +20,14 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => @com.dropbox.get_space_usage() => notify;
 ====
 # online/ep68
-U: rename str:PATH_NAME::0: to str:PATH_NAME::1: in my dropbox drive
+U: rename foo.jpg to bar.jpg in my dropbox drive
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.dropbox.move(new_name="str:PATH_NAME::1:"^^tt:path_name, old_name="str:PATH_NAME::0:"^^tt:path_name);
+UT: now => @com.dropbox.move(new_name="foo.jpg"^^tt:path_name, old_name="bar.jpg"^^tt:path_name);
 ====
 # online/120497
 U: list folder my documents with size greater than 13 mb
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@com.dropbox.list_folder(folder_name="my documents")), file_size >= 13MB => notify;
+UT: now => (@com.dropbox.list_folder(folder_name="my documents"^^tt:path_name)), file_size >= 13MB => notify;
 ====
 # online/121208
 U: how much am i using on dropbox?
@@ -37,7 +37,7 @@ UT: now => @com.dropbox.get_space_usage() => notify;
 # online/121264
 U: list folder work
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.dropbox.list_folder(folder_name="work") => notify;
+UT: now => @com.dropbox.list_folder(folder_name="work"^^tt:path_name) => notify;
 ====
 # online/121376
 U: list files greater than 13 kb
@@ -47,7 +47,7 @@ UT: now => (@com.dropbox.list_folder(folder_name=$?)), file_size >= 13KB => noti
 # online/121439
 U: list files in my old stuff bigger than 13 mb
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@com.dropbox.list_folder(folder_name="my old stuff")), file_size >= 13MB => notify;
+UT: now => (@com.dropbox.list_folder(folder_name="my old stuff"^^tt:path_name)), file_size >= 13MB => notify;
 ====
 # online/337979
 U: hey almond how much am i using on dropbox?
@@ -57,12 +57,12 @@ UT: now => @com.dropbox.get_space_usage() => notify;
 # online/1477733
 U: list my documents on my dropbox
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.dropbox.list_folder(folder_name="my documents") => notify;
+UT: now => @com.dropbox.list_folder(folder_name="my documents"^^tt:path_name) => notify;
 ====
 # online/1477778
 U: list my dropbox my documents
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.dropbox.list_folder(folder_name="my documents") => notify;
+UT: now => @com.dropbox.list_folder(folder_name="my documents"^^tt:path_name) => notify;
 ====
 # online/19737387
 U: dropbox files are less than 1 gb
@@ -132,12 +132,12 @@ UT: now => aggregate max file_size of (@com.dropbox.list_folder(folder_name=$?))
 # online/120609
 U: list folder phone pictures with size greater than 13 kb
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.dropbox.list_folder(folder_name="phone pictures") filter file_size >= 13KB;
+UT: @com.dropbox.list_folder(folder_name="phone pictures"^^tt:path_name) filter file_size >= 13KB;
 ====
 # online/121373
 U: list files in dropbox in phone pictures
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.dropbox.list_folder(folder_name="phone pictures");
+UT: @com.dropbox.list_folder(folder_name="phone pictures"^^tt:path_name);
 ====
 # online/62110267
 U: how much space do i have left on dropbox?
@@ -147,7 +147,7 @@ UT: @com.dropbox.get_space_usage();
 # online/62110268
 U: list the dropbox files in / foo
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.dropbox.list_folder(folder_name="foo");
+UT: @com.dropbox.list_folder(folder_name="foo"^^tt:path_name);
 ====
 # online/62110284
 U: how much space do i have left in dropbox
@@ -183,3 +183,8 @@ UT: monitor(@com.dropbox.get_space_usage()) filter used_space >= 1GB;
 U: notify me if i'm using more than 13 mb on dropbox
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: monitor(@com.dropbox.get_space_usage()) filter used_space >= 13MB;
+====
+# log-dev/4329
+U: list my files in dropbox
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.dropbox.list_folder();
