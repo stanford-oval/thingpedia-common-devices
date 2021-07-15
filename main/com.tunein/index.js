@@ -83,10 +83,9 @@ module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
     _format_station_output(stations) {
         return stations.map((item) => {
             const id = new Tp.Value.Entity(`station:${item.guide_id.toLowerCase()}`, item.text);
-            const show = new Tp.Value.Entity(`show:${item.now_playing_id.toLowerCase()}`, item.subtext);
             return {
                 id,
-                show,
+                show: item.subtext,
                 link: item.URL,
                 image: item.image
             };
