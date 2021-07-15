@@ -11,6 +11,7 @@ const Tp = require('thingpedia');
 
 const tmdbAccess = "https://api.themoviedb.org/3/";
 const multiSearch = "search/multi?api_key="
+const discoverSearch = 'discover/movie?api_key='
 const finalSearch = "&language=en-US&page=1";
 const topRated = "movie/top_rated?api_key=";
 const nowPlaying = "movie/now_playing?api_key=";
@@ -65,10 +66,23 @@ module.exports = class MovieClass extends Tp.BaseDevice {
                         query_term = encodeURIComponent(value);
                 }
                 else if (pname === 'actors' && (op === 'contains' || op === 'contains~')) {
-                    if (value instanceof Tp.Value.Entity)
-                        query_term = encodeURIComponent(value.display);
-                    else
-                        query_term = encodeURIComponent(value);
+                    if (hints.filter.length > 1) {
+                        console.log (hints.filter);
+                        if (value instanceof Tp.Value.Entity) {
+                            query_term += value.value;
+                            query_term += encodeURIComponent(",");
+                        }
+                        else {
+                            query_term += value;
+                            query_term += encodeURIComponent(",");
+                        }
+                    }
+                    else{
+                        if (value instanceof Tp.Value.Entity)
+                            query_term = encodeURIComponent(value.value);
+                        else
+                            query_term = encodeURIComponent(value);
+                    }
                     searchType = 'actor';
                 }
             }
@@ -77,11 +91,13 @@ module.exports = class MovieClass extends Tp.BaseDevice {
             console.log("No query term identified; Here's info about The Avengers:");
             query_term = 'Avengers';
         }
-        const movieQuery = tmdbAccess + multiSearch + this.constructor.metadata.auth.api_key + '&language=en-US&query=' + query_term + '&page=1%include_adult=false';
-        const response1 = await Tp.Helpers.Http.get(movieQuery);
-        let parsedResponse = JSON.parse(response1);
         if (searchType === 'actor'){
-            return Promise.all(parsedResponse.results[0].known_for.map(async (result) => {
+            const movieQuery = tmdbAccess + discoverSearch + this.constructor.metadata.auth.api_key + '&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_cast=' + query_term + 'with_watch_monetization_types=flatrate';
+            const response1 = await Tp.Helpers.Http.get(movieQuery);
+            let parsedResponse = JSON.parse(response1);
+            query_term = query_term.substring(0, query_term.length-3);
+            console.log(query_term);
+            return Promise.all(parsedResponse.results.map(async (result) => {
                 const castQuery = `https://api.themoviedb.org/3/movie/${result.id}/credits?api_key=${this.constructor.metadata.auth.api_key}&language=en-US`;
                 let id = new Tp.Value.Entity(String(result.id), String(result.title));
                 let oneDate = new Date(Date.now());
@@ -107,6 +123,9 @@ module.exports = class MovieClass extends Tp.BaseDevice {
             }));
         }
         else {
+            const movieQuery = tmdbAccess + multiSearch + this.constructor.metadata.auth.api_key + '&language=en-US&query=' + query_term + '&page=1%include_adult=false';
+            const response1 = await Tp.Helpers.Http.get(movieQuery);
+            let parsedResponse = JSON.parse(response1);
             return Promise.all(parsedResponse.results.map(async (result) => {
                 const castQuery = `https://api.themoviedb.org/3/movie/${result.id}/credits?api_key=${this.constructor.metadata.auth.api_key}&language=en-US`;
                 let oneDate = new Date(Date.now());
