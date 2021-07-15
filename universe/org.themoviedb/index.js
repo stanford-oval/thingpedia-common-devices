@@ -94,7 +94,6 @@ module.exports = class MovieClass extends Tp.BaseDevice {
             const movieQuery = tmdbAccess + discoverSearch + this.constructor.metadata.auth.api_key + '&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_cast=' + query_term + '&with_watch_monetization_types=flatrate';
             const response1 = await Tp.Helpers.Http.get(movieQuery);
             let parsedResponse = JSON.parse(response1);
-            query_term = query_term.substring(0, query_term.length-3);
             return Promise.all(parsedResponse.results.map(async (result) => {
                 const castQuery = `https://api.themoviedb.org/3/movie/${result.id}/credits?api_key=${this.constructor.metadata.auth.api_key}&language=en-US`;
                 let id = new Tp.Value.Entity(String(result.id), String(result.title));
