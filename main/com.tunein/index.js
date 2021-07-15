@@ -157,6 +157,7 @@ module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
     }
 
     async do_radio_play({id}) {
+        if (process.env.TEST_MODE === '1') return undefined;
         const audio_player = this.platform.getCapability('audio-player');
         if (!audio_player){
             throw new Error(DEVICE_ERROR.unsupported_version);
