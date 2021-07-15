@@ -17,3 +17,4 @@ deactivate
 sleep 30
 
 ./scripts/setup-ha-virtual-devices.js main universe
+sleep 30
