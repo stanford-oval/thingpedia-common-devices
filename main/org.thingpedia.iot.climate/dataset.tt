@@ -57,48 +57,11 @@ dataset @org.thingpedia.iot.climate language "en" {
                    "the HVAC system has the following available presets"]];
 
     action (p_preset :Enum(eco,away,boost,comfort,home,sleep,activity)) := @org.thingpedia.iot.climate.set_hvac_preset(preset=p_preset)
-    #_[utterances=["set my hvac to $p_preset"]];
-
-    action := @org.thingpedia.iot.climate.set_hvac_preset(preset=enum(eco)) 
-    #_[utterances=["turn the hvac preset to eco",
-                   "set to eco the hvac",
-                   "switch hvac preset to eco",
-                   "change to eco the preset of the hvac"]];
-
-    action := @org.thingpedia.iot.climate.set_hvac_preset(preset=enum(away)) 
-    #_[utterances=["turn the hvac preset to away",
-                   "set to away the hvac",
-                   "switch hvac preset to away",
-                   "change to away the preset of the hvac"]];
-
-    action := @org.thingpedia.iot.climate.set_hvac_preset(preset=enum(boost)) 
-    #_[utterances=["turn the hvac preset to boost",
-                   "set to boost the hvac",
-                   "switch hvac preset to boost",
-                   "change to boost the preset of the hvac"]];
-
-    action := @org.thingpedia.iot.climate.set_hvac_preset(preset=enum(comfort)) 
-    #_[utterances=["turn the hvac preset to comfort",
-                   "set to comfort the hvac",
-                   "switch hvac preset to comfort",
-                   "change to comfort the preset of the hvac"]];
-
-    action := @org.thingpedia.iot.climate.set_hvac_preset(preset=enum(home)) 
-    #_[utterances=["turn the hvac preset to home",
-                   "set to home the hvac",
-                   "switch hvac preset to home",
-                   "change to home the preset of the hvac"]];
-
-    action := @org.thingpedia.iot.climate.set_hvac_preset(preset=enum(sleep)) 
-    #_[utterances=["turn the hvac preset to sleep",
-                   "set to sleep the hvac",
-                   "switch hvac preset to sleep",
-                   "change to sleep the preset of the hvac"]];
-
-    action := @org.thingpedia.iot.climate.set_hvac_preset(preset=enum(activity)) 
-    #_[utterances=["turn the hvac to auto",
-                   "set to auto the hvac",
-                   "switch hvac mode to auto"]];
+    #_[utterances=["set my hvac to $p_preset",
+                   "turn the hvac preset to $p_preset",
+                   "set to $p_preset the hvac",
+                   "switch hvac preset to $p_preset",
+                   "change to $p_preset the preset of the hvac"]];
 
     query := @org.thingpedia.iot.climate.target_temperature()
     #_[utterances=["the target temperature set for my hvac",
@@ -170,53 +133,11 @@ dataset @org.thingpedia.iot.climate language "en" {
     #_[utterances=["the available presets for the fan ",
                    "the fan has the following available presets"]];
 
-    action (f_mode :Enum(on,off,auto,low,medium,high,middle,focus,diffuse)) := @org.thingpedia.iot.climate.set_fan_mode(mode=f_mode)
-    #_[utterances=["set the fan to $f_mode"]];
-
-    action := @org.thingpedia.iot.climate.set_fan_mode(mode=enum(on)) 
-    #_[utterances=["turn the fan on",
-                   "set to on the fan",
-                   "switch fan on"]];
-
-    action := @org.thingpedia.iot.climate.set_fan_mode(mode=enum(off)) 
-    #_[utterances=["turn the fan off",
-                   "set to off the fan",
-                   "switch fan off"]];
-
-    action := @org.thingpedia.iot.climate.set_fan_mode(mode=enum(auto)) 
-    #_[utterances=["turn the fan on auto",
-                   "set to auto the fan",
-                   "switch fan to auto"]];
-
-    action := @org.thingpedia.iot.climate.set_fan_mode(mode=enum(low)) 
-    #_[utterances=["turn the fan on low",
-                   "set to low the fan",
-                   "switch fan to low"]];
-
-    action := @org.thingpedia.iot.climate.set_fan_mode(mode=enum(medium)) 
-    #_[utterances=["turn the fan on medium",
-                   "set to medium the fan",
-                   "switch fan to medium"]];
-
-    action := @org.thingpedia.iot.climate.set_fan_mode(mode=enum(high)) 
-    #_[utterances=["turn the fan on high",
-                   "set to high the fan",
-                   "switch fan to high"]];
-
-    action := @org.thingpedia.iot.climate.set_fan_mode(mode=enum(middle)) 
-    #_[utterances=["turn the fan on middle",
-                   "set to middle the fan",
-                   "switch fan to middle"]];
-
-    action := @org.thingpedia.iot.climate.set_fan_mode(mode=enum(focus)) 
-    #_[utterances=["turn the fan on focus",
-                   "set to focus the fan",
-                   "switch fan to focus"]];
-
-    action := @org.thingpedia.iot.climate.set_fan_mode(mode=enum(diffuse)) 
-    #_[utterances=["turn the fan on diffuse",
-                   "set to diffuse the fan",
-                   "switch fan to diffuse"]];
+    action (p_mode :Enum(on,off,auto,low,medium,high,middle,focus,diffuse)) := @org.thingpedia.iot.climate.set_fan_mode(mode=p_mode)
+    #_[utterances=["set the fan to $p_mode",
+                   "turn the fan $p_mode",
+                   "set to $p_mode the fan",
+                   "switch fan $p_mode"]];
 
     query := @org.thingpedia.iot.climate.swing_mode()
     #_[utterances=["the state of my swing",
@@ -227,81 +148,40 @@ dataset @org.thingpedia.iot.climate language "en" {
     #_[utterances=["the available presets for the swing ",
                    "the swing has the following available presets"]];
 
-    action (f_mode :Enum(off,vertical,horizontal,both)) := @org.thingpedia.iot.climate.set_swing_mode(mode=f_mode)
-    #_[utterances=["set the swing to $f_mode"]];
-
-    action := @org.thingpedia.iot.climate.set_swing_mode(mode=enum(off)) 
-    #_[utterances=["turn the swing off",
-                   "set to off the swing",
-                   "switch swing off"]];
-
-    action := @org.thingpedia.iot.climate.set_swing_mode(mode=enum(vertical)) 
-    #_[utterances=["turn the swing vertical",
-                   "set to vertical the swing",
-                   "switch swing to vertical"]];
-
-    action := @org.thingpedia.iot.climate.set_swing_mode(mode=enum(horizontal)) 
-    #_[utterances=["turn the swing horizontal",
-                   "set to horizontal the swing",
-                   "switch swing to horizontal"]];
+    action (p_mode :Enum(off,vertical,horizontal,both)) := @org.thingpedia.iot.climate.set_swing_mode(mode=p_mode)
+    #_[utterances=["set the swing to $p_mode",
+                   "set to $p_mode the swing",
+                   "turn the swing $p_mode",
+                   "switch swing $p_mode"
+                   ]];
 
     action := @org.thingpedia.iot.climate.set_swing_mode(mode=enum(both)) 
-    #_[utterances=["turn the swing on both",
-                   "set to both the swing",
+    #_[utterances=["turn the swing on both"
                    "switch swing to both ways"]];
 
-    action (f_value :Enum(on,off)) := @org.thingpedia.iot.climate.set_aux_heat(value=f_value)
-    #_[utterances=["set the auxiliary heater to ${f_value}"]];
+    action (p_value :Enum(on,off)) := @org.thingpedia.iot.climate.set_aux_heat(value=p_value)
+    #_[utterances=["set the auxiliary heater to ${p_value}",
+                   "turn the auxiliary heater ${p_value}",
+                   "set to ${p_value} the auxiliary heater",
+                   "switch auxiliary heater ${p_value}"]];
 
-    action := @org.thingpedia.iot.climate.set_aux_heat(value=enum(on)) 
-    #_[utterances=["turn the auxiliary heater on",
-                   "set to on the auxiliary heater",
-                   "switch auxiliary heater on"]];
-
-    action := @org.thingpedia.iot.climate.set_aux_heat(value=enum(off)) 
-    #_[utterances=["turn the auxiliary heater off",
-                   "set to off the auxiliary heater",
-                   "switch auxiliary heater off"]];
-
-    action (f_value :Enum(on,off)) := @org.thingpedia.iot.climate.set_hvac_onoff(value=f_value)
-    #_[utterances=["set the HVAC to $f_value"]];
-
-    action := @org.thingpedia.iot.climate.set_hvac_onoff(value=enum(on)) 
-    #_[utterances=["turn the HVAC on",
-                   "set to on the HVAC",
-                   "switch HVAC on"]];
-
-    action := @org.thingpedia.iot.climate.set_hvac_onoff(value=enum(off)) 
-    #_[utterances=["turn the HVAC off",
-                   "set to off the HVAC",
-                   "switch HVAC off"]];
+    action (p_value :Enum(on,off)) := @org.thingpedia.iot.climate.set_hvac_onoff(value=p_value)
+    #_[utterances=["set the HVAC to $p_value",
+                   "turn the HVAC $p_value",
+                   "set to $p_value the HVAC",
+                   "switch HVAC $p_value"]];
     
     action (p_name : String, p_mode :Enum(heat,cool,heat_cool,off,auto,dry,fan_only)) := @org.thingpedia.iot.climate(name=p_name).set_hvac_mode(mode=p_mode)
-    #_[utterances=["set my ${p_name:const} to $p_mode"]];
-
-    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_hvac_mode(mode=enum(heat))
-    #_[utterances=["turn the ${p_name:const} heating on",
-                   "turn on the ${p_name:const} heater"]];
-
-    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_hvac_mode(mode=enum(cool))
-    #_[utterances=["turn the ${p_name:const} ac on",
-                   "turn on the ${p_name:const} ac",
-                   "turn on the ${p_name:const} aircon",
-                   "start cooling by ${p_name:const}",
-                   "turn the ${p_name:const} air conditioning on",
-                   "turn the ${p_name:const} cooling system on"]];
-
-    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_hvac_mode(mode=enum(off))
-    #_[utterances=["turn the ${p_name:const} heating off",
-                   "turn off the ${p_name:const} heater",
-                   "turn off the ${p_name:const} ac",
-                   "switch off the ${p_name:const} heater",
-                   "switch the ${p_name:const} aircon off"]];
-
-    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_hvac_mode(mode=enum(auto))
-    #_[utterances=["turn the ${p_name:const} to auto",
-                   "set to auto the ${p_name:const}",
-                   "switch ${p_name:const} mode to auto"]];
+    #_[utterances=["set my ${p_name:const} to $p_mode",
+                   "turn the ${p_name:const} heating $p_mode",
+                   "turn the ${p_name:const} ac $p_mode",
+                   "turn $p_mode the ${p_name:const} ac",
+                   "turn $p_mode the ${p_name:const} heater",
+                   "turn $p_mode the ${p_name:const} aircon",
+                   "turn the ${p_name:const} air conditioning $p_mode",
+                   "turn the ${p_name:const} cooling system $p_mode",
+                   "set to $p_mode the ${p_name:const}",
+                   "switch ${p_name:const} mode to $p_mode"]];
 
     action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_hvac_mode(mode=enum(dry))
     #_[utterances=["set ${p_name:const} to drying",
@@ -316,48 +196,11 @@ dataset @org.thingpedia.iot.climate language "en" {
                    "switch the ${p_name:const} fan on"]];
     
     action (p_name : String, p_preset :Enum(eco,away,boost,comfort,home,sleep,activity)) := @org.thingpedia.iot.climate(name=p_name).set_hvac_preset(preset=p_preset)
-    #_[utterances=["set my ${p_name:const} to $p_preset"]];
-
-    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_hvac_preset(preset=enum(eco)) 
-    #_[utterances=["turn the ${p_name:const} preset to eco",
-                   "set to eco the ${p_name:const}",
-                   "switch ${p_name:const} preset to eco",
-                   "change to eco the preset of the ${p_name:const}"]];
-
-    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_hvac_preset(preset=enum(away)) 
-    #_[utterances=["turn the ${p_name:const} preset to away",
-                   "set to away the ${p_name:const}",
-                   "switch ${p_name:const} preset to away",
-                   "change to away the preset of the ${p_name:const}"]];
-
-    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_hvac_preset(preset=enum(boost)) 
-    #_[utterances=["turn the ${p_name:const} preset to boost",
-                   "set to boost the ${p_name:const}",
-                   "switch ${p_name:const} preset to boost",
-                   "change to boost the preset of the ${p_name:const}"]];
-
-    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_hvac_preset(preset=enum(comfort)) 
-    #_[utterances=["turn the ${p_name:const} preset to comfort",
-                   "set to comfort the ${p_name:const}",
-                   "switch ${p_name:const} preset to comfort",
-                   "change to comfort the preset of the ${p_name:const}"]];
-
-    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_hvac_preset(preset=enum(home)) 
-    #_[utterances=["turn the ${p_name:const} preset to home",
-                   "set to home the ${p_name:const}",
-                   "switch ${p_name:const} preset to home",
-                   "change to home the preset of the ${p_name:const}"]];
-
-    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_hvac_preset(preset=enum(sleep)) 
-    #_[utterances=["turn the ${p_name:const} preset to sleep",
-                   "set to sleep the ${p_name:const}",
-                   "switch ${p_name:const} preset to sleep",
-                   "change to sleep the preset of the ${p_name:const}"]];
-
-    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_hvac_preset(preset=enum(activity)) 
-    #_[utterances=["turn the ${p_name:const} to auto",
-                   "set to auto the ${p_name:const}",
-                   "switch ${p_name:const} mode to auto"]];
+    #_[utterances=["set my ${p_name:const} to $p_preset",
+                   "turn the ${p_name:const} preset to $p_preset",
+                   "set to $p_preset the ${p_name:const}",
+                   "switch ${p_name:const} preset to $p_preset",
+                   "change to $p_preset the preset of the ${p_name:const}"]];
 
     action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_target_temperature(value=$?)
     #_[utterances=["change the temperature on my ${p_name:const}",
@@ -384,100 +227,28 @@ dataset @org.thingpedia.iot.climate language "en" {
                    "set my ${p_name:const}  to ${p_value:const}",
                    "set the humidity to ${p_value:const} on my ${p_name:const} "]];
 
-    action (p_name : String, f_mode :Enum(on,off,auto,low,medium,high,middle,focus,diffuse)) := @org.thingpedia.iot.climate(name=p_name).set_fan_mode(mode=f_mode)
-    #_[utterances=["set the ${p_name:const} fan to $f_mode"]];
+    action (p_name : String, p_mode :Enum(on,off,auto,low,medium,high,middle,focus,diffuse)) := @org.thingpedia.iot.climate(name=p_name).set_fan_mode(mode=p_mode)
+    #_[utterances=["set the ${p_name:const} fan to $p_mode",
+                   "turn the ${p_name:const} fan $p_mode",
+                   "set to $p_mode the ${p_name:const} fan",
+                   "switch ${p_name:const} fan $p_mode"]];
 
-    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_fan_mode(mode=enum(on)) 
-    #_[utterances=["turn the ${p_name:const} fan on",
-                   "set to on the ${p_name:const} fan",
-                   "switch ${p_name:const} fan on"]];
+    action (p_name : String, p_mode :Enum(off,vertical,horizontal,both)) := @org.thingpedia.iot.climate(name=p_name).set_swing_mode(mode=p_mode)
+    #_[utterances=["set the ${p_name} swing to $p_mode",
+                   "turn the ${p_name:const} swing $p_mode",
+                   "set to $p_mode the ${p_name:const} swing",
+                   "switch ${p_name:const} swing $p_mode"]];
 
-    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_fan_mode(mode=enum(off)) 
-    #_[utterances=["turn the ${p_name:const} fan off",
-                   "set to off the ${p_name:const} fan",
-                   "switch ${p_name:const} fan off"]];
+    action (p_name : String, p_value :Enum(on,off)) := @org.thingpedia.iot.climate(name=p_name).set_aux_heat(value=p_value)
+    #_[utterances=["set the ${p_name:const} auxiliary heater to $p_value",
+                   "turn the ${p_name:const} auxiliary heater $p_value",
+                   "set to $p_value the ${p_name:const} auxiliary heater",
+                   "switch ${p_name:const} auxiliary heater $p_value"]];
+   
+    action (p_name : String, p_value :Enum(on,off)) := @org.thingpedia.iot.climate(name=p_name).set_hvac_onoff(value=p_value)
+    #_[utterances=["set the ${p_name:const} to ${p_value}",
+                   "turn the ${p_name:const} ${p_value}",
+                   "set to ${p_value} the ${p_name:const}",
+                   "switch ${p_name:const} ${p_value}"]];
 
-    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_fan_mode(mode=enum(auto)) 
-    #_[utterances=["turn the ${p_name:const} fan on auto",
-                   "set to auto the ${p_name:const} fan",
-                   "switch ${p_name:const} fan to auto"]];
-
-    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_fan_mode(mode=enum(low)) 
-    #_[utterances=["turn the ${p_name:const} fan on low",
-                   "set to low the ${p_name:const} fan",
-                   "switch ${p_name:const} fan to low"]];
-
-    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_fan_mode(mode=enum(medium)) 
-    #_[utterances=["turn the ${p_name:const} fan on medium",
-                   "set to medium the ${p_name:const} fan",
-                   "switch ${p_name:const} fan to medium"]];
-
-    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_fan_mode(mode=enum(high)) 
-    #_[utterances=["turn the ${p_name:const} fan on high",
-                   "set to high the ${p_name:const} fan",
-                   "switch ${p_name:const} fan to high"]];
-
-    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_fan_mode(mode=enum(middle)) 
-    #_[utterances=["turn the ${p_name:const} fan on middle",
-                   "set to middle the ${p_name:const} fan",
-                   "switch ${p_name:const} fan to middle"]];
-
-    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_fan_mode(mode=enum(focus)) 
-    #_[utterances=["turn the ${p_name:const} fan on focus",
-                   "set to focus the ${p_name:const} fan",
-                   "switch ${p_name:const} fan to focus"]];
-
-    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_fan_mode(mode=enum(diffuse)) 
-    #_[utterances=["turn the ${p_name:const} fan on diffuse",
-                   "set to diffuse the ${p_name:const} fan",
-                   "switch ${p_name:const} fan to diffuse"]];
-
-    action (p_name : String, f_mode :Enum(off,vertical,horizontal,both)) := @org.thingpedia.iot.climate(name=p_name).set_swing_mode(mode=f_mode)
-    #_[utterances=["set the ${p_name} swing to $f_mode"]];
-
-    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_swing_mode(mode=enum(off)) 
-    #_[utterances=["turn the ${p_name:const} swing off",
-                   "set to off the ${p_name:const} swing",
-                   "switch ${p_name:const} swing off"]];
-
-    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_swing_mode(mode=enum(vertical)) 
-    #_[utterances=["turn the ${p_name} swing vertical",
-                   "set to vertical the ${p_name} swing",
-                   "switch ${p_name} swing to vertical"]];
-
-    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_swing_mode(mode=enum(horizontal)) 
-    #_[utterances=["turn the ${p_name} swing horizontal",
-                   "set to horizontal the ${p_name} swing",
-                   "switch ${p_name} swing to horizontal"]];
-
-    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_swing_mode(mode=enum(both)) 
-    #_[utterances=["turn the ${p_name} swing on both ways",
-                   "set to both the ${p_name} swing direction",
-                   "switch ${p_name} swing to both"]];
-
-    action (p_name : String,f_value :Enum(on,off)) := @org.thingpedia.iot.climate(name=p_name).set_aux_heat(value=f_value)
-    #_[utterances=["set the ${p_name:const} auxiliary heater to $f_value"]];
-
-    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_aux_heat(value=enum(on)) 
-    #_[utterances=["turn the ${p_name:const} auxiliary heater on",
-                   "set to on the ${p_name:const} auxiliary heater",
-                   "switch ${p_name:const} auxiliary heater on"]];
-
-    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_aux_heat(value=enum(off)) 
-    #_[utterances=["turn the ${p_name:const} auxiliary heater off",
-                   "set to off the ${p_name:const} auxiliary heater",
-                   "switch ${p_name:const} auxiliary heater off"]];
-
-    action (p_name : String, f_value :Enum(on,off)) := @org.thingpedia.iot.climate(name=p_name).set_hvac_onoff(value=f_value)
-    #_[utterances=["set the ${p_name:const} to ${f_value}"]];
-
-    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_hvac_onoff(value=enum(on)) 
-    #_[utterances=["turn the ${p_name:const} on",
-                   "set to on the ${p_name:const}",
-                   "switch ${p_name:const} on"]];
-
-    action (p_name : String) := @org.thingpedia.iot.climate(name=p_name).set_hvac_onoff(value=enum(off)) 
-    #_[utterances=["turn the ${p_name:const} off",
-                   "set to off the ${p_name:const}",
-                   "switch ${p_name:const} off"]];
 }
