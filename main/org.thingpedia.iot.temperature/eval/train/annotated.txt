@@ -88,3 +88,19 @@ UT: monitor(@org.thingpedia.iot.temperature(name="nest").temperature()) filter v
 U: alert me when the temperature falls below 13 degrees
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: monitor(@org.thingpedia.iot.temperature.temperature()) filter value <= 13defaultTemperature;
+====
+# manual/1
+U: is it the temperature high?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.temperature.temperature();
+====
+# manual/2
+U: which is the temperature level ?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.temperature.temperature();
+====
+# manual/3
+U: alert me when the temperature is higher than 90 F
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.temperature.temperature()) filter value >= 90F;
+====

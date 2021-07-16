@@ -743,3 +743,83 @@ UT: @org.thingpedia.iot.door(name="front").state();
 U: which is the state of my door.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.door.state();
+====
+# manual/8
+U: did anyone close the door?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.door.state();
+====
+# manual/9
+U: was the door shut?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.door.state();
+====
+# manual/10
+U: which doors are open?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.door(all=true).state() filter state == enum open;
+====
+# manual/11
+U: is my door open?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.door.state();
+====
+# manual/12
+U: Did I left the front door open?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.door(name="front").state();
+====
+# manual/13
+U: list the state of all the doors
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.door(all=true).state();
+====
+# manual/14
+U: warn me if someone open the front door
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.door(name="front").state()) filter state == enum open;
+====
+# manual/15
+U: which door are closed?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.door(all=true).state();
+====
+# manual/16
+U: when someone open the back door send an alert
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.door(name="back").state()) filter state == enum open;
+====
+# manual/17
+U: is my office door open?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.door(name="office").state();
+====
+# manual/18
+U: tell me when one of my door is open
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.door.state()) filter state == enum open;
+====
+# manual/19
+U: which is the state of the bedroom door ?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.door(name="bedroom").state();
+====
+# manual/20
+U: is the door close?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.door.state();
+====
+# manual/21
+U: is the front door open?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.door(name="front").state();
+====
+# manual/22
+U: did someone opened the door?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.door.state();
+====
+# manual/23
+U: which is the status of my backyard fire door?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.door(name="backyard fire").state();

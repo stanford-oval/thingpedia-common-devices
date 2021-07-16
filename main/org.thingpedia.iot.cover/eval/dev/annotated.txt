@@ -333,3 +333,119 @@ UT: monitor(@org.thingpedia.iot.cover.state()) filter state == enum opened;
 U: change cover state.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.cover.set_openclose();
+====
+# manual/8
+U: there is any cover open ?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.cover(all=true).state();
+====
+# manual/9
+U: close all shutters
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.cover(all=true).set_openclose(state=enum close);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.iot.cover(all=true).set_openclose(state=enum close);
+A: Ok, do you want me to open or close cover with state close?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_confirm_action;
+AT: @org.thingpedia.iot.cover(all=true).set_openclose(state=enum close);
+U: yes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.cover(all=true).set_openclose(state=enum close)
+UT: #[confirm=enum confirmed];
+====
+# manual/10
+U: check if my terrace awning is extended
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.cover(name="terrace").state();
+====
+# manual/11
+U: check if my terrace awning is extended
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.cover(name="terrace").state();
+====
+# manual/12
+U: warn me when the bedroom blinds are raised or lowered
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.cover(name="bedroom").state());
+====
+# manual/13
+U: when the backyard window is open send me an alert
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.cover(name="backyard").state());
+====
+# manual/14
+U: when the backyard window is opened send me an alert
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.cover(name="backyard").state());
+====
+# manual/15
+U: pull up the cover
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.cover.set_openclose(state=enum open);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.iot.cover(id="str:ENTITY_tt:device_id::1:"^^tt:device_id("Simulated Device org.thingpedia.iot.cover 1")).set_openclose(state=enum open);
+A: Ok, do you want me to keep your Simulated Device org.thingpedia.iot.cover 1 curtains?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_confirm_action;
+AT: @org.thingpedia.iot.cover(id="str:ENTITY_tt:device_id::1:"^^tt:device_id("Simulated Device org.thingpedia.iot.cover 1")).set_openclose(state=enum open);
+U: yes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.cover(id="str:ENTITY_tt:device_id::1:"^^tt:device_id("Simulated Device org.thingpedia.iot.cover 1")).set_openclose(state=enum open)
+UT: #[confirm=enum confirmed];
+====
+# manual/16
+U: close the awnings
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.cover.set_openclose(state=enum close);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.iot.cover(id="str:ENTITY_tt:device_id::0:"^^tt:device_id("Simulated Device org.thingpedia.iot.cover 0")).set_openclose(state=enum close);
+A: Ok, do you want me to pull the Simulated Device org.thingpedia.iot.cover 0 curtains close?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_confirm_action;
+AT: @org.thingpedia.iot.cover(id="str:ENTITY_tt:device_id::0:"^^tt:device_id("Simulated Device org.thingpedia.iot.cover 0")).set_openclose(state=enum close);
+U: yes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.cover(id="str:ENTITY_tt:device_id::0:"^^tt:device_id("Simulated Device org.thingpedia.iot.cover 0")).set_openclose(state=enum close)
+UT: #[confirm=enum confirmed];
+====
+# manual/17
+U: is the verandah sunshade open?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.cover(name="verandah sunshade").state();
+====
+# manual/18
+U: close the curtain
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.cover.set_openclose(state=enum close);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.iot.cover(id="str:ENTITY_tt:device_id::1:"^^tt:device_id("Simulated Device org.thingpedia.iot.cover 1")).set_openclose(state=enum close);
+A: Ok, do you want me to pull the Simulated Device org.thingpedia.iot.cover 1 curtains close?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_confirm_action;
+AT: @org.thingpedia.iot.cover(id="str:ENTITY_tt:device_id::1:"^^tt:device_id("Simulated Device org.thingpedia.iot.cover 1")).set_openclose(state=enum close);
+U: yes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.cover(id="str:ENTITY_tt:device_id::1:"^^tt:device_id("Simulated Device org.thingpedia.iot.cover 1")).set_openclose(state=enum close)
+UT: #[confirm=enum confirmed];
+====
+# manual/19
+U: which is the status of my house garage door opener?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.cover(name="garage door opener").state();
+====
+# manual/20
+U: did someone opened the bedroom shutters ?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.cover(name="bedroom").state();
+====
+# manual/21
+U: did someone opened the bedroom shutters ?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.cover(name="bedroom").state();
+====
+# manual/22
+U: are the shades opening or closing?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.cover.state();
+====
+# manual/23
+U: the cover is open or closed?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.cover.state();

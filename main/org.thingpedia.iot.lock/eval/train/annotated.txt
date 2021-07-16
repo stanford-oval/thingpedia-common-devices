@@ -8,3 +8,38 @@ UT: @org.thingpedia.iot.lock(name="back door").state();
 U: lock the door.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.lock.set_state(state=enum lock);
+====
+# manual/1
+U: did I lock the door?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.lock.state();
+====
+# manual/2
+U: which is the state of locking of my front door?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.lock(name="front").state();
+====
+# manual/3
+U: please lock all the doors
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.lock(all=true).set_state(state=enum lock);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.iot.lock(all=true).set_state(state=enum lock);
+A: Ok, do you want me to lock or unlock with state lock?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_confirm_action;
+AT: @org.thingpedia.iot.lock(all=true).set_state(state=enum lock);
+U: yes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.lock(all=true).set_state(state=enum lock)
+UT: #[confirm=enum confirmed];
+====
+# manual/4
+U: warn me when the backdoor unlock
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.lock(name="backdoor").state()) filter state == enum unlocked;
+====
+# manual/5
+U: did I forgot to close the front door ?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.lock(name="front").state();
+====

@@ -543,3 +543,33 @@ UT: @org.thingpedia.iot.switch(name="play room").set_power(power=enum on);
 U: turn on group lab
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.switch(name="group lab").set_power(power=enum on);
+====
+# manual/4
+U: what’s the status of the basement plug?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.switch(name="basement").state();
+====
+# manual/5
+U: did I forgot to turn off the plugs in the garage?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.switch(name="garage").state();
+====
+# manual/6
+U: shut down all plugs
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.switch(all=true).set_power(power=enum off);
+====
+# manual/7
+U: turn off the lavatory smart plug
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.switch(name="lavatory smart").set_power(power=enum off);
+====
+# manual/8
+U: which switch is on?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.switch(all=true).state();
+====
+# manual/9
+U: turn off the smart socket
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.switch.set_power(power=enum off);

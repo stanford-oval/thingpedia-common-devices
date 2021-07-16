@@ -283,3 +283,38 @@ UT: @org.thingpedia.iot.temperature.temperature();
 U: get climate temperature
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.temperature.temperature();
+====
+# manual/4
+U: which is the total temperature read?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.temperature(all=true).temperature();
+====
+# manual/5
+U: which is the total temperature read?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.temperature(all=true).temperature();
+====
+# manual/6
+U: warn me when the temperature inside is lower than 40 F according to all my sensors
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.temperature(all=true).temperature()) filter value <= 40F;
+====
+# manual/7
+U: is the temperature normal?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.temperature.temperature();
+====
+# manual/8
+U: which is the temperature level?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.temperature.temperature();
+====
+# manual/9
+U: get temperature level from the wine cellar sensor
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.temperature(name="wine cellar").temperature();
+====
+# manual/10
+U: get temperature level from the wine cellar sensor
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.temperature(name="wine cellar").temperature();
