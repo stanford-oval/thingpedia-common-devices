@@ -190,10 +190,10 @@ module.exports = class HomeAssistantGateway extends Tp.BaseDevice {
         // no matter what, at the next restart the addon setup code will create
         // the new device with the new good token
         this.isTransient = !!state.isHassio;
+    }
 
-        if (!Tp.Helpers.Content.isPubliclyAccessible(state.hassUrl) &&
-            this.platform.type === 'cloud')
-            throw new Error(`Web Almond can only connect to publicly accessible Home Assistant instances`);
+    get ownerTier() {
+        return this.state.ownerTier || Tp.Tier.GLOBAL;
     }
 
     static async loadFromOAuth2(engine, accessToken, refreshToken, extraData) {
@@ -204,6 +204,7 @@ module.exports = class HomeAssistantGateway extends Tp.BaseDevice {
             hassUrl: HASS_URL,
             accessToken, refreshToken,
             accessTokenExpires: expires,
+            ownerTier: engine.ownTier,
         });
     }
 
@@ -275,6 +276,10 @@ module.exports = class HomeAssistantGateway extends Tp.BaseDevice {
     }
 
     async start() {
+        if (!Tp.Helpers.Content.isPubliclyAccessible(this.state.hassUrl) &&
+            this.platform.type === 'cloud')
+            throw new Error(`Web Almond can only connect to publicly accessible Home Assistant instances`);
+
         // start asynchronously as to not block Home Assistant from starting
         // while it's waiting for /devices/create to return (which causes us
         // to fail to connect)
