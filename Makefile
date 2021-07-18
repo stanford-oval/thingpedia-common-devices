@@ -25,7 +25,6 @@ universe_pkgfiles := $(main_pkgfiles) $(call pkgfiles_fn,universe)
 staging_pkgfiles := $(universe_pkgfiles) $(call pkgfiles_fn,staging)
 
 # hyperparameters that can be overridden on the cmdline
-template_file ?= dialogue.genie
 dataset_file ?= eval/$(release)/dataset.tt
 schema_file ?= eval/$(release)/schema.tt
 paraphrases_user ?= eval/$(release)/paraphrase.tsv $(wildcard $(foreach d,$($(release)_devices),$(d)/eval/paraphrase.tsv))
@@ -50,7 +49,7 @@ subdatasets ?= 6
 subdataset_ids := $(shell seq 1 $(subdatasets))
 max_turns ?= 4
 max_depth ?= 8
-debug_level ?= 1
+debug_level ?= 2
 subsample_thingpedia ?= 1
 update_canonical_flags ?= --algorithm bert,adj,bart --paraphraser-model ./models/paraphraser-bart
 synthetic_expand_factor ?= 1
@@ -76,7 +75,7 @@ parallel ?= 7
 genie ?= node --experimental_worker --max_old_space_size=$(memsize) $(geniedir)/dist/tool/genie.js
 
 thingpedia_url ?= https://dev.almond.stanford.edu/thingpedia
-developer_key ?= invalid
+developer_key ?= 88c03add145ad3a3aa4074ffa828be5a391625f9d4e1d0b034b445f18c595656
 
 s3_bucket ?=
 genie_k8s_project ?=
@@ -157,7 +156,7 @@ parameter-datasets.tsv:
 	wget -c --no-verbose https://almond-static.stanford.edu/test-data/paraphraser-bart.tar.xz
 	tar -C .embeddings -xvf paraphraser-bart.tar.xz
 
-eval/$(release)/synthetic-%.txt : $(schema_file) $(dataset_file) $(template_deps) entities.json
+eval/$(release)/synthetic-%.txt : $(schema_file) $(dataset_file) entities.json
 	if test $(subsample_thingpedia) = 1 ; then \
 	  cp $(schema_file) eval/$(release)/schema-$*.tt ; \
 	else \
@@ -169,9 +168,8 @@ eval/$(release)/synthetic-%.txt : $(schema_file) $(dataset_file) $(template_deps
 	fi
 	$(genie) generate-dialogs \
 	  --locale en-US --target-language thingtalk \
-	  --template $(template_file) \
 	  --thingpedia eval/$(release)/schema-$*.tt --entities entities.json --dataset $(dataset_file) \
-	  -o $@.tmp -f txt $(generate_flags) --debug $(debug_level) $(custom_gen_flags) --random-seed $@ \
+	  -o $@.tmp -f txt $(generate_flags) --debug $(debug_level) --log-prefix "$(notdir $@): " $(custom_gen_flags) --random-seed $@ \
 	  -n $(target_size) -B $(minibatch_size)
 	mv $@.tmp $@
 
@@ -327,7 +325,7 @@ lint:
 	any_error=0 ; \
 	for d in $($(release)_devices) ; do \
 		echo $$d ; \
-		$(genie) lint-device --thingpedia-url $(thingpedia_url) --manifest $$d/manifest.tt --dataset $$d/dataset.tt || any_error=$$? ; \
+		$(genie) lint-device --thingpedia-url $(thingpedia_url) --manifest $$d/manifest.tt --dataset $$d/dataset.tt --thingpedia-dir main|| any_error=$$? ; \
 		test ! -f $$d/package.json || $(eslint) $$d/*.js || any_error=$$? ; \
 	done ; \
 	exit $$any_error

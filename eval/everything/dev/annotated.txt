@@ -214,16 +214,6 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.end;
 U: hello almon
 UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
 ====
-# online/1517345
-U: every day at 0:0
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: attimer(time=[new Time(0, 0)]);
-====
-# log/7364
-U: notify me in 2 ms
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: timer(base=$now, interval=2ms);
-====
 # recording/e73806f00406cd54c8d2e081d52e4372
 U: what is the sunset time
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
@@ -237,7 +227,7 @@ A: In Redwood City, California, the sun rises at 6:44:55 AM and sets at 5:58:07 
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
 U: shuffle songs
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.spotify.player_shuffle(shuffle=enum on);
+UT: @org.thingpedia.media-player.player_shuffle(shuffle=enum on);
 ====
 # recording/75a86ccce499476e1fd9b0898ec06e5f
 U: get a random number greater than 7
@@ -491,7 +481,7 @@ A: Why was it called the dark ages? Because of all the knights.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
 U: play a song
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.spotify.song() => @com.spotify.play(playable=id);
+UT: @org.thingpedia.media-source.song() => @org.thingpedia.media-player.play(playable=id);
 ====
 # recording/e4c994091786a99c7d25936175d3b0b7
 U: tell me a joke
@@ -506,20 +496,20 @@ A: Some people eat light bulbs. They say it's a nice light snack.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
 U: play some music
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.spotify.playable() => @com.spotify.play(playable=id);
+UT: @org.thingpedia.media-source.playable() => @org.thingpedia.media-player.play(playable=id);
 ====
 # recording/1be8b61f4de01ff843227f6600b9fe09
 U: Find me a top chinese restaurant
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: sort(rating desc of @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese")))[1];
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: [genres] of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).artist() filter id =~ "queen"
+C: [genres] of @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).artist() filter id =~ "queen"
 C: #[results=[
-C:   { id="spotify:artist:1dfeR4HaWDbWqFHLkxsg1d"^^com.spotify:artist("Queen"), genres=["classic rock", "glam rock", "rock"] },
-C:   { id="spotify:artist:4pejUc4iciQfgdX6OKulQn"^^com.spotify:artist("Queens of the Stone Age"), genres=["alternative metal", "alternative rock", "blues rock", "modern rock", "nu metal", "palm desert scene", "rock", "stoner metal", "stoner rock"] },
-C:   { id="spotify:artist:3nViOFa3kZW8OMSNOzwr98"^^com.spotify:artist("Queen Naija"), genres=["dance pop", "pop", "pop r&b", "r&b", "urban contemporary"] },
-C:   { id="spotify:artist:6p2442ymrT9lZEuCZJdYcH"^^com.spotify:artist("Ivy Queen"), genres=["latin", "latin hip hop", "rap latina", "reggaeton", "trap latino", "tropical"] },
-C:   { id="spotify:artist:0VbIlorLz3I5SEtIsc5vAr"^^com.spotify:artist("Queen Pen"), genres=["hip pop", "lgbtq+ hip hop"] }
+C:   { id="spotify:artist:1dfeR4HaWDbWqFHLkxsg1d"^^org.thingpedia.media-source:artist("Queen"), genres=["classic rock", "glam rock", "rock"] },
+C:   { id="spotify:artist:4pejUc4iciQfgdX6OKulQn"^^org.thingpedia.media-source:artist("Queens of the Stone Age"), genres=["alternative metal", "alternative rock", "blues rock", "modern rock", "nu metal", "palm desert scene", "rock", "stoner metal", "stoner rock"] },
+C:   { id="spotify:artist:3nViOFa3kZW8OMSNOzwr98"^^org.thingpedia.media-source:artist("Queen Naija"), genres=["dance pop", "pop", "pop r&b", "r&b", "urban contemporary"] },
+C:   { id="spotify:artist:6p2442ymrT9lZEuCZJdYcH"^^org.thingpedia.media-source:artist("Ivy Queen"), genres=["latin", "latin hip hop", "rap latina", "reggaeton", "trap latino", "tropical"] },
+C:   { id="spotify:artist:0VbIlorLz3I5SEtIsc5vAr"^^org.thingpedia.media-source:artist("Queen Pen"), genres=["hip pop", "lgbtq+ hip hop"] }
 C: ]];
 C: sort(rating desc of @com.yelp.restaurant() filter contains(cuisines, "chinese"^^com.yelp:restaurant_cuisine("Chinese")))[1]
 C: #[results=[
@@ -531,13 +521,13 @@ U: A good chinese restaurant in palo alto please
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: sort(rating desc of @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese")) && geo == new Location("palo alto"))[1];
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: [genres] of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).artist() filter id =~ "queen"
+C: [genres] of @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).artist() filter id =~ "queen"
 C: #[results=[
-C:   { id="spotify:artist:1dfeR4HaWDbWqFHLkxsg1d"^^com.spotify:artist("Queen"), genres=["classic rock", "glam rock", "rock"] },
-C:   { id="spotify:artist:4pejUc4iciQfgdX6OKulQn"^^com.spotify:artist("Queens of the Stone Age"), genres=["alternative metal", "alternative rock", "blues rock", "modern rock", "nu metal", "palm desert scene", "rock", "stoner metal", "stoner rock"] },
-C:   { id="spotify:artist:3nViOFa3kZW8OMSNOzwr98"^^com.spotify:artist("Queen Naija"), genres=["dance pop", "pop", "pop r&b", "r&b", "urban contemporary"] },
-C:   { id="spotify:artist:6p2442ymrT9lZEuCZJdYcH"^^com.spotify:artist("Ivy Queen"), genres=["latin", "latin hip hop", "rap latina", "reggaeton", "trap latino", "tropical"] },
-C:   { id="spotify:artist:0VbIlorLz3I5SEtIsc5vAr"^^com.spotify:artist("Queen Pen"), genres=["hip pop", "lgbtq+ hip hop"] }
+C:   { id="spotify:artist:1dfeR4HaWDbWqFHLkxsg1d"^^org.thingpedia.media-source:artist("Queen"), genres=["classic rock", "glam rock", "rock"] },
+C:   { id="spotify:artist:4pejUc4iciQfgdX6OKulQn"^^org.thingpedia.media-source:artist("Queens of the Stone Age"), genres=["alternative metal", "alternative rock", "blues rock", "modern rock", "nu metal", "palm desert scene", "rock", "stoner metal", "stoner rock"] },
+C:   { id="spotify:artist:3nViOFa3kZW8OMSNOzwr98"^^org.thingpedia.media-source:artist("Queen Naija"), genres=["dance pop", "pop", "pop r&b", "r&b", "urban contemporary"] },
+C:   { id="spotify:artist:6p2442ymrT9lZEuCZJdYcH"^^org.thingpedia.media-source:artist("Ivy Queen"), genres=["latin", "latin hip hop", "rap latina", "reggaeton", "trap latino", "tropical"] },
+C:   { id="spotify:artist:0VbIlorLz3I5SEtIsc5vAr"^^org.thingpedia.media-source:artist("Queen Pen"), genres=["hip pop", "lgbtq+ hip hop"] }
 C: ]];
 C: sort(rating desc of @com.yelp.restaurant() filter contains(cuisines, "chinese"^^com.yelp:restaurant_cuisine("Chinese")))[1]
 C: #[results=[
@@ -553,13 +543,13 @@ U: What is the weather?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.weather.current();
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: [genres] of @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).artist() filter id =~ "queen"
+C: [genres] of @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).artist() filter id =~ "queen"
 C: #[results=[
-C:   { id="spotify:artist:1dfeR4HaWDbWqFHLkxsg1d"^^com.spotify:artist("Queen"), genres=["classic rock", "glam rock", "rock"] },
-C:   { id="spotify:artist:4pejUc4iciQfgdX6OKulQn"^^com.spotify:artist("Queens of the Stone Age"), genres=["alternative metal", "alternative rock", "blues rock", "modern rock", "nu metal", "palm desert scene", "rock", "stoner metal", "stoner rock"] },
-C:   { id="spotify:artist:3nViOFa3kZW8OMSNOzwr98"^^com.spotify:artist("Queen Naija"), genres=["dance pop", "pop", "pop r&b", "r&b", "urban contemporary"] },
-C:   { id="spotify:artist:6p2442ymrT9lZEuCZJdYcH"^^com.spotify:artist("Ivy Queen"), genres=["latin", "latin hip hop", "rap latina", "reggaeton", "trap latino", "tropical"] },
-C:   { id="spotify:artist:0VbIlorLz3I5SEtIsc5vAr"^^com.spotify:artist("Queen Pen"), genres=["hip pop", "lgbtq+ hip hop"] }
+C:   { id="spotify:artist:1dfeR4HaWDbWqFHLkxsg1d"^^org.thingpedia.media-source:artist("Queen"), genres=["classic rock", "glam rock", "rock"] },
+C:   { id="spotify:artist:4pejUc4iciQfgdX6OKulQn"^^org.thingpedia.media-source:artist("Queens of the Stone Age"), genres=["alternative metal", "alternative rock", "blues rock", "modern rock", "nu metal", "palm desert scene", "rock", "stoner metal", "stoner rock"] },
+C:   { id="spotify:artist:3nViOFa3kZW8OMSNOzwr98"^^org.thingpedia.media-source:artist("Queen Naija"), genres=["dance pop", "pop", "pop r&b", "r&b", "urban contemporary"] },
+C:   { id="spotify:artist:6p2442ymrT9lZEuCZJdYcH"^^org.thingpedia.media-source:artist("Ivy Queen"), genres=["latin", "latin hip hop", "rap latina", "reggaeton", "trap latino", "tropical"] },
+C:   { id="spotify:artist:0VbIlorLz3I5SEtIsc5vAr"^^org.thingpedia.media-source:artist("Queen Pen"), genres=["hip pop", "lgbtq+ hip hop"] }
 C: ]];
 C: sort(rating desc of @com.yelp.restaurant() filter contains(cuisines, "chinese"^^com.yelp:restaurant_cuisine("Chinese")))[1]
 C: #[results=[
@@ -611,21 +601,21 @@ UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum abusive)
 # recording/5b542078158696e20e322562fb01dabb
 U: play me a song
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.spotify.song() => @com.spotify.play(playable=id);
+UT: @org.thingpedia.media-source.song() => @org.thingpedia.media-player.play(playable=id);
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() => @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).song() => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
 C: #[results=[]]
 C: #[error=enum disallowed_action];
 A: Sorry, failed to play: try playing from the Spotify app.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
 U: play me a song
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() => @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id);
+UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).song() => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id);
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() => @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).song() => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
 C: #[results=[]]
 C: #[error=enum disallowed_action];
-C: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).song() => @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).song() => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
 C: #[results=[]]
 C: #[error=enum disallowed_action];
 A: Sorry, failed to play: try playing from the Spotify app.
@@ -1614,29 +1604,29 @@ A: Sorry, there was an unexpected error with your command. Please try again late
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
 U: play some music
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.spotify.playable() => @com.spotify.play(playable=id);
+UT: @org.thingpedia.media-source.playable() => @org.thingpedia.media-player.play(playable=id);
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
 C: @info.owlbot.get(word="covid")
 C: #[results=[]]
 C: #[error="Request failed with status code 404"];
-C: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() => @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
 C: #[results=[]]
 C: #[error=enum no_active_device];
 A: Sorry, you must open the Spotify app first.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
 U: who is taylor swift
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.spotify.artist() filter id =~ "taylor swift";
+UT: @org.thingpedia.media-source.artist() filter id =~ "taylor swift";
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
 C: @info.owlbot.get(word="covid")
 C: #[results=[]]
 C: #[error="Request failed with status code 404"];
-C: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() => @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
 C: #[results=[]]
 C: #[error=enum no_active_device];
-C: @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).artist() filter id =~ "taylor swift"
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).artist() filter id =~ "taylor swift"
 C: #[results=[
-C:   { id="spotify:artist:06HL4z0CvFAxyc27GXpf02"^^com.spotify:artist("Taylor Swift"), genres=["dance pop", "pop", "pop dance"], popularity=98 }
+C:   { id="spotify:artist:06HL4z0CvFAxyc27GXpf02"^^org.thingpedia.media-source:artist("Taylor Swift"), genres=["dance pop", "pop", "pop dance"], popularity=98 }
 C: ]];
 A: I have one, it is Taylor Swift. It is a pop artist.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
@@ -1853,3 +1843,8 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
 # log-dev/1519
 U: oh stop
 UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# log/54338
+U: open the window if smoke is detected
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.smoke.state()) filter state == enum detecting => @org.thingpedia.iot.cover(name="window").set_openclose(state=enum open);

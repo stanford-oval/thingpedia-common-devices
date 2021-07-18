@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 // -*- mode: js; indent-tabs-mode: nil; js-basic-offset: 4 -*-
 //
 // This file is part of Genie
@@ -150,6 +151,10 @@ class Trainer {
                 if (!comment && this._comment)
                     comment = this._comment;
                 comment = SHORTHAND_COMMENT[comment] || comment;
+                if (comment.startsWith('nf/'))
+                    comment = 'new function/' + comment.substring(3);
+                else if (comment.startsWith('nd/'))
+                    comment = 'new device/' + comment.substring(3);
                 this._drop(comment);
                 return;
             }
@@ -201,6 +206,8 @@ class Trainer {
         console.log(`d redacted : drop the example, and hide the sentence from the dropped log`);
         for (const key in SHORTHAND_COMMENT)
             console.log(`d ${key} : drop the example as ${SHORTHAND_COMMENT[key]}`);
+        console.log(`d nf/$device : drop the example as new-function, with the device responsible for it`);
+        console.log(`d nd/$domain : drop the example as new-device, with a short string identifying the device`);
 
         this._rl.prompt();
     }
@@ -712,7 +719,7 @@ async function main() {
     const tpClient = new Tp.HttpClient(platform, 'https://dev.almond.stanford.edu/thingpedia');
 
     const lines = await readAllLines(args.input)
-        .pipe(new Genie.DatasetParser({ contextual: false }))
+        .pipe(new Genie.DatasetParser({ contextual: true }))
         .pipe(new StreamUtils.ArrayAccumulator())
         .read();
 
