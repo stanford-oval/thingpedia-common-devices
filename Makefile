@@ -42,23 +42,47 @@ synthetic_flags ?= \
 	undefined_filter \
 	timer \
 	$(NULL)
+simple_synthetic_flags ?= \
+	$(synthetic_flags) \
+	nostream \
+	$(NULL)
 
-target_pruning_size ?= 250
+target_pruning_size ?= 200
 minibatch_size ?= 1000
 target_size ?= 1
-subdatasets ?= 6
-subdataset_ids := $(shell seq 1 $(subdatasets))
-max_turns ?= 4
+max_turns ?= 5
 max_depth ?= 8
+subdatasets ?= 6
+simple_target_pruning_size ?= 1000
+simple_minibatch_size ?= 5000
+simple_target_size ?= 1
+simple_max_turns ?= 2
+simple_max_depth ?= 6
+simple_subdatasets ?= 6
+
+subdataset_ids := $(shell seq 1 $(subdatasets))
+simple_subdatasets_ids := $(shell seq 1 $(simple_subdatasets))
 debug_level ?= 2
 subsample_thingpedia ?= 1
 update_canonical_flags ?= --algorithm bert,adj,bart --paraphraser-model ./models/paraphraser-bart
+
+all_synthetic_files := $(foreach v,$(simple_subdatasets_ids),eval/$(release)/synthetic-simple-$(v).txt) $(foreach v,$(subdataset_ids),eval/$(release)/synthetic-complex-$(v).txt)
+
 synthetic_expand_factor ?= 1
 quoted_paraphrase_expand_factor ?= 25
 noquote_paraphrase_expand_factor ?= 1
 quoted_fraction ?= 0.05
 
-generate_flags ?= $(foreach v,$(synthetic_flags),--set-flag $(v)) --target-pruning-size $(target_pruning_size) --max-turns $(max_turns) --maxdepth $(max_depth)
+generate_flags ?= \
+	$(foreach v,$(synthetic_flags),--set-flag $(v)) \
+	--target-pruning-size $(target_pruning_size) \
+	--max-turns $(max_turns) --maxdepth $(max_depth) \
+	-n $(target_size) -B $(minibatch_size)
+simple_generate_flags ?= \
+	$(foreach v,$(simple_synthetic_flags),--set-flag $(v)) \
+	--target-pruning-size $(simple_target_pruning_size) \
+	--max-turns $(simple_max_turns) --maxdepth $(simple_max_depth) \
+	-n $(simple_target_size) -B $(simple_minibatch_size)
 custom_gen_flags ?=
 
 auto_annotate_algorithm ?= bert,adj,bart
@@ -157,25 +181,37 @@ parameter-datasets.tsv:
 	wget -c --no-verbose https://almond-static.stanford.edu/test-data/paraphraser-bart.tar.xz
 	tar -C .embeddings -xvf paraphraser-bart.tar.xz
 
-eval/$(release)/synthetic-%.txt : $(schema_file) $(dataset_file) entities.json
+eval/$(release)/synthetic-complex-%.txt : $(schema_file) $(dataset_file) entities.json
 	if test $(subsample_thingpedia) = 1 ; then \
-	  cp $(schema_file) eval/$(release)/schema-$*.tt ; \
+	  cp $(schema_file) eval/$(release)/schema-complex-$*.tt ; \
 	else \
 	  $(genie) subsample-thingpedia \
-	    -o eval/$(release)/schema-$*.tt \
+	    -o eval/$(release)/schema-complex-$*.tt \
 	    --fraction $(subsample_thingpedia) \
 	    --random-seed $@ \
 	    $(schema_file) ; \
 	fi
 	$(genie) generate-dialogs \
 	  --locale en-US --target-language thingtalk \
-	  --thingpedia eval/$(release)/schema-$*.tt --entities entities.json --dataset $(dataset_file) \
-	  -o $@.tmp -f txt $(generate_flags) --debug $(debug_level) --log-prefix "$(notdir $@): " $(custom_gen_flags) --random-seed $@ \
-	  -n $(target_size) -B $(minibatch_size)
+	  --thingpedia eval/$(release)/schema-complex-$*.tt --entities entities.json --dataset $(dataset_file) \
+	  -o $@.tmp -f txt $(generate_flags) --debug $(debug_level) --log-prefix "$(notdir $@): " $(custom_gen_flags) --random-seed $@
 	mv $@.tmp $@
 
-eval/$(release)/synthetic.txt: $(foreach v,$(subdataset_ids),eval/$(release)/synthetic-$(v).txt)
-	cat $^ > $@
+eval/$(release)/synthetic-simple-%.txt : $(schema_file) $(dataset_file) entities.json
+	if test $(subsample_thingpedia) = 1 ; then \
+	  cp $(schema_file) eval/$(release)/schema-simple-$*.tt ; \
+	else \
+	  $(genie) subsample-thingpedia \
+	    -o eval/$(release)/schema-simple-$*.tt \
+	    --fraction $(subsample_thingpedia) \
+	    --random-seed $@ \
+	    $(schema_file) ; \
+	fi
+	$(genie) generate-dialogs \
+	  --locale en-US --target-language thingtalk \
+	  --thingpedia eval/$(release)/schema-simple-$*.tt --entities entities.json --dataset $(dataset_file) \
+	  -o $@.tmp -f txt $(simple_generate_flags) --debug $(debug_level) --log-prefix "$(notdir $@): " $(custom_gen_flags) --random-seed $@
+	mv $@.tmp $@
 
 eval/$(release)/synthetic-%.user.tsv : eval/$(release)/synthetic-%.txt $(schema_file)
 	$(genie) dialog-to-contextual \
@@ -184,7 +220,7 @@ eval/$(release)/synthetic-%.user.tsv : eval/$(release)/synthetic-%.txt $(schema_
 	  -o $@.tmp $<
 	mv $@.tmp $@
 
-eval/$(release)/synthetic.user.tsv: $(foreach v,$(subdataset_ids),eval/$(release)/synthetic-$(v).user.tsv)
+eval/$(release)/synthetic.user.tsv: $(patsubst %.txt,%.user.tsv,$(all_synthetic_files))
 	$(genie) deduplicate --contextual -o $@.tmp $^
 	mv $@.tmp $@
 
@@ -195,7 +231,7 @@ eval/$(release)/synthetic-%.agent.tsv : eval/$(release)/synthetic-%.txt $(schema
 	  -o $@.tmp $<
 	mv $@.tmp $@
 
-eval/$(release)/synthetic.agent.tsv: $(foreach v,$(subdataset_ids),eval/$(release)/synthetic-$(v).agent.tsv)
+eval/$(release)/synthetic.agent.tsv: $(patsubst %.txt,%.agent.tsv,$(all_synthetic_files))
 	$(genie) deduplicate --contextual -o $@.tmp $^
 	mv $@.tmp $@
 
@@ -310,7 +346,7 @@ datadir/fewshot: eval/$(release)/train/user.tsv eval/$(release)/dev/user.tsv eva
 	cp eval/$(release)/dev/agent.tsv $@/agent/eval.tsv
 	touch $@
 
-datadir: datadir/agent datadir/nlg datadir/user datadir/fewshot $(foreach v,$(subdataset_ids),eval/$(release)/synthetic-$(v).txt)
+datadir: datadir/agent datadir/nlg datadir/user datadir/fewshot $(all_synthetic_files)
 	cat eval/$(release)/synthetic-*.txt > $@/synthetic.txt
 	$(genie) measure-training-set $@ > $@/stats
 	touch $@
