@@ -33,9 +33,11 @@ module.exports = class MovieClass extends Tp.BaseDevice {
             return Promise.all(parsedResponse.results.map(async (result) => {
                 const castQuery = `https://api.themoviedb.org/3/movie/${result.id}/credits?api_key=${this.constructor.metadata.auth.api_key}&language=en-US`;
                 let id = new Tp.Value.Entity(String(result.id), result.title);
-                let oneDate = new Date(Date.now());
-                if (String(result.release_date) !== '')
+                let oneDate = new Date()
+                if (result.release_date)
                     oneDate = new Date(result.release_date);
+                else
+                    oneDate = undefined;
                 const movieObj = {
                     id,
                     description: result.overview,
@@ -97,9 +99,11 @@ module.exports = class MovieClass extends Tp.BaseDevice {
             return Promise.all(parsedResponse.results.map(async (result) => {
                 const castQuery = `https://api.themoviedb.org/3/movie/${result.id}/credits?api_key=${this.constructor.metadata.auth.api_key}&language=en-US`;
                 let id = new Tp.Value.Entity(String(result.id), String(result.title));
-                let oneDate = new Date(Date.now());
-                if (String(result.release_date) !== '')
+                let oneDate = new Date()
+                if (result.release_date)
                     oneDate = new Date(result.release_date);
+                else
+                    oneDate = undefined;
                 const movieObj = {
                     id,
                     description: result.overview,
@@ -125,9 +129,11 @@ module.exports = class MovieClass extends Tp.BaseDevice {
             let parsedResponse = JSON.parse(response1);
             return Promise.all(parsedResponse.results.map(async (result) => {
                 const castQuery = `https://api.themoviedb.org/3/movie/${result.id}/credits?api_key=${this.constructor.metadata.auth.api_key}&language=en-US`;
-                let oneDate = new Date(Date.now());
-                if (String(result.release_date) !== '')
+                let oneDate = new Date()
+                if (result.release_date)
                     oneDate = new Date(result.release_date);
+                else
+                    oneDate = undefined;
                 const movieObj = {
                     id: new Tp.Value.Entity(String(result.id), String(result.title)),
                     description: result.overview,
