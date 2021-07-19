@@ -46,13 +46,13 @@ simple_synthetic_flags ?= \
 	nostream \
 	$(NULL)
 
-target_pruning_size ?= 200
+target_pruning_size ?= 150
 minibatch_size ?= 1000
 target_size ?= 1
-max_turns ?= 5
+max_turns ?= 4
 max_depth ?= 8
 subdatasets ?= 6
-simple_target_pruning_size ?= 1000
+simple_target_pruning_size ?= 500
 simple_minibatch_size ?= 5000
 simple_target_size ?= 1
 simple_max_turns ?= 2
