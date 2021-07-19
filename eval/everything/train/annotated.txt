@@ -807,3 +807,159 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
 # recording/9f6a2e548f079d04640971f744eb2570
 U: hey
 UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
+====
+# recording/ff640ca5fb879fcc0630d0ea25544c0a
+U: play wolfgang amadeus mozart
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("wolfgang amadeus mozart")) => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="org.thingpedia.media-source-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:4NJhFmfw43RLBLjQvxDuRS"^^org.thingpedia.media-source:artist("Wolfgang Amadeus Mozart")) => @org.thingpedia.media-player(id="org.thingpedia.media-player-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:4h3B0bJAyl2GCUY9dgHvJ0"^^org.thingpedia.media-source:playable("12 Variations on \"Ah, vous dirai-je maman\", K. 265"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:4dYeS61BGznDr8gVFaRy0p"^^org.thingpedia.media-source:playable("Divertimento in F Major, K. 138 \"Salzburg Symphony No. 3\": III. Presto"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3jyFGiDfRVsrNVCxrESxLI"^^org.thingpedia.media-source:playable("Divertimento in E-Flat Major, K. 563: I. Allegro"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:63cvaTiNnsEAOPeUIyAZMy"^^org.thingpedia.media-source:playable("Divertimento in F Major, K. 138 \"Salzburg Symphony No. 3\": II. Andante"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:2jl00YBXk8HIXvA0gmit1h"^^org.thingpedia.media-source:playable("Divertimento No. 1 in D Major, K. 136: III. Presto"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:1MLifYxP8UDnfv9mRt3qiQ"^^org.thingpedia.media-source:playable("Serenade in G, K.525 \"Eine kleine Nachtmusik\": 2. Romance (Andante)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:4H82O0Eb4c8emw5IeL3jo5"^^org.thingpedia.media-source:playable("Divertimento in B-Flat Major, K. 254: I. Allegro assai"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:1kapunxYsrU5vXPMcCdBfY"^^org.thingpedia.media-source:playable("Divertimento in E-Flat Major, K. 563: IV. Andante"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:7BebEyL3FWbQ5BSyBEnpw2"^^org.thingpedia.media-source:playable("Divertimento in E-Flat Major, K. 563: III. Menuetto (Allegretto)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:0iiWFp5k0VPJdAigUezMth"^^org.thingpedia.media-source:playable("Divertimento No. 1 in D Major, K. 136: II. Andante"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=50];
+A: I played music by Wolfgang Amadeus Mozart on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: next song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player.player_next();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="org.thingpedia.media-source-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:4NJhFmfw43RLBLjQvxDuRS"^^org.thingpedia.media-source:artist("Wolfgang Amadeus Mozart")) => @org.thingpedia.media-player(id="org.thingpedia.media-player-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:4h3B0bJAyl2GCUY9dgHvJ0"^^org.thingpedia.media-source:playable("12 Variations on \"Ah, vous dirai-je maman\", K. 265"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:4dYeS61BGznDr8gVFaRy0p"^^org.thingpedia.media-source:playable("Divertimento in F Major, K. 138 \"Salzburg Symphony No. 3\": III. Presto"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3jyFGiDfRVsrNVCxrESxLI"^^org.thingpedia.media-source:playable("Divertimento in E-Flat Major, K. 563: I. Allegro"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:63cvaTiNnsEAOPeUIyAZMy"^^org.thingpedia.media-source:playable("Divertimento in F Major, K. 138 \"Salzburg Symphony No. 3\": II. Andante"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:2jl00YBXk8HIXvA0gmit1h"^^org.thingpedia.media-source:playable("Divertimento No. 1 in D Major, K. 136: III. Presto"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:1MLifYxP8UDnfv9mRt3qiQ"^^org.thingpedia.media-source:playable("Serenade in G, K.525 \"Eine kleine Nachtmusik\": 2. Romance (Andante)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:4H82O0Eb4c8emw5IeL3jo5"^^org.thingpedia.media-source:playable("Divertimento in B-Flat Major, K. 254: I. Allegro assai"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:1kapunxYsrU5vXPMcCdBfY"^^org.thingpedia.media-source:playable("Divertimento in E-Flat Major, K. 563: IV. Andante"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:7BebEyL3FWbQ5BSyBEnpw2"^^org.thingpedia.media-source:playable("Divertimento in E-Flat Major, K. 563: III. Menuetto (Allegretto)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:0iiWFp5k0VPJdAigUezMth"^^org.thingpedia.media-source:playable("Divertimento No. 1 in D Major, K. 136: II. Andante"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=50];
+C: @org.thingpedia.media-player(id="org.thingpedia.media-player-XXXXXXXX"^^tt:device_id).player_next()
+C: #[results=[]];
+A: I played the next song.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: previous song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player.player_previous();
+====
+# recording/5bc15a4a2e8823d083946d9c4de231c6
+U: play sigur ros
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("sigur ros")) => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="org.thingpedia.media-source-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:6UUrUCIZtQeOf8tC0WuzRy"^^org.thingpedia.media-source:artist("Sigur Rós")) => @org.thingpedia.media-player(id="org.thingpedia.media-player-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:0yQPpUq5BJyqah5m2Q5Stt"^^org.thingpedia.media-source:playable("Hoppípolla"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:07eGxuz8bL6QMsRqEe1Adu"^^org.thingpedia.media-source:playable("Svefn-g-englar"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:55gISxV37mffOW2DbSskT3"^^org.thingpedia.media-source:playable("Starálfur"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:1QUiA9aecDOOnf32A9ZrtW"^^org.thingpedia.media-source:playable("Untitled #3 - Samskeyti"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3OAf2iksV6MRLzqtUglTDq"^^org.thingpedia.media-source:playable("Sæglópur"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:2zkZGzzWOzGwi1rtWv7mhZ"^^org.thingpedia.media-source:playable("Sigur 3 (Untitled)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:0YTfMKGPhWhjS9wgzWvfaf"^^org.thingpedia.media-source:playable("Glósóli"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:4Rr3lN1BgJtrWNAp97wizI"^^org.thingpedia.media-source:playable("Varðeldur"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:0S9w3jx4cO9rSBcGwB16in"^^org.thingpedia.media-source:playable("Olsen olsen"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3XNjxPoUphJfUD5BShkYat"^^org.thingpedia.media-source:playable("Gobbledigook"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=49];
+A: I played music by Sigur Rós on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: add to playlist
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source(id="org.thingpedia.media-source-XXXXXXXX"^^tt:device_id).song() => @com.spotify.add_song_to_playlist(song=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="org.thingpedia.media-source-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:6UUrUCIZtQeOf8tC0WuzRy"^^org.thingpedia.media-source:artist("Sigur Rós")) => @org.thingpedia.media-player(id="org.thingpedia.media-player-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:0yQPpUq5BJyqah5m2Q5Stt"^^org.thingpedia.media-source:playable("Hoppípolla"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:07eGxuz8bL6QMsRqEe1Adu"^^org.thingpedia.media-source:playable("Svefn-g-englar"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:55gISxV37mffOW2DbSskT3"^^org.thingpedia.media-source:playable("Starálfur"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:1QUiA9aecDOOnf32A9ZrtW"^^org.thingpedia.media-source:playable("Untitled #3 - Samskeyti"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3OAf2iksV6MRLzqtUglTDq"^^org.thingpedia.media-source:playable("Sæglópur"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:2zkZGzzWOzGwi1rtWv7mhZ"^^org.thingpedia.media-source:playable("Sigur 3 (Untitled)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:0YTfMKGPhWhjS9wgzWvfaf"^^org.thingpedia.media-source:playable("Glósóli"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:4Rr3lN1BgJtrWNAp97wizI"^^org.thingpedia.media-source:playable("Varðeldur"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:0S9w3jx4cO9rSBcGwB16in"^^org.thingpedia.media-source:playable("Olsen olsen"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3XNjxPoUphJfUD5BShkYat"^^org.thingpedia.media-source:playable("Gobbledigook"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=49];
+C: @org.thingpedia.media-source(id="org.thingpedia.media-source-XXXXXXXX"^^tt:device_id).song() => @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).add_song_to_playlist(song=id);
+A: What playlist do you want to add to?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_slot_fill(playlist);
+AT: @org.thingpedia.media-source(id="org.thingpedia.media-source-XXXXXXXX"^^tt:device_id).song() => @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).add_song_to_playlist(song=id);
+U: FLow
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source(id="org.thingpedia.media-source-XXXXXXXX"^^tt:device_id).song() => @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).add_song_to_playlist(playlist="flow", song=id);
+====
+# recording/17424146a60653a9e24c06aa063b822c
+U: set my location to new york
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.set_location(location=new Location("new york"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.set_location(location=new Location(40.7306458, -73.9866136, "New York City, New York"), type=enum current)
+C: #[results=[]];
+A: I set your current location for you to New York City, New York.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: tell me the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.set_location(location=new Location(40.7306458, -73.9866136, "New York City, New York"), type=enum current)
+C: #[results=[]];
+C: @org.thingpedia.weather.current(location=new Location(40.7306458, -73.9866136, "New York City, New York"))
+C: #[results=[
+C:   { temperature=25C, wind_speed=3.6mps, humidity=87, cloudiness=0.8, fog=0, status=enum sunny, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=1;content_type=image/png"^^tt:picture, location=new Location(40.7306458, -73.9866136, "New York City, New York") }
+C: ]];
+A: It is sunny today in New York City, New York and the temperature is 77 F.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: what's the forecast for tomorrow?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast(location=new Location(40.7306458, -73.9866136, "New York City, New York"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.set_location(location=new Location(40.7306458, -73.9866136, "New York City, New York"), type=enum current)
+C: #[results=[]];
+C: @org.thingpedia.weather.current(location=new Location(40.7306458, -73.9866136, "New York City, New York"))
+C: #[results=[
+C:   { temperature=25C, wind_speed=3.6mps, humidity=87, cloudiness=0.8, fog=0, status=enum sunny, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=1;content_type=image/png"^^tt:picture, location=new Location(40.7306458, -73.9866136, "New York City, New York") }
+C: ]];
+C: @org.thingpedia.weather.forecast(date=$end_of(day), location=new Location(40.7306458, -73.9866136, "New York City, New York"))
+C: #[results=[
+C:   { temperature=30.3C, wind_speed=3.2mps, humidity=69.9, cloudiness=29.7, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=2;content_type=image/png"^^tt:picture, date=new Date("2021-07-16T21:00:00.000Z"), location=new Location(40.7306458, -73.9866136, "New York City, New York") }
+C: ]];
+A: It will be cloudy tomorrow at 2:00 PM in New York City, New York and the temperature will be 86.5 F.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: what will the weather be next week?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast(date=$end_of(week), location=new Location(40.7306458, -73.9866136, "New York City, New York"));
+====
+# recording/9681704ae6cc8c1bed2b974db10a1617
+U: play jump
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter id =~ "jump" => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@org.thingpedia.media-source(id="org.thingpedia.media-source-XXXXXXXX"^^tt:device_id).playable() filter id =~ "jump")[1] => @org.thingpedia.media-player(id="org.thingpedia.media-player-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:7N3PAbqfTjSEU1edb2tY8j"^^org.thingpedia.media-source:playable("Jump - 2015 Remaster"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: @org.thingpedia.media-player(id="org.thingpedia.media-player-XXXXXXXX"^^tt:device_id).player_pause()
+C: #[results=[]];
+C: (@org.thingpedia.media-source(id="org.thingpedia.media-source-XXXXXXXX"^^tt:device_id).playable() filter id =~ "jump")[1] => @org.thingpedia.media-player(id="org.thingpedia.media-player-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:7N3PAbqfTjSEU1edb2tY8j"^^org.thingpedia.media-source:playable("Jump - 2015 Remaster"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: I played Jump - 2015 Remaster on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: play tony's playlist
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source(id="org.thingpedia.media-source-XXXXXXXX"^^tt:device_id).playlist() filter id =~ "tony's playlist" => @org.thingpedia.media-player(id="org.thingpedia.media-player-XXXXXXXX"^^tt:device_id).play(playable=id);

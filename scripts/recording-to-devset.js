@@ -71,7 +71,11 @@ class RemoveSensitiveInfoVisitor extends ThingTalk.Ast.NodeVisitor {
         return true;
     }
     visitEntityValue(value) {
-        if (value.type === 'com.spotify:device') {
+        if (value.type === 'com.spotify:device' || value.type === 'org.thingpedia.media-player:device') {
+            value.value = 'XXXXXXXX';
+            value.display = null;
+        }
+        if (value.type === 'tt:device_id') {
             value.value = 'XXXXXXXX';
             value.display = null;
         }
@@ -229,14 +233,19 @@ class Trainer {
 
         // load the dialogues to process
         for (const userId of await pfs.readdir('./logs/unsorted')) {
-            for (const conversationId of await pfs.readdir(path.resolve('./logs/unsorted/', userId, 'logs'))) {
-                const filepath = path.resolve('./logs/unsorted/', userId, 'logs', conversationId);
+            for (const filename of await pfs.readdir(path.resolve('./logs/unsorted/', userId, 'logs'))) {
+                const filepath = path.resolve('./logs/unsorted/', userId, 'logs', filename);
                 try {
                     let i = 0;
                     for await (const dlg of fs.createReadStream(filepath, { encoding: 'utf8' }).pipe(byline()).pipe(new Genie.DialogueParser({ ignoreErrors: true }))) {
                         if (dlg.length === 0)
                             continue;
-                        dlg.id = await this._computeId(userId, conversationId, i++);
+                        if (dlg.id.includes('/')) {
+                            dlg.id = await this._computeId(userId, dlg.id, '');
+                            i++;
+                        } else {
+                            dlg.id = await this._computeId(userId, dlg.id + '.txt', i++);
+                        }
                         dlg.filename = filepath;
 
                         const visitor = new RemoveSensitiveInfoVisitor();
