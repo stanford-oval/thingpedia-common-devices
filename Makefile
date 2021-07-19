@@ -40,6 +40,7 @@ synthetic_flags ?= \
 	projection_with_filter \
 	schema_org \
 	undefined_filter \
+	timer \
 	$(NULL)
 
 target_pruning_size ?= 250
