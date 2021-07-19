@@ -13,6 +13,8 @@ const S_STATE = 'detecting,not_detecting'.split(',');
 
 module.exports = [
     ['query', 'motion', {}, (result) => {
-        assert(S_STATE.includes(result[0].state), `Invalid motion sensor status ${result[0].state}`);
+        if (typeof result[0] !== 'undefined')
+            if (result[0].hasOwnProperty('state') && (typeof result[0].state !== 'undefined'))
+                assert(S_STATE.includes(result[0].state), `Invalid motion sensor status ${result[0].state}`);
     }]
 ];
