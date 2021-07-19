@@ -112,7 +112,7 @@ UT: @com.slack.updateChannelTopic(channel="str:HASHTAG::0:"^^tt:hashtag, topic="
 # online/120866
 U: send a message on slack to str:HASHTAG::0: if every fixed interval and interval is 13 h
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: timer(base=$now, interval=13h) => @com.slack.send(channel="str:HASHTAG::0:"^^tt:hashtag);
+UT: timer(interval=13h) => @com.slack.send(channel="str:HASHTAG::0:"^^tt:hashtag);
 ====
 # online/121020
 U: auto reply to slack
@@ -122,7 +122,7 @@ UT: monitor(@com.slack.channel_history()) => @com.slack.send(channel=channel);
 # online/121430
 U: every 2 ms send message on slack to tenuous
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: timer(base=$now, interval=2ms) => @com.slack.send(channel="tenuous"^^tt:hashtag);
+UT: timer(interval=2ms) => @com.slack.send(channel="tenuous"^^tt:hashtag);
 ====
 # online/359893
 U: notify me if a message on slack has "str:QUOTED_STRING::0:"

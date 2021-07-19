@@ -1280,7 +1280,7 @@ UT: monitor(email_id of @com.gmail.inbox(is_important=true)) => @com.twitter.pos
 # online/1459786
 U: every hour send the weather on gmail
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: timer(base=$now, interval=1h) => @org.thingpedia.weather.current() => @com.gmail.send_picture(message=$result);
+UT: timer(interval=1h) => @org.thingpedia.weather.current() => @com.gmail.send_picture(message=$result);
 ====
 # online/1520130
 U: translate washington post headlines to str:ENTITY_tt:iso_lang_code::0:
@@ -1913,4 +1913,4 @@ A: I see Odori Japanese Cuisine, Taro San Japanese Noodle Bar, and YAYOI. They'r
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_three;
 U: can you remind me to take a break every hour?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: timer(base=$now, interval=1h) => @org.thingpedia.builtin.thingengine.builtin.say(message="to take a break");
+UT: timer(interval=1h) => @org.thingpedia.builtin.thingengine.builtin.say(message="to take a break");
