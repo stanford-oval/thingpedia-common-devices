@@ -703,3 +703,8 @@ UT: @org.thingpedia.iot.light-bulb(name="lair").set_brightness(pct=13);
 U: hey change 13 color to red
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.light-bulb(name="13").set_color(color=enum red);
+====
+# log/63215
+U: turn onn patio lights in 2 ms
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[$now + 2ms]) => @org.thingpedia.iot.light-bulb(name="patio").set_power(power=enum on);

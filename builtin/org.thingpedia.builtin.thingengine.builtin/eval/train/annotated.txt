@@ -492,7 +492,7 @@ UT: monitor(@org.thingpedia.builtin.thingengine.builtin.get_gps()) filter speed 
 # online/9597120
 U: remind me to take my medicines every morning
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: timer(base=$now, interval=1day) => @org.thingpedia.builtin.thingengine.builtin.say(message="to take my medicines");
+UT: attimer(time=[$time.morning]) => @org.thingpedia.builtin.thingengine.builtin.say(message="to take my medicines");
 ====
 # online/16013795
 U: new account google
@@ -505,9 +505,9 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.builtin.thingengine.builtin.configure(device="com.twitter"^^tt:device);
 ====
 # log/16513
-U: at 0:0 say "str:QUOTED_STRING::0:"
+U: at 5:30pm say "str:QUOTED_STRING::0:"
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: attimer(time=[new Time(0, 0)]) => @org.thingpedia.builtin.thingengine.builtin.say(message="str:QUOTED_STRING::0:");
+UT: ontimer(date=[set_time($now, new Time(17, 30))]) => @org.thingpedia.builtin.thingengine.builtin.say(message="str:QUOTED_STRING::0:");
 ====
 # recording/45ecb3a65437ef80e5dd298c4468b5cb
 U: nice one almond
@@ -568,3 +568,33 @@ UT: @org.thingpedia.builtin.thingengine.builtin.get_random_between(low=10);
 U: what today is?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.builtin.thingengine.builtin.get_date();
+====
+# log/12036
+U: remind me in 30 minutes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[$now + 30min]) => @org.thingpedia.builtin.thingengine.builtin.say();
+====
+# log/42337
+U: wake me every morning at 6am
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: attimer(time=[new Time(6, 0)]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+====
+# log/70407
+U: wake me at 13 h please
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: attimer(time=[new Time(13, 0)]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+====
+# log/39666
+U: set a timer
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=$?) => @org.thingpedia.builtin.thingengine.builtin.alert();
+====
+# log/42027
+U: set alarm
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=$?) => @org.thingpedia.builtin.thingengine.builtin.alert();
+====
+# log/72883
+U: alarm in 45 minutes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[$now + 45min]) => @org.thingpedia.builtin.thingengine.builtin.alert();

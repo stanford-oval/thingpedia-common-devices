@@ -49,11 +49,11 @@ module.exports = class HomeAssistantMediaPlayer extends HomeAssistantDevice {
         await this._callService("media_player", "volume_set", {volume_level: volume});
     }
 
-    async do_media_play() {
+    async do_player_play() {
         await this._callService("media_player", "media_play");
     }
 
-    async do_media_pause() {
+    async do_player_pause() {
         await this._callService("media_player", "media_pause");
     }
 
@@ -61,12 +61,40 @@ module.exports = class HomeAssistantMediaPlayer extends HomeAssistantDevice {
         await this._callService("media_player", "media_stop");
     }
 
-    async do_media_next_track() {
+    async do_player_next() {
         await this._callService("media_player", "media_next_track");
     }
 
-    async do_media_previous_track() {
+    async do_player_previous() {
         await this._callService("media_player", "media_previous_track");
+    }
+
+    async do_player_shuffle({shuffle}) {
+        if (shuffle === "on") {
+            await this._callService("media_player", "shuffle_set", {
+                shuffle: true
+            });
+        } else {
+            await this._callService("media_player", "shuffle_set", {
+                shuffle: false
+            });
+        }
+    }
+
+    async do_player_repeat({repeat}){
+        if (repeat === "off") {
+            await this._callService("media_player", "repeat_set", {
+                repeat: "off"
+            });
+        } else if (repeat === "track") {
+            await this._callService("media_player", "repeat_set", {
+                repeat: "one"
+            });
+        } else {
+            await this._callService("media_player", "repeat_set", {
+                repeat: "all"
+            });
+        }
     }
 
 /*

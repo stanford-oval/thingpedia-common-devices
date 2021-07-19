@@ -36,7 +36,7 @@ const DOMAIN_TO_TP_KIND = {
     'vacuum': 'org.thingpedia.iot.vacuum',
 
     // media players
-    //'media_player': 'org.thingpedia.iot.media-player',
+    'media_player': 'org.thingpedia.iot.media-player',
     //'media_player_speaker': 'org.thingpedia.iot.speaker',
     //'media_player_tv': 'org.thingpedia.iot.tv',
 
@@ -123,8 +123,8 @@ class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
             kind = DOMAIN_TO_TP_KIND['sensor_door'];
         else if ((domain === 'sensor') || (domain === 'binary_sensor'))
             kind = DOMAIN_TO_TP_KIND[`sensor_${attributes.device_class}`];
-        //else if (domain === 'media_player' && attributes.device_class !== '')
-        //    kind = DOMAIN_TO_TP_KIND[`media_player_${attributes.device_class}`];
+        else if (domain === 'media_player')
+            kind = DOMAIN_TO_TP_KIND['media_player'];
         else
             kind = DOMAIN_TO_TP_KIND[domain];
 
@@ -190,10 +190,10 @@ module.exports = class HomeAssistantGateway extends Tp.BaseDevice {
         // no matter what, at the next restart the addon setup code will create
         // the new device with the new good token
         this.isTransient = !!state.isHassio;
+    }
 
-        if (!Tp.Helpers.Content.isPubliclyAccessible(state.hassUrl) &&
-            this.platform.type === 'cloud')
-            throw new Error(`Web Almond can only connect to publicly accessible Home Assistant instances`);
+    get ownerTier() {
+        return this.state.ownerTier || Tp.Tier.GLOBAL;
     }
 
     static async loadFromOAuth2(engine, accessToken, refreshToken, extraData) {
@@ -204,6 +204,7 @@ module.exports = class HomeAssistantGateway extends Tp.BaseDevice {
             hassUrl: HASS_URL,
             accessToken, refreshToken,
             accessTokenExpires: expires,
+            ownerTier: engine.ownTier,
         });
     }
 
@@ -275,6 +276,10 @@ module.exports = class HomeAssistantGateway extends Tp.BaseDevice {
     }
 
     async start() {
+        if (!Tp.Helpers.Content.isPubliclyAccessible(this.state.hassUrl) &&
+            this.platform.type === 'cloud')
+            throw new Error(`Web Almond can only connect to publicly accessible Home Assistant instances`);
+
         // start asynchronously as to not block Home Assistant from starting
         // while it's waiting for /devices/create to return (which causes us
         // to fail to connect)
