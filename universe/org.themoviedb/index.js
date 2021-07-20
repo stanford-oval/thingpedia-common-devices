@@ -10,8 +10,8 @@ const Tp = require('thingpedia');
 
 
 const tmdbAccess = "https://api.themoviedb.org/3/";
-const multiSearch = "search/multi?api_key="
-const discoverSearch = 'discover/movie?api_key='
+const multiSearch = "search/multi?api_key=";
+const discoverSearch = 'discover/movie?api_key=';
 const finalSearch = "&language=en-US&page=1";
 const topRated = "movie/top_rated?api_key=";
 const nowPlaying = "movie/now_playing?api_key=";
