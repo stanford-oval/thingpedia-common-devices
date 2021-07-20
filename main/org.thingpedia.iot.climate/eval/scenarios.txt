@@ -11,7 +11,9 @@ A: >> expecting = null
 
 ====
 # 2-basic-aval
-U: Which modes are available for my climate system?
+#U: Which modes are available for my climate system?
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.iot.climate.hvac_modes_aval();
 A: You have multiple climate devices. Which one do you want to use\?
 A: choice 0: HeatPump
 A: choice 1: Hvac
@@ -37,7 +39,7 @@ A: >> expecting = null
 #U: Set the Ecobee climate system to heat mode
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: @org.thingpedia.iot.climate(name="Ecobee").set_hvac_mode(mode=enum(heat));
-A: Ok, do you want me to turn the Ecobee heating on\?
+A: (Ok, do you want me to (turn the|set your) Ecobee (heating on|to heat)\?)
 A: >> expecting = yesno
 
 U: Yes
@@ -71,11 +73,12 @@ A: choice 1: Hvac
 A: choice 2: Ecobee
 
 U: Hvac
-A: Ok, do you want me to turn the Hvac preset to away\?
+#A: (Ok, do you want me to (turn the|set your) Hvac (preset)? to away\?)
+A: Ok, do you want me to set your Hvac to away\?
 A: >> expecting = yesno
 
 U: Yes
-A: I set your Hvac to away for you.
+A: I set (your Hvac to away for you|hvac preset).
 A: >> expecting = null
 
 ====
@@ -181,7 +184,9 @@ A: >> expecting = null
 
 ====
 # 16-basic-target-hum
-U: Set the target humidity to 60%
+#U: Set the target humidity to 60%
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.iot.climate.set_target_humidity(value=60);
 A: You have multiple climate devices. Which one do you want to use\?
 A: choice 0: HeatPump
 A: choice 1: Hvac
@@ -200,7 +205,7 @@ A: >> expecting = null
 #U: Which is the minimum target humidity set on the Hvac?
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: @org.thingpedia.iot.climate(name="Hvac").min_humidity();
-A: (The minimum humidity on Hvac is set to [0-9\.]+ ?(%)?\.)
+A: The minimum humidity on Hvac is set to [0-9\.]+ ?(%)?\.
 A: >> expecting = null
 
 ====
@@ -208,7 +213,7 @@ A: >> expecting = null
 #U: Which is the maximum humidity set on the thermostat?
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: @org.thingpedia.iot.climate(name="Hvac").max_humidity();
-A: (The maximum humidity on Hvac is set to [0-9\.]+ ?(%)?\.)
+A: The maximum humidity on Hvac is set to [0-9\.]+ ?(%)?\.
 A: >> expecting = null
 
 ====
@@ -217,7 +222,7 @@ A: >> expecting = null
 #U: Which fan mode is actually running my Ecobee climate system?
 #U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 #U: @org.thingpedia.iot.climate(name="Ecobee").fan_mode();
-#A: (The Ecobee is running fan in (On Low|On High|Auto Low|Auto High|Off")\ mode\.)
+#A: (The Ecobee is running fan in (On Low|On High|Auto Low|Auto High|Off)\ mode\.)
 #A: >> expecting = null
 #
 #====
@@ -227,7 +232,7 @@ A: >> expecting = null
 #U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 #U: @org.thingpedia.iot.climate(name="Ecobee").fan_modes_aval();
 #A: (The Ecobee fan could be set to (on|off|auto|low|medium|high|middle|focus|diffuse)\.)
-#A: (The Ecobee is running fan in (On Low|On High|Auto Low|Auto High|Off")\ mode\.)
+#A: (The Ecobee is running fan in (On Low|On High|Auto Low|Auto High|Off)\ mode\.)
 #A: >> expecting = null
 #
 #====
@@ -272,18 +277,20 @@ A: >> expecting = null
 #
 #====
 # 25-basic-set-aux-heat
-U: Set the auxiliary heating on 
+#U: Set the auxiliary heating on 
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.iot.climate.set_aux_heat(value=enum on);
 A: You have multiple climate devices. Which one do you want to use\?
 A: choice 0: HeatPump
 A: choice 1: Hvac
 A: choice 2: Ecobee
 
 U: Hvac
-A:  Ok, do you want me to turn the Hvac auxiliary heater on\?
+A: (Ok, do you want me to (turn|set) the Hvac auxiliary heater (to)? on\?)
 A: >> expecting = yesno
 
 U: yes
-A: (I set the Hvac auxiliary heater to on\.)
+A: I set auxiliary heater\.
 A: >> expecting = null
 
 ====
@@ -291,11 +298,11 @@ A: >> expecting = null
 #U: Turn on the Hvac 
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: @org.thingpedia.iot.climate(name="Hvac").set_hvac_onoff(value=enum on);
-A: Ok, do you want me to turn the Hvac on\?
+A: (Ok, do you want me to (turn|set)? the Hvac (to)? on\?)
 A: >> expecting = yesno
 
 U: Yes
-A: (I set the Hvac to on\.)
+A: I set hvac power for you\.
 A: >> expecting = null
 
 ====
