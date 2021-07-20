@@ -67,7 +67,9 @@ A: >> expecting = null
 
 ====
 # 7-set-basic-oscillation
-U: Start oscillating the fan
+#U: Start oscillating the fan
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.iot.fan.set_oscillation(oscillation=enum on); 
 A: You have multiple fan devices. Which one do you want to use\?
 A: choice 0: Living Room Fan
 A: choice 1: Ceiling Fan
@@ -86,12 +88,14 @@ A: >> expecting = null
 
 ====
 # 8-set-basic-oscillation-name
-U: Start oscillating the Percentage Full Fan
-A: Ok, do you want me to oscillate your Percentage Full Fan fan\?
+#U: Stop oscillating the Percentage Full Fan
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.iot.fan(name="percentage full").set_oscillation(oscillation=enum off); 
+A: Ok, do you want me to stop your Percentage Full Fan fan from oscillating\?
 A: >> expecting = yesno
 
 U: Yes
-A: I oscillated your Percentage Full Fan fan\.
+A: I set oscillation on fan\.
 A: >> expecting = null
 
 ====
