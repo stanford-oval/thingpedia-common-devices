@@ -11,6 +11,8 @@ const Tp = require('thingpedia');
 
 module.exports = [
     ['query', 'illuminance', {}, (result) => {
-        assert(typeof result[0].value === 'number');
+        if (typeof result[0] !== 'undefined')
+            if (result[0].hasOwnProperty('value') && (typeof result[0].value !== 'undefined'))
+                assert(typeof result[0].value === 'number');
     }]
 ];

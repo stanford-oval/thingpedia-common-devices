@@ -1280,7 +1280,7 @@ UT: monitor(email_id of @com.gmail.inbox(is_important=true)) => @com.twitter.pos
 # online/1459786
 U: every hour send the weather on gmail
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: timer(base=$now, interval=1h) => @org.thingpedia.weather.current() => @com.gmail.send_picture(message=$result);
+UT: timer(interval=1h) => @org.thingpedia.weather.current() => @com.gmail.send_picture(message=$result);
 ====
 # online/1520130
 U: translate washington post headlines to str:ENTITY_tt:iso_lang_code::0:
@@ -1848,3 +1848,69 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
 U: open the window if smoke is detected
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: monitor(@org.thingpedia.iot.smoke.state()) filter state == enum detecting => @org.thingpedia.iot.cover(name="window").set_openclose(state=enum open);
+====
+# recording/cce30ec414554394e63f9ac3b6c25f76
+U: play baba riley by the who
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("the who")) && id =~ "baba riley" => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@org.thingpedia.media-source(id="org.thingpedia.media-source-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:67ea9eGLXYMsO2eYQRui3w"^^org.thingpedia.media-source:artist("The Who")) && id =~ "baba riley")[1] => @org.thingpedia.media-player(id="org.thingpedia.media-player-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3qiyyUfYe7CRYLucrPmulD"^^org.thingpedia.media-source:playable("Baba O'Riley"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: I played Baba O'Riley on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: next song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player.player_next();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@org.thingpedia.media-source(id="org.thingpedia.media-source-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:67ea9eGLXYMsO2eYQRui3w"^^org.thingpedia.media-source:artist("The Who")) && id =~ "baba riley")[1] => @org.thingpedia.media-player(id="org.thingpedia.media-player-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3qiyyUfYe7CRYLucrPmulD"^^org.thingpedia.media-source:playable("Baba O'Riley"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: @org.thingpedia.media-player(id="org.thingpedia.media-player-XXXXXXXX"^^tt:device_id).player_next()
+C: #[results=[]];
+A: I played the next song.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: next please
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player(id="org.thingpedia.media-player-XXXXXXXX"^^tt:device_id).player_next();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@org.thingpedia.media-source(id="org.thingpedia.media-source-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:67ea9eGLXYMsO2eYQRui3w"^^org.thingpedia.media-source:artist("The Who")) && id =~ "baba riley")[1] => @org.thingpedia.media-player(id="org.thingpedia.media-player-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3qiyyUfYe7CRYLucrPmulD"^^org.thingpedia.media-source:playable("Baba O'Riley"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: @org.thingpedia.media-player(id="org.thingpedia.media-player-XXXXXXXX"^^tt:device_id).player_next()
+C: #[results=[]];
+C: @org.thingpedia.media-player(id="org.thingpedia.media-player-XXXXXXXX"^^tt:device_id).player_next()
+C: #[results=[]];
+A: I played the next song.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: play the who
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("the who")) => @org.thingpedia.media-player(id="org.thingpedia.media-player-XXXXXXXX"^^tt:device_id).play(playable=id);
+====
+# recording/8d1d57109d0565e79262c53b2a3a7702
+U: can you tell me a good japanese restaurant
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("japanese"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.yelp.restaurant() filter contains(cuisines, "japanese"^^com.yelp:restaurant_cuisine("Japanese"))
+C: #[results=[
+C:   { id="APcouAOJlP0sdKZU3Ev_7w"^^com.yelp:restaurant("Odori Japanese Cuisine"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/fpIf_fClDVr8MFD8268AyQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/odori-japanese-cuisine-palo-alto-4?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["japanese"^^com.yelp:restaurant_cuisine("Japanese"), "sushi"^^com.yelp:restaurant_cuisine("Sushi Bars")], price=enum moderate, rating=3.5, review_count=612, geo=new Location(37.4270973205566, -122.14794921875, "2111 El Camino Real, Palo Alto, CA 94306"), phone="+16503272222"^^tt:phone_number },
+C:   { id="AUktvLJ9j7gANenwNga1fg"^^com.yelp:restaurant("Taro San Japanese Noodle Bar"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/89qobB8Zp7uNq4_p3Zw01Q/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/taro-san-japanese-noodle-bar-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["japanese"^^com.yelp:restaurant_cuisine("Japanese"), "noodles"^^com.yelp:restaurant_cuisine("Noodles"), "sushi"^^com.yelp:restaurant_cuisine("Sushi Bars")], price=enum moderate, rating=3.5, review_count=660, geo=new Location(37.4429175780446, -122.172707300397, "717 Stanford Shopping Ctr, Palo Alto, CA 94304"), phone="+16508152700"^^tt:phone_number },
+C:   { id="LEp5w5lF3AD2UGRfolFoDQ"^^com.yelp:restaurant("YAYOI"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/ebhtMam6i1HBJl83qaY4UQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/yayoi-palo-alto-3?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["japanese"^^com.yelp:restaurant_cuisine("Japanese"), "sushi"^^com.yelp:restaurant_cuisine("Sushi Bars")], price=enum moderate, rating=3.5, review_count=634, geo=new Location(37.44737, -122.16052, "403 University Ave, Palo Alto, CA 94301"), phone="+16504944437"^^tt:phone_number },
+C:   { id="xNNURK1vIGEDqwVb9pFRlg"^^com.yelp:restaurant("Go Fish Poke Bar"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/GCbABrUn_UArevjk--lwUg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/go-fish-poke-bar-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["japanese"^^com.yelp:restaurant_cuisine("Japanese"), "sushi"^^com.yelp:restaurant_cuisine("Sushi Bars")], price=enum moderate, rating=4, review_count=348, geo=new Location(37.4427026586894, -122.170617845337, "660 Stanford Shopping Ctr, Ste 244B, Palo Alto, CA 94304"), phone="+16503281370"^^tt:phone_number },
+C:   { id="WAo42c41_0Y0tifXbwuo8w"^^com.yelp:restaurant("Fuki Sushi"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/K84YCh7eNy0fxkUSLmVzyg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/fuki-sushi-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["sushi"^^com.yelp:restaurant_cuisine("Sushi Bars"), "japanese"^^com.yelp:restaurant_cuisine("Japanese")], price=enum expensive, rating=3.5, review_count=887, geo=new Location(37.4138844, -122.125805, "4119 El Camino Real, Palo Alto, CA 94306"), phone="+16504949383"^^tt:phone_number },
+C:   { id="hvB8fOsqPmVAFFrnmAMz_w"^^com.yelp:restaurant("Daigo"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/MmFuZOxqQs---nLw7izPGQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/daigo-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["sushi"^^com.yelp:restaurant_cuisine("Sushi Bars"), "japanese"^^com.yelp:restaurant_cuisine("Japanese")], price=enum moderate, rating=4, review_count=152, geo=new Location(37.4278, -122.14425, "2363 Birch St, Ste B, Palo Alto, CA 94306"), phone="+16503846880"^^tt:phone_number },
+C:   { id="xcUJ7qlO60Cu-ZyCaD-23Q"^^com.yelp:restaurant("Jin Sho"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/kdCwUep8tyRy6xatkgoivg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/jin-sho-palo-alto-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["japanese"^^com.yelp:restaurant_cuisine("Japanese"), "asianfusion"^^com.yelp:restaurant_cuisine("Asian Fusion"), "sushi"^^com.yelp:restaurant_cuisine("Sushi Bars")], price=enum expensive, rating=3.5, review_count=556, geo=new Location(37.42596, -122.14555, "454 S California Ave, Palo Alto, CA 94306"), phone="+16503213454"^^tt:phone_number },
+C:   { id="arrdif21CgXnCliP_Kcnjw"^^com.yelp:restaurant("Onigilly Palo Alto"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/ji-6Mbvur2YPPQ4XSFBwKg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/onigilly-palo-alto-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["japanese"^^com.yelp:restaurant_cuisine("Japanese")], price=enum cheap, rating=4, review_count=272, geo=new Location(37.44408, -122.16296, "164 University Ave, Palo Alto, CA 94301"), phone="+16503132104"^^tt:phone_number },
+C:   { id="64ClD5HpRafRXjQ79w0SYw"^^com.yelp:restaurant("Nobu Palo Alto"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/JYWEZlLP6ZLWAzVsgQRFKQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/nobu-palo-alto-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["sushi"^^com.yelp:restaurant_cuisine("Sushi Bars"), "japanese"^^com.yelp:restaurant_cuisine("Japanese"), "breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch")], price=enum luxury, rating=3.5, review_count=464, geo=new Location(37.4436, -122.16152, "180 Hamilton Ave, Palo Alto, CA 94301"), phone="+16507988396"^^tt:phone_number },
+C:   { id="JnLNfQtW9GLGRF1pzAd55w"^^com.yelp:restaurant("Sushi House"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/6fbc1tdrD1tFqjYb6SM8tQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/sushi-house-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["sushi"^^com.yelp:restaurant_cuisine("Sushi Bars"), "noodles"^^com.yelp:restaurant_cuisine("Noodles"), "japanese"^^com.yelp:restaurant_cuisine("Japanese")], price=enum moderate, rating=3.5, review_count=272, geo=new Location(37.4392332, -122.1582318, "855 El Camino Real, Ste 158, Palo Alto, CA 94301"), phone="+16503213453"^^tt:phone_number }
+C: ]]
+C: #[count=41];
+A: I see Odori Japanese Cuisine, Taro San Japanese Noodle Bar, and YAYOI. They're moderate restaurants rated 3.5 star.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_three;
+U: can you remind me to take a break every hour?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: timer(interval=1h) => @org.thingpedia.builtin.thingengine.builtin.say(message="to take a break");

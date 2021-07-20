@@ -1015,7 +1015,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             progstate.push(playable);
         }
 
-        return device;
+        return { device };
     }
 
     async do_add_song_to_playlist({

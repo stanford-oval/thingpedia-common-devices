@@ -157,13 +157,25 @@ module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
     }
 
     async do_radio_play({id}) {
+        if (process.env.TEST_MODE === '1') return undefined;
         const audio_player = this.platform.getCapability('audio-player');
         if (!audio_player){
             throw new Error(DEVICE_ERROR.unsupported_version);
         } else {
             try{
-                audio_player.play(id.url);
-                return undefined;
+                const query_string = {
+                    query: id,
+                    render: RENDER_TYPE
+                };
+                const url = `${BASE_URL}${QUERY_PARAM.search}?${querystring.stringify(query_string)}`;
+                const station_list = this._get_station_details(url);
+                const match = station_list.find((item) => item.text.toLowerCase() === id.toLowerCase());
+                if (!match) {
+                    throw new Error(DEVICE_ERROR.station_not_found);
+                } else {
+                    audio_player.play(match.link);
+                    return undefined;
+                }
             } catch (e) {
                 throw new Error(DEVICE_ERROR.service_unavailable);
             }
