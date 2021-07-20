@@ -13,7 +13,12 @@ const S_STATE = 'low,normal'.split(',');
 
 module.exports = [
     ['query', 'state', {}, (result) => {
-        assert(typeof result[0].value === 'number');
-        assert(S_STATE.includes(result[0].state), `Invalid battery sensor status ${result[0].state}`);
+        if (typeof result[0] !== 'undefined')
+            if (result[0].hasOwnProperty('value') && (typeof result[0].value !== 'undefined'))
+                assert(typeof result[0].value === 'number');
+
+        if (typeof result[0] !== 'undefined')
+            if (result[0].hasOwnProperty('state') && (typeof result[0].state !== 'undefined'))
+                assert(S_STATE.includes(result[0].state), `Invalid battery sensor status ` + JSON.stringify(result[0].state));
     }]
 ];

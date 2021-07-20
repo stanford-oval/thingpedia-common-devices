@@ -13,10 +13,14 @@ const S_OSCILLATION = 'oscillating,not_oscillating'.split(',');
 
 module.exports = [
     ['query', 'state', {}, (result) => {
-        assert(S_STATE.includes(result[0].state), `Invalid fan status ${result[0].state}`);
+        if (typeof result[0] !== 'undefined')
+            if (result[0].hasOwnProperty('state') && (typeof result[0].state !== 'undefined'))
+                assert(S_STATE.includes(result[0].state), `Invalid fan status ${result[0].state}`);
     }],
 
     ['query', 'oscillation', {}, (result) => {
-        assert(S_OSCILLATION.includes(result[0].state), `Invalid fan oscillating status ${result[0].state}`);
+        if (typeof result[0] !== 'undefined')
+            if (result[0].hasOwnProperty('state') && (typeof result[0].state !== 'undefined'))
+                assert(S_OSCILLATION.includes(result[0].state), `Invalid fan oscillating status ${result[0].state}`);
     }]
 ];

@@ -12,6 +12,8 @@ const S_OPENCLOSED = 'open,closed'.split(',');
 
 module.exports = [
     ['query', 'state', {}, (result) => {
-        assert(S_OPENCLOSED.includes(result[0].state), `Invalid cover status ${result[0].state}`);
+        if (typeof result[0] !== 'undefined')
+            if (result[0].hasOwnProperty('state') && (typeof result[0].state !== 'undefined'))
+                assert(S_OPENCLOSED.includes(result[0].state), `Invalid cover status ${result[0].state}`);
     }]
 ];
