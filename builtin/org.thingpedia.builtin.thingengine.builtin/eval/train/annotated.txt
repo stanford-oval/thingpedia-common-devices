@@ -482,7 +482,7 @@ UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_
 # online/120571
 U: every minute show notification
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: timer(base=$now, interval=1min) => @org.thingpedia.builtin.thingengine.builtin.say();
+UT: timer(interval=1min) => @org.thingpedia.builtin.thingengine.builtin.say();
 ====
 # online/1647560
 U: notify me when i move slower than 13 km/h
@@ -597,4 +597,14 @@ UT: ontimer(date=$?) => @org.thingpedia.builtin.thingengine.builtin.alert();
 # log/72883
 U: alarm in 45 minutes
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[$now + 45min]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+UT: ontimer(date=[$now + 45min]) => @org.thingpedia.builtin.thingengine.builtin.timer_expire();
+====
+# recording/8eb27940672146aeeb604ffff22199eb
+U: what can you do?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
+====
+# recording/6311f7ed0741b3a8143260b69e9b32c3
+U: what's my name?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_name();

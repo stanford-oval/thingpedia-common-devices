@@ -12,6 +12,8 @@ const S_STATE = 'unlocked,locked'.split(',');
 
 module.exports = [
     ['query', 'state', {}, (result) => {
-        assert(S_STATE.includes(result[0].state), `Invalid lock status ${result[0].state}`);
+        if (typeof result[0] !== 'undefined')
+            if (result[0].hasOwnProperty('state') && (typeof result[0].state !== 'undefined'))
+                assert(S_STATE.includes(result[0].state), `Invalid lock status ${result[0].state}`);
     }]
 ];

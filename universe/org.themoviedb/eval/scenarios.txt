@@ -10,7 +10,7 @@ A: >> expecting = null
 #U: Search for Top Gun
 U: \t @org.themoviedb.movie() filter id=~"Top Gun";
 
-A: (I see Top Gun, Top Gun: Maverick, and Top Gun|Both Top Gun and Top Gun: Maverick are movies by Tom Cruise).
+A: (I see|Both)? .* and .* are movies by Tom Cruise.
 A: >> expecting = null
 
 ====
@@ -41,3 +41,21 @@ A: I see Tom Cruise, Tom Cruise, and Tom Cruise Jr.
 U: \t sort(popularity desc of @org.themoviedb.actor());
 
 A: I see .*, .*, and .*.
+====
+# 7-filtered-actor-search
+U: \t @org.themoviedb.actor() filter id=~ "Tom Hanks";
+
+A: Tom Hanks is an actor with the popularity equal to .*.
+
+====
+# 8-filter-movie-by-actor
+U: \t @org.themoviedb.movie() filter contains(actors, null^^org.themoviedb:actor("Christian Bale"));
+
+A: I see .*, .*, and .*. They're movies by Christian Bale.
+
+====
+# 9-movie-containing-two-plus-actors
+# U: Is there a movie with Denzel Washington and Russell Crowe?
+U: \t @org.themoviedb.movie() filter contains(actors, null^^org.themoviedb:actor("Denzel Washington")) && contains(actors, null^^org.themoviedb:actor("Russell Crowe"));
+
+A: I see American Gangster, Virtuosity, and And the Oscar Goes To... They're movies by Denzel Washington.
