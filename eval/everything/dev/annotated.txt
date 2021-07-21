@@ -195,20 +195,10 @@ A: Hello, what can I do for you?
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_greet;
 U: bye
 UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
-C: $dialogue @org.thingpedia.dialogue.transaction.cancel;
-A: Is there anything else I can help you with?
-AT: $dialogue @org.thingpedia.dialogue.transaction.sys_anything_else;
-U: no thanks
-UT: $dialogue @org.thingpedia.dialogue.transaction.end;
 ====
 # recording/70f9e38f567391dc05ef31a41047f726
 U: bye
 UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
-C: $dialogue @org.thingpedia.dialogue.transaction.cancel;
-A: Is there anything else I can help you with?
-AT: $dialogue @org.thingpedia.dialogue.transaction.sys_anything_else;
-U: no thanks
-UT: $dialogue @org.thingpedia.dialogue.transaction.end;
 ====
 # log/158401
 U: hello almon
@@ -567,7 +557,7 @@ A: The current weather in Menlo Park is cloudy. The temperature is 62.4 F and th
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
 U: What is the humidity?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.iot.humidity.humidity();
+UT: [humidity] of @org.thingpedia.weather.current(location=new Location(37.4519671, -122.1779927, "Menlo Park"));
 ====
 # recording/db9d8bd7d3217a7100457981df813239
 U: What is the temperature here?
@@ -1782,11 +1772,6 @@ UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_al
 # recording/90a50a1078390e8d747cf1238ba17d2f
 U: bye
 UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
-C: $dialogue @org.thingpedia.dialogue.transaction.cancel;
-A: Is there anything else I can help you with?
-AT: $dialogue @org.thingpedia.dialogue.transaction.sys_anything_else;
-U: no
-UT: $dialogue @org.thingpedia.dialogue.transaction.end;
 ====
 # recording/a0d98f0449e864c091ae904bd6f8097a
 U: hi
@@ -1795,11 +1780,6 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
 # recording/7dbccc32973ad07f3d0ff6b03ce3c2b6
 U: bye
 UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
-C: $dialogue @org.thingpedia.dialogue.transaction.cancel;
-A: Is there anything else I can help you with?
-AT: $dialogue @org.thingpedia.dialogue.transaction.sys_anything_else;
-U: no
-UT: $dialogue @org.thingpedia.dialogue.transaction.end;
 ====
 # recording/fe463257269792171d41a0484484ecc1
 U: bya
@@ -1808,11 +1788,6 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
 # recording/515163de5dbcfa5b6744976b37832b26
 U: bye
 UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
-C: $dialogue @org.thingpedia.dialogue.transaction.cancel;
-A: Is there anything else I can help you with?
-AT: $dialogue @org.thingpedia.dialogue.transaction.sys_anything_else;
-U: no
-UT: $dialogue @org.thingpedia.dialogue.transaction.end;
 ====
 # recording/b27bc4f8384a464f4104f0f398f6d04c
 U: hi
@@ -1854,7 +1829,7 @@ U: play baba riley by the who
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("the who")) && id =~ "baba riley" => @org.thingpedia.media-player.play(playable=id);
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: (@org.thingpedia.media-source(id="org.thingpedia.media-source-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:67ea9eGLXYMsO2eYQRui3w"^^org.thingpedia.media-source:artist("The Who")) && id =~ "baba riley")[1] => @org.thingpedia.media-player(id="org.thingpedia.media-player-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:67ea9eGLXYMsO2eYQRui3w"^^org.thingpedia.media-source:artist("The Who")) && id =~ "baba riley")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
 C: #[results=[
 C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3qiyyUfYe7CRYLucrPmulD"^^org.thingpedia.media-source:playable("Baba O'Riley"), __device="XXXXXXXX"^^tt:device_id }
 C: ]];
@@ -1864,31 +1839,31 @@ U: next song
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.media-player.player_next();
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: (@org.thingpedia.media-source(id="org.thingpedia.media-source-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:67ea9eGLXYMsO2eYQRui3w"^^org.thingpedia.media-source:artist("The Who")) && id =~ "baba riley")[1] => @org.thingpedia.media-player(id="org.thingpedia.media-player-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:67ea9eGLXYMsO2eYQRui3w"^^org.thingpedia.media-source:artist("The Who")) && id =~ "baba riley")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
 C: #[results=[
 C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3qiyyUfYe7CRYLucrPmulD"^^org.thingpedia.media-source:playable("Baba O'Riley"), __device="XXXXXXXX"^^tt:device_id }
 C: ]];
-C: @org.thingpedia.media-player(id="org.thingpedia.media-player-XXXXXXXX"^^tt:device_id).player_next()
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next()
 C: #[results=[]];
 A: I played the next song.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
 U: next please
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-player(id="org.thingpedia.media-player-XXXXXXXX"^^tt:device_id).player_next();
+UT: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next();
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: (@org.thingpedia.media-source(id="org.thingpedia.media-source-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:67ea9eGLXYMsO2eYQRui3w"^^org.thingpedia.media-source:artist("The Who")) && id =~ "baba riley")[1] => @org.thingpedia.media-player(id="org.thingpedia.media-player-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:67ea9eGLXYMsO2eYQRui3w"^^org.thingpedia.media-source:artist("The Who")) && id =~ "baba riley")[1] => @org.thingpedia.media-player(id="org.thingpedia.media-player-XXXXXXXX"^^tt:device_id).play(playable=id)
 C: #[results=[
 C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3qiyyUfYe7CRYLucrPmulD"^^org.thingpedia.media-source:playable("Baba O'Riley"), __device="XXXXXXXX"^^tt:device_id }
 C: ]];
-C: @org.thingpedia.media-player(id="org.thingpedia.media-player-XXXXXXXX"^^tt:device_id).player_next()
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next()
 C: #[results=[]];
-C: @org.thingpedia.media-player(id="org.thingpedia.media-player-XXXXXXXX"^^tt:device_id).player_next()
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next()
 C: #[results=[]];
 A: I played the next song.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
 U: play the who
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("the who")) => @org.thingpedia.media-player(id="org.thingpedia.media-player-XXXXXXXX"^^tt:device_id).play(playable=id);
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("the who")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id);
 ====
 # recording/8d1d57109d0565e79262c53b2a3a7702
 U: can you tell me a good japanese restaurant
