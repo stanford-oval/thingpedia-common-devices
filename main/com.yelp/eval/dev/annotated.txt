@@ -1791,7 +1791,7 @@ A: I have Ramen Nagi, Evvia Estiatorio and Zareen's. They're restaurants rated 4
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_three;
 U: what is the address of Zareen's?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: [geo] of @com.yelp.restaurant() filter id == null^^com.yelp:restaurant("zareen");
+UT: [geo] of @com.yelp.restaurant() filter id =~ "zareen 's";
 ====
 # recording/2d86aa7f0949faa00d1d1936108249b2
 U: What are good Chinese restaurants around me?
@@ -1826,7 +1826,7 @@ A: I have found Jing Jing Chinese Gourmet, Phil's Kitchen and Mandarin Roots. Al
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_three;
 U: where is the tamarine restaurant?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: [geo] of @com.yelp.restaurant() filter geo == new Location(37.4443293, -122.1598465, "Palo Alto, California") && id =~ "tamarine";
+UT: [geo] of @com.yelp.restaurant() filter id =~ "tamarine";
 ====
 # recording/db50ecba58c4f36e06f1c05d297f0435
 U: where is jing jing chinese gourmet?
@@ -1841,7 +1841,7 @@ A: Jing Jing Chinese Gourmet is a restaurant near 443 Emerson St, Palo Alto, CA 
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
 U: suggest a top vietnamese restaurant
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: [geo] of @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("vietnamese"));
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("vietnamese"));
 ====
 # recording/17beff4694e42af4dd10bfcc798fc214
 U: can you do restaurants
@@ -1940,7 +1940,7 @@ A: I have found Ramen Nagi, Evvia Estiatorio and Zareen's. All of them are 4.5 s
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_three;
 U: what is the cuisine type of ramen nagi?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: [cuisines] of @com.yelp.restaurant() filter id == null^^com.yelp:restaurant("ramen nagi");
+UT: [cuisines] of @com.yelp.restaurant() filter id =~ "ramen nagi";
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
 C: @com.yelp.restaurant()
 C: #[results=[
@@ -1956,7 +1956,7 @@ C:   { id="_mkNOTiQ-kbc1kJHo9RoVA"^^com.yelp:restaurant("Tamarine Restaurant"), 
 C:   { id="jwaXc3VVGDFQu1aCoiXwdw"^^com.yelp:restaurant("NOLA Restaurant & Bar"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/aFbcuzteoQ4yN5R9R5-XAg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/nola-restaurant-and-bar-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["cajun"^^com.yelp:restaurant_cuisine("Cajun/Creole"), "newamerican"^^com.yelp:restaurant_cuisine("American (New)")], price=enum expensive, rating=3.5, review_count=2837, geo=new Location(37.4450225830078, -122.161323547363, "535 Ramona St, Palo Alto, CA 94301"), phone="+16503282722"^^tt:phone_number }
 C: ]]
 C: #[count=50];
-C: [cuisines] of @com.yelp.restaurant() filter id == "vhfPni9pci29SEHrN1OtRg"^^com.yelp:restaurant("Ramen Nagi")
+C: [cuisines] of @com.yelp.restaurant() filter id =~ "Ramen Nagi"
 C: #[results=[
 C:   { id="vhfPni9pci29SEHrN1OtRg"^^com.yelp:restaurant("Ramen Nagi"), cuisines=["ramen"^^com.yelp:restaurant_cuisine("Ramen"), "noodles"^^com.yelp:restaurant_cuisine("Noodles")] }
 C: ]];
@@ -1964,7 +1964,7 @@ A: Ramen Nagi is a Ramen restaurant.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
 U: where is ramen nagi?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: [geo] of @com.yelp.restaurant() filter id == null^^com.yelp:restaurant("ramen nagi");
+UT: [geo] of @com.yelp.restaurant() filter id =~ "ramen nagi";
 ====
 # recording/905407aa174b660850456b2a83336d8d
 U: can you show me restaurants around here?

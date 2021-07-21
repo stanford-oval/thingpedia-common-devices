@@ -4586,7 +4586,7 @@ A: Sorry, failed to play: you must first click play from inside the Spotify app,
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
 U: play the podcast all the presidents lawyers
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-source.show() filter id =~ "all the presidents lawyers" => @org.thingpedia.media-player.play(playable=id);
+UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).show() filter id =~ "all the presidents lawyers" => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id);
 ====
 # recording/7a3c7291e1eb2b0e67766797e75f05c0
 U: play the podcast left right and center
@@ -4827,7 +4827,7 @@ A: The most popular singers is Juice WRLD. It is a melodic rap singers.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
 U: play the beatles
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, null^^org.thingpedia.media-source:artist("beatles")) => @org.thingpedia.media-player.play(playable=id);
+UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, null^^org.thingpedia.media-source:artist("beatles")) => @org.thingpedia.media-player.play(playable=id);
 ====
 # recording/71c8b187b0b9d1e8138d488111c20658
 U: play a song
@@ -4841,12 +4841,12 @@ A: Sorry, failed to play: try playing from the Spotify app.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
 U: play queen
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, null^^org.thingpedia.media-source:artist("queen")) => @org.thingpedia.media-player.play(playable=id);
+UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, null^^org.thingpedia.media-source:artist("queen")) => @org.thingpedia.media-player.play(playable=id);
 ====
 # recording/81aaec26692917513ce3b40e47156cf1
 U: play the artist queen
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-source.song() filter contains(artists, null^^org.thingpedia.media-source:artist("queen")) => @org.thingpedia.media-player.play(playable=id);
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("queen")) => @org.thingpedia.media-player.play(playable=id);
 ====
 # recording/a53d3b895cc837844eba4092fd9ef472
 U: pause
@@ -6639,7 +6639,7 @@ UT: @org.thingpedia.media-source.song() filter contains(artists, null^^org.thing
 # log-dev/5204
 U: yes, show me information of jay chou
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-source.artist() filter id == null^^org.thingpedia.media-source:artist("jay chou");
+UT: @org.thingpedia.media-source.artist() filter id =~ "jay chou";
 ====
 # log-dev/8754
 U: d rock classic.
