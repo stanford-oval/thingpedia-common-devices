@@ -65,8 +65,12 @@ class RemoveSensitiveInfoVisitor extends ThingTalk.Ast.NodeVisitor {
     visitDeviceSelector(sel) {
         if (sel.id === 'thingengine-own-global')
             sel.id = null;
-        if (sel.id && sel.id !== sel.kind)
-            sel.id = sel.kind + '-XXXXXXXX';
+        if (sel.id && sel.id !== sel.kind) {
+            let kind = sel.kind;
+            if (sel.kind === 'org.thingpedia.media-source' || sel.kind === 'org.thingpedia.media-player')
+                kind = 'com.spotify';
+            sel.id = kind + '-XXXXXXXX';
+        }
         sel.attributes = sel.attributes.filter((ip) => ip.name !== 'name');
         return true;
     }
@@ -80,6 +84,19 @@ class RemoveSensitiveInfoVisitor extends ThingTalk.Ast.NodeVisitor {
             value.display = null;
         }
     }
+}
+
+class RemoveDeviceIDVisitor extends ThingTalk.Ast.NodeVisitor {
+    visitDeviceSelector(sel) {
+        sel.id = null;
+        return true;
+    }
+}
+
+function removeDeviceID(code) {
+    const parsed = ThingTalk.Syntax.parse(code);
+    parsed.visit(new RemoveDeviceIDVisitor());
+    return parsed.prettyprint();
 }
 
 class Trainer {
@@ -224,6 +241,32 @@ class Trainer {
         }
     }
 
+    async _loadDialogue(dlg, userId, conversationId, serial) {
+        if (dlg.length === 0)
+            return;
+        dlg.id = await this._computeId(userId, conversationId, serial);
+
+        const visitor = new RemoveSensitiveInfoVisitor();
+        for (const turn of dlg) {
+            if (turn.context) {
+                const parsed = ThingTalk.Syntax.parse(turn.context);
+                parsed.visit(visitor);
+                turn.context = parsed.prettyprint();
+            }
+            if (turn.agent_target) {
+                const parsed = ThingTalk.Syntax.parse(turn.agent_target);
+                parsed.visit(visitor);
+                turn.agent_target = parsed.prettyprint();
+            }
+            if (turn.user_target) {
+                const parsed = ThingTalk.Syntax.parse(turn.user_target);
+                parsed.visit(visitor);
+                turn.user_target = parsed.prettyprint();
+            }
+        }
+        this._dialogues.push(dlg);
+    }
+
     async init() {
         await this._loadAllExistingDatasets();
 
@@ -232,7 +275,24 @@ class Trainer {
         await this._parser.start();
 
         // load the dialogues to process
+        for (const env of ['prod', 'dev']) {
+            const filepath = path.resolve('./logs/unsorted/', env + '.txt');
+            try {
+                for await (const dlg of fs.createReadStream(filepath, { encoding: 'utf8' }).pipe(byline()).pipe(new Genie.DialogueParser({ ignoreErrors: true }))) {
+                    if (dlg.length === 0)
+                        continue;
+                    dlg.filename = dlg.id;
+                    const [userId, conversationId, dialogueId] = dlg.id.split('/');
+                    await this._loadDialogue(dlg, userId, conversationId + '/' + dialogueId, '');
+                }
+            } catch(e) {
+                console.error(`Failed to process ${filepath}: ${e}`);
+            }
+        }
+
         for (const userId of await pfs.readdir('./logs/unsorted')) {
+            if (userId.endsWith('.txt'))
+                continue;
             for (const filename of await pfs.readdir(path.resolve('./logs/unsorted/', userId, 'logs'))) {
                 const filepath = path.resolve('./logs/unsorted/', userId, 'logs', filename);
                 try {
@@ -240,33 +300,11 @@ class Trainer {
                     for await (const dlg of fs.createReadStream(filepath, { encoding: 'utf8' }).pipe(byline()).pipe(new Genie.DialogueParser({ ignoreErrors: true }))) {
                         if (dlg.length === 0)
                             continue;
-                        if (dlg.id.includes('/')) {
-                            dlg.id = await this._computeId(userId, dlg.id, '');
-                            i++;
-                        } else {
-                            dlg.id = await this._computeId(userId, dlg.id + '.txt', i++);
-                        }
                         dlg.filename = filepath;
-
-                        const visitor = new RemoveSensitiveInfoVisitor();
-                        for (const turn of dlg) {
-                            if (turn.context) {
-                                const parsed = ThingTalk.Syntax.parse(turn.context);
-                                parsed.visit(visitor);
-                                turn.context = parsed.prettyprint();
-                            }
-                            if (turn.agent_target) {
-                                const parsed = ThingTalk.Syntax.parse(turn.agent_target);
-                                parsed.visit(visitor);
-                                turn.agent_target = parsed.prettyprint();
-                            }
-                            if (turn.user_target) {
-                                const parsed = ThingTalk.Syntax.parse(turn.user_target);
-                                parsed.visit(visitor);
-                                turn.user_target = parsed.prettyprint();
-                            }
-                        }
-                        this._dialogues.push(dlg);
+                        if (dlg.id.includes('/'))
+                            await this._loadDialogue(dlg, userId, dlg.id, '');
+                        else
+                            await this._loadDialogue(dlg, userId, dlg.id + '.txt', i++);
                     }
                 } catch(e) {
                     console.error(`Failed to process ${filepath}: ${e}`);
@@ -365,7 +403,8 @@ class Trainer {
 
     async _learnProgram(prediction) {
         const newCode = prediction.prettyprint();
-        if (newCode.trim() === this._outputTurn.user_target.trim()) {
+        if (removeDeviceID(newCode.trim()) === removeDeviceID(this._outputTurn.user_target.trim())) {
+            this._outputTurn.user_target = newCode;
             this._outputDialogue.push(this._outputTurn);
             this._turnIdx ++;
             if (this._turnIdx === this._dialogues[this._serial].length) {
@@ -389,6 +428,7 @@ class Trainer {
             return;
         }
         console.log(`Learned: ${targetCode}`);
+        console.log(`Dialogue diverged, truncating... (${this._dialogues[this._serial].length-this._outputDialogue.length} turns lost)`);
         this._outputTurn.user_target = newCode;
         this._outputDialogue.push(this._outputTurn);
 

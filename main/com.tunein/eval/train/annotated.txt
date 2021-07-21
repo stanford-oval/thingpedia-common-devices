@@ -1,0 +1,45 @@
+====
+# recording/7f46953823b9b0a521cb1ed482e68b5f
+U: play radio
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.radio_play();
+====
+# recording/bd4c2858ef8b794b0b8fb2b7441376c4
+U: listen to radio
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.radio_play();
+====
+# recording/02a5209fbf876da16cd3e50025baecd7
+U: list most popular radio stations
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.most_popular_stations();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.tunein.most_popular_stations()
+C: #[results=[
+C:   { id="station:s24940"^^com.tunein:station("BBC Radio 2"), show="show:s24940"^^com.tunein:show("Dr Rangan Chatterjee"), link="http://opml.radiotime.com/Tune.ashx?id=s24940"^^tt:url, image="http://cdn-radiotime-logos.tunein.com/s24940q.png"^^tt:picture },
+C:   { id="station:s25419"^^com.tunein:station("BBC Radio 4"), show="show:s25419"^^com.tunein:show("Something Understood"), link="http://opml.radiotime.com/Tune.ashx?id=s25419"^^tt:url, image="http://cdn-radiotime-logos.tunein.com/s25419q.png"^^tt:picture },
+C:   { id="station:s17077"^^com.tunein:station("talkSPORT"), show="show:s17077"^^com.tunein:show("What Real Sport Sounds Like"), link="http://opml.radiotime.com/Tune.ashx?id=s17077"^^tt:url, image="http://cdn-profiles.tunein.com/s17077/images/logoq.png?t=1"^^tt:picture },
+C:   { id="station:s25876"^^com.tunein:station("ESPN Radio"), show="show:s25876"^^com.tunein:show("Boston Red Sox at New York Yankees"), link="http://opml.radiotime.com/Tune.ashx?id=s25876"^^tt:url, image="http://cdn-profiles.tunein.com/s25876/images/logoq.jpg?t=1"^^tt:picture },
+C:   { id="station:s25508"^^com.tunein:station("triple j"), show="show:s25508"^^com.tunein:show("CHVRCHES - He Said She Said"), link="http://opml.radiotime.com/Tune.ashx?id=s25508"^^tt:url, image="http://cdn-radiotime-logos.tunein.com/s25508q.png"^^tt:picture },
+C:   { id="station:s7641"^^com.tunein:station("2GB 873"), show="show:s7641"^^com.tunein:show("Ben Fordham Live: 2GB Breakfast"), link="http://opml.radiotime.com/Tune.ashx?id=s7641"^^tt:url, image="http://cdn-profiles.tunein.com/s7641/images/logoq.png?t=158837"^^tt:picture },
+C:   { id="station:s15099"^^com.tunein:station("Today FM"), show="show:s15099"^^com.tunein:show("The Beat Goes On"), link="http://opml.radiotime.com/Tune.ashx?id=s15099"^^tt:url, image="http://cdn-profiles.tunein.com/s15099/images/logoq.jpg"^^tt:picture },
+C:   { id="station:s15066"^^com.tunein:station("RTÉ Radio 1"), show="show:s15066"^^com.tunein:show("RTÉ Radio 1 features News..."), link="http://opml.radiotime.com/Tune.ashx?id=s15066"^^tt:url, image="http://cdn-profiles.tunein.com/s15066/images/logoq.jpg?t=1"^^tt:picture },
+C:   { id="station:s27533"^^com.tunein:station("98.5 The Sports Hub"), show="show:s27533"^^com.tunein:show("Boston's Home For Sports!"), link="http://opml.radiotime.com/Tune.ashx?id=s27533"^^tt:url, image="http://cdn-profiles.tunein.com/s27533/images/logoq.png?t=3"^^tt:picture },
+C:   { id="station:s22469"^^com.tunein:station("98.7 FM ESPN New York"), show="show:s22469"^^com.tunein:show("98.7 FM Sunday"), link="http://opml.radiotime.com/Tune.ashx?id=s22469"^^tt:url, image="http://cdn-profiles.tunein.com/s22469/images/logoq.jpg?t=1"^^tt:picture }
+C: ]]
+C: #[count=31];
+A: I see BBC Radio 2, BBC Radio 4, and talkSPORT. BBC Radio 2 is a most popular radio stations named Dr Rangan Chatterjee, BBC Radio 4 is named Something Understood, and talkSPORT is named What Real Sport Sounds Like.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_three;
+U: stream radio
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.radio_play();
+====
+# recording/54d57fc3b680e653f1582a1a4913bb3a
+U: ask tunein
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.radio_play();
+====
+# recording/b7dc09467dbb0faeebc49baa3a2d1f8c
+U: tunein kfog
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.station() filter id =~ "kfog";

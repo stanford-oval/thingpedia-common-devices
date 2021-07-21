@@ -1,0 +1,17 @@
+====
+# recording/2e9b41da4b99e6cb335f47fe6be0951c
+U: pause
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player.player_pause();
+====
+# recording/daa91fc59b30cda5bd5c0c5e80fe0967
+U: stop spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player.player_pause();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_pause()
+C: #[results=[]];
+A: I paused playback.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: cancel
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;

@@ -1889,3 +1889,749 @@ AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_three;
 U: can you remind me to take a break every hour?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: timer(interval=1h) => @org.thingpedia.builtin.thingengine.builtin.say(message="to take a break");
+====
+# recording/27711928e6877e21a458a66df951e6ad
+U: find me the box by roddy ricch
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("roddy ricch")) && id =~ "box";
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="scUvsrORKe"^^com.icanhazdadjoke:id, text="I asked a frenchman if he played video games. He said \"Wii\"" }
+C: ]];
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:757aE44tKEUQEqRuT6GnEB"^^org.thingpedia.media-source:artist("Roddy Ricch")) && id =~ "box"
+C: #[results=[
+C:   { id="spotify:track:0nbXyq5TXYPCO7pr3N8S4I"^^org.thingpedia.media-source:playable("The Box"), artists=["spotify:artist:757aE44tKEUQEqRuT6GnEB"^^org.thingpedia.media-source:artist("Roddy Ricch")], release_date=new Date("2019-12-06T00:00:00.000Z"), popularity=86, genres=["melodic rap", "rap", "trap"], __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: I see The Box. It is a music by Roddy Ricch released in December 5, 2019. Would you like to play it on Spotify?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+AT: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable="spotify:track:0nbXyq5TXYPCO7pr3N8S4I"^^org.thingpedia.media-source:playable("The Box"))
+AT: #[confirm=enum proposed];
+U: no
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# recording/6072b83f41172d1d6037fac46c9d7cfa
+U: Tell me a joke
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.icanhazdadjoke.get();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="rHBQuXLR7h"^^com.icanhazdadjoke:id, text="Why did the cookie cry?\r\nBecause his mother was a wafer so long" }
+C: ]];
+A: Why did the cookie cry? Because his mother was a wafer so long.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: what's the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# recording/8c3f690481829cc911ced381be36211b
+U: tell me a joke
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.icanhazdadjoke.get();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=19.4C, wind_speed=1mps, humidity=61.5, cloudiness=24.2, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=2;content_type=image/png"^^tt:picture, location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="4ElyszXDdxc"^^com.icanhazdadjoke:id, text="I went to the store to pick up eight cans of sprite... when I got home I realized I'd only picked seven up" }
+C: ]];
+A: I went to the store to pick up eight cans of sprite... When I got home I realized I'd only picked seven up.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: what's the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# recording/d737337e6e4c20088d9f7fe699f1d249
+U: what's the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=25.2C, wind_speed=2.7mps, humidity=43.7, cloudiness=11.7, fog=0, status=enum sunny, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=1;content_type=image/png"^^tt:picture, location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+A: It is sunny today in Palo Alto, California and the temperature is 77.4 F.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: tell me a joke
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.icanhazdadjoke.get();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=25.2C, wind_speed=2.7mps, humidity=43.7, cloudiness=11.7, fog=0, status=enum sunny, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=1;content_type=image/png"^^tt:picture, location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="e2obFd2oOf"^^com.icanhazdadjoke:id, text="I thought about going on an all-almond diet. But that's just nuts." }
+C: ]];
+A: I thought about going on an all-almond diet. But that's just nuts.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: what's the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# recording/0bb13fec6883d24eb63b9ad21da456cf
+U: play the cure on spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("cure")) => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/f10e847df303ac51cad43c95c11495c6
+U: cancel
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# recording/c1d705a075ab4d3224b953ee43a93757
+U: Play Bruce Springsteen.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("bruce springsteen")) => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:3eqjTLE0HfPfh78zjh6TqT"^^org.thingpedia.media-source:artist("Bruce Springsteen")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:0dOg1ySSI7NkpAe89Zo0b9"^^org.thingpedia.media-source:playable("Born in the U.S.A."), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:7FwBtcecmlpc1sLySPXeGE"^^org.thingpedia.media-source:playable("Dancing In the Dark"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:6hTcuIQa0sxrrByu9wTD7s"^^org.thingpedia.media-source:playable("Born to Run"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:2Y90nL1ohB4sgYELDs7uNx"^^org.thingpedia.media-source:playable("Glory Days"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:3PzsbWSQdLCKDLxn7YZfkM"^^org.thingpedia.media-source:playable("I'm On Fire"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:56lhDZNQ5J47aog6mGKeGk"^^org.thingpedia.media-source:playable("Thunder Road"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:1KsI8NEeAna8ZIdojI3FiT"^^org.thingpedia.media-source:playable("Hungry Heart"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:3fbnbn6A5O5RNb08tlUEgd"^^org.thingpedia.media-source:playable("Streets of Philadelphia - Single Edit"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:68uuz61IqrSJjO6ffO3yHc"^^org.thingpedia.media-source:playable("Secret Garden"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:7HrzErXq3TsKOY1gmdIShB"^^org.thingpedia.media-source:playable("The River"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=50];
+A: I played music by Bruce Springsteen on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: Play The Beatles.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, null^^org.thingpedia.media-source:artist("beatles")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:3eqjTLE0HfPfh78zjh6TqT"^^org.thingpedia.media-source:artist("Bruce Springsteen")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:0dOg1ySSI7NkpAe89Zo0b9"^^org.thingpedia.media-source:playable("Born in the U.S.A."), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:7FwBtcecmlpc1sLySPXeGE"^^org.thingpedia.media-source:playable("Dancing In the Dark"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:6hTcuIQa0sxrrByu9wTD7s"^^org.thingpedia.media-source:playable("Born to Run"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:2Y90nL1ohB4sgYELDs7uNx"^^org.thingpedia.media-source:playable("Glory Days"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:3PzsbWSQdLCKDLxn7YZfkM"^^org.thingpedia.media-source:playable("I'm On Fire"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:56lhDZNQ5J47aog6mGKeGk"^^org.thingpedia.media-source:playable("Thunder Road"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:1KsI8NEeAna8ZIdojI3FiT"^^org.thingpedia.media-source:playable("Hungry Heart"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:3fbnbn6A5O5RNb08tlUEgd"^^org.thingpedia.media-source:playable("Streets of Philadelphia - Single Edit"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:68uuz61IqrSJjO6ffO3yHc"^^org.thingpedia.media-source:playable("Secret Garden"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:7HrzErXq3TsKOY1gmdIShB"^^org.thingpedia.media-source:playable("The River"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=50];
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:3WrFJ7ztbogyGnTHbHJFl2"^^org.thingpedia.media-source:artist("The Beatles")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:6dGnYIeXmHdcikdzNNDMm2"^^org.thingpedia.media-source:playable("Here Comes The Sun - Remastered 2009"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:2EqlS6tkEnglzr7tkKAAYD"^^org.thingpedia.media-source:playable("Come Together - Remastered 2009"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:7iN1s7xHE4ifF5povM6A48"^^org.thingpedia.media-source:playable("Let It Be - Remastered 2009"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:3BQHpFgAp4l80e1XslIjNI"^^org.thingpedia.media-source:playable("Yesterday - Remastered 2009"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:5jgFfDIR6FR0gvlA56Nakr"^^org.thingpedia.media-source:playable("Blackbird - Remastered 2009"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:5ZBeML7Lf3FMEVviTyvi8l"^^org.thingpedia.media-source:playable("Twist And Shout - Remastered 2009"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:0aym2LBJBk9DAYuHHutrIl"^^org.thingpedia.media-source:playable("Hey Jude - Remastered 2015"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:3KfbEIOC7YIv90FIfNSZpo"^^org.thingpedia.media-source:playable("In My Life - Remastered 2009"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:4pbG9SUmWIvsROVLF0zF9s"^^org.thingpedia.media-source:playable("I Want To Hold Your Hand - Remastered 2015"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:3Am0IbOxmvlSXro7N5iSfZ"^^org.thingpedia.media-source:playable("Strawberry Fields Forever - Remastered 2009"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=47];
+A: I played music by The Beatles on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: play playlist cyn piano
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playlist() filter id =~ "cyn piano" => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id);
+====
+# recording/d5976954acf743a41fde079560067438
+U: cancel
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# recording/e4d01220cbc89f22384cd2eddcbd7aae
+U: add this song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.get_currently_playing() => @com.spotify.add_song_to_playlist(song=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).get_currently_playing() => @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).add_song_to_playlist(song=id);
+A: What playlist do you want to add to?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_slot_fill(playlist);
+AT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).get_currently_playing() => @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).add_song_to_playlist(song=id);
+U: Z
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).get_currently_playing() => @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).add_song_to_playlist(playlist="z", song=id);
+====
+# recording/204e96f6f7f6375a663426cb85ccfb98
+U: play armchair expert
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter id =~ "armchair expert" => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter id =~ "armchair expert")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:6cprB7E9cUJNu5yaLWw85G"^^org.thingpedia.media-source:playable("Armchair Expert"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: I played Armchair Expert on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: play joe rogan podcast
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).show() filter contains(artists, null^^org.thingpedia.media-source:artist("joe rogan")) => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/a485bad6463afc7da82b38a464667972
+U: play chopin
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("chopin")) => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:7y97mc3bZRFXzT2szRM4L4"^^org.thingpedia.media-source:artist("Frédéric Chopin")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:2MSgFefjK0T7Iwjvr3OKqV"^^org.thingpedia.media-source:playable("Chopin: Nocturne No. 20 in C-Sharp Minor, Op. Posth."), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:2NelosTe0arXp8sdQRfc1B"^^org.thingpedia.media-source:playable("Scherzo No. 3 in C-Sharp Minor, Op. 39, B. 125"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:5VT7oTL3YLT43geRPP2LYP"^^org.thingpedia.media-source:playable("Piano Sonata No. 2 in B-Flat Minor, Op. 35: III. Marche funèbre (Lento) (Orchestral Version)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:56FgPusKrAOypfATcunNbB"^^org.thingpedia.media-source:playable("Nocturnes, Op. 9: No. 1, Larghetto in B-Flat Minor"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:4XZETVhfy6u2ikOFwYcXbD"^^org.thingpedia.media-source:playable("Nocturne No.2 In E Flat, Op.9 No.2"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:18GJzOA39ppNUjqaSSrdpu"^^org.thingpedia.media-source:playable("Nocturnes, Op. 15: No. 2 in F-Sharp Major"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:2VkB91yELC0iXDFcCBy5ck"^^org.thingpedia.media-source:playable("Nocturnes, Op. 9: No. 2, Andante in E-Flat Major"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:7G1k4wY4k25DBkJZ7BSWJJ"^^org.thingpedia.media-source:playable("Études, Op. 10: No. 3, Étude in E Major \"Tristesse\""), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:38FT6Udxc1ReglJfFqEu1r"^^org.thingpedia.media-source:playable("Impromptu No. 3, Op. 51"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:3LNsWJM7YJP3JjZHBFFlnm"^^org.thingpedia.media-source:playable("Nocturne No. 19 in E Minor, Op. 72, No. 1"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=48];
+A: I played music by Frédéric Chopin on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: next
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next();
+====
+# recording/dd6e629c7f68c80815c69097adba3e23
+U: play playlist
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playlist() => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playlist() => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:playlist:4kQovkgBZTd8h2HCM3fF31"^^org.thingpedia.media-source:playable("Grammy Awards 2021"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:playlist:4e36iSHdNaSDaIfOKmCvXd"^^org.thingpedia.media-source:playable("2021 HITS VIRAL ? ( Best Hits 2021 & Top Global 2021 Hits) ?"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:playlist:37i9dQZF1DWZjqjZMudx9T"^^org.thingpedia.media-source:playable("MANSIÓN REGGAETÓN"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:playlist:6Tyhahqm1EJ2IHOytwMYDq"^^org.thingpedia.media-source:playable("2021 summer camp songs clean/appropriate "), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:playlist:37i9dQZF1DX5BAPG29mHS8"^^org.thingpedia.media-source:playable("Éxitos México"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[error="Invalid playlist Id"];
+A: Sorry, there was an unexpected error with your command. Please try again later or report this issue to my developers.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
+U: play sigur ros
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, null^^org.thingpedia.media-source:artist("sigur ros")) => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/0b3f3f45d3591073db1e979fcb5ddb78
+U: cancel
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# recording/e79faaa9e11e7d3739644267fedbe959
+U: play inbetween days by the cure
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("cure")) && id =~ "inbetween days" => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:7bu3H8JO7d0UbMoVzbo70s"^^org.thingpedia.media-source:artist("The Cure")) && id =~ "inbetween days")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:3EY4O2ZQFIgVU4BSz5rSYx"^^org.thingpedia.media-source:playable("Inbetween Days"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: I played Inbetween Days on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: what song is this
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.get_currently_playing();
+====
+# recording/16f845acb479b4a09f57b94b1a6a9b73
+U: play some music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/6965c0b4bca38b2abdf0221acdcd8fa8
+U: play album the head on the door
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.album() filter id =~ "head on the door" => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).album() filter id =~ "head on the door")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:album:6HhpmJekzDCRu2K64ZbWqw"^^org.thingpedia.media-source:playable("The Head on the Door"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: I played The Head on the Door on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: next song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player.player_next();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).album() filter id =~ "head on the door")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:album:6HhpmJekzDCRu2K64ZbWqw"^^org.thingpedia.media-source:playable("The Head on the Door"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next()
+C: #[results=[]];
+A: I played the next song.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: next song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player.player_next();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).album() filter id =~ "head on the door")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:album:6HhpmJekzDCRu2K64ZbWqw"^^org.thingpedia.media-source:playable("The Head on the Door"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next()
+C: #[results=[]];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next()
+C: #[results=[]];
+A: I played the next song.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: cancel
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# recording/d5e5fead6a0fc77b22bc82a0c749d2e8
+U: cancel
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# recording/906fc0923855957285bc544b8fbfcf7a
+U: play inbetween days
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter id =~ "inbetween days" => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter id =~ "inbetween days")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:3EY4O2ZQFIgVU4BSz5rSYx"^^org.thingpedia.media-source:playable("Inbetween Days"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: I played Inbetween Days on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: stop repeat
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player.player_repeat(repeat=enum off);
+====
+# recording/55ada0c1ab8684a158480910c0c05a20
+U: cancel
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# recording/814752db1994701bb5ca955c8e6c215e
+U: play tony's playlist
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playlist() filter id =~ "tony 's playlist" => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/9590418aeabe0ce1c680f272461a0021
+U: play the artist the cure on spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("cure")) => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:7bu3H8JO7d0UbMoVzbo70s"^^org.thingpedia.media-source:artist("The Cure")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:263aNAQCeFSWipk896byo6"^^org.thingpedia.media-source:playable("Friday I'm in Love"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:76GlO5H5RT6g7y0gev86Nk"^^org.thingpedia.media-source:playable("Just like Heaven"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:4dneV7C1yDt9UtyxrQY375"^^org.thingpedia.media-source:playable("Boys Don't Cry - Single Version"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:0X5C4WjQNubRysTkHOubz3"^^org.thingpedia.media-source:playable("Lovesong - 2010 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:7ABE6G4uQxbNtYgVrpBBPA"^^org.thingpedia.media-source:playable("Close to Me - 2006 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:1tuwC1Ob5vnYZhvg3zyzJg"^^org.thingpedia.media-source:playable("Pictures of You - 2010 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:07CyrZF9eVd02zzIse7tZA"^^org.thingpedia.media-source:playable("In Between Days - 2006 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:3O4TPMOgChXOerSdB5WENH"^^org.thingpedia.media-source:playable("1 Forest - 2006 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:4d4oXk7O2lEhZ83ivV93li"^^org.thingpedia.media-source:playable("Lullaby - 2010 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:5GHwCpwEos0FzYe55slXEp"^^org.thingpedia.media-source:playable("The Lovecats"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=35];
+A: I played music by The Cure on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: next song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:7bu3H8JO7d0UbMoVzbo70s"^^org.thingpedia.media-source:artist("The Cure")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:263aNAQCeFSWipk896byo6"^^org.thingpedia.media-source:playable("Friday I'm in Love"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:76GlO5H5RT6g7y0gev86Nk"^^org.thingpedia.media-source:playable("Just like Heaven"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:4dneV7C1yDt9UtyxrQY375"^^org.thingpedia.media-source:playable("Boys Don't Cry - Single Version"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:0X5C4WjQNubRysTkHOubz3"^^org.thingpedia.media-source:playable("Lovesong - 2010 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:7ABE6G4uQxbNtYgVrpBBPA"^^org.thingpedia.media-source:playable("Close to Me - 2006 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:1tuwC1Ob5vnYZhvg3zyzJg"^^org.thingpedia.media-source:playable("Pictures of You - 2010 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:07CyrZF9eVd02zzIse7tZA"^^org.thingpedia.media-source:playable("In Between Days - 2006 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:3O4TPMOgChXOerSdB5WENH"^^org.thingpedia.media-source:playable("1 Forest - 2006 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:4d4oXk7O2lEhZ83ivV93li"^^org.thingpedia.media-source:playable("Lullaby - 2010 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:5GHwCpwEos0FzYe55slXEp"^^org.thingpedia.media-source:playable("The Lovecats"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=35];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next()
+C: #[results=[]];
+A: I played the next song.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: weather tomorrow
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:7bu3H8JO7d0UbMoVzbo70s"^^org.thingpedia.media-source:artist("The Cure")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:263aNAQCeFSWipk896byo6"^^org.thingpedia.media-source:playable("Friday I'm in Love"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:76GlO5H5RT6g7y0gev86Nk"^^org.thingpedia.media-source:playable("Just like Heaven"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:4dneV7C1yDt9UtyxrQY375"^^org.thingpedia.media-source:playable("Boys Don't Cry - Single Version"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:0X5C4WjQNubRysTkHOubz3"^^org.thingpedia.media-source:playable("Lovesong - 2010 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:7ABE6G4uQxbNtYgVrpBBPA"^^org.thingpedia.media-source:playable("Close to Me - 2006 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:1tuwC1Ob5vnYZhvg3zyzJg"^^org.thingpedia.media-source:playable("Pictures of You - 2010 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:07CyrZF9eVd02zzIse7tZA"^^org.thingpedia.media-source:playable("In Between Days - 2006 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:3O4TPMOgChXOerSdB5WENH"^^org.thingpedia.media-source:playable("1 Forest - 2006 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:4d4oXk7O2lEhZ83ivV93li"^^org.thingpedia.media-source:playable("Lullaby - 2010 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:5GHwCpwEos0FzYe55slXEp"^^org.thingpedia.media-source:playable("The Lovecats"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=35];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next()
+C: #[results=[]];
+C: @org.thingpedia.weather.forecast(date=$end_of(day), location=new Location(37.1624585, -121.98538717615781, "Lexington Hills, Summit West"))
+C: #[results=[
+C:   { temperature=16.1C, wind_speed=0.9mps, humidity=61.1, cloudiness=0.8, fog=0, status=enum sunny, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=1;content_type=image/png"^^tt:picture, date=new Date("2021-07-20T14:00:00.000Z"), location=new Location(37.1624585, -121.98538717615781, "Lexington Hills, Summit West") }
+C: ]];
+A: It will be sunny tomorrow at 7:00 AM in Lexington Hills, Summit West and the temperature will be 61 F.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: tell me a joke
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.icanhazdadjoke.get();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:7bu3H8JO7d0UbMoVzbo70s"^^org.thingpedia.media-source:artist("The Cure")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:263aNAQCeFSWipk896byo6"^^org.thingpedia.media-source:playable("Friday I'm in Love"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:76GlO5H5RT6g7y0gev86Nk"^^org.thingpedia.media-source:playable("Just like Heaven"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:4dneV7C1yDt9UtyxrQY375"^^org.thingpedia.media-source:playable("Boys Don't Cry - Single Version"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:0X5C4WjQNubRysTkHOubz3"^^org.thingpedia.media-source:playable("Lovesong - 2010 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:7ABE6G4uQxbNtYgVrpBBPA"^^org.thingpedia.media-source:playable("Close to Me - 2006 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:1tuwC1Ob5vnYZhvg3zyzJg"^^org.thingpedia.media-source:playable("Pictures of You - 2010 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:07CyrZF9eVd02zzIse7tZA"^^org.thingpedia.media-source:playable("In Between Days - 2006 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:3O4TPMOgChXOerSdB5WENH"^^org.thingpedia.media-source:playable("1 Forest - 2006 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:4d4oXk7O2lEhZ83ivV93li"^^org.thingpedia.media-source:playable("Lullaby - 2010 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:5GHwCpwEos0FzYe55slXEp"^^org.thingpedia.media-source:playable("The Lovecats"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=35];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next()
+C: #[results=[]];
+C: @org.thingpedia.weather.forecast(date=$end_of(day), location=new Location(37.1624585, -121.98538717615781, "Lexington Hills, Summit West"))
+C: #[results=[
+C:   { temperature=16.1C, wind_speed=0.9mps, humidity=61.1, cloudiness=0.8, fog=0, status=enum sunny, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=1;content_type=image/png"^^tt:picture, date=new Date("2021-07-20T14:00:00.000Z"), location=new Location(37.1624585, -121.98538717615781, "Lexington Hills, Summit West") }
+C: ]];
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="5T08U8M79pb"^^com.icanhazdadjoke:id, text="Never take advice from electrons. They are always negative." }
+C: ]];
+A: Never take advice from electrons. They are always negative.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: next song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player.player_next();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:7bu3H8JO7d0UbMoVzbo70s"^^org.thingpedia.media-source:artist("The Cure")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:263aNAQCeFSWipk896byo6"^^org.thingpedia.media-source:playable("Friday I'm in Love"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:76GlO5H5RT6g7y0gev86Nk"^^org.thingpedia.media-source:playable("Just like Heaven"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:4dneV7C1yDt9UtyxrQY375"^^org.thingpedia.media-source:playable("Boys Don't Cry - Single Version"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:0X5C4WjQNubRysTkHOubz3"^^org.thingpedia.media-source:playable("Lovesong - 2010 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:7ABE6G4uQxbNtYgVrpBBPA"^^org.thingpedia.media-source:playable("Close to Me - 2006 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:1tuwC1Ob5vnYZhvg3zyzJg"^^org.thingpedia.media-source:playable("Pictures of You - 2010 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:07CyrZF9eVd02zzIse7tZA"^^org.thingpedia.media-source:playable("In Between Days - 2006 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:3O4TPMOgChXOerSdB5WENH"^^org.thingpedia.media-source:playable("1 Forest - 2006 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:4d4oXk7O2lEhZ83ivV93li"^^org.thingpedia.media-source:playable("Lullaby - 2010 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:5GHwCpwEos0FzYe55slXEp"^^org.thingpedia.media-source:playable("The Lovecats"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=35];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next()
+C: #[results=[]];
+C: @org.thingpedia.weather.forecast(date=$end_of(day), location=new Location(37.1624585, -121.98538717615781, "Lexington Hills, Summit West"))
+C: #[results=[
+C:   { temperature=16.1C, wind_speed=0.9mps, humidity=61.1, cloudiness=0.8, fog=0, status=enum sunny, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=1;content_type=image/png"^^tt:picture, date=new Date("2021-07-20T14:00:00.000Z"), location=new Location(37.1624585, -121.98538717615781, "Lexington Hills, Summit West") }
+C: ]];
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="5T08U8M79pb"^^com.icanhazdadjoke:id, text="Never take advice from electrons. They are always negative." }
+C: ]];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next()
+C: #[results=[]];
+A: I played the next song.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: call me tE
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.set_name(name="te");
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:7bu3H8JO7d0UbMoVzbo70s"^^org.thingpedia.media-source:artist("The Cure")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:263aNAQCeFSWipk896byo6"^^org.thingpedia.media-source:playable("Friday I'm in Love"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:76GlO5H5RT6g7y0gev86Nk"^^org.thingpedia.media-source:playable("Just like Heaven"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:4dneV7C1yDt9UtyxrQY375"^^org.thingpedia.media-source:playable("Boys Don't Cry - Single Version"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:0X5C4WjQNubRysTkHOubz3"^^org.thingpedia.media-source:playable("Lovesong - 2010 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:7ABE6G4uQxbNtYgVrpBBPA"^^org.thingpedia.media-source:playable("Close to Me - 2006 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:1tuwC1Ob5vnYZhvg3zyzJg"^^org.thingpedia.media-source:playable("Pictures of You - 2010 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:07CyrZF9eVd02zzIse7tZA"^^org.thingpedia.media-source:playable("In Between Days - 2006 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:3O4TPMOgChXOerSdB5WENH"^^org.thingpedia.media-source:playable("1 Forest - 2006 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:4d4oXk7O2lEhZ83ivV93li"^^org.thingpedia.media-source:playable("Lullaby - 2010 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:5GHwCpwEos0FzYe55slXEp"^^org.thingpedia.media-source:playable("The Lovecats"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=35];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next()
+C: #[results=[]];
+C: @org.thingpedia.weather.forecast(date=$end_of(day), location=new Location(37.1624585, -121.98538717615781, "Lexington Hills, Summit West"))
+C: #[results=[
+C:   { temperature=16.1C, wind_speed=0.9mps, humidity=61.1, cloudiness=0.8, fog=0, status=enum sunny, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=1;content_type=image/png"^^tt:picture, date=new Date("2021-07-20T14:00:00.000Z"), location=new Location(37.1624585, -121.98538717615781, "Lexington Hills, Summit West") }
+C: ]];
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="5T08U8M79pb"^^com.icanhazdadjoke:id, text="Never take advice from electrons. They are always negative." }
+C: ]];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next()
+C: #[results=[]];
+C: @org.thingpedia.builtin.thingengine.builtin.set_name(name="te")
+C: #[results=[]];
+A: Your request was completed successfully.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: what's my name
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_name();
+====
+# recording/b73b9e42f19a0c5f7c48b14b7b044473
+U: play the band the cure on spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("cure")) => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/e75185c595ab360beb9bba3cfdaec5e7
+U: play thriller
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter id =~ "thriller" => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter id =~ "thriller")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:7azo4rpSUh8nXgtonC6Pkq"^^org.thingpedia.media-source:playable("Thriller"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: I played Thriller on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: pause
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_pause();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter id =~ "thriller")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:7azo4rpSUh8nXgtonC6Pkq"^^org.thingpedia.media-source:playable("Thriller"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_pause()
+C: #[results=[]];
+A: I paused playback.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: play
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_play();
+====
+# recording/4bdfb7126d0dae5cf6f66928dadc6a2c
+U: cancel
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# recording/20f7e3cf3220424dfee364b128fc5608
+U: play the cure on spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("cure")) => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/e844c2b38bb47b8374268cf84500807d
+U: play music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:4ZtFanR9U6ndgddUvNcjcG"^^org.thingpedia.media-source:playable("good 4 u"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:0UsmyJDsst2xhX1ZiFF3JW"^^org.thingpedia.media-source:playable("Year,2015"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:7BFk1nSfwfkDOgnNNeY7Yn"^^org.thingpedia.media-source:playable("wish i dropped out like brakence interlude"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:5BJs3aDrKYBRkzrhaVxf89"^^org.thingpedia.media-source:playable("After Me - 2021 Version"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:748mdHapucXQri7IAO8yFK"^^org.thingpedia.media-source:playable("Kiss Me More (feat. SZA)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:5rJw9VsPNdfnV9Ar97xZG2"^^org.thingpedia.media-source:playable("K-LOVE Fan Awards: Songs of the Year (2015 Mash-Up)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1lrjBRhWKrd3YShBN4Un7c"^^org.thingpedia.media-source:playable("Bob Dylan"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:0u7vHkZJtxjSP65kf0yZOA"^^org.thingpedia.media-source:playable("Rubish"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:5CZ40GBx1sQ9agT82CLQCT"^^org.thingpedia.media-source:playable("traitor"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:00ohIpPn9LkKpeIqhfIU9V"^^org.thingpedia.media-source:playable("K-Love Fan Awards: Songs of the Year (2014 Mash-Up)"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=50];
+A: I played music on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: play artist travis
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, null^^org.thingpedia.media-source:artist("travis")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:4ZtFanR9U6ndgddUvNcjcG"^^org.thingpedia.media-source:playable("good 4 u"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:0UsmyJDsst2xhX1ZiFF3JW"^^org.thingpedia.media-source:playable("Year,2015"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:7BFk1nSfwfkDOgnNNeY7Yn"^^org.thingpedia.media-source:playable("wish i dropped out like brakence interlude"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:5BJs3aDrKYBRkzrhaVxf89"^^org.thingpedia.media-source:playable("After Me - 2021 Version"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:748mdHapucXQri7IAO8yFK"^^org.thingpedia.media-source:playable("Kiss Me More (feat. SZA)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:5rJw9VsPNdfnV9Ar97xZG2"^^org.thingpedia.media-source:playable("K-LOVE Fan Awards: Songs of the Year (2015 Mash-Up)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1lrjBRhWKrd3YShBN4Un7c"^^org.thingpedia.media-source:playable("Bob Dylan"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:0u7vHkZJtxjSP65kf0yZOA"^^org.thingpedia.media-source:playable("Rubish"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:5CZ40GBx1sQ9agT82CLQCT"^^org.thingpedia.media-source:playable("traitor"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:00ohIpPn9LkKpeIqhfIU9V"^^org.thingpedia.media-source:playable("K-Love Fan Awards: Songs of the Year (2014 Mash-Up)"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=50];
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:0Y5tJX1MQlPlqiwlOH1tJY"^^org.thingpedia.media-source:artist("Travis Scott")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:5uEYRdEIh9Bo4fpjDd4Na9"^^org.thingpedia.media-source:playable("Goosebumps - Remix"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:6gBFPUFcJLzWGx4lenP6h2"^^org.thingpedia.media-source:playable("goosebumps"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:2xLMifQCjDGFmkHkpNLD9h"^^org.thingpedia.media-source:playable("SICKO MODE"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:3eekarcy7kvN4yt5ZFzltW"^^org.thingpedia.media-source:playable("HIGHEST IN THE ROOM"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:11kDth1aKUEUMq9r1pqyds"^^org.thingpedia.media-source:playable("5% TINT"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:2cYqizR4lgvp4Qu6IQ3qGN"^^org.thingpedia.media-source:playable("BUTTERFLY EFFECT"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:51EC3I1nQXpec4gDk0mQyP"^^org.thingpedia.media-source:playable("90210 (feat. Kacy Hill)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:27a1mYSG5tYg7dmEjWBcmL"^^org.thingpedia.media-source:playable("CAN'T SAY"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:7wBJfHzpfI3032CSD7CE2m"^^org.thingpedia.media-source:playable("STARGAZING"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1wHZx0LgzFHyeIZkUydNXq"^^org.thingpedia.media-source:playable("Antidote"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=46];
+A: I played music by Travis Scott on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: pause
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_pause();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:4ZtFanR9U6ndgddUvNcjcG"^^org.thingpedia.media-source:playable("good 4 u"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:0UsmyJDsst2xhX1ZiFF3JW"^^org.thingpedia.media-source:playable("Year,2015"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:7BFk1nSfwfkDOgnNNeY7Yn"^^org.thingpedia.media-source:playable("wish i dropped out like brakence interlude"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:5BJs3aDrKYBRkzrhaVxf89"^^org.thingpedia.media-source:playable("After Me - 2021 Version"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:748mdHapucXQri7IAO8yFK"^^org.thingpedia.media-source:playable("Kiss Me More (feat. SZA)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:5rJw9VsPNdfnV9Ar97xZG2"^^org.thingpedia.media-source:playable("K-LOVE Fan Awards: Songs of the Year (2015 Mash-Up)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1lrjBRhWKrd3YShBN4Un7c"^^org.thingpedia.media-source:playable("Bob Dylan"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:0u7vHkZJtxjSP65kf0yZOA"^^org.thingpedia.media-source:playable("Rubish"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:5CZ40GBx1sQ9agT82CLQCT"^^org.thingpedia.media-source:playable("traitor"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:00ohIpPn9LkKpeIqhfIU9V"^^org.thingpedia.media-source:playable("K-Love Fan Awards: Songs of the Year (2014 Mash-Up)"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=50];
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:0Y5tJX1MQlPlqiwlOH1tJY"^^org.thingpedia.media-source:artist("Travis Scott")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:5uEYRdEIh9Bo4fpjDd4Na9"^^org.thingpedia.media-source:playable("Goosebumps - Remix"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:6gBFPUFcJLzWGx4lenP6h2"^^org.thingpedia.media-source:playable("goosebumps"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:2xLMifQCjDGFmkHkpNLD9h"^^org.thingpedia.media-source:playable("SICKO MODE"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:3eekarcy7kvN4yt5ZFzltW"^^org.thingpedia.media-source:playable("HIGHEST IN THE ROOM"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:11kDth1aKUEUMq9r1pqyds"^^org.thingpedia.media-source:playable("5% TINT"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:2cYqizR4lgvp4Qu6IQ3qGN"^^org.thingpedia.media-source:playable("BUTTERFLY EFFECT"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:51EC3I1nQXpec4gDk0mQyP"^^org.thingpedia.media-source:playable("90210 (feat. Kacy Hill)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:27a1mYSG5tYg7dmEjWBcmL"^^org.thingpedia.media-source:playable("CAN'T SAY"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:7wBJfHzpfI3032CSD7CE2m"^^org.thingpedia.media-source:playable("STARGAZING"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1wHZx0LgzFHyeIZkUydNXq"^^org.thingpedia.media-source:playable("Antidote"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=46];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_pause()
+C: #[results=[]];
+A: I paused playback.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: play ravel
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, null^^org.thingpedia.media-source:artist("ravel")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:4ZtFanR9U6ndgddUvNcjcG"^^org.thingpedia.media-source:playable("good 4 u"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:0UsmyJDsst2xhX1ZiFF3JW"^^org.thingpedia.media-source:playable("Year,2015"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:7BFk1nSfwfkDOgnNNeY7Yn"^^org.thingpedia.media-source:playable("wish i dropped out like brakence interlude"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:5BJs3aDrKYBRkzrhaVxf89"^^org.thingpedia.media-source:playable("After Me - 2021 Version"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:748mdHapucXQri7IAO8yFK"^^org.thingpedia.media-source:playable("Kiss Me More (feat. SZA)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:5rJw9VsPNdfnV9Ar97xZG2"^^org.thingpedia.media-source:playable("K-LOVE Fan Awards: Songs of the Year (2015 Mash-Up)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1lrjBRhWKrd3YShBN4Un7c"^^org.thingpedia.media-source:playable("Bob Dylan"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:0u7vHkZJtxjSP65kf0yZOA"^^org.thingpedia.media-source:playable("Rubish"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:5CZ40GBx1sQ9agT82CLQCT"^^org.thingpedia.media-source:playable("traitor"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:00ohIpPn9LkKpeIqhfIU9V"^^org.thingpedia.media-source:playable("K-Love Fan Awards: Songs of the Year (2014 Mash-Up)"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=50];
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:0Y5tJX1MQlPlqiwlOH1tJY"^^org.thingpedia.media-source:artist("Travis Scott")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:5uEYRdEIh9Bo4fpjDd4Na9"^^org.thingpedia.media-source:playable("Goosebumps - Remix"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:6gBFPUFcJLzWGx4lenP6h2"^^org.thingpedia.media-source:playable("goosebumps"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:2xLMifQCjDGFmkHkpNLD9h"^^org.thingpedia.media-source:playable("SICKO MODE"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:3eekarcy7kvN4yt5ZFzltW"^^org.thingpedia.media-source:playable("HIGHEST IN THE ROOM"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:11kDth1aKUEUMq9r1pqyds"^^org.thingpedia.media-source:playable("5% TINT"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:2cYqizR4lgvp4Qu6IQ3qGN"^^org.thingpedia.media-source:playable("BUTTERFLY EFFECT"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:51EC3I1nQXpec4gDk0mQyP"^^org.thingpedia.media-source:playable("90210 (feat. Kacy Hill)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:27a1mYSG5tYg7dmEjWBcmL"^^org.thingpedia.media-source:playable("CAN'T SAY"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:7wBJfHzpfI3032CSD7CE2m"^^org.thingpedia.media-source:playable("STARGAZING"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1wHZx0LgzFHyeIZkUydNXq"^^org.thingpedia.media-source:playable("Antidote"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=46];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_pause()
+C: #[results=[]];
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:0CVjzaBJZ4csWIL0kPmzM6"^^org.thingpedia.media-source:artist("Ravell")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:5rIk9RbrH9y4CDYfMeoie1"^^org.thingpedia.media-source:playable("Rockin'"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:0o9L9lfy4hECoa2Y7FcpzS"^^org.thingpedia.media-source:playable("That Body - Dub Mix"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:6c4PgdnY1vZfds7leBo0Zr"^^org.thingpedia.media-source:playable("Feelin' You"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:04Uu103kfQSwmwuzCQoyeZ"^^org.thingpedia.media-source:playable("Sunrise Riot"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:6uoGK87Mo8vBkpDPevEJJX"^^org.thingpedia.media-source:playable("Before I Go"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:7cQbQPtzPeDkcP3W6hfHgD"^^org.thingpedia.media-source:playable("Get Away"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:3y2Ac9C28723pnZq4E53Dg"^^org.thingpedia.media-source:playable("Do It Now"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: I played music by Ravell on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: play maurice ravel
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, null^^org.thingpedia.media-source:artist("maurice ravel")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:4ZtFanR9U6ndgddUvNcjcG"^^org.thingpedia.media-source:playable("good 4 u"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:0UsmyJDsst2xhX1ZiFF3JW"^^org.thingpedia.media-source:playable("Year,2015"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:7BFk1nSfwfkDOgnNNeY7Yn"^^org.thingpedia.media-source:playable("wish i dropped out like brakence interlude"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:5BJs3aDrKYBRkzrhaVxf89"^^org.thingpedia.media-source:playable("After Me - 2021 Version"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:748mdHapucXQri7IAO8yFK"^^org.thingpedia.media-source:playable("Kiss Me More (feat. SZA)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:5rJw9VsPNdfnV9Ar97xZG2"^^org.thingpedia.media-source:playable("K-LOVE Fan Awards: Songs of the Year (2015 Mash-Up)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1lrjBRhWKrd3YShBN4Un7c"^^org.thingpedia.media-source:playable("Bob Dylan"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:0u7vHkZJtxjSP65kf0yZOA"^^org.thingpedia.media-source:playable("Rubish"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:5CZ40GBx1sQ9agT82CLQCT"^^org.thingpedia.media-source:playable("traitor"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:00ohIpPn9LkKpeIqhfIU9V"^^org.thingpedia.media-source:playable("K-Love Fan Awards: Songs of the Year (2014 Mash-Up)"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=50];
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:0Y5tJX1MQlPlqiwlOH1tJY"^^org.thingpedia.media-source:artist("Travis Scott")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:5uEYRdEIh9Bo4fpjDd4Na9"^^org.thingpedia.media-source:playable("Goosebumps - Remix"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:6gBFPUFcJLzWGx4lenP6h2"^^org.thingpedia.media-source:playable("goosebumps"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:2xLMifQCjDGFmkHkpNLD9h"^^org.thingpedia.media-source:playable("SICKO MODE"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:3eekarcy7kvN4yt5ZFzltW"^^org.thingpedia.media-source:playable("HIGHEST IN THE ROOM"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:11kDth1aKUEUMq9r1pqyds"^^org.thingpedia.media-source:playable("5% TINT"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:2cYqizR4lgvp4Qu6IQ3qGN"^^org.thingpedia.media-source:playable("BUTTERFLY EFFECT"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:51EC3I1nQXpec4gDk0mQyP"^^org.thingpedia.media-source:playable("90210 (feat. Kacy Hill)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:27a1mYSG5tYg7dmEjWBcmL"^^org.thingpedia.media-source:playable("CAN'T SAY"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:7wBJfHzpfI3032CSD7CE2m"^^org.thingpedia.media-source:playable("STARGAZING"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1wHZx0LgzFHyeIZkUydNXq"^^org.thingpedia.media-source:playable("Antidote"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=46];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_pause()
+C: #[results=[]];
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:0CVjzaBJZ4csWIL0kPmzM6"^^org.thingpedia.media-source:artist("Ravell")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:5rIk9RbrH9y4CDYfMeoie1"^^org.thingpedia.media-source:playable("Rockin'"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:0o9L9lfy4hECoa2Y7FcpzS"^^org.thingpedia.media-source:playable("That Body - Dub Mix"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:6c4PgdnY1vZfds7leBo0Zr"^^org.thingpedia.media-source:playable("Feelin' You"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:04Uu103kfQSwmwuzCQoyeZ"^^org.thingpedia.media-source:playable("Sunrise Riot"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:6uoGK87Mo8vBkpDPevEJJX"^^org.thingpedia.media-source:playable("Before I Go"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:7cQbQPtzPeDkcP3W6hfHgD"^^org.thingpedia.media-source:playable("Get Away"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:3y2Ac9C28723pnZq4E53Dg"^^org.thingpedia.media-source:playable("Do It Now"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:17hR0sYHpx7VYTMRfFUOmY"^^org.thingpedia.media-source:artist("Maurice Ravel")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:3MRQn2RYo2VLYMoStnLRxu"^^org.thingpedia.media-source:playable("Ravel: Pavane pour une infante défunte, M. 19"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:4JOEMgLkrHp8K1XNmyNffH"^^org.thingpedia.media-source:playable("Miroirs: III. Une barque sur l'océan"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1NJQ86EXe3Gmo2aGKtrMua"^^org.thingpedia.media-source:playable("Jeux d'eau M.30"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:3M7dYsUVdr66ztv5yXqOFm"^^org.thingpedia.media-source:playable("Ma mère l'oye, M. 60 (Version for Piano Duo): I. Pavane de la belle au bois dormant"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:5lHKK347dnVNkTDGfQ81Ub"^^org.thingpedia.media-source:playable("Miroirs, M.43 - Orch. Ravel: Alborada del gracioso, M.43"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:4ju98rvX917EwXLKLnRbQ2"^^org.thingpedia.media-source:playable("Piano Concerto in G Major, M. 83: II. Adagio assai"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:0eoHzI456z8FK5o0g7pdGn"^^org.thingpedia.media-source:playable("Ravel: Miroirs, M. 43: III. Une barque sur l'océan"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:6TX34flBqlMMSWihUADO2a"^^org.thingpedia.media-source:playable("Le Tombeau de Couperin, M.68: 1. Prélude"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1QMmdTk4tgSZ7K4L2E1oa4"^^org.thingpedia.media-source:playable("Valses nobles et sentimentales, M.61 - for Orchestra: 3. Modéré; 4. Assez animé"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:2DmlTLFphBLAIACKPsLAQH"^^org.thingpedia.media-source:playable("Pavane pour une infante défunte, M. 19 (Version for Orchestra)"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=39];
+A: I played music by Maurice Ravel on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: next
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next();
+====
+# recording/9d5c065ebbfd82d329a8935ae657178c
+U: play some music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/73bdacce3b3128a9206415fbf37b690a
+U: Play a song by the Beatles
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.song() filter contains(artists, null^^org.thingpedia.media-source:artist("beatles")) => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/5eaf228643d600cab36463277346df00
+U: play a song by the Beatles
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.song() filter contains(artists, null^^org.thingpedia.media-source:artist("beatles")) => @org.thingpedia.media-player.play(playable=id);
