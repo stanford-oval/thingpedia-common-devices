@@ -107,7 +107,12 @@ module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
                                   .flatMap(({children}) => children)
                                   .filter((channel) => (channel.type.toLowerCase() === CONTENT_KEYS.audio && channel.item.toLowerCase() === CONTENT_KEYS.station));
             } else {
-                stations = content.filter((channel) => (channel.type.toLowerCase() === CONTENT_KEYS.audio && channel.item.toLowerCase() === CONTENT_KEYS.station));
+                stations = content.filter((channel) => (
+                    'type' in channel &&
+                    'item' in channel &&
+                    channel.type.toLowerCase() === CONTENT_KEYS.audio && 
+                    channel.item.toLowerCase() === CONTENT_KEYS.station
+                ));
             }
             return this._format_station_output(stations);
         } else {
