@@ -243,7 +243,8 @@ module.exports = class HomeAssistantClimate extends HomeAssistantDevice {
     async get_swing_mode() {
         if (this.domain === 'climate') {
             let f_mode = this.state.attributes.swing_mode;
-            return [{ swing: f_mode }];
+            let remove_swing_txt = f_mode.replace("swing_", "");
+            return [{ swing: remove_swing_txt }];
         } else {
             throw new Error('Sorry! Your device doesn\'t support querying swing mode.');
         }
@@ -252,7 +253,8 @@ module.exports = class HomeAssistantClimate extends HomeAssistantDevice {
     async get_swing_modes_aval() {
         if (this.domain === 'climate') {
             let swing_modes_aval = this.state.attributes.swing_mode;
-            return [{ swing: swing_modes_aval }];
+            let remove_swing_txt = swing_modes_aval.replace("swing_", "");
+            return [{ swing: remove_swing_txt }];
         } else {
             throw new Error('Sorry! Your device doesn\'t support querying HVAC swing modes available.');
         }
@@ -260,7 +262,7 @@ module.exports = class HomeAssistantClimate extends HomeAssistantDevice {
 
     async do_set_swing_mode({ mode }) {
         if (this.domain === 'climate')
-            await this._callService('climate', 'set_swing_mode', { swing_mode: mode });
+            await this._callService('climate', 'set_swing_mode', { swing_mode: "swing_" + mode });
         else
             throw new Error('Sorry! Your device doesn\'t support setting swing mode.');
     }

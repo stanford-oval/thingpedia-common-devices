@@ -102,8 +102,8 @@ class TestRunner {
             }
         }
 
-        if (!manifest) // FIXME
-            return this._engine.createSimpleDevice(deviceKind);
+        if (manifest.is_abstract)
+            return null;
 
         const config = manifest.config;
         if (config.module === 'org.thingpedia.config.none')

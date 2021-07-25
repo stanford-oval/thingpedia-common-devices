@@ -1,0 +1,43 @@
+====
+# 1-basic-search
+#U: find me the espn chicago radio station
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => (@com.tunein.station(), id =~ ("espn chicago")) => notify;
+
+A: ESPN Chicago is a radio currently streaming .*\. Would you like to play it\?
+A: rdl: ESPN Chicago http://opml.radiotime.com/Tune.ashx\?id=s21297
+A: >> expecting = yesno
+
+====
+# 2-by-popularity
+#U: show me the most popular radio stations
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => @com.tunein.most_popular_stations() => notify;
+
+A: I (see|have( found)?) .*, .*, and .*\. *.* is a most popular radio stations currently streaming .*\.
+A: rdl: .* http://opml.radiotime.com/Tune.ashx\?id=.*
+A: rdl: .* http://opml.radiotime.com/Tune.ashx\?id=.*
+A: rdl: .* http://opml.radiotime.com/Tune.ashx\?id=.*
+A: >> expecting = null
+
+====
+# 3-by-local
+#U: show me radio stations in my area
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => @com.tunein.local_stations() => notify;
+
+A: I (see|have( found)?) .*, .*, and .*\. *.* is a local radio stations currently streaming .*\.
+A: rdl: .* http://opml.radiotime.com/Tune.ashx\?id=.*
+A: rdl: .* http://opml.radiotime.com/Tune.ashx\?id=.*
+A: rdl: .* http://opml.radiotime.com/Tune.ashx\?id=.*
+A: >> expecting = null
+
+====
+# 4-basic
+# simple playing
+#U: play espn chicago channel on radio
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => (@com.tunein.station(), id =~ ("espn chicago")) => @com.tunein.radio_play(id=id);
+
+A: I played the first radio station that has name espn chicago\.
+A: >> expecting = null

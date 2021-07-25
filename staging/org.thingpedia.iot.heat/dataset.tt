@@ -1,7 +1,6 @@
 dataset @org.thingpedia.iot.heat language "en" {
-    program  := {
-  now => @org.thingpedia.iot.heat.state() => notify;
-}
+    program  := @org.thingpedia.iot.heat.state() 
+
     #_[utterances=["is the heat sensor hot or cold?",
                    "check if the heat sensor is hot",
                    "what does the heat sensor say?",
@@ -54,9 +53,7 @@ dataset @org.thingpedia.iot.heat language "en" {
     #[id=54330257]
     #[name="MonitorStateByStateNormal"];
 
-    program (p_name :String)  := {
-  now => @org.thingpedia.iot.heat(name=p_name).state() => notify;
-}
+    program (p_name :String) := @org.thingpedia.iot.heat(name=p_name).state() 
     #_[utterances=["is the ${p_name} heat sensor hot or cold?",
                    "check if the ${p_name} heat sensor is hot",
                    "check if the ${p_name} heat sensor is cold",
