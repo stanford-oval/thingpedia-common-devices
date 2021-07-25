@@ -27,9 +27,9 @@
 // STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 // OF THE POSSIBILITY OF SUCH DAMAGE.
-
-
-
+ 
+ 
+ 
 class @com.goal_smart
   #_[thingpedia_name="GoalSmart"]
   #_[thingpedia_description="Keep up with the latest in soccer."]
@@ -37,15 +37,15 @@ class @com.goal_smart
   #[license="MIT"]
   #[license_gplcompatible=true]
   #[subcategory="media"]
-
+ 
 {
   import loader from @org.thingpedia.v2();
   import config from @org.thingpedia.config.none(api_key=$?);
-
+ 
   entity soccer_team #_[description="Soccer Teams in the World"];
   entity soccer_league #_[description="Soccer Leagues in the World"];
   entity soccer_player #_[description="Soccer Players in the World"];
-
+ 
   monitorable list query standings(in req league_id: Entity(com.goal_smart:soccer_league) #_[prompt="what league standings do you want out check out"],
                         out team : Entity(com.goal_smart:soccer_team)
                         #_[canonical={
@@ -71,8 +71,8 @@ class @com.goal_smart
   #_[result = ["${rank} . ${team} Form: ${form} Points: ${points}"]]
   #[poll_interval=3600000ms]
   #[doc="Get the standings of a league"];
-
-
+ 
+ 
   monitorable list query fixtures(in req team_id: Entity(com.goal_smart:soccer_team) #_[prompt="what team do you want out check out"],
                         out league : Entity(com.goal_smart:soccer_league)
                         #_[canonical = {
@@ -108,8 +108,8 @@ class @com.goal_smart
   #_[result=["${our_team} ${result} against ${opposition_team} on ${date} at ${venue} for the ${league}. The score ${score}"]]
   #[poll_interval=3600000ms]
   #[doc="Get the fixtures of the team"];
-
-
+ 
+ 
   monitorable list query player(in req league_id: Entity(com.goal_smart:soccer_league) #_[prompt="what league do you want out check out"],
                         out id: Entity(com.goal_smart:soccer_player)
                         #_[canonical = {
@@ -187,8 +187,8 @@ class @com.goal_smart
   }]
   #[poll_interval=3600000ms]
   #[doc="Get the top scorers of the league"];
-
-
+ 
+ 
   monitorable list query teamUpdate(in req team_id: Entity(com.goal_smart:soccer_team) #_[prompt="what team do you want out check out "],
                         out team : Entity(com.goal_smart:soccer_team)
                         #_[canonical = {
@@ -218,5 +218,33 @@ class @com.goal_smart
   }]
   #[poll_interval=3600000ms]
   #[doc="Get the overall summary on the performance of the team"];
-
+ 
+  monitorable list query lineup(in req team_id: Entity(com.goal_smart:soccer_team) #_[prompt="what team do you want out check out "],
+                        out player : Entity(com.goal_smart:soccer_player)
+                        #_[canonical = {
+                          base = ["player", "individual", "athlete", "player", "member", "starter"]
+                        }],
+                        out jersey_number : Number
+                        #_[canonical = {
+                          base = ["jersey number", "number"]
+                        }],
+                        out position: Enum(goalkeeper, defender, midfielder, forward)
+                        #_[canonical = {
+                          base = ["score of last match", "result", "final", "outcome", "score"]
+                        }])
+  #_[canonical=["team lineup", "team starters", "team starting lineup", "team sheet", "team players"]]
+  #_[confirmation="lineup of $team_id"]
+  #_[result= {
+    top = "${player} is a ${position} and wears jersey number ${jersey_number}",
+    list = "${player} is a ${position} and wears jersey number ${jersey_number}"
+  }]
+  #[poll_interval=3600000ms]
+  #[doc="Get the lineup of the team"];
+ 
+ 
+  
+ 
 }
+ 
+ 
+
