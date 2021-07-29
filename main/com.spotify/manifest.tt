@@ -108,4 +108,80 @@ class @com.spotify extends @org.thingpedia.media-player, @org.thingpedia.media-s
     #[poll_interval=3600000ms]
     #[doc="get user's top tracks in the last 4 weeks"];
 
+  action add_item_to_library(in req playable: Entity(org.thingpedia.media-source:playable)
+                             #[string_values="tt:song_name"]
+                             #_[prompt=["what item do you want to add to your favorite"]]
+                             #_[canonical={
+                               default="base",
+                               base=["name"],
+                               preposition=["named #", "called #", "titled #"],
+                               property=["name #", "title #"]
+                             }])
+  #_[canonical=["add a song to my favorites",
+                "add a track to my favorites",
+                "add a show to my favorites",
+                "add an artist to my favorites",
+                "put a song to my favorites",
+                "put a track to my favorites",
+                "put a show to my favorites",
+                "put an artist to my favorites",
+                "add a song to my library",
+                "add a track to my library",
+                "add a show to my library",
+                "add an artist to my library",
+                "put a song to my library",
+                "put a track to my library",
+                "put a show to my library",
+                "put an artist to my library",
+                "favorite the song",
+                "favorite the track",
+                "favorite the album",
+                "favorite the show",
+                "favorite the episode",
+                "favorite the artist",
+                "like the song",
+                "like the track",
+                "like the album",
+                "like the show",
+                "like the episode",
+                "like the artist",
+                "remember the song",
+                "remember the track",
+                "remember the album",
+                "remember the show",
+                "remember the episode",
+                "remember the artist",
+                "save the song",
+                "save the track",
+                "save the album",
+                "save the show",
+                "save the episode",
+                "save the artist",
+                "keep the song",
+                "keep the track",
+                "keep the album",
+                "keep the show",
+                "keep the episode",
+                "keep the artist",
+                "love the song",
+                "love the track",
+                "love the album",
+                "love the show",
+                "love the episode",
+                "love the artist",
+                "follow the song",
+                "follow the track",
+                "follow the album",
+                "follow the show",
+                "follow the episode",
+                "follow the artist"]]
+  #_[confirmation="add the item $playable to your library"]
+  #_[on_error={
+    no_item_to_add=["there is no item to be added to your library"],
+    unsupported_item=["adding this item to your library is currently unsupported"],
+    disallowed_action=["you cannot add items to your library"],
+    rate_limit_error=["spotify is temporarily unavailable"]
+  }]
+  #[confirm=enum auto]
+  #[minimal_projection=[]];
 }

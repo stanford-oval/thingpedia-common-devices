@@ -250,6 +250,67 @@ abstract class @org.thingpedia.media-source
     #[poll_interval=60000ms]
     #[doc="retrieve the currently playing track name"];
 
+    list query get_song_from_library extends song()
+    #_[canonical=["my favorites",
+                  "my library",
+                  "library",
+                  "songs in my favorites",
+                  "music in my favorites",
+                  "tracks in my favorites",
+                  "songs in my library",
+                  "music in my library",
+                  "tracks in my library"]]
+    #_[confirmation="song"]
+    #_[on_error={
+      no_favorite_item=["no tracks in your favorites", "no tracks in your library"],
+      rate_limit_error=["spotify is temporarily unavailable"]
+    }]
+    #[doc="retrieve songs from user's library or favorites"];
 
+    list query get_album_from_library extends album()
+    #_[canonical=["my favorite album",
+                  "my favorite music",
+                  "my favorite music collection",
+                  "my favorite collection",
+                  "my library collection", "my music library collection"]]
+    #_[confirmation="album"]
+    #_[on_error={
+      no_favorite_item=["no albums in your favorites", "no albums in your library"],
+      rate_limit_error=["spotify is temporarily unavailable"]
+    }]
+    #[doc="retrieve albums from user's library or favorite"];
+
+    list query get_show_from_library extends show()
+    #_[canonical=["my favorite shows",
+                  "my favorite podcasts",
+                  "my favorite episodes",
+                  "my favorite audio podcasts",
+                  "shows in my favorites",
+                  "podcasts in my favorites",
+                  "episodes in my favorites",
+                  "audio podcasts in my favorites",
+                  "shows in my library",
+                  "podcasts in my library",
+                  "episodes in my library",
+                  "audio podcasts in my library"]]
+    #_[confirmation="show"]
+    #_[on_error={
+      no_favorite_item=["no shows in your favorites", "no shows in your library"],
+      rate_limit_error=["spotify is temporarily unavailable"]
+    }]
+    #[doc="retrieve shows or podcasts from user's library or favorite"];
+
+    list query get_artist_from_library extends artist()
+    #_[canonical=["my favorite artist",
+                  "my favorite singer",
+                  "my favorite musician",
+                  "my favorite composer",
+                  "my favorite host"]]
+    #_[confirmation="artist"]
+    #_[on_error={
+      no_favorite_item=["no artists in your favorites", "no artists in your library"],
+      rate_limit_error=["spotify is temporarily unavailable"]
+    }]
+    #[doc="retrieve artists from user's library or favorite"];
 }
 

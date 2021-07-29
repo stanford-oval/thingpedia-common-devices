@@ -46,4 +46,36 @@ module.exports = [
         assert.deepStrictEqual(result[0].id, new Tp.Value.Entity('spotify:track:7tFiyTwD0nx5a1eklYtX2J', 'Bohemian Rhapsody - Remastered 2011'));
         assert.deepStrictEqual(result[0].release_date, new Date('1975-11-21T00:00:00.000Z'));
     }],
+    ['query', 'get_song_from_library', {}, (result) => {
+        console.log("parsed song items: " + JSON.stringify(result, null, 2));
+        assert(result instanceof Array);
+        for (const item of result) {
+            assert(item.song instanceof Tp.Value.Entity);
+            console.log(`Entity = ${String(item.song)} :: Name = ${item.song.display}`);
+        }
+    }],
+    ['query', 'get_album_from_library', {}, (result) => {
+        console.log("parsed song items: " + JSON.stringify(result, null, 2));
+        assert(result instanceof Array);
+        for (const item of result) {
+            assert(item.album instanceof Tp.Value.Entity);
+            console.log(`Entity = ${String(item.album)} :: Name = ${item.album.display}`);
+        }
+    }],
+    ['query', 'get_show_from_library', {}, (result) => {
+        console.log("parsed song items: " + JSON.stringify(result, null, 2));
+        assert(result instanceof Array);
+        for (const item of result) {
+            assert(item.show instanceof Tp.Value.Entity);
+            console.log(`Entity = ${String(item.show)} :: Name = ${item.show.display}`);
+        }
+    }],
+    ['query', 'get_artist_from_library', {}, (result) => {
+        console.log("parsed song items: " + JSON.stringify(result, null, 2));
+        assert(result instanceof Array);
+        for (const item of result) {
+            assert(item.artist instanceof Tp.Value.Entity);
+            console.log(`Entity = ${String(item.artist)} :: Name = ${item.artist.display}`);
+        }
+    }],
 ];

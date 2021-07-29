@@ -20,5 +20,33 @@ dataset @com.spotify language "en" {
     #[id=27924898]
     ;
 
+    action (p_playable :Entity(org.thingpedia.media-source:playable)) = @com.spotify.add_item_to_library(playable=p_playable)
+    #_[utterances=["add ${p_playable} to my favorite",
+                   "put ${p_playable} in my favorite",
+                   "save ${p_playable} to my favorite",
+                   "add ${p_playable} to my library",
+                   "put ${p_playable} in my library",
+                   "save ${p_playable} to my library",
+                   "like ${p_playable:no-undefined}",
+                   "favorite ${p_playable:no-undefined}",
+                   "save ${p_playable:no-undefined}",
+                   "keep ${p_playable:no-undefined}",
+                   "love ${p_playable:no-undefined}",
+                   "remember ${p_playable:no-undefined}"]]
+    ;
 
+    action := (@org.thingpedia.media-source.get_currently_playing()) => @com.spotify.add_item_to_library(playable=id)
+    #_[utterances=["add this to my favorite",
+                   "put this in my favorite",
+                   "save this to my favorite",
+                   "add this to my library",
+                   "put this in my library",
+                   "save this to my library",
+                   "like this",
+                   "favorite this",
+                   "save this",
+                   "keep this",
+                   "love this",
+                   "remember this"]]
+    ;
 }

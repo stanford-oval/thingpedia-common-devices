@@ -35,6 +35,7 @@ const Tp = require("thingpedia");
 const querystring = require("querystring");
 const assert = require('assert');
 const spotifyd = require("./spotifyd");
+// const { parse } = require("path");
 
 const PLAY_URL = "https://api.spotify.com/v1/me/player/play";
 const SEARCH_URL = "https://api.spotify.com/v1/search?";
@@ -54,7 +55,15 @@ const NEXT_URL = 'https://api.spotify.com/v1/me/player/next?';
 const PREVIOUS_URL = 'https://api.spotify.com/v1/me/player/previous?';
 const REPEAT_URL = 'https://api.spotify.com/v1/me/player/repeat?';
 const PLAYER_INFO_URL = "https://api.spotify.com/v1/me/player";
+const USER_BASE_URL = 'https://api.spotify.com/v1/me/';
 
+const SPOTIFY_ITEMS = {
+    track: 'track',
+    album: 'album',
+    episode: 'episode',
+    show: 'show',
+    artist: 'artist',
+};
 module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
     constructor(engine, state) {
@@ -887,7 +896,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         const trackItems = await this.tracks_get_by_id([id]);
         return this.parse_tracks(trackItems.tracks);
     }
-
+    
     _testMode() {
         return process.env.TEST_MODE === '1';
     }
@@ -1050,6 +1059,111 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         } catch (error) {
             throwError('disallowed_action');
         }
+    }
+
+    determine_item_uri(item) {
+        let url = '';
+        switch (item) {
+            case SPOTIFY_ITEMS.track:
+            case SPOTIFY_ITEMS.album:
+            case SPOTIFY_ITEMS.episode:
+            case SPOTIFY_ITEMS.show:
+                url = `${USER_BASE_URL}${item}s?`;
+                break;
+            case SPOTIFY_ITEMS.artist:
+                url = `${USER_BASE_URL}following?`;
+                break;
+            default:
+                throw new Error("unsupported_item");
+        }
+        return url;
+    }
+
+    async do_add_item_to_library({playable}) {
+        if (this._testMode()) return;
+        if (!playable || !(playable instanceof Tp.Value.Entity))
+            throwError('no_item_to_add');
+        const [ids, item_type,] = String(playable).split(':').reverse();
+        let url = this.determine_item_uri(item_type);
+        try {
+            let query = {
+                ids: ids
+            };
+            if (item_type === SPOTIFY_ITEMS.artist)
+                query.type = SPOTIFY_ITEMS.artist;
+            url += querystring.stringify(query);
+            await this.http_put_default_options(url, '');
+        } catch (error) {
+            throwError('disallowed_action');
+        }
+    }
+
+    _format_library_item_url({item=SPOTIFY_ITEMS.track, market='US', limit=50, offset=0}) {
+        let query_string = {
+            limit: limit
+        };
+        if (item === SPOTIFY_ITEMS.artist) {
+            query_string.type = SPOTIFY_ITEMS.artist;
+        } else {
+            query_string.market = market;
+            query_string.offset = offset;
+        }
+        return `${this.determine_item_uri(item)}?${querystring.stringify(query_string)}`;
+    }
+
+    async _parse_library_items(url, item_type) {
+        const parsed = await this.http_get(url).then((response) => {
+            return JSON.parse(response);
+        });
+        if (item_type === SPOTIFY_ITEMS.artist) {
+            if (parsed.artists.items.length === 0)
+                throwError('no_favorite_item');
+            return parsed.artists.items;
+        } else {
+            if (Number(parsed.total) === 0 || parsed.items.length === 0)
+                throwError('no_favorite_item');
+            return parsed.items;
+        }
+    }
+
+    async get_get_song_from_library() {
+        const url = this._format_library_item_url({item: SPOTIFY_ITEMS.track});
+        const parsed = await this._parse_library_items(url, SPOTIFY_ITEMS.track);
+        return parsed.map((item) => {
+            return {
+                song: new Tp.Value.Entity(item.track.uri, item.track.name)
+            };
+        });
+    }
+
+    async get_get_album_from_library() {
+        const url = this._format_library_item_url({item: SPOTIFY_ITEMS.album});
+        const parsed = await this._parse_library_items(url, SPOTIFY_ITEMS.album);
+        return parsed.map((item) => {
+            return {
+                album: new Tp.Value.Entity(item.album.uri, item.album.name)
+            };
+        });
+    }
+
+    async get_get_show_from_library() {
+        const url = this._format_library_item_url({item: SPOTIFY_ITEMS.show});
+        const parsed = await this._parse_library_items(url, SPOTIFY_ITEMS.show);
+        return parsed.map((item) => {
+            return {
+                show: new Tp.Value.Entity(item.show.uri, item.show.name)
+            };
+        });
+    }
+
+    async get_get_artist_from_library() {
+        const url = this._format_library_item_url({item: SPOTIFY_ITEMS.artist});
+        const parsed = await this._parse_library_items(url, SPOTIFY_ITEMS.artist);
+        return parsed.map((item) => {
+            return {
+                artist: new Tp.Value.Entity(item.uri, item.name)
+            };
+        });
     }
 
     async do_create_playlist({
