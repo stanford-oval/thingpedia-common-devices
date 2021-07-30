@@ -82,7 +82,7 @@ UT: now => (@com.tunein.station(), id =~ ("ireland's classic hits")) => @com.tun
 # nlu-modified/006
 U: Give me something from the radio
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.tunein.most_popular_stations();
+UT: @com.tunein.most_popular_stations() => @com.tunein.radio_play(id=id);
 ====
 # nlu-modified/007
 U: I want something from the ESPN radio
@@ -155,19 +155,19 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => (@com.tunein.station(), id =~ ("classical guitar northwest")) => @com.tunein.radio_play(id=id);
 ====
 # nlu-modified/021
-U: Open TuneIn and play 
+U: Open TuneIn and play ESPN Radio
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@com.tunein.station(), id =~ ("classical guitar northwest")) => @com.tunein.radio_play(id=id);
+UT: now => (@com.tunein.station(), id =~ ("espn radio")) => @com.tunein.radio_play(id=id);
 ====
 # nlu-modified/022
-U: Put th Power Gaming playlist
+U: Put ESPN Chicago channel on the radio
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@com.tunein.station(), id =~ ("classical guitar northwest")) => @com.tunein.radio_play(id=id);
+UT: now => (@com.tunein.station(), id =~ ("espn chicago")) => @com.tunein.radio_play(id=id);
 ====
 # nlu-modified/023
 U: Something on the radio please
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.tunein.local_stations();
+UT: @com.tunein.most_popular_stations() => @com.tunein.radio_play(id=id);
 ====
 # nlu-modified/024
 U: Can you stream the ESPN Los Angeles station on the radio
@@ -253,3 +253,28 @@ UT: now => (@com.tunein.station(), id =~ ("j-pop project radio")) => @com.tunein
 U: Start the radio and search J-Pop Project Radio.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => (@com.tunein.station(), id =~ ("j-pop project radio")) => notify;
+====
+# nlu-modified/041
+U: Something from the local radio please
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.local_stations() => @com.tunein.radio_play(id=id);
+====
+# nlu-modified/042
+U: Play anything from the local radio
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.local_stations() => @com.tunein.radio_play(id=id);
+====
+# nlu-modified/043
+U: Anything from the local radios
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.local_stations() => @com.tunein.radio_play(id=id);
+====
+# nlu-modified/044
+U: Start radio and stream any local channel
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.local_stations() => @com.tunein.radio_play(id=id);
+====
+# nlu-modified/043
+U: Play anything in my area on the radio
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.local_stations() => @com.tunein.radio_play(id=id);
