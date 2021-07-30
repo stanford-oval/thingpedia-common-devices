@@ -45,6 +45,8 @@ class @com.goal_smart
   entity soccer_team #_[description="Soccer Teams in the World"];
   entity soccer_league #_[description="Soccer Leagues in the World"];
   entity soccer_player #_[description="Soccer Players in the World"];
+  entity soccer_coach #_[description="Soccer Coaches in the World"];
+
  
   monitorable list query standings(in req league_id: Entity(com.goal_smart:soccer_league) #_[prompt="what league standings do you want out check out"],
                         out team : Entity(com.goal_smart:soccer_team)
@@ -240,8 +242,57 @@ class @com.goal_smart
   }]
   #[poll_interval=3600000ms]
   #[doc="Get the lineup of the team"];
- 
- 
+
+  monitorable list query teamCoach(in req team_id: Entity(com.goal_smart:soccer_team) #_[prompt="what coach do you want out check out "],
+                        out coach : Entity(com.goal_smart:soccer_coach))
+  #_[canonical=["team coach", "team manager"]]
+  #_[confirmation="coach has been found"]
+  #_[result=["${coach}"]]
+  #[poll_interval=3600000ms]
+  #[doc="Get the coach of the team"];
+
+  monitorable list query trophies(in req player_id: Entity(com.goal_smart:soccer_player) #_[prompt="what player do you want out check out "],
+                        out trophy : String
+                        #_[canonical = {
+                          base = ["trophy", "accolades", "wins", "championships"]
+                        }],
+                        out rank : String
+                        #_[canonical = {
+                          base = ["rank", "place", "order"]
+                        }],
+                        out season : String
+                        #_[canonical = {
+                          base = ["season", "year"]
+                        }])
+  #_[canonical=["player accolades", "player trophies"]]
+  #_[confirmation="trophies of $player_id"]
+  #_[result=["${player_id} was the ${rank} in the ${trophy} in ${season}"]]
+  #[poll_interval=3600000ms]
+  #[doc="Get the trophies of the player"];
+
+  monitorable list query teamPredictions(in req team_id: Entity(com.goal_smart:soccer_team) #_[prompt="what team do you want out check out "],
+                        out our_team: Entity(com.goal_smart:soccer_team)
+                        #_[canonical = {
+                          base = ["manager", "coach", "trainer", "instructor"]
+                        }],
+                        out opposition_team: Entity(com.goal_smart:soccer_team)
+                        #_[canonical = {
+                          base = ["manager", "coach", "trainer", "instructor"]
+                        }],
+                        out league : Entity(com.goal_smart:soccer_league)
+                        #_[canonical = {
+                          base = ["league", "division"]
+                        }],
+                        out chance_of_winning: String, 
+                        out history_head_to_head: String,
+                        out previous_meeting_score: String, 
+                        out prediction_score: String)
+  #_[canonical=["team predictions", "team odds"]]
+  #_[confirmation="predictions of $team_id"]
+  #_[result=["${our_team} has a ${chance_of_winning} of winning against ${opposition_team} in the ${league}. The predicted score is ${prediction_score}. The last time they played, the score was ${previous_meeting_score}, and historically, ${our_team} has won the matchup ${history_head_to_head} of the time."]]
+  #[poll_interval=3600000ms]
+  #[doc="Get the predictions of the team"];
+
   
  
 }
