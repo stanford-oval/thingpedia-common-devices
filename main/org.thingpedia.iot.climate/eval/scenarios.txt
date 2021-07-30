@@ -1,0 +1,308 @@
+# 1-basic
+U: What the hvac is currently doing?
+A: You have multiple climate devices. Which one do you want to use\?
+A: choice 0: HeatPump
+A: choice 1: Hvac
+A: choice 2: Ecobee
+
+U: Hvac
+A: The Hvac hvac system is (heating|cooling|off|drying|idle)\. 
+A: >> expecting = null
+
+====
+# 2-basic-aval
+#U: Which modes are available for my climate system?
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.iot.climate.hvac_modes_aval();
+A: You have multiple climate devices. Which one do you want to use\?
+A: choice 0: HeatPump
+A: choice 1: Hvac
+A: choice 2: Ecobee
+
+U: Hvac
+#A: The available modes on Hvac are ((off|auto|heat|cool|heat cool|dry|fan only)(, |(, )and)?)+\.
+#A: The available modes on Hvac are (off)?(,|and)?(auto)?(,|and)?(heat)?(,|and)?(cool)?(,|and)?(heat cool)?(,|and)?(dry)?(,|and)?(fan only)?\.
+A: The available modes on Hvac are off, heat, cool, auto, dry, and fan only\.
+A: >> expecting = null
+
+====
+# 3-basic-aval
+#U: Which modes are available for my Ecobee?
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.iot.climate(name="Ecobee").hvac_modes_aval();
+#A: The available modes on Ecobee are ((off|auto|heat|cool|heat cool|dry|fan only)(, |(, )and)?)+\.
+A: The available modes on Ecobee are heat cool, cool, and heat.
+A: >> expecting = null
+
+====
+# 4-basic-set
+#U: Set the Ecobee climate system to heat mode
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.iot.climate(name="Ecobee").set_hvac_mode(mode=enum(heat));
+A: (Ok, do you want me to (turn the|set your) Ecobee (heating on|to heat)\?)
+A: >> expecting = yesno
+
+U: Yes
+A: I set your Ecobee to heat for you.
+A: >> expecting = null 
+
+====
+# 5-basic-preset
+#U: Which preset is actually running my thermostat?
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.iot.climate(name="Ecobee").hvac_preset();
+A: (The Ecobee hvac system is set to (eco|away|boost|comfort|home|sleep|activity)\.)
+A: >> expecting = null
+
+====
+# 6-basic-aval-preset
+#U: Which presets are available for my thermostat?
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.iot.climate(name="Ecobee").hvac_presets_aval();
+A: The available presets on Ecobee are home and eco\.
+A: >> expecting = null
+
+====
+# 7-basic-set-preset
+#U: Switch the thermostat preset to away
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.iot.climate.set_hvac_preset(preset=enum(away));
+A: You have multiple climate devices. Which one do you want to use\?
+A: choice 0: HeatPump
+A: choice 1: Hvac
+A: choice 2: Ecobee
+
+U: Hvac
+#A: (Ok, do you want me to (turn the|set your) Hvac (preset)? to away\?)
+A: Ok, do you want me to set your Hvac to away\?
+A: >> expecting = yesno
+
+U: Yes
+A: I set (your Hvac to away for you|hvac preset).
+A: >> expecting = null
+
+====
+# 8-basic-current-temp-read
+#U: Which is the temperature read by the thermostat?
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.iot.climate.current_temperature();
+A: You have multiple climate devices. Which one do you want to use\?
+A: choice 0: HeatPump
+A: choice 1: Hvac
+A: choice 2: Ecobee
+A: >> expecting = choice
+
+U: HeatPump
+A: (The temperature reported by HeatPump is [0-9\.]+ ?(°)?(F|C)?\.)
+A: >> expecting = null
+
+====
+# 9-basic-target-temp-read 
+# FIXME "temperature" exposed instead of "target_temperature"
+#U: Which is the target temperature set on the Hvac climate system?
+#U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+#U: @org.thingpedia.iot.climate(name="Hvac").target_temperature();
+#A: (The target temperature on Hvac is [0-9\.]+ ?°F\.)
+#A: >> expecting = null
+
+====
+# 10-basic-target-temp
+#U: Set the target temperature of the HeatPump to 80°F
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.iot.climate(name="HeatPump").set_target_temperature(value=80F);
+A: Ok, do you want me to set temperature on your HeatPump to 80 F\?
+A: >> expecting = yesno
+
+U: Yes
+A: I set temperature on your HeatPump to 80 F for you.
+A: >> expecting = null
+
+====
+# 11-set-minmax-temp-slot-fill
+U: Set minimum and maximum temperature
+A: You have multiple climate devices. Which one do you want to use\?
+A: choice 0: HeatPump
+A: choice 1: Hvac
+A: choice 2: Ecobee
+
+U: Hvac
+A: What high temperature do you want to set\?
+A: >> expecting = generic
+
+U: 85°F
+
+A: What low temperature do you want to set\?
+A: >> expecting = generic
+
+U: 60°F
+
+A: Ok, do you want me to set the temperature between [0-9\.]+ ?(°)?(F|C)? and [0-9\.]+ ?(°)?(F|C)? on your Hvac\?
+A: >> expecting = yesno
+
+U: Yes 
+A: I set the temperature between [0-9\.]+ ?(°)?(F|C)? and [0-9\.]+ ?(°)?(F|C)? on your Hvac for you.
+A: >> expecting = null
+
+====
+# 12-basic-min-temp-read
+#U: Which is the minimum target temperature set on the Ecobee?
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.iot.climate(name="Ecobee").min_temperature();
+A: (The minimum temperature on Ecobee is set to [0-9\.]+ ?(°)?(F|C)?\.)
+A: >> expecting = null
+
+====
+# 13-basic-max-temp-read
+#U: Which is the maximum target temperature set on the Hvac?
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.iot.climate(name="Hvac").max_temperature();
+A: (The maximum temperature on Hvac is set to [0-9\.]+ ?(°)?(F|C)?\.)
+A: >> expecting = null
+
+====
+# 14-basic-current-hum-read
+#U: Which is the humidity read by the Hvac climate system?
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.iot.climate.current_humidity();
+A: You have multiple climate devices. Which one do you want to use\?
+A: choice 0: HeatPump
+A: choice 1: Hvac
+A: choice 2: Ecobee
+
+U: Hvac
+A: (The humidity reported by Hvac is [0-9\.]+ ?(%)?\.)
+A: >> expecting = null
+
+====
+# 15-basic-target-hum-read
+# FIXME "humidity" exposed instead of "target_humidity"
+#U: Which is the target humidity set on the Hvac climate system?
+#U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+#U: @org.thingpedia.iot.climate(name="Hvac").target_humidity();
+#A: (The target humidity is [0-9\.]+ ?(%)?\.)
+#A: >> expecting = null
+
+====
+# 16-basic-target-hum
+#U: Set the target humidity to 60%
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.iot.climate.set_target_humidity(value=60);
+A: You have multiple climate devices. Which one do you want to use\?
+A: choice 0: HeatPump
+A: choice 1: Hvac
+A: choice 2: Ecobee
+
+U: Hvac
+A: Ok, do you want me to set humidity on your Hvac to 60(%)?\?
+A: >> expecting = yesno
+
+U: Yes
+A: I set humidity on your Hvac to 60(%)? for you.
+A: >> expecting = null
+ 
+====
+# 17-basic-target-min-hum-read
+#U: Which is the minimum target humidity set on the Hvac?
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.iot.climate(name="Hvac").min_humidity();
+A: The minimum humidity on Hvac is set to [0-9\.]+ ?(%)?\.
+A: >> expecting = null
+
+====
+# 18-basic-target-max-hum-read
+#U: Which is the maximum humidity set on the thermostat?
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.iot.climate(name="Hvac").max_humidity();
+A: The maximum humidity on Hvac is set to [0-9\.]+ ?(%)?\.
+A: >> expecting = null
+
+====
+# 19-basic-fan-mode
+# FIXME fan modes not matching documentation
+#U: Which fan mode is actually running my Ecobee climate system?
+#U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+#U: @org.thingpedia.iot.climate(name="Ecobee").fan_mode();
+#A: (The Ecobee is running fan in (On Low|On High|Auto Low|Auto High|Off)\ mode\.)
+#A: >> expecting = null
+#
+#====
+# 20-basic-aval-fan-mode
+# FIXME fan modes not matching documentation
+#U: Which fan modes are available for my Ecobee climate system?
+#U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+#U: @org.thingpedia.iot.climate(name="Ecobee").fan_modes_aval();
+#A: (The Ecobee fan could be set to (on|off|auto|low|medium|high|middle|focus|diffuse)\.)
+#A: (The Ecobee is running fan in (On Low|On High|Auto Low|Auto High|Off)\ mode\.)
+#A: >> expecting = null
+#
+#====
+# 21-basic-set-fan-mode
+# FIXME fan modes not matching documentation
+#U: Set the HVAC fan to diffuse
+#U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+#U: @org.thingpedia.iot.climate.set_fan_mode(mode=enum(diffuse));
+#A: Ok, do you want me to turn the Office Thermostat fan on diffuse\?
+#A: >> expecting = yesno
+#
+#U: Yes
+#A: (Your request was completed successfully\.)
+#A: >> expecting = null
+#
+#====
+# 22-basic-swing-mode
+# FIXME needs manifest/dataset to be updated, swing modes not matching documentation
+#U: Which swing mode is actually running my climate system?
+#A: You have multiple climate devices. Which one do you want to use\?
+#A: choice 0: HeatPump
+#A: choice 1: Hvac
+#A: choice 2: Ecobee
+#
+#U: Ecobee
+#A: (The Ecobee is running (swing off|swing vertical|swing horizontal|swing both)\ mode.)
+#A: >> expecting = null
+#
+#====
+# 23-basic-aval-swing-mode 
+# FIXME needs manifest/dataset to be updated, swing modes not matching documentation
+#U: Which swing modes are available for my climate system?
+#A: (The HVAC's swing mode could be set to (swing off|swing vertical|swing horizontal|swing both)\.)
+#A: >> expecting = null
+#
+#====
+# 24-basic-set-swing-mode 
+# FIXME needs manifest/dataset to be updated, swing modes not matching documentation
+#U: Set the HVAC swing mode to swing vertically 
+#A: (I set climate system's swing mode to swinng vertically\.)
+#A: >> expecting = null
+#
+#====
+# 25-basic-set-aux-heat
+#U: Set the auxiliary heating on 
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.iot.climate.set_aux_heat(value=enum on);
+A: You have multiple climate devices. Which one do you want to use\?
+A: choice 0: HeatPump
+A: choice 1: Hvac
+A: choice 2: Ecobee
+
+U: Hvac
+A: (Ok, do you want me to (turn|set) the Hvac auxiliary heater (to)? on\?)
+A: >> expecting = yesno
+
+U: yes
+A: I set auxiliary heater\.
+A: >> expecting = null
+
+====
+# 26-basic-set-hvaconoff
+#U: Turn on the Hvac 
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: @org.thingpedia.iot.climate(name="Hvac").set_hvac_onoff(value=enum on);
+A: (Ok, do you want me to (turn|set)? the Hvac (to)? on\?)
+A: >> expecting = yesno
+
+U: Yes
+A: I set hvac power for you\.
+A: >> expecting = null
+
+====

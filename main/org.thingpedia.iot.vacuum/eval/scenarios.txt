@@ -1,0 +1,71 @@
+# 1-basic-state
+U: Which is the status of the Ground floor vacuum?
+A: Your 0_Ground_floor vacuum is (on|off|docked)\.
+A: >> expecting = null
+
+====
+# 2-send-base
+U: Send the vacuum back to the base
+A: choice 0: 0_Ground_floor
+A: choice 1: 1_First_floor
+A: choice 2: 2_Second_floor
+A: choice 3: 3_Third_floor
+A: choice 4: 4_Fourth_floor
+A: choice 5: 5_Fifth_floor
+A: >> expecting = choice
+
+U: 1_First_floor
+A: (Ok, do you want me to dock your 1_First_floor vacuum\?)
+A: >> expecting = yesno 
+
+U: Yes
+A: I docked your 1_First_floor vacuum for you\.
+A: >> expecting = null
+
+====
+# 3-start
+U: Start my 2_Second_floor vacuum
+A: Ok, do you want me to start your 2_Second_floor vacuum\?
+A: >> expecting = yesno 
+
+U: Yes
+A: I started your 2_Second_floor vacuum\.
+A: >> expecting = null
+
+====
+# 4-pause
+U: Tell the 3_Third_floor vacuum to pause cleaning
+A:  Ok, do you want me to pause your 3_Third_floor vacuum\?
+A: >> expecting = yesno 
+
+U: Yes
+A: I paused your 3_Third_floor vacuum\.
+A: >> expecting = null
+
+====
+# 5-stop
+U: Make my 4_Fourth_floor stop cleaning
+A: Ok, do you want me to stop the 4_Fourth_floor vacuum cleaner\?
+A: >> expecting = yesno 
+
+U: Yes
+A:  I stopped the 4_Fourth_floor vacuum cleaner\.
+A: >> expecting = null
+
+====
+# 6-set_power-slot-fill
+U: Set the power of the 5_Fifth_floor vacuum
+A: Ok, do you want me to turn on your 5_Fifth_floor vacuum\?
+A: >> expecting = yesno
+
+U: yes
+A: >> expecting = null
+
+====      
+# 7-set-all
+U: Start all vacuums
+A: Ok, do you want me to start vacuum\?
+A: >> expecting = yesno
+
+U: yes
+A: >> expecting = null
