@@ -40,7 +40,8 @@ const CONTENT_TYPE = 'application/x-www-form-urlencoded';
 const RENDER_TYPE = 'json';
 const QUERY_PARAM = {
     search: 'Search.ashx',
-    browse: 'Browse.ashx'
+    browse: 'Browse.ashx',
+    tune: 'Tune.ashx'
 };
 const CONTENT_KEYS = {
     station: 'station',
@@ -162,25 +163,18 @@ module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
     }
 
     async do_radio_play({id}) {
-        if (process.env.TEST_MODE === '1') return undefined;
+        if (process.env.TEST_MODE === '1') return;
         const audio_player = this.platform.getCapability('audio-player');
         if (!audio_player){
             throw new Error(DEVICE_ERROR.unsupported_version);
         } else {
+            const query_string = {
+                id: String(id).split(':')[1],
+            };
+            const url = `${BASE_URL}${QUERY_PARAM.tune}?${querystring.stringify(query_string)}`;
             try{
-                const query_string = {
-                    query: id,
-                    render: RENDER_TYPE
-                };
-                const url = `${BASE_URL}${QUERY_PARAM.search}?${querystring.stringify(query_string)}`;
-                const station_list = this._get_station_details(url);
-                const match = station_list.find((item) => item.text.toLowerCase() === id.toLowerCase());
-                if (!match) {
-                    throw new Error(DEVICE_ERROR.station_not_found);
-                } else {
-                    audio_player.play(match.link);
-                    return undefined;
-                }
+                audio_player.play(url);
+                return;
             } catch (e) {
                 throw new Error(DEVICE_ERROR.service_unavailable);
             }
