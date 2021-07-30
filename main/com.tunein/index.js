@@ -36,8 +36,11 @@ const Tp = require("thingpedia");
 const querystring = require("querystring");
 
 const BASE_URL = 'http://opml.radiotime.com/';
-const CONTENT_TYPE = 'application/x-www-form-urlencoded';
 const RENDER_TYPE = 'json';
+const CONTENT_TYPE = {
+    urlencoded: 'application/x-www-form-urlencoded',
+    json: 'application/json'
+};
 const QUERY_PARAM = {
     search: 'Search.ashx',
     browse: 'Browse.ashx',
@@ -71,14 +74,25 @@ module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
         };
     }
 
-    async _http_get(url) {
+    async _http_get(url, content_type) {
         try {
-            return JSON.parse(await Tp.Helpers.Http.get(url, {dataContentType: CONTENT_TYPE}));
+            return JSON.parse(await Tp.Helpers.Http.get(url, {dataContentType: content_type}));
         } catch (e) {
             if (!e.detail)
                 throw e; 
             throw new Error(JSON.parse(e.detail).error.message);
         }
+    }
+
+    async _http_post(url, data='', content_type=CONTENT_TYPE.json) {
+        return await Tp.Helpers.Http.post(url, data, {
+            dataContentType: content_type,
+            accept: content_type
+        }).catch((e) => {
+            if (!e.detail)
+                throw e;
+            throw new Error(JSON.parse(e.detail).error.message);
+        });
     }
 
     _format_station_output(stations) {
@@ -94,7 +108,7 @@ module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
     }
 
     async _get_station_details(url) {
-        const content = await this._http_get(url).then((response) => {
+        const content = await this._http_get(url, CONTENT_TYPE.urlencoded).then((response) => {
             return response.body;
         });
         let stations = [];
@@ -172,8 +186,10 @@ module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
                 id: String(id).split(':')[1],
             };
             const url = `${BASE_URL}${QUERY_PARAM.tune}?${querystring.stringify(query_string)}`;
+            // const playable_link = this._http_post(url);
+            const playable_link = await Tp.Helpers.Http.get(url, {dataContentType: CONTENT_TYPE.json});
             try{
-                audio_player.play(url);
+                audio_player.play(playable_link);
                 return;
             } catch (e) {
                 throw new Error(DEVICE_ERROR.service_unavailable);
