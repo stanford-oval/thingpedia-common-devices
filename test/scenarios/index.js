@@ -363,6 +363,7 @@ async function main() {
             testMode: false,
             showWelcome: false,
             anonymous: false,
+            useConfidence: false,
             rng: rng,
         });
         testRunner.conversation = conversation;
