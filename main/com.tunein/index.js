@@ -37,10 +37,6 @@ const querystring = require("querystring");
 
 const BASE_URL = 'http://opml.radiotime.com/';
 const RENDER_TYPE = 'json';
-const CONTENT_TYPE = {
-    urlencoded: 'application/x-www-form-urlencoded',
-    json: 'application/json'
-};
 const QUERY_PARAM = {
     search: 'Search.ashx',
     browse: 'Browse.ashx',
@@ -54,10 +50,6 @@ const CONTENT_KEYS = {
     am: 'am',
     internet: 'internet only'
 };
-// const BROWSE_ITEMS = {
-//     trending: 'trending',
-//     local: 'local'
-// };
 const DEVICE_ERROR = {
     unsupported_version: 'unsupported_version',
     service_unavailable: 'service_unavailable',
@@ -74,27 +66,6 @@ module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
         };
     }
 
-    async _http_get(url, content_type) {
-        try {
-            return JSON.parse(await Tp.Helpers.Http.get(url, {dataContentType: content_type}));
-        } catch (e) {
-            if (!e.detail)
-                throw e; 
-            throw new Error(JSON.parse(e.detail).error.message);
-        }
-    }
-
-    async _http_post(url, data='', content_type=CONTENT_TYPE.json) {
-        return await Tp.Helpers.Http.post(url, data, {
-            dataContentType: content_type,
-            accept: content_type
-        }).catch((e) => {
-            if (!e.detail)
-                throw e;
-            throw new Error(JSON.parse(e.detail).error.message);
-        });
-    }
-
     _format_station_output(stations) {
         return stations.map((item) => {
             const id = new Tp.Value.Entity(`station:${item.guide_id.toLowerCase()}`, item.text);
@@ -108,9 +79,7 @@ module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
     }
 
     async _get_station_details(url) {
-        const content = await this._http_get(url, CONTENT_TYPE.urlencoded).then((response) => {
-            return response.body;
-        });
+        const content = JSON.parse(await Tp.Helpers.Http.get(url)).body;
         let stations = [];
         if (typeof content !== 'undefined' && content.length > 0) {
             if (content.find((item) => item.text.toLowerCase() === CONTENT_KEYS.stations)) {
@@ -176,8 +145,12 @@ module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
         }      
     }
 
+    _test_mode() {
+        return process.env.TEST_MODE === '1';
+    }
+
     async do_radio_play({id}) {
-        if (process.env.TEST_MODE === '1') return;
+        if (this._test_mode()) return;
         const audio_player = this.platform.getCapability('audio-player');
         if (!audio_player){
             throw new Error(DEVICE_ERROR.unsupported_version);
@@ -187,7 +160,7 @@ module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
             };
             const url = `${BASE_URL}${QUERY_PARAM.tune}?${querystring.stringify(query_string)}`;
             // const playable_link = this._http_post(url);
-            const playable_link = await Tp.Helpers.Http.get(url, {dataContentType: CONTENT_TYPE.json});
+            const playable_link = await Tp.Helpers.Http.get(url);
             try{
                 audio_player.play(playable_link);
                 return;
