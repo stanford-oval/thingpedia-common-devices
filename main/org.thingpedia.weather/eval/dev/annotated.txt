@@ -1072,7 +1072,7 @@ UT: monitor(@org.thingpedia.weather.current()) filter status == enum snowy;
 # online/359921
 U: give me weather every day
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: timer(base=$now, interval=1day) => @org.thingpedia.weather.current();
+UT: timer(interval=1day) => @org.thingpedia.weather.current();
 ====
 # online/1435474
 U: weather sunny
@@ -1173,3 +1173,58 @@ UT: @org.thingpedia.weather.forecast(location=new Location("namur"));
 U: will it reain tomorrow
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.weather.forecast();
+====
+# recording/5cb2daaef83ba8d9bd2e6852f401c9aa
+U: what's the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# recording/eae1113fbe7ca5af442c0f9506ba68f5
+U: what's the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# recording/d24f6a907bc204abd89e54a2a734c413
+U: what's the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# recording/63bc93166e54bda9d62163b0e45abeec
+U: what's the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# recording/c1f6375b7d6947646429bb8d93265fc6
+U: hows' the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# recording/78da318de78547cbdb63485778e1e7f3
+U: what's the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# recording/548b0af769ea0c3f8c70d5f7c8b478b8
+U: what's the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# recording/8b357db77a428566bd5b8e4daabd6231
+U: what's the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=25.2C, wind_speed=2.7mps, humidity=43.7, cloudiness=11.7, fog=0, status=enum sunny, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=1;content_type=image/png"^^tt:picture, location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+A: It is sunny today in Palo Alto, California and the temperature is 77.4 F.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: what's the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# recording/d5057f74ca68bd67dccc415eeffb3f10
+U: what's the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();

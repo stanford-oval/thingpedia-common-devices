@@ -8,6 +8,11 @@ dataset @com.spotify language "en" {
                    "put ${p_song:no-undefined} in ${p_playlist}"]]
     ;
 
+    program (p_song :Entity(org.thingpedia.media-source:song), p_playlist :String) := @com.spotify.add_song_to_playlist(song=p_song, playlist=p_playlist)
+    #_[utterances=["add ${p_song} to ${p_playlist}",
+                   "put ${p_song} in ${p_playlist}"]]
+    ;
+
     program (p_playlist :String) := (@org.thingpedia.media-source.get_currently_playing()) => @com.spotify.add_song_to_playlist(song=id, playlist=p_playlist)
     #_[utterances=["add this song to ${p_playlist}",
                    "put this song in ${p_playlist}"]]

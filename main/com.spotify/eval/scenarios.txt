@@ -97,7 +97,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => sort popularity desc of (@org.thingpedia.media-source.song(), contains(artists, null^^org.thingpedia.media-source:artist("post malone")))[1] => @org.thingpedia.media-player.play(playable=id);
 
-A: I played Circles( on Spotify)?( on (Coolest Computer|giovanni-xps15))? ?.
+A: I played (Motley Crew|Circles)( on Spotify)?( on (Coolest Computer|giovanni-xps15))? ?.
 A: >> expecting = null
 
 ====
@@ -204,7 +204,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => @org.thingpedia.media-player.player_repeat(repeat=enum(track));
 
-A: I set the repeat state to track( for you)?\.
+A: I set the repeat state( for you)? to track\.
 A: >> expecting = null
 
 ====
@@ -335,7 +335,8 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@org.thingpedia.media-source.song(), id =~ ("despacito")) => @com.spotify.add_song_to_playlist(playlist="my playlist", song=id);
 
-A: I added a song to a playlist named my playlist( \#1)?\.
+# FIXME the "with song name" clause is awful
+A: I added a song to a playlist (for you )?(with song name Despacito )?named my playlist( \#1)?\.
 A: >> expecting = null
 
 ====

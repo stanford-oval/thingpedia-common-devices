@@ -1,7 +1,7 @@
 # 1-basic-movie-search
 U: \t @org.themoviedb.movie();
 
-A: I see Avengers: Endgame, The Avengers, and Avengers: Infinity War. (They're movies by Robert Downey Jr|Avengers: Endgame is a movie released on April 23, 2019, The Avengers is released on April 24, 2012, and Avengers: Infinity War is released on April 24, 2018).
+A: I see (?=.*The Avengers)(?=.*Avengers\: Endgame)(?=.*Avengers\: Infinity\sWar).+\. (They're movies by Robert Downey Jr|Avengers: Endgame is a movie released on April 23, 2019, The Avengers is released on April 24, 2012, and Avengers: Infinity War is released on April 24, 2018).
 A: >> expecting = null
 
 ====
@@ -10,7 +10,7 @@ A: >> expecting = null
 #U: Search for Top Gun
 U: \t @org.themoviedb.movie() filter id=~"Top Gun";
 
-A: (I see Top Gun, Top Gun: Maverick, and Top Gun|Both Top Gun and Top Gun: Maverick are movies by Tom Cruise).
+A: (I see|Both)? .* and .* are movies by Tom Cruise.
 A: >> expecting = null
 
 ====
@@ -18,7 +18,7 @@ A: >> expecting = null
 # 3-by-release-date
 U: \t sort(release_date desc of @org.themoviedb.movie());
 
-A: I see (.*), (.*), and (.*). \1 is a movie released on .*, \2 is released on (January|February|March|April|May|June|July|August|September|October|November|December) [0-9]{1,2}( 2021)?, and \3 is released on (January|February|March|April|May|June|July|August|September|October|November|December) [0-9]{1,2}( 2021)?.
+A: I see (.*), (.*), and (.*). \1 is a movie released .*, \2 is released on (January|February|March|April|May|June|July|August|September|October|November|December) [0-9]{1,2}( 2021)?, and \3 is released on (January|February|March|April|May|June|July|August|September|October|November|December) [0-9]{1,2}( 2021)?.
 A: >> expecting = null
 
 ====
@@ -45,13 +45,13 @@ A: I see .*, .*, and .*.
 # 7-filtered-actor-search
 U: \t @org.themoviedb.actor() filter id=~ "Tom Hanks";
 
-A: I see Tom Hanks.
+A: Tom Hanks is an actor with the popularity equal to .*.
 
 ====
 # 8-filter-movie-by-actor
 U: \t @org.themoviedb.movie() filter contains(actors, null^^org.themoviedb:actor("Christian Bale"));
 
-A: I see Ford v Ferrari, The Dark Knight, and Exodus: Gods and Kings. They're movies by Christian Bale.
+A: I see .*, .*, and .*. They're movies by Christian Bale.
 
 ====
 # 9-movie-containing-two-plus-actors

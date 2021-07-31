@@ -1278,7 +1278,7 @@ UT: @org.thingpedia.builtin.thingengine.builtin.say(message="water up to 130");
 # online/120868
 U: every minute show popup
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: timer(base=$now, interval=1min) => @org.thingpedia.builtin.thingengine.builtin.say();
+UT: timer(interval=1min) => @org.thingpedia.builtin.thingengine.builtin.say();
 ====
 # online/1470582
 U: location of device
@@ -1634,17 +1634,17 @@ UT: ontimer(date=[set_time($now, new Time(15, 30))]) => @org.thingpedia.builtin.
 # log/17348
 U: remind me that i have to jog every day
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: timer(base=$now, interval=1day) => @org.thingpedia.builtin.thingengine.builtin.say(message="to jog every day");
+UT: timer(interval=1day) => @org.thingpedia.builtin.thingengine.builtin.say(message="to jog every day");
 ====
 # log-dev/1165
 U: send me a message 13 times every 2 ms
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: timer(base=$now, frequency=13, interval=2ms) => @org.thingpedia.builtin.thingengine.builtin.say();
+UT: timer(frequency=13, interval=2ms) => @org.thingpedia.builtin.thingengine.builtin.say();
 ====
 # log-dev/1167
 U: send me a message 13 times every minute
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: timer(base=$now, frequency=13, interval=1min) => @org.thingpedia.builtin.thingengine.builtin.say();
+UT: timer(frequency=13, interval=1min) => @org.thingpedia.builtin.thingengine.builtin.say();
 ====
 # log-dev/1177
 U: send me a message at 8am
@@ -1654,12 +1654,12 @@ UT: ontimer(date=[set_time($now, new Time(8, 0))]) => @org.thingpedia.builtin.th
 # log-dev/1188
 U: send me a message 13 times every day
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: timer(base=$now, frequency=13, interval=1day) => @org.thingpedia.builtin.thingengine.builtin.say();
+UT: timer(frequency=13, interval=1day) => @org.thingpedia.builtin.thingengine.builtin.say();
 ====
 # log/41012
 U: wait for 2 hours
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[$now + 2h]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+UT: ontimer(date=[$now + 2h]) => @org.thingpedia.builtin.thingengine.builtin.timer_expire();
 ====
 # log/51266
 U: wake me up at 6:30 each morning
@@ -1679,7 +1679,7 @@ UT: attimer(time=[new Time(8, 0)]) => @org.thingpedia.builtin.thingengine.builti
 # log/97371
 U: wake me up in 2.5 hours
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[$now + 2.5h]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+UT: ontimer(date=[$now + 2.5h]) => @org.thingpedia.builtin.thingengine.builtin.timer_expire();
 ====
 # log/122578
 U: wake me up tomorrow morning at 9:45
@@ -1860,3 +1860,122 @@ UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_
 U: what can you do
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
+====
+# recording/0b2a406c37fc66ea02908e5abf44e4cf
+U: what can you do?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
+====
+# recording/7280b69ce5664b9dceb0f6563c2c4e0d
+U: help
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
+====
+# recording/a348fe70f11e7dd3893721c2c9be6cce
+U: set a timer
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=$?) => @org.thingpedia.builtin.thingengine.builtin.alert();
+====
+# recording/a738dd139d3a6fae6964507dd63d4915
+U: What's your name?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_identity);
+====
+# recording/8c42de079561f3500e507ca80013df7b
+U: what can you do?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
+====
+# recording/9efc7e383725868f9911ccb7c8fd51a4
+U: how old are you?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_age);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_age)
+C: #[results=[
+C:   { reply="I was born in 2015 in a class at Stanford. The plan is for me to be released in the first half of 2021.", question=enum about_almond_age }
+C: ]];
+A: I was born in 2015 in a class at Stanford. The plan is for me to be released in the first half of 2021.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: how old are y ou
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_age);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_age)
+C: #[results=[
+C:   { reply="I was born in 2015 in a class at Stanford. The plan is for me to be released in the first half of 2021.", question=enum about_almond_age }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_age)
+C: #[results=[
+C:   { reply="I was born in 2015 in a class at Stanford. The plan is for me to be released in the first half of 2021.", question=enum about_almond_age }
+C: ]];
+A: I was born in 2015 in a class at Stanford. The plan is for me to be released in the first half of 2021.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: how old are you
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_age);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_age)
+C: #[results=[
+C:   { reply="I was born in 2015 in a class at Stanford. The plan is for me to be released in the first half of 2021.", question=enum about_almond_age }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_age)
+C: #[results=[
+C:   { reply="I was born in 2015 in a class at Stanford. The plan is for me to be released in the first half of 2021.", question=enum about_almond_age }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_age)
+C: #[results=[
+C:   { reply="I was born in 2015 in a class at Stanford. The plan is for me to be released in the first half of 2021.", question=enum about_almond_age }
+C: ]];
+A: I was born in 2015 in a class at Stanford. The plan is for me to be released in the first half of 2021.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: who are you?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_identity);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_age)
+C: #[results=[
+C:   { reply="I was born in 2015 in a class at Stanford. The plan is for me to be released in the first half of 2021.", question=enum about_almond_age }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_age)
+C: #[results=[
+C:   { reply="I was born in 2015 in a class at Stanford. The plan is for me to be released in the first half of 2021.", question=enum about_almond_age }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_age)
+C: #[results=[
+C:   { reply="I was born in 2015 in a class at Stanford. The plan is for me to be released in the first half of 2021.", question=enum about_almond_age }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_identity)
+C: #[results=[
+C:   { reply="I'm Genie, an open-source virtual assistant created at Stanford.", question=enum about_almond_identity }
+C: ]];
+A: I'm Genie, an open-source virtual assistant created at Stanford.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: how old are you?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_age);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_age)
+C: #[results=[
+C:   { reply="I was born in 2015 in a class at Stanford. The plan is for me to be released in the first half of 2021.", question=enum about_almond_age }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_age)
+C: #[results=[
+C:   { reply="I was born in 2015 in a class at Stanford. The plan is for me to be released in the first half of 2021.", question=enum about_almond_age }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_age)
+C: #[results=[
+C:   { reply="I was born in 2015 in a class at Stanford. The plan is for me to be released in the first half of 2021.", question=enum about_almond_age }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_identity)
+C: #[results=[
+C:   { reply="I'm Genie, an open-source virtual assistant created at Stanford.", question=enum about_almond_identity }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_age)
+C: #[results=[
+C:   { reply="I was born in 2015 in a class at Stanford. The plan is for me to be released in the first half of 2021.", question=enum about_almond_age }
+C: ]];
+A: I was born in 2015 in a class at Stanford. The plan is for me to be released in the first half of 2021.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: cancel
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;

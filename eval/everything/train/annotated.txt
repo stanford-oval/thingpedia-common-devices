@@ -70,20 +70,10 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
 # recording/a6bdb647534ed0a5a29f997c49d4d598
 U: bye
 UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
-C: $dialogue @org.thingpedia.dialogue.transaction.cancel;
-A: Is there anything else I can help you with?
-AT: $dialogue @org.thingpedia.dialogue.transaction.sys_anything_else;
-U: no
-UT: $dialogue @org.thingpedia.dialogue.transaction.end;
 ====
 # recording/6348bd611b59e53055b947a050457268
 U: bye
 UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
-C: $dialogue @org.thingpedia.dialogue.transaction.cancel;
-A: Is there anything else I can help you with?
-AT: $dialogue @org.thingpedia.dialogue.transaction.sys_anything_else;
-U: no
-UT: $dialogue @org.thingpedia.dialogue.transaction.end;
 ====
 # log/158327
 U: hello, almond
@@ -92,7 +82,7 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
 # online/359894
 U: notify me of mail once every 2 ms
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: timer(base=$now, interval=2ms);
+UT: timer(interval=2ms) => @com.gmail.inbox();
 ====
 # recording/4d7d4033eff156190f76d63cc4fed839
 U: tell a joke
@@ -790,11 +780,6 @@ A: Hi, how can I help you?
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_greet;
 U: bye
 UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
-C: $dialogue @org.thingpedia.dialogue.transaction.cancel;
-A: Is there anything else I can help you with?
-AT: $dialogue @org.thingpedia.dialogue.transaction.sys_anything_else;
-U: no
-UT: $dialogue @org.thingpedia.dialogue.transaction.end;
 ====
 # recording/d1e3878b6fd3c673a87d3da6ccb09566
 U: hey
@@ -963,3 +948,981 @@ AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
 U: play tony's playlist
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.media-source(id="org.thingpedia.media-source-XXXXXXXX"^^tt:device_id).playlist() filter id =~ "tony's playlist" => @org.thingpedia.media-player(id="org.thingpedia.media-player-XXXXXXXX"^^tt:device_id).play(playable=id);
+====
+# recording/66af0a9f06e492629278df5e75483c65
+U: lol
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum positive_emotion_cool);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.covid-vaccine.appointment(zip_code="94062")
+C: #[results=[
+C:   { id="vaccinespotter:7384051:1622655391072"^^org.thingpedia.covid-vaccine:vaccine_appointment("Rite Aid"), geo=new Location(37.4565, -122.229, "Rite Aid, 340 Woodside Plaza, Redwood City, CA, 94061"), link="https://www.riteaid.com/pharmacy/covid-qualifier"^^tt:url, availability_rate=1, zip_code="94062" }
+C: ]];
+C: @org.thingpedia.covid-vaccine.mark_valid(appointment="vaccinespotter:7384051:1622655391072"^^org.thingpedia.covid-vaccine:vaccine_appointment("Rite Aid"), validity=false)
+C: #[results=[]];
+C: @org.thingpedia.covid-vaccine.appointment(zip_code="94062")
+C: #[results=[
+C:   { id="mukesh:765866102:1624194464066"^^org.thingpedia.covid-vaccine:vaccine_appointment("PharmaCA, 871 Santa Cruz Ave, Menlo Park"), geo=new Location(37.4498999, -122.1856139, "PharmaCA, 871 Santa Cruz Ave, Menlo Park, 871 Santa Cruz Ave, Menlo Park, CA, 94025"), link="https://www.pharmacarx.com/pharmacy-locator/"^^tt:url, availability_rate=0, zip_code="94062" }
+C: ]];
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="mbpbapbhiyd"^^com.icanhazdadjoke:id, text="Did you hear about the bread factory burning down? They say the business is toast." }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum positive_emotion_cool)
+C: #[results=[
+C:   { reply="Cool!", question=enum positive_emotion_cool }
+C: ]];
+A: Cool!
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: what else can you do
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.covid-vaccine.appointment(zip_code="94062")
+C: #[results=[
+C:   { id="vaccinespotter:7384051:1622655391072"^^org.thingpedia.covid-vaccine:vaccine_appointment("Rite Aid"), geo=new Location(37.4565, -122.229, "Rite Aid, 340 Woodside Plaza, Redwood City, CA, 94061"), link="https://www.riteaid.com/pharmacy/covid-qualifier"^^tt:url, availability_rate=1, zip_code="94062" }
+C: ]];
+C: @org.thingpedia.covid-vaccine.mark_valid(appointment="vaccinespotter:7384051:1622655391072"^^org.thingpedia.covid-vaccine:vaccine_appointment("Rite Aid"), validity=false)
+C: #[results=[]];
+C: @org.thingpedia.covid-vaccine.appointment(zip_code="94062")
+C: #[results=[
+C:   { id="mukesh:765866102:1624194464066"^^org.thingpedia.covid-vaccine:vaccine_appointment("PharmaCA, 871 Santa Cruz Ave, Menlo Park"), geo=new Location(37.4498999, -122.1856139, "PharmaCA, 871 Santa Cruz Ave, Menlo Park, 871 Santa Cruz Ave, Menlo Park, CA, 94025"), link="https://www.pharmacarx.com/pharmacy-locator/"^^tt:url, availability_rate=0, zip_code="94062" }
+C: ]];
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="mbpbapbhiyd"^^com.icanhazdadjoke:id, text="Did you hear about the bread factory burning down? They say the business is toast." }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum positive_emotion_cool)
+C: #[results=[
+C:   { reply="Cool!", question=enum positive_emotion_cool }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help)
+C: #[results=[
+C:   { reply="I'm a new virtual assistant. At the moment, I can help you with music, jokes, and managing some IoT devices.", question=enum general_help }
+C: ]];
+A: I'm a new virtual assistant. At the moment, I can help you with music, jokes, and managing some IoT devices.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: play some music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/d992333d201d1699664f5bedb2766811
+U: play some music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[]]
+C: #[error=enum no_active_device];
+A: Sorry, you must open the Spotify app first.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
+U: play some music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[]]
+C: #[error=enum no_active_device];
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[]]
+C: #[error=enum no_active_device];
+A: Sorry, you must open the Spotify app first.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
+U: play the playlist classics
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playlist() filter id =~ "classics" => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[]]
+C: #[error=enum no_active_device];
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[]]
+C: #[error=enum no_active_device];
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playlist() filter id =~ "classics")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[]]
+C: #[error=enum no_active_device];
+A: Sorry, you must open the Spotify app first.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
+U: resume playback
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_play();
+====
+# recording/b6151a92051749f93de5c01ffb5fd055
+U: cancel
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# recording/e6299acfdcf532ffb56e69283b3b25c6
+U: How is it going?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you)
+C: #[results=[
+C:   { reply="Great. Thanks for asking. How can I help you?", question=enum about_almond_how_are_you }
+C: ]];
+A: Great. Thanks for asking. How can I help you?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: Who are you?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_identity);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you)
+C: #[results=[
+C:   { reply="Great. Thanks for asking. How can I help you?", question=enum about_almond_how_are_you }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_identity)
+C: #[results=[
+C:   { reply="I'm Genie, an open-source virtual assistant created at Stanford.", question=enum about_almond_identity }
+C: ]];
+A: I'm Genie, an open-source virtual assistant created at Stanford.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: where is almond?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_location);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you)
+C: #[results=[
+C:   { reply="Great. Thanks for asking. How can I help you?", question=enum about_almond_how_are_you }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_identity)
+C: #[results=[
+C:   { reply="I'm Genie, an open-source virtual assistant created at Stanford.", question=enum about_almond_identity }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_location)
+C: #[results=[
+C:   { reply="My creators are mostly at Stanford. I'm an open-source assistant in the cloud.", question=enum about_almond_location }
+C: ]];
+A: My creators are mostly at Stanford. I'm an open-source assistant in the cloud.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: what is the weather in ISS?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("iss"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you)
+C: #[results=[
+C:   { reply="Great. Thanks for asking. How can I help you?", question=enum about_almond_how_are_you }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_identity)
+C: #[results=[
+C:   { reply="I'm Genie, an open-source virtual assistant created at Stanford.", question=enum about_almond_identity }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_location)
+C: #[results=[
+C:   { reply="My creators are mostly at Stanford. I'm an open-source assistant in the cloud.", question=enum about_almond_location }
+C: ]];
+C: @org.thingpedia.weather.current(location=new Location(60.46322415, 22.302891572000966, "Nummi, Turku"))
+C: #[results=[
+C:   { temperature=21.5C, wind_speed=5.9mps, humidity=77.6, cloudiness=96.7, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=4;content_type=image/png"^^tt:picture, location=new Location(60.46322415, 22.302891572000966, "Nummi, Turku") }
+C: ]];
+A: It is cloudy today in Nummi, Turku and the temperature is 70.7 F.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: what is ISS?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.bing.web_search(query="iss");
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you)
+C: #[results=[
+C:   { reply="Great. Thanks for asking. How can I help you?", question=enum about_almond_how_are_you }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_identity)
+C: #[results=[
+C:   { reply="I'm Genie, an open-source virtual assistant created at Stanford.", question=enum about_almond_identity }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_location)
+C: #[results=[
+C:   { reply="My creators are mostly at Stanford. I'm an open-source assistant in the cloud.", question=enum about_almond_location }
+C: ]];
+C: @org.thingpedia.weather.current(location=new Location(60.46322415, 22.302891572000966, "Nummi, Turku"))
+C: #[results=[
+C:   { temperature=21.5C, wind_speed=5.9mps, humidity=77.6, cloudiness=96.7, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=4;content_type=image/png"^^tt:picture, location=new Location(60.46322415, 22.302891572000966, "Nummi, Turku") }
+C: ]];
+C: @com.bing.web_search(query="iss")
+C: #[results=[
+C:   { query="iss", title="International Space Station | NASA", description="Get the latest news, images, videos and more from humanity's home in orbit -- the International Space Station.", link="https://www.nasa.gov/mission_pages/station/main/index.html"^^tt:url },
+C:   { query="iss", title="International Space Station - Wikipedia", description="The International Space Station (ISS) is a modular space station (habitable artificial satellite) in low Earth orbit.It is a multinational collaborative project involving five participating space agencies: NASA (United States), Roscosmos (Russia), JAXA (Japan), ESA (Europe), and CSA (Canada). The ownership and use of the space station is established by intergovernmental treaties and agreements.", link="https://en.wikipedia.org/wiki/International_Space_Station"^^tt:url },
+C:   { query="iss", title="Spot The Station | NASA", description="Watch the International Space Station pass overhead from several thousand worldwide locations. It is the third brightest object in the sky and easy to spot if you know when to look up. Visible to the naked eye, it looks like a fast-moving plane only much higher and traveling thousands of miles an hour faster!", link="https://spotthestation.nasa.gov/"^^tt:url },
+C:   { query="iss", title="Live Space Station Tracking Map | Spot The Station | NASA", description="Live Space Station Tracking Map. The tracker shows where the Space Station is right now and its path 90 minutes ago (-1.5 hr) and 90 minutes ahead (+1.5 hr). The dark overlay indicates where it is nighttime in the world. ISS Tracker. ERROR: Cannot load images.", link="https://spotthestation.nasa.gov/tracking_map.cfm"^^tt:url },
+C:   { query="iss", title="Home | ISS", description="ISS NEWS ISS Announces Acquisition of Genesys Research Genesys is a leading provider of product intelligence to the asset management and insurance communities, delivering to leading asset managers and insurance providers a combination of data and research solutions focused on the subadvisory and platform markets.", link="https://www.issgovernance.com/"^^tt:url }
+C: ]];
+A: I found International Space Station | NASA.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: who is elon?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.bing.web_search(query="elon");
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you)
+C: #[results=[
+C:   { reply="Great. Thanks for asking. How can I help you?", question=enum about_almond_how_are_you }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_identity)
+C: #[results=[
+C:   { reply="I'm Genie, an open-source virtual assistant created at Stanford.", question=enum about_almond_identity }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_location)
+C: #[results=[
+C:   { reply="My creators are mostly at Stanford. I'm an open-source assistant in the cloud.", question=enum about_almond_location }
+C: ]];
+C: @org.thingpedia.weather.current(location=new Location(60.46322415, 22.302891572000966, "Nummi, Turku"))
+C: #[results=[
+C:   { temperature=21.5C, wind_speed=5.9mps, humidity=77.6, cloudiness=96.7, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=4;content_type=image/png"^^tt:picture, location=new Location(60.46322415, 22.302891572000966, "Nummi, Turku") }
+C: ]];
+C: @com.bing.web_search(query="iss")
+C: #[results=[
+C:   { query="iss", title="International Space Station | NASA", description="Get the latest news, images, videos and more from humanity's home in orbit -- the International Space Station.", link="https://www.nasa.gov/mission_pages/station/main/index.html"^^tt:url },
+C:   { query="iss", title="International Space Station - Wikipedia", description="The International Space Station (ISS) is a modular space station (habitable artificial satellite) in low Earth orbit.It is a multinational collaborative project involving five participating space agencies: NASA (United States), Roscosmos (Russia), JAXA (Japan), ESA (Europe), and CSA (Canada). The ownership and use of the space station is established by intergovernmental treaties and agreements.", link="https://en.wikipedia.org/wiki/International_Space_Station"^^tt:url },
+C:   { query="iss", title="Spot The Station | NASA", description="Watch the International Space Station pass overhead from several thousand worldwide locations. It is the third brightest object in the sky and easy to spot if you know when to look up. Visible to the naked eye, it looks like a fast-moving plane only much higher and traveling thousands of miles an hour faster!", link="https://spotthestation.nasa.gov/"^^tt:url },
+C:   { query="iss", title="Live Space Station Tracking Map | Spot The Station | NASA", description="Live Space Station Tracking Map. The tracker shows where the Space Station is right now and its path 90 minutes ago (-1.5 hr) and 90 minutes ahead (+1.5 hr). The dark overlay indicates where it is nighttime in the world. ISS Tracker. ERROR: Cannot load images.", link="https://spotthestation.nasa.gov/tracking_map.cfm"^^tt:url },
+C:   { query="iss", title="Home | ISS", description="ISS NEWS ISS Announces Acquisition of Genesys Research Genesys is a leading provider of product intelligence to the asset management and insurance communities, delivering to leading asset managers and insurance providers a combination of data and research solutions focused on the subadvisory and platform markets.", link="https://www.issgovernance.com/"^^tt:url }
+C: ]];
+C: @com.bing.web_search(query="elon")
+C: #[results=[
+C:   { query="elon", title="Elon University / Home", description="Elon is one of only 18 private universities in the nation with an accredited communications school. More than 1,200 students pursue undergraduate majors in journalism, strategic communications, cinema and television arts, communication design, media analytics, and sport management, along with a master’s program in interactive media. Learn More.", link="https://www.elon.edu/"^^tt:url },
+C:   { query="elon", title="Elon Musk - Wikipedia", description="Elon Reeve Musk was born on June 28, 1971, in Pretoria, South Africa. His mother is Maye Musk (née Haldeman), a model and dietitian born in Saskatchewan, Canada, but raised in South Africa. His father is Errol Musk, a South African electromechanical engineer, pilot, sailor, consultant, and property developer.", link="https://en.wikipedia.org/wiki/Elon_Musk"^^tt:url },
+C:   { query="elon", title="Elon Musk (@elonmusk) | Twitter", description="The latest Tweets from Elon Musk (@elonmusk). Technoking of Tesla, Imperator of Mars ?", link="https://twitter.com/elonmusk"^^tt:url },
+C:   { query="elon", title="Elon Musk (@ElonMusk) | Twitter", description="We would like to show you a description here but the site won’t allow us.", link="https://twitter.com/@elonmusk"^^tt:url },
+C:   { query="elon", title="Elon University / Information Technology / University Email", description="Elon University is a mid-sized private university in North Carolina that is nationally recognized as the premier student-centered environment for experiential learning.", link="https://www.elon.edu/u/fa/technology/university-email/"^^tt:url }
+C: ]];
+A: I found Elon University / Home.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: who is bezos?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.bing.web_search(query="bezos");
+====
+# recording/42e165d09d78df19b10b96c8db1de5bd
+U: what's the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=25.2C, wind_speed=2.7mps, humidity=43.7, cloudiness=11.7, fog=0, status=enum sunny, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=1;content_type=image/png"^^tt:picture, location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+A: Where are you now?
+A: It is sunny today in Palo Alto, California and the temperature is 77.4 F.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: tell me ajoke
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.icanhazdadjoke.get();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=25.2C, wind_speed=2.7mps, humidity=43.7, cloudiness=11.7, fog=0, status=enum sunny, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=1;content_type=image/png"^^tt:picture, location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="uPu4MRZLmrc"^^com.icanhazdadjoke:id, text="Want to hear a chimney joke? Got stacks of em! First one's on the house" }
+C: ]];
+A: Want to hear a chimney joke? Got stacks of em! First one's on the house.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: what's the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# recording/6fb1627331a6193db3d3f67b84b3acb2
+U: Have a great evening
+UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
+C: $dialogue @org.thingpedia.dialogue.transaction.greet;
+A: Hello! How can I help you?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_greet;
+U: Bye
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# recording/6270a6a9cc4407d5392109a0552d28a6
+U: tell me a joke
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.icanhazdadjoke.get();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="BQnyImOCIBd"^^com.icanhazdadjoke:id, text="How do hens stay fit? They always egg-cercise!" }
+C: ]];
+A: How do hens stay fit? They always egg-cercise!
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: play some music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/385434ebca941a151090cd39632e803f
+U: tell me the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(46.6166686, -64.1084895, "Alaska, PE"))
+C: #[results=[
+C:   { temperature=22.5C, wind_speed=5.1mps, humidity=83.8, cloudiness=4.7, fog=0, status=enum sunny, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=1;content_type=image/png"^^tt:picture, location=new Location(46.6166686, -64.1084895, "Alaska, PE") }
+C: ]];
+A: Where are you now?
+A: It is sunny today in Alaska, PE and the temperature is 72.5 F.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: how's the weather in tokyo
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("tokyo"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(46.6166686, -64.1084895, "Alaska, PE"))
+C: #[results=[
+C:   { temperature=22.5C, wind_speed=5.1mps, humidity=83.8, cloudiness=4.7, fog=0, status=enum sunny, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=1;content_type=image/png"^^tt:picture, location=new Location(46.6166686, -64.1084895, "Alaska, PE") }
+C: ]];
+C: @org.thingpedia.weather.current(location=new Location(35.6821116, 139.7656744, "Tōkyō, Tokyo"))
+C: #[results=[
+C:   { temperature=25.9C, wind_speed=0.6mps, humidity=85.7, cloudiness=47.7, fog=0, status=enum raining, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=5;content_type=image/png"^^tt:picture, location=new Location(35.6821116, 139.7656744, "Tōkyō, Tokyo") }
+C: ]];
+A: It is raining today in Tōkyō, Tokyo and the temperature is 78.6 F.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: remind me to do something at 4:24
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[set_time($now, new Time(4, 24))]) => @org.thingpedia.builtin.thingengine.builtin.say();
+====
+# recording/ba1a32fc3ab0440eba0dbb56584bc87e
+U: what's the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=26.3C, wind_speed=2.8mps, humidity=42.9, cloudiness=3.1, fog=0, status=enum sunny, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=1;content_type=image/png"^^tt:picture, location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+A: Where are you now?
+A: It is sunny today in Palo Alto, California and the temperature is 79.3 F.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: tell me a joke
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.icanhazdadjoke.get();
+====
+# recording/51b91c29082d36c7cf6d739ebe7726c4
+U: hi there
+UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
+====
+# recording/e9c10f4e27f9a41beb9eb4d9098d4ec4
+U: what's the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=25.2C, wind_speed=2.7mps, humidity=43.7, cloudiness=11.7, fog=0, status=enum sunny, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=1;content_type=image/png"^^tt:picture, location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+A: Where are you now?
+A: It is sunny today in Palo Alto, California and the temperature is 77.4 F.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: tell me a joke
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.icanhazdadjoke.get();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=25.2C, wind_speed=2.7mps, humidity=43.7, cloudiness=11.7, fog=0, status=enum sunny, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=1;content_type=image/png"^^tt:picture, location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="lyPZgVn3Le"^^com.icanhazdadjoke:id, text="What did the ocean say to the shore? Nothing, it just waved." }
+C: ]];
+A: What did the ocean say to the shore? Nothing, it just waved.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: what's the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# recording/66fb5badb46140b801e4fa90d3b3979d
+U: tell me a joke
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.icanhazdadjoke.get();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="Yg3orWS7wkb"^^com.icanhazdadjoke:id, text="\"I'm sorry.\" \"Hi sorry, I'm dad\"" }
+C: ]];
+A: "I'm sorry." "Hi sorry, I'm dad".
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: tell me a joke
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.icanhazdadjoke.get();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="Yg3orWS7wkb"^^com.icanhazdadjoke:id, text="\"I'm sorry.\" \"Hi sorry, I'm dad\"" }
+C: ]];
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="7wciy59MJe"^^com.icanhazdadjoke:id, text="What’s Forest Gump’s Facebook password? 1forest1" }
+C: ]];
+A: What’s Forest Gump’s Facebook password? 1forest1.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: tell me a joke
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.icanhazdadjoke.get();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="Yg3orWS7wkb"^^com.icanhazdadjoke:id, text="\"I'm sorry.\" \"Hi sorry, I'm dad\"" }
+C: ]];
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="7wciy59MJe"^^com.icanhazdadjoke:id, text="What’s Forest Gump’s Facebook password? 1forest1" }
+C: ]];
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="ElbaF6wHlyd"^^com.icanhazdadjoke:id, text="I cut my finger cutting cheese. I know it may be a cheesy story but I feel grate now." }
+C: ]];
+A: I cut my finger cutting cheese. I know it may be a cheesy story but I feel grate now.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: tell me a joke
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.icanhazdadjoke.get();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="Yg3orWS7wkb"^^com.icanhazdadjoke:id, text="\"I'm sorry.\" \"Hi sorry, I'm dad\"" }
+C: ]];
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="7wciy59MJe"^^com.icanhazdadjoke:id, text="What’s Forest Gump’s Facebook password? 1forest1" }
+C: ]];
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="ElbaF6wHlyd"^^com.icanhazdadjoke:id, text="I cut my finger cutting cheese. I know it may be a cheesy story but I feel grate now." }
+C: ]];
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="oOR7hFdx5Ed"^^com.icanhazdadjoke:id, text="I wouldn't buy anything with velcro. It's a total rip-off." }
+C: ]];
+A: I wouldn't buy anything with velcro. It's a total rip-off.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: what's the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# recording/b4c1221e21e07f28b35113362e93f0a7
+U: what's the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=19.4C, wind_speed=1mps, humidity=61.5, cloudiness=24.2, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=2;content_type=image/png"^^tt:picture, location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+A: It is cloudy today in Palo Alto, California and the temperature is 66.9 F.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: what's the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=19.4C, wind_speed=1mps, humidity=61.5, cloudiness=24.2, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=2;content_type=image/png"^^tt:picture, location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+C: @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=19.4C, wind_speed=1mps, humidity=61.5, cloudiness=24.2, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=2;content_type=image/png"^^tt:picture, location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+A: It is cloudy today in Palo Alto, California and the temperature is 66.9 F.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: what's the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=19.4C, wind_speed=1mps, humidity=61.5, cloudiness=24.2, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=2;content_type=image/png"^^tt:picture, location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+C: @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=19.4C, wind_speed=1mps, humidity=61.5, cloudiness=24.2, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=2;content_type=image/png"^^tt:picture, location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+C: @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=19.4C, wind_speed=1mps, humidity=61.5, cloudiness=24.2, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=2;content_type=image/png"^^tt:picture, location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+A: It is cloudy today in Palo Alto, California and the temperature is 66.9 F.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: what's the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=19.4C, wind_speed=1mps, humidity=61.5, cloudiness=24.2, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=2;content_type=image/png"^^tt:picture, location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+C: @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=19.4C, wind_speed=1mps, humidity=61.5, cloudiness=24.2, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=2;content_type=image/png"^^tt:picture, location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+C: @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=19.4C, wind_speed=1mps, humidity=61.5, cloudiness=24.2, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=2;content_type=image/png"^^tt:picture, location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+C: @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=19.4C, wind_speed=1mps, humidity=61.5, cloudiness=24.2, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=2;content_type=image/png"^^tt:picture, location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+A: It is cloudy today in Palo Alto, California and the temperature is 66.9 F.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: tell me a joke
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.icanhazdadjoke.get();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=19.4C, wind_speed=1mps, humidity=61.5, cloudiness=24.2, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=2;content_type=image/png"^^tt:picture, location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+C: @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=19.4C, wind_speed=1mps, humidity=61.5, cloudiness=24.2, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=2;content_type=image/png"^^tt:picture, location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+C: @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=19.4C, wind_speed=1mps, humidity=61.5, cloudiness=24.2, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=2;content_type=image/png"^^tt:picture, location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+C: @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=19.4C, wind_speed=1mps, humidity=61.5, cloudiness=24.2, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=2;content_type=image/png"^^tt:picture, location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="baFQZv4w5wc"^^com.icanhazdadjoke:id, text="My New Years resolution is to stop leaving things so late." }
+C: ]];
+A: My New Years resolution is to stop leaving things so late.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: what's the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# recording/0d86db403a22912b0bd13c4d6b01c63e
+U: what's the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=25.2C, wind_speed=2.7mps, humidity=43.7, cloudiness=11.7, fog=0, status=enum sunny, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=1;content_type=image/png"^^tt:picture, location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+A: It is sunny today in Palo Alto, California and the temperature is 77.4 F.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: tell me a joke
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.icanhazdadjoke.get();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=25.2C, wind_speed=2.7mps, humidity=43.7, cloudiness=11.7, fog=0, status=enum sunny, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=1;content_type=image/png"^^tt:picture, location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="V8hFQCY8Unb"^^com.icanhazdadjoke:id, text="Where do you take someone who has been injured in a Peek-a-boo accident? To the I.C.U." }
+C: ]];
+A: Where do you take someone who has been injured in a Peek-a-boo accident? To the I.C.U.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: more
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.icanhazdadjoke.get();
+====
+# recording/5599bb12e4be6d6ae1c28a242a4cb992
+U: what's the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=16.1C, wind_speed=1.8mps, humidity=85.6, cloudiness=83.6, fog=0.8, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=3;content_type=image/png"^^tt:picture, location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="N7pWvcxsHBd"^^com.icanhazdadjoke:id, text="What happens to a frog's car when it breaks down? It gets toad." }
+C: ]];
+C: @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=16.1C, wind_speed=1.8mps, humidity=85.6, cloudiness=83.6, fog=0.8, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=3;content_type=image/png"^^tt:picture, location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+A: It is cloudy today in Palo Alto, California and the temperature is 61 F.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: tell me a joke
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.icanhazdadjoke.get();
+====
+# recording/4f794aaaba91c72961cdb49ab8f932de
+U: what's the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=23.8C, wind_speed=2.9mps, humidity=52.5, cloudiness=10.2, fog=0, status=enum sunny, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=1;content_type=image/png"^^tt:picture, location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+A: It is sunny today in Palo Alto, California and the temperature is 74.8 F.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: what time is it
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_time();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=23.8C, wind_speed=2.9mps, humidity=52.5, cloudiness=10.2, fog=0, status=enum sunny, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=1;content_type=image/png"^^tt:picture, location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.get_time()
+C: #[results=[
+C:   { time=new Time(0, 18, 38) }
+C: ]];
+A: Right now, it's 5:18 PM.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: tell me a joke
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.icanhazdadjoke.get();
+====
+# recording/b4c1325f79f3df84e530499bef121e30
+U: cancel
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# recording/5c008f9f9a2e4061afe303e6ea867395
+U: play wolfgang a mozart
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("wolfgang a mozart")) => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/168924dbacf30e68e8ed7a1f35120bf6
+U: Ask Bing for a quote from William Shakespeare.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.bing.web_search(query="william shakespeare");
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.bing.web_search(query="william shakespeare")
+C: #[results=[
+C:   { query="william shakespeare", title="William Shakespeare - Wikipedia", description="William Shakespeare (bapt. 26 April 1564 – 23 April 1616) was an English playwright, poet, and actor, widely regarded as the greatest writer in the English language and the world's greatest dramatist. He is often called England's national poet and the \"Bard of Avon\" (or simply \"the Bard\"). His extant works, including collaborations, consist of some 39 plays, 154 sonnets, three long narrative ...", link="https://en.wikipedia.org/wiki/William_Shakespeare"^^tt:url },
+C:   { query="william shakespeare", title="William Shakespeare Biography", description="William Shakespeare was a renowned English poet, playwright, and actor born in 1564 in Stratford-upon-Avon.His birthday is most commonly celebrated on 23 April (see When was Shakespeare born), which is also believed to be the date he died in 1616. Shakespeare was a prolific writer during the Elizabethan and Jacobean ages of British theatre (sometimes called the English Renaissance or the Early ...", link="https://www.shakespeare.org.uk/explore-shakespeare/shakespedia/william-shakespeare/william-shakespeare-biography/"^^tt:url },
+C:   { query="william shakespeare", title="About William Shakespeare | Academy of American Poets", description="William Shakespeare was born on April 23, 1564, in Stratford-upon-Avon. The son of John Shakespeare and Mary Arden, he was probably educated at the King Edward VI Grammar School in Stratford, where he learned Latin and a little Greek and read the Roman dramatists. At eighteen, he married Anne Hathaway, a woman seven or eight years his senior.", link="https://poets.org/poet/william-shakespeare"^^tt:url },
+C:   { query="william shakespeare", title="William Shakespeare: 20 Facts, 37 Plays, 375 Poems, 100 ...", description="William Shakespeare wrote at least 37 plays that scholars know of, with most of them labeled is comedies, histories, or tragedies. The earliest play that is directly attributed to Shakespeare is the trilogy of \"King Henry VI,\" with Richard III also being written around the same time, between 1589 and 1591.", link="https://www.williamshakespeare.net/"^^tt:url },
+C:   { query="william shakespeare", title="The Complete Works of William Shakespeare", description="Welcome to the Web's first edition of the Complete Works of William Shakespeare. This site has offered Shakespeare's plays and poetry to the Internet community since 1993. For other Shakespeare resources, visit the Mr. William Shakespeare and the Internet Web site. The original electronic source for this server was the Complete Moby(tm ...", link="http://shakespeare.mit.edu/"^^tt:url }
+C: ]];
+A: I found William Shakespeare - Wikipedia.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: What is the meaning of the word of judicate?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @info.owlbot.get(word="judicate");
+====
+# recording/64d08ac321c0e85f0b7a895d4bb24468
+U: play baba riley
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter id =~ "baba riley" => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter id =~ "baba riley")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:3qiyyUfYe7CRYLucrPmulD"^^org.thingpedia.media-source:playable("Baba O'Riley"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: I played Baba O'Riley on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: next song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player.player_next();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter id =~ "baba riley")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:3qiyyUfYe7CRYLucrPmulD"^^org.thingpedia.media-source:playable("Baba O'Riley"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next()
+C: #[results=[]];
+A: I played the next song.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: cancel
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# recording/655e9cb921165bcbde06647eaf0ed9e8
+U: play mozart
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("mozart")) => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:32QzlLbdI90xZtgtHorqzB"^^org.thingpedia.media-source:artist("Baby Mozart")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:0Kib1nl18LNb3nZfE1JvsM"^^org.thingpedia.media-source:playable("Twinkle Little Star (with Ocean Waves)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1tphFOMsnIiCW0vLeqmved"^^org.thingpedia.media-source:playable("Moonlight Sonata"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:0KeDpZwfV153LWLOLVqIay"^^org.thingpedia.media-source:playable("Brahm Baby Lullaby"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:6pP8yDg5Y4xU5eubMcWNkH"^^org.thingpedia.media-source:playable("Hush Little Baby"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1Y0sZjZo7hJf3o1vkM2W90"^^org.thingpedia.media-source:playable("Canon in D"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: I played music by Baby Mozart on Spotify for you.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: play wolfgang mozart
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, null^^org.thingpedia.media-source:artist("wolfgang mozart")) => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:32QzlLbdI90xZtgtHorqzB"^^org.thingpedia.media-source:artist("Baby Mozart")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:0Kib1nl18LNb3nZfE1JvsM"^^org.thingpedia.media-source:playable("Twinkle Little Star (with Ocean Waves)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1tphFOMsnIiCW0vLeqmved"^^org.thingpedia.media-source:playable("Moonlight Sonata"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:0KeDpZwfV153LWLOLVqIay"^^org.thingpedia.media-source:playable("Brahm Baby Lullaby"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:6pP8yDg5Y4xU5eubMcWNkH"^^org.thingpedia.media-source:playable("Hush Little Baby"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1Y0sZjZo7hJf3o1vkM2W90"^^org.thingpedia.media-source:playable("Canon in D"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:4NJhFmfw43RLBLjQvxDuRS"^^org.thingpedia.media-source:artist("Wolfgang Amadeus Mozart")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:4h3B0bJAyl2GCUY9dgHvJ0"^^org.thingpedia.media-source:playable("12 Variations on \"Ah, vous dirai-je maman\", K. 265"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:4dYeS61BGznDr8gVFaRy0p"^^org.thingpedia.media-source:playable("Divertimento in F Major, K. 138 \"Salzburg Symphony No. 3\": III. Presto"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:3jyFGiDfRVsrNVCxrESxLI"^^org.thingpedia.media-source:playable("Divertimento in E-Flat Major, K. 563: I. Allegro"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:63cvaTiNnsEAOPeUIyAZMy"^^org.thingpedia.media-source:playable("Divertimento in F Major, K. 138 \"Salzburg Symphony No. 3\": II. Andante"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:2jl00YBXk8HIXvA0gmit1h"^^org.thingpedia.media-source:playable("Divertimento No. 1 in D Major, K. 136: III. Presto"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1MLifYxP8UDnfv9mRt3qiQ"^^org.thingpedia.media-source:playable("Serenade in G, K.525 \"Eine kleine Nachtmusik\": 2. Romance (Andante)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:4H82O0Eb4c8emw5IeL3jo5"^^org.thingpedia.media-source:playable("Divertimento in B-Flat Major, K. 254: I. Allegro assai"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1kapunxYsrU5vXPMcCdBfY"^^org.thingpedia.media-source:playable("Divertimento in E-Flat Major, K. 563: IV. Andante"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:7BebEyL3FWbQ5BSyBEnpw2"^^org.thingpedia.media-source:playable("Divertimento in E-Flat Major, K. 563: III. Menuetto (Allegretto)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:0iiWFp5k0VPJdAigUezMth"^^org.thingpedia.media-source:playable("Divertimento No. 1 in D Major, K. 136: II. Andante"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=50];
+A: I played music by Wolfgang Amadeus Mozart on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: next song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player.player_next();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:32QzlLbdI90xZtgtHorqzB"^^org.thingpedia.media-source:artist("Baby Mozart")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:0Kib1nl18LNb3nZfE1JvsM"^^org.thingpedia.media-source:playable("Twinkle Little Star (with Ocean Waves)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1tphFOMsnIiCW0vLeqmved"^^org.thingpedia.media-source:playable("Moonlight Sonata"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:0KeDpZwfV153LWLOLVqIay"^^org.thingpedia.media-source:playable("Brahm Baby Lullaby"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:6pP8yDg5Y4xU5eubMcWNkH"^^org.thingpedia.media-source:playable("Hush Little Baby"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1Y0sZjZo7hJf3o1vkM2W90"^^org.thingpedia.media-source:playable("Canon in D"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:4NJhFmfw43RLBLjQvxDuRS"^^org.thingpedia.media-source:artist("Wolfgang Amadeus Mozart")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:4h3B0bJAyl2GCUY9dgHvJ0"^^org.thingpedia.media-source:playable("12 Variations on \"Ah, vous dirai-je maman\", K. 265"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:4dYeS61BGznDr8gVFaRy0p"^^org.thingpedia.media-source:playable("Divertimento in F Major, K. 138 \"Salzburg Symphony No. 3\": III. Presto"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:3jyFGiDfRVsrNVCxrESxLI"^^org.thingpedia.media-source:playable("Divertimento in E-Flat Major, K. 563: I. Allegro"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:63cvaTiNnsEAOPeUIyAZMy"^^org.thingpedia.media-source:playable("Divertimento in F Major, K. 138 \"Salzburg Symphony No. 3\": II. Andante"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:2jl00YBXk8HIXvA0gmit1h"^^org.thingpedia.media-source:playable("Divertimento No. 1 in D Major, K. 136: III. Presto"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1MLifYxP8UDnfv9mRt3qiQ"^^org.thingpedia.media-source:playable("Serenade in G, K.525 \"Eine kleine Nachtmusik\": 2. Romance (Andante)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:4H82O0Eb4c8emw5IeL3jo5"^^org.thingpedia.media-source:playable("Divertimento in B-Flat Major, K. 254: I. Allegro assai"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1kapunxYsrU5vXPMcCdBfY"^^org.thingpedia.media-source:playable("Divertimento in E-Flat Major, K. 563: IV. Andante"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:7BebEyL3FWbQ5BSyBEnpw2"^^org.thingpedia.media-source:playable("Divertimento in E-Flat Major, K. 563: III. Menuetto (Allegretto)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:0iiWFp5k0VPJdAigUezMth"^^org.thingpedia.media-source:playable("Divertimento No. 1 in D Major, K. 136: II. Andante"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=50];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next()
+C: #[results=[]];
+A: I played the next song.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: pause
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player.player_pause();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:32QzlLbdI90xZtgtHorqzB"^^org.thingpedia.media-source:artist("Baby Mozart")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:0Kib1nl18LNb3nZfE1JvsM"^^org.thingpedia.media-source:playable("Twinkle Little Star (with Ocean Waves)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1tphFOMsnIiCW0vLeqmved"^^org.thingpedia.media-source:playable("Moonlight Sonata"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:0KeDpZwfV153LWLOLVqIay"^^org.thingpedia.media-source:playable("Brahm Baby Lullaby"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:6pP8yDg5Y4xU5eubMcWNkH"^^org.thingpedia.media-source:playable("Hush Little Baby"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1Y0sZjZo7hJf3o1vkM2W90"^^org.thingpedia.media-source:playable("Canon in D"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:4NJhFmfw43RLBLjQvxDuRS"^^org.thingpedia.media-source:artist("Wolfgang Amadeus Mozart")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:4h3B0bJAyl2GCUY9dgHvJ0"^^org.thingpedia.media-source:playable("12 Variations on \"Ah, vous dirai-je maman\", K. 265"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:4dYeS61BGznDr8gVFaRy0p"^^org.thingpedia.media-source:playable("Divertimento in F Major, K. 138 \"Salzburg Symphony No. 3\": III. Presto"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:3jyFGiDfRVsrNVCxrESxLI"^^org.thingpedia.media-source:playable("Divertimento in E-Flat Major, K. 563: I. Allegro"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:63cvaTiNnsEAOPeUIyAZMy"^^org.thingpedia.media-source:playable("Divertimento in F Major, K. 138 \"Salzburg Symphony No. 3\": II. Andante"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:2jl00YBXk8HIXvA0gmit1h"^^org.thingpedia.media-source:playable("Divertimento No. 1 in D Major, K. 136: III. Presto"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1MLifYxP8UDnfv9mRt3qiQ"^^org.thingpedia.media-source:playable("Serenade in G, K.525 \"Eine kleine Nachtmusik\": 2. Romance (Andante)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:4H82O0Eb4c8emw5IeL3jo5"^^org.thingpedia.media-source:playable("Divertimento in B-Flat Major, K. 254: I. Allegro assai"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1kapunxYsrU5vXPMcCdBfY"^^org.thingpedia.media-source:playable("Divertimento in E-Flat Major, K. 563: IV. Andante"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:7BebEyL3FWbQ5BSyBEnpw2"^^org.thingpedia.media-source:playable("Divertimento in E-Flat Major, K. 563: III. Menuetto (Allegretto)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:0iiWFp5k0VPJdAigUezMth"^^org.thingpedia.media-source:playable("Divertimento No. 1 in D Major, K. 136: II. Andante"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=50];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next()
+C: #[results=[]];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_pause()
+C: #[results=[]];
+A: I paused playback.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: cancel
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# recording/bd2f608983fc6143e47f9a1dae5626f1
+U: play the artist the cure on spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("cure")) => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:7bu3H8JO7d0UbMoVzbo70s"^^org.thingpedia.media-source:artist("The Cure")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:263aNAQCeFSWipk896byo6"^^org.thingpedia.media-source:playable("Friday I'm in Love"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:76GlO5H5RT6g7y0gev86Nk"^^org.thingpedia.media-source:playable("Just like Heaven"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:4dneV7C1yDt9UtyxrQY375"^^org.thingpedia.media-source:playable("Boys Don't Cry - Single Version"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:0X5C4WjQNubRysTkHOubz3"^^org.thingpedia.media-source:playable("Lovesong - 2010 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:7ABE6G4uQxbNtYgVrpBBPA"^^org.thingpedia.media-source:playable("Close to Me - 2006 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:1tuwC1Ob5vnYZhvg3zyzJg"^^org.thingpedia.media-source:playable("Pictures of You - 2010 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:07CyrZF9eVd02zzIse7tZA"^^org.thingpedia.media-source:playable("In Between Days - 2006 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:3O4TPMOgChXOerSdB5WENH"^^org.thingpedia.media-source:playable("1 Forest - 2006 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:4d4oXk7O2lEhZ83ivV93li"^^org.thingpedia.media-source:playable("Lullaby - 2010 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="e4a3f879b862b4d8273c96aca085c674b5d060ec", display="tE-MBP", playable="spotify:track:5GHwCpwEos0FzYe55slXEp"^^org.thingpedia.media-source:playable("The Lovecats"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=35];
+A: I played music by The Cure on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: cancel
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# recording/5a5c1909fab47a4593c937b17646a71f
+U: play mozart
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("mozart")) => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:32QzlLbdI90xZtgtHorqzB"^^org.thingpedia.media-source:artist("Baby Mozart")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:0Kib1nl18LNb3nZfE1JvsM"^^org.thingpedia.media-source:playable("Twinkle Little Star (with Ocean Waves)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1tphFOMsnIiCW0vLeqmved"^^org.thingpedia.media-source:playable("Moonlight Sonata"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:0KeDpZwfV153LWLOLVqIay"^^org.thingpedia.media-source:playable("Brahm Baby Lullaby"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:6pP8yDg5Y4xU5eubMcWNkH"^^org.thingpedia.media-source:playable("Hush Little Baby"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1Y0sZjZo7hJf3o1vkM2W90"^^org.thingpedia.media-source:playable("Canon in D"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: I played music by Baby Mozart on Spotify for you.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: next
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next();
+====
+# recording/d0a27ef7d75fd1709b690b1d908188b5
+U: play music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:4ZtFanR9U6ndgddUvNcjcG"^^org.thingpedia.media-source:playable("good 4 u"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:0UsmyJDsst2xhX1ZiFF3JW"^^org.thingpedia.media-source:playable("Year,2015"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:7BFk1nSfwfkDOgnNNeY7Yn"^^org.thingpedia.media-source:playable("wish i dropped out like brakence interlude"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:5BJs3aDrKYBRkzrhaVxf89"^^org.thingpedia.media-source:playable("After Me - 2021 Version"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:748mdHapucXQri7IAO8yFK"^^org.thingpedia.media-source:playable("Kiss Me More (feat. SZA)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:5rJw9VsPNdfnV9Ar97xZG2"^^org.thingpedia.media-source:playable("K-LOVE Fan Awards: Songs of the Year (2015 Mash-Up)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1lrjBRhWKrd3YShBN4Un7c"^^org.thingpedia.media-source:playable("Bob Dylan"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:0u7vHkZJtxjSP65kf0yZOA"^^org.thingpedia.media-source:playable("Rubish"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:5CZ40GBx1sQ9agT82CLQCT"^^org.thingpedia.media-source:playable("traitor"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:00ohIpPn9LkKpeIqhfIU9V"^^org.thingpedia.media-source:playable("K-Love Fan Awards: Songs of the Year (2014 Mash-Up)"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=50];
+A: I played music on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: play next
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player.player_next();
+====
+# recording/836eb051bba5f2d095ddc908e72c93a7
+U: cancel
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# recording/aaa33ba9896cec36ee8da57640c6fb5d
+U: play music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/af632248fa79fe682e347b9dc89a6150
+U: play wolfgang amadeus mozart
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("wolfgang amadeus mozart")) => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:4NJhFmfw43RLBLjQvxDuRS"^^org.thingpedia.media-source:artist("Wolfgang Amadeus Mozart")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:4h3B0bJAyl2GCUY9dgHvJ0"^^org.thingpedia.media-source:playable("12 Variations on \"Ah, vous dirai-je maman\", K. 265"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:4dYeS61BGznDr8gVFaRy0p"^^org.thingpedia.media-source:playable("Divertimento in F Major, K. 138 \"Salzburg Symphony No. 3\": III. Presto"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:3jyFGiDfRVsrNVCxrESxLI"^^org.thingpedia.media-source:playable("Divertimento in E-Flat Major, K. 563: I. Allegro"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:63cvaTiNnsEAOPeUIyAZMy"^^org.thingpedia.media-source:playable("Divertimento in F Major, K. 138 \"Salzburg Symphony No. 3\": II. Andante"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:2jl00YBXk8HIXvA0gmit1h"^^org.thingpedia.media-source:playable("Divertimento No. 1 in D Major, K. 136: III. Presto"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1MLifYxP8UDnfv9mRt3qiQ"^^org.thingpedia.media-source:playable("Serenade in G, K.525 \"Eine kleine Nachtmusik\": 2. Romance (Andante)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:4H82O0Eb4c8emw5IeL3jo5"^^org.thingpedia.media-source:playable("Divertimento in B-Flat Major, K. 254: I. Allegro assai"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1kapunxYsrU5vXPMcCdBfY"^^org.thingpedia.media-source:playable("Divertimento in E-Flat Major, K. 563: IV. Andante"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:7BebEyL3FWbQ5BSyBEnpw2"^^org.thingpedia.media-source:playable("Divertimento in E-Flat Major, K. 563: III. Menuetto (Allegretto)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:0iiWFp5k0VPJdAigUezMth"^^org.thingpedia.media-source:playable("Divertimento No. 1 in D Major, K. 136: II. Andante"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=50];
+A: I played music by Wolfgang Amadeus Mozart on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: next song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:4NJhFmfw43RLBLjQvxDuRS"^^org.thingpedia.media-source:artist("Wolfgang Amadeus Mozart")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:4h3B0bJAyl2GCUY9dgHvJ0"^^org.thingpedia.media-source:playable("12 Variations on \"Ah, vous dirai-je maman\", K. 265"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:4dYeS61BGznDr8gVFaRy0p"^^org.thingpedia.media-source:playable("Divertimento in F Major, K. 138 \"Salzburg Symphony No. 3\": III. Presto"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:3jyFGiDfRVsrNVCxrESxLI"^^org.thingpedia.media-source:playable("Divertimento in E-Flat Major, K. 563: I. Allegro"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:63cvaTiNnsEAOPeUIyAZMy"^^org.thingpedia.media-source:playable("Divertimento in F Major, K. 138 \"Salzburg Symphony No. 3\": II. Andante"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:2jl00YBXk8HIXvA0gmit1h"^^org.thingpedia.media-source:playable("Divertimento No. 1 in D Major, K. 136: III. Presto"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1MLifYxP8UDnfv9mRt3qiQ"^^org.thingpedia.media-source:playable("Serenade in G, K.525 \"Eine kleine Nachtmusik\": 2. Romance (Andante)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:4H82O0Eb4c8emw5IeL3jo5"^^org.thingpedia.media-source:playable("Divertimento in B-Flat Major, K. 254: I. Allegro assai"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1kapunxYsrU5vXPMcCdBfY"^^org.thingpedia.media-source:playable("Divertimento in E-Flat Major, K. 563: IV. Andante"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:7BebEyL3FWbQ5BSyBEnpw2"^^org.thingpedia.media-source:playable("Divertimento in E-Flat Major, K. 563: III. Menuetto (Allegretto)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:0iiWFp5k0VPJdAigUezMth"^^org.thingpedia.media-source:playable("Divertimento No. 1 in D Major, K. 136: II. Andante"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=50];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next()
+C: #[results=[]];
+A: I played the next song.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: previous song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_previous();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:4NJhFmfw43RLBLjQvxDuRS"^^org.thingpedia.media-source:artist("Wolfgang Amadeus Mozart")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:4h3B0bJAyl2GCUY9dgHvJ0"^^org.thingpedia.media-source:playable("12 Variations on \"Ah, vous dirai-je maman\", K. 265"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:4dYeS61BGznDr8gVFaRy0p"^^org.thingpedia.media-source:playable("Divertimento in F Major, K. 138 \"Salzburg Symphony No. 3\": III. Presto"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:3jyFGiDfRVsrNVCxrESxLI"^^org.thingpedia.media-source:playable("Divertimento in E-Flat Major, K. 563: I. Allegro"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:63cvaTiNnsEAOPeUIyAZMy"^^org.thingpedia.media-source:playable("Divertimento in F Major, K. 138 \"Salzburg Symphony No. 3\": II. Andante"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:2jl00YBXk8HIXvA0gmit1h"^^org.thingpedia.media-source:playable("Divertimento No. 1 in D Major, K. 136: III. Presto"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1MLifYxP8UDnfv9mRt3qiQ"^^org.thingpedia.media-source:playable("Serenade in G, K.525 \"Eine kleine Nachtmusik\": 2. Romance (Andante)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:4H82O0Eb4c8emw5IeL3jo5"^^org.thingpedia.media-source:playable("Divertimento in B-Flat Major, K. 254: I. Allegro assai"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1kapunxYsrU5vXPMcCdBfY"^^org.thingpedia.media-source:playable("Divertimento in E-Flat Major, K. 563: IV. Andante"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:7BebEyL3FWbQ5BSyBEnpw2"^^org.thingpedia.media-source:playable("Divertimento in E-Flat Major, K. 563: III. Menuetto (Allegretto)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:0iiWFp5k0VPJdAigUezMth"^^org.thingpedia.media-source:playable("Divertimento No. 1 in D Major, K. 136: II. Andante"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=50];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next()
+C: #[results=[]];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_previous()
+C: #[results=[]];
+A: I played the previous song for you.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: pause
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_pause();
+====
+# recording/6401acf784b0b87369027e16b7a747e1
+U: play michael jackson
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("michael jackson")) => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:3fMbdgg4jU18AjLCKBhRSm"^^org.thingpedia.media-source:artist("Michael Jackson")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:5ChkMS8OtdzJeqyybCc9R5"^^org.thingpedia.media-source:playable("Billie Jean"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1OOtq8tRnDM8kG2gqUPjAj"^^org.thingpedia.media-source:playable("Beat It"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:7oOOI85fVQvVnK5ynNMdW7"^^org.thingpedia.media-source:playable("Rock with You - Single Version"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:46eu3SBuFCXWsPT39Yg3tJ"^^org.thingpedia.media-source:playable("Don't Stop 'Til You Get Enough"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:2bCQHF9gdG5BNDVuEIEnNk"^^org.thingpedia.media-source:playable("Smooth Criminal - 2012 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:3cybT6ri039rCxZkbsa6IR"^^org.thingpedia.media-source:playable("Rockin' Robin"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:5lA3pwMkBdd24StM90QrNR"^^org.thingpedia.media-source:playable("P.Y.T. (Pretty Young Thing)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:0sKlV58cODrjxGFOyf9IXY"^^org.thingpedia.media-source:playable("The Way You Make Me Feel - 2012 Remaster"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:4jnFqNWeJCeCRHc4HCdxfd"^^org.thingpedia.media-source:playable("Remember the Time"), __device="XXXXXXXX"^^tt:device_id },
+C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:5lWFrW5T3JtxVCLDb7etPu"^^org.thingpedia.media-source:playable("Bad - 2012 Remaster"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=33];
+A: I played music by Michael Jackson on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: next
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next();
+====
+# recording/468d01d54f25e9216f9ce410e18df943
+U: play travis playlist
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playlist() filter id =~ "travis" => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/41abf79a945714fe511008497bc629d5
+U: Play Sandstorm by Darude
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("darude")) && id =~ "sandstorm" => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:0LhHRmSd1EYM5QdNeNnCoQ"^^org.thingpedia.media-source:artist("Darude")) && id =~ "sandstorm")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { value="10a83fba23ca39d9d843c96f868d452729b18665", display="Nicks room", playable="spotify:track:24CXuh2WNpgeSYUOvz14jk"^^org.thingpedia.media-source:playable("Sandstorm - Radio Edit"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: I played Sandstorm - Radio Edit on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: configure home assistant
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.configure(device=null^^tt:device("home assistant"));
+====
+# recording/218ff06ec9f035bb73287fb801635ed6
+U: play yellow submarine
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter id =~ "yellow submarine" => @org.thingpedia.media-player.play(playable=id);
