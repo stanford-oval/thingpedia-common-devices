@@ -350,7 +350,7 @@ datadir/ood: datadir/user
 	mkdir -p $@
 	if ! test -z $(s3_bucket) ; then \
 	  ./scripts/make-calibration-ood.sh ; \
-	  cat calibration-ood.tsv $(word 2,$^) $</eval.tsv | ./scripts/shuf_with_seed.sh 42 > $@/data.tsv ; \
+	  cat calibration-ood.tsv $</eval.tsv | ./scripts/shuf_with_seed.sh 42 > $@/data.tsv ; \
 	  ./scripts/split.sh $@/data.tsv $@/train.tsv $@/eval.tsv 0.8 ; \
 	  rm $@/data.tsv ; \
         fi
