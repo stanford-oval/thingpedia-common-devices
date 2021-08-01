@@ -18,4 +18,3 @@ genie dialog-to-contextual -o staging-devtrain.tsv --thingpedia eval/staging/sch
 
 sed -E -e 's/\t\$dialogue [^\t]*$/\t\$ood ;/' staging-devtrain.tsv >> calibration-ood.tsv
 
-aws s3 cp calibration-ood.tsv s3://geniehai/gcampax/calibration-ood.tsv
