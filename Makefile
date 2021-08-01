@@ -346,14 +346,15 @@ datadir/fewshot: eval/$(release)/train/user.tsv eval/$(release)/dev/user.tsv eva
 	cp eval/$(release)/dev/agent.tsv $@/agent/eval.tsv
 	touch $@
 
-calibration-ood.tsv:
-	./scripts/make-calibration-ood.sh
-
-datadir/ood: datadir/user calibration-ood.tsv
+datadir/ood: datadir/user
 	mkdir -p $@
-	cat $(word 2,$^) $</eval.tsv | ./scripts/shuf_with_seed.sh 42 > $@/data.tsv
-	./scripts/split.sh $@/data.tsv $@/train.tsv $@/eval.tsv 0.8
-	rm $@/data.tsv
+	if ! test -z $(s3_bucket) ; then \
+	  ./scripts/make-calibration-ood.sh ; \
+	  cat calibration-ood.tsv $(word 2,$^) $</eval.tsv | ./scripts/shuf_with_seed.sh 42 > $@/data.tsv ; \
+	  ./scripts/split.sh $@/data.tsv $@/train.tsv $@/eval.tsv 0.8 ; \
+	  rm $@/data.tsv ; \
+        fi
+	touch $@
 
 datadir: datadir/agent datadir/nlg datadir/user datadir/fewshot datadir/ood $(all_synthetic_files)
 	cat eval/$(release)/synthetic-*.txt > $@/synthetic.txt
