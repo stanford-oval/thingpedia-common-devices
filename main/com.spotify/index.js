@@ -952,7 +952,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (deviceId === null)
             throwError('no_active_device');
 
-        if (this.spotifyd && this.engine.audio) {
+        if (this.engine.audio) {
             await this.engine.audio.requestAudio(this, async () => {
                 console.log("stopping audio");
                 let pauseURL = PAUSE_URL + querystring.stringify({
