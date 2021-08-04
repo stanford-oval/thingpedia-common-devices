@@ -21,6 +21,7 @@ module.exports = class MovieClass extends Tp.BaseDevice {
     async get_movie (params, hints, env) {
         // const queryURL = tmdbAccess + multiSearch + this.constructor.metadata.auth.api_key + finalSearch + realquery + "&page=1&include_adult=false";
         let sortURL = '';
+        let oneDate = new Date(Date.now());
         if (hints && hints.sort) {
             if (hints.sort[0] === 'release_date' && hints.sort[1] === 'desc')
                 sortURL = tmdbAccess + nowPlaying + this.constructor.metadata.auth.api_key + finalSearch;
