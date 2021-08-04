@@ -120,7 +120,7 @@ Given the two initial models, we can proceed to annotate the data:
 ```bash
 make release=staging eval/staging/schema.tt eval/staging/database-map.tsv
 genie manual-annotate-dialog --thingpedia eval/staging/schema.tt --database-file eval/staging/database-map.tsv \
-   --user-nlu-model $usermodel --agent-nlu-model $agentmodel \
+   --user-nlu-server $usermodel --agent-nlu-server $agentmodel \
    --annotated output.txt --dropped dropped.txt input.txt
 ```
 
