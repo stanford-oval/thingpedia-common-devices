@@ -33,7 +33,6 @@ module.exports = class MovieClass extends Tp.BaseDevice {
             return Promise.all(parsedResponse.results.map(async (result) => {
                 const castQuery = `https://api.themoviedb.org/3/movie/${result.id}/credits?api_key=${this.constructor.metadata.auth.api_key}&language=en-US`;
                 let id = new Tp.Value.Entity(String(result.id), result.title);
-                let oneDate = new Date(Date.now());
                 if ((result.release_date !== undefined) && (String(result.release_date) !== ''))
                     oneDate = new Date(result.release_date);
                 else
@@ -58,8 +57,6 @@ module.exports = class MovieClass extends Tp.BaseDevice {
                 return movieObj;
             }));
         }
-        let query_term = '';
-        let searchType = 'movie';
         const movie_filter = {
             term: '',
             actors:'',
@@ -129,7 +126,6 @@ module.exports = class MovieClass extends Tp.BaseDevice {
             return Promise.all(parsedResponse.results.map(async (result) => {
                 const castQuery = `https://api.themoviedb.org/3/movie/${result.id}/credits?api_key=${this.constructor.metadata.auth.api_key}&language=en-US`;
                 let id = new Tp.Value.Entity(String(result.id), String(result.title));
-                let oneDate = new Date(Date.now());
                 if ((result.release_date !== undefined) && (String(result.release_date) !== ''))
                     oneDate = new Date(result.release_date);
                 else
@@ -160,7 +156,6 @@ module.exports = class MovieClass extends Tp.BaseDevice {
             let parsedResponse = JSON.parse(response1);
             return Promise.all(parsedResponse.results.map(async (result) => {
                 const castQuery = `https://api.themoviedb.org/3/movie/${result.id}/credits?api_key=${this.constructor.metadata.auth.api_key}&language=en-US`;
-                let oneDate = new Date(Date.now());
                 if ((result.release_date !== undefined) && (String(result.release_date) !== ''))
                     oneDate = new Date(result.release_date);
                 else
