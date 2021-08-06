@@ -37,8 +37,8 @@ const DOMAIN_TO_TP_KIND = {
 
     // media players
     'media_player': 'org.thingpedia.iot.media-player',
-    //'media_player_speaker': 'org.thingpedia.iot.speaker',
-    //'media_player_tv': 'org.thingpedia.iot.tv',
+    'media_player_speaker': 'org.thingpedia.iot.speaker',
+    'media_player_tv': 'org.thingpedia.iot.tv',
 
     // sensors and binary sensors (implemented by HomeAssistantSensor)
     //'sensor_air': 'org.thingpedia.iot.air',
@@ -81,6 +81,8 @@ const SUBDEVICES = {
 Object.entries(DOMAIN_TO_TP_KIND).forEach(([key,value]) => {
     if (key.includes('sensor') && !(value in SUBDEVICES))
         SUBDEVICES[value] = class extends HomeAssistantSensor {};
+    if (key.includes('media_player'))
+        SUBDEVICES[value] = class extends HomeAssistantMediaPlayer {};
 });
 
 class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {

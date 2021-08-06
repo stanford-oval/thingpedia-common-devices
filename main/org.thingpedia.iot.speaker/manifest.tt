@@ -1,0 +1,20 @@
+abstract class @org.thingpedia.iot.speaker extends @org.thingpedia.volume-control, @org.thingpedia.iot.switch, @org.thingpedia.media-player
+#_[thingpedia_name="Speaker"]
+#_[thingpedia_description="Interface for Speaker."]
+#_[description="Interface for Speaker."]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="home"]
+{
+  monitorable query power(out state : Enum(on,off))
+  #_[canonical="power state"]
+  #_[confirmation="the power state of $__device"]
+  #_[formatted=["it is ${state}"]];
+
+  action set_power(in req power: Enum(on,off) #_[prompt="Do you want to turn it on or off?"] #_[canonical="power"])
+  #_[canonical="turn your speaker on or off"]
+  #_[confirmation="turn ${power} $__device"]
+  #[confirm=true]
+  #[doc="turn on or off the speaker"];
+
+}
