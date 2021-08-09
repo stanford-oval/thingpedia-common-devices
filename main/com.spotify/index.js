@@ -1083,14 +1083,34 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (this._testMode()) return;
         if (!playable || !(playable instanceof Tp.Value.Entity))
             throwError('no_item_to_add');
+        if (String(playable.id).match(/spotify:artist:/))
+            throwError('disallowed_action');
         const [ids, item_type,] = String(playable).split(':').reverse();
         let url = this.determine_item_uri(item_type);
         try {
             let query = {
                 ids: ids
             };
-            if (item_type === SPOTIFY_ITEMS.artist)
-                query.type = SPOTIFY_ITEMS.artist;
+            url += querystring.stringify(query);
+            await this.http_put_default_options(url, '');
+        } catch (error) {
+            throwError('disallowed_action');
+        }
+    }
+
+    async do_add_artist_to_library({artist}) {
+        if (this._testMode()) return;
+        if (!artist || !(artist instanceof Tp.Value.Entity))
+            throwError('no_item_to_add');
+        if (!String(artist).match(/spotify:artist:/))
+            throwError('disallowed_action');
+        const [ids, item_type,] = String(artist).split(':').reverse();
+        let url = this.determine_item_uri(item_type);
+        try {
+            let query = {
+                ids: ids,
+                type: SPOTIFY_ITEMS.artist
+            };
             url += querystring.stringify(query);
             await this.http_put_default_options(url, '');
         } catch (error) {
@@ -1129,11 +1149,8 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
     async get_get_song_from_library() {
         const url = this._format_library_item_url({item: SPOTIFY_ITEMS.track});
         const parsed = await this._parse_library_items(url, SPOTIFY_ITEMS.track);
-        return parsed.map((item) => {
-            return {
-                song: new Tp.Value.Entity(item.track.uri, item.track.name)
-            };
-        });
+        const track_items = parsed.map((item) => item.track);
+        return this.parse_tracks(track_items);
     }
 
     async get_get_album_from_library() {
@@ -1141,7 +1158,10 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         const parsed = await this._parse_library_items(url, SPOTIFY_ITEMS.album);
         return parsed.map((item) => {
             return {
-                album: new Tp.Value.Entity(item.album.uri, item.album.name)
+                id: new Tp.Value.Entity(item.album.uri, item.album.name),
+                artists: item.album.artists.map((artist) => new Tp.Value.Entity(artist.uri, artist.name)),
+                release_date: new Date(item.album.release_date),
+                popularity: item.album.popularity
             };
         });
     }
@@ -1151,7 +1171,8 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         const parsed = await this._parse_library_items(url, SPOTIFY_ITEMS.show);
         return parsed.map((item) => {
             return {
-                show: new Tp.Value.Entity(item.show.uri, item.show.name)
+                id: new Tp.Value.Entity(item.show.uri, this.formatTitle(item.show.name)),
+                publisher: item.show.publisher
             };
         });
     }
@@ -1161,7 +1182,9 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         const parsed = await this._parse_library_items(url, SPOTIFY_ITEMS.artist);
         return parsed.map((item) => {
             return {
-                artist: new Tp.Value.Entity(item.uri, item.name)
+                id: new Tp.Value.Entity(item.uri, this.formatTitle(item.name)),
+                genres: item.genres,
+                popularity: item.popularity
             };
         });
     }

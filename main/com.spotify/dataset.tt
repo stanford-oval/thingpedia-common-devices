@@ -35,6 +35,15 @@ dataset @com.spotify language "en" {
                    "remember ${p_playable:no-undefined}"]]
     ;
 
+    action (p_artist :Entity(org.thingpedia.media-source:artist)) = @com.spotify.add_artist_to_library(artist=p_artist)
+    #_[utterances=["add artist ${p_artist} to my favorite",
+                   "put artist ${p_artist} in my favorite",
+                   "save artist ${p_artist} to my favorite",
+                   "add artist ${p_artist} to my library",
+                   "put artist ${p_artist} in my library",
+                   "save artist ${p_artist} to my library"]]
+    ;
+
     action := (@org.thingpedia.media-source.get_currently_playing()) => @com.spotify.add_item_to_library(playable=id)
     #_[utterances=["add this to my favorite",
                    "put this in my favorite",
@@ -49,4 +58,21 @@ dataset @com.spotify language "en" {
                    "love this",
                    "remember this"]]
     ;
+
+    action := (@org.thingpedia.media-source.get_currently_playing()) => @com.spotify.add_artist_to_library(artist=artist)
+    #_[utterances=["add this artist to my favorite",
+                   "put this artist in my favorite",
+                   "save this artist to my favorite",
+                   "add this artist to my library",
+                   "put this artist in my library",
+                   "save this artist to my library",
+                   "like this artist",
+                   "favorite this artist",
+                   "save this artist",
+                   "keep this artist",
+                   "love this artist",
+                   "remember this artist"]]
+    ;
+
+
 }
