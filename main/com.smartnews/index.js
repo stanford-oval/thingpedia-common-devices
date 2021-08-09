@@ -55,6 +55,49 @@ class UnavailableError extends Error {
     }
 }
 
+async function* tryGetArticle(forDate) {
+    const url = `https://oval-project.s3-ap-northeast-1.amazonaws.com/data/${forDate}/summary_${forDate}.jsonl`;
+
+    let anyNews = false;
+    try {
+        const stream = (await Tp.Helpers.Http.getStream(url)).setEncoding('utf8').pipe(byline());
+
+        let i = -1;
+        for await (const line of stream) {
+            i++;
+            try {
+                const article = JSON.parse(line);
+                if (article['articleViewStyle'] !== 'SMART')
+                    continue;
+                if (article['title'] === 'coronavirus_push_landingpage')
+                    continue;
+                anyNews = true;
+                yield {
+                    id: new Tp.Value.Entity(String(article.link_id), null),
+                    link: article.url,
+                    title: article.title,
+                    date: new Date(article.publishedTimestamp * 1000),
+                    source: article.site ? article.site.name : null,
+                    author: article.author ? article.author.name : null,
+                    audio_url: s3tohttp(article.summary_mp3_file),
+                    content: article.body,
+                };
+            } catch(e) {
+                if (e.name !== 'SyntaxError')
+                    throw e;
+
+                console.error(`WARNING: syntax error in SmartNews summary file at line ${i}: ${e.message}`);
+            }
+        }
+    } catch(e) {
+        if (e.code === 404 || e.code === 403)
+            throw new UnavailableError(`summary missing for ${forDate}`);
+        throw e;
+    }
+    if (!anyNews)
+        throw new UnavailableError(`summary empty for ${forDate}`);
+}
+
 module.exports = class SmartNewsDevice extends Tp.BaseDevice {
     constructor(engine, state) {
         super(engine, state);
@@ -65,47 +108,24 @@ module.exports = class SmartNewsDevice extends Tp.BaseDevice {
 
     async *get_article(params, hints) {
         const now = new Date;
-        const date = `${now.getYear()-100}${now.getMonth() < 9 ? '0' : ''}${now.getMonth()+1}${now.getDate()<10 ? '0': ''}${now.getDate()}`;
-        const url = `https://oval-project.s3-ap-northeast-1.amazonaws.com/data/${date}/summary_${date}.jsonl`;
+        const yesterday = new Date(now.getTime() - 86400 * 1000);
 
-        let anyNews = false;
         try {
-            const stream = (await Tp.Helpers.Http.getStream(url)).setEncoding('utf8').pipe(byline());
+            const date = `${now.getYear()-100}${now.getMonth() < 9 ? '0' : ''}${now.getMonth()+1}${now.getDate()<10 ? '0': ''}${now.getDate()}`;
+            yield* tryGetArticle(date);
+        } catch(e1) {
+            if (!(e1 instanceof UnavailableError))
+                throw e1;
 
-            let i = -1;
-            for await (const line of stream) {
-                i++;
-                try {
-                    const article = JSON.parse(line);
-                    if (article['articleViewStyle'] !== 'SMART')
-                        continue;
-                    if (article['title'] === 'coronavirus_push_landingpage')
-                        continue;
-                    anyNews = true;
-                    yield {
-                        id: new Tp.Value.Entity(String(article.link_id), null),
-                        link: article.url,
-                        title: article.title,
-                        date: new Date(article.publishedTimestamp * 1000),
-                        source: article.site ? article.site.name : null,
-                        author: article.author ? article.author.name : null,
-                        audio_url: s3tohttp(article.summary_mp3_file),
-                        content: article.body,
-                    };
-                } catch(e) {
-                    if (e.name !== 'SyntaxError')
-                        throw e;
-
-                    console.error(`WARNING: syntax error in SmartNews summary file at line ${i}: ${e.message}`);
-                }
+            try {
+                const date = `${yesterday.getYear()-100}${yesterday.getMonth() < 9 ? '0' : ''}${yesterday.getMonth()+1}${yesterday.getDate()<10 ? '0': ''}${now.getDate()}`;
+                yield* tryGetArticle(date);
+            } catch(e2) {
+                if (!(e2 instanceof UnavailableError))
+                    throw e2;
+                throw e1;
             }
-        } catch(e) {
-            if (e.code === 404 || e.code === 403)
-                throw new UnavailableError('summary missing');
-            throw e;
         }
-        if (!anyNews)
-            throw new UnavailableError('summary empty');
     }
 
     // get_reading_list({ device_token = DEVICE_TOKEN }) {

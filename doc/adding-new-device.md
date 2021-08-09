@@ -118,18 +118,26 @@ com.xxx:artist  eval/artists_db.json
 
 Given the two initial models, we can proceed to annotate the data:
 ```bash
-./scripts/annotate.sh --release staging --device com.xxx --user_nlu_model $modeluser --agent_nlu_model $modelagent \
-  --eval_set dev --offset 1
+make release=staging eval/staging/schema.tt eval/staging/database-map.tsv
+genie manual-annotate-dialog --thingpedia eval/staging/schema.tt --database-file eval/staging/database-map.tsv \
+   --user-nlu-server $usermodel --agent-nlu-server $agentmodel \
+   --annotated output.txt --dropped dropped.txt input.txt
 ```
+
+`$usermodel` and `$agentmodel` should be URLs pointing to the trained models to interpret the user
+and agent sentences. If you do not have a specific model trained for your device, you can use
+`https://nlp-staging.almond.stanford.edu`.
+
+The command will read from `input.txt` and write to `output.txt`. At any point, a turn can be discarded
+with `d` followed by a short phrase indicating the reason. Dialogues that are discarded are added to `dropped.txt`.
+
+The command can be exited with `q`. You can append `--offset` followed by the index of a dialogue to resume
+annotation at a later point. Use `h` to see all commands available.
 
 See the [ThingTalk guide](https://wiki.almond.stanford.edu/thingtalk/guide) to learn how
 to write ThingTalk.
 At any point, you can interrupt the process by typing `q` or pressing Ctrl-C, and then resume it by passing
 the offset of the dialogue to start from, in the `input.txt` order.
-
-At the end of annotation, you can use `make release=staging model=$modeluser evaluate` to
-evaluate the trained model on the data for the new device (as well as everything else
-in the release).
 
 ### Training A Better Model
 

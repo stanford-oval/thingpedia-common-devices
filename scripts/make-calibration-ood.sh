@@ -16,7 +16,5 @@ genie dialog-to-contextual -o staging-devtrain.tsv --thingpedia eval/staging/sch
   --side user --flags E --id-prefix staging/ --deduplicate --no-tokenized --ignore-errors \
   staging/*/eval/dev/annotated.txt staging/*/eval/train/annotated.txt
 
-sed -E -e 's/\t\$dialogue [^\t]*$/\t\$ood ;/' staging-devtrain.tsv \
-  staging/*/eval/paraphrase.tsv >> calibration-ood.tsv
+sed -E -e 's/\t\$dialogue [^\t]*$/\t\$ood ;/' staging-devtrain.tsv >> calibration-ood.tsv
 
-aws s3 cp calibration-ood.tsv s3://geniehai/gcampax/calibration-ood.tsv
