@@ -1255,10 +1255,10 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         }
         if (albumUris.length > 0) {
             const albumIds = albumUris.map((uri) => uri.split("spotify:album:")[1]);
-            const albumTracks = (await this.albums_get_by_id(albumIds)).albums;
-            for (const album of albumTracks) {
-                const uris = album.tracks.items.map((track) => track.uri);
-                albumTracks[album.uri] = uris;
+            const albums = (await this.albums_get_by_id(albumIds)).albums;
+            for (const album of albums) {
+                const trackUris = album.tracks.items.map((track) => track.uri);
+                albumTracks[album.uri] = trackUris;
             }
         }
 
