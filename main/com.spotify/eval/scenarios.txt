@@ -463,7 +463,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@org.thingpedia.media-source.artist(), id =~ ("ed sheeran")) => @com.spotify.add_artist_to_library(artist=id);
 
-A: I added artist the first artist that has name [Ee]d [Ss]heeran to your favorite.
+A: I added artist(\sthe first artist that has name)?\s[Ee]d [Ss]heeran to your favorite.
 A: >> expecting = null
 
 ====
@@ -473,10 +473,10 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => (@org.thingpedia.media-source.artist(), id =~ ("hans zimmer")) => @com.spotify.add_artist_to_library(artist=id);
 
-A: I added\s(an\s)?artist\s(the first artist that has name [Hh]ans [Zz]immer\s)?to your favorite(s)?(\sfor you named [Hh]ans [Zz]immer)?\.
+A: I added\s(an\s)?artist\s(the first artist that has name\s)?([Hh]ans [Zz]immer\s)?to your favorite(s)?(\sfor you named [Hh]ans [Zz]immer)?\.
 A: >> expecting = null
 
-#====
+====
 # 50-add-currently-playing-to-library (req=com.spotify)
 
 #U: add this song to my library
@@ -486,12 +486,12 @@ U: now => @org.thingpedia.media-source.get_currently_playing() => @com.spotify.a
 A: (Sorry, no item is currently playing|I added an item to your library|I added currently playing track to your favorite)\.
 A: >> expecting = null
 
-#====
+====
 # 51-add-artist-of-currently-playing-song-to-library (req=com.spotify)
 
 #U: like this artist
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: now => [artist] of @org.thingpedia.media-source.get_artist_of_currently_playing() => @com.spotify.add_artist_to_library(artist=id);
+U: now => [artists] of @org.thingpedia.media-source.get_artist_of_currently_playing() => @com.spotify.add_artist_to_library(artist=id);
 
 A: (Sorry, no item is currently playing\.|I added an artist to your favorites named [Hh]ans [Zz]immer]\.)
 A: >> expecting = null
