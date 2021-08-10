@@ -399,53 +399,54 @@ U: yes
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::2:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 2")).set_target_humidity(value=60)
 UT: #[confirm=enum confirmed];
-# 106
+====
+# mturk/106
 U: What is the thermostat on?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.hvac_action();
 ====
-# 109
+# mturk/109
 U: When it is 9 AM set the temperature to 71 degrees Fahrenheit.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: ontimer(date=[set_time($now, new Time(9, 0))]) => @org.thingpedia.iot.climate.set_target_temperature(value=71F);
 ====
-# 112
+# mturk/112
 U: If the temperature gets to 80 degrees turn on the AC.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: monitor(@org.thingpedia.iot.climate.current_temperature()) filter value >= 80defaultTemperature => @org.thingpedia.iot.climate.set_hvac_mode(mode=enum cool);
 ====
-# 116
+# mturk/116
 U: What temperature is the heater set at?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.target_temperature();
 ====
-# 119
+# mturk/119
 U: Turn the heat on when the temperature reaches 68.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: monitor(@org.thingpedia.iot.climate.current_temperature()) filter value == 68defaultTemperature => @org.thingpedia.iot.climate.set_hvac_mode(mode=enum heat);
 ====
-# 128
+# mturk/128
 U: Set the temperature to 70 degrees Fahrenheit and the humidity level to 40%.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.set_target_temperature(value=70F);
 UT: @org.thingpedia.iot.climate.set_target_humidity(value=40);
 ====
-# 129
+# mturk/129
 U: Turn off the A/C but leave the fan on.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.set_hvac_mode(mode=enum fan_only);
 ====
-# 136
+# mturk/136
 U: Heat the house to 71 degrees when I come home.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: monitor(@org.thingpedia.builtin.thingengine.builtin.get_gps()) filter location == $location.home => @org.thingpedia.iot.climate.set_target_temperature(value=71defaultTemperature);
 ====
-# 142
+# mturk/142
 U: When I enter the house, set the temperature to 78.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: monitor(@org.thingpedia.builtin.thingengine.builtin.get_gps()) filter location == $location.home => @org.thingpedia.iot.climate.set_target_temperature(value=78defaultTemperature);
 ====
-# 154
+# mturk/154
 U: Turn on the AC in 15 minutes.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: ontimer(date=[$now + 15min]) => @org.thingpedia.iot.climate.set_hvac_mode(mode=enum cool);z
