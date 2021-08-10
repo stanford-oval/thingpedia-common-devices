@@ -482,7 +482,7 @@ UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_
 # online/120571
 U: every minute show notification
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: timer(base=$now, interval=1min) => @org.thingpedia.builtin.thingengine.builtin.say();
+UT: timer(interval=1min) => @org.thingpedia.builtin.thingengine.builtin.say();
 ====
 # online/1647560
 U: notify me when i move slower than 13 km/h
@@ -597,4 +597,119 @@ UT: ontimer(date=$?) => @org.thingpedia.builtin.thingengine.builtin.alert();
 # log/72883
 U: alarm in 45 minutes
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[$now + 45min]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+UT: ontimer(date=[$now + 45min]) => @org.thingpedia.builtin.thingengine.builtin.timer_expire();
+====
+# recording/8eb27940672146aeeb604ffff22199eb
+U: what can you do?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
+====
+# recording/6311f7ed0741b3a8143260b69e9b32c3
+U: what's my name?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_name();
+====
+# recording/12b0e380179ecbacefd80c1602c4d66b
+U: test
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
+====
+# recording/1d9c105d80464cdc8efb1ad657132a51
+U: help
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
+====
+# recording/9cd1ec842142f191d5bdd500aa159b77
+U: Tell me hi!
+UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
+C: $dialogue @org.thingpedia.dialogue.transaction.greet;
+A: Hello! How can I help you?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_greet;
+U: I don't know
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help)
+C: #[results=[
+C:   { reply="I'm a new virtual assistant. At the moment, I can help you with music, jokes, and managing some IoT devices.", question=enum general_help }
+C: ]];
+A: I'm a new virtual assistant. At the moment, I can help you with music, jokes, and managing some IoT devices.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: Nice, thank you
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# recording/166f20903596a8548db3bec73d45f288
+U: i love you
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum positive_emotion_thanks);
+====
+# recording/65ba2708fd73b788e2e67d6412435167
+U: test
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
+====
+# recording/f2f439901b8cf198d652e3ae750f0232
+U: what timeis it
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_time();
+====
+# recording/aa280da498086769a2481345fd4a41fd
+U: what time is it
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_time();
+====
+# recording/d2779ad24c2773699b35461c06f29d7a
+U: where are you?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_location);
+====
+# recording/e6aa6a1c0f73f1c0c2b026b269bf933f
+U: who are you
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_identity);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_identity)
+C: #[results=[
+C:   { reply="I'm Genie, an open-source virtual assistant created at Stanford.", question=enum about_almond_identity }
+C: ]];
+A: I'm Genie, an open-source virtual assistant created at Stanford.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: how old are you
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_age);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_identity)
+C: #[results=[
+C:   { reply="I'm Genie, an open-source virtual assistant created at Stanford.", question=enum about_almond_identity }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_age)
+C: #[results=[
+C:   { reply="I was born in 2015 in a class at Stanford. The plan is for me to be released in the first half of 2021.", question=enum about_almond_age }
+C: ]];
+A: I was born in 2015 in a class at Stanford. The plan is for me to be released in the first half of 2021.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: how old are you?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_age);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_identity)
+C: #[results=[
+C:   { reply="I'm Genie, an open-source virtual assistant created at Stanford.", question=enum about_almond_identity }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_age)
+C: #[results=[
+C:   { reply="I was born in 2015 in a class at Stanford. The plan is for me to be released in the first half of 2021.", question=enum about_almond_age }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_age)
+C: #[results=[
+C:   { reply="I was born in 2015 in a class at Stanford. The plan is for me to be released in the first half of 2021.", question=enum about_almond_age }
+C: ]];
+A: I was born in 2015 in a class at Stanford. The plan is for me to be released in the first half of 2021.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: cancel
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# recording/8272d9b584f25f65a353e05fe174eeea
+U: what's my name?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_name();

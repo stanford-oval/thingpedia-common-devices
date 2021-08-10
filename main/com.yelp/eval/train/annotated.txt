@@ -925,3 +925,38 @@ UT: sort(rating desc of @com.yelp.restaurant() filter geo == new Location("palo 
 U: search on yelp
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.yelp.restaurant();
+====
+# recording/d74a8277899d89205d5fee37240bc7f1
+U: I want to eat chinese food.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese"));
+====
+# recording/d33b3deb3cfbee3f21bfc99a873c17ce
+U: I like chinese food.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese"));
+====
+# recording/1fba1cf45334d2eb1d7e65d77ab03e3a
+U: show me restaurants with "box" in their name
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter id =~ "box";
+====
+# recording/da3427ae1bae714c674a6e194df1b219
+U: restaurants in saratoga
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("saratoga");
+====
+# recording/803d3afb5b4723c1489d1bea6331f87f
+U: where is taverna?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [geo] of @com.yelp.restaurant() filter id =~ "taverna";
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: [geo] of @com.yelp.restaurant() filter id =~ "taverna"
+C: #[results=[
+C:   { id="Z9zQYvlCLXw9x0AV4dYVng"^^com.yelp:restaurant("TAVERNA"), geo=new Location(37.44205, -122.15894, "800 Emerson St, Palo Alto, CA 94301") }
+C: ]];
+A: TAVERNA is a restaurant near 800 Emerson St, Palo Alto, CA 94301.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: suggest a pizzeria in palo alto
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [geo] of @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("pizzeria")) && geo == new Location("palo alto");
