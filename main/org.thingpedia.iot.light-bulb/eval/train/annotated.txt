@@ -784,3 +784,45 @@ UT: @org.thingpedia.iot.light-bulb(name="living room").set_brightness(pct=80);
 U: lower the bedroom light intensity
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.light-bulb(name="bedroom").lower_brightness();
+====
+# 75
+U: Increase the brightness of the living room light to 75%.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(name="living room").set_brightness(pct=75);
+====
+# 96
+U: Change the color of the light in the living room to pink.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(name="living room").set_color(color=enum pink);
+====
+# 100
+U: Turn off floor lamp at 9AM every day.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: attimer(time=[new Time(9, 0)]) => @org.thingpedia.iot.light-bulb(name="floor lamp").set_power(power=enum off);
+====
+# 114
+U: Are the lights off?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(all=true).power();
+====
+# 118
+U: Are there any lights on inside?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(all=true).power();
+====
+# 132
+U: Set the living room light to the color blue and 60% brightness.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(name="living room").set_color(color=enum blue);
+UT: @org.thingpedia.iot.light-bulb(name="living room").set_brightness(pct=60);
+====
+# 147
+U: Increase Illuminance to 65 at 7pm, and increase to 80 at 9pm
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: attimer(time=[new Time(19, 0)]) => @org.thingpedia.iot.light-bulb.set_brightness(pct=65);
+UT: attimer(time=[new Time(21, 0)]) => @org.thingpedia.iot.light-bulb.set_brightness(pct=80);
+====
+# 149
+U: Turn the lights on in the living room after 5pm.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: attimer(time=[new Time(17, 0)]) => @org.thingpedia.iot.light-bulb(name="living room").set_power(power=enum on);
