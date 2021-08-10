@@ -43,3 +43,32 @@ U: did I forgot to close the front door ?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.lock(name="front").state();
 ====
+# 94
+U: Lock the front door now
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.lock(name="front door").set_state(state=enum lock);
+====
+# 107
+U: Is the front door locked right now?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.lock(name="front door").state();
+====
+# 108
+U: Is the front door locked?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.lock(name="front door").state();
+====
+# 111
+U: Is the back door locked?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.lock(name="back door").state();
+====
+# 122
+U: Lock the front door after 8:00 PM.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[set_time($now, new Time(20, 0))]) => @org.thingpedia.iot.lock(name="front door").set_state(state=enum lock);
+====
+# 150
+U: Lock the front door after I come home.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.builtin.thingengine.builtin.get_gps()) filter location == $location.home => @org.thingpedia.iot.lock(name="front door").set_state(state=enum lock);
