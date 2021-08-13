@@ -379,13 +379,13 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (tracks.length === 0 && albums.length === 0) {
             for (const playlist of playlists) {
                 music.push({
-                    id: new Tp.Value.Entity(playlist.uri, playlist.name)
+                    id: new Tp.Value.Entity(playlist.uri, this.formatTitle(playlist.name))
                 });
             }
 
             for (const show of shows) {
                 music.push({
-                    id: new Tp.Value.Entity(show.uri, show.name)
+                    id: new Tp.Value.Entity(show.uri, this.formatTitle(show.name))
                 });
             }
         }
@@ -468,7 +468,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             const release_date = new Date(albumItems[i].release_date);
             const artists = albumItems[i].artists.map((artist) => new Tp.Value.Entity(artist.uri, artist.name));
             const albumObj = {
-                id: new Tp.Value.Entity(albumItems[i].uri, albumItems[i].name),
+                id: new Tp.Value.Entity(albumItems[i].uri, this.formatTitle(albumItems[i].name)),
                 artists,
                 release_date,
                 popularity: albumItems[i].popularity,
@@ -526,7 +526,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             const release_date = new Date(showItems[i].release_date);
             const artists = showItems[i].artists.map((producer) => new Tp.Value.Entity(producer.uri, producer.name));
             const show = {
-                id: new Tp.Value.Entity(showItems[i].uri, showItems[i].name),
+                id: new Tp.Value.Entity(showItems[i].uri, this.formatTitle(showItems[i].name)),
                 artists,
                 release_date,
             };
@@ -867,7 +867,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         var playlists = [];
         for (const playlist of searchResults.playlists.items) {
             playlists.push({
-                id: new Tp.Value.Entity(playlist.uri, playlist.name)
+                id: new Tp.Value.Entity(playlist.uri, this.formatTitle(playlist.name))
             });
         }
         return playlists;
@@ -1158,7 +1158,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         const parsed = await this._parse_library_items(url, SPOTIFY_ITEMS.album);
         return parsed.map((item) => {
             return {
-                id: new Tp.Value.Entity(item.album.uri, item.album.name),
+                id: new Tp.Value.Entity(item.album.uri, this.formatTitle(item.album.name)),
                 artists: item.album.artists.map((artist) => new Tp.Value.Entity(artist.uri, artist.name)),
                 release_date: new Date(item.album.release_date),
                 popularity: item.album.popularity
