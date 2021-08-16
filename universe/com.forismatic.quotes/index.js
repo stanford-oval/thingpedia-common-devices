@@ -36,15 +36,28 @@ const URL = 'http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang
 
 module.exports = class ForismaticDevice extends Tp.BaseDevice {
     async get_get() {
-        let response = await Tp.Helpers.Http.get(URL);
-        // remove bogus \' escaping which trips up JSON.parse
-        response = response.replace(/\\'/g, "'");
+        for (;;) {
+            let response;
+            try {
+                response = await Tp.Helpers.Http.get(URL);
+                // remove bogus \' escaping which trips up JSON.parse
+                response = response.replace(/\\'/g, "'");
 
-        const parsed = JSON.parse(response);
-        return [{
-            author: parsed.quoteAuthor,
-            text: parsed.quoteText,
-            link: parsed.quoteLink
-        }];
+                const parsed = JSON.parse(response);
+                return [{
+                    author: parsed.quoteAuthor || undefined,
+                    text: parsed.quoteText,
+                    link: parsed.quoteLink
+                }];
+            } catch(e) {
+                // catch syntaxerrors caused by JSON parse because the
+                // API doesn't always return valid JSON
+
+                if (e.name !== 'SyntaxError')
+                    throw e;
+
+                console.log(`Invalid JSON from Forismatic API: ${response}`);
+            }
+        }
     }
 };
