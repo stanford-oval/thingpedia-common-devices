@@ -34,6 +34,7 @@
 const Tp = require("thingpedia");
 const byline = require('byline');
 const Url = require('url');
+const zlib = require('zlib');
 
 function s3tohttp(url) {
     const parsed = Url.parse(url);
@@ -43,6 +44,8 @@ function s3tohttp(url) {
     parsed.protocol = 'https:';
     if (parsed.host === 'oval-project')
         parsed.host = parsed.hostname = 'oval-project.s3-ap-northeast-1.amazonaws.com';
+    else if (parsed.host === 'en-us-oval-project')
+        parsed.host = parsed.hostname = 'en-us-oval-project.s3-us-west-1.amazonaws.com';
     else
         parsed.host = parsed.hostname = parsed.host + '.s3.amazonaws.com';
     return Url.format(parsed);
@@ -56,11 +59,11 @@ class UnavailableError extends Error {
 }
 
 async function* tryGetArticle(forDate) {
-    const url = `https://oval-project.s3-ap-northeast-1.amazonaws.com/data/${forDate}/summary_${forDate}.jsonl`;
+    const url = `https://en-us-oval-project.s3-us-west-1.amazonaws.com/data/${forDate}/summary_${forDate}.jsonl.gz`;
 
     let anyNews = false;
     try {
-        const stream = (await Tp.Helpers.Http.getStream(url)).setEncoding('utf8').pipe(byline());
+        const stream = (await Tp.Helpers.Http.getStream(url)).pipe(zlib.createGunzip()).setEncoding('utf8').pipe(byline());
 
         let i = -1;
         for await (const line of stream) {
@@ -118,7 +121,7 @@ module.exports = class SmartNewsDevice extends Tp.BaseDevice {
                 throw e1;
 
             try {
-                const date = `${yesterday.getYear()-100}${yesterday.getMonth() < 9 ? '0' : ''}${yesterday.getMonth()+1}${yesterday.getDate()<10 ? '0': ''}${now.getDate()}`;
+                const date = `${yesterday.getYear()-100}${yesterday.getMonth() < 9 ? '0' : ''}${yesterday.getMonth()+1}${yesterday.getDate()<10 ? '0': ''}${yesterday.getDate()}`;
                 yield* tryGetArticle(date);
             } catch(e2) {
                 if (!(e2 instanceof UnavailableError))
