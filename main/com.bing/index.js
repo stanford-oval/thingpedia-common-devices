@@ -100,7 +100,7 @@ class BingDialogueHandler {
         const prefixmatch = prefixregexp.exec(utterance);
         if (prefixmatch) {
             query = utterance.substring(prefixmatch[0].length).trim();
-            confident = Tp.DialogueHandler.Confidence.CONFIDENT_IN_DOMAIN_COMMAND;
+            confident = Tp.DialogueHandler.Confidence.EXACT_IN_DOMAIN_COMMAND;
         }
 
         if (this._lastQuerySuggestion) {
@@ -108,7 +108,7 @@ class BingDialogueHandler {
             const yesmatch = yes.exec(utterance);
             if (yesmatch) {
                 query = this._lastQuerySuggestion;
-                confident = Tp.DialogueHandler.Confidence.CONFIDENT_IN_DOMAIN_FOLLOWUP;
+                confident = Tp.DialogueHandler.Confidence.EXACT_IN_DOMAIN_FOLLOWUP;
             }
         }
 
@@ -188,7 +188,11 @@ class BingDialogueHandler {
             };
 
         case 'entities': {
+            if (!analysis.response.value[0])
+                throw new Error(`Unexpected bing answer type`);
             const entity = analysis.response.value[0];
+            if (!(entity.name || entity.description) || entity.name === "" || entity.description === "")
+                throw new Error(`Unexpected bing answer type`);
             return {
                 messages: [
                     this._interp(this._("According to Bing, the answer is ${name}. ${description}."), {
@@ -199,7 +203,7 @@ class BingDialogueHandler {
                         type: 'rdl',
                         webCallback: entity.webSearchUrl,
                         displayTitle: entity.name,
-                        pictureUrl: entity.image.thumbnailUrl,
+                        pictureUrl: (entity.image === undefined || entity.image.thumbnailUrl === undefined) ? "" : entity.image.thumbnailUrl
                     }
                 ],
                 expecting: null,
