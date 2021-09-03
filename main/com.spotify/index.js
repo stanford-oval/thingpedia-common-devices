@@ -244,6 +244,15 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         });
     }
 
+    show_episodes_get_by_id(id, limit=0) {
+        let url = SHOW_EPISODES_URL.replace('{id}', id);
+        if (limit)
+            url += '?' + querystring.stringify({limit: limit, offset: 0});
+        return this.http_get(url).then((response) => {
+            return JSON.parse(response);
+        });
+    }
+
     async parse_tracks(tracks, appID) {
         //const ids = tracks.map((track) => new Tp.Value.Entity(track.id, track.name));
         const ids = tracks.map((track) => track.id);
@@ -1212,12 +1221,12 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         });
     }
 
-    async shows_get_unplayed_episodes(showId) {
-        const data = JSON.stringify(await this.http_get(SHOW_EPISODES_URL.replace('{id}', showId)));
+    shows_get_unplayed_episodes(data) {
         return data.items.filter((item) => {
+            if (!('resume_point' in item))
+                return true;
             if (item.resume_point && item.resume_point.fully_played)
                 return false;
-
             return true;
         }).map((item) => item.uri);
     }
@@ -1240,9 +1249,10 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         }
 
         const albumUris = [];
+        const albumTracks = {};
         const playlistUris = [];
         const showUris = [];
-        const albumTracks = {};
+        const showTracks = {};
 
         for (const playable of music) {
             const uri = String(playable);
@@ -1262,6 +1272,17 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             }
         }
 
+        if (showUris.length > 0) {
+            const showEpisodes = await Promise.all(showUris.map(async (showUri) => {
+                const showId = showUri.split("spotify:show:")[1];
+                const episodes = await this.show_episodes_get_by_id(showId);
+                const unplayed_episodes = this.shows_get_unplayed_episodes(episodes);
+                return {showUri: showUri, episodes: unplayed_episodes};
+            }));
+            for (const showEpisode of showEpisodes)
+                showTracks[showEpisode.showUri] = showEpisode.episodes;
+        }
+
         let songUris = [];
         for (const playable of music) {
             const uri = String(playable);
@@ -1270,7 +1291,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             else if (uri.includes("album"))
                 songUris = songUris.concat(albumTracks[uri]);
             else if (uri.includes("show"))
-                songUris = songUris.concat(await this.shows_get_unplayed_episodes(uri));
+                songUris = songUris.concat(showTracks[uri]);
             else if (uri.includes("playlist"))
                 songUris = songUris.concat(await this.playlist_get_tracks_by_id(uri));
         }
