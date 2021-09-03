@@ -58,6 +58,11 @@ class UnavailableError extends Error {
     }
 }
 
+function sanitize(text) {
+    // eslint-disable-next-line no-control-regex
+    return text.replace(/[\r\n\u2028]+/g, '\n').replace(/[ \t\v\f\x00-\x20\x80-\x9f]+/g, ' ');
+}
+
 async function* tryGetArticle(forDate) {
     const url = `https://en-us-oval-project.s3-us-west-1.amazonaws.com/data/${forDate}/summary_${forDate}.jsonl.gz`;
 
@@ -78,12 +83,12 @@ async function* tryGetArticle(forDate) {
                 yield {
                     id: new Tp.Value.Entity(String(article.link_id), null),
                     link: article.url,
-                    title: article.title,
+                    title: sanitize(article.title),
                     date: new Date(article.publishedTimestamp * 1000),
                     source: article.site ? article.site.name : null,
                     author: article.author ? article.author.name : null,
                     audio_url: s3tohttp(article.summary_mp3_file),
-                    content: article.body,
+                    content: sanitize(article.body),
                 };
             } catch(e) {
                 if (e.name !== 'SyntaxError')
