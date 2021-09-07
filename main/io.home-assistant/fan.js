@@ -11,25 +11,25 @@ const HomeAssistantDevice = require('./base');
 
 module.exports = class HomeAssistantFan extends HomeAssistantDevice {
     async get_state() {
-        return [{ state: this.state.state }];
-    }
-    // note: subscribe_ must NOT be async, or an ImplementationError will occur at runtime
+            return [{ state: this.state.state }];
+        }
+        // note: subscribe_ must NOT be async, or an ImplementationError will occur at runtime
     subscribe_state() {
         return this._subscribeState(() => {
             return { state: this.state.state };
         });
     }
     async get_oscillation() {
-        if (this.state.attributes.oscillating === undefined) {
-            throw new Error("Oh no! I couldn't retrieve the oscillation state of your fan");
-        } else {
-            if (this.state.attributes.oscillating)
-                return [{ state: 'oscillating' }];
-            else
-                return [{ state: 'not_oscillating'}];
+            if (this.state.attributes.oscillating === undefined) {
+                throw new Error("Oh no! I couldn't retrieve the oscillation state of your fan");
+            } else {
+                if (this.state.attributes.oscillating)
+                    return [{ state: 'oscillating' }];
+                else
+                    return [{ state: 'not_oscillating' }];
+            }
         }
-    }
-    // note: subscribe_ must NOT be async, or an ImplementationError will occur at runtime
+        // note: subscribe_ must NOT be async, or an ImplementationError will occur at runtime
     subscribe_oscillation() {
         return this._subscribeState(() => {
             if (this.state.attributes.oscillating === undefined) {
@@ -38,7 +38,7 @@ module.exports = class HomeAssistantFan extends HomeAssistantDevice {
                 if (this.state.attributes.oscillating)
                     return { state: 'oscillating' };
                 else
-                    return { state: 'not_oscillating'};
+                    return { state: 'not_oscillating' };
             }
         });
     }
@@ -51,8 +51,8 @@ module.exports = class HomeAssistantFan extends HomeAssistantDevice {
 
     async do_set_oscillation({ oscillation }) {
         if (oscillation === 'on')
-            await this._callService('fan', 'set_preset_mode', {preset_mode: "auto"});
+            await this._callService('fan', 'oscillation', true);
         else
-            await this._callService('fan', 'set_preset_mode', {preset_mode: "manual"});
+            await this._callService('fan', 'oscillation', false);
     }
 };
