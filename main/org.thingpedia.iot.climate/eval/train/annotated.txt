@@ -148,23 +148,6 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::0:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 0")).set_hvac_mode(mode=enum dry)
 UT: #[confirm=enum confirmed];
 ====
-# manual/8
-U: Put the hvac in dry mode
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::4:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 4")).set_hvac_mode(mode=enum dry);
-C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::4:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 4")).set_hvac_mode(mode=enum dry)
-C: #[results=[]]
-C: #[error="str:QUOTED_STRING::20:"];
-C: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::4:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 4")).set_hvac_mode(mode=enum dry);
-A: Ok, do you want me to set Simulated Device org.thingpedia.iot.climate 4 to drying?
-AT: $dialogue @org.thingpedia.dialogue.transaction.sys_confirm_action;
-AT: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::4:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 4")).set_hvac_mode(mode=enum dry);
-U: yes
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::4:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 4")).set_hvac_mode(mode=enum dry)
-UT: #[confirm=enum confirmed];
-====
 # manual/9
 U: start cooling
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
@@ -449,4 +432,4 @@ UT: monitor(@org.thingpedia.builtin.thingengine.builtin.get_gps()) filter locati
 # mturk/154
 U: Turn on the AC in 15 minutes.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[$now + 15min]) => @org.thingpedia.iot.climate.set_hvac_mode(mode=enum cool);z
+UT: ontimer(date=[$now + 15min]) => @org.thingpedia.iot.climate.set_hvac_mode(mode=enum cool);
