@@ -134,7 +134,7 @@ class BingDialogueHandler {
             return {
                 confident,
                 utterance,
-                user_target: `@com.bing.computation;`,
+                user_target: `$dialogue @com.bing.computation;`,
 
                 query: response.queryContext,
                 answerType: 'computation',
