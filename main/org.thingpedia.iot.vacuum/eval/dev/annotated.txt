@@ -63,3 +63,84 @@ UT: @org.thingpedia.iot.vacuum.stop();
 U: turn off the vacuum at 0:0
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: attimer(time=[new Time(0, 0)]) => @org.thingpedia.iot.vacuum.set_power(power=enum off);
+====
+# manual/6
+U: toggle smart vacuums status
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.vacuum.state();
+====
+# manual/7
+U: dock the vacuum
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.vacuum.return_to_base();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.iot.vacuum(id="str:ENTITY_tt:device_id::4:"^^tt:device_id("Simulated Device org.thingpedia.iot.vacuum 4")).return_to_base();
+A: Ok, do you want me to dock your Simulated Device org.thingpedia.iot.vacuum 4 vacuum?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_confirm_action;
+AT: @org.thingpedia.iot.vacuum(id="str:ENTITY_tt:device_id::4:"^^tt:device_id("Simulated Device org.thingpedia.iot.vacuum 4")).return_to_base();
+U: yes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.vacuum(id="str:ENTITY_tt:device_id::4:"^^tt:device_id("Simulated Device org.thingpedia.iot.vacuum 4")).return_to_base()
+UT: #[confirm=enum confirmed];
+====
+# manual/8
+U: pause the vacuum job
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.vacuum.pause();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.iot.vacuum(id="str:ENTITY_tt:device_id::1:"^^tt:device_id("Simulated Device org.thingpedia.iot.vacuum 1")).pause();
+A: Ok, do you want me to pause your Simulated Device org.thingpedia.iot.vacuum 1 vacuum?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_confirm_action;
+AT: @org.thingpedia.iot.vacuum(id="str:ENTITY_tt:device_id::1:"^^tt:device_id("Simulated Device org.thingpedia.iot.vacuum 1")).pause();
+U: yes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.vacuum(id="str:ENTITY_tt:device_id::1:"^^tt:device_id("Simulated Device org.thingpedia.iot.vacuum 1")).pause()
+UT: #[confirm=enum confirmed];
+====
+# manual/9
+U: start vacuuming the house
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.vacuum.start();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.iot.vacuum(id="str:ENTITY_tt:device_id::1:"^^tt:device_id("Simulated Device org.thingpedia.iot.vacuum 1")).start();
+A: Ok, do you want me to start your Simulated Device org.thingpedia.iot.vacuum 1 vacuum?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_confirm_action;
+AT: @org.thingpedia.iot.vacuum(id="str:ENTITY_tt:device_id::1:"^^tt:device_id("Simulated Device org.thingpedia.iot.vacuum 1")).start();
+U: yes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.vacuum(id="str:ENTITY_tt:device_id::1:"^^tt:device_id("Simulated Device org.thingpedia.iot.vacuum 1")).start()
+UT: #[confirm=enum confirmed];
+====
+# manual/10
+U: return the vacuum bot to the base
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.vacuum.return_to_base();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.iot.vacuum(id="str:ENTITY_tt:device_id::2:"^^tt:device_id("Simulated Device org.thingpedia.iot.vacuum 2")).return_to_base();
+A: Ok, do you want me to dock your Simulated Device org.thingpedia.iot.vacuum 2 vacuum?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_confirm_action;
+AT: @org.thingpedia.iot.vacuum(id="str:ENTITY_tt:device_id::2:"^^tt:device_id("Simulated Device org.thingpedia.iot.vacuum 2")).return_to_base();
+U: yes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.vacuum(id="str:ENTITY_tt:device_id::2:"^^tt:device_id("Simulated Device org.thingpedia.iot.vacuum 2")).return_to_base()
+UT: #[confirm=enum confirmed];
+====
+# manual/11
+U: is the vacuum starting?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.vacuum.state();
+====
+# manual/12
+U: is the vacuum working?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.vacuum.state();
+====
+# manual/13
+U: do the vacuum is actually running?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.vacuum.state();
+====
+# manual/14
+U: what the vacuum is doing?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.vacuum.state();

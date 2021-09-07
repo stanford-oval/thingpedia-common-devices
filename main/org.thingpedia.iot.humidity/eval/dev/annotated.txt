@@ -58,3 +58,48 @@ UT: @org.thingpedia.iot.humidity.humidity();
 U: which is the humidity read by my thermostat.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.humidity.humidity();
+====
+# manual/5
+U: warn me when the humidity inside is lower than 40% according to all my sensors
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.humidity(all=true).humidity()) filter value <= 40;
+====
+# manual/6
+U: is the humidity normal?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.humidity.humidity();
+====
+# manual/7
+U: how humid is it according to my patio humidity sensor?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.humidity(name="patio").humidity();
+====
+# manual/8
+U: which is the humidity level?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.humidity.humidity();
+====
+# manual/9
+U: what’s the humidity level in the house?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.humidity.humidity();
+====
+# manual/10
+U: get humidity level from the wine cellar sensor
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.humidity(name="wine cellar").humidity();
+====
+# manual/11
+U: get humidity outside
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [humidity] of @org.thingpedia.weather.current();
+====
+# manual/12
+U: tell me which is the humidity inside
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.humidity.humidity();
+====
+# mturk/42
+U: How humid is it in the basement?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.humidity(name="basement").humidity();

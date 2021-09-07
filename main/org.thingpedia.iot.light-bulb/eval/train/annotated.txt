@@ -709,6 +709,124 @@ U: turn onn patio lights in 2 ms
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: ontimer(date=[$now + 2ms]) => @org.thingpedia.iot.light-bulb(name="patio").set_power(power=enum on);
 ====
+# manual/1
+U: which is the state of my lights?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(all=true).power();
+====
+# manual/2
+U: there is any light on?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(all=true).power();
+====
+# manual/3
+U: shutdown the lights
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb.set_power(power=enum off);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.iot.light-bulb(id="str:ENTITY_tt:device_id::3:"^^tt:device_id("Simulated Device org.thingpedia.iot.light-bulb 3")).set_power(power=enum off)
+C: #[results=[]];
+A: I shut down the lights.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: shutdown all lights
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(all=true).set_power(power=enum off);
+====
+# manual/4
+U: turn on the office lights
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(name="office").set_power(power=enum on);
+====
+# manual/5
+U: switch the smart bulbs on
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(all=true).set_power(power=enum on);
+====
+# manual/6
+U: switch the smart bulb on
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb.set_power(power=enum on);
+====
+# manual/7
+U: let's there be more light
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb.raise_brightness();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.iot.light-bulb(id="str:ENTITY_tt:device_id::3:"^^tt:device_id("Simulated Device org.thingpedia.iot.light-bulb 3")).raise_brightness();
+A: Ok, do you want me to raise brightness?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_confirm_action;
+AT: @org.thingpedia.iot.light-bulb(id="str:ENTITY_tt:device_id::3:"^^tt:device_id("Simulated Device org.thingpedia.iot.light-bulb 3")).raise_brightness();
+U: yes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(id="str:ENTITY_tt:device_id::3:"^^tt:device_id("Simulated Device org.thingpedia.iot.light-bulb 3")).raise_brightness()
+UT: #[confirm=enum confirmed];
+====
+# manual/8
+U: raise lights luminosity
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(all=true).raise_brightness();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.iot.light-bulb(all=true).raise_brightness();
+A: Ok, do you want me to raise brightness?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_confirm_action;
+AT: @org.thingpedia.iot.light-bulb(all=true).raise_brightness();
+U: yes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(all=true).raise_brightness()
+UT: #[confirm=enum confirmed];
+====
+# manual/9
+U: set living room brightness to 80%
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(name="living room").set_brightness(pct=80);
+====
+# manual/10
+U: lower the bedroom light intensity
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(name="bedroom").lower_brightness();
+====
+# 75
+U: Increase the brightness of the living room light to 75%.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(name="living room").set_brightness(pct=75);
+====
+# 96
+U: Change the color of the light in the living room to pink.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(name="living room").set_color(color=enum pink);
+====
+# 100
+U: Turn off floor lamp at 9AM every day.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: attimer(time=[new Time(9, 0)]) => @org.thingpedia.iot.light-bulb(name="floor lamp").set_power(power=enum off);
+====
+# 114
+U: Are the lights off?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(all=true).power();
+====
+# 118
+U: Are there any lights on inside?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(all=true).power();
+====
+# 132
+U: Set the living room light to the color blue and 60% brightness.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(name="living room").set_color(color=enum blue);
+UT: @org.thingpedia.iot.light-bulb(name="living room").set_brightness(pct=60);
+====
+# 147
+U: Increase Illuminance to 65 at 7pm, and increase to 80 at 9pm
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: attimer(time=[new Time(19, 0)]) => @org.thingpedia.iot.light-bulb.set_brightness(pct=65);
+UT: attimer(time=[new Time(21, 0)]) => @org.thingpedia.iot.light-bulb.set_brightness(pct=80);
+====
+# 149
+U: Turn the lights on in the living room after 5pm.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: attimer(time=[new Time(17, 0)]) => @org.thingpedia.iot.light-bulb(name="living room").set_power(power=enum on);
+====
 # recording/2dc8651275416b3dbbf4017a024603e9
 U: turn off the office lights
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;

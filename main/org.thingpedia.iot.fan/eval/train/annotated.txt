@@ -13,3 +13,47 @@ UT: now => @org.thingpedia.iot.fan.set_oscillation(oscillation=enum(off));
 U: turn the fan off
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.fan.set_power(power=enum off);
+====
+# manual/1
+U: is the fan on ?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.fan.state();
+====
+# manual/2
+U: which is the state of the fan?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.fan.state();
+====
+# manual/3
+U: check the status of the fan
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.fan.state();
+====
+# manual/4
+U: alert me when the fan is switched on
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.fan.state()) filter state == enum on;
+====
+# manual/5
+U: did I left the fan on?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.fan.state();
+====
+# manual/6
+U: turn on the fan
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.fan.set_power(power=enum on);
+====
+# manual/7
+U: start the fan
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.fan.set_power(power=enum on);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.iot.fan(id="str:ENTITY_tt:device_id::3:"^^tt:device_id("Simulated Device org.thingpedia.iot.fan 3")).set_power(power=enum on);
+A: Ok, do you want me to help you on your Simulated Device org.thingpedia.iot.fan 3 fan?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_confirm_action;
+AT: @org.thingpedia.iot.fan(id="str:ENTITY_tt:device_id::3:"^^tt:device_id("Simulated Device org.thingpedia.iot.fan 3")).set_power(power=enum on);
+U: yes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.fan(id="str:ENTITY_tt:device_id::3:"^^tt:device_id("Simulated Device org.thingpedia.iot.fan 3")).set_power(power=enum on)
+UT: #[confirm=enum confirmed];
