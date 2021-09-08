@@ -142,12 +142,24 @@ class BingDialogueHandler {
             };
         }
         const bestRankingItems = [];
-        if (response.rankingResponse.pole)
-            bestRankingItems.push(...response.rankingResponse.pole.items);
-        if (response.rankingResponse.sidebar)
-            bestRankingItems.push(...response.rankingResponse.sidebar.items);
-        if (response.rankingResponse.mainline)
-            bestRankingItems.push(...response.rankingResponse.mainline.items);
+        if (response.rankingResponse.pole && response.rankingResponse.pole.items) {
+            if (response.rankingResponse.pole.items instanceof Array)
+                bestRankingItems.push(...response.rankingResponse.pole.items);
+            else if ('answerType' in response.rankingResponse.pole.items)
+                bestRankingItems.push(response.rankingResponse.pole.items);
+        }
+        if (response.rankingResponse.sidebar && response.rankingResponse.sidebar.items) {
+            if (response.rankingResponse.sidebar.items instanceof Array)
+                bestRankingItems.push(...response.rankingResponse.sidebar.items);
+            else if ('answerType' in response.rankingResponse.sidebar.items)
+                bestRankingItems.push(response.rankingResponse.sidebar.items);
+        }
+        if (response.rankingResponse.mainline && response.rankingResponse.mainline.items) {
+            if (response.rankingResponse.mainline.items instanceof Array)
+                bestRankingItems.push(...response.rankingResponse.mainline.items);
+            else if ('answerType' in response.rankingResponse.mainline.items)
+                bestRankingItems.push(response.rankingResponse.mainline.items);
+        }
 
         for (const candidate of bestRankingItems) {
             const answerType = toCamelCase(candidate.answerType);
