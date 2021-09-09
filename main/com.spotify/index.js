@@ -976,7 +976,11 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 let pauseURL = PAUSE_URL + querystring.stringify({
                     device_id: deviceId
                 });
-                await this.http_put_default_options(pauseURL, '');
+                try {
+                    await this.http_put_default_options(pauseURL, '');
+                } catch (error) {
+                    console.error(error, error.stack);
+                }
             });
         }
 
@@ -1318,7 +1322,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         try {
             await this.http_put_default_options(pauseURL, '');
         } catch (error) {
-            throwError('disallowed_action');
+            throwError('disallowed_action');        
         }
     }
 
