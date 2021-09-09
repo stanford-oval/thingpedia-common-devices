@@ -5,6 +5,7 @@ set -x
 
 ./scripts/upload-all.sh \
     builtin/org.thingpedia.dialogue-handler \
+    main/org.thingpedia.weather \
     main/com.bing \
     main/com.icanhazdadjoke \
     main/com.smartnews \
