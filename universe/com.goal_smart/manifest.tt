@@ -52,23 +52,22 @@ class @com.goal_smart
                         out team : Entity(com.goal_smart:soccer_team)
                         #_[canonical={
                           base=["team", "side", "group"],
-                          reverse_verb_projection=['played', 'participated', 'competed', 'competing', 'playing', 'participating']
+                          reverse_verb_projection=['played', 'participated', 'competed', 'competing', 'playing', 'participating'],
+                          passive_verb = []
                         }],
                         out rank: Number
                         #_[canonical = {
-                          base = ["rank", "placement"],
-                          property = ["rankings of #", "# placement", "placement of #"],
+                          base = ["rank", "placement"]
                         }],
                         out form: Array(String)
                         #_[canonical = {
-                          base = ["form", "momentum"],
-                          property = ["form of #"]
+                          base = ["form", "momentum"]
                         }],
                         out points: Number
                         #_[canonical = {
                           base = ["results", "points"],
                         }])
-  #_[canonical=["team standings", "team rankings", "team rankings", "team table", "team table"]]
+  #_[canonical=["team standings", "team rankings", "team table"]]
   #_[confirmation="league standings of $league"]
   #_[result = ["${rank} . ${team} Form: ${form} Points: ${points}"]]
   #[poll_interval=3600000ms]
@@ -214,42 +213,6 @@ class @com.goal_smart
   #[poll_interval=3600000ms]
   #[doc="Get the top scorers of the league"];
 
-
-
-  monitorable list query teamUpdate(in req team_id: Entity(com.goal_smart:soccer_team)
-                                    #_[canonical={
-                                      base=["team", "side", "group"],
-                                      preposition=["of"],
-                                      adjective=["# 's"]
-                                    }],
-                                    out score: String
-                                    #[filterable=false]
-                                    #_[canonical = {
-                                      base = ["score of last match", "result", "final", "outcome", "score"]
-                                    }],
-                                    out league: Entity(com.goal_smart:soccer_league)
-                                    #[filterable=false]
-                                    #_[canonical = {
-                                      base = ["league", "division"]
-                                    }],
-                                    out opponent: Entity(com.goal_smart:soccer_team)
-                                    #[filterable=false]
-                                    #_[canonical = {
-                                      base = ["last opponent", "previous opponent", "last opponent", "last matchup", "opposition team", "opposition side", "opposition group"]
-                                    }],
-                                    out rank: Number
-                                    #[filterable=false]
-                                    #_[canonical = {
-                                      base = ["placement", "rank", "position", "place", "league ranking"]
-                                    }])
-  #_[canonical=["team updates", "team information", "team info", "team overview", "team summary"]]
-  #_[result= {
-    top = "${team_id} is currently number ${rank} in the ${league}. Their last match was against ${opponent} and the score was ${score}",
-    list = "${team_id} is currently number ${rank} in the ${league}. Their last match was against ${opponent} and the score was ${score}"
-  }]
-  #[poll_interval=3600000ms]
-  #[doc="Get the overall summary on the performance of the team"];
- 
   monitorable list query lineup(in req team_id: Entity(com.goal_smart:soccer_team) #_[prompt="what team do you want out check out "],
                         out player : Entity(com.goal_smart:soccer_player)
                         #_[canonical = {
