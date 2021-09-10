@@ -88,7 +88,6 @@ async function* tryGetArticle(forDate) {
                     source: article.site ? article.site.name : null,
                     author: article.author ? article.author.name : null,
                     audio_url: s3tohttp(article.summary_mp3_file),
-                    content: sanitize(article.body),
                 };
             } catch(e) {
                 if (e.name !== 'SyntaxError')
