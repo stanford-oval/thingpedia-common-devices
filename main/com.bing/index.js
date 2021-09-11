@@ -30,6 +30,7 @@
 // OF THE POSSIBILITY OF SUCH DAMAGE.
 "use strict";
 
+//const util = require('util');
 const interpolate = require('string-interp');
 const Tp = require('thingpedia');
 const TT = require('thingtalk');
@@ -96,11 +97,11 @@ class BingDialogueHandler {
         let confident = Tp.DialogueHandler.Confidence.NONCONFIDENT_IN_DOMAIN_COMMAND;
         let query = utterance;
 
-        const prefixregexp = new RegExp(this._("^ask bing (to|for)?\\b"));
+        const prefixregexp = new RegExp(this._("^ask bing (to|for)?\\b"), 'i');
         const prefixmatch = prefixregexp.exec(utterance);
         if (prefixmatch) {
             query = utterance.substring(prefixmatch[0].length).trim();
-            confident = Tp.DialogueHandler.Confidence.CONFIDENT_IN_DOMAIN_COMMAND;
+            confident = Tp.DialogueHandler.Confidence.EXACT_IN_DOMAIN_COMMAND;
         }
 
         if (this._lastQuerySuggestion) {
@@ -108,7 +109,7 @@ class BingDialogueHandler {
             const yesmatch = yes.exec(utterance);
             if (yesmatch) {
                 query = this._lastQuerySuggestion;
-                confident = Tp.DialogueHandler.Confidence.CONFIDENT_IN_DOMAIN_FOLLOWUP;
+                confident = Tp.DialogueHandler.Confidence.EXACT_IN_DOMAIN_FOLLOWUP;
             }
         }
 
@@ -116,13 +117,10 @@ class BingDialogueHandler {
             mkt: this._locale,
             setLang: this._locale,
             q: query,
-
-            // limit to certain type of results from Bing
-            responseFilter: 'computation,entities,spellSuggestions,translations'
         }), {
             extraHeaders: { 'Ocp-Apim-Subscription-Key': this._apiKey }
         }));
-        //console.log(response);
+        //console.log(util.inspect(response, { depth: Infinity }));
 
         if (!response.rankingResponse)
             return { confident: Tp.DialogueHandler.Confidence.OUT_OF_DOMAIN_COMMAND, utterance, user_target: '' };
@@ -136,36 +134,58 @@ class BingDialogueHandler {
             return {
                 confident,
                 utterance,
-                user_target: `@com.bing.computation;`,
+                user_target: `$dialogue @com.bing.computation;`,
 
                 query: response.queryContext,
                 answerType: 'computation',
                 response: response.computation
             };
         }
-        const bestRankingItem = response.rankingResponse.pole ?
-            response.rankingResponse.pole.items[0] :
-            response.rankingResponse.sidebar ?
-            response.rankingResponse.sidebar.items[0] :
-            response.rankingResponse.mainline ?
-            response.rankingResponse.mainline.items[0] :
-            undefined;
-        if (!bestRankingItem)
-            return { confident: Tp.DialogueHandler.Confidence.OUT_OF_DOMAIN_COMMAND, utterance, user_target: '' };
-        const answerType = toCamelCase(bestRankingItem.answerType);
-        const bestResponse = response[answerType];
-        if (!bestResponse)
-            return { confident: Tp.DialogueHandler.Confidence.OUT_OF_DOMAIN_COMMAND, utterance, user_target: '' };
+        const bestRankingItems = [];
+        if (response.rankingResponse.pole && response.rankingResponse.pole.items) {
+            if (response.rankingResponse.pole.items instanceof Array)
+                bestRankingItems.push(...response.rankingResponse.pole.items);
+            else if ('answerType' in response.rankingResponse.pole.items)
+                bestRankingItems.push(response.rankingResponse.pole.items);
+        }
+        if (response.rankingResponse.sidebar && response.rankingResponse.sidebar.items) {
+            if (response.rankingResponse.sidebar.items instanceof Array)
+                bestRankingItems.push(...response.rankingResponse.sidebar.items);
+            else if ('answerType' in response.rankingResponse.sidebar.items)
+                bestRankingItems.push(response.rankingResponse.sidebar.items);
+        }
+        if (response.rankingResponse.mainline && response.rankingResponse.mainline.items) {
+            if (response.rankingResponse.mainline.items instanceof Array)
+                bestRankingItems.push(...response.rankingResponse.mainline.items);
+            else if ('answerType' in response.rankingResponse.mainline.items)
+                bestRankingItems.push(response.rankingResponse.mainline.items);
+        }
 
-        return {
-            confident,
-            utterance,
-            user_target: `@com.bing.${answerType};`,
+        for (const candidate of bestRankingItems) {
+            const answerType = toCamelCase(candidate.answerType);
+            if (answerType === 'videos' || answerType === 'relatedSearches' || answerType === 'images')
+                continue;
+            let bestResponse = response[answerType];
+            if (!bestResponse)
+                continue;
+            if (answerType === 'entities' && !('resultIndex' in candidate))
+                continue;
+            if ('resultIndex' in candidate)
+                bestResponse = bestResponse.value[candidate.resultIndex || 0];
+            if (bestResponse) {
+                return {
+                    confident,
+                    utterance,
+                    user_target: `$dialogue @com.bing.${answerType};`,
 
-            query: response.queryContext,
-            answerType: answerType,
-            response: bestResponse
-        };
+                    query: response.queryContext,
+                    answerType: answerType,
+                    response: bestResponse
+                };
+            }
+        }
+
+        return { confident: Tp.DialogueHandler.Confidence.OUT_OF_DOMAIN_COMMAND, utterance, user_target: '' };
     }
 
     /**
@@ -176,6 +196,26 @@ class BingDialogueHandler {
     getReply(analysis) {
         //console.log(analysis);
         switch (analysis.answerType) {
+        case 'webPages': {
+            const webPage = analysis.response;
+            return {
+                messages: [
+                    this._interp(this._("Using Bing I found ${name}. ${description}."), {
+                        name: webPage.name,
+                        description: webPage.snippet
+                    }),
+                    {
+                        type: 'rdl',
+                        webCallback: webPage.url,
+                        displayTitle: webPage.name,
+                    }
+                ],
+                expecting: null,
+                context: analysis.user_target,
+                agent_target: '@com.bing.reply;'
+            };
+        }
+
         case 'computation':
             return {
                 messages: [this._interp(this._("According to Bing, ${expression} is equal to ${value}."), {
@@ -184,11 +224,13 @@ class BingDialogueHandler {
                 })],
                 expecting: null,
                 context: analysis.user_target,
-                agent_target: '@com.bing.reply;'
+                agent_target: '$dialogue @com.bing.reply;'
             };
 
         case 'entities': {
-            const entity = analysis.response.value[0];
+            const entity = analysis.response;
+            if (!(entity.name || entity.description) || entity.name === "" || entity.description === "")
+                throw new Error(`Unexpected bing answer type (invalid entity)`);
             return {
                 messages: [
                     this._interp(this._("According to Bing, the answer is ${name}. ${description}."), {
@@ -199,7 +241,7 @@ class BingDialogueHandler {
                         type: 'rdl',
                         webCallback: entity.webSearchUrl,
                         displayTitle: entity.name,
-                        pictureUrl: entity.image.thumbnailUrl,
+                        pictureUrl: (entity.image === undefined || entity.image.thumbnailUrl === undefined) ? "" : entity.image.thumbnailUrl
                     }
                 ],
                 expecting: null,
@@ -237,7 +279,7 @@ class BingDialogueHandler {
             };
         }
         default:
-            throw new Error(`Unexpected bing answer type`);
+            throw new Error(`Unexpected bing answer type ${analysis.answerType}`);
         }
     }
 }

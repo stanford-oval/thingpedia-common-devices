@@ -28,3 +28,146 @@ UT: @org.thingpedia.iot.lock.set_state(state=enum unlock);
 U: lock the front door.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.lock(name="front").set_state(state=enum lock);
+====
+# manual/7
+U: lock the door
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.lock.set_state(state=enum lock);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.iot.lock(id="str:ENTITY_tt:device_id::3:"^^tt:device_id("Simulated Device org.thingpedia.iot.lock 3")).set_state(state=enum lock);
+A: Ok, do you want me to help you lock the Simulated Device org.thingpedia.iot.lock 3 door?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_confirm_action;
+AT: @org.thingpedia.iot.lock(id="str:ENTITY_tt:device_id::3:"^^tt:device_id("Simulated Device org.thingpedia.iot.lock 3")).set_state(state=enum lock);
+U: yes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.lock(id="str:ENTITY_tt:device_id::3:"^^tt:device_id("Simulated Device org.thingpedia.iot.lock 3")).set_state(state=enum lock)
+UT: #[confirm=enum confirmed];
+====
+# manual/8
+U: is the front door locked?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.lock(name="front").state();
+====
+# manual/9
+U: which is the status of patio lock?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.lock(name="patio").state();
+====
+# manual/10
+U: did someone unlocked the shed lock?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.lock(name="shed").state();
+====
+# manual/11
+U: unlock and lock the garage door
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.lock(name="garage").set_state(state=enum lock);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.iot.lock(id="str:ENTITY_tt:device_id::0:"^^tt:device_id("Simulated Device org.thingpedia.iot.lock 0")).set_state(state=enum lock);
+A: Ok, do you want me to help you lock the Simulated Device org.thingpedia.iot.lock 0 door?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_confirm_action;
+AT: @org.thingpedia.iot.lock(id="str:ENTITY_tt:device_id::0:"^^tt:device_id("Simulated Device org.thingpedia.iot.lock 0")).set_state(state=enum lock);
+U: yes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.lock(id="str:ENTITY_tt:device_id::0:"^^tt:device_id("Simulated Device org.thingpedia.iot.lock 0")).set_state(state=enum lock)
+UT: #[confirm=enum confirmed];
+====
+# manual/12
+U: what’s the status of the wine cellar lock?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.lock(name="wine cellar").state();
+====
+# manual/13
+U: did I forgot to lock my backdoor?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.lock(name="backdoor").state();
+====
+# manual/14
+U: close all the smart locks in the house
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.lock(all=true).set_state(state=enum lock);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.iot.lock(all=true).set_state(state=enum lock);
+A: Ok, do you want me to set state with state lock?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_confirm_action;
+AT: @org.thingpedia.iot.lock(all=true).set_state(state=enum lock);
+U: yes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.lock(all=true).set_state(state=enum lock)
+UT: #[confirm=enum confirmed];
+====
+# manual/15
+U: close the kitchen entrance lock
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.lock(name="kitchen entrance").set_state(state=enum lock);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.iot.lock(id="str:ENTITY_tt:device_id::4:"^^tt:device_id("Simulated Device org.thingpedia.iot.lock 4")).set_state(state=enum lock);
+A: Ok, do you want me to help you lock the Simulated Device org.thingpedia.iot.lock 4 door?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_confirm_action;
+AT: @org.thingpedia.iot.lock(id="str:ENTITY_tt:device_id::4:"^^tt:device_id("Simulated Device org.thingpedia.iot.lock 4")).set_state(state=enum lock);
+U: yes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.lock(id="str:ENTITY_tt:device_id::4:"^^tt:device_id("Simulated Device org.thingpedia.iot.lock 4")).set_state(state=enum lock)
+UT: #[confirm=enum confirmed];
+====
+# manual/16
+U: did someone opened the attic lock?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.lock(name="attic").state();
+====
+# mturk/3
+U: Is the front door locked?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.lock(name="front").state();
+====
+# mturk/5
+U: Can you please lock the front door.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.lock(name="front").set_state(state=enum lock);
+====
+# mturk/17
+U: Lock outside doors at 10pm
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[set_time($now, new Time(22, 0))]) => @org.thingpedia.iot.lock(name="outside").set_state(state=enum lock);
+====
+# mturk/34
+U: Unlock the back gateway.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.lock(name="back gateway").set_state(state=enum unlock);
+====
+# mturk/37
+U: Lock the patio door.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.lock(name="patio").set_state(state=enum lock);
+====
+# mturk/73
+U: Lock the front door at 8PM.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[set_time($now, new Time(20, 0))]) => @org.thingpedia.iot.lock(name="front door").set_state(state=enum lock);
+====
+# mturk/76
+U: Lock the front door.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.lock(name="front door").set_state(state=enum lock);
+====
+# mturk/77
+U: Unlock the front door.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.lock(name="front door").set_state(state=enum unlock);
+====
+# mturk/84
+U: Lock all the doors.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.lock(all=true).set_state(state=enum lock);
+====
+# mturk/93
+U: Remotely unlock the front door at 5 PM each evening.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: attimer(time=[new Time(17, 0)]) => @org.thingpedia.iot.lock(name="front door").set_state(state=enum unlock);
+
+
+
+
+
+
+

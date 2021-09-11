@@ -13,6 +13,32 @@ There are two type of logs:
   as any up/downvotes from the user and their feedback. These logs
   are enabled by "Enable recording" in a Web Almond instance.
 
+## Setup
+
+The scripts to download the datasets rely on the `dev-mysql-run`
+and `prod-mysql-run` scripts in the [sysadmin-scripts](https://github.com/stanford-oval/sysadmin-scripts)
+repository, which allow to perform raw SQL queries against the
+database.
+
+The script execute the queries from an SSH session from a machine
+that can connect to the database, hence SSH credentials must be
+setup first. Credentials are different for dev and for prod.
+
+The config.sh file in sysadmin-scripts must be edited to set
+the username and password. Credentials are shared using Dashlane.
+
+Then the scripts `dev-mysql-run` and `prod-mysql-run` must be symlinked
+from a directory in PATH, with a command similar to the following (from
+inside sysadmin-scripts):
+```
+ln -s $(pwd)/dev-mysql-run ~/.local/bin/dev-mysql-run
+```
+(the specific command to use depends on the OS and the $PATH environment
+variable). The scripts must be symlinks, they cannot be copied as they
+rely on their physical location to find config.sh
+
+NOTE: on some systems, the command "realpath" must also be installed.
+
 ## Processing Passive Logs
 
 ### Step 1: Download the logs
@@ -67,15 +93,22 @@ reason.
 
 **It is highly recommended to make a backup of dropped-log.tsv before executing the command, and check the diff, to avoid data loss.**
 
+### Step 4: Upload results
+
+The newly annotated data should be committed and pushed to the repository.
+The new dropped-log.tsv should be uploaded to S3.
+
 ## Processing Recording Logs
 
 ### Step 1: Download the logs
 
 ```bash
-./scripts/analyze-recordings.sh
+mkdir -p ./logs/unsorted/
+./scripts/download-dataset.sh --db {prod|dev} --type recordings >> logs/unsorted/{dev|prod}.txt
+aws s3 cp s3://geniehai/gcampax/logs/dropped.tsv logs/dropped.tsv
 ```
 
-The script will download new recording files to `./logs/new/`.
+The script will append new recording files to `./logs/unsorted/{dev|prod}.txt`.
 
 It is possible to analyze the recordings manually to look for downvotes
 or comments. After looking at the logs, the files should be moved to `./logs/seen/`.
@@ -99,3 +132,8 @@ need to be edited manually.
 Note that the convention for the reasons to drop a dialogue is different than the
 convention used for dropped-log.tsv, because all out-of-domain dialogues
 are grouped under the `ood` category. Use `?` to see the list of reasons.
+
+### Step 4: Upload results
+
+The newly annotated data should be committed and pushed to the repository.
+The new logs/dropped.tsv should be uploaded to S3.

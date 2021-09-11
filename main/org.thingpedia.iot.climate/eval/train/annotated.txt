@@ -103,3 +103,333 @@ UT: @org.thingpedia.iot.climate.set_target_temperature(value=13defaultTemperatur
 U: tell me the temperature the air conditioner is set to
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.target_temperature();
+====
+# manual/1
+U: Which is the state of my HVAC?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.hvac_action();
+====
+# manual/2
+U: Which is the current action set on the thermostat?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.hvac_action();
+====
+# manual/3
+U: What is doing the HVAC?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.hvac_action();
+====
+# manual/4
+U: Which are the available modes of my climate system?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.hvac_modes_aval();
+====
+# manual/5
+U: What are the HVAC capabilities?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.hvac_modes_aval();
+====
+# manual/6
+U: How can I set the thermostat?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.hvac_modes_aval();
+====
+# manual/7
+U: Set the climate system to dry mode
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.set_hvac_mode(mode=enum dry);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::0:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 0")).set_hvac_mode(mode=enum dry);
+A: Ok, do you want me to set Simulated Device org.thingpedia.iot.climate 0 to drying?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_confirm_action;
+AT: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::0:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 0")).set_hvac_mode(mode=enum dry);
+U: yes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::0:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 0")).set_hvac_mode(mode=enum dry)
+UT: #[confirm=enum confirmed];
+====
+# manual/9
+U: start cooling
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.set_hvac_mode(mode=enum cool);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::2:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 2")).set_hvac_mode(mode=enum cool);
+A: Ok, do you want me to turn the Simulated Device org.thingpedia.iot.climate 2 ac on?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_confirm_action;
+AT: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::2:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 2")).set_hvac_mode(mode=enum cool);
+U: yes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::2:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 2")).set_hvac_mode(mode=enum cool)
+UT: #[confirm=enum confirmed];
+====
+# manual/10
+U: turn off the climate system
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.set_hvac_mode(mode=enum off);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::4:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 4")).set_hvac_mode(mode=enum off);
+A: Ok, do you want me to turn the Simulated Device org.thingpedia.iot.climate 4 heating off?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_confirm_action;
+AT: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::4:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 4")).set_hvac_mode(mode=enum off);
+U: yes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::4:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 4")).set_hvac_mode(mode=enum off)
+UT: #[confirm=enum confirmed];
+====
+# manual/11
+U: which is the state  of my hvac?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.hvac_preset();
+====
+# manual/12
+U: Which presete is currently running by the climate system?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.hvac_preset();
+====
+# manual/13
+U: List me the presets available on the thermostat
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.hvac_presets_aval();
+====
+# manual/14
+U: Which presets are available on the HVAC?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.hvac_presets_aval();
+====
+# manual/15
+U: Set the hvac preset to away
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.set_hvac_preset(preset=enum away);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::2:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 2")).set_hvac_preset(preset=enum away);
+A: Ok, do you want me to turn the Simulated Device org.thingpedia.iot.climate 2 preset to away?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_confirm_action;
+AT: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::2:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 2")).set_hvac_preset(preset=enum away);
+U: yes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::2:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 2")).set_hvac_preset(preset=enum away)
+UT: #[confirm=enum confirmed];
+====
+# manual/16
+U: Change the climate preset to boost
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.set_hvac_preset(preset=enum boost);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::3:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 3")).set_hvac_preset(preset=enum boost);
+A: Ok, do you want me to turn the Simulated Device org.thingpedia.iot.climate 3 preset to boost?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_confirm_action;
+AT: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::3:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 3")).set_hvac_preset(preset=enum boost);
+U: yes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::3:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 3")).set_hvac_preset(preset=enum boost)
+UT: #[confirm=enum confirmed];
+====
+# manual/17
+U: which is the target temperature set on the thermostat?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.target_temperature();
+====
+# manual/18
+U: which temperature is reading my thermostat?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.current_temperature();
+====
+# manual/19
+U: which is the current temperature read by HVAC?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.current_temperature();
+====
+# manual/20
+U: Put the target temperature level to 82F
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.set_target_temperature(value=82F);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::3:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 3")).set_target_temperature(value=82F);
+A: Ok, do you want me to set temperature on your Simulated Device org.thingpedia.iot.climate 3 to 82 F?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_confirm_action;
+AT: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::3:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 3")).set_target_temperature(value=82F);
+U: yes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::3:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 3")).set_target_temperature(value=82F)
+UT: #[confirm=enum confirmed];
+====
+# manual/21
+U: set the thermostat to 80F
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.set_target_temperature(value=80F);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::0:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 0")).set_target_temperature(value=80F);
+A: Ok, do you want me to set temperature on your Simulated Device org.thingpedia.iot.climate 0 to 80 F?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_confirm_action;
+AT: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::0:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 0")).set_target_temperature(value=80F);
+U: yes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::0:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 0")).set_target_temperature(value=80F)
+UT: #[confirm=enum confirmed];
+====
+# manual/22
+U: which is the minimum temperature set on the thermostat?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.min_temperature();
+====
+# manual/23
+U: tell me the lowest temperature set for the HVAC
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.min_temperature();
+====
+# manual/24
+U: which is the highest temperature set on the thermostat?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.max_temperature();
+====
+# manual/25
+U: which is the highest temperature set on the thermostat?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.max_temperature();
+====
+# manual/26
+U: set the minimum and maximum temperatures on my thermostat
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.set_minmax_temperature();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::5:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 5")).set_minmax_temperature();
+A: What high temperature do you want to set?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_slot_fill(high);
+AT: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::5:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 5")).set_minmax_temperature();
+U: 90F
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::5:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 5")).set_minmax_temperature(high=90F);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::5:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 5")).set_minmax_temperature(high=90F);
+A: What low temperature do you want to set?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_slot_fill(low);
+AT: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::5:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 5")).set_minmax_temperature(high=90F);
+U: 35F
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::5:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 5")).set_minmax_temperature(high=90F, low=35F);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::5:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 5")).set_minmax_temperature(high=90F, low=35F);
+A: Ok, do you want me to set the temperature between 35 F and 90 F on your Simulated Device org.thingpedia.iot.climate 5?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_confirm_action;
+AT: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::5:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 5")).set_minmax_temperature(high=90F, low=35F);
+U: yes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::5:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 5")).set_minmax_temperature(high=90F, low=35F)
+UT: #[confirm=enum confirmed];
+====
+# manual/27
+U: set the thermostat temperature between 25F and 90F
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.set_minmax_temperature(high=90F, low=25F);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::5:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 5")).set_minmax_temperature(high=90F, low=25F);
+A: Ok, do you want me to set the temperature between 25 F and 90 F on your Simulated Device org.thingpedia.iot.climate 5?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_confirm_action;
+AT: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::5:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 5")).set_minmax_temperature(high=90F, low=25F);
+U: yes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::5:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 5")).set_minmax_temperature(high=90F, low=25F)
+UT: #[confirm=enum confirmed];
+====
+# manual/28
+U: set the minimum temperature on the thermostat to 35F and the maximum to 95F
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.set_minmax_temperature(high=95F, low=35F);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::3:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 3")).set_minmax_temperature(high=95F, low=35F);
+A: Ok, do you want me to set the temperature between 35 F and 95 F on your Simulated Device org.thingpedia.iot.climate 3?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_confirm_action;
+AT: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::3:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 3")).set_minmax_temperature(high=95F, low=35F);
+U: yes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::3:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 3")).set_minmax_temperature(high=95F, low=35F)
+UT: #[confirm=enum confirmed];
+====
+# manual/29
+U: which is the target humidity set on my thermostat?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.target_humidity();
+====
+# manual/30
+U: tell me the target humidity set on the climate system
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.target_humidity();
+====
+# manual/31
+U: set the target humidity of the HVAC to 90%
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.set_target_humidity(value=90);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::2:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 2")).set_target_humidity(value=90);
+A: Ok, do you want me to set humidity on your Simulated Device org.thingpedia.iot.climate 2 to 90?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_confirm_action;
+AT: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::2:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 2")).set_target_humidity(value=90);
+U: yes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::2:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 2")).set_target_humidity(value=90)
+UT: #[confirm=enum confirmed];
+====
+# manual/32
+U: change the humidity setpoint to 60%
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.set_target_humidity(value=60);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::2:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 2")).set_target_humidity(value=60);
+A: Ok, do you want me to set humidity on your Simulated Device org.thingpedia.iot.climate 2 to 60?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_confirm_action;
+AT: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::2:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 2")).set_target_humidity(value=60);
+U: yes
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate(id="str:ENTITY_tt:device_id::2:"^^tt:device_id("Simulated Device org.thingpedia.iot.climate 2")).set_target_humidity(value=60)
+UT: #[confirm=enum confirmed];
+====
+# mturk/106
+U: What is the thermostat on?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.hvac_action();
+====
+# mturk/109
+U: When it is 9 AM set the temperature to 71 degrees Fahrenheit.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[set_time($now, new Time(9, 0))]) => @org.thingpedia.iot.climate.set_target_temperature(value=71F);
+====
+# mturk/112
+U: If the temperature gets to 80 degrees turn on the AC.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.climate.current_temperature()) filter value >= 80defaultTemperature => @org.thingpedia.iot.climate.set_hvac_mode(mode=enum cool);
+====
+# mturk/116
+U: What temperature is the heater set at?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.target_temperature();
+====
+# mturk/119
+U: Turn the heat on when the temperature reaches 68.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.climate.current_temperature()) filter value == 68defaultTemperature => @org.thingpedia.iot.climate.set_hvac_mode(mode=enum heat);
+====
+# mturk/128
+U: Set the temperature to 70 degrees Fahrenheit and the humidity level to 40%.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.set_target_temperature(value=70F);
+UT: @org.thingpedia.iot.climate.set_target_humidity(value=40);
+====
+# mturk/129
+U: Turn off the A/C but leave the fan on.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.set_hvac_mode(mode=enum fan_only);
+====
+# mturk/136
+U: Heat the house to 71 degrees when I come home.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.builtin.thingengine.builtin.get_gps()) filter location == $location.home => @org.thingpedia.iot.climate.set_target_temperature(value=71defaultTemperature);
+====
+# mturk/142
+U: When I enter the house, set the temperature to 78.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.builtin.thingengine.builtin.get_gps()) filter location == $location.home => @org.thingpedia.iot.climate.set_target_temperature(value=78defaultTemperature);
+====
+# mturk/154
+U: Turn on the AC in 15 minutes.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[$now + 15min]) => @org.thingpedia.iot.climate.set_hvac_mode(mode=enum cool);

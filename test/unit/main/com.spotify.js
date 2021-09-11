@@ -46,4 +46,77 @@ module.exports = [
         assert.deepStrictEqual(result[0].id, new Tp.Value.Entity('spotify:track:7tFiyTwD0nx5a1eklYtX2J', 'Bohemian Rhapsody - Remastered 2011'));
         assert.deepStrictEqual(result[0].release_date, new Date('1975-11-21T00:00:00.000Z'));
     }],
+    ['query', 'get_song_from_library', {}, (result) => {
+        try {
+            assert(result instanceof Array);
+            for (const item of result) {
+                assert(item.id instanceof Tp.Value.Entity);
+                assert(String(item.id).match(/spotify:track:/));
+                assert(!String(item.id.display).match(/spotify:track:/));
+                assert(Array.isArray(item.artists));
+                assert(item.artists[0] instanceof Tp.Value.Entity);
+                assert(String(item.artists[0]).match(/spotify:artist:/));
+                assert(!String(item.artists[0].display).match(/spotify:artist:/));
+                assert(item.album instanceof Tp.Value.Entity);
+                assert(String(item.album).match(/spotify:album:/));
+                assert(!String(item.album.display).match(/spotify:album:/));
+                assert(Array.isArray(item.genres));
+                assert(typeof item.genres[0] === 'string');
+                assert(item.release_date instanceof Date);
+                assert(typeof item.popularity === 'number');
+                assert(typeof item.energy === 'number');
+                assert(typeof item.danceability === 'number');
+            }
+        } catch (error) {
+            console.log('parsed song items: ' + JSON.stringify(result, null, 2));
+            throw Error(error);
+        }
+    }],
+    ['query', 'get_album_from_library', {}, (result) => {
+        try {
+            assert(result instanceof Array);
+            for (const item of result) {
+                assert(item.id instanceof Tp.Value.Entity);
+                assert(String(item.id).match(/spotify:album:/));
+                assert(!String(item.id.display).match(/spotify:album:/));
+                assert(Array.isArray(item.artists));
+                assert(item.artists[0] instanceof Tp.Value.Entity);
+                assert(item.release_date instanceof Date);
+                assert(typeof item.popularity === 'number');
+            }
+        } catch (error) {
+            console.log('parsed album items: ' + JSON.stringify(result, null, 2));
+            throw Error(error);
+        }
+    }],
+    ['query', 'get_show_from_library', {}, (result) => {
+        try {
+            assert(result instanceof Array);
+            for (const item of result) {
+                assert(item.id instanceof Tp.Value.Entity);
+                assert(String(item.id).match(/spotify:show:/));
+                assert(!String(item.id.display).match(/spotify:show:/));
+                assert(typeof item.publisher === 'string');
+            } 
+        } catch (error) {
+            console.log('parsed show items: ' + JSON.stringify(result, null, 2));
+            throw Error(error);
+        }
+    }],
+    ['query', 'get_artist_from_library', {}, (result) => {
+        try {
+            assert(result instanceof Array);
+            for (const item of result) {
+                assert(item.id instanceof Tp.Value.Entity);
+                assert(String(item.id).match(/spotify:artist:/));
+                assert(!String(item.id.display).match(/spotify:artist:/));
+                assert(Array.isArray(item.genres));
+                assert(typeof item.genres[0] === 'string');
+                assert(typeof item.popularity === 'number');
+            }
+        } catch (error) {
+            console.log('parsed artist items: ' + JSON.stringify(result, null, 2));
+            throw Error(error);
+        }
+    }]
 ];
