@@ -21,6 +21,7 @@ module.exports = class MovieClass extends Tp.BaseDevice {
     async get_movie (params, hints, env) {
         // const queryURL = tmdbAccess + multiSearch + this.constructor.metadata.auth.api_key + finalSearch + realquery + "&page=1&include_adult=false";
         let sortURL = '';
+        let oneDate = new Date(Date.now());
         if (hints && hints.sort) {
             if (hints.sort[0] === 'release_date' && hints.sort[1] === 'desc')
                 sortURL = tmdbAccess + nowPlaying + this.constructor.metadata.auth.api_key + finalSearch;
@@ -33,14 +34,17 @@ module.exports = class MovieClass extends Tp.BaseDevice {
             return Promise.all(parsedResponse.results.map(async (result) => {
                 const castQuery = `https://api.themoviedb.org/3/movie/${result.id}/credits?api_key=${this.constructor.metadata.auth.api_key}&language=en-US`;
                 let id = new Tp.Value.Entity(String(result.id), result.title);
-                let oneDate = new Date(Date.now());
                 if ((result.release_date !== undefined) && (String(result.release_date) !== ''))
                     oneDate = new Date(result.release_date);
+                else
+                    oneDate = undefined;
+                console.log((result.genre_ids || []).map(String))
                 const movieObj = {
                     id,
                     description: result.overview,
                     release_date: oneDate,
                     rating_score: Number(result.vote_average),
+                    genres: (result.genre_ids || []).map(String),
                     actors:[]
                 };
                 try{
@@ -55,56 +59,85 @@ module.exports = class MovieClass extends Tp.BaseDevice {
                 return movieObj;
             }));
         }
-        let query_term = '';
-        let searchType = 'movie';
+        const movie_filter = {
+            term: '',
+            actors:'',
+            genres:'',
+        };
         if (hints && hints.filter) {
             for (let [pname, op, value] of hints.filter) {
                 if (pname === 'id' && (op === '==' || op === '=~')) {
                     if (value instanceof Tp.Value.Entity)
-                        query_term = encodeURIComponent(value.display);
+                        movie_filter.term = encodeURIComponent(value.display);
                     else
-                        query_term = encodeURIComponent(value);
+                        movie_filter.term = encodeURIComponent(value);
                 }
                 else if (pname === 'actors' && (op === 'contains' || op === 'contains~')) {
                     if (hints.filter.length > 1) {
                         if (value instanceof Tp.Value.Entity) {
-                            query_term += value.value;
-                            query_term += encodeURIComponent(",");
+                            movie_filter.actors += value.value;
+                            movie_filter.actors += encodeURIComponent(",");
                         }
                         else {
-                            query_term += value;
-                            query_term += encodeURIComponent(",");
+                            movie_filter.actors += value;
+                            movie_filter.actors += encodeURIComponent(",");
                         }
                     }
                     else{
                         if (value instanceof Tp.Value.Entity)
-                            query_term = encodeURIComponent(value.value);
+                            movie_filter.actors = encodeURIComponent(value.value);
                         else
-                            query_term = encodeURIComponent(value);
+                            movie_filter.actors = encodeURIComponent(value);
                     }
-                    searchType = 'actor';
+                }
+                else if (pname === 'genre' && (op === 'contains' || op === 'contains~')){
+                    console.log("Hi");
+                    if (hints.filter.length > 1) {
+                        if (value instanceof Tp.Value.Entity) {
+                            movie_filter.genres += value.value;
+                            movie_filter.genres += encodeURIComponent(",");
+                        }
+                        else {
+                            movie_filter.genres += value;
+                            movie_filter.genres += encodeURIComponent(",");
+                        }
+                    }
+                    else{
+                        if (value instanceof Tp.Value.Entity) {
+                            movie_filter.genres = encodeURIComponent(value.value);
+                        }
+                        else
+                            movie_filter.genres = encodeURIComponent(value);
+                    }
                 }
             }
         }
-        if (!query_term) {
+        if (!movie_filter.term && !movie_filter.actors && !movie_filter.genres) {
             console.log("No query term identified; Here's info about The Avengers:");
-            query_term = 'Avengers';
+            movie_filter.term = 'Avengers';
         }
-        if (searchType === 'actor'){
-            const movieQuery = tmdbAccess + discoverSearch + this.constructor.metadata.auth.api_key + '&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_cast=' + query_term + '&with_watch_monetization_types=flatrate';
+        if (movie_filter.actors || movie_filter.genres){
+            let movieQuery = tmdbAccess + discoverSearch + this.constructor.metadata.auth.api_key + '&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&';
+            if (movie_filter.actors)
+                movieQuery += `with_cast=${movie_filter.actors}`;
+            if (movie_filter.genres)
+                movieQuery += `with_genres=${movie_filter.genres}`;
+            movieQuery += '&with_watch_monetization_types=flatrate';
             const response1 = await Tp.Helpers.Http.get(movieQuery);
             let parsedResponse = JSON.parse(response1);
             return Promise.all(parsedResponse.results.map(async (result) => {
                 const castQuery = `https://api.themoviedb.org/3/movie/${result.id}/credits?api_key=${this.constructor.metadata.auth.api_key}&language=en-US`;
                 let id = new Tp.Value.Entity(String(result.id), String(result.title));
-                let oneDate = new Date(Date.now());
                 if ((result.release_date !== undefined) && (String(result.release_date) !== ''))
                     oneDate = new Date(result.release_date);
+                else
+                    oneDate = undefined;
                 const movieObj = {
                     id,
                     description: result.overview,
                     release_date: oneDate,
                     rating_score: Number(result.vote_average),
+                    genres: (result.genre_ids || []).map(String),
                     actors:[]
                 };
                 try{
@@ -120,19 +153,21 @@ module.exports = class MovieClass extends Tp.BaseDevice {
             }));
         }
         else {
-            const movieQuery = tmdbAccess + multiSearch + this.constructor.metadata.auth.api_key + '&language=en-US&query=' + query_term + '&page=1%include_adult=false';
+            const movieQuery = tmdbAccess + multiSearch + this.constructor.metadata.auth.api_key + '&language=en-US&query=' + movie_filter.term + '&page=1%include_adult=false';
             const response1 = await Tp.Helpers.Http.get(movieQuery);
             let parsedResponse = JSON.parse(response1);
             return Promise.all(parsedResponse.results.map(async (result) => {
                 const castQuery = `https://api.themoviedb.org/3/movie/${result.id}/credits?api_key=${this.constructor.metadata.auth.api_key}&language=en-US`;
-                let oneDate = new Date(Date.now());
                 if ((result.release_date !== undefined) && (String(result.release_date) !== ''))
                     oneDate = new Date(result.release_date);
+                else
+                    oneDate = undefined;
                 const movieObj = {
                     id: new Tp.Value.Entity(String(result.id), String(result.title)),
                     description: result.overview,
                     release_date: oneDate,
                     rating_score: Number(result.vote_average),
+                    genres: (result.genre_ids || []).map(String),
                     actors:[]
                 };
                 try{

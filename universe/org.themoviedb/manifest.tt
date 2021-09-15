@@ -10,6 +10,7 @@ class @org.themoviedb
 
     entity movie #_[description = "Movie Information"];
     entity actor #_[description = "Movie Actors"];
+    entity genre #_[description = "Movie Genres"];
 
     monitorable list query movie(   out id: Entity(org.themoviedb:movie)
                                     #[string_values="tt:movie_title"]
@@ -51,6 +52,14 @@ class @org.themoviedb
                                             G = ["suitable for children"],
                                             R = ["made for adults"]
                                         }
+                                    }],
+                                    out genres: Array(Entity(org.themoviedb:genre))
+                                    #_[canonoical={
+                                        default = "property",
+                                        base = ["genre", "type", "category"],
+                                        property = ["# genre", "# type", "# category", "# movie", "# film"],
+                                        adjective = ["#"],
+                                        prepositiion = ["in the # genre"],
                                     }],
                                     out rating_score : Number
                                     #_[canonical = {
