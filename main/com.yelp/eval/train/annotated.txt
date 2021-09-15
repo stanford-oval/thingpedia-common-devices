@@ -2,7 +2,7 @@
 # schemaorg/5
 U: Show me the closest McDonald's
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (sort distance asc of (compute (distance(geo, $context.location.current_location)) of ((@com.yelp.restaurant()), id =~ "mcdonald 's")))[1] => notify;
+UT: sort(distance(geo, $location.current_location) asc of ((@com.yelp.restaurant()), id =~ "mcdonald 's"))[1];
 ====
 # schemaorg/8
 U: What is the phone number for Noodle Nirvana?
@@ -27,7 +27,7 @@ UT: now => (@com.yelp.restaurant()), (rating >= 4 && contains(cuisines, null^^co
 # schemaorg/14
 U: Look for a Japanese restaurant that is the closest to me.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (sort distance asc of (compute (distance(geo, $context.location.current_location)) of ((@com.yelp.restaurant()), contains(cuisines, null^^com.yelp:restaurant_cuisine("japanese")))))[1] => notify;
+UT: sort (distance(geo, $location.current_location) asc of ((@com.yelp.restaurant()), contains(cuisines, null^^com.yelp:restaurant_cuisine("japanese"))))[1];
 ====
 # schemaorg/15
 U: What's the telephone number of the Arby's on Sherman in Muskegon, MI?
@@ -42,7 +42,7 @@ UT: now => (@com.yelp.restaurant()), (rating == 4 && geo == $context.location.cu
 # schemaorg/40
 U: What is the phone number for the nearest Wendy's?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => [phone] of ((sort distance asc of (compute (distance(geo, $context.location.current_location)) of ((@com.yelp.restaurant()), id =~ "wendy 's")))[1]) => notify;
+UT: [phone] of sort(distance(geo, $location.current_location) asc of ((@com.yelp.restaurant()), id =~ "wendy 's"))[1] => notify;
 ====
 # schemaorg/44
 U: Find Mexican restaurants with at least 4 star rating.
@@ -52,22 +52,22 @@ UT: now => (@com.yelp.restaurant()), (rating >= 4 && contains(cuisines, null^^co
 # schemaorg/64
 U: where is the closest Starbucks?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => [geo] of ((sort distance asc of (compute (distance(geo, $context.location.current_location)) of ((@com.yelp.restaurant()), id =~ "starbucks")))[1]) => notify;
+UT: [geo] of sort(distance(geo, $location.current_location) asc of ((@com.yelp.restaurant()), id =~ "starbucks"))[1] => notify;
 ====
 # schemaorg/68
 U: Can you tell me where the closest Pizza Hut is?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => [geo] of ((sort distance asc of (compute (distance(geo, $context.location.current_location)) of ((@com.yelp.restaurant()), id =~ "pizza hut")))[1]) => notify;
+UT: [geo] of sort(distance(geo, $location.current_location) asc of ((@com.yelp.restaurant()), id =~ "pizza hut"))[1] => notify;
 ====
 # schemaorg/77
 U: What is the telephone number for the nearest Chinese restaurant?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => [phone] of ((sort distance asc of (compute (distance(geo, $context.location.current_location)) of ((@com.yelp.restaurant()), contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese")))))[1]) => notify;
+UT: [phone] of sort(distance(geo, $location.current_location) asc of ((@com.yelp.restaurant()), contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese"))))[1] => notify;
 ====
 # schemaorg/82
 U: How close am I to Art's Deli or Carnegie Deli?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => [distance] of (compute (distance(geo, $context.location.current_location)) of ((@com.yelp.restaurant()), (id =~ "art 's deli" || id =~ "carnegie deli"))) => notify;
+UT: [distance(geo, $location.current_location)] of ((@com.yelp.restaurant()), (id =~ "art 's deli" || id =~ "carnegie deli"));
 ====
 # schemaorg/95
 U: What is the address of the Panda Express in Grand Rapids, Michigan?
@@ -117,7 +117,7 @@ UT: now => [review_count] of ((@com.yelp.restaurant()), (geo == new Location("da
 # schemaorg/sf21
 U: Can you find the restaurant nearest to my location?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (sort distance asc of (compute (distance(geo, $context.location.current_location)) of (@com.yelp.restaurant())))[1] => notify;
+UT: sort(distance(geo, $location.current_location) asc of (@com.yelp.restaurant()))[1];
 ====
 # schemaorg/sf23
 U: Find me a restaurant on Main St. please.
