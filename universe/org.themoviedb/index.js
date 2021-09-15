@@ -43,7 +43,7 @@ module.exports = class MovieClass extends Tp.BaseDevice {
                     description: result.overview,
                     release_date: oneDate,
                     rating_score: Number(result.vote_average),
-                    genres: result.genre_ids,
+                    genres: result.genre_ids.map(String),
                     actors:[]
                 };
                 try{
@@ -136,7 +136,7 @@ module.exports = class MovieClass extends Tp.BaseDevice {
                     description: result.overview,
                     release_date: oneDate,
                     rating_score: Number(result.vote_average),
-                    genres: result.genre_ids,
+                    genres: result.genre_ids.map(String),
                     actors:[]
                 };
                 try{
@@ -166,7 +166,7 @@ module.exports = class MovieClass extends Tp.BaseDevice {
                     description: result.overview,
                     release_date: oneDate,
                     rating_score: Number(result.vote_average),
-                    genres: result.genre_ids,
+                    genres: result.genre_ids.map(String),
                     actors:[]
                 };
                 try{
