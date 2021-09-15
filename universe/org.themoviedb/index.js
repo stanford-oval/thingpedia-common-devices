@@ -38,12 +38,13 @@ module.exports = class MovieClass extends Tp.BaseDevice {
                     oneDate = new Date(result.release_date);
                 else
                     oneDate = undefined;
+                console.log((result.genre_ids || []).map(String))
                 const movieObj = {
                     id,
                     description: result.overview,
                     release_date: oneDate,
                     rating_score: Number(result.vote_average),
-                    genres: result.genre_ids.map(String),
+                    genres: (result.genre_ids || []).map(String),
                     actors:[]
                 };
                 try{
@@ -136,7 +137,7 @@ module.exports = class MovieClass extends Tp.BaseDevice {
                     description: result.overview,
                     release_date: oneDate,
                     rating_score: Number(result.vote_average),
-                    genres: result.genre_ids.map(String),
+                    genres: (result.genre_ids || []).map(String),
                     actors:[]
                 };
                 try{
@@ -166,7 +167,7 @@ module.exports = class MovieClass extends Tp.BaseDevice {
                     description: result.overview,
                     release_date: oneDate,
                     rating_score: Number(result.vote_average),
-                    genres: result.genre_ids.map(String),
+                    genres: (result.genre_ids || []).map(String),
                     actors:[]
                 };
                 try{
