@@ -94,7 +94,7 @@ module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
                 stations = content.filter((channel) => (
                     'type' in channel &&
                     'item' in channel &&
-                    channel.type.toLowerCase() === CONTENT_KEYS.audio && 
+                    channel.type.toLowerCase() === CONTENT_KEYS.audio &&
                     channel.item.toLowerCase() === CONTENT_KEYS.station
                 ));
             }
@@ -120,7 +120,7 @@ module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
             render: RENDER_TYPE
         };
         const url = `${BASE_URL}${QUERY_PARAM.search}?${querystring.stringify(query_string)}`;
-        return this._get_station_details(url);       
+        return this._get_station_details(url);
     }
 
     async get_most_popular_stations() {
@@ -129,7 +129,7 @@ module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
             render: RENDER_TYPE
         };
         const url = `${BASE_URL}${QUERY_PARAM.browse}?${querystring.stringify(query_string)}`;
-        return this._get_station_details(url);       
+        return this._get_station_details(url);
     }
 
     async get_local_stations() {
@@ -142,25 +142,40 @@ module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
             };
             const url = `${BASE_URL}${QUERY_PARAM.browse}?${querystring.stringify(query_string)}`;
             return this._get_station_details(url);
-        }      
+        }
     }
 
     _test_mode() {
         return process.env.TEST_MODE === '1';
     }
 
-    async do_radio_play({id}) {
+    async do_radio_play({ id }, env) {
+        const query_string = {
+            id: String(id).split(':')[1],
+        };
+        const url = `${BASE_URL}${QUERY_PARAM.tune}?${querystring.stringify(query_string)}`;
+        const playable_link = await Tp.Helpers.Http.get(url);
+
         if (this._test_mode()) return;
+
+        const engine = this.engine;
+        if (engine.audio && engine.audio.playURLs) {
+            if (!await engine.audio.checkCustomPlayer({ type: 'url' }, env.conversation))
+                throw new Error(DEVICE_ERROR.unsupported_version);
+
+            // play asynchronously: playing will call requestAudio on the audio controller,
+            // which will wait until the agent is done speaking, so we must return here
+            engine.audio.playURLs(this, [playable_link], env.conversation).catch((e) => {
+                console.error(`Failed to play radio URL`, e);
+            });
+            return;
+        }
+
         const audio_player = this.platform.getCapability('audio-player');
-        if (!audio_player){
+        if (!audio_player) {
             throw new Error(DEVICE_ERROR.unsupported_version);
         } else {
-            const query_string = {
-                id: String(id).split(':')[1],
-            };
-            const url = `${BASE_URL}${QUERY_PARAM.tune}?${querystring.stringify(query_string)}`;
             // const playable_link = this._http_post(url);
-            const playable_link = await Tp.Helpers.Http.get(url);
             try{
                 audio_player.play(playable_link);
                 return;
@@ -168,5 +183,5 @@ module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
                 throw new Error(DEVICE_ERROR.service_unavailable);
             }
         }
-    }  
+    }
 };
