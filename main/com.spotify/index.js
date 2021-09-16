@@ -917,7 +917,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         });
     }
 
-    async _findActiveDevice(devices) {
+    async _findActiveDevice(env, devices) {
         if (devices.length === 0) {
             console.log("no available devices");
 
@@ -931,11 +931,19 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
                 await new Promise((resolve) => setTimeout(resolve, 20000));
                 devices = await this.get_get_available_devices();
             }
-            if (this.spotifyd) {
-                // wait 3 seconds for spotifyd to eventually reload
-                await new Promise((resolve) => setTimeout(resolve, 3000));
-                devices = await this.get_get_available_devices();
+
+            // try initializing the player using the audio controller
+            if (this.engine.audio && this.engine.audio.checkCustomPlayer) {
+                const ok = await this.engine.audio.checkCustomPlayer({
+                    type: 'spotify',
+                    username: this.state.id,
+                    accessToken: this.accessToken
+                }, env.conversation);
+
+                if (ok)
+                    devices = await this.get_get_available_devices();
             }
+
             if (devices.length === 0)
                 return [null, null];
         }
@@ -943,7 +951,6 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         if (this.spotifyd) {
             console.log('trying to run spotifyd');
             for (let i = 0; i < devices.length; i++) {
-                console.log(devices[i].is_active);
                 if (devices[i].id === this.spotifyd.deviceId) {
                     console.log("found spotifyd device");
                     return [devices[i].id, this.state.id];
@@ -972,7 +979,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         let device;
         if (!progstate) {
             let devices = await this.get_get_available_devices();
-            const [deviceId, deviceName] = await this._findActiveDevice(devices);
+            const [deviceId, deviceName] = await this._findActiveDevice(env, devices);
             if (deviceId === null)
                 throwError('no_active_device');
 
@@ -1305,12 +1312,12 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         });
     }
 
-    async do_player_pause() {
+    async do_player_pause(params, env) {
         if (this.state.product !== "premium" && this.state.product !== undefined)
             throwError("non_premium_account");
 
         let devices = await this.get_get_available_devices();
-        const [deviceId,] = await this._findActiveDevice(devices);
+        const [deviceId,] = await this._findActiveDevice(env, devices);
         if (deviceId === null)
             throwError('no_active_device');
         let pauseURL = PAUSE_URL + querystring.stringify({
@@ -1326,14 +1333,14 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         }
     }
 
-    async do_player_play() {
+    async do_player_play(params, env) {
         console.log("Playing music...");
 
         if (this.state.product !== "premium" && this.state.product !== undefined)
             throwError("non_premium_account");
 
         let devices = await this.get_get_available_devices();
-        const [deviceId,] = await this._findActiveDevice(devices);
+        const [deviceId,] = await this._findActiveDevice(env, devices);
         if (deviceId === null)
             throwError('no_active_device');
 
@@ -1347,12 +1354,12 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         });
     }
 
-    async do_player_next() {
+    async do_player_next(params, env) {
         if (this.state.product !== "premium" && this.state.product !== undefined)
             throwError("non_premium_account");
 
         let devices = await this.get_get_available_devices();
-        const deviceId = (await this._findActiveDevice(devices))[0];
+        const deviceId = (await this._findActiveDevice(env, devices))[0];
         if (deviceId === null)
             throwError('no_active_device');
         let nextURL = NEXT_URL + querystring.stringify({
@@ -1368,12 +1375,12 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         }
     }
 
-    async do_player_previous() {
+    async do_player_previous(params, env) {
         if (this.state.product !== "premium" && this.state.product !== undefined)
             throwError("non_premium_account");
 
         let devices = await this.get_get_available_devices();
-        const deviceId = (await this._findActiveDevice(devices))[0];
+        const deviceId = (await this._findActiveDevice(env, devices))[0];
         if (deviceId === null)
             throwError('no_active_device');
         let previousURL = PREVIOUS_URL + querystring.stringify({
@@ -1391,7 +1398,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
     async do_player_shuffle({
         shuffle
-    }) {
+    }, env) {
         shuffle = shuffle === 'on' ? 'true' : 'false';
         console.log("setting shuffle: " + shuffle);
 
@@ -1399,7 +1406,7 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
             throwError("non_premium_account");
 
         let devices = await this.get_get_available_devices();
-        const deviceId = (await this._findActiveDevice(devices))[0];
+        const deviceId = (await this._findActiveDevice(env, devices))[0];
         if (deviceId === null)
             throwError('no_active_device');
         let shuffleURL = SHUFFLE_URL + querystring.stringify({
@@ -1419,13 +1426,13 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
 
     async do_player_repeat({
         repeat
-    }) {
+    }, env) {
         console.log("repeat: " + repeat);
         if (this.state.product !== "premium" && this.state.product !== undefined)
             throwError("non_premium_account");
 
         let devices = await this.get_get_available_devices();
-        const deviceId = (await this._findActiveDevice(devices))[0];
+        const deviceId = (await this._findActiveDevice(env, devices))[0];
         if (deviceId === null)
             throwError('no_active_device');
         let repeatURL = REPEAT_URL + querystring.stringify({
