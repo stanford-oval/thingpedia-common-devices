@@ -145,8 +145,15 @@ module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
         }
     }
 
-    _test_mode() {
+    _testMode() {
         return process.env.TEST_MODE === '1';
+    }
+
+    async _resolvePlayableURL(uriList) {
+        const url = uriList.trim().split('\n')[0];
+        if (url.endsWith('m3u'))
+            return this._resolvePlayableURL(await Tp.Helpers.Http.get(url));
+        return url;
     }
 
     async do_radio_play({ id }, env) {
@@ -154,9 +161,10 @@ module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
             id: String(id).split(':')[1],
         };
         const url = `${BASE_URL}${QUERY_PARAM.tune}?${querystring.stringify(query_string)}`;
-        const playable_link = await Tp.Helpers.Http.get(url);
+        const playable_link = await this._resolvePlayableURL(await Tp.Helpers.Http.get(url));
+        console.log(`Playing radio from ${playable_link}`);
 
-        if (this._test_mode()) return;
+        if (this._testMode()) return;
 
         const engine = this.engine;
         if (engine.audio && engine.audio.playURLs) {
