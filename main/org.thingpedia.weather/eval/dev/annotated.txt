@@ -199,21 +199,21 @@ U: what's the weather in san francisco?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => @org.thingpedia.weather.current(location=new Location("san francisco")) => notify;
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: now => @org.thingpedia.weather(id="org.thingpedia.weather", name="org.thingpedia.weather").current(location=new Location(37.7792808, -122.4192363, "San Francisco, California")) => notify
+C: @org.thingpedia.weather.current(location=new Location(37.7792808, -122.4192363, "San Francisco, California"))
 C: #[results=[
-C:   { location=new Location(37.7792808, -122.4192363, "San Francisco, California"), temperature=41C, wind_speed=7mps, humidity=15, cloudiness=7, fog=15, status=enum(raining), icon="str:ENTITY_tt:picture::40:"^^tt:picture }
+C:   { location=new Location(37.7792808, -122.4192363, "San Francisco, California"), temperature=41C, wind_speed=7mps, humidity=15, cloudiness=7, fog=15, status=enum raining, icon="str:ENTITY_tt:picture::40:"^^tt:picture }
 C: ]];
 A: The weather in San Francisco, Californa is cloudy.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
 U: what's the temperature?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => [temperature] of (@org.thingpedia.weather.current(location=new Location(37.7792808, -122.4192363, "San Francisco, California"))) => notify;
+UT: [temperature] of @org.thingpedia.weather.current(location=new Location(37.7792808, -122.4192363, "San Francisco, California"));
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: now => @org.thingpedia.weather(id="org.thingpedia.weather", name="org.thingpedia.weather").current(location=new Location(37.7792808, -122.4192363, "San Francisco, California")) => notify
+C: @org.thingpedia.weather.current(location=new Location(37.7792808, -122.4192363, "San Francisco, California"))
 C: #[results=[
-C:   { location=new Location(37.7792808, -122.4192363, "San Francisco, California"), temperature=18.3C, wind_speed=7mps, humidity=15, cloudiness=7, fog=15, status=enum(cloudy), icon="str:ENTITY_tt:picture::40:"^^tt:picture }
+C:   { location=new Location(37.7792808, -122.4192363, "San Francisco, California"), temperature=18.3C, wind_speed=7mps, humidity=15, cloudiness=7, fog=15, status=enum cloudy, icon="str:ENTITY_tt:picture::40:"^^tt:picture }
 C: ]];
-C: now => [temperature] of (@org.thingpedia.weather(id="org.thingpedia.weather", name="org.thingpedia.weather").current(location=new Location(37.7792808, -122.4192363, "San Francisco, California"))) => notify
+C: [temperature] of @org.thingpedia.weather.current(location=new Location(37.7792808, -122.4192363, "San Francisco, California"))
 C: #[results=[
 C:   { location=new Location(37.7792808, -122.4192363, "San Francisco, California"), temperature=18.3C }
 C: ]];
@@ -1173,7 +1173,7 @@ UT: @org.thingpedia.weather.forecast(location=new Location("namur"));
 U: will it reain tomorrow
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.weather.forecast();
-=======
+====
 # recording/5cb2daaef83ba8d9bd2e6852f401c9aa
 U: what's the weather
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
