@@ -11,3 +11,26 @@ AT: @com.goal_smart.fixtures();
 U: chelsea FC
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.goal_smart.fixtures(team_id=null^^com.goal_smart:soccer_team("chelsea fc"));
+====
+# recording/3e14c295745af1548844649301b33b66
+U: can you talk about soccer?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.goal_smart.fixtures();
+====
+# recording/365295c08298674979287cd3c8422bc6
+U: what are the football results?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.goal_smart.fixtures();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.goal_smart.fixtures();
+A: What team do you want out check out?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_slot_fill(team_id);
+AT: @com.goal_smart.fixtures();
+U: chelsea FC
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.goal_smart.fixtures(team_id=null^^com.goal_smart:soccer_team("chelsea fc"));
+====
+# log-dev/13051
+U: get la liga standings.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.goal_smart.standings(league_id=null^^com.goal_smart:soccer_league("la liga"));

@@ -391,7 +391,7 @@ A: The most recent track is Save Your Tears. It is a track in the album The High
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
 U: play it
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable="spotify:track:06fglfpCAtDtmlyfJYgA01"^^org.thingpedia.media-source:song("Save Your Tears"));
+UT: @org.thingpedia.media-player.play(playable="spotify:track:06fglfpCAtDtmlyfJYgA01"^^org.thingpedia.media-source:song("Save Your Tears"));
 ====
 # recording/99f71bd4f4bb085eccdc65198005055e
 U: next song
@@ -410,7 +410,7 @@ A: Sorry, failed to play: you must first click play from inside the Spotify app,
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
 U: play some music
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() => @org.thingpedia.media-player.play(playable=id);
+UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id);
 ====
 # recording/428c23dd6aa15d049f7e808caff5aab1
 U: who is the most popular artist
@@ -469,7 +469,7 @@ A: Sorry, failed to play: try playing from the Spotify app.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
 U: play jay chou
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, null^^org.thingpedia.media-source:artist("jay chou")) => @org.thingpedia.media-player.play(playable=id);
+UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, null^^org.thingpedia.media-source:artist("jay chou")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id);
 ====
 # recording/318f03dd9330025140e70b88d7a3b8b6
 U: play hello by adele
@@ -497,7 +497,7 @@ A: Sorry, there are no music like that.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_empty_search;
 U: play two out of three aint bad
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter id =~ "2 out of 3 aint bad" => @org.thingpedia.media-player.play(playable=id);
+UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter id =~ "2 out of 3 aint bad" => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id);
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
 C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter id =~ "2 out of 3 ain't bad")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
 C: #[results=[]];
@@ -507,7 +507,7 @@ A: Sorry, I cannot find any music like that.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_empty_search;
 U: play bats out of hell
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter id =~ "bats out of hell" => @org.thingpedia.media-player.play(playable=id);
+UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter id =~ "bats out of hell" => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id);
 ====
 # recording/1999dcc2b0b020af126b7c41a82b68d0
 U: play yellow brick road by elton john
@@ -536,7 +536,7 @@ A: Sorry, failed to play: you must first click play from inside the Spotify app,
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
 U: Play the Queens.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, null^^org.thingpedia.media-source:artist("queens")) => @org.thingpedia.media-player.play(playable=id);
+UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, null^^org.thingpedia.media-source:artist("queens")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id);
 ====
 # recording/b695a61f2ad9dd9e9bc18178d9ba9027
 U: play Random Access Memories
@@ -912,3 +912,23 @@ UT: @org.thingpedia.media-source.get_currently_playing() => @com.spotify.add_ite
 U: I like this song
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.media-source.get_currently_playing() => @com.spotify.add_item_to_library(playable=id);
+====
+# recording/68265ea652cd9ba1485ba9c5a7706701
+U: add playlist oval
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.create_playlist(name="oval");
+====
+# log-dev/12694
+U: try again. create a playlist.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.create_playlist();
+====
+# log-dev/12513
+U: make me a new playlist.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.create_playlist();
+====
+# log-dev/12508
+U: create a new playlist.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.spotify.create_playlist();

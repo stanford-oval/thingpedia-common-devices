@@ -49,15 +49,15 @@ U: what’s the status of the attic vacuum?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.vacuum(name="attic").state();
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: @org.thingpedia.iot.vacuum(id="str:ENTITY_tt:device_id::5:"^^tt:device_id("Simulated Device org.thingpedia.iot.vacuum 5")).state()
+C: @org.thingpedia.iot.vacuum(id="org.thingpedia.iot.vacuum-XXXXXXXX"^^tt:device_id).state()
 C: #[results=[
-C:   { state=enum docked, status="str:QUOTED_STRING::25:", __device="str:ENTITY_tt:device_id::5:"^^tt:device_id("Simulated Device org.thingpedia.iot.vacuum 5") }
+C:   { state=enum docked, status="str:QUOTED_STRING::25:", __device="XXXXXXXX"^^tt:device_id }
 C: ]];
 A: Your Simulated Device org.thingpedia.iot.vacuum 5 vacuum is docked.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
 U: did I forgot to turn off the vacuum in the living room?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.iot.vacuum(id="str:ENTITY_tt:device_id::5:"^^tt:device_id("Simulated Device org.thingpedia.iot.vacuum 5")).state();
+UT: @org.thingpedia.iot.vacuum(id="org.thingpedia.iot.vacuum-XXXXXXXX"^^tt:device_id).state();
 ====
 # manual/5
 U: shut down all vacuums
@@ -72,4 +72,3 @@ U: yes
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.vacuum(all=true).set_power(power=enum off)
 UT: #[confirm=enum confirmed];
-====

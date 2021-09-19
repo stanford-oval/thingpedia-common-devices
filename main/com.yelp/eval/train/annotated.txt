@@ -960,3 +960,128 @@ AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
 U: suggest a pizzeria in palo alto
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: [geo] of @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("pizzeria")) && geo == new Location("palo alto");
+====
+# recording/2f73b694538e33c6ea0a096afd27178a
+U: can you tell me a good japanese restaurant
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("japanese"));
+====
+# recording/794840d511e9106270ee55e5a9433572
+U: show me restaurants with "box" in their name
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter id =~ "box";
+====
+# recording/6d63c954ce2ef96bd74d607b0a2e244f
+U: find me indo restaurant & lounge
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter id =~ "indo restaurant & lounge";
+====
+# recording/fb064f84c7d397bc34b0538f65db925a
+U: show me the number of review
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [review_count] of @com.yelp.restaurant();
+====
+# recording/58e7ee7d8f37c9003c8c8206c755e151
+U: find me the restaurant named indo restaurant & lounge
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter id =~ "indo restaurant & lounge";
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.yelp.restaurant() filter id =~ "indo restaurant & lounge"
+C: #[results=[
+C:   { id="-gjBoypvDfv9UhagceRsvw"^^com.yelp:restaurant("INDO Restaurant & Lounge"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/fnkiIbVnSh9eCsgQzuz5og/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/indo-restaurant-and-lounge-palo-alto-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["indonesian"^^com.yelp:restaurant_cuisine("Indonesian")], price=enum moderate, rating=4, review_count=1085, geo=new Location(37.42086, -122.13699, "3295 El Camino Real, Palo Alto, CA 94306"), phone="+16504947168"^^tt:phone_number }
+C: ]];
+A: INDO Restaurant & Lounge is a restaurant near 3295 El Camino Real, Palo Alto, CA 94306 rated 4 star.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: how many people rated it
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [review_count] of @com.yelp.restaurant() filter id == "-gjBoypvDfv9UhagceRsvw"^^com.yelp:restaurant("INDO Restaurant & Lounge");
+====
+# recording/f32a6ad5aa6748696dd55d19e48100e1
+U: what's the nearest pizza i can get to
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(distance(geo, $location.current_location) asc of @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("pizza")))[1];
+====
+# recording/e192225619f27dedc426232aacc830d9
+U: what's a good restaurant in san francisco mission district
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("san francisco mission district");
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.yelp.restaurant() filter geo == new Location(37.75993, -122.4191376, "Mission District, San Francisco, CA 90103")
+C: #[results=[
+C:   { id="ri7UUYmx21AgSpRsf4-9QA"^^com.yelp:restaurant("Tartine Bakery"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/nPUUXYVVa3CHJh5yzH8Xnw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/tartine-bakery-san-francisco-3?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["cafes"^^com.yelp:restaurant_cuisine("Cafes")], price=enum moderate, rating=4, review_count=8154, geo=new Location(37.76131, -122.42431, "600 Guerrero St, San Francisco, CA 94110"), phone="+14154872600"^^tt:phone_number },
+C:   { id="KkAVX3Wb7E3lP5F_f_8pXg"^^com.yelp:restaurant("Liholiho Yacht Club"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/DluAA2YbM8k6qRM_mwbiNw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/liholiho-yacht-club-san-francisco-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["newamerican"^^com.yelp:restaurant_cuisine("American (New)"), "seafood"^^com.yelp:restaurant_cuisine("Seafood")], price=enum expensive, rating=4.5, review_count=2468, geo=new Location(37.7618143, -122.42296790220479, "3560 18th St, San Francisco, CA 94110"), phone="+14155897266"^^tt:phone_number },
+C:   { id="SGRmnarrNuVEsAjYdEoA0w"^^com.yelp:restaurant("El Farolito"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/kYemXiMcYje-Da7AjPtWcg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/el-farolito-san-francisco-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum cheap, rating=4, review_count=5052, geo=new Location(37.75265, -122.41812, "2779 Mission St, San Francisco, CA 94110"), phone="+14158247877"^^tt:phone_number },
+C:   { id="n6L5VIGunR51-D55C-eYeQ"^^com.yelp:restaurant("Foreign Cinema"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/cw5y2LSOIE-EVNjKK_d7SQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/foreign-cinema-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch"), "mediterranean"^^com.yelp:restaurant_cuisine("Mediterranean")], price=enum expensive, rating=4, review_count=4988, geo=new Location(37.75637, -122.41925, "2534 Mission St, San Francisco, CA 94110"), phone="+14156487600"^^tt:phone_number },
+C:   { id="1hMD7RQogPDWpE-p3LKjXA"^^com.yelp:restaurant("Loló"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/QimJjz8ECFnevPcssJYfTw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/lol%C3%B3-san-francisco-4?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican"), "tapasmallplates"^^com.yelp:restaurant_cuisine("Tapas/Small Plates")], price=enum moderate, rating=4, review_count=2263, geo=new Location(37.7573462, -122.4214034, "974 Valencia St, San Francisco, CA 94110"), phone="+14156435656"^^tt:phone_number },
+C:   { id="8kck3-K4zYKTJbJko0JlXQ"^^com.yelp:restaurant("Farmhouse Kitchen Thai Cuisine"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/kUlEaPpv0JGlHG_nrPr7wQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/farmhouse-kitchen-thai-cuisine-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["thai"^^com.yelp:restaurant_cuisine("Thai"), "comfortfood"^^com.yelp:restaurant_cuisine("Comfort Food")], price=enum moderate, rating=4, review_count=2904, geo=new Location(37.760192883932795, -122.4114188698492, "710 Florida St, San Francisco, CA 94110"), phone="+14158142920"^^tt:phone_number },
+C:   { id="4KfQnlcSu4bbTqnvGdGptw"^^com.yelp:restaurant("Beretta"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/HKxMJ8q8fzOY76hy7ACIag/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/beretta-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["italian"^^com.yelp:restaurant_cuisine("Italian"), "pizza"^^com.yelp:restaurant_cuisine("Pizza"), "breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch")], price=enum moderate, rating=4, review_count=3798, geo=new Location(37.753869, -122.420611, "1199 Valencia St, San Francisco, CA 94110"), phone="+14156951199"^^tt:phone_number },
+C:   { id="wEpiKz--Z2b1q_FSCCNiow"^^com.yelp:restaurant("Lolinda"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/M8J3ehcOIRRI8ys1Q0hxtw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/lolinda-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["steak"^^com.yelp:restaurant_cuisine("Steakhouses"), "tapasmallplates"^^com.yelp:restaurant_cuisine("Tapas/Small Plates"), "latin"^^com.yelp:restaurant_cuisine("Latin American")], price=enum expensive, rating=4, review_count=2057, geo=new Location(37.7566658, -122.419116, "2518 Mission St, San Francisco, CA 94110"), phone="+14155506970"^^tt:phone_number },
+C:   { id="JARsJVKLPgs_yC3cwDnp7g"^^com.yelp:restaurant("La Taqueria"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/7LqVKYVg2GdEFKI2CFL4cA/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/la-taqueria-san-francisco-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum moderate, rating=4, review_count=4229, geo=new Location(37.75088, -122.41805, "2889 Mission St, San Francisco, CA 94110"), phone="+14152857117"^^tt:phone_number },
+C:   { id="r7RwvYMwxDuK3u26fHbYDA"^^com.yelp:restaurant("Limón"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/uJAt6_k4J35gIFsC6FtWWg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/lim%C3%B3n-san-francisco-7?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["peruvian"^^com.yelp:restaurant_cuisine("Peruvian"), "tapasmallplates"^^com.yelp:restaurant_cuisine("Tapas/Small Plates")], price=enum moderate, rating=4, review_count=3276, geo=new Location(37.7570514, -122.416461, "1001 S Van Ness Ave, San Francisco, CA 94110"), phone="+14158212134"^^tt:phone_number }
+C: ]]
+C: #[count=50];
+A: I see Tartine Bakery, Liholiho Yacht Club, and El Farolito. Tartine Bakery is a restaurant rated 4 star, Liholiho Yacht Club is rated 4.5 star, and El Farolito is rated 4 star.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_three;
+U: how about a cafe there
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("cafe")) && geo == new Location(37.75993, -122.4191376, "Mission District, San Francisco, CA 90103");
+====
+# recording/192200bd3893d06c3cda546bdf915ce9
+U: what's a good restaurant in san francisco mission district
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("san francisco mission district");
+====
+# recording/5092a5f73081f35e336aeffd0ad88e1c
+U: restaurants in saratoga
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("saratoga");
+====
+# log-dev/13038
+U: can you recommend a good mexican restaurant in san francisco?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("mexican")) && geo == new Location("san francisco");
+====
+# log-dev/12964
+U: find a great restaurant for dim sum in hong kong.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("dim sum")) && geo == new Location("hong kong");
+====
+# log-dev/12755
+U: tell me the best taco joint in palo alto.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating desc of @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("taco")) && geo == new Location("palo alto"))[1];
+====
+# log-dev/12723
+U: what's a good restaurant in los altos
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("los altos");
+====
+# log-dev/12654
+U: what's the address of gosh, one restaurant in palo alto?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [geo] of @com.yelp.restaurant() filter geo == new Location("palo alto");
+====
+# log-dev/12652
+U: find a good restaurant in los gatos.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("los gatos");
+====
+# log-dev/12651
+U: what's the best italian restaurant in denver, co?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating desc of @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("italian")) && geo == new Location("denver , co"))[1];
+====
+# log-dev/12650
+U: can you find me a restaurant in denver, co?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("denver , co");
+====
+# log-dev/12379
+U: find me a mexican restaurant in palo alto.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("mexican")) && geo == new Location("palo alto");
+====
+# log-dev/12341
+U: find me a chinese restaurant in palo alto.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese")) && geo == new Location("palo alto");

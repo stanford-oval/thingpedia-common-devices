@@ -40,7 +40,7 @@ const Platform = require('./lib/platform');
 const { readAllLines } = require('./lib/argutils');
 const { coin } = require('./lib/random');
 
-const FEW_SHOT_TRAIN_PROBABILITY = 0.5;
+const FEW_SHOT_TRAIN_PROBABILITY = 0.9;
 
 // must be in inheritance order
 const RELEASES = ['builtin', 'main', 'universe', 'staging'];
@@ -59,6 +59,12 @@ class GetDevicesVisitor extends ThingTalk.Ast.NodeVisitor {
         this.devices.add(expr.kind);
         return true;
     }
+}
+
+function sha256sum(content) {
+    const hash = crypto.createHash('sha256');
+    hash.update(content);
+    return hash.digest('hex');
 }
 
 class RemoveSensitiveInfoVisitor extends ThingTalk.Ast.NodeVisitor {
@@ -83,6 +89,23 @@ class RemoveSensitiveInfoVisitor extends ThingTalk.Ast.NodeVisitor {
             value.value = 'XXXXXXXX';
             value.display = null;
         }
+        return true;
+    }
+    visitDialogueHistoryItem(value) {
+        delete value.impl_annotations.error_detail;
+        delete value.impl_annotations.error_stack;
+        return true;
+    }
+    visitDialogueHistoryResultItem(value) {
+        if (value.value.id && value.value.id.isEntity &&
+            value.value.id.type === 'com.smartnews:article' &&
+            value.value.content && value.value.content.isString &&
+            !value.value.content.value.startsWith('smartnews-sha256:')) {
+            // replace the news body with a hash, to avoid putting an entire news body
+            // in a public git repository
+            value.value.content.value='smartnews-sha256:' + sha256sum(value.value.content.value);
+        }
+        return true;
     }
 }
 
@@ -248,6 +271,14 @@ class Trainer {
 
         const visitor = new RemoveSensitiveInfoVisitor();
         for (const turn of dlg) {
+            // fix some mistakes in the bing skill that cause syntax errors
+            for (const key of ['context', 'user_target', 'agent_target']) {
+                if (/^@com\.bing\.[a-z]+;$/.test(turn[key]))
+                    turn[key] = '$dialogue ' + turn[key];
+                else if (turn[key] === 'null')
+                    turn[key] = '';
+            }
+
             if (turn.context) {
                 const parsed = ThingTalk.Syntax.parse(turn.context);
                 parsed.visit(visitor);
@@ -283,7 +314,13 @@ class Trainer {
                         continue;
                     dlg.filename = dlg.id;
                     const [userId, conversationId, dialogueId] = dlg.id.split('/');
-                    await this._loadDialogue(dlg, userId, conversationId + '/' + dialogueId, '');
+                    try {
+                        await this._loadDialogue(dlg, userId, conversationId + '/' + dialogueId, '');
+                    } catch(e) {
+                        if (e.name !== 'SyntaxError')
+                            throw e;
+                        console.error(`Ignored syntax error in ${filepath} ${userId}/${conversationId}/${dialogueId}: ${e.message}`);
+                    }
                 }
             } catch(e) {
                 console.error(`Failed to process ${filepath}: ${e}`);

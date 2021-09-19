@@ -49,11 +49,36 @@ U: start the fan
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.fan.set_power(power=enum on);
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: @org.thingpedia.iot.fan(id="str:ENTITY_tt:device_id::3:"^^tt:device_id("Simulated Device org.thingpedia.iot.fan 3")).set_power(power=enum on);
+C: @org.thingpedia.iot.fan(id="org.thingpedia.iot.fan-XXXXXXXX"^^tt:device_id).set_power(power=enum on);
 A: Ok, do you want me to help you on your Simulated Device org.thingpedia.iot.fan 3 fan?
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_confirm_action;
-AT: @org.thingpedia.iot.fan(id="str:ENTITY_tt:device_id::3:"^^tt:device_id("Simulated Device org.thingpedia.iot.fan 3")).set_power(power=enum on);
+AT: @org.thingpedia.iot.fan(id="org.thingpedia.iot.fan-XXXXXXXX"^^tt:device_id).set_power(power=enum on);
 U: yes
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.iot.fan(id="str:ENTITY_tt:device_id::3:"^^tt:device_id("Simulated Device org.thingpedia.iot.fan 3")).set_power(power=enum on)
+UT: @org.thingpedia.iot.fan(id="org.thingpedia.iot.fan-XXXXXXXX"^^tt:device_id).set_power(power=enum on)
 UT: #[confirm=enum confirmed];
+====
+# log-dev/12199
+U: turn oscillating
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.fan.set_oscillation();
+====
+# log-dev/12187
+U: start oscillating
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.fan.set_oscillation(oscillation=enum on);
+====
+# log-dev/12172
+U: turn on the oscillation
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.fan.set_oscillation(oscillation=enum on);
+====
+# log-dev/12171
+U: set oscillation off
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.fan.set_oscillation(oscillation=enum off);
+====
+# log-dev/12159
+U: help me on my fan
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.fan.set_power(power=enum on);

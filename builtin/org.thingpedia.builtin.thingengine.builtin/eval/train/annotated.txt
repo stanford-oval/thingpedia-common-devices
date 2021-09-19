@@ -713,3 +713,341 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
 U: what's my name?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.builtin.thingengine.builtin.get_name();
+====
+# recording/b74f29da6b23504bba1520c3f5b8c061
+U: find a random number between 100 and 500
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_random_between(high=500, low=100);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.get_random_between(high=500, low=100)
+C: #[results=[
+C:   { random=211, high=500, low=100 }
+C: ]];
+A: 211.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: another one
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_random_between(high=500, low=100);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.get_random_between(high=500, low=100)
+C: #[results=[
+C:   { random=211, high=500, low=100 }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.get_random_between(high=500, low=100)
+C: #[results=[
+C:   { random=447, high=500, low=100 }
+C: ]];
+A: Did you mean get the a random number between 100 and 500?
+A: 447.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: cancel
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# recording/0040c0326aead188b413ccd659ca0478
+U: what can you do
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
+====
+# recording/1a82e11a176dab9431f90a95cefa55da
+U: what time is it?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_time();
+====
+# recording/c266eafe622c7fbf667066f752ff1e1f
+U: set a timer for 30 seconds
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[$now + 30s]) => @org.thingpedia.builtin.thingengine.builtin.timer_expire();
+====
+# recording/662df9e5db381481772ff412c6e6c6b5
+U: what time is it?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_time();
+====
+# recording/13a55729f6dd75023855859a2e490cb6
+U: This is cool
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum positive_emotion_cool);
+====
+# recording/cd755901914806980fc5b1ab0a99401f
+U: what time is it?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_time();
+====
+# recording/6a30d94fdba2469302c942cb64447eea
+U: help
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
+====
+# recording/63f5290744a65692b75307d7a9665769
+U: Tell me hi!
+UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
+C: $dialogue @org.thingpedia.dialogue.transaction.greet;
+A: Hello! How can I help you?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_greet;
+U: I don't know
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help)
+C: #[results=[
+C:   { reply="I'm a new virtual assistant. At the moment, I can help you with music, jokes, and managing some IoT devices.", question=enum general_help }
+C: ]];
+A: I'm a new virtual assistant. At the moment, I can help you with music, jokes, and managing some IoT devices.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: Nice, thank you
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# recording/1f0dd43678348b2b967374ba83704a18
+U: i love you
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum positive_emotion_thanks);
+====
+# recording/4b8858fc133c0ca1037ac09fa9bd1e4a
+U: hi thr
+UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
+C: $dialogue @org.thingpedia.dialogue.transaction.greet;
+A: Hello! How can I help you?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_greet;
+U: what can you do?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help)
+C: #[results=[
+C:   { reply="I'm a new virtual assistant. At the moment, I can help you with music, jokes, and managing some IoT devices.", question=enum general_help }
+C: ]];
+A: I'm a new virtual assistant. At the moment, I can help you with music, jokes, and managing some IoT devices.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: what is IoT?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum iot_help);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help)
+C: #[results=[
+C:   { reply="I'm a new virtual assistant. At the moment, I can help you with music, jokes, and managing some IoT devices.", question=enum general_help }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum iot_help)
+C: #[results=[
+C:   { reply="At the moment, I can control lights, switches, as well as various sensors. Check the Thingpedia website for the full, up-to-date list, and check your My Skills page to see which of your devices I recognize.", question=enum iot_help }
+C: ]];
+A: At the moment, I can control lights, switches, as well as various sensors. Check the Thingpedia website for the full, up-to-date list, and check your My Skills page to see which of your devices I recognize.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: thats cool
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum positive_emotion_thanks);
+====
+# recording/ef76f1b78262b5588c877a628ba0645d
+U: do you speak italian?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.set_language(language=null^^tt:iso_lang_code("italian"));
+====
+# recording/7e82cc79851938e27348ff2ebd267b93
+U: test
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
+====
+# recording/1786b6773e48b1d8e84fc0503ec5fe5a
+U: what time is it?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_time();
+====
+# recording/376b5a5e473c57a82d4def6e5b9196ea
+U: what time is it?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_time();
+====
+# recording/5b39846ea5e9343fa5ceb9dc863eddba
+U: where are you?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_location);
+====
+# recording/494df0d057e3ae4c0c692329c34fe135
+U: who are you
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_identity);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_identity)
+C: #[results=[
+C:   { reply="I'm Genie, an open-source virtual assistant created at Stanford.", question=enum about_almond_identity }
+C: ]];
+A: I'm Genie, an open-source virtual assistant created at Stanford.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: how old are you
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_age);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_identity)
+C: #[results=[
+C:   { reply="I'm Genie, an open-source virtual assistant created at Stanford.", question=enum about_almond_identity }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_age)
+C: #[results=[
+C:   { reply="I was born in 2015 in a class at Stanford. The plan is for me to be released in the first half of 2021.", question=enum about_almond_age }
+C: ]];
+A: I was born in 2015 in a class at Stanford. The plan is for me to be released in the first half of 2021.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: how old are you?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_age);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_identity)
+C: #[results=[
+C:   { reply="I'm Genie, an open-source virtual assistant created at Stanford.", question=enum about_almond_identity }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_age)
+C: #[results=[
+C:   { reply="I was born in 2015 in a class at Stanford. The plan is for me to be released in the first half of 2021.", question=enum about_almond_age }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_age)
+C: #[results=[
+C:   { reply="I was born in 2015 in a class at Stanford. The plan is for me to be released in the first half of 2021.", question=enum about_almond_age }
+C: ]];
+A: I was born in 2015 in a class at Stanford. The plan is for me to be released in the first half of 2021.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: cancel
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# recording/1abd355070e782a47c7bb7a689677cbc
+U: what time is it
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_time();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.get_time()
+C: #[results=[
+C:   { time=new Time(17, 9, 51) }
+C: ]];
+A: Right now, it's 10:09 AM.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: remind me tomorrow to eat soup
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[$end_of(day)]) => @org.thingpedia.builtin.thingengine.builtin.say(message="eat soup");
+====
+# recording/fdd6f837839f1e8c6ff683591b895a1c
+U: what is today?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_date();
+====
+# recording/90f49d84ba4930f9847810a618164a4f
+U: what time is it?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_time();
+====
+# log-dev/13006
+U: what you up to?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you);
+====
+# log-dev/13003
+U: hey jeannie. what's your favorite color?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_preference);
+====
+# log-dev/12982
+U: hey jeannie. what time?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_time();
+====
+# log-dev/12955
+U: set my location.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.set_location();
+====
+# log-dev/12826
+U: what's your favorite fruit?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_preference);
+====
+# log-dev/12825
+U: how do you feel?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you);
+====
+# log-dev/12824
+U: who's your mama?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_identity);
+====
+# log-dev/12816
+U: what's your favorite color?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_preference);
+====
+# log-dev/12805
+U: get the random number.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_random_between();
+====
+# log-dev/12804
+U: it's good.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum positive_emotion_thanks);
+====
+# log-dev/12803
+U: get around number.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_random_between();
+====
+# log-dev/12639
+U: what's the date today?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_date();
+====
+# log-dev/12551
+U: remind me in one minute.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[$now + 1min]) => @org.thingpedia.builtin.thingengine.builtin.say();
+====
+# log-dev/12530
+U: what's going on, dude?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you);
+====
+# log-dev/12525
+U: set a reminder.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=$?) => @org.thingpedia.builtin.thingengine.builtin.say();
+====
+# log-dev/12524
+U: what kind of io t devices can you manage?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum iot_help);
+====
+# log-dev/12522
+U: compute there. what's the coolest thing you can do?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
+====
+# log-dev/12422
+U: alert me at 0:0
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[set_time($now, new Time(0, 0))]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+====
+# log-dev/12393
+U: waht tim is it?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_time();
+====
+# log-dev/12346
+U: set a reminder for 5 minutes.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[$now + 5min]) => @org.thingpedia.builtin.thingengine.builtin.say();
+====
+# log-dev/12322
+U: computer. what time is it?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_time();
+====
+# log-dev/12123
+U: but you are not smart
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum abusive);
+====
+# log-dev/12122
+U: you don't do math counts
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
+====
+# log-dev/12114
+U: turn on voice to text
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.set_voice_input(status=enum on);
