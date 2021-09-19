@@ -69,3 +69,18 @@ UT: [artists] of @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:devi
 U: what's the latest by charlie xcx
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: sort(release_date desc of @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("charlie xcx")))[1];
+====
+# log-dev/12293
+U: what's playing?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.get_currently_playing();
+====
+# log-dev/12291
+U: what's playing
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.get_currently_playing();
+====
+# log-dev/12289
+U: who is the artist of the currently playing track?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [artists] of @org.thingpedia.media-source.get_currently_playing();

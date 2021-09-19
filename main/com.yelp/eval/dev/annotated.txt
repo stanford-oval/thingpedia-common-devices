@@ -2394,3 +2394,23 @@ AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
 U: another option?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.yelp.restaurant() filter !(id == "2oIjson-Zzz7Tn7ZMI0nug"^^com.yelp:restaurant("Sidecar Modern Tavern")) && geo == new Location(37.1624585, -121.98538717615781, "Lexington Hills, Summit West") && rating == 5;
+====
+# log-dev/13020
+U: find a good place for dim sum.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("dim sum"));
+====
+# log-dev/13010
+U: can you find me a good dim sum restaurant in san francisco?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("dim sum")) && geo == new Location("san francisco");
+====
+# log-dev/12653
+U: what's the best chinese restaurant in menlo park?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating desc of @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese")) && geo == new Location("menlo park"))[1];
+====
+# log-dev/12331
+U: best chinese restaurant
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating desc of @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese")))[1];

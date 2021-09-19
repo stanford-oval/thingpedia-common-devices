@@ -1035,3 +1035,53 @@ UT: @com.yelp.restaurant() filter geo == new Location("san francisco mission dis
 U: restaurants in saratoga
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.yelp.restaurant() filter geo == new Location("saratoga");
+====
+# log-dev/13038
+U: can you recommend a good mexican restaurant in san francisco?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("mexican")) && geo == new Location("san francisco");
+====
+# log-dev/12964
+U: find a great restaurant for dim sum in hong kong.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("dim sum")) && geo == new Location("hong kong");
+====
+# log-dev/12755
+U: tell me the best taco joint in palo alto.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating desc of @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("taco")) && geo == new Location("palo alto"))[1];
+====
+# log-dev/12723
+U: what's a good restaurant in los altos
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("los altos");
+====
+# log-dev/12654
+U: what's the address of gosh, one restaurant in palo alto?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [geo] of @com.yelp.restaurant() filter geo == new Location("palo alto");
+====
+# log-dev/12652
+U: find a good restaurant in los gatos.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("los gatos");
+====
+# log-dev/12651
+U: what's the best italian restaurant in denver, co?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating desc of @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("italian")) && geo == new Location("denver , co"))[1];
+====
+# log-dev/12650
+U: can you find me a restaurant in denver, co?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("denver , co");
+====
+# log-dev/12379
+U: find me a mexican restaurant in palo alto.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("mexican")) && geo == new Location("palo alto");
+====
+# log-dev/12341
+U: find me a chinese restaurant in palo alto.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese")) && geo == new Location("palo alto");

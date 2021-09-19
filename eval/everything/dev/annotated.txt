@@ -3303,3 +3303,127 @@ UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.t
 U: play music
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.media-source.playable() => @org.thingpedia.media-player.play(playable=id);
+====
+# log-dev/12878
+U: council.
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# log-dev/12839
+U: thanks.
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# log-dev/12782
+U: play welcome to miami by will smith.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("will smith")) && id =~ "welcome to miami" => @org.thingpedia.media-player.play(playable=id);
+====
+# log-dev/12779
+U: turn this * * * * off.
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# log-dev/12734
+U: play some dead mouse
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("dead mouse")) => @org.thingpedia.media-player.play(playable=id);
+====
+# log-dev/12726
+U: play some funky music.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains~(genres, "funky") => @org.thingpedia.media-player.play(playable=id);
+====
+# log-dev/12667
+U: play some classical music.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains~(genres, "classical") => @org.thingpedia.media-player.play(playable=id);
+====
+# log-dev/12666
+U: play some beethoven.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("beethoven")) => @org.thingpedia.media-player.play(playable=id);
+====
+# log-dev/12658
+U: thanks for that.
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# log-dev/12572
+U: add this to my playlist, please.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.get_currently_playing() => @com.spotify.add_song_to_playlist(song=id);
+====
+# log-dev/12569
+U: add this to my playlist.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.get_currently_playing() => @com.spotify.add_song_to_playlist(song=id);
+====
+# log-dev/12566
+U: play some mac dre.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("mac dre")) => @org.thingpedia.media-player.play(playable=id);
+====
+# log-dev/12549
+U: stop. sorry i did not understand that.
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# log-dev/12495
+U: same computer. stop.
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# log-dev/12493
+U: play some tom petty.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("tom petty")) => @org.thingpedia.media-player.play(playable=id);
+====
+# log-dev/12487
+U: play that emancipator album i like.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.album() filter id =~ "emancipator" => @org.thingpedia.media-player.play(playable=id);
+====
+# log-dev/12440
+U: play cure music okay
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("cure")) => @org.thingpedia.media-player.play(playable=id);
+====
+# log-dev/12438
+U: play me my fave band the cure
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("cure")) => @org.thingpedia.media-player.play(playable=id);
+====
+# log-dev/12437
+U: play me some cure music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("cure")) => @org.thingpedia.media-player.play(playable=id);
+====
+# log-dev/12436
+U: play me some of that there cure music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("cure")) => @org.thingpedia.media-player.play(playable=id);
+====
+# log-dev/12435
+U: play some reggae
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains~(genres, "reggae") => @org.thingpedia.media-player.play(playable=id);
+====
+# log-dev/12417
+U: play phil collins
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("phil collins")) => @org.thingpedia.media-player.play(playable=id);
+====
+# log-dev/12411
+U: like this podcast
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.get_currently_playing() => @com.spotify.add_item_to_library(playable=id);
+====
+# log-dev/12388
+U: play my favorites.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.get_song_from_library() => @org.thingpedia.media-player.play(playable=id);
+====
+# log-dev/12383
+U: play some music on spotify.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() => @org.thingpedia.media-player.play(playable=id);
+====
+# log-dev/12087
+U: play arm chair podcast.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.show() filter id =~ "arm chair" => @org.thingpedia.media-player.play(playable=id);

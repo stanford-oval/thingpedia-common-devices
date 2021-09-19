@@ -1053,3 +1053,18 @@ UT: @com.goal_smart.fixtures(team_id="489"^^com.goal_smart:soccer_team("ac milan
 U: what are the next real madrid games
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.goal_smart.fixtures(team_id="541"^^com.goal_smart:soccer_team("real madrid"));
+====
+# log-dev/13053
+U: get premier league top scorers.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(goals asc of @com.goal_smart.player(league_id=null^^com.goal_smart:soccer_league("premier league")))[1];
+====
+# log-dev/13052
+U: get premier league standings.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.goal_smart.standings(league_id=null^^com.goal_smart:soccer_league("premier league"));
+====
+# log-dev/12355
+U: tell me about manchester united.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.goal_smart.fixtures(team_id=null^^com.goal_smart:soccer_team("manchester united"));
