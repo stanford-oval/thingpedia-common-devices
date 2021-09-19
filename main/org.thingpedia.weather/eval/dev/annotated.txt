@@ -1253,3 +1253,47 @@ UT: @org.thingpedia.weather.current();
 U: Please give me today's weather forecast.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.weather.current();
+====
+# recording/985494336989cee0e9525fa1b49434b1
+U: will it rain tomorrow
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.forecast(date=$end_of(day), location=new Location(37.4863239, -122.232523, "Redwood City, California"))
+C: #[results=[
+C:   { temperature=13.7C, wind_speed=1.8mps, humidity=81.1, cloudiness=68, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=3;content_type=image/png"^^tt:picture, date=new Date("2021-08-04T14:00:00.000Z"), location=new Location(37.4863239, -122.232523, "Redwood City, California") }
+C: ]];
+A: It will be cloudy tomorrow at 7:00 AM in Redwood City, California and the temperature will be 13.7 C.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: will it rain tomorrow at 2pm
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast(date=set_time($end_of(day), new Time(14, 0)), location=new Location(37.4863239, -122.232523, "Redwood City, California"));
+====
+# recording/a21871e20bbba2e30c3ae8d1d3ebaffc
+U: what's the weather tomorrow?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.forecast(date=$end_of(day), location=new Location(37.1624585, -121.98538717615781, "Lexington Hills, Summit West"))
+C: #[results=[
+C:   { temperature=18C, wind_speed=0.8mps, humidity=71.8, cloudiness=0.8, fog=0, status=enum sunny, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=1;content_type=image/png"^^tt:picture, date=new Date("2021-07-30T14:00:00.000Z"), location=new Location(37.1624585, -121.98538717615781, "Lexington Hills, Summit West") }
+C: ]];
+A: It will be sunny tomorrow at 7:00 AM in Lexington Hills, Summit West and the temperature will be 64.4 F.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: what's the weather in palo alto?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("palo alto"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.forecast(date=$end_of(day), location=new Location(37.1624585, -121.98538717615781, "Lexington Hills, Summit West"))
+C: #[results=[
+C:   { temperature=18C, wind_speed=0.8mps, humidity=71.8, cloudiness=0.8, fog=0, status=enum sunny, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=1;content_type=image/png"^^tt:picture, date=new Date("2021-07-30T14:00:00.000Z"), location=new Location(37.1624585, -121.98538717615781, "Lexington Hills, Summit West") }
+C: ]];
+C: @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=31.3C, wind_speed=2.2mps, humidity=32.3, cloudiness=42.2, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=3;content_type=image/png"^^tt:picture, location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+A: It is cloudy today in Palo Alto, California and the temperature is 88.3 F.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: next week?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast(date=$end_of(week), location=new Location(37.4443293, -122.1598465, "Palo Alto, California"));

@@ -2635,3 +2635,671 @@ UT: @org.thingpedia.media-source.song() filter contains(artists, null^^org.thing
 U: play a song by the Beatles
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.media-source.song() filter contains(artists, null^^org.thingpedia.media-source:artist("beatles")) => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/fd8de0a3c97b4d2527ebb8090b752578
+U: what's the latest song by taylor swift
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(release_date desc of @org.thingpedia.media-source.song() filter contains(artists, null^^org.thingpedia.media-source:artist("taylor swift")))[1];
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: sort(release_date desc of @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, "spotify:artist:06HL4z0CvFAxyc27GXpf02"^^org.thingpedia.media-source:artist("Taylor Swift")))[1]
+C: #[results=[
+C:   { id="spotify:track:77sMIMlNaSURUAXq5coCxE"^^org.thingpedia.media-source:song("Fearless (Taylor’s Version)"), artists=["spotify:artist:06HL4z0CvFAxyc27GXpf02"^^org.thingpedia.media-source:artist("Taylor Swift")], album="spotify:album:4hDok0OAJd57SGIT8xuWJH"^^org.thingpedia.media-source:album("Fearless (Taylor's Version)"), genres=["pop", "post-teen pop"], release_date=new Date("2021-04-09T00:00:00.000Z"), popularity=69, energy=74.1, danceability=56.89999999999999, __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: The answer is Fearless (Taylor’s Version). It is a song in the album Fearless (Taylor's Version) by Taylor Swift.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: what's the most popular song by taylor swift
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(popularity desc of @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, null^^org.thingpedia.media-source:artist("taylor swift")))[1];
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: sort(release_date desc of @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, "spotify:artist:06HL4z0CvFAxyc27GXpf02"^^org.thingpedia.media-source:artist("Taylor Swift")))[1]
+C: #[results=[
+C:   { id="spotify:track:77sMIMlNaSURUAXq5coCxE"^^org.thingpedia.media-source:song("Fearless (Taylor’s Version)"), artists=["spotify:artist:06HL4z0CvFAxyc27GXpf02"^^org.thingpedia.media-source:artist("Taylor Swift")], album="spotify:album:4hDok0OAJd57SGIT8xuWJH"^^org.thingpedia.media-source:album("Fearless (Taylor's Version)"), genres=["pop", "post-teen pop"], release_date=new Date("2021-04-09T00:00:00.000Z"), popularity=69, energy=74.1, danceability=56.89999999999999, __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: sort(popularity desc of @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, "spotify:artist:06HL4z0CvFAxyc27GXpf02"^^org.thingpedia.media-source:artist("Taylor Swift")))[1]
+C: #[results=[
+C:   { id="spotify:track:0lx2cLdOt3piJbcaXIV74f"^^org.thingpedia.media-source:song("willow"), artists=["spotify:artist:06HL4z0CvFAxyc27GXpf02"^^org.thingpedia.media-source:artist("Taylor Swift")], album="spotify:album:2Xoteh7uEpea4TohMxjtaq"^^org.thingpedia.media-source:album("evermore"), genres=["pop", "post-teen pop"], release_date=new Date("2020-12-11T00:00:00.000Z"), popularity=79, energy=57.4, danceability=39.2, __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: The answer is willow. It is a song by Taylor Swift in the album evermore.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: play it
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable="spotify:track:0lx2cLdOt3piJbcaXIV74f"^^org.thingpedia.media-source:song("willow"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: sort(release_date desc of @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, "spotify:artist:06HL4z0CvFAxyc27GXpf02"^^org.thingpedia.media-source:artist("Taylor Swift")))[1]
+C: #[results=[
+C:   { id="spotify:track:77sMIMlNaSURUAXq5coCxE"^^org.thingpedia.media-source:song("Fearless (Taylor’s Version)"), artists=["spotify:artist:06HL4z0CvFAxyc27GXpf02"^^org.thingpedia.media-source:artist("Taylor Swift")], album="spotify:album:4hDok0OAJd57SGIT8xuWJH"^^org.thingpedia.media-source:album("Fearless (Taylor's Version)"), genres=["pop", "post-teen pop"], release_date=new Date("2021-04-09T00:00:00.000Z"), popularity=69, energy=74.1, danceability=56.89999999999999, __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: sort(popularity desc of @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, "spotify:artist:06HL4z0CvFAxyc27GXpf02"^^org.thingpedia.media-source:artist("Taylor Swift")))[1]
+C: #[results=[
+C:   { id="spotify:track:0lx2cLdOt3piJbcaXIV74f"^^org.thingpedia.media-source:song("willow"), artists=["spotify:artist:06HL4z0CvFAxyc27GXpf02"^^org.thingpedia.media-source:artist("Taylor Swift")], album="spotify:album:2Xoteh7uEpea4TohMxjtaq"^^org.thingpedia.media-source:album("evermore"), genres=["pop", "post-teen pop"], release_date=new Date("2020-12-11T00:00:00.000Z"), popularity=79, energy=57.4, danceability=39.2, __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable="spotify:track:0lx2cLdOt3piJbcaXIV74f"^^org.thingpedia.media-source:song("willow"))
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:0lx2cLdOt3piJbcaXIV74f"^^org.thingpedia.media-source:playable("willow"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: I played a song for you.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: cancel
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# recording/eba6c54bc9719dbe4dde18752529b6fe
+U: play eminem
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("eminem")) => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:7dGJo4pcD2V6oG8kP0tJRR"^^org.thingpedia.media-source:artist("Eminem")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:7FIWs0pqAYbP91WWM0vlTQ"^^org.thingpedia.media-source:playable("Godzilla (feat. Juice WRLD)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:4xkOaSrkexMciUUogZKVTS"^^org.thingpedia.media-source:playable("'Till I Collapse"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3yfqSUWxFvZELEM4PmlwIR"^^org.thingpedia.media-source:playable("The Real Slim Shady"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:7lQ8MOhq6IN2w8EYcFNSUk"^^org.thingpedia.media-source:playable("Without Me"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:15JINEqzVMv3SvJTAXAKED"^^org.thingpedia.media-source:playable("Love The Way You Lie"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:7zl7kehxesNEo2pYkKXTSe"^^org.thingpedia.media-source:playable("Killer (feat. Jack Harlow & Cordae) - Remix"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:5Z01UMMf7V1o0MzF86s6WJ"^^org.thingpedia.media-source:playable("Lose Yourself - From \"8 Mile\" Soundtrack"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:2SL6oP2YAEQbqsrkOzRGO4"^^org.thingpedia.media-source:playable("Venom - Music From The Motion Picture"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3UmaczJpikHgJFyBTAJVoz"^^org.thingpedia.media-source:playable("Stan"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:7Ie9W94M7OjPoZVV216Xus"^^org.thingpedia.media-source:playable("Not Afraid"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=48];
+A: I played music by Eminem on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: next song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player.player_next();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:7dGJo4pcD2V6oG8kP0tJRR"^^org.thingpedia.media-source:artist("Eminem")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:7FIWs0pqAYbP91WWM0vlTQ"^^org.thingpedia.media-source:playable("Godzilla (feat. Juice WRLD)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:4xkOaSrkexMciUUogZKVTS"^^org.thingpedia.media-source:playable("'Till I Collapse"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3yfqSUWxFvZELEM4PmlwIR"^^org.thingpedia.media-source:playable("The Real Slim Shady"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:7lQ8MOhq6IN2w8EYcFNSUk"^^org.thingpedia.media-source:playable("Without Me"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:15JINEqzVMv3SvJTAXAKED"^^org.thingpedia.media-source:playable("Love The Way You Lie"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:7zl7kehxesNEo2pYkKXTSe"^^org.thingpedia.media-source:playable("Killer (feat. Jack Harlow & Cordae) - Remix"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:5Z01UMMf7V1o0MzF86s6WJ"^^org.thingpedia.media-source:playable("Lose Yourself - From \"8 Mile\" Soundtrack"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:2SL6oP2YAEQbqsrkOzRGO4"^^org.thingpedia.media-source:playable("Venom - Music From The Motion Picture"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3UmaczJpikHgJFyBTAJVoz"^^org.thingpedia.media-source:playable("Stan"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:7Ie9W94M7OjPoZVV216Xus"^^org.thingpedia.media-source:playable("Not Afraid"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=48];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next()
+C: #[results=[
+C:   { __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: I played the next song for you.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: cancel
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# recording/6b538300572f8f940f959effd100f734
+U: what can you do
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help)
+C: #[results=[
+C:   { reply="I'm a new virtual assistant. At the moment, I can help you with music, jokes, and managing some IoT devices.", question=enum general_help }
+C: ]];
+A: I'm a new virtual assistant. At the moment, I can help you with music, jokes, and managing some IoT devices.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: tell me a joke
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.icanhazdadjoke.get();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help)
+C: #[results=[
+C:   { reply="I'm a new virtual assistant. At the moment, I can help you with music, jokes, and managing some IoT devices.", question=enum general_help }
+C: ]];
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="obhFBljb2g"^^com.icanhazdadjoke:id, text="I adopted my dog from a blacksmith. As soon as we got home he made a bolt for the door." }
+C: ]];
+A: I adopted my dog from a blacksmith. As soon as we got home he made a bolt for the door.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: anoter one
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.icanhazdadjoke.get();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help)
+C: #[results=[
+C:   { reply="I'm a new virtual assistant. At the moment, I can help you with music, jokes, and managing some IoT devices.", question=enum general_help }
+C: ]];
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="obhFBljb2g"^^com.icanhazdadjoke:id, text="I adopted my dog from a blacksmith. As soon as we got home he made a bolt for the door." }
+C: ]];
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="o4MexXSClb"^^com.icanhazdadjoke:id, text="What did the judge say to the dentist? Do you swear to pull the tooth, the whole tooth and nothing but the tooth?" }
+C: ]];
+A: What did the judge say to the dentist? Do you swear to pull the tooth, the whole tooth and nothing but the tooth?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: what can you do
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help)
+C: #[results=[
+C:   { reply="I'm a new virtual assistant. At the moment, I can help you with music, jokes, and managing some IoT devices.", question=enum general_help }
+C: ]];
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="obhFBljb2g"^^com.icanhazdadjoke:id, text="I adopted my dog from a blacksmith. As soon as we got home he made a bolt for the door." }
+C: ]];
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="o4MexXSClb"^^com.icanhazdadjoke:id, text="What did the judge say to the dentist? Do you swear to pull the tooth, the whole tooth and nothing but the tooth?" }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help)
+C: #[results=[
+C:   { reply="I'm a new virtual assistant. At the moment, I can help you with music, jokes, and managing some IoT devices.", question=enum general_help }
+C: ]];
+A: I'm a new virtual assistant. At the moment, I can help you with music, jokes, and managing some IoT devices.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: help me
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help)
+C: #[results=[
+C:   { reply="I'm a new virtual assistant. At the moment, I can help you with music, jokes, and managing some IoT devices.", question=enum general_help }
+C: ]];
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="obhFBljb2g"^^com.icanhazdadjoke:id, text="I adopted my dog from a blacksmith. As soon as we got home he made a bolt for the door." }
+C: ]];
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="o4MexXSClb"^^com.icanhazdadjoke:id, text="What did the judge say to the dentist? Do you swear to pull the tooth, the whole tooth and nothing but the tooth?" }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help)
+C: #[results=[
+C:   { reply="I'm a new virtual assistant. At the moment, I can help you with music, jokes, and managing some IoT devices.", question=enum general_help }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help)
+C: #[results=[
+C:   { reply="I'm a new virtual assistant. At the moment, I can help you with music, jokes, and managing some IoT devices.", question=enum general_help }
+C: ]];
+A: I'm a new virtual assistant. At the moment, I can help you with music, jokes, and managing some IoT devices.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: what's the latest song by taylor swift
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(release_date desc of @org.thingpedia.media-source.song() filter contains(artists, null^^org.thingpedia.media-source:artist("taylor swift")))[1];
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help)
+C: #[results=[
+C:   { reply="I'm a new virtual assistant. At the moment, I can help you with music, jokes, and managing some IoT devices.", question=enum general_help }
+C: ]];
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="obhFBljb2g"^^com.icanhazdadjoke:id, text="I adopted my dog from a blacksmith. As soon as we got home he made a bolt for the door." }
+C: ]];
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="o4MexXSClb"^^com.icanhazdadjoke:id, text="What did the judge say to the dentist? Do you swear to pull the tooth, the whole tooth and nothing but the tooth?" }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help)
+C: #[results=[
+C:   { reply="I'm a new virtual assistant. At the moment, I can help you with music, jokes, and managing some IoT devices.", question=enum general_help }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help)
+C: #[results=[
+C:   { reply="I'm a new virtual assistant. At the moment, I can help you with music, jokes, and managing some IoT devices.", question=enum general_help }
+C: ]];
+C: sort(release_date desc of @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, "spotify:artist:06HL4z0CvFAxyc27GXpf02"^^org.thingpedia.media-source:artist("Taylor Swift")))[1]
+C: #[results=[
+C:   { id="spotify:track:77sMIMlNaSURUAXq5coCxE"^^org.thingpedia.media-source:song("Fearless (Taylor’s Version)"), artists=["spotify:artist:06HL4z0CvFAxyc27GXpf02"^^org.thingpedia.media-source:artist("Taylor Swift")], album="spotify:album:4hDok0OAJd57SGIT8xuWJH"^^org.thingpedia.media-source:album("Fearless (Taylor's Version)"), genres=["pop", "post-teen pop"], release_date=new Date("2021-04-09T00:00:00.000Z"), popularity=70, energy=74.1, danceability=56.89999999999999, __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: The song with the highest date is Fearless (Taylor’s Version). It is a song in the album Fearless (Taylor's Version) by Taylor Swift.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: how about by eminem
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(release_date desc of @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, null^^org.thingpedia.media-source:artist("eminem")))[1];
+====
+# recording/f0ba89cf5f4893ff17903e7f3369ca45
+U: play the song megalovania
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.song() filter id =~ "megalovania" => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter id =~ "megalovania")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:1J03Vp93ybKIxfzYI4YJtL"^^org.thingpedia.media-source:playable("MEGALOVANIA"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: I played MEGALOVANIA on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: play music by cascada
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, null^^org.thingpedia.media-source:artist("cascada")) => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter id =~ "megalovania")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:1J03Vp93ybKIxfzYI4YJtL"^^org.thingpedia.media-source:playable("MEGALOVANIA"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:0N0d3kjwdY2h7UVuTdJGfp"^^org.thingpedia.media-source:artist("Cascada")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:5YJtMNWKe55yr49cyJgxva"^^org.thingpedia.media-source:playable("Everytime We Touch"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:360ZhWvMnyXKYFG9Mqsm89"^^org.thingpedia.media-source:playable("Evacuate The Dancefloor - Radio Edit"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:1p5jgCAGFDBIBs6ZbWIMvA"^^org.thingpedia.media-source:playable("Bad Boy"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:2rVa6UVT2f95l3bGcMGCWQ"^^org.thingpedia.media-source:playable("What Hurts The Most"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:26lxGeXwldBZCELoTUp0r6"^^org.thingpedia.media-source:playable("Miracle"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:6VByQDfEa38l0Rpjw7gjDv"^^org.thingpedia.media-source:playable("1 Last Dance - Klaas Remix"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3vH9GgabC2MhLdkYhJqajw"^^org.thingpedia.media-source:playable("Truly Madly Deeply - Radio Edit"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:4Zfq7r0v4FKeoxwhyLYSyb"^^org.thingpedia.media-source:playable("Evacuate the Dancefloor"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:0dLMK9i5dLoYYrGXFdlcT3"^^org.thingpedia.media-source:playable("Because the Night"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:5jgeoj4zIu3haLuQVjBrbi"^^org.thingpedia.media-source:playable("Dangerous - Radio Edit"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=35];
+A: I played music by Cascada on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: go to the next song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player.player_next();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter id =~ "megalovania")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:1J03Vp93ybKIxfzYI4YJtL"^^org.thingpedia.media-source:playable("MEGALOVANIA"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:0N0d3kjwdY2h7UVuTdJGfp"^^org.thingpedia.media-source:artist("Cascada")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:5YJtMNWKe55yr49cyJgxva"^^org.thingpedia.media-source:playable("Everytime We Touch"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:360ZhWvMnyXKYFG9Mqsm89"^^org.thingpedia.media-source:playable("Evacuate The Dancefloor - Radio Edit"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:1p5jgCAGFDBIBs6ZbWIMvA"^^org.thingpedia.media-source:playable("Bad Boy"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:2rVa6UVT2f95l3bGcMGCWQ"^^org.thingpedia.media-source:playable("What Hurts The Most"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:26lxGeXwldBZCELoTUp0r6"^^org.thingpedia.media-source:playable("Miracle"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:6VByQDfEa38l0Rpjw7gjDv"^^org.thingpedia.media-source:playable("1 Last Dance - Klaas Remix"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3vH9GgabC2MhLdkYhJqajw"^^org.thingpedia.media-source:playable("Truly Madly Deeply - Radio Edit"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:4Zfq7r0v4FKeoxwhyLYSyb"^^org.thingpedia.media-source:playable("Evacuate the Dancefloor"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:0dLMK9i5dLoYYrGXFdlcT3"^^org.thingpedia.media-source:playable("Because the Night"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:5jgeoj4zIu3haLuQVjBrbi"^^org.thingpedia.media-source:playable("Dangerous - Radio Edit"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=35];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next()
+C: #[results=[
+C:   { __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: I played the next song for you.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: play the album undertale soundtrack
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).album() filter id =~ "undertale soundtrack" => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter id =~ "megalovania")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:1J03Vp93ybKIxfzYI4YJtL"^^org.thingpedia.media-source:playable("MEGALOVANIA"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:0N0d3kjwdY2h7UVuTdJGfp"^^org.thingpedia.media-source:artist("Cascada")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:5YJtMNWKe55yr49cyJgxva"^^org.thingpedia.media-source:playable("Everytime We Touch"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:360ZhWvMnyXKYFG9Mqsm89"^^org.thingpedia.media-source:playable("Evacuate The Dancefloor - Radio Edit"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:1p5jgCAGFDBIBs6ZbWIMvA"^^org.thingpedia.media-source:playable("Bad Boy"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:2rVa6UVT2f95l3bGcMGCWQ"^^org.thingpedia.media-source:playable("What Hurts The Most"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:26lxGeXwldBZCELoTUp0r6"^^org.thingpedia.media-source:playable("Miracle"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:6VByQDfEa38l0Rpjw7gjDv"^^org.thingpedia.media-source:playable("1 Last Dance - Klaas Remix"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3vH9GgabC2MhLdkYhJqajw"^^org.thingpedia.media-source:playable("Truly Madly Deeply - Radio Edit"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:4Zfq7r0v4FKeoxwhyLYSyb"^^org.thingpedia.media-source:playable("Evacuate the Dancefloor"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:0dLMK9i5dLoYYrGXFdlcT3"^^org.thingpedia.media-source:playable("Because the Night"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:5jgeoj4zIu3haLuQVjBrbi"^^org.thingpedia.media-source:playable("Dangerous - Radio Edit"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=35];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next()
+C: #[results=[
+C:   { __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).album() filter id =~ "undertale soundtrack")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:album:2M2Ae2SvZe3fmzUtlVOV5Z"^^org.thingpedia.media-source:playable("UNDERTALE Soundtrack"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: I played UNDERTALE Soundtrack on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: next song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player.player_next();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter id =~ "megalovania")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:1J03Vp93ybKIxfzYI4YJtL"^^org.thingpedia.media-source:playable("MEGALOVANIA"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:0N0d3kjwdY2h7UVuTdJGfp"^^org.thingpedia.media-source:artist("Cascada")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:5YJtMNWKe55yr49cyJgxva"^^org.thingpedia.media-source:playable("Everytime We Touch"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:360ZhWvMnyXKYFG9Mqsm89"^^org.thingpedia.media-source:playable("Evacuate The Dancefloor - Radio Edit"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:1p5jgCAGFDBIBs6ZbWIMvA"^^org.thingpedia.media-source:playable("Bad Boy"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:2rVa6UVT2f95l3bGcMGCWQ"^^org.thingpedia.media-source:playable("What Hurts The Most"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:26lxGeXwldBZCELoTUp0r6"^^org.thingpedia.media-source:playable("Miracle"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:6VByQDfEa38l0Rpjw7gjDv"^^org.thingpedia.media-source:playable("1 Last Dance - Klaas Remix"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3vH9GgabC2MhLdkYhJqajw"^^org.thingpedia.media-source:playable("Truly Madly Deeply - Radio Edit"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:4Zfq7r0v4FKeoxwhyLYSyb"^^org.thingpedia.media-source:playable("Evacuate the Dancefloor"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:0dLMK9i5dLoYYrGXFdlcT3"^^org.thingpedia.media-source:playable("Because the Night"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:5jgeoj4zIu3haLuQVjBrbi"^^org.thingpedia.media-source:playable("Dangerous - Radio Edit"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=35];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next()
+C: #[results=[
+C:   { __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).album() filter id =~ "undertale soundtrack")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:album:2M2Ae2SvZe3fmzUtlVOV5Z"^^org.thingpedia.media-source:playable("UNDERTALE Soundtrack"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next()
+C: #[results=[
+C:   { __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: I played the next song for you.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: set this song to repeat
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player.player_repeat(repeat=enum track);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter id =~ "megalovania")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:1J03Vp93ybKIxfzYI4YJtL"^^org.thingpedia.media-source:playable("MEGALOVANIA"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:0N0d3kjwdY2h7UVuTdJGfp"^^org.thingpedia.media-source:artist("Cascada")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:5YJtMNWKe55yr49cyJgxva"^^org.thingpedia.media-source:playable("Everytime We Touch"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:360ZhWvMnyXKYFG9Mqsm89"^^org.thingpedia.media-source:playable("Evacuate The Dancefloor - Radio Edit"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:1p5jgCAGFDBIBs6ZbWIMvA"^^org.thingpedia.media-source:playable("Bad Boy"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:2rVa6UVT2f95l3bGcMGCWQ"^^org.thingpedia.media-source:playable("What Hurts The Most"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:26lxGeXwldBZCELoTUp0r6"^^org.thingpedia.media-source:playable("Miracle"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:6VByQDfEa38l0Rpjw7gjDv"^^org.thingpedia.media-source:playable("1 Last Dance - Klaas Remix"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3vH9GgabC2MhLdkYhJqajw"^^org.thingpedia.media-source:playable("Truly Madly Deeply - Radio Edit"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:4Zfq7r0v4FKeoxwhyLYSyb"^^org.thingpedia.media-source:playable("Evacuate the Dancefloor"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:0dLMK9i5dLoYYrGXFdlcT3"^^org.thingpedia.media-source:playable("Because the Night"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:5jgeoj4zIu3haLuQVjBrbi"^^org.thingpedia.media-source:playable("Dangerous - Radio Edit"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=35];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next()
+C: #[results=[
+C:   { __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).album() filter id =~ "undertale soundtrack")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:album:2M2Ae2SvZe3fmzUtlVOV5Z"^^org.thingpedia.media-source:playable("UNDERTALE Soundtrack"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next()
+C: #[results=[
+C:   { __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_repeat(repeat=enum track)
+C: #[results=[
+C:   { repeat=enum track, __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: I set the repeat state for you to track.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: do not repeat
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player.player_repeat(repeat=enum off);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter id =~ "megalovania")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:1J03Vp93ybKIxfzYI4YJtL"^^org.thingpedia.media-source:playable("MEGALOVANIA"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:0N0d3kjwdY2h7UVuTdJGfp"^^org.thingpedia.media-source:artist("Cascada")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:5YJtMNWKe55yr49cyJgxva"^^org.thingpedia.media-source:playable("Everytime We Touch"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:360ZhWvMnyXKYFG9Mqsm89"^^org.thingpedia.media-source:playable("Evacuate The Dancefloor - Radio Edit"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:1p5jgCAGFDBIBs6ZbWIMvA"^^org.thingpedia.media-source:playable("Bad Boy"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:2rVa6UVT2f95l3bGcMGCWQ"^^org.thingpedia.media-source:playable("What Hurts The Most"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:26lxGeXwldBZCELoTUp0r6"^^org.thingpedia.media-source:playable("Miracle"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:6VByQDfEa38l0Rpjw7gjDv"^^org.thingpedia.media-source:playable("1 Last Dance - Klaas Remix"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3vH9GgabC2MhLdkYhJqajw"^^org.thingpedia.media-source:playable("Truly Madly Deeply - Radio Edit"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:4Zfq7r0v4FKeoxwhyLYSyb"^^org.thingpedia.media-source:playable("Evacuate the Dancefloor"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:0dLMK9i5dLoYYrGXFdlcT3"^^org.thingpedia.media-source:playable("Because the Night"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:5jgeoj4zIu3haLuQVjBrbi"^^org.thingpedia.media-source:playable("Dangerous - Radio Edit"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=35];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next()
+C: #[results=[
+C:   { __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).album() filter id =~ "undertale soundtrack")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:album:2M2Ae2SvZe3fmzUtlVOV5Z"^^org.thingpedia.media-source:playable("UNDERTALE Soundtrack"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next()
+C: #[results=[
+C:   { __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_repeat(repeat=enum track)
+C: #[results=[
+C:   { repeat=enum track, __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_repeat(repeat=enum off)
+C: #[results=[
+C:   { repeat=enum off, __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: I set the repeat state for you to off.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: next song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player.player_next();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter id =~ "megalovania")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:1J03Vp93ybKIxfzYI4YJtL"^^org.thingpedia.media-source:playable("MEGALOVANIA"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:0N0d3kjwdY2h7UVuTdJGfp"^^org.thingpedia.media-source:artist("Cascada")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:5YJtMNWKe55yr49cyJgxva"^^org.thingpedia.media-source:playable("Everytime We Touch"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:360ZhWvMnyXKYFG9Mqsm89"^^org.thingpedia.media-source:playable("Evacuate The Dancefloor - Radio Edit"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:1p5jgCAGFDBIBs6ZbWIMvA"^^org.thingpedia.media-source:playable("Bad Boy"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:2rVa6UVT2f95l3bGcMGCWQ"^^org.thingpedia.media-source:playable("What Hurts The Most"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:26lxGeXwldBZCELoTUp0r6"^^org.thingpedia.media-source:playable("Miracle"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:6VByQDfEa38l0Rpjw7gjDv"^^org.thingpedia.media-source:playable("1 Last Dance - Klaas Remix"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3vH9GgabC2MhLdkYhJqajw"^^org.thingpedia.media-source:playable("Truly Madly Deeply - Radio Edit"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:4Zfq7r0v4FKeoxwhyLYSyb"^^org.thingpedia.media-source:playable("Evacuate the Dancefloor"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:0dLMK9i5dLoYYrGXFdlcT3"^^org.thingpedia.media-source:playable("Because the Night"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:5jgeoj4zIu3haLuQVjBrbi"^^org.thingpedia.media-source:playable("Dangerous - Radio Edit"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=35];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next()
+C: #[results=[
+C:   { __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).album() filter id =~ "undertale soundtrack")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:album:2M2Ae2SvZe3fmzUtlVOV5Z"^^org.thingpedia.media-source:playable("UNDERTALE Soundtrack"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next()
+C: #[results=[
+C:   { __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_repeat(repeat=enum track)
+C: #[results=[
+C:   { repeat=enum track, __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_repeat(repeat=enum off)
+C: #[results=[
+C:   { repeat=enum off, __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next()
+C: #[results=[
+C:   { __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: I played the next song for you.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: cancel
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# recording/f1dec4a73b5f6a455a0264af5f7f831a
+U: tell me about the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.426540700000004, -122.17029258409187, "Stanford, Palo Alto"))
+C: #[results=[
+C:   { temperature=25.9C, wind_speed=3.8mps, humidity=36.3, cloudiness=0, fog=0, status=enum sunny, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=1;content_type=image/png"^^tt:picture, location=new Location(37.426540700000004, -122.17029258409187, "Stanford, Palo Alto") }
+C: ]];
+A: It is sunny today in Stanford, Palo Alto and the temperature is 78.6 F.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: what is that in celsius?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.set_temperature_unit(unit=enum celsius);
+UT: [temperature] of @org.thingpedia.weather.current(location=new Location(37.426540700000004, -122.17029258409187, "Stanford, Palo Alto"));
+====
+# recording/cfd8c0f0a3ee931d7fd8faaa99cc810b
+U: play stone roses
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("stone roses")) => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:1lYT0A0LV5DUfxr6doRP3d"^^org.thingpedia.media-source:artist("The Stone Roses")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { playable="spotify:track:758wEKVqfYopJIHYWdLVd4"^^org.thingpedia.media-source:playable("I Wanna Be Adored - Remastered"), __device="XXXXXXXX"^^tt:device_id },
+C:   { playable="spotify:track:6JvEXmRh3l2acBzvqavgT9"^^org.thingpedia.media-source:playable("Love Spreads"), __device="XXXXXXXX"^^tt:device_id },
+C:   { playable="spotify:track:3clIHVzJ9J2rvvrFUKLICo"^^org.thingpedia.media-source:playable("She Bangs the Drums - Remastered"), __device="XXXXXXXX"^^tt:device_id },
+C:   { playable="spotify:track:2mv6GY70UsHiTCGQZ4JfgC"^^org.thingpedia.media-source:playable("Fools Gold - Remastered"), __device="XXXXXXXX"^^tt:device_id },
+C:   { playable="spotify:track:4CWgqHRJjDLd2PCedMz8eY"^^org.thingpedia.media-source:playable("Waterfall - Remastered"), __device="XXXXXXXX"^^tt:device_id },
+C:   { playable="spotify:track:0bZelokqNQicLQfLU1Ayw8"^^org.thingpedia.media-source:playable("Made of Stone - Remastered"), __device="XXXXXXXX"^^tt:device_id },
+C:   { playable="spotify:track:5ikdUUm6JbnEVnp35c7dvy"^^org.thingpedia.media-source:playable("I Am the Resurrection - Remastered"), __device="XXXXXXXX"^^tt:device_id },
+C:   { playable="spotify:track:2erQ477GekpdP5l3xp5adl"^^org.thingpedia.media-source:playable("Shoot You Down - Remastered"), __device="XXXXXXXX"^^tt:device_id },
+C:   { playable="spotify:track:433EQGQOsQjWvD5eImXkHf"^^org.thingpedia.media-source:playable("This Is the 1 - Remastered"), __device="XXXXXXXX"^^tt:device_id },
+C:   { playable="spotify:track:6sDSDCrz36fF78hfwvAEmq"^^org.thingpedia.media-source:playable("Sally Cinnamon - Single Mix"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=37];
+A: I played music by The Stone Roses on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: like song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).song() => @com.spotify.add_item_to_library(playable=id);
+====
+# recording/0bb94bf160fe9e94907ac795763becc2
+U: stop music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player.player_pause();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_pause()
+C: #[results=[]]
+C: #[error=enum disallowed_action];
+A: Sorry, music is already paused.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
+U: play my favorites
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.get_song_from_library() => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id);
+====
+# recording/3fdf70c6361b1c4cfbbcdfe90cd9cef8
+U: pause
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player.player_pause();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_pause()
+C: #[results=[
+C:   { __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: I stopped playing.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: play
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() => @org.thingpedia.media-player(id="XXXXXXXX"^^tt:device_id).play(playable=id);
+====
+# recording/6b180527e095b882787087118589990d
+U: add currently playing to playlist gizmo
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.get_currently_playing() => @com.spotify.add_song_to_playlist(playlist="gizmo", song=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).get_currently_playing() => @com.spotify(id="com.spotify-XXXXXXXX"^^tt:device_id).add_song_to_playlist(playlist="gizmo", song=id)
+C: #[results=[]]
+C: #[error=enum no_song_playing];
+A: Did you mean get the currently playing track and then add the id to gizmo?
+A: Sorry, there was an unexpected error with your command. Please try again later or report this issue to my developers.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
+U: cancel
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# recording/00ba786bdfcf33480d0eced0324c5094
+U: pause music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player.player_pause();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_pause()
+C: #[results=[
+C:   { __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: I paused playback.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: play playlist z
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playlist() filter id =~ "z" => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_pause()
+C: #[results=[
+C:   { __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playlist() filter id =~ "z")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { playable="spotify:playlist:1W0WZRjzyIldfCfVxJYB9o"^^org.thingpedia.media-source:playable("Z"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: I played Z on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: next song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player.player_next();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_pause()
+C: #[results=[
+C:   { __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playlist() filter id =~ "z")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { playable="spotify:playlist:1W0WZRjzyIldfCfVxJYB9o"^^org.thingpedia.media-source:playable("Z"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next()
+C: #[results=[
+C:   { __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: I played the next song.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: play madonna
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, null^^org.thingpedia.media-source:artist("madonna")) => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_pause()
+C: #[results=[
+C:   { __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playlist() filter id =~ "z")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { playable="spotify:playlist:1W0WZRjzyIldfCfVxJYB9o"^^org.thingpedia.media-source:playable("Z"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next()
+C: #[results=[
+C:   { __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:6tbjWDEIzxoDsBA1FuhfPW"^^org.thingpedia.media-source:artist("Madonna")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { playable="spotify:track:22sLuJYcvZOSoLLRYev1s5"^^org.thingpedia.media-source:playable("Material Girl"), __device="XXXXXXXX"^^tt:device_id },
+C:   { playable="spotify:track:1z3ugFmUKoCzGsI6jdY4Ci"^^org.thingpedia.media-source:playable("Like 1 Prayer"), __device="XXXXXXXX"^^tt:device_id },
+C:   { playable="spotify:track:3850dYVgOFIXJh5U4BFEWH"^^org.thingpedia.media-source:playable("Hung Up"), __device="XXXXXXXX"^^tt:device_id },
+C:   { playable="spotify:track:1ZPlNanZsJSPK5h9YZZFbZ"^^org.thingpedia.media-source:playable("Like 1 Virgin"), __device="XXXXXXXX"^^tt:device_id },
+C:   { playable="spotify:track:1oHClQEgDmmbcEx12Kc5nZ"^^org.thingpedia.media-source:playable("4 Minutes (feat. Justin Timberlake & Timbaland)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { playable="spotify:track:27QvYgBk0CHOVHthWnkuWt"^^org.thingpedia.media-source:playable("Vogue"), __device="XXXXXXXX"^^tt:device_id },
+C:   { playable="spotify:track:2m0M7YqCy4lXfedh18qd8N"^^org.thingpedia.media-source:playable("Into the Groove"), __device="XXXXXXXX"^^tt:device_id },
+C:   { playable="spotify:track:6r8k1vznHrzlEKYxL4dZEe"^^org.thingpedia.media-source:playable("La Isla Bonita"), __device="XXXXXXXX"^^tt:device_id },
+C:   { playable="spotify:track:3ibAzRj9JnowdoLkyllk3n"^^org.thingpedia.media-source:playable("Holiday"), __device="XXXXXXXX"^^tt:device_id },
+C:   { playable="spotify:track:6A8OnjnpShshNpcqWtZRjr"^^org.thingpedia.media-source:playable("Papa Don't Preach"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=35];
+A: I played music by Madonna on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: play revolver
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter id =~ "revolver" => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id);
+====
+# recording/b560497a73f4d7e457ef3bb95d4f5eba
+U: play podcast
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.show() => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/f02e2c91be77719d6a3038516ebb8302
+U: add this song to my library
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.get_currently_playing() => @com.spotify.add_item_to_library(playable=id);
+====
+# recording/64f83ab4118f94e1f866f6d57bc5fa01
+U: play artist metallica
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("metallica")) => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/2015a516647c7bb9015bb2d5ac28c711
+U: play music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() => @org.thingpedia.media-player.play(playable=id);
