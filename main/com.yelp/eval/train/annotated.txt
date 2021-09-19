@@ -1085,3 +1085,13 @@ UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_c
 U: find me a chinese restaurant in palo alto.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese")) && geo == new Location("palo alto");
+====
+# log-dev/12003
+U: find me some good italian restaurants in san francisco.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("italian")) && geo == new Location("san francisco");
+====
+# log-dev/11983
+U: find me a chinese restaurant.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese"));

@@ -2414,3 +2414,23 @@ UT: sort(rating desc of @com.yelp.restaurant() filter contains(cuisines, null^^c
 U: best chinese restaurant
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: sort(rating desc of @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese")))[1];
+====
+# log-dev/12079
+U: find me some good mexican restaurants in redwood city.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("mexican")) && geo == new Location("redwood city");
+====
+# log-dev/11985
+U: find me some good mexican restaurants in santa cruz, ca.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("mexican")) && geo == new Location("santa cruz , ca");
+====
+# log-dev/11984
+U: find me some good mexican restaurants in santa cruz.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("mexican")) && geo == new Location("santa cruz");
+====
+# log-dev/11910
+U: find me some restaurants that are pretty good in los gatos.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("los gatos");

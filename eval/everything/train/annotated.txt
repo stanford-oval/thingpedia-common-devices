@@ -7572,3 +7572,51 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
 U: play some public enemy.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("public enemy")) => @org.thingpedia.media-player.play(playable=id);
+====
+# log-dev/12070
+U: play npr podcast. let me know.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.show() filter id =~ "npr" => @org.thingpedia.media-player.play(playable=id);
+====
+# log-dev/12054
+U: how do i get play podcast?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.show() => @org.thingpedia.media-player.play(playable=id);
+====
+# log-dev/12051
+U: play that joe rogan podcast.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.show() filter id =~ "joe rogan" => @org.thingpedia.media-player.play(playable=id);
+====
+# log-dev/12031
+U: still there.
+UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
+====
+# log-dev/12029
+U: stop. computer.
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# log-dev/12017
+U: play podcast arm chair.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.show() filter id =~ "arm chair" => @org.thingpedia.media-player.play(playable=id);
+====
+# log-dev/12015
+U: play a podcast.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.show() => @org.thingpedia.media-player.play(playable=id);
+====
+# log-dev/11950
+U: put on a podcast.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.show() => @org.thingpedia.media-player.play(playable=id);
+====
+# log-dev/11935
+U: play music.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() => @org.thingpedia.media-player.play(playable=id);
+====
+# log-dev/11932
+U: play some disco.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains~(genres, "disco") => @org.thingpedia.media-player.play(playable=id);

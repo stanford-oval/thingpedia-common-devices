@@ -2191,3 +2191,28 @@ UT: @org.thingpedia.builtin.thingengine.builtin.get_time();
 U: enable voice output
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.builtin.thingengine.builtin.set_voice_output(status=enum on);
+====
+# log-dev/12421
+U: set an alarm for 0:15
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[set_time($now, new Time(0, 15))]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+====
+# log-dev/12000
+U: set my location to palo alto.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.set_location(location=new Location("palo alto"));
+====
+# log-dev/11919
+U: set my location to palo alto, ca.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.set_location(location=new Location("palo alto , ca"));
+====
+# log-dev/11911
+U: shut the * * * * * *.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum abusive);
+====
+# log-dev/11841
+U: why do you suck so many * * * * *?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum abusive);
