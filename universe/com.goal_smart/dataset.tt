@@ -33,28 +33,81 @@
 dataset @com.goal_smart language "en" {
  
     query (p_league_id : Entity(com.goal_smart:soccer_league))  := @com.goal_smart.standings(league_id=p_league_id)
-    #_[utterances=["standings of $p_league_id", "$p_league_id's standings","$p_league_id's table"]];
+    #_[utterances=["standings of $p_league_id", "$p_league_id standings", "$p_league_id's standings", 
+    "table of $p_league_id", "$p_league_id table", "$p_league_id's table", 
+    "rankings of $p_league_id", "$p_league_id rankings", "$p_league_id's rankings"];
  
     query (p_team_id : Entity(com.goal_smart:soccer_team))  := @com.goal_smart.fixtures(team_id=p_team_id)
-    #_[utterances=["fixtures of $p_team_id", "$p_team_id's upcoming fixtures","$p_team_id's matches", "$p_team_id's fixtures", "matches of $p_team_id"]];
+    #_[utterances=["fixtures of $p_team_id", "$p_team_id's upcoming fixtures","$p_team_id's fixtures", "$p_team_id fixtures", "upcoming fixtures of $p_team_id", "upcoming $p_team_id fixtures",
+    "matches of $p_team_id", "$p_team_id's upcoming matches", "$p_team_id's matches", "$p_team_id matches", "upcoming matches of $p_team_id", "upcoming $matches fixtures",
+    "games of $p_team_id", "$p_team_id's upcoming games", "$p_team_id's games", "$p_team_id games", "upcoming games of $p_team_id", "upcoming $matches games"]];
  
     query (p_league_id : Entity(com.goal_smart:soccer_league))  := @com.goal_smart.player(league_id=p_league_id)
-    #_[utterances=["players of $p_league_id", "$p_league_id's players","$p_league_id's individuals"]];
+    #_[utterances=["players of $p_league_id", "$p_league_id's players", "$p_league_id players", "$p_league_id players", "players in $p_league_id",
+    "top scorers of $p_league_id", "$p_league_id's top scorers","$p_league_id's scorers", "$p_league_id top scorers", "$p_league_id scorers", "scorers of $p_league_id",
+    "top scorers in $p_league_id", "scorers in $p_league_id",
+    "top goals of $p_league_id", "$p_league_id's top goals","$p_league_id's goals", "$p_league_id top goals", "$p_league_id goals", "goals of $p_league_id",
+    "top goals in $p_league_id", "goals in $p_league_id",
+    "top assisters of $p_league_id", "$p_league_id's top assisters","$p_league_id's assisters", "$p_league_id top assisters", "$p_league_id assisters", "assisters of $p_league_id",
+    "top assisters in $p_league_id", "assisters in $p_league_id",
+    "top assists of $p_league_id", "$p_league_id's top assists","$p_league_id's assists", "$p_league_id top assists", "$p_league_id assists", "assists of $p_league_id",
+    "top assists in $p_league_id", "assists in $p_league_id",
+    "top red cards of $p_league_id", "$p_league_id's top red cards","$p_league_id's red cards", "$p_league_id top red cards", "$p_league_id red cards", "red cards of $p_league_id",
+    "top red cards in $p_league_id", "red cards in $p_league_id",
+    "top yellow cards of $p_league_id", "$p_league_id's top yellow cards","$p_league_id's yellow cards", "$p_league_id top yellow cards", "$p_league_id yellow cards", "yellow cards of $p_league_id",
+    "top yellow cards in $p_league_id", "yellow cards in $p_league_id",
+    "top appearances of $p_league_id", "$p_league_id's top appearances","$p_league_id's appearances", "$p_league_id top appearances", "$p_league_id appearances", "appearances of $p_league_id",
+    "top appearances in $p_league_id", "appearances in $p_league_id",
+    "top minutes of $p_league_id", "$p_league_id's top minutes","$p_league_id's minutes", "$p_league_id top minutes", "$p_league_id minutes", "minutes of $p_league_id",
+    "top minutes in $p_league_id", "minutes in $p_league_id",
+    "top shots of $p_league_id", "$p_league_id's top shots","$p_league_id's shots", "$p_league_id top shots", "$p_league_id shots", "shots of $p_league_id",
+    "top shots in $p_league_id", "shots in $p_league_id",
+    "top passers of $p_league_id", "$p_league_id's top passers","$p_league_id's passers", "$p_league_id top passers", "$p_league_id passers", "passers of $p_league_id",
+    "top passes of $p_league_id", "$p_league_id's top passes","$p_league_id's passes", "$p_league_id top passes", "$p_league_id passes", "passes of $p_league_id",
+    "top passers in $p_league_id", "passers in $p_league_id",
+    "top key passers of $p_league_id", "$p_league_id's top key passers","$p_league_id's key passers", "$p_league_id top key passers", "$p_league_id key passers", "key passers of $p_league_id",
+    "top key passers in $p_league_id", "key passers in $p_league_id",
+    "top key passes of $p_league_id", "$p_league_id's top key passes","$p_league_id's key passes", "$p_league_id top key passes", "$p_league_id key passes", "key passes of $p_league_id",
+    "top pass accuracy of $p_league_id", "$p_league_id's top pass accuracy","$p_league_id's pass accuracy", "$p_league_id top pass accuracy", "$p_league_id pass accuracy", "pass accuracy of $p_league_id",
+    "top dribblers of $p_league_id", "$p_league_id's top dribblers","$p_league_id's dribblers", "$p_league_id top dribblers", "$p_league_id dribblers", "dribblers of $p_league_id",
+    "top dribblers in $p_league_id", "dribblers in $p_league_id",
+    "top successful dribbles of $p_league_id", "$p_league_id's top successful dribbles","$p_league_id's successful dribbles", "$p_league_id top successful dribbles", "$p_league_id successful dribbles", "successful dribbles of $p_league_id",
+    "top tacklers of $p_league_id", "$p_league_id's top tacklers","$p_league_id's tacklers", "$p_league_id top tacklers", "$p_league_id tacklers", "tacklers of $p_league_id",
+    "top tackles of $p_league_id", "$p_league_id's top tackles","$p_league_id's tackles", "$p_league_id top tackles", "$p_league_id tackles", "tackles of $p_league_id",
+    "top tacklers in $p_league_id", "tacklers in $p_league_id",
+    "top interceptions of $p_league_id", "$p_league_id's top interceptions","$p_league_id's interceptions", "$p_league_id top interceptions", "$p_league_id interceptions", "interceptions of $p_league_id",
+    "top interceptors of $p_league_id", "$p_league_id's top interceptors","$p_league_id's interceptors", "$p_league_id top interceptors", "$p_league_id interceptors", "interceptors of $p_league_id",
+    "top interceptors in $p_league_id", "interceptors in $p_league_id",
+    "top blockers of $p_league_id", "$p_league_id's top blockers","$p_league_id's blockers", "$p_league_id top blockers", "$p_league_id blockers", "blockers of $p_league_id",
+    "top blockers in $p_league_id", "blockers in $p_league_id",
+    "top blocks of $p_league_id", "$p_league_id's top blocks","$p_league_id's blocks", "$p_league_id top blocks", "$p_league_id blocks", "blocks of $p_league_id"]];
  
     query (p_team_id : Entity(com.goal_smart:soccer_team))  := @com.goal_smart.lineup(team_id=p_team_id)
-    #_[utterances=["lineup of $p_team_id", "$p_team_id's lineup","$p_team_id's starters", "$p_team_id's starting lineup"]];
+    #_[utterances=["lineup of $p_team_id", "starting lineup of $p_team_id", "$p_team_id's lineup", "$p_team_id's starting lineup", "$p_team_id starting lineup", "$p_team_id lineup",
+    "starters of $p_team_id", "$p_team_id's starters", "$p_team_id starters",
+    "starting eleven of $p_team_id", "$p_team_id's starting eleven", "$p_team_id starting eleven"]];
 
     query (p_team_id : Entity(com.goal_smart:soccer_team))  := @com.goal_smart.teamCoach(team_id=p_team_id)
-    #_[utterances=["coach of $p_team_id", "$p_team_id manager","$p_team_id instructor"]];
+    #_[utterances=["coach of $p_team_id", "head coach of $p_team_id", "$p_team_id's coach", "$p_team_id coach", "$p_team_id's head coach", "$p_team_id head coach",
+    "manager of $p_team_id", "head manager of $p_team_id", "$p_team_id's manager", "$p_team_id manager", "$p_team_id's head manager", "$p_team_id head manager",
+    "instructor of $p_team_id", "head instructor of $p_team_id", "$p_team_id's instructor", "$p_team_id instructor", "$p_team_id's head instructor", "$p_team_id head instructor"]];
 
     query (p_player_id : Entity(com.goal_smart:soccer_player))  := @com.goal_smart.trophies(player_id=p_player_id)
-    #_[utterances=["championships of $p_player_id", "$p_player_id's trophies","$p_player_id's accolades"]];
+    #_[utterances=["about $p_player_id", "information about $p_player_id", "overview about $p_player_id", 
+    "championships of $p_player_id", "$p_player_id's championships", 
+    "$p_player_id's trophies", "$p_player_id trophies", "trophies of $p_player_id",
+    "$p_player_id's accolades", "$p_player_id accolades", "accolades of $p_player_id"]];
 
     query (p_team_id : Entity(com.goal_smart:soccer_team))  := @com.goal_smart.teamPredictions(team_id=p_team_id)
-    #_[utterances=["predictions of $p_team_id", "$p_team_id's odds","$p_team_id's predictions"]];
+    #_[utterances=["predictions of $p_team_id", "$p_team_id predictions", "$p_team_id predictions", 
+    "odds of $p_team_id", "$p_team_id odds", "$p_team_id odds", 
+    "match predictions of $p_team_id", "$p_team_id match predictions", "$p_team_id match predictions", 
+    "bookies of $p_team_id", "$p_team_id bookies", "$p_team_id bookies", 
+    "projections of $p_team_id", "$p_team_id projections", "$p_team_id projections"]];
 
  
 }
  
  
 
+-
