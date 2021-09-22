@@ -12,7 +12,7 @@ UT: now => @org.thingpedia.iot.tv.set_power(power=enum(on));
 # online/ep88
 U: raise the volume of the tv
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.tv.raise_volume();
+UT: now => @org.thingpedia.volume-control.raise_volume();
 ====
 # online/120671
 U: turn off my tv
@@ -22,12 +22,7 @@ UT: now => @org.thingpedia.iot.tv.set_power(power=enum(off));
 # online/121286
 U: lower volume on my lg tv
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.tv(name="lg").lower_volume();
-====
-# online/1518256
-U: play link str:URL::0: on my lg tv
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.tv(name="lg").play_url(url="str:URL::0:"^^tt:url);
+UT: now => @org.thingpedia.volume-control(name="lg").lower_volume();
 ====
 # log/86143
 U: turn off tv
