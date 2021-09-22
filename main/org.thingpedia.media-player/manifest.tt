@@ -1,7 +1,6 @@
 abstract class @org.thingpedia.media-player
-#_[thingpedia_name="Media Player"]
-#_[thingpedia_description="Interface for Media Player."]
-#_[description="Interface for Media Player."]
+#_[thingpedia_name="Music Player"]
+#_[thingpedia_description="General interface for music players."]
 #[license="BSD-3-Clause"]
 #[license_gplcompatible=true]
 #[subcategory="home"]
@@ -10,17 +9,16 @@ abstract class @org.thingpedia.media-player
     entity device #_[description="Output device ID"];
 
     action player_play()
-    #_[canonical=["resume playing",
-                  "start playing again",
-                  "resume playback",
-                  "continue playback",
-                  "continue playing"]]
-    #_[confirmation="resume playing"]
-    #_[on_error={no_active_device=["you must open the spotify app first", "no spotify player is active"],
-    disallowed_action=["music is already playing"],
-    player_error=["failed to play: try manually resuming"],
-    non_premium_account=["you need a spotify premium account to do this"],
-    rate_limit_error=["spotify is temporarily unavailable"]
+    #_[canonical=["resume the music",
+                  "start playing music again",
+                  "resume music playback",
+                  "continue playing music"]]
+    #_[on_error={
+      no_active_device=["you must open the spotify app first", "no spotify player is active"],
+      disallowed_action=["music is already playing"],
+      player_error=["failed to play: try manually resuming"],
+      non_premium_account=["you need a spotify premium account to do this"],
+      rate_limit_error=["spotify is temporarily unavailable"]
     }]
     #[doc="resume playback"]
     #[confirm=false];
