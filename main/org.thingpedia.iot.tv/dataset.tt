@@ -116,5 +116,13 @@ dataset @org.thingpedia.iot.tv language "en" {
                    "help to off the ${p_name} tv",
                    "shut off my ${p_name} tv"]];
 
-    
+
+    action (p_url :Entity(tt:url)) := @org.thingpedia.iot.tv.play_url(url=p_url)
+    #_[utterances=["play link ${p_url:const} on my tv",
+                   "play ${p_url} on my tv"]];
+
+
+    action (p_name : String, p_url :Entity(tt:url)) := @org.thingpedia.iot.tv(name=p_name).play_url(url=p_url)
+    #_[utterances=["play link ${p_url:const} on my ${p_name} tv",
+                   "play ${p_url} on my ${p_name} tv"]];
 }

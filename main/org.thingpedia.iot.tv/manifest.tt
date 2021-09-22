@@ -1,4 +1,4 @@
-abstract class @org.thingpedia.iot.tv extends @org.thingpedia.volume-control, @org.thingpedia.iot.switch, @org.thingpedia.media-player
+abstract class @org.thingpedia.iot.tv extends @org.thingpedia.volume-control, @org.thingpedia.iot.switch
 #_[thingpedia_name="TV"]
 #_[thingpedia_description="Interface for TV."]
 #_[description="Interface for TV."]
@@ -16,6 +16,12 @@ abstract class @org.thingpedia.iot.tv extends @org.thingpedia.volume-control, @o
   #_[confirmation="turn ${power} $__device"]
   #[confirm=true]
   #[doc="turn on or off the TV"];
+
+  action play_url(in req url: Entity(tt:url) #_[prompt="What video do you want to play? Use the full URL."])
+  #_[canonical="play url on tv"]
+  #_[confirmation="play $url on $__device"]
+  #_[confirmation_remote="play $url on $__person's $__device"]
+  #[doc="start playing a video by URL"];
 
 }
 
