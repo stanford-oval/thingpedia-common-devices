@@ -1207,15 +1207,29 @@ module.exports = class SpotifyDevice extends Tp.BaseDevice {
         };
 
         if (this.engine.audio) {
-            await this.engine.audio.requestAudio(this, async () => {
-                console.log("stopping audio");
-                let pauseURL = PAUSE_URL + querystring.stringify({
-                    device_id: deviceId
-                });
-                try {
-                    await this.http_put_default_options(pauseURL, '');
-                } catch (error) {
-                    console.error(error, error.stack);
+            await this.engine.audio.requestAudio(this, {
+                resume: async() => {
+                    console.log("resuming audio");
+                    let resumeURL = PLAY_URL + querystring.stringify({
+                        device_id: deviceId
+                    });
+                    try {
+                        await this.http_put_default_options(resumeURL, '');
+                    } catch (error) {
+                        console.error(error, error.stack);
+                    }
+                },
+
+                stop: async() => {
+                    console.log("stopping audio");
+                    let pauseURL = PAUSE_URL + querystring.stringify({
+                        device_id: deviceId
+                    });
+                    try {
+                        await this.http_put_default_options(pauseURL, '');
+                    } catch (error) {
+                        console.error(error, error.stack);
+                    }
                 }
             });
         }
