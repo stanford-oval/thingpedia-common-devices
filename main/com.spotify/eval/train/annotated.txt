@@ -227,7 +227,7 @@ UT: (@org.thingpedia.media-source.playable() filter id =~ "bohemian rhapsody") =
 # log/6051
 U: open spotify
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-player.player_play();
+UT: @org.thingpedia.media-source.song() => @org.thingpedia.media-player.play(playable=id);
 ====
 # log/2070
 U: play a song
@@ -349,11 +349,6 @@ U: play some kpop music
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.media-source.playable() filter contains~(genres, "kpop") => @org.thingpedia.media-player.play(playable=id);
 ====
-# log-dev/5522
-U: resume playback
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-player.player_play();
-====
 # log-dev/5276
 U: play the artist beyoncé
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
@@ -430,7 +425,7 @@ UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).song()
 # recording/825b7345ebf5ec71f86bd41d9410a96e
 U: Pause playback.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-player.player_pause();
+UT: @org.thingpedia.builtin.thingengine.builtin.pause();
 ====
 # recording/a94181ab8794282fbf8d25cc555199a7
 U: Play Taylor Swift.
@@ -571,7 +566,7 @@ UT: sort(release_date desc of @org.thingpedia.media-source.song() filter contain
 # recording/482e32815d995c13c22ac7161916b7f0
 U: pause playback
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-player.player_pause();
+UT: @org.thingpedia.builtin.thingengine.builtin.pause();
 ====
 # log-dev/7920
 U: play byron maiden on spotify.
@@ -856,7 +851,7 @@ UT: @org.thingpedia.media-source.playable();
 # log/9782
 U: play spotify random
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-player.player_play();
+UT: @org.thingpedia.media-source.playable() => @org.thingpedia.media-player.play(playable=id);
 ====
 # log/44283
 U: play my playlist billy
@@ -868,47 +863,47 @@ U: put vienna song on my playlist bill
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.media-source.song() filter id =~ "vienna" => @com.spotify.add_song_to_playlist(playlist="bill", song=id);
 ====
-# manual/1
+# manual/269
 U: favorite this
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.media-source.get_currently_playing() => @com.spotify.add_item_to_library(playable=id);
 ====
-# manual/2
+# manual/270
 U: like this
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.media-source.get_currently_playing() => @com.spotify.add_item_to_library(playable=id);
 ====
-# manual/3
+# manual/271
 U: love this
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.media-source.get_currently_playing() => @com.spotify.add_item_to_library(playable=id);
 ====
-# manual/4
+# manual/272
 U: remember this
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.media-source.get_currently_playing() => @com.spotify.add_item_to_library(playable=id);
 ====
-# manual/5
+# manual/273
 U: save this
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.media-source.get_currently_playing() => @com.spotify.add_item_to_library(playable=id);
 ====
-# manual/6
+# manual/274
 U: keep this
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.media-source.get_currently_playing() => @com.spotify.add_item_to_library(playable=id);
 ====
-# manual/7
+# manual/275
 U: I like this
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.media-source.get_currently_playing() => @com.spotify.add_item_to_library(playable=id);
 ====
-# manual/8
+# manual/276
 U: I love this
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.media-source.get_currently_playing() => @com.spotify.add_item_to_library(playable=id);
 ====
-# manual/9
+# manual/277
 U: I like this song
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.media-source.get_currently_playing() => @com.spotify.add_item_to_library(playable=id);

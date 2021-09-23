@@ -771,12 +771,12 @@ UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_
 # online/121537
 U: if the temperature is less than 13 c then set volume on my speaker to 14 %
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: monitor(@org.thingpedia.iot.temperature.temperature()) filter value <= 13C => @org.thingpedia.iot.speaker.set_volume(volume=14);
+UT: monitor(@org.thingpedia.iot.temperature.temperature()) filter value <= 13C => @org.thingpedia.volume-control.set_volume(volume=14);
 ====
 # online/121538
 U: if the thermostat says less than 13 c then set volume on my speaker to 14 %
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: monitor(@org.thingpedia.iot.temperature.temperature()) filter value <= 13C => @org.thingpedia.iot.speaker.set_volume(volume=14);
+UT: monitor(@org.thingpedia.iot.temperature.temperature()) filter value <= 13C => @org.thingpedia.volume-control.set_volume(volume=14);
 ====
 # online/363766
 U: say "str:QUOTED_STRING::0:" when it rains
@@ -2397,19 +2397,19 @@ A: I played Thriller on Spotify.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
 U: pause
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_pause();
+UT: @org.thingpedia.builtin.thingengine.builtin.pause();
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
 C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter id =~ "thriller")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
 C: #[results=[
 C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:7azo4rpSUh8nXgtonC6Pkq"^^org.thingpedia.media-source:playable("Thriller"), __device="XXXXXXXX"^^tt:device_id }
 C: ]];
-C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_pause()
+C: @org.thingpedia.builtin.thingengine.builtin.pause()
 C: #[results=[]];
 A: I paused playback.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
 U: play
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_play();
+UT: @org.thingpedia.builtin.thingengine.builtin.resume();
 ====
 # recording/4bdfb7126d0dae5cf6f66928dadc6a2c
 U: cancel
@@ -2477,7 +2477,7 @@ A: I played music by Travis Scott on Spotify.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
 U: pause
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_pause();
+UT: @org.thingpedia.builtin.thingengine.builtin.pause();
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
 C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
 C: #[results=[
@@ -2507,13 +2507,13 @@ C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s
 C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1wHZx0LgzFHyeIZkUydNXq"^^org.thingpedia.media-source:playable("Antidote"), __device="XXXXXXXX"^^tt:device_id }
 C: ]]
 C: #[count=46];
-C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_pause()
+C: @org.thingpedia.builtin.thingengine.builtin.pause()
 C: #[results=[]];
 A: I paused playback.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
 U: play ravel
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("ravel")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id);
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("ravel")) => @org.thingpedia.media-player.play(playable=id);
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
 C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
 C: #[results=[
@@ -2543,7 +2543,7 @@ C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s
 C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1wHZx0LgzFHyeIZkUydNXq"^^org.thingpedia.media-source:playable("Antidote"), __device="XXXXXXXX"^^tt:device_id }
 C: ]]
 C: #[count=46];
-C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_pause()
+C: @org.thingpedia.builtin.thingengine.builtin.pause()
 C: #[results=[]];
 C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:0CVjzaBJZ4csWIL0kPmzM6"^^org.thingpedia.media-source:artist("Ravell")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
 C: #[results=[
@@ -2589,7 +2589,7 @@ C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s
 C:   { value="2faa93e1b2b45b85b02b90b497d311c37e7659e7", display="Soundworks’s Mac Pro", playable="spotify:track:1wHZx0LgzFHyeIZkUydNXq"^^org.thingpedia.media-source:playable("Antidote"), __device="XXXXXXXX"^^tt:device_id }
 C: ]]
 C: #[count=46];
-C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_pause()
+C: @org.thingpedia.builtin.thingengine.builtin.pause()
 C: #[results=[]];
 C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:0CVjzaBJZ4csWIL0kPmzM6"^^org.thingpedia.media-source:artist("Ravell")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
 C: #[results=[
@@ -3179,17 +3179,17 @@ UT: @org.thingpedia.media-source.get_song_from_library() => @org.thingpedia.medi
 # recording/3fdf70c6361b1c4cfbbcdfe90cd9cef8
 U: pause
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-player.player_pause();
+UT: @org.thingpedia.builtin.thingengine.builtin.pause();
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_pause()
+C: @org.thingpedia.builtin.thingengine.builtin.pause()
 C: #[results=[
-C:   { __device="XXXXXXXX"^^tt:device_id }
+C:   {}
 C: ]];
 A: I stopped playing.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
 U: play
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-source.playable() => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id);
+UT: @org.thingpedia.media-source.playable() => @org.thingpedia.media-player.play(playable=id);
 ====
 # recording/6b180527e095b882787087118589990d
 U: add currently playing to playlist gizmo

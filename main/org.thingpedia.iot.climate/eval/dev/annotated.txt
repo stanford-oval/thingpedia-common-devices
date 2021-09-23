@@ -164,7 +164,7 @@ U: said the hv preset to home.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.set_hvac_preset(preset=enum home);
 ====
-# manual/33
+# manual/53
 U: when the humidity will be higher than 70% start cooling
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: monitor(@org.thingpedia.weather.current()) filter humidity >= 70 => @org.thingpedia.iot.climate.set_hvac_mode(mode=enum cool);
@@ -176,7 +176,7 @@ AT: monitor(@org.thingpedia.weather.current(location=new Location(2, 2, "here"))
 U: no
 UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
 ====
-# manual/34
+# manual/54
 U: when the humidity will be higher than 70% start cooling
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: monitor(@org.thingpedia.iot.climate.current_humidity()) filter value >= 70 => @org.thingpedia.iot.climate.set_hvac_mode(mode=enum cool);
@@ -190,7 +190,7 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: monitor(@org.thingpedia.iot.climate(id="org.thingpedia.iot.climate-XXXXXXXX"^^tt:device_id).current_humidity()) filter value >= 70 => @org.thingpedia.iot.climate(id="org.thingpedia.iot.climate-XXXXXXXX"^^tt:device_id).set_hvac_mode(mode=enum cool)
 UT: #[confirm=enum confirmed];
 ====
-# manual/35
+# manual/55
 U: when the temperature read by thermostat will be more than 90 stop heating
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: monitor(@org.thingpedia.iot.climate.current_temperature()) filter value >= 90defaultTemperature => @org.thingpedia.iot.climate.set_hvac_mode(mode=enum off);
@@ -204,42 +204,42 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: monitor(@org.thingpedia.iot.climate(id="org.thingpedia.iot.climate-XXXXXXXX"^^tt:device_id).current_temperature()) filter value >= 90F => @org.thingpedia.iot.climate(id="org.thingpedia.iot.climate-XXXXXXXX"^^tt:device_id).set_hvac_mode(mode=enum off)
 UT: #[confirm=enum confirmed];
 ====
-# manual/36
+# manual/56
 U: tell me the minimum humidity setpoint
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.min_humidity();
 ====
-# manual/37
+# manual/57
 U: which is the maximum humidity?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.max_humidity();
 ====
-# manual/38
+# manual/58
 U: which is the current hvac fan mode?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.fan_mode();
 ====
-# manual/39
+# manual/59
 U: what's the climate system's fan is currently doing?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.fan_mode();
 ====
-# manual/40
+# manual/60
 U: which is the current hvac fan mode?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.fan_mode();
 ====
-# manual/41
+# manual/61
 U: which fan modes are available for the climate system?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.fan_modes_aval();
 ====
-# manual/42
+# manual/62
 U: which fan modes could be set on the HVAC?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.hvac_modes_aval();
 ====
-# manual/43
+# manual/63
 U: which fan modes could be set on the HVAC?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.fan_modes_aval();
@@ -253,12 +253,12 @@ U: which fan modes could be set on the HVAC?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate(id="org.thingpedia.iot.climate-XXXXXXXX"^^tt:device_id).fan_modes_aval();
 ====
-# manual/44
+# manual/64
 U: set the fan mode to diffuse
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.set_fan_mode(mode=enum diffuse);
 ====
-# manual/45
+# manual/65
 U: set the fan mode to diffuse
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.set_fan_mode(mode=enum diffuse);
@@ -272,7 +272,7 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate(id="org.thingpedia.iot.climate-XXXXXXXX"^^tt:device_id).set_fan_mode(mode=enum diffuse)
 UT: #[confirm=enum confirmed];
 ====
-# manual/46
+# manual/66
 U: turn the climate system's fan on
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.set_fan_mode(mode=enum on);
@@ -286,7 +286,7 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate(id="org.thingpedia.iot.climate-XXXXXXXX"^^tt:device_id).set_fan_mode(mode=enum on)
 UT: #[confirm=enum confirmed];
 ====
-# manual/47
+# manual/67
 U: switch the hvac fan to focus
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.set_fan_mode(mode=enum focus);
@@ -300,17 +300,17 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate(id="org.thingpedia.iot.climate-XXXXXXXX"^^tt:device_id).set_fan_mode(mode=enum focus)
 UT: #[confirm=enum confirmed];
 ====
-# manual/48
+# manual/68
 U: is available swing mode on the hvac?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.swing_modes_aval();
 ====
-# manual/49
+# manual/69
 U: which swing modes are available on the hvac's fan?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.swing_modes_aval();
 ====
-# manual/50
+# manual/70
 U: set hvac fan swinging mode to off
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.set_swing_mode(mode=enum off);
@@ -324,7 +324,7 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate(id="org.thingpedia.iot.climate-XXXXXXXX"^^tt:device_id).set_swing_mode(mode=enum off)
 UT: #[confirm=enum confirmed];
 ====
-# manual/51
+# manual/71
 U: switch the climate hvac swing off
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.set_swing_mode(mode=enum off);
@@ -338,7 +338,7 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate(id="org.thingpedia.iot.climate-XXXXXXXX"^^tt:device_id).set_swing_mode(mode=enum off)
 UT: #[confirm=enum confirmed];
 ====
-# manual/52
+# manual/72
 U: I need you to start the auxiliary heating
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.set_aux_heat(value=enum on);
@@ -352,7 +352,7 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate(id="org.thingpedia.iot.climate-XXXXXXXX"^^tt:device_id).set_aux_heat(value=enum on)
 UT: #[confirm=enum confirmed];
 ====
-# manual/53
+# manual/73
 U: turn the auxiliary heater on
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.set_aux_heat(value=enum on);
@@ -366,7 +366,7 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate(id="org.thingpedia.iot.climate-XXXXXXXX"^^tt:device_id).set_aux_heat(value=enum on)
 UT: #[confirm=enum confirmed];
 ====
-# manual/54
+# manual/74
 U: turn the HVAC on
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.set_hvac_onoff(value=enum on);
@@ -380,7 +380,7 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate(id="org.thingpedia.iot.climate-XXXXXXXX"^^tt:device_id).set_hvac_onoff(value=enum on)
 UT: #[confirm=enum confirmed];
 ====
-# manual/55
+# manual/75
 U: switch HVAC off
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.set_hvac_onoff(value=enum off);
@@ -394,7 +394,7 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate(id="org.thingpedia.iot.climate-XXXXXXXX"^^tt:device_id).set_hvac_onoff(value=enum off)
 UT: #[confirm=enum confirmed];
 ====
-# manual/56
+# manual/76
 U: is the hvac on?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.hvac_action();
@@ -409,32 +409,32 @@ U: which is the thermostat state?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate(id="org.thingpedia.iot.climate-XXXXXXXX"^^tt:device_id).hvac_action();
 ====
-# manual/57
+# manual/77
 U: which temperature is currently set on the thermostat?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.target_temperature();
 ====
-# manual/58
+# manual/78
 U: which temperature is the target one?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.target_temperature();
 ====
-# manual/59
+# manual/79
 U: there is a target temperature set?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.target_temperature();
 ====
-# manual/60
+# manual/80
 U: is the hvac running with a specific mode?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.hvac_action();
 ====
-# manual/61
+# manual/81
 U: which modes are available on my thermostat?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.hvac_modes_aval();
 ====
-# manual/62
+# manual/82
 U: set the thermostat to heat mode?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.set_hvac_mode(mode=enum heat);
@@ -448,7 +448,7 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate(id="org.thingpedia.iot.climate-XXXXXXXX"^^tt:device_id).set_hvac_mode(mode=enum heat)
 UT: #[confirm=enum confirmed];
 ====
-# manual/63
+# manual/83
 U: set the thermostat to heat mode?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.set_hvac_mode(mode=enum heat);
@@ -462,7 +462,7 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate(id="org.thingpedia.iot.climate-XXXXXXXX"^^tt:device_id).set_hvac_mode(mode=enum heat)
 UT: #[confirm=enum confirmed];
 ====
-# manual/64
+# manual/84
 U: set the thermostat to heat mode
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.set_hvac_mode(mode=enum heat);
@@ -476,7 +476,7 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate(id="org.thingpedia.iot.climate-XXXXXXXX"^^tt:device_id).set_hvac_mode(mode=enum heat)
 UT: #[confirm=enum confirmed];
 ====
-# manual/65
+# manual/85
 U: change hvac operation to fan only?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.set_hvac_mode(mode=enum fan_only);
@@ -490,17 +490,17 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate(id="org.thingpedia.iot.climate-XXXXXXXX"^^tt:device_id).set_hvac_mode(mode=enum fan_only)
 UT: #[confirm=enum confirmed];
 ====
-# manual/66
+# manual/86
 U: which presets are available on this thermostat?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.hvac_presets_aval();
 ====
-# manual/67
+# manual/87
 U: tell me which is the current preset of the thermostat?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.hvac_preset();
 ====
-# manual/68
+# manual/88
 U: switch  hvac preset to away
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.set_hvac_preset(preset=enum away);
@@ -514,12 +514,12 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate(id="org.thingpedia.iot.climate-XXXXXXXX"^^tt:device_id).set_hvac_preset(preset=enum away)
 UT: #[confirm=enum confirmed];
 ====
-# manual/69
+# manual/89
 U: which humidity level is read by the thermostat?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.current_humidity();
 ====
-# manual/70
+# manual/90
 U: set target temperature to 70 °F
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.set_target_temperature(value=70F);
@@ -533,7 +533,7 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate(id="org.thingpedia.iot.climate-XXXXXXXX"^^tt:device_id).set_target_temperature(value=70F)
 UT: #[confirm=enum confirmed];
 ====
-# manual/71
+# manual/91
 U: set temperature between 40 °F and 70 °F
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.set_minmax_temperature(high=70F, low=40F);
@@ -547,7 +547,7 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate(id="org.thingpedia.iot.climate-XXXXXXXX"^^tt:device_id).set_minmax_temperature(high=70F, low=40F)
 UT: #[confirm=enum confirmed];
 ====
-# manual/72
+# manual/92
 U: set minimum temperature at 35 °F and maximum temperature at 75 °F
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.set_minmax_temperature(high=75F, low=35F);
@@ -561,42 +561,42 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate(id="org.thingpedia.iot.climate-XXXXXXXX"^^tt:device_id).set_minmax_temperature(high=75F, low=35F)
 UT: #[confirm=enum confirmed];
 ====
-# manual/73
+# manual/93
 U: which is the lowest temperature set for the hvac?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.min_temperature();
 ====
-# manual/74
+# manual/94
 U: which is the highest temperature set on the thermostat?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.max_temperature();
 ====
-# manual/75
+# manual/95
 U: which is the current humidity?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.current_humidity();
 ====
-# manual/76
+# manual/96
 U: which is the current humidity?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.current_humidity();
 ====
-# manual/77
+# manual/97
 U: which is the minimum humidity level set?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.min_humidity();
 ====
-# manual/78
+# manual/98
 U: which is the minimum humidity level set?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.min_humidity();
 ====
-# manual/79
+# manual/99
 U: which is the highest humidity level set?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.max_humidity();
 ====
-# manual/80
+# manual/100
 U: set the fan mode to diffuse?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.set_fan_mode(mode=enum diffuse);
@@ -610,12 +610,12 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate(id="org.thingpedia.iot.climate-XXXXXXXX"^^tt:device_id).set_fan_mode(mode=enum diffuse)
 UT: #[confirm=enum confirmed];
 ====
-# manual/81
+# manual/101
 U: which are the fan modes available for the hvac?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.hvac_modes_aval();
 ====
-# manual/82
+# manual/102
 U: switch fan off
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.set_fan_mode(mode=enum off);
@@ -629,17 +629,17 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate(id="org.thingpedia.iot.climate-XXXXXXXX"^^tt:device_id).set_fan_mode(mode=enum off)
 UT: #[confirm=enum confirmed];
 ====
-# manual/83
+# manual/103
 U: list the ventilation’s swinging modes
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate(name="ventilation").swing_modes_aval();
 ====
-# manual/84
+# manual/104
 U: set auxiliary heating on
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.set_aux_heat();
 ====
-# manual/85
+# manual/105
 U: set auxiliary heating on
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.set_aux_heat(value=enum on);
@@ -653,7 +653,7 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate(id="org.thingpedia.iot.climate-XXXXXXXX"^^tt:device_id).set_aux_heat(value=enum on)
 UT: #[confirm=enum confirmed];
 ====
-# manual/86
+# manual/106
 U: turn the climate system on
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.set_hvac_onoff(value=enum on);
@@ -667,7 +667,7 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate(id="org.thingpedia.iot.climate-XXXXXXXX"^^tt:device_id).set_hvac_onoff(value=enum on)
 UT: #[confirm=enum confirmed];
 ====
-# manual/87
+# manual/107
 U: turn AC off
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.set_hvac_onoff(value=enum off);
@@ -681,42 +681,42 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate(id="org.thingpedia.iot.climate-XXXXXXXX"^^tt:device_id).set_hvac_onoff(value=enum off)
 UT: #[confirm=enum confirmed];
 ====
-# manual/88
+# manual/108
 U: :what’s the thermostat setpoint for the apartment?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.target_temperature();
 ====
-# manual/89
+# manual/109
 U: is the thermostat set to cool?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.hvac_action();
 ====
-# manual/90
+# manual/110
 U: get temperature setpoint
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.target_temperature();
 ====
-# manual/91
+# manual/111
 U: is the HVAC system on?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.hvac_action();
 ====
-# manual/92
+# manual/112
 U: what’s the HVAC status in the house?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.hvac_action();
 ====
-# manual/93
+# manual/113
 U: stop cooling the bedroom
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate(name="bedroom").set_hvac_mode(mode=enum off);
 ====
-# manual/94
+# manual/114
 U: which is the thermostat status in the office?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate(name="office").hvac_preset();
 ====
-# manual/95
+# manual/115
 U: start cooling
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.set_hvac_mode(mode=enum cool);
@@ -730,12 +730,12 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate(id="org.thingpedia.iot.climate-XXXXXXXX"^^tt:device_id).set_hvac_mode(mode=enum cool)
 UT: #[confirm=enum confirmed];
 ====
-# manual/96
+# manual/116
 U: is the air conditioned system running?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.hvac_action();
 ====
-# manual/97
+# manual/117
 U: start the hvac
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.set_hvac_mode(mode=enum heat_cool);
@@ -749,7 +749,7 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate(id="org.thingpedia.iot.climate-XXXXXXXX"^^tt:device_id).set_hvac_mode(mode=enum heat_cool)
 UT: #[confirm=enum confirmed];
 ====
-# manual/98
+# manual/118
 U: set thermostat in eco mode
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.set_hvac_preset(preset=enum eco);
@@ -763,7 +763,7 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate(id="org.thingpedia.iot.climate-XXXXXXXX"^^tt:device_id).set_hvac_preset(preset=enum eco)
 UT: #[confirm=enum confirmed];
 ====
-# manual/99
+# manual/119
 U: set thermostat in eco mode
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.set_hvac_preset(preset=enum eco);
@@ -777,7 +777,7 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate(id="org.thingpedia.iot.climate-XXXXXXXX"^^tt:device_id).set_hvac_preset(preset=enum eco)
 UT: #[confirm=enum confirmed];
 ====
-# manual/100
+# manual/120
 U: set climate ventilation on
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.set_fan_mode(mode=enum on);
@@ -791,7 +791,7 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate(id="org.thingpedia.iot.climate-XXXXXXXX"^^tt:device_id).set_fan_mode(mode=enum on)
 UT: #[confirm=enum confirmed];
 ====
-# manual/101
+# manual/121
 U: shut off the HVAC
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.set_hvac_onoff(value=enum off);
@@ -805,7 +805,7 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate(id="org.thingpedia.iot.climate-XXXXXXXX"^^tt:device_id).set_hvac_onoff(value=enum off)
 UT: #[confirm=enum confirmed];
 ====
-# manual/102
+# manual/122
 U: shut off the HVAC
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.set_hvac_onoff(value=enum off);
@@ -819,12 +819,12 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate(id="org.thingpedia.iot.climate-XXXXXXXX"^^tt:device_id).set_hvac_onoff(value=enum off)
 UT: #[confirm=enum confirmed];
 ====
-# manual/103
+# manual/123
 U: what’s the thermostat setpoint for the apartment?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.target_temperature();
 ====
-# manual/104
+# manual/124
 U: set the climate status to away
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.set_hvac_preset(preset=enum away);
@@ -838,12 +838,12 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate(id="org.thingpedia.iot.climate-XXXXXXXX"^^tt:device_id).set_hvac_preset(preset=enum away)
 UT: #[confirm=enum confirmed];
 ====
-# manual/105
+# manual/125
 U: tell me which is the temperature inside
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.current_temperature();
 ====
-# manual/106
+# manual/126
 U: is the air conditioned system running?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.hvac_action();

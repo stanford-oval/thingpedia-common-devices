@@ -36,7 +36,7 @@ const DOMAIN_TO_TP_KIND = {
     'vacuum': 'org.thingpedia.iot.vacuum',
 
     // media players
-    'media_player': 'org.thingpedia.iot.media-player',
+    //'media_player': 'org.thingpedia.iot.media-player',
     //'media_player_speaker': 'org.thingpedia.iot.speaker',
     //'media_player_tv': 'org.thingpedia.iot.tv',
 
@@ -74,13 +74,17 @@ const SUBDEVICES = {
     'org.thingpedia.iot.fan': HomeAssistantFan,
     'org.thingpedia.iot.light-bulb': HomeAssistantLightbulb,
     'org.thingpedia.iot.lock': HomeAssistantLock,
-    'org.thingpedia.iot.media-player': HomeAssistantMediaPlayer,
+    //'org.thingpedia.iot.media-player': HomeAssistantMediaPlayer,
+    //'org.thingpedia.iot.tv': HomeAssistantMediaPlayer,
+    //'org.thingpedia.iot.speaker': HomeAssistantMediaPlayer,
     'org.thingpedia.iot.switch': HomeAssistantSwitch,
     'org.thingpedia.iot.vacuum': HomeAssistantVacuum
 };
 Object.entries(DOMAIN_TO_TP_KIND).forEach(([key,value]) => {
     if (key.includes('sensor') && !(value in SUBDEVICES))
         SUBDEVICES[value] = class extends HomeAssistantSensor {};
+    if (key.includes('media_player'))
+        SUBDEVICES[value] = class extends HomeAssistantMediaPlayer {};
 });
 
 class HomeAssistantDeviceSet extends Tp.Helpers.ObjectSet.Base {
