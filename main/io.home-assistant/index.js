@@ -36,9 +36,9 @@ const DOMAIN_TO_TP_KIND = {
     'vacuum': 'org.thingpedia.iot.vacuum',
 
     // media players
-    'media_player': 'org.thingpedia.iot.media-player',
-    'media_player_speaker': 'org.thingpedia.iot.speaker',
-    'media_player_tv': 'org.thingpedia.iot.tv',
+    //'media_player': 'org.thingpedia.iot.media-player',
+    //'media_player_speaker': 'org.thingpedia.iot.speaker',
+    //'media_player_tv': 'org.thingpedia.iot.tv',
 
     // sensors and binary sensors (implemented by HomeAssistantSensor)
     //'sensor_air': 'org.thingpedia.iot.air',
@@ -74,7 +74,9 @@ const SUBDEVICES = {
     'org.thingpedia.iot.fan': HomeAssistantFan,
     'org.thingpedia.iot.light-bulb': HomeAssistantLightbulb,
     'org.thingpedia.iot.lock': HomeAssistantLock,
-    'org.thingpedia.iot.media-player': HomeAssistantMediaPlayer,
+    //'org.thingpedia.iot.media-player': HomeAssistantMediaPlayer,
+    //'org.thingpedia.iot.tv': HomeAssistantMediaPlayer,
+    //'org.thingpedia.iot.speaker': HomeAssistantMediaPlayer,
     'org.thingpedia.iot.switch': HomeAssistantSwitch,
     'org.thingpedia.iot.vacuum': HomeAssistantVacuum
 };
