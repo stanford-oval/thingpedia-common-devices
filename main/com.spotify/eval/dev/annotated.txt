@@ -3859,11 +3859,6 @@ U: What artist sang the song Rooster?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: now => [artists] of ((@org.thingpedia.media-source.song()) filter id =~ "rooster") => notify;
 ====
-# online/61768664
-U: resume playing
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-player.player_play();
-====
 # online/62109745
 U: skip to the next song
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
@@ -3972,7 +3967,7 @@ UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.t
 # log/72340
 U: sporify play
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-player.player_play();
+UT: @org.thingpedia.media-source.song() => @org.thingpedia.media-player.play(playable=id);
 ====
 # log/118270
 U: play song
@@ -4057,7 +4052,7 @@ UT: @org.thingpedia.media-player.player_next();
 # log/17661
 U: start spotify
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-player.player_play();
+UT: @org.thingpedia.media-source.song() => @org.thingpedia.media-player.play(playable=id);
 ====
 # log/7508
 U: what song is playing?
@@ -4077,134 +4072,134 @@ UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.t
 # log/88340
 U: open the spotify app
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-player.player_play();
+UT: @org.thingpedia.media-source.song() => @org.thingpedia.media-player.play(playable=id);
 ====
-# manual/1
+# manual/8
 U: play the podcast Chameleon: Hollywood Con Queen
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: (@org.thingpedia.media-source.show() filter id =~ "Chameleon: Hollywood Con Queen") => @org.thingpedia.media-player.play(playable=id);
 ====
-# manual/2
+# manual/9
 U: play Making Sense with Sam Harris
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: (@org.thingpedia.media-source.playable() filter id =~ "Making Sense with Sam Harris") => @org.thingpedia.media-player.play(playable=id);
 ====
-# manual/3
+# manual/10
 U: play the podcast Where Is George Gibney?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: (@org.thingpedia.media-source.show() filter id =~ "Where Is George Gibney?") => @org.thingpedia.media-player.play(playable=id);
 ====
-# manual/4
+# manual/11
 U: play Deep Cover: The Drug Wars
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: (@org.thingpedia.media-source.playable() filter id =~ "Deep Cover: The Drug Wars") => @org.thingpedia.media-player.play(playable=id);
 ====
-# manual/5
+# manual/12
 U: play the podcast Revisionist History
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: (@org.thingpedia.media-source.show() filter id =~ "Revisionist History") => @org.thingpedia.media-player.play(playable=id);
 ====
-# manual/6
+# manual/13
 U: play Son Of A Hitman
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: (@org.thingpedia.media-source.playable() filter id =~ "Son Of A Hitman") => @org.thingpedia.media-player.play(playable=id);
 ====
-# manual/7
+# manual/14
 U: play the podcast Giant
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: (@org.thingpedia.media-source.show() filter id =~ "Giant") => @org.thingpedia.media-player.play(playable=id);
 ====
-# manual/8
+# manual/15
 U: play You're Dead To Me
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: (@org.thingpedia.media-source.playable() filter id =~ "You're Dead To Me") => @org.thingpedia.media-player.play(playable=id);
 ====
-# manual/9
+# manual/16
 U: play the podcast Crimetown
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: (@org.thingpedia.media-source.show() filter id =~ "Crimetown") => @org.thingpedia.media-player.play(playable=id);
 ====
-# manual/10
+# manual/17
 U: play Soul Music
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: (@org.thingpedia.media-source.playable() filter id =~ "Soul Music") => @org.thingpedia.media-player.play(playable=id);
 ====
-# manual/10
+# manual/18
 U: play the podcast Soul Music
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: (@org.thingpedia.media-source.show() filter id =~ "Soul Music") => @org.thingpedia.media-player.play(playable=id);
 ====
-# manual/11
+# manual/19
 U: play Who The Hell Is Hamish?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: (@org.thingpedia.media-source.playable() filter id =~ "Who The Hell Is Hamish?") => @org.thingpedia.media-player.play(playable=id);
 ====
-# manual/12
+# manual/20
 U: play the podcast Unexplained
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: (@org.thingpedia.media-source.show() filter id =~ "Unexplained") => @org.thingpedia.media-player.play(playable=id);
 ====
-# manual/13
+# manual/21
 U: play In The Dark
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: (@org.thingpedia.media-source.playable() filter id =~ "In The Dark") => @org.thingpedia.media-player.play(playable=id);
 ====
-# manual/14
+# manual/22
 U: play the podcast Athletico Mince
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: (@org.thingpedia.media-source.show() filter id =~ "Athletico Mince") => @org.thingpedia.media-player.play(playable=id);
 ====
-# manual/15
+# manual/23
 U: play Slow Burn
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: (@org.thingpedia.media-source.playable() filter id =~ "Slow Burn") => @org.thingpedia.media-player.play(playable=id);
 ====
-# manual/16
+# manual/24
 U: play the podcast Ear Hustle
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: (@org.thingpedia.media-source.show() filter id =~ "Ear Hustle") => @org.thingpedia.media-player.play(playable=id);
 ====
-# manual/17
+# manual/25
 U: play The Adam Buxton Podcast
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: (@org.thingpedia.media-source.playable() filter id =~ "Adam Buxton Podcast") => @org.thingpedia.media-player.play(playable=id);
 ====
-# manual/18
+# manual/26
 U: play the podcast WTF with Marc Maron
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: (@org.thingpedia.media-source.show() filter id =~ "WTF with Marc Maron") => @org.thingpedia.media-player.play(playable=id);
 ====
-# manual/19
+# manual/27
 U: play Man In The Window
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: (@org.thingpedia.media-source.playable() filter id =~ "Man In The Window") => @org.thingpedia.media-player.play(playable=id);
 ====
-# manual/20
+# manual/28
 U: play the podcast Code Switch
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: (@org.thingpedia.media-source.show() filter id =~ "Code Switch") => @org.thingpedia.media-player.play(playable=id);
 ====
-# manual/21
+# manual/29
 U: play Reply All
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: (@org.thingpedia.media-source.playable() filter id =~ "Reply All") => @org.thingpedia.media-player.play(playable=id);
 ====
-# manual/22
+# manual/30
 U: play the podcast Stuff You Should Know
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: (@org.thingpedia.media-source.show() filter id =~ "Stuff You Should Know") => @org.thingpedia.media-player.play(playable=id);
 ====
-# manual/23
+# manual/31
 U: play S-Town
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: (@org.thingpedia.media-source.playable() filter id =~ "S-Town") => @org.thingpedia.media-player.play(playable=id);
 ====
-# manual/24
+# manual/32
 U: Play a random song on Spotify
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.media-source.playable() => @org.thingpedia.media-player.play(playable=id);
 ====
-# manual/25
+# manual/33
 U: can you really play music?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.media-source.playable() => @org.thingpedia.media-player.play(playable=id);
@@ -4227,7 +4222,7 @@ UT: @org.thingpedia.media-source.playable() filter id =~ "call me maybe" => @org
 # log-dev/5446
 U: pause playing
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-player.player_pause();
+UT: @org.thingpedia.builtin.thingengine.builtin.pause();
 ====
 # log-dev/5638
 U: find cardigan by taylor swift
@@ -4317,7 +4312,7 @@ UT: [release_date] of sort(popularity desc of @org.thingpedia.media-source.song(
 # log-dev/7154
 U: stop playing.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-player.player_pause();
+UT: @org.thingpedia.builtin.thingengine.builtin.stop();
 ====
 # log-dev/7286
 U: allman, can you play some music?
@@ -4382,7 +4377,7 @@ UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.t
 # log-dev/5607
 U: stop playing
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-player.player_pause();
+UT: @org.thingpedia.builtin.thingengine.builtin.stop();
 ====
 # log-dev/7335
 U: what is taylor swift most popular song?
@@ -4462,7 +4457,7 @@ UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.t
 # log-dev/7104
 U: open spotify.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-player.player_play();
+UT: @org.thingpedia.media-source.song() => @org.thingpedia.media-player.play(playable=id);
 ====
 # log-dev/5294
 U: play songs by gigi d'agostino
@@ -4498,7 +4493,7 @@ UT: @org.thingpedia.media-source.playable() filter id =~ "spiderman into the spi
 # recording/947d13232af093547ecde3fe680de9f6
 U: pause playback
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-player.player_pause();
+UT: @org.thingpedia.builtin.thingengine.builtin.pause();
 ====
 # recording/9338a3e803aa6c25fdf1c950fbb1c98d
 U: play a songs from the beatles
@@ -4554,11 +4549,6 @@ U: what is beatles's top hit
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: sort(popularity desc of @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).song() filter contains(artists, null^^org.thingpedia.media-source:artist("beatles")))[1];
 ====
-# recording/a72002e65e77a86dc77c5a25aafebd7c
-U: resume playback
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-player.player_play();
-====
 # recording/ad32165c43ae364e5526d44cccddc9bf
 U: what are the top 3 most popular tracks?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
@@ -4572,7 +4562,7 @@ UT: @org.thingpedia.media-player.player_next();
 # recording/fd988aa20ddeda677e01b9b40deea17d
 U: pause playback
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-player.player_pause();
+UT: @org.thingpedia.builtin.thingengine.builtin.pause();
 ====
 # recording/7c9271bf1707a5dd2c2e8f816bf745cb
 U: play the podcast all the presidents lawyers
@@ -4636,11 +4626,6 @@ U: what is the current song
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.media-source.get_currently_playing();
 ====
-# recording/742f3ba422e32d6b46c64347ac8db8e3
-U: Resume playback.
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-player.player_play();
-====
 # recording/f4fd734d3e364068600082b2762805ae
 U: play hello
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
@@ -4664,7 +4649,7 @@ UT: @org.thingpedia.media-source.song() => @org.thingpedia.media-player.play(pla
 # recording/611f9456aa1beeb9ebaa38ee3b7ae509
 U: Stop playing
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-player.player_pause();
+UT: @org.thingpedia.builtin.thingengine.builtin.stop();
 ====
 # recording/9ac67d07170e6905cf23b976e93a7e6d
 U: play the oldest song by the Beatles
@@ -4851,7 +4836,7 @@ UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.t
 # recording/a53d3b895cc837844eba4092fd9ef472
 U: pause
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-player.player_pause();
+UT: @org.thingpedia.builtin.thingengine.builtin.pause();
 ====
 # recording/80d33327cc713feaf3926422b60fe216
 U: pause playing a song
@@ -5039,11 +5024,6 @@ UT: @org.thingpedia.media-source.playable() => @org.thingpedia.media-player.play
 U: find artist beatles
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.media-source.artist() filter id =~ "beatles";
-====
-# recording/02869f193a0c83efc97736d06f7bfedf
-U: Resume playback.
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-player.player_play();
 ====
 # recording/c7996840a8d840610d56785b2a0df5e7
 U: play songs by the weeknd
@@ -5279,7 +5259,7 @@ UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.t
 # log-dev/7915
 U: turn on spotify.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-player.player_play();
+UT: @org.thingpedia.media-source.song() => @org.thingpedia.media-player.play(playable=id);
 ====
 # log-dev/7912
 U: play irone maiden on spotify.
@@ -6409,7 +6389,7 @@ UT: monitor(@org.thingpedia.media-source.get_currently_playing());
 # recording/7563f4171a03964d8e8b186fe9ffe424
 U: pause playback
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-player.player_pause();
+UT: @org.thingpedia.builtin.thingengine.builtin.pause();
 ====
 # recording/f8c0bd632461107384cc95e929fa593b
 U: can you play some music?
