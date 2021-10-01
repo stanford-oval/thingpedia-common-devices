@@ -15,7 +15,8 @@ set -x
     main/com.spotify \
     main/org.thingpedia.iot.switch \
     main/org.thingpedia.iot.* \
-    main/io.home-assistant
+    main/io.home-assistant \
+    main/com.tunein
 
 mkdir -p tmp/entities
 npx genie download-entity-values \
