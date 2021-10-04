@@ -13,18 +13,6 @@ const Tp = require('thingpedia');
 module.exports = [
     ['query', 'station', {}, {
         filter: [
-            ['id', '=~', 'espn']
-        ]
-    }, (results) => {
-        assert(results instanceof Array);
-        assert.deepStrictEqual(results[0].id, new Tp.Value.Entity('station:s25876', 'ESPN Radio'));
-        assert(typeof results[0].show === 'string');
-        assert(typeof results[0].link === 'string');
-        assert(results[0].link === 'http://opml.radiotime.com/Tune.ashx?id=s25876');
-        assert(results[0].image === 'http://cdn-profiles.tunein.com/s25876/images/logoq.jpg?t=1');
-    }],
-    ['query', 'station', {}, {
-        filter: [
             ['id', '=~', 'espn chicago']
         ]
     }, (results) => {

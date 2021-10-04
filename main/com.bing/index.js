@@ -105,7 +105,7 @@ class BingDialogueHandler {
         }
 
         if (this._lastQuerySuggestion) {
-            const yes = new RegExp(this._("^(yes|yeah|yep|sure)$"));
+            const yes = new RegExp(this._("^(yes|yeah|yep|sure)\b"));
             const yesmatch = yes.exec(utterance);
             if (yesmatch) {
                 query = this._lastQuerySuggestion;
@@ -233,7 +233,7 @@ class BingDialogueHandler {
                 throw new Error(`Unexpected bing answer type (invalid entity)`);
             return {
                 messages: [
-                    this._interp(this._("According to Bing, the answer is ${name}. ${description}."), {
+                    this._interp(this._("According to Bing, ${description}."), {
                         name: entity.name,
                         description: entity.description
                     }),
