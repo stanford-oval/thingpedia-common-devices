@@ -143,11 +143,11 @@ eval/$(release)/constants.tsv: $(schema_file) parameter-datasets.tsv
 	if test -f $@ && cmp $@.tmp $@ ; then rm $@.tmp ; else mv $@.tmp $@ ; fi
 
 eval/$(release)/paraphrase.tsv : eval/everything/paraphrase.tsv
-	node ./scripts/subset-multidevice.js paraphrase $(release) $(custom_devices)
+	node ./scripts/subset-multidevice.js paraphrase $(release) $(foreach d,$(custom_devices),$(notdir $(d)))
 
 eval/$(release)/%/annotated.txt : eval/everything/%/annotated.txt
 	mkdir -p $(dir $@)
-	node ./scripts/subset-multidevice.js $* $(release) $(custom_devices)
+	node ./scripts/subset-multidevice.js $* $(release) $(foreach d,$(custom_devices),$(notdir $(d)))
 
 %/manifest.auto.tt: %/manifest.tt eval/$(release)/constants.tsv parameter-datasets.tsv .embeddings/paraphraser-bart
 	$(genie) auto-annotate -o $@.tmp --thingpedia $< \
@@ -169,12 +169,12 @@ eval/$(release)/database-map.tsv: $(wildcard $(addsuffix /database-map.tsv,$($(r
 entities.json:
 	$(genie) download-entities --thingpedia-url $(thingpedia_url) --developer-key $(developer_key) -o $@
 
-parameter-datasets.tsv:
-	$(genie) download-entity-values --thingpedia-url $(thingpedia_url) --developer-key $(developer_key) \
-	   --manifest $@.tmp --append-manifest -d parameter-datasets
-	$(genie) download-string-values --thingpedia-url $(thingpedia_url) --developer-key $(developer_key) \
-	   --manifest $@.tmp --append-manifest -d parameter-datasets
-	mv $@.tmp $@
+#parameter-datasets.tsv:
+#	$(genie) download-entity-values --thingpedia-url $(thingpedia_url) --developer-key $(developer_key) \
+#	   --manifest $@.tmp --append-manifest -d parameter-datasets
+#	$(genie) download-string-values --thingpedia-url $(thingpedia_url) --developer-key $(developer_key) \
+#	   --manifest $@.tmp --append-manifest -d parameter-datasets
+#	mv $@.tmp $@
 
 .embeddings/paraphraser-bart:
 	mkdir -p .embeddings
