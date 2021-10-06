@@ -1,3 +1,5 @@
+SHELL := /bin/bash
+
 -include ./config.mk
 
 NULL =
@@ -30,6 +32,8 @@ schema_file ?= eval/$(release)/schema.tt
 paraphrases_user ?= eval/$(release)/paraphrase.tsv $(wildcard $(foreach d,$($(release)_devices),$(d)/eval/paraphrase.tsv))
 eval_files ?= eval/$(release)/$(eval_set)/annotated.txt $(wildcard $(foreach d,$($(release)_devices),$(d)/eval/$(eval_set)/annotated.txt))
 fewshot_train_files ?= eval/$(release)/train/annotated.txt $(wildcard $(foreach d,$($(release)_devices),$(d)/eval/train/annotated.txt))
+
+-include ./translate.mk
 
 synthetic_flags ?= \
 	dialogues \
@@ -169,12 +173,12 @@ eval/$(release)/database-map.tsv: $(wildcard $(addsuffix /database-map.tsv,$($(r
 entities.json:
 	$(genie) download-entities --thingpedia-url $(thingpedia_url) --developer-key $(developer_key) -o $@
 
-#parameter-datasets.tsv:
-#	$(genie) download-entity-values --thingpedia-url $(thingpedia_url) --developer-key $(developer_key) \
-#	   --manifest $@.tmp --append-manifest -d parameter-datasets
-#	$(genie) download-string-values --thingpedia-url $(thingpedia_url) --developer-key $(developer_key) \
-#	   --manifest $@.tmp --append-manifest -d parameter-datasets
-#	mv $@.tmp $@
+parameter-datasets.tsv:
+	$(genie) download-entity-values --thingpedia-url $(thingpedia_url) --developer-key $(developer_key) \
+	   --manifest $@.tmp --append-manifest -d parameter-datasets
+	$(genie) download-string-values --thingpedia-url $(thingpedia_url) --developer-key $(developer_key) \
+	   --manifest $@.tmp --append-manifest -d parameter-datasets
+	mv $@.tmp $@
 
 .embeddings/paraphraser-bart:
 	mkdir -p .embeddings
