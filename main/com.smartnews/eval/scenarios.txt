@@ -1,4 +1,49 @@
 # 1-basic
 U: get news
-A: Here is the news\.\n(rdl: (.|[\n])*)+
+
+A: Here (is|are) the news\.( They're us news\.)?\n(rdl: (.|[\n])*)+
 A: >> expecting = null
+
+
+# 2-basic-2
+U: recent news
+
+A: Here (is|are) the news\.( They're us news\.)?\n(rdl: (.|[\n])*)+
+A: >> expecting = null
+
+
+# 3-time-based-1
+#U: today's news
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => @com.smartnews.article() => notify;
+
+A: Here (is|are) the news\.( They're us news\.)?\n(rdl: (.|[\n])*)+
+A: >> expecting = null
+
+
+# 4-time-based-2
+#U: today's news
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => @com.smartnews.article(), date <= $now => notify;
+
+A: Here (is|are) the news\.( They're us news\.)?\n(rdl: (.|[\n])*)+
+A: >> expecting = null
+
+
+# 5-basic-with-count
+#U: top 10 news
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => @com.smartnews.article()[1:10] => notify;
+
+A: Here (is|are) the news\.( They're us news\.)?\n(rdl: (.|[\n])*)+
+A: >> expecting = null
+
+
+# 6-category-based
+#U: sports news
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => @com.smartnews.article() filter contains(category, "sports"^^com.smartnews:category("sports")) => notify;
+
+A: Here (is|are) the news\.\n(rdl: (.|[\n])*)+
+A: >> expecting = null
+

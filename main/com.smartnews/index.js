@@ -31,10 +31,14 @@
 // OF THE POSSIBILITY OF SUCH DAMAGE.
 "use strict";
 
+
 const Tp = require("thingpedia");
-const byline = require('byline');
 const Url = require('url');
-const zlib = require('zlib');
+const querystring = require("querystring");
+
+
+const NEWS_DB_URL = "http://54.238.163.11:5000/news";
+
 
 function s3tohttp(url) {
     const parsed = Url.parse(url);
@@ -51,6 +55,7 @@ function s3tohttp(url) {
     return Url.format(parsed);
 }
 
+
 class UnavailableError extends Error {
     constructor(message) {
         super(message);
@@ -58,52 +63,49 @@ class UnavailableError extends Error {
     }
 }
 
-function sanitize(text) {
-    // eslint-disable-next-line no-control-regex
-    return text.replace(/[\r\n\u2028]+/g, '\n').replace(/[ \t\v\f\x00-\x20\x80-\x9f]+/g, ' ');
-}
 
-async function* tryGetArticle(forDate) {
-    const url = `https://en-us-oval-project.s3-us-west-1.amazonaws.com/data/${forDate}/summary_${forDate}.jsonl.gz`;
-
-    let anyNews = false;
+async function* fetch_articles(date, category, limit=0, offset=0) {
     try {
-        const stream = (await Tp.Helpers.Http.getStream(url)).pipe(zlib.createGunzip()).setEncoding('utf8').pipe(byline());
-
-        let i = -1;
-        for await (const line of stream) {
-            i++;
-            try {
-                const article = JSON.parse(line);
-                if (article['articleViewStyle'] !== 'SMART')
-                    continue;
-                if (article['title'] === 'coronavirus_push_landingpage')
-                    continue;
-                anyNews = true;
-                yield {
-                    id: new Tp.Value.Entity(String(article.link_id), null),
-                    link: article.url,
-                    title: sanitize(article.title),
-                    date: new Date(article.publishedTimestamp * 1000),
-                    source: article.site ? article.site.name : null,
-                    author: article.author ? article.author.name : null,
-                    audio_url: s3tohttp(article.summary_mp3_file),
-                };
-            } catch(e) {
-                if (e.name !== 'SyntaxError')
-                    throw e;
-
-                console.error(`WARNING: syntax error in SmartNews summary file at line ${i}: ${e.message}`);
-            }
+        let query_string = {
+            date: date
+        };
+        if (category)
+        query_string = Object.assign({category: category}, query_string);
+        if (limit)
+            query_string = Object.assign({limit: limit}, query_string);
+        if (offset)
+            query_string = Object.assign({offset: offset}, query_string);
+        const url = `${NEWS_DB_URL}?${querystring.stringify(query_string)}`;
+        const news_blob = JSON.parse(await Tp.Helpers.Http.get(url)).items;
+        if (!news_blob)
+            throw Error("no news yet");
+        for (const article of news_blob) {
+            const category = article.category.map((cat) => new Tp.Value.Entity(`${cat.toLowerCase()}`, cat.toLowerCase()));
+            yield {
+                id: new Tp.Value.Entity(String(article.link_id), null),
+                title: article.headline,
+                author: article.author ? article.author : null,
+                source: article.source ? article.source : null,
+                summary: article.summary,
+                link: article.link,
+                category,
+                date: new Date(article.publish_timestamp * 1000),
+                headline_audio_url: s3tohttp(article.headline_audio_s3),
+                summary_audio_url: s3tohttp(article.summary_audio_s3)
+            };
         }
     } catch(e) {
         if (e.code === 404 || e.code === 403)
             throw new UnavailableError(`summary missing for ${forDate}`);
         throw e;
     }
-    if (!anyNews)
-        throw new UnavailableError(`summary empty for ${forDate}`);
 }
+
+
+function format_date(date) {
+    return `${date.getFullYear()}${date.getMonth() < 9 ? '0' : ''}${date.getMonth()+1}${date.getDate()<10 ? '0': ''}${date.getDate()}`;
+}
+
 
 module.exports = class SmartNewsDevice extends Tp.BaseDevice {
     constructor(engine, state) {
@@ -114,138 +116,55 @@ module.exports = class SmartNewsDevice extends Tp.BaseDevice {
     }
 
     async *get_article(params, hints) {
-        const now = new Date;
-        const yesterday = new Date(now.getTime() - 86400 * 1000);
-
-        try {
-            const date = `${now.getYear()-100}${now.getMonth() < 9 ? '0' : ''}${now.getMonth()+1}${now.getDate()<10 ? '0': ''}${now.getDate()}`;
-            yield* tryGetArticle(date);
-        } catch(e1) {
-            if (!(e1 instanceof UnavailableError))
-                throw e1;
-
+        var date = "";
+        var category = "";
+        if (hints && hints.filter) {
+            for (let [pname, op, value] of hints.filter) {
+                if (pname === "date") {
+                    if (op === ">=") {
+                        date = format_date(value);
+                    } else if (op === "<=") {
+                        value.setDate(value.getDate() - 1);
+                        value.setHours(23, 59, 59);
+                        date = format_date(value);
+                    }
+                }
+                if (pname === "category")
+                    if (op === "contains")
+                        category = (String(value))
+            }
+        }
+        if (!date) {
+            const now = new Date;
+            date = format_date(now);
             try {
-                const date = `${yesterday.getYear()-100}${yesterday.getMonth() < 9 ? '0' : ''}${yesterday.getMonth()+1}${yesterday.getDate()<10 ? '0': ''}${yesterday.getDate()}`;
-                yield* tryGetArticle(date);
-            } catch(e2) {
-                if (!(e2 instanceof UnavailableError))
-                    throw e2;
-                throw e1;
+                if (category)
+                    yield* fetch_articles(date, category);
+                else
+                    yield* fetch_articles(date);
+            } catch(e1) {
+                if (!(e1 instanceof UnavailableError))
+                    throw e1;
+                try {
+                    const yesterday = new Date(now.getTime() - 86400 * 1000);
+                    const date = format_date(yesterday);
+                    if (category)
+                        yield* fetch_articles(date, category);
+                    else
+                        yield* fetch_articles(date);
+                } catch(e2) {
+                    if (!(e2 instanceof UnavailableError))
+                        throw e2;
+                    throw e1;
+                }
+            }
+        } else {
+            try {
+                yield* fetch_articles(date);
+            } catch(err) {
+                if (!(err instanceof UnavailableError))
+                    throw err;
             }
         }
     }
-
-    // get_reading_list({ device_token = DEVICE_TOKEN }) {
-    //     let url = API_URL + "/list?deviceToken=" + device_token;
-    //     return Tp.Helpers.Http.get(url).then((response) => {
-    //         let jsonData = JSON.parse(response);
-    //         let articleIdList = jsonData.articleIdList;
-    //         let newsPromises = articleIdList.map((articleId) => {
-    //             let url = API_URL + "/news?articleId=" + articleId;
-    //             return Tp.Helpers.Http.get(url);
-    //         });
-    //         return Promise.all(newsPromises);
-    //     }).then((responses) => {
-    //         let newArray = responses.filter((element) => element['articleViewStyle'] === 'SMART');
-    //         newArray = newArray.filter((element) => element['title'] !== 'coronavirus_push_landingpage');
-    //         return newArray.map((response) => {
-    //             /*console.log(response);
-    //             let jsonData = JSON.parse(response);
-    //             if (jsonData.error) {
-    //                 return {
-    //                     id: '',
-    //                     title: jsonData.error,
-    //                     url: '',
-    //                     date: '',
-    //                     source: ''
-    //                 }
-    //             }*/
-    //             let article = JSON.parse(response);
-    //             return {
-    //                 id: article["id"],
-    //                 title: article["title"],
-    //                 url: article["url"],
-    //                 date: new Date(article["publishedTimestamp"] * 1000),
-    //                 source: article["site"]["name"]
-    //             };
-    //         });
-    //     });
-    // }
-
-    // //connect SN API endpoint /pocket with POST request
-    // do_pocket({ id, device_token = DEVICE_TOKEN }) {
-    //     return Tp.Helpers.Http.post(
-    //         API_URL + "/pocket?deviceToken=" + device_token,
-    //         JSON.stringify({ articleIds: [id] }),
-    //         { dataContentType: 'application/json' }
-    //     );
-    // }
-
-    // //connect SN API endpoint /drop with POST request
-    // do_drop({ id, device_token = DEVICE_TOKEN }) {
-    //     return Tp.Helpers.Http.post(
-    //         API_URL + "/drop?deviceToken=" + device_token,
-    //         JSON.stringify({ articleIds: [id] }),
-    //         { dataContentType: 'application/json' }
-    //     );
-    // }
-
-
-    // //connect SN API endpoint /top with GET request
-    // get_article({ count }) {
-    //     count = count || 3; //default is 10 news
-    //     let url = API_URL + "/top?count=" + count;
-    //     return Tp.Helpers.Http.get(url).then((response) => {
-    //         return JSON.parse(response);
-    //     }).then((parsed) => {
-    //         return parsed.map((article) => {
-    //             return {
-    //                 id: article["id"],
-    //                 title: article["title"],
-    //                 date: new Date(article["published_time"] * 1000),
-    //                 source: article["site"],
-    //                 audio: article["audio"],
-    //                 content: article["content"],
-    //                 url: article["url"]
-    //             };
-    //         });
-    //     });
-    // }
-
-    // //connect SN API endpoint /list with GET request
-    // get_reading_list({ user = USER }) {
-    //     let url = API_URL + "/list?user=" + user;
-    //     return Tp.Helpers.Http.get(url).then((response) => {
-    //         return JSON.parse(response);
-    //     }).then((parsed) => {
-    //         return parsed.map((article) => {
-    //             return {
-    //                 id: article["id"],
-    //                 title: article["title"],
-    //                 date: new Date(article["publishedTimestamp"] * 1000),
-    //                 source: article["site"],
-    //                 audio: article["audio"],
-    //                 content: article["content"]
-    //             };
-    //         });
-    //     });
-    // }
-
-    // //connect SN API endpoint /pocket with POST request
-    // do_pocket({ id, user = USER }) {
-    //     return Tp.Helpers.Http.post(
-    //         API_URL + "/pocket?user=" + user,
-    //         JSON.stringify({ reading_list: [id] }),
-    //         { dataContentType: 'application/json' }
-    //     );
-    // }
-
-    // //connect SN API endpoint /drop with POST request
-    // do_drop({ id, user = USER }) {
-    //     return Tp.Helpers.Http.post(
-    //         API_URL + "/drop?user=" + user,
-    //         JSON.stringify({ reading_list: [id] }),
-    //         { dataContentType: 'application/json' }
-    //     );
-    // }
 };
