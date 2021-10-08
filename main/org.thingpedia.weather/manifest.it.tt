@@ -1,0 +1,118 @@
+class @org.thingpedia.weather
+#_[thingpedia_name="Tempo metereologico"]
+#_[thingpedia_description="Previsioni del tempo e informazioni fornite da met.no"]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="service"] {
+  import loader from @org.thingpedia.v2();
+
+  import config from @org.thingpedia.config.none();
+
+  monitorable query sunrise(in opt location : Location
+                            #_[prompt="per quale località vuoi informazioni sull'ora solare?"]
+                            #_[canonical="preposizione"]
+                            #[default=$location.current_location],
+                            in opt date : Date
+                            #_[canonical="preposizione"],
+                            out sunrise_time : Time
+                            #_[canonical="ora dell'alba"],
+                            out sunset_time : Time
+                            #_[canonical="ora del tramonto"])
+  #_[result=["in ${location} , il sole sorge a ${sunrise_time} e tramonta a ${sunset_time}", "il ${date} il sole sorge alle ${sunrise_time} e tramonta alle ${sunset_time} a ${location}", "il ${date} il sole sorge alle ${sunrise_time}", "il ${date} il sole tramonta alle ${sunset_time}"]]
+  #_[canonical=["ora di alba e tramonto", "ora dell'alba", "ora del tramonto"]]
+  #_[confirmation="l'ora dell'alba e del tramonto per la località $location"]
+  #[minimal_projection=["sunrise_time", "sunset_time"]]
+  #[poll_interval=86400000ms]
+  #[doc="Information about sunrise and sunset"];
+
+  monitorable query moon(in opt location : Location
+                         #_[prompt="per quale località vuoi informazioni sull'ora della luna"]
+                         #_[canonical="preposizione"]
+                         #[default=$location.current_location],
+                         in opt date : Date
+                         #_[canonical="preposizione"],
+                         out phase : Enum(new_moon, waxing_crescent, first_quarter, waxing_gibbous, full_moon, waning_gibbous, third_quarter, waning_crescent)
+                         #_[canonical="fase"])
+  #_[result=["in ${location} la luna è ${phase}", "in ${location} la fase lunare è ${phase}", "il giorno ${date} la luna è ${phase} in ${location}", "la luna è ${phase}"]]
+  #_[canonical=["fase lunare", "fase della luna"]]
+  #_[confirmation="la fase lunare per $location"]
+  #[poll_interval=86400000ms]
+  #[doc="Information about moon times and moon phase"]
+  #[confirm=false]
+  #[minimal_projection=[]];
+
+  monitorable query current(in opt location : Location
+                            #_[prompt="per quale località vuoi il tempo attuale?"]
+                            #_[canonical="preposizione"]
+                            #[default=$location.current_location],
+                            out temperature : Measure(C)
+                            #_[canonical="temperatura"]
+                            #[min_number=-10C]
+                            #[max_number=50C],
+                            out wind_speed : Measure(mps)
+                            #_[canonical="velocità del vento"]
+                            #[min_number=0kmph]
+                            #[max_number=150kmph],
+                            out humidity : Number
+                            #_[canonical="umidità"]
+                            #[min_number=0]
+                            #[max_number=100],
+                            out cloudiness : Number
+                            #_[canonical="nuvolosità"]
+                            #[min_number=0]
+                            #[max_number=100],
+                            out fog : Number
+                            #_[canonical="nebbia"]
+                            #[min_number=0]
+                            #[max_number=100],
+                            out status : Enum(raining, cloudy, sunny, snowy, sleety, drizzling, windy, foggy)
+                            #_[canonical="stato"],
+                            out icon : Entity(tt:picture)
+                            #_[canonical="icona"])
+  #_[result=["è ${status} oggi a ${location} e la temperatura è ${temperature}", "il tempo attuale a ${location} è ${status} . la temperatura è ${temperature} e l'umidità è ${humidity} %", "il tempo attuale a ${location} è ${status} . la temperatura è ${temperature}", "il tempo attuale a ${location} è ${status} . l'umidità è ${humidity} %", "il tempo attuale a ${location} è ${status}", "il tempo a ${location} è ${status}"]]
+  #_[canonical=["Meteo attuale", "tempo metereologico", "il tempo oggi", "il tempo adesso", "tempo fuori"]]
+  #[minimal_projection=["status"]]
+  #[poll_interval=3600000ms]
+  #[doc="Information about current weather"]
+  #[confirm=false];
+
+  monitorable query forecast(in opt location : Location
+                             #_[prompt="per quale località vuoi le previsioni del tempo"]
+                             #_[canonical="preposizione"]
+                             #[default=$location.current_location],
+                             in opt date : Date
+                             #_[prompt="per quale data o ora vuoi la previsione"]
+                             #_[canonical="preposizione"]
+                             #[default=$end_of(day)],
+                             out temperature : Measure(C)
+                             #_[canonical="temperatura"]
+                             #[min_number=-10C]
+                             #[max_number=50C],
+                             out wind_speed : Measure(mps)
+                             #_[canonical="velocità del vento"]
+                             #[min_number=0kmph]
+                             #[max_number=150kmph],
+                             out humidity : Number
+                             #_[canonical="umidità"]
+                             #[min_number=0]
+                             #[max_number=100],
+                             out cloudiness : Number
+                             #_[canonical="nuvolosità"]
+                             #[min_number=0]
+                             #[max_number=100],
+                             out fog : Number
+                             #_[canonical="nebbia"]
+                             #[min_number=0]
+                             #[max_number=100],
+                             out status : Enum(raining, cloudy, sunny, snowy, sleety, drizzling, windy, foggy)
+                             #_[canonical="stato"],
+                             out icon : Entity(tt:picture)
+                             #_[canonical="icona"])
+  #_[result=["sarà ${status} il giorno ${date} in ${location} e la temperatura sarà ${temperature}", "il giorno ${date} il tempo a ${location} sarà ${status} . la temperatura sarà ${temperature} e l'umidità sarà ${humidity} %", "il giorno ${date} il tempo a ${location} sarà ${status} . la temperatura sarà ${temperature}", "il giorno ${date} il tempo a ${location} sarà ${status} . l'umidità sarà ${humidity} %", "il giorno ${date} il tempo a ${location} sarà ${status}", "il tempo a ${location} sarà ${status} il ${date}"]]
+  #_[on_error="non riesco a recuperare le previsioni del tempo in passato"]
+  #_[canonical=["previsioni del tempo", "tempo previsto fuori", "tempo futuro"]]
+  #[minimal_projection=["status"]]
+  #[poll_interval=3600000ms]
+  #[doc="Information about future weather"]
+  #[confirm=false];
+}
