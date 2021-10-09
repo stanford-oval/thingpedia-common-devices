@@ -49,8 +49,11 @@ class @org.thingpedia.weather
                            base=["Data"],
                            preposition=["Su #"]
                          }],
-                         out phase : Enum(nuova_luna, ceretta_mezzaluna, primo_quarto, ceretta_gibbosa, Luna_piena, waning_gibbous, terzo_trimestre, pericolo_crescente)
-                         #_[canonical=["fase", "fase lunare"]])
+                         out phase : Enum(new_moon, waxing_crescent, first_quarter, waxing_gibbous, full_moon, waning_gibbous, third_quarter, waning_crescent)
+                         #_[canonical={
+                           base=["fase", "fase lunare"],
+                           enum_display=["nuova_luna", "ceretta_mezzaluna", "primo_quarto", "ceretta_gibbosa", "Luna_piena", "waning_gibbous", "terzo_trimestre", "pericolo_crescente"]
+                         }])
   #_[result=["in ${location} la luna è ${phase}", "in ${location} la fase lunare è ${phase}", "il giorno ${date} la luna è ${phase} in ${location}", "la luna è ${phase}"]]
   #_[canonical=["fase lunare", "fase della luna"]]
   #_[confirmation="la fase lunare per $location"]
@@ -88,8 +91,11 @@ class @org.thingpedia.weather
                             #_[canonical="nebbia"]
                             #[min_number=0]
                             #[max_number=100],
-                            out status : Enum(pioggia, nuvoloso, soleggiato, nevoso, nevischio, pioviggina, ventoso, nebbioso)
-                            #_[canonical="stato"],
+                            out status : Enum(raining, cloudy, sunny, snowy, sleety, drizzling, windy, foggy)
+                            #_[canonical={
+                              base="stato",
+                              enum_display=["pioggia", "nuvoloso", "soleggiato", "nevoso", "nevischio", "pioviggina", "ventoso", "nebbioso"]
+                            }],
                             out icon : Entity(tt:picture)
                             #_[canonical="icona"])
   #_[result=["è ${status} oggi a ${location} e la temperatura è ${temperature}", "il tempo attuale a ${location} è ${status} . la temperatura è ${temperature} e l'umidità è ${humidity} %", "il tempo attuale a ${location} è ${status} . la temperatura è ${temperature}", "il tempo attuale a ${location} è ${status} . l'umidità è ${humidity} %", "il tempo attuale a ${location} è ${status}", "il tempo a ${location} è ${status}"]]
@@ -137,8 +143,11 @@ class @org.thingpedia.weather
                              #_[canonical="nebbia"]
                              #[min_number=0]
                              #[max_number=100],
-                             out status : Enum(pioggia, nuvoloso, soleggiato, nevoso, nevischio, pioviggina, ventoso, nebbioso)
-                             #_[canonical="stato"],
+                             out status : Enum(raining, cloudy, sunny, snowy, sleety, drizzling, windy, foggy)
+                             #_[canonical={
+                               base="stato",
+                               enum_display=["pioggia", "nuvoloso", "soleggiato", "nevoso", "nevischio", "pioviggina", "ventoso", "nebbioso"]
+                             }],
                              out icon : Entity(tt:picture)
                              #_[canonical="icona"])
   #_[result=["sarà ${status} il giorno ${date} in ${location} e la temperatura sarà ${temperature}", "il giorno ${date} il tempo a ${location} sarà ${status} . la temperatura sarà ${temperature} e l'umidità sarà ${humidity} %", "il giorno ${date} il tempo a ${location} sarà ${status} . la temperatura sarà ${temperature}", "il giorno ${date} il tempo a ${location} sarà ${status} . l'umidità sarà ${humidity} %", "il giorno ${date} il tempo a ${location} sarà ${status}", "il tempo a ${location} sarà ${status} il ${date}"]]
