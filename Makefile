@@ -33,8 +33,6 @@ paraphrases_user ?= eval/$(release)/paraphrase.tsv $(wildcard $(foreach d,$($(re
 eval_files ?= eval/$(release)/$(eval_set)/annotated.txt $(wildcard $(foreach d,$($(release)_devices),$(d)/eval/$(eval_set)/annotated.txt))
 fewshot_train_files ?= eval/$(release)/train/annotated.txt $(wildcard $(foreach d,$($(release)_devices),$(d)/eval/train/annotated.txt))
 
--include ./translate.mk
-
 synthetic_flags ?= \
 	dialogues \
 	aggregation \
@@ -119,6 +117,10 @@ s3_model_dir ?=
 
 all: $($(release)_pkgfiles:%/package.json=build/%.zip)
 	@:
+
+# make calls with unspecified target execute the first one that doesn't start with "."
+# import translate.mk after all: to retain it as the first target
+-include ./translate.mk
 
 build/%.zip: % %/node_modules
 	mkdir -p `dirname $@`
