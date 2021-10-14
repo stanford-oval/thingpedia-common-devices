@@ -48,7 +48,16 @@ A: Here (is|are) the news\.( They're us news\.)?\n(rdl: (.|[\n])*)+
 A: >> expecting = null
 
 
-# 7-basic-with-count
+# 7-time-based-5
+#U: what are the news today
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => @com.smartnews.article(), date >= $start_of(day);
+
+A: Here (is|are) the news\.( They're us news\.)?\n(rdl: (.|[\n])*)+
+A: >> expecting = null
+
+
+# 8-basic-with-count
 #U: top 10 news
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => @com.smartnews.article()[1:10] => notify;
@@ -57,7 +66,7 @@ A: Here (is|are) the news\.( They're us news\.)?\n(rdl: (.|[\n])*)+
 A: >> expecting = null
 
 
-# 8-category-based
+# 9-category-based
 #U: sports news
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => @com.smartnews.article() filter contains(category, "sports"^^com.smartnews:category("sports")) => notify;
@@ -66,7 +75,7 @@ A: Here (is|are) the news\.\n(rdl: (.|[\n])*)+
 A: >> expecting = null
 
 
-# 9-category-and-time-based
+# 10-category-and-time-based
 #U: sports news on 2021-10-06
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => @com.smartnews.article() filter contains(category, "sports"^^com.smartnews:category("sports")) && date >= new Date(2021,10,6) && date <= new Date(2021,10,6) + 1day;
@@ -75,10 +84,19 @@ A: Here (is|are) the news\.\n(rdl: (.|[\n])*)+
 A: >> expecting = null
 
 
-# 10-source-based
+# 11-source-based
 #U: latest news published from Android Authority
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: now => \t @com.smartnews.article(), source =~ ("android authority");
+U: now => @com.smartnews.article(), source =~ ("android authority");
+
+A: The latest news (is|are) .*\.\n(rdl: (.|[\n])*)+
+A: >> expecting = null
+
+
+# 12-keyword-based
+#U: news related to vaccine
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => @com.smartnews.article(keyword="vaccine");
 
 A: The latest news (is|are) .*\.\n(rdl: (.|[\n])*)+
 A: >> expecting = null

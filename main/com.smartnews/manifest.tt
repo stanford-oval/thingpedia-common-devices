@@ -40,8 +40,18 @@ class @com.smartnews
   import config from @org.thingpedia.config.none();
 
   entity article #_[description="News Articles on SmartNews"] #[has_ner=false];
+  entity category #_[description="News Category on SmartNews"] #[has_ner=false];
 
-  monitorable list query article(out id: Entity(com.smartnews:article),
+  monitorable list query article(in opt keyword: String
+                                 #_[canonical={
+                                   base=["search keyword", "keyword", "query", "entity"],
+                                   passive_verb=["about #", "related to #", "matching #", "containing #", "in #"],
+                                 }]
+                                 #_[prompt=["what are you looking for"]]
+                                 #[string_values="tt:search_query"],
+                              
+                                 out id: Entity(com.smartnews:article)
+                                 #[filterable=false],
 
                                  out title: String
                                  #[string_values="tt:news_title"]
@@ -49,7 +59,8 @@ class @com.smartnews
                                       default = "base",
                                       base = ["title", "news title", "headline"],
                                       property = ["news #", "title #", "headline #"]
-                                 }],
+                                 }]
+                                 #[filterable=false],
 
                                  out author: String
                                  #[string_values="tt:person_full_name"]
@@ -72,7 +83,7 @@ class @com.smartnews
                                       passive_verb=["released by #", "published by #"],
                                       verb = ["# released", "# published", "# announced", "# stated"],
                                       base_projection=["publisher", "company", "media"],
-                                      passive_verb_projection=["publisher | by", "released | by"],
+                                      passive_verb_projection=["published | by", "released | by"],
                                       reverse_verb_projection=["released", "published"]
                                  }],
 
@@ -131,7 +142,7 @@ class @com.smartnews
                 "news feeds"]]
   #_[result={
     top="the latest news is ${title}",
-    list="here are the news"
+    list="here is the news"
   }]
   #_[formatted=[
     { type="rdl", webCallback="${link}", displayTitle="${title}" },

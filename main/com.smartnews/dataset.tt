@@ -29,7 +29,8 @@
 // OF THE POSSIBILITY OF SUCH DAMAGE.
 
 dataset @com.smartnews language "en" {
-    /* query (p_count :Number) := @com.smartnews.article()[1 : p_count]
+    /*  It causes a bug in synthesis. Need to check if that bug was fixed in Genie.
+    query (p_count :Number) := @com.smartnews.article()[1 : p_count]
     #_[utterances=["${p_count:const} news",
                    "${p_count:const} top news",
                    "${p_count:const} headlines",
@@ -42,8 +43,13 @@ dataset @com.smartnews language "en" {
                    "${p_count:const} news sotry",
                    "${p_count:const} news report",
                    "${p_count:const} articles",
-                   "${p_count:const} story",
+                   "${p_count:const} story"
                    ]]
-    #[id=62725774]
-    #[name="TopArticlesWithCount"]; */
+    #[name="ArticlesWithCount"];
+    */
+
+    query (p_keyword :String) = @com.smartnews.article(keyword=p_keyword)
+    #_[utterances=["${p_keyword:const} news",
+                   "news related to $p_keyword"]]
+    #[name="NewsWithKeyword"];
 }

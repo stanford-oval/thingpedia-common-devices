@@ -64,41 +64,37 @@ class UnavailableError extends Error {
 
 
 async function* fetch_articles(args) {
-    console.log(args);
-    try {
-        let query_string = {};
-        for (const [key, value] of Object.entries(args))
-            query_string = Object.assign({[key]: value}, query_string);
-        console.log(query_string);
-        const url = `${NEWS_DB_URL}?${querystring.stringify(query_string)}`;
-        const news_blob = JSON.parse(await Tp.Helpers.Http.get(url)).items;
-        if (!news_blob || (news_blob.length == 0))
-            throw new UnavailableError(`news not available yet for ${args.date}`);
-        for (const article of news_blob) {
-            const category = article.category.map((cat) => new Tp.Value.Entity(`${cat.toLowerCase()}`, cat.toLowerCase()));
-            yield {
-                id: new Tp.Value.Entity(String(article.link_id), null),
-                title: article.headline,
-                author: article.author ? article.author : null,
-                source: article.source ? article.source : null,
-                summary: article.summary,
-                link: article.link,
-                category,
-                date: new Date(article.publish_timestamp * 1000),
-                headline_audio_url: s3_to_http(article.headline_audio_s3),
-                summary_audio_url: s3_to_http(article.summary_audio_s3)
-            };
-        }
-    } catch(e) {
-        if (e.code === 404 || e.code === 403)
-            throw new UnavailableError(`summary missing for ${args.date}`);
-        throw e;
+    const url = `${NEWS_DB_URL}?${querystring.stringify(args)}`;
+    const news_blob = JSON.parse(await Tp.Helpers.Http.get(url)).items;
+    if (!news_blob || (news_blob.length === 0)) {
+        if (args.start_date && args.end_date) {
+            const start_date = new Date(args.start_date * 1000).toISOString();
+            const end_date = new Date(args.end_date * 1000).toISOString();
+            throw new UnavailableError(`news not available yet for ${start_date} and ${end_date}`);
+        } else if (args.start_date) {
+            const date = new Date(args.start_date * 1000).toISOString();
+            throw new UnavailableError(`news not available yet for ${date}`);
+        } else if (args.end_date) {
+            const date = new Date(args.end_date * 1000).toISOString();
+            throw new UnavailableError(`news not available yet for ${date}`);
+        } else
+            throw new UnavailableError("news service not available");
+    }     
+    for (const article of news_blob) {
+        const category = article.category.map((cat) => new Tp.Value.Entity(`${cat.toLowerCase()}`, cat.toLowerCase()));
+        yield {
+            id: new Tp.Value.Entity(String(article.link_id), null),
+            title: article.headline,
+            author: article.author ? article.author : null,
+            source: article.source ? article.source : null,
+            summary: article.summary,
+            link: article.link,
+            category,
+            date: new Date(article.publish_timestamp * 1000),
+            headline_audio_url: s3_to_http(article.headline_audio_s3),
+            summary_audio_url: s3_to_http(article.summary_audio_s3)
+        };
     }
-}
-
-
-function format_date(date) {
-    return `${date.getFullYear()}${date.getMonth() < 9 ? "0" : ""}${date.getMonth()+1}${date.getDate()<10 ? "0": ""}${date.getDate()}`;
 }
 
 
@@ -110,64 +106,33 @@ module.exports = class SmartNewsDevice extends Tp.BaseDevice {
         this.description = "SmartNews latest articles";
     }
 
-    async *get_article(params, hints) {
-        var date = "";
-        var category = "";
-        var source = "";
+    async *get_article({ keyword="" }, hints) {
         var args = {};
         if (hints && hints.filter) {
             for (let [pname, op, value] of hints.filter) {
                 if (pname === "date") {
-                    if (op === ">=") {
-                        date = format_date(value);
-                    } else if (op === "<=") {
-                        value.setDate(value.getDate() - 1);
-                        value.setHours(23, 59, 59);
-                        date = format_date(value);
-                    }
-                    args = Object.assign({date: date}, args);
+                    if (op === ">=")
+                        args.start_date = Math.floor(value.getTime() / 1000);
+                    else if ((op === "<=") || (op === "=="))
+                        args.end_date = Math.floor(value.getTime() / 1000);
                 }
                 if (pname === "category") {
-                    if (op === "contains") {
-                        category = String(value);
-                        args = Object.assign({category: category}, args);
-                    }
+                    if (op === "contains")
+                        args.category = String(value);
                 }
                 if (pname === "source") {
-                    if ((op === "==") || (op === "=~")) {
-                        source = String(value);
-                        args = Object.assign({source: source}, args);
-                    }
+                    if ((op === "==") || (op === "=~"))
+                        args.source = String(value);
                 }
             }
         }
-        if (!date) {
-            const now = new Date;
-            date = format_date(now);
-            args = Object.assign({date: date}, args);
-            try {
-                yield* fetch_articles(args);
-            } catch(e1) {
-                if (!(e1 instanceof UnavailableError))
-                    throw e1;
-                try {
-                    const yesterday = new Date(now.getTime() - 86400 * 1000);
-                    const date = format_date(yesterday);
-                    args.date = date;
-                    yield* fetch_articles(args);
-                } catch(e2) {
-                    if (!(e2 instanceof UnavailableError))
-                        throw e2;
-                    throw e1;
-                }
-            }
-        } else {
-            try {
-                yield* fetch_articles(args);
-            } catch(err) {
-                if (!(err instanceof UnavailableError))
-                    throw err;
-            }
+        if (keyword)
+            args.keyword = keyword;
+        try {
+            yield* fetch_articles(args);
+        } catch(error) {
+            if (!(error instanceof UnavailableError))
+                throw new UnavailableError("news service not available");
         }
     }
 };
