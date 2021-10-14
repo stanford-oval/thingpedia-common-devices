@@ -30,7 +30,25 @@ A: Here (is|are) the news\.( They're us news\.)?\n(rdl: (.|[\n])*)+
 A: >> expecting = null
 
 
-# 5-basic-with-count
+# 5-time-based-3
+#U: yesterday's news
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => @com.smartnews.article(), date <= $now - 1day => notify;
+
+A: Here (is|are) the news\.( They're us news\.)?\n(rdl: (.|[\n])*)+
+A: >> expecting = null
+
+
+# 6-time-based-4
+#U: news on 2021-10-06
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => @com.smartnews.article(), date >= new Date(2021,10,6) && date <= new Date(2021,10,6) + 1day;
+
+A: Here (is|are) the news\.( They're us news\.)?\n(rdl: (.|[\n])*)+
+A: >> expecting = null
+
+
+# 7-basic-with-count
 #U: top 10 news
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => @com.smartnews.article()[1:10] => notify;
@@ -39,7 +57,7 @@ A: Here (is|are) the news\.( They're us news\.)?\n(rdl: (.|[\n])*)+
 A: >> expecting = null
 
 
-# 6-category-based
+# 8-category-based
 #U: sports news
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => @com.smartnews.article() filter contains(category, "sports"^^com.smartnews:category("sports")) => notify;
@@ -47,3 +65,20 @@ U: now => @com.smartnews.article() filter contains(category, "sports"^^com.smart
 A: Here (is|are) the news\.\n(rdl: (.|[\n])*)+
 A: >> expecting = null
 
+
+# 9-category-and-time-based
+#U: sports news on 2021-10-06
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => @com.smartnews.article() filter contains(category, "sports"^^com.smartnews:category("sports")) && date >= new Date(2021,10,6) && date <= new Date(2021,10,6) + 1day;
+
+A: Here (is|are) the news\.\n(rdl: (.|[\n])*)+
+A: >> expecting = null
+
+
+# 10-source-based
+#U: latest news published from Android Authority
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => \t @com.smartnews.article(), source =~ ("android authority");
+
+A: The latest news (is|are) .*\.\n(rdl: (.|[\n])*)+
+A: >> expecting = null

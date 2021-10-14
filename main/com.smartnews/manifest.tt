@@ -41,9 +41,9 @@ class @com.smartnews
 
   entity article #_[description="News Articles on SmartNews"] #[has_ner=false];
 
-  monitorable list query article(out id : Entity(com.smartnews:article),
+  monitorable list query article(out id: Entity(com.smartnews:article),
 
-                                 out title : String
+                                 out title: String
                                  #[string_values="tt:news_title"]
                                  #_[canonical={
                                       default = "base",
@@ -62,7 +62,7 @@ class @com.smartnews
                                  }],
 
                                  out source: String
-                                 #[string_values="com.smartnews:news_source"]
+                                 #[string_values="tt:news_source"]
                                  #_[canonical={
                                       default="preposition",
                                       base=["publisher", "media", "publisher name", "source"],
@@ -85,7 +85,7 @@ class @com.smartnews
                                  }]
                                  #[filterable=false],
 
-                                 out link : Entity(tt:url),
+                                 out link: Entity(tt:url),
 
                                  out category: Array(Entity(com.smartnews:category))
                                  #[conflict_filter=["id"]]

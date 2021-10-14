@@ -40,18 +40,17 @@ const querystring = require("querystring");
 const NEWS_DB_URL = "http://54.238.163.11:5000/news";
 
 
-function s3tohttp(url) {
+function s3_to_http(url) {
     const parsed = Url.parse(url);
-    if (parsed.protocol !== 's3:')
+    if (parsed.protocol !== "s3:")
         return url;
-
-    parsed.protocol = 'https:';
-    if (parsed.host === 'oval-project')
-        parsed.host = parsed.hostname = 'oval-project.s3-ap-northeast-1.amazonaws.com';
-    else if (parsed.host === 'en-us-oval-project')
-        parsed.host = parsed.hostname = 'en-us-oval-project.s3-us-west-1.amazonaws.com';
+    parsed.protocol = "https:";
+    if (parsed.host === "oval-project")
+        parsed.host = parsed.hostname = "oval-project.s3-ap-northeast-1.amazonaws.com";
+    else if (parsed.host === "en-us-oval-project")
+        parsed.host = parsed.hostname = "en-us-oval-project.s3-us-west-1.amazonaws.com";
     else
-        parsed.host = parsed.hostname = parsed.host + '.s3.amazonaws.com';
+        parsed.host = parsed.hostname = parsed.host + ".s3.amazonaws.com";
     return Url.format(parsed);
 }
 
@@ -59,26 +58,22 @@ function s3tohttp(url) {
 class UnavailableError extends Error {
     constructor(message) {
         super(message);
-        this.code = 'unavailable';
+        this.code = "unavailable";
     }
 }
 
 
-async function* fetch_articles(date, category, limit=0, offset=0) {
+async function* fetch_articles(args) {
+    console.log(args);
     try {
-        let query_string = {
-            date: date
-        };
-        if (category)
-        query_string = Object.assign({category: category}, query_string);
-        if (limit)
-            query_string = Object.assign({limit: limit}, query_string);
-        if (offset)
-            query_string = Object.assign({offset: offset}, query_string);
+        let query_string = {};
+        for (const [key, value] of Object.entries(args))
+            query_string = Object.assign({[key]: value}, query_string);
+        console.log(query_string);
         const url = `${NEWS_DB_URL}?${querystring.stringify(query_string)}`;
         const news_blob = JSON.parse(await Tp.Helpers.Http.get(url)).items;
-        if (!news_blob)
-            throw Error("no news yet");
+        if (!news_blob || (news_blob.length == 0))
+            throw new UnavailableError(`news not available yet for ${args.date}`);
         for (const article of news_blob) {
             const category = article.category.map((cat) => new Tp.Value.Entity(`${cat.toLowerCase()}`, cat.toLowerCase()));
             yield {
@@ -90,20 +85,20 @@ async function* fetch_articles(date, category, limit=0, offset=0) {
                 link: article.link,
                 category,
                 date: new Date(article.publish_timestamp * 1000),
-                headline_audio_url: s3tohttp(article.headline_audio_s3),
-                summary_audio_url: s3tohttp(article.summary_audio_s3)
+                headline_audio_url: s3_to_http(article.headline_audio_s3),
+                summary_audio_url: s3_to_http(article.summary_audio_s3)
             };
         }
     } catch(e) {
         if (e.code === 404 || e.code === 403)
-            throw new UnavailableError(`summary missing for ${forDate}`);
+            throw new UnavailableError(`summary missing for ${args.date}`);
         throw e;
     }
 }
 
 
 function format_date(date) {
-    return `${date.getFullYear()}${date.getMonth() < 9 ? '0' : ''}${date.getMonth()+1}${date.getDate()<10 ? '0': ''}${date.getDate()}`;
+    return `${date.getFullYear()}${date.getMonth() < 9 ? "0" : ""}${date.getMonth()+1}${date.getDate()<10 ? "0": ""}${date.getDate()}`;
 }
 
 
@@ -118,6 +113,8 @@ module.exports = class SmartNewsDevice extends Tp.BaseDevice {
     async *get_article(params, hints) {
         var date = "";
         var category = "";
+        var source = "";
+        var args = {};
         if (hints && hints.filter) {
             for (let [pname, op, value] of hints.filter) {
                 if (pname === "date") {
@@ -128,30 +125,36 @@ module.exports = class SmartNewsDevice extends Tp.BaseDevice {
                         value.setHours(23, 59, 59);
                         date = format_date(value);
                     }
+                    args = Object.assign({date: date}, args);
                 }
-                if (pname === "category")
-                    if (op === "contains")
-                        category = (String(value))
+                if (pname === "category") {
+                    if (op === "contains") {
+                        category = String(value);
+                        args = Object.assign({category: category}, args);
+                    }
+                }
+                if (pname === "source") {
+                    if ((op === "==") || (op === "=~")) {
+                        source = String(value);
+                        args = Object.assign({source: source}, args);
+                    }
+                }
             }
         }
         if (!date) {
             const now = new Date;
             date = format_date(now);
+            args = Object.assign({date: date}, args);
             try {
-                if (category)
-                    yield* fetch_articles(date, category);
-                else
-                    yield* fetch_articles(date);
+                yield* fetch_articles(args);
             } catch(e1) {
                 if (!(e1 instanceof UnavailableError))
                     throw e1;
                 try {
                     const yesterday = new Date(now.getTime() - 86400 * 1000);
                     const date = format_date(yesterday);
-                    if (category)
-                        yield* fetch_articles(date, category);
-                    else
-                        yield* fetch_articles(date);
+                    args.date = date;
+                    yield* fetch_articles(args);
                 } catch(e2) {
                     if (!(e2 instanceof UnavailableError))
                         throw e2;
@@ -160,7 +163,7 @@ module.exports = class SmartNewsDevice extends Tp.BaseDevice {
             }
         } else {
             try {
-                yield* fetch_articles(date);
+                yield* fetch_articles(args);
             } catch(err) {
                 if (!(err instanceof UnavailableError))
                     throw err;
