@@ -9,7 +9,7 @@ num_columns = 4
 clean_input_quotes = true
 
 
-$(experiment)/$(source)/input: datadir/$(source)
+eval/$(experiment)/$(source)/input: datadir/$(source)
 	mkdir -p $@
 
 	for f in $(all_names) ; do \
@@ -20,14 +20,14 @@ $(experiment)/$(source)/input: datadir/$(source)
 		fi ; \
 	done
 
-$(experiment)/$(source)/input-qpis: $(experiment)/$(source)/input
+eval/$(experiment)/$(source)/input-qpis: eval/$(experiment)/$(source)/input
 	mkdir -p $@
 
 	# qpis input data
 	for f in $(all_names) ; do $(genie) requote --mode qpis --contextual -o $@/$$f.tsv $</$$f.tsv; done
 
 
-$(experiment)/$(source)/input-nmt: $(experiment)/$(source)/input-qpis
+eval/$(experiment)/$(source)/input-nmt: eval/$(experiment)/$(source)/input-qpis
 	mkdir -p $@
 	# prepare unquoted data for translation
 	for f in $(all_names) ; do \
@@ -37,7 +37,7 @@ $(experiment)/$(source)/input-nmt: $(experiment)/$(source)/input-qpis
 	rm -rf $@/*.tmp*
 
 
-process_data: $(experiment)/$(source)/input-nmt
+process_data: eval/$(experiment)/$(source)/input-nmt
 	# done!
 	echo $@
 
@@ -71,7 +71,7 @@ SENTENCE_TRANSFORMERS_HOME ?= $(genienlpdir)/.embeddings
 GENIENLP_DATABASE_DIR ?=
 genienlp ?= export SENTENCE_TRANSFORMERS_HOME=$(SENTENCE_TRANSFORMERS_HOME) ; $(shell which genienlp)
 
-$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/translated-qpis: $(experiment)/$(source)/input-nmt/
+eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/translated-qpis: eval/$(experiment)/$(source)/input-nmt/
 	mkdir -p $@
 
 	rm -rf tmp/
@@ -88,7 +88,7 @@ $(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/translated-qpis: $(experiment)/
 	done ; \
 	rm -rf tmp/
 
-translate_data: $(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/translated-qpis
+translate_data: eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/translated-qpis
 	# done!
 	echo $@
 
@@ -97,16 +97,16 @@ translate_data: $(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/translated-qpis
 ####################################################################################################################
 augment_default_args = --num-attempts 10000 --target-language thingtalk --contextual --synthetic-expand-factor $(synthetic_expand_factor) --quoted-paraphrasing-expand-factor $(quoted_paraphrase_expand_factor) --no-quote-paraphrasing-expand-factor $(noquote_paraphrase_expand_factor) --quoted-fraction $(quoted_fraction)
 
-$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/refined-qpis: $(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/translated-qpis
+eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/refined-qpis: eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/translated-qpis
 	mkdir -p $@
 	for f in $(all_names) ; do \
-		paste <(cut -f1,2 ./$(experiment)/$(source)/input/$$f.tsv) <(cut -f2 $</$$f.tsv) <(cut -f4 ./$(experiment)/$(source)/input/$$f.tsv) > $@/$$f.tmp.tsv ; \
+		paste <(cut -f1,2 ./eval/$(experiment)/$(source)/input/$$f.tsv) <(cut -f2 $</$$f.tsv) <(cut -f4 ./eval/$(experiment)/$(source)/input/$$f.tsv) > $@/$$f.tmp.tsv ; \
 		python3 ./scripts/text_edit.py --no_lower_case --refine_sentence --post_process_translation --unnormalize_punctuation --experiment $(experiment) --param_language $(src_lang) --num_columns $(num_columns) --input_file $@/$$f.tmp.tsv --output_file $@/$$f.tsv ; \
 	done
 	rm -rf $@/*.tmp*
 
 
-$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/cleaned-qpis: $(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/refined-qpis
+eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/cleaned-qpis: eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/refined-qpis
 	mkdir -p $@
 	# fix punctuation and clean dataset
 	for f in $(all_names) ; do \
@@ -114,7 +114,7 @@ $(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/cleaned-qpis: $(experiment)/$(s
 	done
 
 
-$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/cleaned: $(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/cleaned-qpis
+eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/cleaned: eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/cleaned-qpis
 	mkdir -p $@
 	# remove quotation marks in the sentence
 	for f in $(all_names) ; do \
@@ -122,7 +122,7 @@ $(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/cleaned: $(experiment)/$(source
 	done
 
 
-$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/quoted: $(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/cleaned
+eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/quoted: eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/cleaned
 	mkdir -p $@
 	# requote dataset (if successful, verifies parameters match in the sentence and in the program)
 	for f in $(all_names) ; do \
@@ -141,7 +141,7 @@ update_param_set: parameter-datasets.tsv
 	cat $<.tmp | sort | uniq > $<
 	rm -rf $<.tmp
 
-$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/augmented: $(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/quoted update_param_set $(schema_file)
+eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/augmented: eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/quoted update_param_set $(schema_file)
 	mkdir -p $@
 	# augment dataset in target language
 	for f in $(all_names) ; do \
@@ -150,13 +150,13 @@ $(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/augmented: $(experiment)/$(sour
 	done
 
 
-$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/final: $(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/augmented
+eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/final: eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/augmented
 	mkdir -p $@
 	# remove cjk spaces and lowercase text
 	for f in $(all_names) ; do \
 		python3 ./scripts/text_edit.py --fix_spaces_cjk --experiment $(experiment) --param_language $(tgt_lang) --num_columns $(num_columns) --input_file $</$$f.tsv --output_file $@/$$f.tsv  ; \
 	done
 
-postprocess_data: $(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/final
+postprocess_data: eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/final
 	# done!
 	echo $@
