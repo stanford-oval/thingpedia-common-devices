@@ -110,7 +110,7 @@ $(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/cleaned-qpis: $(experiment)/$(s
 	mkdir -p $@
 	# fix punctuation and clean dataset
 	for f in $(all_names) ; do \
-		python3 ./scripts/text_edit.py --no_lower_case --e2e --insert_space_quotes --num_columns $(num_columns) --input_file $</$$f.tsv --output_file $@/$$f.tsv ; \
+		python3 ./scripts/text_edit.py --no_lower_case --insert_space_quotes --num_columns $(num_columns) --input_file $</$$f.tsv --output_file $@/$$f.tsv ; \
 	done
 
 
