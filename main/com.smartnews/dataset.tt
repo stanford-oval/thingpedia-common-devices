@@ -29,62 +29,27 @@
 // OF THE POSSIBILITY OF SUCH DAMAGE.
 
 dataset @com.smartnews language "en" {
-    /*query (p_count :Number) := @com.smartnews.article()[1 : p_count]
+    /*  It causes a bug in synthesis. Need to check if that bug was fixed in Genie.
+    query (p_count :Number) := @com.smartnews.article()[1 : p_count]
     #_[utterances=["${p_count:const} news",
                    "${p_count:const} top news",
+                   "${p_count:const} headlines",
                    "${p_count:const} breaking news",
                    "${p_count:const} important news",
                    "${p_count:const} global news",
                    "${p_count:const} hot topic",
+                   "${p_count:const} news articles",
+                   "${p_count:const} news feeds",
                    "${p_count:const} news sotry",
                    "${p_count:const} news report",
+                   "${p_count:const} articles",
                    "${p_count:const} story"
                    ]]
-    #[id=62725774]
-    #[name="TopArticlesWithCount"];*/
+    #[name="ArticlesWithCount"];
+    */
 
-// BELOW FOR FUTURE DEV
-/*
-    query := @com.smartnews.reading_list()
-    #_[utterances=["smartnews reading list",
-                   "smart news reading list",
-                   "smartnews list",
-                   "smart news list",
-                   "my smart news list",
-                   "reading list",
-                   "my reading list",
-                   "list",
-                   "my list",
-                   "news list",
-                   "article list",
-                   "my pocket list",
-                   "pokcet list",
-                   "pocket",
-                   "my pocket"]]
-    #[id=62726516]
-    #[name="ReadingList"];
-
-    action (p_id :Number) := @com.smartnews.pocket(id=p_id)
-    #_[utterances=["pocket smartnews $p_id",
-                   "pocket smart news $p_id",
-                   "pocket $p_id",
-                   "add smartnews $p_id",
-                   "add smart news $p_id",
-                   "pocket news $p_id",
-                   "read $p_id later"]]
-    #[id=62740743]
-    #[name="PocketWithNewsId"];
-
-    action (p_id :Number) := @com.smartnews.drop(id=p_id)
-    #_[utterances=["drop smartnews $p_id",
-                   "drop smart news $p_id",
-                   "drop news $p_id",
-                   "drop $p_id",
-                   "remove news $p_id",
-                   "remove smart news $p_id",
-                   "remove smartnews $p_id from my pocket"]]
-    #[id=62741272]
-    #[name="DropWithNewsId"];
-*/
-
+    query (p_keyword :String) = @com.smartnews.article(keyword=p_keyword)
+    #_[utterances=["${p_keyword:const} news",
+                   "news related to $p_keyword"]]
+    #[name="NewsWithKeyword"];
 }
