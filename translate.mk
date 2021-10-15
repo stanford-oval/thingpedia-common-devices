@@ -5,7 +5,7 @@
 # source ?= user | agent | nlg | fewshot/agent | fewshot/user
 source ?= user
 
-num_columns = 4
+translate_num_columns = 4
 clean_input_quotes = true
 
 
@@ -14,7 +14,7 @@ eval/$(experiment)/$(source)/input: datadir/$(source)
 
 	for f in $(all_names) ; do \
 		if $(clean_input_quotes) ; then \
-			python3 ./scripts/text_edit.py --no_lower_case --remove_qpis --num_columns $(num_columns) --experiment $(experiment) --input_file $</$$f.tsv --output_file $@/$$f.tsv ; \
+			python3 ./scripts/text_edit.py --no_lower_case --remove_qpis --num_columns $(translate_num_columns) --experiment $(experiment) --input_file $</$$f.tsv --output_file $@/$$f.tsv ; \
 		else \
 			cp $</$$f.tsv $@/$$f.tsv ; \
 		fi ; \
@@ -31,7 +31,7 @@ eval/$(experiment)/$(source)/input-nmt: eval/$(experiment)/$(source)/input-qpis
 	mkdir -p $@
 	# prepare unquoted data for translation
 	for f in $(all_names) ; do \
-		python3 ./scripts/text_edit.py --no_lower_case --prepare_for_marian --replace_ids  --num_columns $(num_columns) --input_file $</$$f.tsv --output_file $@/$$f.tmp.tsv ; \
+		python3 ./scripts/text_edit.py --no_lower_case --prepare_for_marian --replace_ids  --num_columns $(translate_num_columns) --input_file $</$$f.tsv --output_file $@/$$f.tmp.tsv ; \
 		cut -f1,3 $@/$$f.tmp.tsv >  $@/$$f.tsv ; \
 	done
 	rm -rf $@/*.tmp*
@@ -61,15 +61,15 @@ temperature = 0.2
 
 nmt_model = marian
 
-train_default_args = --eval_set_name eval --override_question= --train_tasks almond_translate --train_languages $(src_lang) --train_tgt_languages $(tgt_lang) --eval_languages $(src_lang) --eval_tgt_languages $(tgt_lang) --model TransformerSeq2Seq --save $(GENIENLP_EMBEDDINGS)/$(model_name_or_path)/ --embeddings $(GENIENLP_EMBEDDINGS) --exist_ok --skip_cache --no_commit --preserve_case
-translate_default_args = --translate_no_answer --tasks almond_translate --evaluate valid --pred_languages $(src_lang) --pred_tgt_languages $(tgt_lang) --path $(GENIENLP_EMBEDDINGS)/$(model_name_or_path)/ --embeddings $(GENIENLP_EMBEDDINGS) --overwrite --silent
-custom_translation_hparams = --val_batch_size $(val_batch_size) --temperature $(temperature) --translate_example_split
+translate_fixed_default_args = --eval_set_name eval --override_question= --train_tasks almond_translate --train_languages $(src_lang) --train_tgt_languages $(tgt_lang) --eval_languages $(src_lang) --eval_tgt_languages $(tgt_lang) --model TransformerSeq2Seq --save $(GENIENLP_EMBEDDINGS)/$(model_name_or_path)/ --embeddings $(GENIENLP_EMBEDDINGS) --exist_ok --skip_cache --no_commit --preserve_case
+translate_pred_default_args = --translate_example_split --translate_no_answer --tasks almond_translate --evaluate valid --pred_languages $(src_lang) --pred_tgt_languages $(tgt_lang) --path $(GENIENLP_EMBEDDINGS)/$(model_name_or_path)/ --embeddings $(GENIENLP_EMBEDDINGS) --overwrite --silent
+custom_translation_hparams = --val_batch_size $(val_batch_size) --temperature $(temperature)
 
 genienlpdir ?= ../genienlp
 GENIENLP_EMBEDDINGS ?= $(genienlpdir)/.embeddings
 SENTENCE_TRANSFORMERS_HOME ?= $(genienlpdir)/.embeddings
 GENIENLP_DATABASE_DIR ?=
-genienlp ?= export SENTENCE_TRANSFORMERS_HOME=$(SENTENCE_TRANSFORMERS_HOME) ; $(shell which genienlp)
+genienlp ?= GENIENLP_EMBEDDINGS=$(GENIENLP_EMBEDDINGS) ; SENTENCE_TRANSFORMERS_HOME=$(SENTENCE_TRANSFORMERS_HOME) ; genienlp
 
 eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/translated-qpis: eval/$(experiment)/$(source)/input-nmt/
 	mkdir -p $@
@@ -79,9 +79,9 @@ eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/translated-qpis: eval/$(ex
 	ln -f $</*.tsv tmp/almond/
 	for f in $(all_names) ; do \
 		if [ ! -f $(GENIENLP_EMBEDDINGS)/$(model_name_or_path)/best.pth ] ; then \
-			$(genienlp) train --do_alignment --train_iterations 0 --pretrained_model $(model_name_or_path) $(train_default_args) ; \
+			$(genienlp) train --do_alignment --train_iterations 0 --pretrained_model $(model_name_or_path) $(translate_fixed_default_args) ; \
 		fi ; \
-		$(genienlp) predict --pred_set_name $$f --do_alignment --data tmp/ `if ${return_raw_outputs} ; then echo "--translate_return_raw_outputs" ; fi` --eval_dir $@/ $(translate_default_args) $(custom_translation_hparams) || exit 1 ; \
+		$(genienlp) predict --pred_set_name $$f --do_alignment --data tmp/ $(if $(return_raw_outputs), --translate_return_raw_outputs, ) --eval_dir $@/ $(translate_pred_default_args) $(custom_translation_hparams) || exit 1 ; \
 		mv $@/valid/almond_translate.tsv $@/$$f.tsv ; \
 		if [ -e "$@/valid/almond_translate.raw.tsv" ] ; then mv $@/valid/almond_translate.raw.tsv $@/$$f.raw.tsv ; fi ; \
 		rm -rf $@/valid ; \
@@ -101,7 +101,7 @@ eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/refined-qpis: eval/$(exper
 	mkdir -p $@
 	for f in $(all_names) ; do \
 		paste <(cut -f1,2 ./eval/$(experiment)/$(source)/input/$$f.tsv) <(cut -f2 $</$$f.tsv) <(cut -f4 ./eval/$(experiment)/$(source)/input/$$f.tsv) > $@/$$f.tmp.tsv ; \
-		python3 ./scripts/text_edit.py --no_lower_case --refine_sentence --post_process_translation --unnormalize_punctuation --experiment $(experiment) --param_language $(src_lang) --num_columns $(num_columns) --input_file $@/$$f.tmp.tsv --output_file $@/$$f.tsv ; \
+		python3 ./scripts/text_edit.py --no_lower_case --refine_sentence --post_process_translation --unnormalize_punctuation --experiment $(experiment) --param_language $(src_lang) --num_columns $(translate_num_columns) --input_file $@/$$f.tmp.tsv --output_file $@/$$f.tsv ; \
 	done
 	rm -rf $@/*.tmp*
 
@@ -110,7 +110,7 @@ eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/cleaned-qpis: eval/$(exper
 	mkdir -p $@
 	# fix punctuation and clean dataset
 	for f in $(all_names) ; do \
-		python3 ./scripts/text_edit.py --no_lower_case --insert_space_quotes --num_columns $(num_columns) --input_file $</$$f.tsv --output_file $@/$$f.tsv ; \
+		python3 ./scripts/text_edit.py --no_lower_case --insert_space_quotes --num_columns $(translate_num_columns) --input_file $</$$f.tsv --output_file $@/$$f.tsv ; \
 	done
 
 
@@ -118,7 +118,7 @@ eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/cleaned: eval/$(experiment
 	mkdir -p $@
 	# remove quotation marks in the sentence
 	for f in $(all_names) ; do \
-		python3 ./scripts/text_edit.py --no_lower_case --remove_qpis --num_columns $(num_columns) --input_file $</$$f.tsv  --output_file $@/$$f.tsv ; \
+		python3 ./scripts/text_edit.py --no_lower_case --remove_qpis --num_columns $(translate_num_columns) --input_file $</$$f.tsv  --output_file $@/$$f.tsv ; \
 	done
 
 
@@ -154,7 +154,7 @@ eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/final: eval/$(experiment)/
 	mkdir -p $@
 	# remove cjk spaces and lowercase text
 	for f in $(all_names) ; do \
-		python3 ./scripts/text_edit.py --fix_spaces_cjk --experiment $(experiment) --param_language $(tgt_lang) --num_columns $(num_columns) --input_file $</$$f.tsv --output_file $@/$$f.tsv  ; \
+		python3 ./scripts/text_edit.py --fix_spaces_cjk --experiment $(experiment) --param_language $(tgt_lang) --num_columns $(translate_num_columns) --input_file $</$$f.tsv --output_file $@/$$f.tsv  ; \
 	done
 
 postprocess_data: eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/final
