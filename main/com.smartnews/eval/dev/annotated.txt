@@ -1,9 +1,4 @@
 ====
-# ====
-U: show me news
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.smartnews.article();
-====
 # log/92543
 U: get top news
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
@@ -58,11 +53,6 @@ UT: @com.smartnews.article();
 U: what are the news today?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.smartnews.article(), date >= $start_of(day);
-====
-# log/92103
-U: get smartnews "str:QUOTED_STRING::0:"
-UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.smartnews.article() filter title =~ "str:QUOTED_STRING::0:";
 ====
 # log/66222
 U: current news
@@ -252,5 +242,375 @@ UT: @com.smartnews.article();
 ====
 # log-dev/11871
 U: read me the news.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# manual/0
+U: show me news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# manual/2
+U: breaking stories
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# manual/3
+U: breaking stories
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# manual/4
+U: A roundup of the latest news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# manual/5
+U: news on anti-corruption
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="anti-corruption");
+====
+# manual/6
+U: news on air pollution
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="air pollution");
+====
+# manual/7
+U: baseball news from espn
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "baseball"^^com.smartnews:category("baseball")) && source =~ "espn";
+====
+# manual/8
+U: national top headlines
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "national"^^com.smartnews:category("national"));
+====
+# manual/9
+U: give me 5 top news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article()[1 : 5];
+====
+# manual/10
+U: read out 3 news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article()[1 : 3];
+====
+# manual/11
+U: some news on real-estate
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="real-estate");
+====
+# manual/12
+U: any news on finance
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "finance"^^com.smartnews:category("finance"));
+====
+# manual/13
+U: give me 1 news released on October 10
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: (@com.smartnews.article(), date == new Date(2021,10,10))[1];
+====
+# manual/14
+U: 3 most recent news on weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(date desc of @com.smartnews.article(keyword="weather"))[1];
+====
+# manual/15
+U: tell me news about celebrity
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="celebrity");
+====
+# manual/16
+U: consumer electronics news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "consumer electronics"^^com.smartnews:category("consumer electronics"));
+====
+# manual/17
+U: news feeds
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# manual/18
+U: business headlines
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "business"^^com.smartnews:category("business"));
+====
+# manual/19
+U: read tennis news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "tennis"^^com.smartnews:category("tennis"));
+====
+# manual/20
+U: updates on boxing news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "boxing"^^com.smartnews:category("boxing"));
+====
+# manual/21
+U: what is happening in eastasia
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "eastasia"^^com.smartnews:category("eastasia"));
+====
+# manual/22
+U: football news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "football"^^com.smartnews:category("football"));
+====
+# manual/23
+U: what's new in mexico
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "mexico"^^com.smartnews:category("mexico"));
+====
+# manual/24
+U: world news please
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "world"^^com.smartnews:category("world"));
+====
+# manual/25
+U: give me some news on the election
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="election");
+====
+# manual/26
+U: npr news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(), source =~ ("npr");
+====
+# manual/27
+U: read news from musicradar
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(), source =~ ("musicradar");
+====
+# manual/28
+U: news related to android
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="android");
+====
+# manual/29
+U: give me news containing google pixel
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="google pixel");
+====
+# manual/30
+U: top technology news on october 10
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "technology"^^com.smartnews:category("technology")) && date == new Date(2021,10,10);
+====
+# manual/31
+U: news on mother's day
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="mother's day");
+====
+# manual/32
+U: news on halloween
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="halloween");
+====
+# manual/33
+U: news on fake news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="fake news");
+====
+# manual/34
+U: news on the topic of crime
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "crime"^^com.smartnews:category("crime"));
+====
+# manual/35
+U: news in education
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "education"^^com.smartnews:category("education"));
+====
+# manual/36
+U: latest news on cars
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="cars")[1];
+====
+# manual/37
+U: news on horseracing
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="horseracing");
+====
+# manual/38
+U: news on football
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="football");
+====
+# manual/39
+U: latest news on etfs
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="etfs");
+====
+# manual/40
+U: finance news from bloomberg
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "finance"^^com.smartnews:category("finance")) && source =~ "bloomberg";
+====
+# manual/41
+U: latest breaking news on election
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: (@com.smartnews.article() filter contains(category, "election"^^com.smartnews:category("election")))[1];
+====
+# manual/42
+U: latest news on the facebook outage from reuters
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(date desc of @com.smartnews.article(keyword="facebook outage") filter source =~ "reuters")[1];
+====
+# manual/43
+U: latest news on google announcement
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(date desc of @com.smartnews.article(keyword="google announcement"))[1];
+====
+# manual/44
+U: show me yesterday's news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(), date <= $now - 1day;
+====
+# manual/45
+U: latest news on iphone
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(date desc of @com.smartnews.article(keyword="iphone"))[1];
+====
+# manual/46
+U: technology news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "technology"^^com.smartnews:category("technology"));
+====
+# manual/47
+U: news related to netflix
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="netflix");
+====
+# manual/48
+U: news in bitcoin
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="bitcoin");
+====
+# manual/49
+U: news containing cryptocurrency
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="cryptocurrency");
+====
+# manual/50
+U: news about star wars
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="star wars");
+====
+# manual/51
+U: news about the academy award
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="academy award");
+====
+# manual/52
+U: latest news about the grammys
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(date desc of @com.smartnews.article(keyword="grammys"))[1];
+====
+# manual/53
+U: some news about grammys nominations
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="grammys nominations");
+====
+# manual/54
+U: top news on the cannes festival
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="cannes festival");
+====
+# manual/55
+U: recent news about the mtv award
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="mtv award");
+====
+# manual/56
+U: smart news about investment
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="investment");
+====
+# manual/57
+U: national news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "national"^^com.smartnews:category("national"));
+====
+# manual/58
+U: news in the space category
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "space"^^com.smartnews:category("space"));
+====
+# manual/59
+U: news of the health category
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "health"^^com.smartnews:category("health"));
+====
+# manual/60
+U: soccer news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "soccer"^^com.smartnews:category("soccer"));
+====
+# manual/61
+U: australia news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "australia"^^com.smartnews:category("australia"));
+====
+# manual/62
+U: south america news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "south america"^^com.smartnews:category("south america"));
+====
+# manual/63
+U: travel news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "travel"^^com.smartnews:category("travel"));
+====
+# manual/64
+U: whitehouse news from the washington post
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "whitehouse"^^com.smartnews:category("whitehouse")) && source =~ "washington post";
+====
+# manual/65
+U: news from people
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter source =~ "people";
+====
+# manual/66
+U: recent news published by new york post
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter source =~ "new york post";
+====
+# manual/67
+U: news released by new york daily news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter source =~ "new york daily news";
+====
+# manual/68
+U: news from nfl draft bible
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter source =~ "nfl draft bible";
+====
+# manual/69
+U: football news published by dodge city daily globe
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "football"^^com.smartnews:category("football")) && source =~ "dodge city daily globe";
+====
+# manual/70
+U: alright, give me some news from digital trends
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(), source =~ "digital trends";
+====
+# manual/71
+U: news from the last 2 days
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(), date >= $now - 2day && date <= $now;
+====
+# manual/72
+U: today's news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(), date >= $start_of(day);
+====
+# manual/73
+U: what's happening in the middle east
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "middle east"^^com.smartnews:category("middle east"));
+====
+# manual/74
+U: what's new today
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.smartnews.article();
