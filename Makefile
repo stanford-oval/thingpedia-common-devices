@@ -1,3 +1,5 @@
+SHELL := /bin/bash
+
 -include ./config.mk
 
 NULL =
@@ -116,6 +118,10 @@ s3_model_dir ?=
 all: $($(release)_pkgfiles:%/package.json=build/%.zip)
 	@:
 
+# make calls with unspecified target execute the first one that doesn't start with "."
+# import translate.mk after all: to retain it as the first target
+-include ./translate.mk
+
 build/%.zip: % %/node_modules
 	mkdir -p `dirname $@`
 	cd $< ; zip -x '*.tt' '*.yml' 'node_modules/.bin/*' 'icon.png' 'secrets.json' 'eval/*' 'simulation/*' 'database-map.tsv' -r $(abspath $@) .
@@ -143,11 +149,11 @@ eval/$(release)/constants.tsv: $(schema_file) parameter-datasets.tsv
 	if test -f $@ && cmp $@.tmp $@ ; then rm $@.tmp ; else mv $@.tmp $@ ; fi
 
 eval/$(release)/paraphrase.tsv : eval/everything/paraphrase.tsv
-	node ./scripts/subset-multidevice.js paraphrase $(release) $(custom_devices)
+	node ./scripts/subset-multidevice.js paraphrase $(release) $(foreach d,$(custom_devices),$(notdir $(d)))
 
 eval/$(release)/%/annotated.txt : eval/everything/%/annotated.txt
 	mkdir -p $(dir $@)
-	node ./scripts/subset-multidevice.js $* $(release) $(custom_devices)
+	node ./scripts/subset-multidevice.js $* $(release) $(foreach d,$(custom_devices),$(notdir $(d)))
 
 %/manifest.auto.tt: %/manifest.tt eval/$(release)/constants.tsv parameter-datasets.tsv .embeddings/paraphraser-bart
 	$(genie) auto-annotate -o $@.tmp --thingpedia $< \
