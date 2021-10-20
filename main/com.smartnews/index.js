@@ -77,8 +77,9 @@ async function* fetch_articles(args) {
         } else if (args.end_date) {
             const date = new Date(args.end_date * 1000).toISOString();
             throw new UnavailableError(`news not available yet for ${date}`);
-        } else
+        } else {
             throw new UnavailableError("news service not available");
+        }
     }     
     for (const article of news_blob) {
         const category = article.category.map((cat) => new Tp.Value.Entity(`${cat.toLowerCase()}`, cat.toLowerCase()));
