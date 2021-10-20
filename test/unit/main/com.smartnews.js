@@ -11,7 +11,7 @@ const assert = require('assert');
 const Tp = require('thingpedia');
 
 module.exports = [
-    
+
     ['query', 'article', {}, {}, (result) => {
         let tmp = undefined;
         try {
@@ -36,8 +36,7 @@ module.exports = [
                 assert(item.summary_audio_url.startsWith('https://'), `Expected link to start with https://, got ${item.summary_audio_url}`);
             }
         } catch (error) {
-            console.log(tmp.id.constructor.name);
-            console.log('parsed news items: ' + JSON.stringify(tmp, null, 2));
+            console.log('parsed news items:', tmp);
             throw Error(error);
         }
     }],
@@ -66,12 +65,12 @@ module.exports = [
                 assert(Array.isArray(item.category));
                 assert(item.category[0] instanceof Tp.Value.Entity);
                 assert(item.date instanceof Date);
-                assert((item.date.getTime() >= start_date.getTime()) && (item.date.getTime() < end_date.getTime()));
+                assert((item.date.getTime() >= start_date.getTime()) && (item.date.getTime() <= end_date.getTime()));
                 assert(item.headline_audio_url.startsWith('https://'), `Expected link to start with https://, got ${item.headline_audio_url}`);
                 assert(item.summary_audio_url.startsWith('https://'), `Expected link to start with https://, got ${item.summary_audio_url}`);
             }
         } catch (error) {
-            console.log('parsed news items: ' + JSON.stringify(tmp, null, 2));
+            console.log('parsed news items:', tmp);
             throw Error(error);
         }
     }]
