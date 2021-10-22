@@ -1,3 +1,102 @@
 # 1-basic
 U: get news
-A: (Sorry, the smartnews service is unavailable\. Please try again later\.|Here are the news\.\n(rdl: (.|[\n])*)+\n>> expecting = null)
+
+A: Here (is|are) the news\.( They're us news\.)?\n(rdl: (.|[\n])*)+
+A: >> expecting = null
+
+====
+# 2-basic-2
+U: recent news
+
+A: Here (is|are) the news\.( They're us news\.)?\n(rdl: (.|[\n])*)+
+A: >> expecting = null
+
+====
+# 3-time-based-1
+#U: today's news
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => @com.smartnews.article() => notify;
+
+A: Here (is|are) the news\.( They're us news\.)?\n(rdl: (.|[\n])*)+
+A: >> expecting = null
+
+====
+# 4-time-based-2
+#U: today's news
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => @com.smartnews.article(), date <= $now => notify;
+
+A: Here (is|are) the news\.( They're us news\.)?\n(rdl: (.|[\n])*)+
+A: >> expecting = null
+
+====
+# 5-time-based-3
+#U: yesterday's news
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => @com.smartnews.article(), date <= $now - 1day => notify;
+
+A: Here (is|are) the news\.( They're us news\.)?\n(rdl: (.|[\n])*)+
+A: >> expecting = null
+
+====
+# 6-time-based-4
+#U: news on 2021-10-06
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => @com.smartnews.article(), date >= new Date(2021,10,6) && date <= new Date(2021,10,6) + 1day;
+
+A: Here (is|are) the news\.( They're us news\.)?\n(rdl: (.|[\n])*)+
+A: >> expecting = null
+
+====
+# 7-time-based-5
+#U: what are the news today
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => @com.smartnews.article(), date >= $start_of(day);
+
+A: (Sorry, there are no news at the moment matching your request. Would you like to be notified when there are new news\?|Here (is|are) the news\.( They're us news\.)?\n(rdl: (.|[\n])*)+)
+A: >> expecting = (null|yesno)
+
+====
+# 8-basic-with-count
+#U: top 10 news
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => @com.smartnews.article()[1:10] => notify;
+
+A: Here (is|are) the news\.( They're us news\.)?\n(rdl: (.|[\n])*)+
+A: >> expecting = null
+
+====
+# 9-category-based
+#U: sports news
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => @com.smartnews.article() filter contains(category, "sports"^^com.smartnews:category("sports")) => notify;
+
+A: Here (is|are) the news\.\n(rdl: (.|[\n])*)+
+A: >> expecting = null
+
+====
+# 10-category-and-time-based
+#U: sports news on 2021-10-06
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => @com.smartnews.article() filter contains(category, "sports"^^com.smartnews:category("sports")) && date >= new Date(2021,10,6) && date <= new Date(2021,10,6) + 1day;
+
+A: Here (is|are) the news\.\n(rdl: (.|[\n])*)+
+A: >> expecting = null
+
+====
+# 11-source-based
+#U: latest news published from Android Authority
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => @com.smartnews.article(), source =~ ("android authority");
+
+A: Here is the news\. They're news from Android Authority\.\n(rdl: (.|[\n])*)+
+A: >> expecting = null
+
+====
+# 12-keyword-based
+#U: news related to vaccine
+U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+U: now => @com.smartnews.article(keyword="vaccine");
+
+A: Here is the news\.\n(rdl: (.|[\n])*)+
+A: >> expecting = null

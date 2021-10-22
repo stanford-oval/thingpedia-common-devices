@@ -257,7 +257,7 @@ UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum how_to_a
 # log/16680
 U: configure voice
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.builtin.thingengine.builtin.set_voice_output(status=enum on);
+UT: @org.thingpedia.builtin.thingengine.builtin.set_voice_input();
 ====
 # log/119055
 U: how do i enable new skills
@@ -1076,3 +1076,27 @@ UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum abusive)
 U: i'm in palo alto, ca.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.builtin.thingengine.builtin.set_location(location=new Location("palo alto , ca"));
+====
+# log-dev/5522
+U: resume playback
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.resume();
+====
+# recording/c675390b3f8c59257cfbff1e84cf087d
+U: resume
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.resume();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.resume()
+C: #[results=[
+C:   {}
+C: ]];
+A: I resumed playing.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: cancel
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# log-dev/11963
+U: resume.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.resume();

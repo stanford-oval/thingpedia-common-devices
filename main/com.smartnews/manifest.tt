@@ -40,87 +40,119 @@ class @com.smartnews
   import config from @org.thingpedia.config.none();
 
   entity article #_[description="News Articles on SmartNews"] #[has_ner=false];
+  entity category #_[description="News Category on SmartNews"] #[has_ner=false];
 
-  monitorable list query article(out id : Entity(com.smartnews:article),
-                                 out title : String
+  monitorable list query article(in opt keyword: String
+                                 #_[canonical={
+                                   base=["search keyword", "keyword", "query", "entity"],
+                                   passive_verb=["about #", "related to #", "matching #", "containing #", "in #", "on #"],
+                                 }]
+                                 #_[prompt=["what are you looking for"]]
+                                 #[string_values="tt:search_query"],
+                              
+                                 out id: Entity(com.smartnews:article)
+                                 #[filterable=false],
+
+                                 out title: String
                                  #[string_values="tt:news_title"]
                                  #_[canonical={
-                                   default = "base",
-                                   base = ["title", "news title", "name"],
-                                   property = ["news #", "title #"]
-                                 }],
-                                 out link : Entity(tt:url),
-                                 out audio_url: Entity(tt:url),
-                                 out date: Date
-                                 #_[canonical={
-                                    default="passive_verb",
-                                    base=["date", "published date", "published year", "published day"],
-                                    property=["published date #"],
-                                    preposition=["from #"],
-                                    passive_verb=["published on #", "released #", "published at #"],
-                                    adjective_argmin=["least recent", "oldest", "first"],
-                                    adjective_argmax=["most recent", "newest", "latest"],
-                                    passive_verb_argmax=["published most recently"],
-                                    passive_verb_projection=['published | on', 'released | on', 'written | on']
-                                 }],
+                                      default = "base",
+                                      base = ["title", "news title", "headline"],
+                                      property = ["news #", "title #", "headline #"]
+                                 }]
+                                 #[filterable=false],
+
                                  out author: String
                                  #[string_values="tt:person_full_name"]
                                  #_[canonical={
-                                    default="preposition",
-                                    base=["author", "reporter"],
-                                    preposition=["by #", "from #"],
-                                    passive_verb=["written by #", "published by #", "authored by #", "reported by #"],
-                                    verb = ["# authored", "# published", "# wrote", "# reported"],
+                                      default="preposition",
+                                      base=["author", "reporter"],
+                                      preposition=["by #", "from #"],
+                                      passive_verb=["written by #", "published by #", "authored by #", "reported by #"],
+                                      verb = ["# authored", "# published", "# wrote", "# reported"]
                                  }],
+
                                  out source: String
-                                 #[string_values="com.smartnews:news_source"]
+                                 #[string_values="tt:news_source"]
                                  #_[canonical={
-                                    default="preposition",
-                                    base=["publisher", "media", "publisher name", "source"],
-                                    property=["publisher #", "media #"],
-                                    preposition=["from #", "by #"],
-                                    adjective=["#", "# 's"],
-                                    passive_verb=["released by #", "published by #"],
-                                    verb = ["# released", "# published", "# announced", "# stated"],
-                                    base_projection=['publisher', 'company', 'media'],
-                                    passive_verb_projection=['published | by', 'released | by'],
-                                    reverse_verb_projection=['released', 'published']
-                                 }]
-                                 /*,
-                                 out content: String
+                                      default="preposition",
+                                      base=["publisher", "media", "publisher name", "source"],
+                                      property=["publisher #", "media #"],
+                                      preposition=["from #", "by #"],
+                                      adjective=["#", "# 's"],
+                                      passive_verb=["released by #", "published by #"],
+                                      verb = ["# released", "# published", "# announced", "# stated"],
+                                      base_projection=["publisher", "company", "media"],
+                                      passive_verb_projection=["published | by", "released | by"],
+                                      reverse_verb_projection=["released", "published"]
+                                 }],
+
+                                 out summary: String
                                  #[string_values="tt:long_free_text"]
                                  #_[canonical={
-                                    default = "base",
-                                    base = ["news content", "content", "body", "article"],
-                                    property = ["news #", "content #", "body #"]
+                                      default = "base",
+                                      base = ["news content", "summary", "content", "body", "article"],
+                                      property = ["news #", "content #", "body #", "summary #"]
                                  }]
-                                 #[filterable=false]*/
-                                 )
-  #_[canonical=["news article", "news report",
-               "news",
-               "top news",
-               "news from smartnews",
-               "news on smartnews",
-               "breaking news",
-               "global news",
-               "hot topic",
-               "high rank news",
-               "article",
-               "story",
-               "news story"]]
+                                 #[filterable=false],
+
+                                 out link: Entity(tt:url),
+
+                                 out category: Array(Entity(com.smartnews:category))
+                                 #[conflict_filter=["id"]]
+                                 #_[canonical={
+                                      default="property",
+                                      base=["category", "type of news", "topic of news"],
+                                      property=["# news", "# category"],
+                                      adjective=["#"],
+                                      preposition=["in the # category", "in the # topic", "in #", "on #", "of the # category", "of the # topic"]
+                                 }],
+
+                                 out date: Date
+                                 #_[canonical={
+                                     default="passive_verb",
+                                     base=["date", "published date", "published year", "published day"],
+                                     property=["published date #"],
+                                     preposition=["from #"],
+                                     passive_verb=["published on #", "released #", "published at #"],
+                                     adjective_argmin=["least recent", "oldest", "first"],
+                                     adjective_argmax=["most recent", "newest", "latest", "current"],
+                                     passive_verb_argmax=["published most recently"],
+                                     passive_verb_projection=["published | on", "released | on", "written | on"]
+                                 }],
+ 
+                                 out headline_audio_url: Entity(tt:url),
+
+                                 out summary_audio_url: Entity(tt:url) 
+  )
+  #_[canonical=["news",
+                "top news",
+                "headlines",
+                "news article", 
+                "news report",
+                "new",
+                "news from smartnews",
+                "news on smartnews",
+                "breaking news",
+                "global news",
+                "hot topic",
+                "article",
+                "story",
+                "news story",
+                "news feeds"]]
   #_[result={
     top="the latest news is ${title}",
-    list="here are the news"
+    list="here is the news"
   }]
   #_[formatted=[
     { type="rdl", webCallback="${link}", displayTitle="${title}" },
     { type="sound", name="news-intro", exclusive=true },
-    { type="audio", url="${audio_url}" }
+    { type="audio", url="${headline_audio_url}" }
   ]]
   #_[on_error={
     unavailable="the smartnews service is unavailable. please try again later"
   }]
   #[poll_interval=3600000ms]
-  #[minimal_projection=["id", "title", "link", "audio_url"]]
-  #[doc="get news articles from SmartNews api"];
+  #[minimal_projection=["id", "title", "link", "headline_audio_url"]]
+  #[doc="get news articles from SmartNews"];
 }

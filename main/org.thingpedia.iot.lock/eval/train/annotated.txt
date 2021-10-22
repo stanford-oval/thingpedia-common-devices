@@ -9,17 +9,17 @@ U: lock the door.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.lock.set_state(state=enum lock);
 ====
-# manual/1
+# manual/361
 U: did I lock the door?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.lock.state();
 ====
-# manual/2
+# manual/362
 U: which is the state of locking of my front door?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.lock(name="front").state();
 ====
-# manual/3
+# manual/363
 U: please lock all the doors
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.lock(all=true).set_state(state=enum lock);
@@ -33,12 +33,12 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.lock(all=true).set_state(state=enum lock)
 UT: #[confirm=enum confirmed];
 ====
-# manual/4
+# manual/364
 U: warn me when the backdoor unlock
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: monitor(@org.thingpedia.iot.lock(name="backdoor").state()) filter state == enum unlocked;
 ====
-# manual/5
+# manual/365
 U: did I forgot to close the front door ?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.lock(name="front").state();

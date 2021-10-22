@@ -93,7 +93,7 @@ A: choice 2: Ecobee
 A: >> expecting = choice
 
 U: HeatPump
-A: (The temperature reported by HeatPump is [0-9\.]+ ?(°)?(F|C)?\.)
+A: (The temperature reported by HeatPump is [0-9\.]+ degrees Fahrenheit\.)
 A: >> expecting = null
 
 ====
@@ -102,7 +102,7 @@ A: >> expecting = null
 #U: Which is the target temperature set on the Hvac climate system?
 #U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 #U: @org.thingpedia.iot.climate(name="Hvac").target_temperature();
-#A: (The target temperature on Hvac is [0-9\.]+ ?°F\.)
+#A: (The target temperature on Hvac is [0-9\.]+ degrees Fahrenheit\.)
 #A: >> expecting = null
 
 ====
@@ -110,11 +110,11 @@ A: >> expecting = null
 #U: Set the target temperature of the HeatPump to 80°F
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: @org.thingpedia.iot.climate(name="HeatPump").set_target_temperature(value=80F);
-A: Ok, do you want me to set temperature on your HeatPump to 80 F\?
+A: Ok, do you want me to set temperature on your HeatPump to 80 degrees Fahrenheit\?
 A: >> expecting = yesno
 
 U: Yes
-A: (I changed the temperature on your thermostat for you|I set temperature on your HeatPump to 80 F for you)\.
+A: (I changed the temperature on your thermostat for you|I set temperature on your HeatPump to 80 degrees Fahrenheit for you)\.
 A: >> expecting = null
 
 ====
@@ -139,11 +139,11 @@ A: >> expecting = generic
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: @org.thingpedia.iot.climate(id="io.home-assistant/http://127.0.0.1:8123/climate.hvac"^^tt:device_id("Hvac")).set_minmax_temperature(high=85F, low=60F);
 
-A: Ok, do you want me to set the temperature between [0-9\.]+ ?(°)?(F|C)? and [0-9\.]+ ?(°)?(F|C)? on your Hvac\?
+A: Ok, do you want me to set the temperature between [0-9\.]+ degrees Fahrenheit and [0-9\.]+ degrees Fahrenheit on your Hvac\?
 A: >> expecting = yesno
 
 U: Yes
-A: (I changed the minimum and maximum temperatures on your thermostat|I set the temperature between [0-9\.]+ ?(°)?(F|C)? and [0-9\.]+ ?(°)?(F|C)? on your Hvac for you).
+A: (I changed the minimum and maximum temperatures on your thermostat|I set the temperature between [0-9\.]+ degrees Fahrenheit and [0-9\.]+ degrees Fahrenheit on your Hvac for you).
 A: >> expecting = null
 
 ====
@@ -151,7 +151,7 @@ A: >> expecting = null
 #U: Which is the minimum target temperature set on the Ecobee?
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: @org.thingpedia.iot.climate(name="Ecobee").min_temperature();
-A: (The minimum temperature on Ecobee is set to [0-9\.]+ ?(°)?(F|C)?\.)
+A: (The minimum temperature on Ecobee is set to [0-9\.]+ degrees Fahrenheit\.)
 A: >> expecting = null
 
 ====
@@ -159,7 +159,7 @@ A: >> expecting = null
 #U: Which is the maximum target temperature set on the Hvac?
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: @org.thingpedia.iot.climate(name="Hvac").max_temperature();
-A: (The maximum temperature on Hvac is set to [0-9\.]+ ?(°)?(F|C)?\.)
+A: (The maximum temperature on Hvac is set to [0-9\.]+ degrees Fahrenheit\.)
 A: >> expecting = null
 
 ====
