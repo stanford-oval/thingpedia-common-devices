@@ -102,7 +102,7 @@ eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/refined-qpis: eval/$(exper
 	mkdir -p $@
 	for f in $(all_names) ; do \
 		paste <(cut -f1,2 ./eval/$(experiment)/$(source)/input/$$f.tsv) <(cut -f2 $</$$f.tsv) <(cut -f4 ./eval/$(experiment)/$(source)/input/$$f.tsv) > $@/$$f.tmp.tsv ; \
-		python3 ./scripts/text_edit.py --no_lower_case --refine_sentence --post_process_translation --unnormalize_punctuation --experiment $(experiment) --param_language $(src_lang) --num_columns $(translate_num_columns) --input_file $@/$$f.tmp.tsv --output_file $@/$$f.tsv ; \
+		python3 ./scripts/text_edit.py --no_lower_case --refine_sentence --post_process_translation --experiment $(experiment) --param_language $(src_lang) --num_columns $(translate_num_columns) --input_file $@/$$f.tmp.tsv --output_file $@/$$f.tsv ; \
 	done
 	rm -rf $@/*.tmp*
 
