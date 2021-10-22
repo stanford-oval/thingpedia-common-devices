@@ -449,7 +449,4 @@ if __name__ == '__main__':
             elif args.num_columns == 3:
                 f_out.write('\t'.join([_id, sent, prog, *extra]) + '\n')
             elif args.num_columns == 4:
-                if args.prepare_multiwoz_for_marian:
-                    f_out.write('\t'.join([_id, slot_values, agent_uttr, sent, prog, *extra]) + '\n')
-                else:
-                    f_out.write('\t'.join([_id, context, sent, prog, *extra]) + '\n')
+                f_out.write('\t'.join([_id, context, sent, prog, *extra]) + '\n')
