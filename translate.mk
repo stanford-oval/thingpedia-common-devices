@@ -7,6 +7,7 @@ source ?= user
 
 translate_num_columns = 4
 clean_input_quotes = true
+requote_skip_errors =
 
 
 eval/$(experiment)/$(source)/input: datadir/$(source)
@@ -24,7 +25,7 @@ eval/$(experiment)/$(source)/input-qpis: eval/$(experiment)/$(source)/input
 	mkdir -p $@
 
 	# qpis input data
-	for f in $(all_names) ; do $(genie) requote --mode qpis --contextual -o $@/$$f.tsv $</$$f.tsv; done
+	for f in $(all_names) ; do $(genie) requote --mode qpis --contextual $(if $(requote_skip_errors),--skip-errors --output-errors $@/$$f.tsv,) -o $@/$$f.tsv $</$$f.tsv; done
 
 
 eval/$(experiment)/$(source)/input-nmt: eval/$(experiment)/$(source)/input-qpis
@@ -54,7 +55,7 @@ model_name_or_path=Helsinki-NLP/opus-mt-$(src_lang)-$(tgt_lang)
 src_lang =
 tgt_lang =
 
-return_raw_outputs = false
+return_raw_outputs = true
 
 val_batch_size = 2000
 temperature = 0.2
@@ -126,7 +127,7 @@ eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/quoted: eval/$(experiment)
 	mkdir -p $@
 	# requote dataset (if successful, verifies parameters match in the sentence and in the program)
 	for f in $(all_names) ; do \
-		$(genie) requote --mode replace --contextual -o $@/$$f.tsv $</$$f.tsv  ; \
+		$(genie) requote --mode replace --contextual $(if $(requote_skip_errors),--skip-errors --output-errors $@/$$f.tsv,) -o $@/$$f.tsv $</$$f.tsv  ; \
 	done
 
 # expand parameter-datasets.tsv to include locale for target language
