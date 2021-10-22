@@ -118,7 +118,19 @@ all: $($(release)_pkgfiles:%/package.json=build/%.zip)
 
 build/%.zip: % %/node_modules
 	mkdir -p `dirname $@`
-	cd $< ; zip -x '*.tt' '*.yml' 'node_modules/.bin/*' 'icon.png' 'secrets.json' 'eval/*' 'simulation/*' 'database-map.tsv' -r $(abspath $@) .
+	cd $< ; zip \
+		-x \
+			'*/.git/*' \
+			'*/.nyc_output/*' \
+			'*.tt' \
+			'*.yml' \
+			'node_modules/.bin/*' \
+			'icon.png' \
+			'secrets.json' \
+			'eval/*' \
+			'simulation/*' \
+			'database-map.tsv' \
+		-r $(abspath $@) .
 
 %/node_modules: %/package.json %/package-lock.json
 	mkdir -p $@

@@ -32,7 +32,36 @@
 // Author: Silei Xu <silei@cs.stanford.edu>
 "use strict";
 
+const Redis = require("redis");
 const Tp = require('thingpedia');
+const Logging = require("@stanford-oval/logging");
+const Winston = require("winston");
+
+const LogFactory = new Logging.Factory({
+    runRoot: __dirname,
+    level: "http",
+    envVarPrefix: "TP_YELP_LOG",
+    transports: [
+        //
+        // - Write all logs with level `error` and below to `error.log`
+        // - Write all logs with level `info` and below to `combined.log`
+        //
+        // new Winston.transports.File({
+        //     filename: Path.resolve(REPO_ROOT, "tmp", "error.log"),
+        //     format: Winston.format.json(),
+        //     level: "error",
+        // }),
+        // new Winston.transports.File({
+        //     filename: Path.resolve(REPO_ROOT, "tmp", "all.log"),
+        //     format: Winston.format.json(),
+        // }),
+        new Winston.transports.Console({
+            format: Logging.Format.prettySimple({ colorize: true }),
+        }),
+    ],
+});
+
+const LOG = LogFactory.get(__filename);
 const URL = "https://api.yelp.com/v3/businesses";
 
 const CUISINES = new Set(require('./cuisines.json').data.map((d) => d.value));
@@ -69,6 +98,59 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
 
         this.name = "Yelp";
         this.description = "Yelp search for Almond ";
+        this.log = LOG.childFor(YelpDevice);
+        this.redisClient = Redis.createClient({url: "redis://redis"});
+    }
+
+    async start() {
+        this.log.debug("Starting...");
+        await this.redisClient.connect();
+        this.log.debug("Started.");
+    }
+
+    async _get(url) {
+        const log = this.log.childFor(this._get);
+        const profiler = log.startTimer();
+        log.debug("Start GET request...", {url});
+
+        let fromCache = false;
+        const key = `org.thingpedia.weather:${url}`;
+        const cached = await this.redisClient.GET(key);
+        let data;
+        if (cached === null) {
+            log.info("CACHE MISS", {key});
+            const httpProfiler = log.startTimer();
+            data = await Tp.Helpers.Http.get(url, {
+                auth: 'Bearer ' + this.constructor.metadata.auth.api_key
+            });
+            const httpLogInfo = {
+                level: "http",
+                message: "Yelp API request complete",
+                url,
+            };
+            if (log.isLevelEnabled("debug")) {
+                httpLogInfo.data = data;
+            }
+            httpProfiler.done(httpLogInfo);
+            log.info("CACHE SET", {key});
+            await this.redisClient.SET(key, data, {EX: 30 * 60});
+        } else {
+            console.log("CACHE HIT", {key});
+            fromCache = true;
+            data = cached;
+        }
+        const response = JSON.parse(data);
+
+        const logInfo = {
+            level: "info",
+            message: "Request complete",
+            fromCache,
+            url,
+        };
+        if (log.isLevelEnabled("debug")) logInfo.response = response;
+        profiler.done(logInfo);
+
+        return response;
     }
 
     async get_restaurant(params, hints, env) {
@@ -139,10 +221,7 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
 
         console.log(url);
 
-        const response = await Tp.Helpers.Http.get(url, {
-            auth: 'Bearer ' + this.constructor.metadata.auth.api_key
-        });
-        const parsed = JSON.parse(response);
+        const parsed = await this._get(url);
         return parsed.businesses.filter((b) => !b.is_closed).map((b) => {
             const id = new Tp.Value.Entity(b.id, b.name);
             const cuisines = b.categories.filter((cat) => CUISINES.has(cat.alias))
