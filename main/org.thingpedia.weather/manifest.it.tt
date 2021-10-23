@@ -9,25 +9,25 @@ class @org.thingpedia.weather
   import config from @org.thingpedia.config.none();
 
   monitorable query sunrise(in opt location : Location
-                            #_[prompt="per quale località vuoi informazioni sull'alba e il tramonto?"]
+                            #_[prompt="per quale località vuoi informazioni su alba e tramonto?"]
                             #_[canonical={
                               default="preposition",
-                              base=["Posizione", "posizione", "luogo"],
+                              base=["posizione", "località", "luogo"],
                               property=[],
-                              preposition=["in #", "a #", "in giro #", "per la posizione #", "per #"]
+                              preposition=["in #", "a #", "attorno #", "per la posizione #", "per #"]
                             }]
                             #[default=$location.current_location],
                             in opt date : Date
                             #_[canonical={
                               default="preposition",
-                              base=["Data"],
-                              preposition=["Su #"]
+                              base=["data"],
+                              preposition=["il #"]
                             }],
                             out sunrise_time : Time
                             #_[canonical="ora dell'alba"],
                             out sunset_time : Time
                             #_[canonical="ora del tramonto"])
-  #_[result=["in ${location} , il sole sorge a ${sunrise_time} e tramonta a ${sunset_time}", "il ${date} il sole sorge alle ${sunrise_time} e tramonta alle ${sunset_time} a ${location}", "il ${date} il sole sorge alle ${sunrise_time}", "il ${date} il sole tramonta alle ${sunset_time}"]]
+  #_[result=["a ${location} , il sole sorge alle ${sunrise_time} e tramonta alle ${sunset_time}", "il ${date} il sole sorge alle ${sunrise_time} e tramonta alle ${sunset_time} a ${location}", "il ${date} il sole sorge alle ${sunrise_time}", "il ${date} il sole tramonta alle ${sunset_time}"]]
   #_[canonical=["ora di alba e tramonto", "ora dell'alba", "ora del tramonto"]]
   #_[confirmation="l'ora dell'alba e del tramonto per la località $location"]
   #[minimal_projection=["sunrise_time", "sunset_time"]]
@@ -37,10 +37,10 @@ class @org.thingpedia.weather
   monitorable query moon(in opt location : Location
                          #_[prompt="per quale località vuoi informazioni sull'ora della luna"]
                          #_[canonical={
-                           default="preposition",
-                           base=["Posizione", "posizione", "luogo"],
-                           property=[],
-                           preposition=["in #", "a #", "in giro #", "per la posizione #", "per #"]
+                            default="preposition",
+                            base=["posizione", "località", "luogo"],
+                            property=[],
+                            preposition=["in #", "a #", "attorno #", "per la posizione #", "per #"]
                          }]
                          #[default=$location.current_location],
                          in opt date : Date
@@ -63,7 +63,7 @@ class @org.thingpedia.weather
                              waning_crescent=["luna calante"]
                            }
                          }])
-  #_[result=["in ${location} la luna è ${phase}", "in ${location} la fase lunare è ${phase}", "il giorno ${date} la luna è ${phase} in ${location}", "la luna è ${phase}"]]
+  #_[result=["a ${location} la luna è ${phase}", "a ${location} la fase lunare è ${phase}", "il giorno ${date} la luna è ${phase} a ${location}", "la luna è ${phase}"]]
   #_[canonical=["fase lunare", "fase della luna"]]
   #_[confirmation="la fase lunare per $location"]
   #[poll_interval=86400000ms]
@@ -74,10 +74,10 @@ class @org.thingpedia.weather
   monitorable query current(in opt location : Location
                             #_[prompt="per quale località vuoi il tempo attuale?"]
                             #_[canonical={
-                              default="preposition",
-                              base=["Posizione", "posizione", "luogo"],
-                              property=[],
-                              preposition=["in #", "a #", "in giro #", "per la posizione #", "per #"]
+                                default="preposition",
+                                base=["posizione", "località", "luogo"],
+                                property=[],
+                                preposition=["in #", "a #", "attorno #", "per la posizione #", "per #"]
                             }]
                             #[default=$location.current_location],
                             out temperature : Measure(C)
@@ -106,18 +106,18 @@ class @org.thingpedia.weather
                               value_enum={
                                 raining=["pioggia"],
                                 cloudy=["nuvoloso"],
-                                sunny=["soleggiato"],
-                                snowy=["nevoso"],
+                                sunny=["sereno", "soleggiato"],
+                                snowy=["neve"],
                                 sleety=["nevischio"],
                                 drizzling=["pioviggina"],
-                                windy=["ventoso"],
-                                foggy=["nebbioso"]
+                                windy=["vento forte", "ventoso"],
+                                foggy=["nebbia", "nebbioso"]
                               }
                             }],
                             out icon : Entity(tt:picture)
                             #_[canonical="icona"])
   #_[result=["è ${status} oggi a ${location} e la temperatura è ${temperature}", "il tempo attuale a ${location} è ${status} . la temperatura è ${temperature} e l'umidità è ${humidity} %", "il tempo attuale a ${location} è ${status} . la temperatura è ${temperature}", "il tempo attuale a ${location} è ${status} . l'umidità è ${humidity} %", "il tempo attuale a ${location} è ${status}", "il tempo a ${location} è ${status}"]]
-  #_[canonical=["Meteo attuale", "tempo metereologico", "il tempo oggi", "il tempo adesso", "tempo fuori"]]
+  #_[canonical=["meteo attuale", "tempo metereologico", "il tempo oggi", "il tempo adesso", "tempo fuori"]]
   #[minimal_projection=["status"]]
   #[poll_interval=3600000ms]
   #[doc="Information about current weather"]
@@ -126,10 +126,10 @@ class @org.thingpedia.weather
   monitorable query forecast(in opt location : Location
                              #_[prompt="per quale località vuoi le previsioni del tempo"]
                              #_[canonical={
-                               default="preposition",
-                               base=["Posizione", "posizione", "luogo"],
-                               property=[],
-                               preposition=["in #", "in giro #", "per la posizione #", "per #"]
+                                default="preposition",
+                                base=["posizione", "località", "luogo"],
+                                property=[],
+                                preposition=["in #", "a #", "attorno #", "per la posizione #", "per #"]
                              }]
                              #[default=$location.current_location],
                              in opt date : Date
@@ -165,24 +165,24 @@ class @org.thingpedia.weather
                              #_[canonical={
                                base="stato",
                                value_enum={
-                                 raining=["pioggia"],
-                                 cloudy=["nuvoloso"],
-                                 sunny=["soleggiato"],
-                                 snowy=["nevoso"],
-                                 sleety=["nevischio"],
-                                 drizzling=["pioviggina"],
-                                 windy=["ventoso"],
-                                 foggy=["nebbioso"]
+                                raining=["pioggia"],
+                                cloudy=["nuvoloso"],
+                                sunny=["sereno", "soleggiato"],
+                                snowy=["neve"],
+                                sleety=["nevischio"],
+                                drizzling=["pioviggina"],
+                                windy=["vento forte", "ventoso"],
+                                foggy=["nebbia", "nebbioso"]
                                }
                              }],
                              out icon : Entity(tt:picture)
                              #_[canonical="icona"])
-  #_[result=["sarà ${status} il giorno ${date} in ${location} e la temperatura sarà ${temperature}", "il giorno ${date} il tempo a ${location} sarà ${status} . la temperatura sarà ${temperature} e l'umidità sarà ${humidity} %", "il giorno ${date} il tempo a ${location} sarà ${status} . la temperatura sarà ${temperature}", "il giorno ${date} il tempo a ${location} sarà ${status} . l'umidità sarà ${humidity} %", "il giorno ${date} il tempo a ${location} sarà ${status}", "il tempo a ${location} sarà ${status} il ${date}"]]
+  #_[result=["sarà ${status} il giorno ${date} a ${location} e la temperatura sarà ${temperature}", "il giorno ${date} a tempo a ${location} sarà ${status} . la temperatura sarà ${temperature} e l'umidità sarà ${humidity} %", "il giorno ${date} il tempo a ${location} sarà ${status} . la temperatura sarà ${temperature}", "il giorno ${date} il tempo a ${location} sarà ${status} . l'umidità sarà ${humidity} %", "il giorno ${date} il tempo a ${location} sarà ${status}", "il tempo a ${location} sarà ${status} il ${date}"]]
   #_[on_error={
     no_past_forecast=["non riesco a recuperare le previsioni del tempo in passato"],
     not_available=["la previsione per ${date} non è ancora disponibile"]
   }]
-  #_[canonical=["previsioni del tempo", "tempo previsto fuori", "tempo futuro"]]
+  #_[canonical=["previsioni del tempo", "previsioni del meteo", "tempo previsto fuori", "tempo futuro"]]
   #[minimal_projection=["status"]]
   #[poll_interval=3600000ms]
   #[doc="Information about future weather"]
