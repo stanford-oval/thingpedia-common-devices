@@ -97,6 +97,7 @@ translate_data: eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/translated
 ##### Postprocess Translated dataset                 ###############################################################
 ####################################################################################################################
 augment_default_args = --num-attempts 10000 --target-language thingtalk --contextual --synthetic-expand-factor $(synthetic_expand_factor) --quoted-paraphrasing-expand-factor $(quoted_paraphrase_expand_factor) --no-quote-paraphrasing-expand-factor $(noquote_paraphrase_expand_factor) --quoted-fraction $(quoted_fraction)
+augment_override_flags = S
 
 eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/refined-qpis: eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/translated-qpis
 	mkdir -p $@
@@ -133,12 +134,7 @@ eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/quoted: eval/$(experiment)
 # expand parameter-datasets.tsv to include locale for target language
 update_param_set: parameter-datasets.tsv
 	cat $< > $<.tmp
-	if command -v gsed &> /dev/null ; \
-	then \
-		cat $< | sort | uniq | gsed -r "s|^(\w*)\ten-US|\1\t$(tgt_lang)|g" >> $<.tmp ; \
-	else \
-  		cat $< | sort | uniq | sed -r "s|^(\w*)\ten-US|\1\t$(tgt_lang)|g" >> $<.tmp ; \
-	fi
+	cat $< | sort | uniq | $(if $(shell command -v gsed), gsed, sed) -r "s|^(\w*)\ten-US|\1\t$(tgt_lang)|g" >> $<.tmp ; \
 	cat $<.tmp | sort | uniq > $<
 	rm -rf $<.tmp
 
@@ -146,7 +142,7 @@ eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/augmented: eval/$(experime
 	mkdir -p $@
 	# augment dataset in target language
 	for f in $(all_names) ; do \
-		$(genie) augment -o $@/$$f.tsv --override-flags S --param-locale $(tgt_lang) -l en-US \
+		$(genie) augment -o $@/$$f.tsv $(if $(augment_override_flags) --override-flags $(augment_override_flags),) --param-locale $(tgt_lang) -l en-US \
 		 		--thingpedia $(schema_file) --parameter-datasets parameter-datasets.tsv $(augment_default_args) $</$$f.tsv ; \
 	done
 
