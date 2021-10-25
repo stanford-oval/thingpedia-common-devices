@@ -126,7 +126,12 @@ class @org.thingpedia.weather
                             #[min_number=0]
                             #[max_number=100],
                             out status: Enum(raining,cloudy,sunny,snowy,sleety,drizzling,windy,foggy)
-                            #_[canonical="status"],
+                            #_[canonical={
+                              base=["status"],
+                              enum_value={
+                                raining=["raining", "rainy", "rain"]
+                              }
+                            }],
                             out icon: Entity(tt:picture)
                             #_[canonical="icon"])
   #_[result=["it is ${status} today in ${location} and the temperature is ${temperature}",
@@ -181,7 +186,12 @@ class @org.thingpedia.weather
                             #[min_number=0]
                             #[max_number=100],
                             out status: Enum(raining,cloudy,sunny,snowy,sleety,drizzling,windy,foggy)
-                            #_[canonical="status"],
+                            #_[canonical={
+                              base=["status"],
+                              enum_value={
+                                raining=["raining", "rainy", "rain"]
+                              }
+                            }],
                             out icon: Entity(tt:picture)
                             #_[canonical="icon"])
   #_[result=["it will be ${status} on ${date} in ${location} and the temperature will be ${temperature}",
