@@ -3,6 +3,7 @@
 // Copyright 2018 Gabby Wright, Hemanth Kini
 //           2018-2020 The Board of Trustees of the Leland Stanford Junior University
 //           2020 Ryan Cheng
+//           2021 Neil Souza
 //
 // Redistribution and use in source and binary forms, with or
 // without modification, are permitted provided that the following
@@ -31,5 +32,4 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 // OF THE POSSIBILITY OF SUCH DAMAGE.
 "use strict";
-const SpotifyWebApi = require("@stanford-oval/spotify-web-api");
-module.exports = SpotifyWebApi.SpotifyDevice;
+module.exports = require("@stanford-oval/spotify-web-api").SpotifyDevice;
