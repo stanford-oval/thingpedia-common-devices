@@ -15,7 +15,7 @@ abstract class @org.thingpedia.media-source
   entity playlist extends playable #[has_ner=true] #_[description="Playlists"];
   entity show extends playable #[has_ner=true] #_[description="Shows"];
 
-  list query playable(out id: Entity(org.thingpedia.media-source:playable)
+  monitorable list query playable(out id: Entity(org.thingpedia.media-source:playable)
                       // use song names to fill ambiguous parameters
                       // the model doesn't see the different between songs and
                       // albums anyway, and when we in doubt we should assume song
@@ -87,7 +87,7 @@ abstract class @org.thingpedia.media-source
   #[minimal_projection=["id"]]
   #[doc="search for content"];
 
-  list query song extends playable(out id: Entity(org.thingpedia.media-source:song)
+  monitorable list query song extends playable(out id: Entity(org.thingpedia.media-source:song)
                                   #[string_values="tt:song_name"]
                                   #[unique=true]
                                   #_[canonical={
@@ -140,7 +140,7 @@ abstract class @org.thingpedia.media-source
   #[minimal_projection=["id"]]
   #[doc="search for songs"];
 
-  list query album extends playable (out id: Entity(org.thingpedia.media-source:album)
+  monitorable list query album extends playable (out id: Entity(org.thingpedia.media-source:album)
                                       #[string_values="tt:song_album"]
                                       #[unique=true]
                                       #_[canonical={
@@ -157,7 +157,7 @@ abstract class @org.thingpedia.media-source
   #[minimal_projection=["id"]]
   #[doc="search for albums"];
 
-  list query playlist extends playable (out id: Entity(org.thingpedia.media-source:playlist)
+  monitorable list query playlist extends playable (out id: Entity(org.thingpedia.media-source:playlist)
                                          #[string_values="tt:song_name"]
                                          #[unique=true]
                                          #_[canonical={
@@ -175,7 +175,7 @@ abstract class @org.thingpedia.media-source
   #[minimal_projection=["id"]]
   #[doc="search for playlists"];
 
-  list query show extends playable(out id: Entity(org.thingpedia.media-source:show)
+  monitorable list query show extends playable(out id: Entity(org.thingpedia.media-source:show)
                                         //#[string_values="tt:show"]
                                         #[unique=true]
                                         #_[canonical={
