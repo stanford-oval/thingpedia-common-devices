@@ -52,4 +52,12 @@ dataset @com.smartnews language "en" {
     #_[utterances=["${p_keyword:const} news",
                    "news related to $p_keyword"]]
     #[name="NewsWithKeyword"];
+
+    stream  := monitor (id of @com.smartnews.article())
+    #_[utterances=["when they publish something", "when there is news"]]
+    #[name="MonitorNewsId"];
+
+    stream (p_source : String) := monitor (id of @com.smartnews.article(), id =~ p_source)
+    #_[utterances=["when ${p_source} publishes something", "when ${p_source} publishes a new article"]]
+    #[name="MonitorNewsIdWithSource"];
 }
