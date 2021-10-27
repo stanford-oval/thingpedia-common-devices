@@ -114,7 +114,7 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
         log.debug("Start GET request...", {url});
 
         let fromCache = false;
-        const key = `org.thingpedia.weather:${url}`;
+        const key = `com.yelp:${url}`;
         const cached = await this.redisClient.GET(key);
         let data;
         if (cached === null) {
