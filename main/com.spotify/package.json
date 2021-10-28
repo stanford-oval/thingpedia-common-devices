@@ -1,6 +1,6 @@
 {
   "name": "com.spotify",
-  "main": "index.js",
+  "main": "dist/index.js",
   "contributors": [
     {
       "name": "Ryan Cheng",
@@ -21,7 +21,14 @@
   ],
   "license": "BSD-3-Clause",
   "private": true,
+  "scripts": {
+    "clean": "rm -rf ./dist && rm -rf tmp/*.log",
+    "build": "npm run clean && tsc --build",
+    "prepare": "npm run build"
+  },
   "dependencies": {
-    "@stanford-oval/spotify-web-api": "github:stanford-oval/spotify-web-api-ts"
+    "elasticlunr": "^0.9.5",
+    "redis": "^4.0.0-rc.2",
+    "@stanford-oval/logging": "^0.1.1"
   }
 }
