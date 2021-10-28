@@ -112,7 +112,7 @@ metrics_output ?=
 s3_model_dir ?=
 
 .PRECIOUS: %/node_modules
-.PHONY: all clean lint
+.PHONY: all clean lint upgrade-deps
 .SECONDARY:
 
 all: $($(release)_pkgfiles:%/package.json=build/%.zip)
@@ -140,7 +140,7 @@ build/%.zip: % %/node_modules
 
 %/node_modules: %/package.json %/package-lock.json
 	mkdir -p $@
-	cd `dirname $@` ; npm install --only=prod --no-optional
+	cd `dirname $@` ; npm ci --only=prod
 	touch $@
 
 %: %/package.json %/*.js %/node_modules
@@ -395,6 +395,12 @@ lint:
 	done ; \
 	exit $$any_error
 
+upgrade-deps:
+	for f in $(staging_pkgfiles) ; do \
+		d=$$(dirname $$f); \
+		echo $$d ; \
+		(cd $$d ; npm upgrade ) || exit $? ; \
+	done
 
 evaluate: eval/$(release)/$(eval_set)/$(model).dialogue.results eval/$(release)/$(eval_set)/$(model).nlu.results
 	@echo eval/$(release)/$(eval_set)/$(model).dialogue.results
