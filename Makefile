@@ -122,7 +122,7 @@ all: $($(release)_pkgfiles:%/package.json=build/%.zip)
 # import translate.mk after all: to retain it as the first target
 -include ./translate.mk
 
-build/%.zip: % %/node_modules
+build/%.zip: %
 	mkdir -p `dirname $@`
 	cd $< ; zip \
 		-x \
@@ -138,13 +138,13 @@ build/%.zip: % %/node_modules
 			'database-map.tsv' \
 		-r $(abspath $@) .
 
-%/node_modules: %/package.json %/package-lock.json
-	mkdir -p $@
-	cd `dirname $@` ; npm ci --only=prod
-	touch $@
+define build_device =
+$(1): $(1)/package.json $(1)/package-lock.json $(wildcard $(1)/*.js $(1)/*.ts $(1)/*/*.js $(1)/*/*.ts $(1)/*/*/*.js $(1)/*/*/*.ts)
+	cd $$@ ; npm ci --only=prod
+	touch $$@
+endef
 
-%: %/package.json %/*.js %/node_modules
-	touch $@
+$(foreach d,$($(release)_pkgfiles:%/package.json=%),$(eval $(call build_device,$(d))))
 
 $(schema_file): $(addsuffix /manifest.tt,$($(release)_devices))
 	cat $^ > $@.tmp
