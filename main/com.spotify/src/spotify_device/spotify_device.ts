@@ -1,4 +1,4 @@
-import { BaseDevice, Helpers, Value } from "thingpedia";
+import { BaseDevice, Value } from "thingpedia";
 import * as Winston from "winston";
 import type { Runtime, ExecEnvironment } from "thingtalk";
 import { Logger } from "@stanford-oval/logging";
