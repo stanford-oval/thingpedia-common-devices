@@ -124,7 +124,7 @@ all: $($(release)_pkgfiles:%/package.json=build/%.zip)
 
 build/%.zip: %
 	mkdir -p `dirname $@`
-	cd $< ; zip \
+	cd $< ; zip -q \
 		-x \
 			'*/.git/*' \
 			'*/.nyc_output/*' \
