@@ -16,9 +16,8 @@ export default abstract class CacheEntity {
         public uri: string
     ) {}
 
-    entity(formatter?: DisplayFormatter): Value.Entity {
-        const name = formatter === undefined ? this.name : formatter(this.name);
-        return new Value.Entity(this.uri, name);
+    entity(formatter: DisplayFormatter): Value.Entity {
+        return new Value.Entity(this.uri, formatter(this.name));
     }
 
     toThing(formatter: DisplayFormatter) {

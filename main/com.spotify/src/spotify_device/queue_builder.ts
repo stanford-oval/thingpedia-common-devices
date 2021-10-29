@@ -2,7 +2,7 @@ import { Value } from "thingpedia";
 import { Logger } from "@stanford-oval/logging";
 
 import { DeviceObject } from "../api/objects";
-import { assertUnreachable, isSingularURI, uriType } from "../helpers";
+import { assertUnreachable, isSingularURI, URIType, uriType } from "../helpers";
 import Logging from "../logging";
 
 export type URIResolver = (uri: string) => Promise<string[]>;
@@ -148,5 +148,16 @@ export default class QueueBuilder {
 
     [Symbol.asyncIterator]() {
         return this;
+    }
+
+    async toURIs(): Promise<string[]> {
+        const srcURIsByType = {} as Record<URIType, string[]>;
+        for (const srcURI of this.srcURIs) {
+            const type = uriType(srcURI);
+            if (!(type in srcURIsByType)) {
+                srcURIsByType[type] = [];
+            }
+        }
+        throw new Error("HERE!!!");
     }
 }

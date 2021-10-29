@@ -1,5 +1,9 @@
 import { BaseDevice, BaseEngine } from "thingpedia";
 import { ExecEnvironment } from "thingtalk";
+import type * as Genie from "genie-toolkit";
+
+export type Tokenizer = Genie.I18n.BaseTokenizer;
+export type LangPack = Genie.I18n.LanguagePack;
 
 export type OnOff = "on" | "off";
 
@@ -54,14 +58,6 @@ export type CustomPlayerSpec =
 
 export interface SpotifyDeviceState extends BaseDevice.DeviceState {
     id: string;
-}
-
-export interface Tokenizer {
-    _parseWordNumber(word: string): number;
-}
-
-export interface LangPack {
-    getTokenizer(): Tokenizer;
 }
 
 export interface AudioDevice {

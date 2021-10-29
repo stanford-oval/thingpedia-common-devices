@@ -75,6 +75,13 @@ export function sample<T>(items: T[], n?: number) {
     return result;
 }
 
+export function errorMetaFor(error: any): Error | { error: any } {
+    if (error instanceof Error) {
+        return error;
+    }
+    return { error };
+}
+
 export function uriType(uri: string): URIType {
     for (const type of URI_TYPES) {
         if (uri.startsWith(`spotify:${type}`)) {
