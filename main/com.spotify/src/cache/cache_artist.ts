@@ -31,9 +31,12 @@ class CacheArtist extends CacheEntity implements ArtistObject {
         this.popularity = artist.popularity;
     }
 
-    toThing(formatter: DisplayFormatter): ThingArtist {
+    toThing(
+        formatter: DisplayFormatter,
+        forceSoftmatch: boolean = false
+    ): ThingArtist {
         return {
-            id: this.entity(formatter),
+            id: this.getEntity(formatter, forceSoftmatch),
             genres: this.genres,
             popularity: this.popularity,
         };

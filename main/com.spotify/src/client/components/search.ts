@@ -10,8 +10,9 @@ import { Component } from "..";
 import { cache } from "../../cache/cache_helpers";
 
 export type CachePlayable = CacheTrack | CacheAlbum | CachePlaylist | CacheShow;
+export type TypedSearchKwds = Omit<SearchKwds, "type">;
 
-function makeCacheKey(kwds: Omit<SearchKwds, "type">): string {
+function makeCacheKey(kwds: TypedSearchKwds): string {
     return JSON.stringify(
         orderedPairsFor({
             ...kwds,
@@ -22,7 +23,7 @@ function makeCacheKey(kwds: Omit<SearchKwds, "type">): string {
 
 export class Search extends Component {
     @cache(makeCacheKey)
-    async artists(kwds: Omit<SearchKwds, "type">): Promise<CacheArtist[]> {
+    async artists(kwds: TypedSearchKwds): Promise<CacheArtist[]> {
         const response = await this._api.search.search({
             type: "artist",
             market: "from_token",
@@ -35,7 +36,7 @@ export class Search extends Component {
     }
 
     @cache(makeCacheKey)
-    async albums(kwds: Omit<SearchKwds, "type">): Promise<CacheAlbum[]> {
+    async albums(kwds: TypedSearchKwds): Promise<CacheAlbum[]> {
         const response = await this._api.search.search({
             type: "album",
             market: "from_token",
@@ -48,7 +49,7 @@ export class Search extends Component {
     }
 
     @cache(makeCacheKey)
-    async tracks(kwds: Omit<SearchKwds, "type">): Promise<CacheTrack[]> {
+    async tracks(kwds: TypedSearchKwds): Promise<CacheTrack[]> {
         const response = await this._api.search.search({
             type: "track",
             market: "from_token",
@@ -61,7 +62,7 @@ export class Search extends Component {
     }
 
     @cache(makeCacheKey)
-    async shows(kwds: Omit<SearchKwds, "type">): Promise<CacheShow[]> {
+    async shows(kwds: TypedSearchKwds): Promise<CacheShow[]> {
         const response = await this._api.search.search({
             type: "show",
             market: "from_token",
@@ -74,7 +75,7 @@ export class Search extends Component {
     }
 
     @cache(makeCacheKey)
-    async playlists(kwds: Omit<SearchKwds, "type">): Promise<CachePlaylist[]> {
+    async playlists(kwds: TypedSearchKwds): Promise<CachePlaylist[]> {
         const response = await this._api.search.search({
             type: "playlist",
             market: "from_token",
@@ -93,7 +94,7 @@ export class Search extends Component {
         limit,
         offset,
         include_external,
-    }: Omit<SearchKwds, "type">): Promise<CachePlayable[]> {
+    }: TypedSearchKwds): Promise<CachePlayable[]> {
         const results = await this._api.search.search({
             query,
             type: "track,album,playlist,show",

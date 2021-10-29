@@ -1,4 +1,4 @@
-import { Value } from "thingpedia";
+import SpotifyEntity from "./spotify_entity";
 
 export class ThingError extends Error {
     code: string;
@@ -10,9 +10,9 @@ export class ThingError extends Error {
 }
 
 export interface ThingTrack {
-    id: Value.Entity;
-    artists: Value.Entity[];
-    album: Value.Entity;
+    id: SpotifyEntity;
+    artists: SpotifyEntity[];
+    album: SpotifyEntity;
     genres: string[];
     release_date: Date;
     popularity: number; // int [0, 100]
@@ -21,30 +21,30 @@ export interface ThingTrack {
 }
 
 export interface ThingArtist {
-    id: Value.Entity;
+    id: SpotifyEntity;
     genres: string[];
     popularity: number; // int[0, 100]
 }
 
 export interface ThingAlbum {
-    id: Value.Entity;
-    artists: Value.Entity[];
+    id: SpotifyEntity;
+    artists: SpotifyEntity[];
     release_date: Date;
     popularity: number; // int[0, 100]
     genres: string[];
 }
 
 export interface ThingPlaylist {
-    id: Value.Entity;
+    id: SpotifyEntity;
 }
 
 export interface ThingShow {
-    id: Value.Entity;
+    id: SpotifyEntity;
     publisher: string;
 }
 
 export interface ThingEpisode {
-    id: Value.Entity;
+    id: SpotifyEntity;
 }
 
 export type ThingPlayable =
@@ -54,6 +54,6 @@ export type ThingPlayable =
     | ThingPlaylist
     | ThingShow;
 
-export function isEntity(x: any): x is Value.Entity {
-    return typeof x === "object" && x instanceof Value.Entity;
+export function isEntity(x: any): x is SpotifyEntity {
+    return typeof x === "object" && x instanceof SpotifyEntity;
 }

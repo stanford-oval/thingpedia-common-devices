@@ -347,15 +347,55 @@ export default class SpotifyDevice extends BaseDevice {
         hints: Runtime.CompiledQueryHints,
         env: ExecWrapper
     ): Promise<ThingArtist[]> {
-        return (
-            await invokeSearch(
-                hints,
-                "any",
-                this._client.search.artists.bind(this._client.search),
-                this._client.getAnyArtists.bind(this._client),
-                { limit: 10 }
-            )
-        ).map((x) => x.toThing(this._displayFormatter));
+        const log = this.log.childFor(this.get_artist);
+
+        const limit = 10;
+        if (!hints.filter) {
+            return (await this._client.getAnyArtists({ limit })).map((artist) =>
+                artist.toThing(this._displayFormatter)
+            );
+        }
+
+        const query = buildQuery(hints.filter, "any");
+
+        if (query.isEmpty()) {
+            return (await this._client.getAnyArtists({ limit })).map((artist) =>
+                artist.toThing(this._displayFormatter)
+            );
+        }
+
+        const artists = await this._client.search.artists({ query, limit });
+
+        const info: Record<string, any>[] = [];
+        const things = artists.map((artist, index) => {
+            let forceSoftmatch = false;
+
+            if (index === 0) {
+                forceSoftmatch = true;
+            }
+
+            info.push({
+                name: artist.name,
+                popularity: artist.popularity,
+                forceSoftmatch,
+            });
+
+            return artist.toThing(this._displayFormatter, forceSoftmatch);
+        });
+
+        log.info("Search info", { info });
+
+        return things;
+
+        // return (
+        //     await invokeSearch(
+        //         hints,
+        //         "any",
+        //         this._client.search.artists.bind(this._client.search),
+        //         this._client.getAnyArtists.bind(this._client),
+        //         { limit: 10 }
+        //     )
+        // ).map((x) => x.toThing(this._displayFormatter));
     }
 
     @genieGet

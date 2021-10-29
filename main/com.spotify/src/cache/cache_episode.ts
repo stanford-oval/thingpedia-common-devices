@@ -57,9 +57,12 @@ class CacheEpisode extends CacheEntity implements EpisodeObject {
         this.resume_point = episode.resume_point;
     }
 
-    toThing(formatter: DisplayFormatter): ThingEpisode {
+    toThing(
+        formatter: DisplayFormatter,
+        forceSoftmatch: boolean = false
+    ): ThingEpisode {
         return {
-            id: this.entity(formatter),
+            id: this.getEntity(formatter, forceSoftmatch),
         };
     }
 }

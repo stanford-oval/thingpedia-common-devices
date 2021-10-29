@@ -46,9 +46,12 @@ class CacheShow extends CacheEntity implements ShowObject {
         this.publisher = show.publisher;
     }
 
-    toThing(formatter: DisplayFormatter): ThingShow {
+    toThing(
+        formatter: DisplayFormatter,
+        forceSoftmatch: boolean = false
+    ): ThingShow {
         return {
-            id: this.entity(formatter),
+            id: this.getEntity(formatter, forceSoftmatch),
             publisher: this.publisher,
         };
     }

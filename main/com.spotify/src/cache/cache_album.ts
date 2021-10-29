@@ -1,4 +1,3 @@
-import { Value } from "thingpedia";
 import {
     AlbumObject,
     AlbumRestrictionObject,
@@ -13,6 +12,7 @@ import {
 import { ThingAlbum } from "../things";
 import CacheEntity, { DisplayFormatter } from "./cache_entity";
 import { cacheRegister } from "../cache/cache_helpers";
+import SpotifyEntity from "../spotify_entity";
 
 class CacheAlbum extends CacheEntity implements AlbumObject {
     // Properties
@@ -64,9 +64,9 @@ class CacheAlbum extends CacheEntity implements AlbumObject {
         this.tracks = album.tracks;
     }
 
-    get artistEntities(): Value.Entity[] {
+    getArtistEntities(formatter: DisplayFormatter): SpotifyEntity[] {
         return this.artists.map(
-            (artist) => new Value.Entity(artist.uri, artist.name)
+            (artist) => new SpotifyEntity(artist.uri, artist.name, formatter)
         );
     }
 
@@ -74,10 +74,13 @@ class CacheAlbum extends CacheEntity implements AlbumObject {
         return new Date(this.release_date);
     }
 
-    toThing(formatter: DisplayFormatter): ThingAlbum {
+    toThing(
+        formatter: DisplayFormatter,
+        forceSoftmatch: boolean = false
+    ): ThingAlbum {
         return {
-            id: this.entity(formatter),
-            artists: this.artistEntities,
+            id: this.getEntity(formatter, forceSoftmatch),
+            artists: this.getArtistEntities(formatter),
             release_date: this.releaseDate,
             popularity: this.popularity,
             genres: this.genres,

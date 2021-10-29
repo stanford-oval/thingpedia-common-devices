@@ -1,4 +1,3 @@
-import { Value } from "thingpedia";
 import {
     ArtistObject,
     AudioFeaturesObject,
@@ -10,6 +9,7 @@ import {
     TrackObject,
     TrackRestrictionObject,
 } from "../api/objects";
+import SpotifyEntity from "../spotify_entity";
 import { ThingTrack } from "../things";
 import CacheEntity, { DisplayFormatter } from "./cache_entity";
 import { cacheRegister } from "./cache_helpers";
@@ -140,25 +140,28 @@ class CacheTrack extends CacheEntity implements TrackObject {
         return this.audioFeatures.danceability * 100;
     }
 
-    get artistEntities(): Value.Entity[] {
+    getArtistEntities(formatter: DisplayFormatter): SpotifyEntity[] {
         return this.artists.map(
-            (artist) => new Value.Entity(artist.uri, artist.name)
+            (artist) => new SpotifyEntity(artist.uri, artist.name, formatter)
         );
     }
 
-    get albumEntity(): Value.Entity {
-        return new Value.Entity(this.album.uri, this.album.name);
+    getAlbumEntity(formatter: DisplayFormatter): SpotifyEntity {
+        return new SpotifyEntity(this.album.uri, this.album.name, formatter);
     }
 
     get releaseDate(): Date {
         return new Date(this.album.release_date);
     }
 
-    toThing(formatter: DisplayFormatter): ThingTrack {
+    toThing(
+        formatter: DisplayFormatter,
+        forceSoftmatch: boolean = false
+    ): ThingTrack {
         return {
-            id: this.entity(formatter),
-            artists: this.artistEntities,
-            album: this.albumEntity,
+            id: this.getEntity(formatter, forceSoftmatch),
+            artists: this.getArtistEntities(formatter),
+            album: this.getAlbumEntity(formatter),
             genres: this.genres,
             release_date: this.releaseDate,
             popularity: this.popularity,

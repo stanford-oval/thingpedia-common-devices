@@ -61,9 +61,12 @@ class CachePlaylist extends CacheEntity implements SimplifiedPlaylistObject {
         this.tracks = playlist.tracks;
     }
 
-    toThing(formatter: DisplayFormatter): ThingPlaylist {
+    toThing(
+        formatter: DisplayFormatter,
+        forceSoftmatch: boolean = false
+    ): ThingPlaylist {
         return {
-            id: this.entity(formatter),
+            id: this.getEntity(formatter, forceSoftmatch),
         };
     }
 }
