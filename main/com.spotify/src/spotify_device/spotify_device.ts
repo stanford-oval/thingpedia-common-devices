@@ -2,7 +2,7 @@ import { BaseDevice, Value } from "thingpedia";
 import * as Winston from "winston";
 import type { Runtime, ExecEnvironment } from "thingtalk";
 import { Logger } from "@stanford-oval/logging";
-import * as Redis from "redis";
+//import * as Redis from "redis";
 
 import SpotifyDaemon from "../spotify_daemon";
 import { Client } from "../client";
@@ -74,7 +74,7 @@ export default class SpotifyDevice extends BaseDevice {
     protected _client: Client;
     protected _queueBuilders: QueueBuilderManager;
     protected _playerDevice: undefined | DeviceObject;
-    protected _redis: RedisClient;
+    protected _redis?: RedisClient;
     protected _playerDeviceManager: PlayerDeviceManager;
     protected _displayFormatter: DisplayFormatter;
 
@@ -98,7 +98,7 @@ export default class SpotifyDevice extends BaseDevice {
             });
         }
 
-        this._redis = Redis.createClient({ url: "redis://redis" });
+        //this._redis = Redis.createClient({ url: "redis://redis" });
 
         this._client = new Client({
             useOAuth2: this,
@@ -157,7 +157,7 @@ export default class SpotifyDevice extends BaseDevice {
 
     async start(): Promise<void> {
         this.log.debug("Starting...");
-        await this._redis.connect();
+        await this._redis?.connect();
         // Try to get a device to play on, which has the added benefit of
         // refreshing the access token
         this._playerDeviceManager.start();

@@ -31,7 +31,7 @@ export class Component {
         return this._client.augment;
     }
 
-    protected get redis(): RedisClient {
+    protected get redis(): RedisClient|undefined {
         return this._client.redis;
     }
 

@@ -11,7 +11,7 @@ export const DEFAULT_TTL_SECONDS = 60 * 60 * 24; // 1 day
 
 export interface CacheDecorated {
     log: Logger.TLogger;
-    redis: RedisClient;
+    redis: RedisClient|undefined;
     userId: string;
 }
 
@@ -100,12 +100,12 @@ export function cache<TArgs extends any[]>(
             let isFromCache: boolean = false;
 
             const timer = log.startTimer();
-            const cached = await this.redis.GET(key);
+            const cached = await this.redis?.GET(key) ?? null;
 
             if (cached === null) {
                 log.info("CACHE MISS", { key });
                 data = await fn.apply(this, args);
-                this.redis.SET(key, JSON.stringify(data), setOptions);
+                this.redis?.SET(key, JSON.stringify(data), setOptions);
                 log.info("CACHE SET", { key, options: setOptions });
             } else {
                 isFromCache = true;

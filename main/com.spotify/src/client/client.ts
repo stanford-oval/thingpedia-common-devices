@@ -51,7 +51,7 @@ export class Client {
     // private static readonly log = LOG.childFor(Client);
 
     public readonly api: Api;
-    public readonly redis: RedisClient;
+    public readonly redis?: RedisClient;
     public readonly userId: string;
 
     public readonly augment: Augment;
@@ -74,7 +74,7 @@ export class Client {
         userId,
     }: {
         useOAuth2: Helpers.Http.HTTPRequestOptions["useOAuth2"];
-        redis: RedisClient;
+        redis?: RedisClient;
         userId: string;
     }) {
         this.api = new Api({ useOAuth2 });
