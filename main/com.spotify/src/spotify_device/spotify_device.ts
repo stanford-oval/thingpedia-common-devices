@@ -101,7 +101,7 @@ export default class SpotifyDevice extends BaseDevice {
         this._redis = Redis.createClient({ url: "redis://redis" });
 
         this._client = new Client({
-            useOAuth2: this as Helpers.Http.HTTPRequestOptions["useOAuth2"],
+            useOAuth2: this,
             redis: this._redis,
             userId: this.state.id,
         });
