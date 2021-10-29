@@ -27,13 +27,16 @@ module.exports = [
                 if (item.source)
                     assert(typeof item.source === 'string');
                 assert(typeof item.summary === 'string');
-                assert(item.link.startsWith('https://'), `Expected link to start with http://, got ${item.link}`);
+                assert(item.link.startsWith('http://') || item.link.startsWith('https://'), `Expected link to start with http:// or https://, got ${item.link}`);
                 assert(Array.isArray(item.category));
                 // console.log(item.category[0].constructor.name)
                 assert(item.category[0] instanceof Tp.Value.Entity);
                 assert(item.date instanceof Date);
-                assert(item.headline_audio_url.startsWith('https://'), `Expected link to start with https://, got ${item.headline_audio_url}`);
-                assert(item.summary_audio_url.startsWith('https://'), `Expected link to start with https://, got ${item.summary_audio_url}`);
+                assert(Array.isArray(item.mention));
+                if (item.mention[0])
+                    assert(typeof item.mention[0] === 'string');
+                assert(item.headline_audio_url.startsWith('http://') || item.headline_audio_url.startsWith('https://'), `Expected link to start with http:// or https://, got ${item.headline_audio_url}`);
+                assert(item.summary_audio_url.startsWith('http://') || item.summary_audio_url.startsWith('https://'), `Expected link to start with http:// or https://, got ${item.summary_audio_url}`);
             }
         } catch (error) {
             console.log('parsed news items:', tmp);
@@ -61,13 +64,13 @@ module.exports = [
                 if (item.source)
                     assert(typeof item.source === 'string');
                 assert(typeof item.summary === 'string');
-                assert(item.link.startsWith('https://'), `Expected link to start with https://, got ${item.link}`);
+                assert(item.link.startsWith('http://') || item.link.startsWith('https://'), `Expected link to start with http:// or https://, got ${item.link}`);
                 assert(Array.isArray(item.category));
                 assert(item.category[0] instanceof Tp.Value.Entity);
                 assert(item.date instanceof Date);
                 assert((item.date.getTime() >= start_date.getTime()) && (item.date.getTime() <= end_date.getTime()));
-                assert(item.headline_audio_url.startsWith('https://'), `Expected link to start with https://, got ${item.headline_audio_url}`);
-                assert(item.summary_audio_url.startsWith('https://'), `Expected link to start with https://, got ${item.summary_audio_url}`);
+                assert(item.headline_audio_url.startsWith('http://') || item.headline_audio_url.startsWith('https://'), `Expected link to start with http:// or https://, got ${item.headline_audio_url}`);
+                assert(item.summary_audio_url.startsWith('http://') || item.summary_audio_url.startsWith('https://'), `Expected link to start with http:// or https://, got ${item.summary_audio_url}`);
             }
         } catch (error) {
             console.log('parsed news items:', tmp);
