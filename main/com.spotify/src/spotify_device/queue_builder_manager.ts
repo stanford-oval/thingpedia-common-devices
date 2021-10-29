@@ -24,17 +24,20 @@ export default class QueueBuilderManager {
     protected _addToQueue: AddToQueueCallback;
     protected _pendingBuilders: Map<string, QueueBuilder>;
     protected _backgroundBuilders: Map<string, QueueBuilder>;
+    protected _queueInBackground: boolean;
 
     constructor({
         resolveURI,
         getActiveDevice,
         play,
         addToQueue,
+        queueInBackground = false,
     }: {
         resolveURI: URIResolver;
         getActiveDevice: ActiveDeviceResolver;
         play: PlayCallback;
         addToQueue: AddToQueueCallback;
+        queueInBackground?: boolean;
     }) {
         this._resolveURI = resolveURI;
         this._getActiveDevice = getActiveDevice;
@@ -42,6 +45,7 @@ export default class QueueBuilderManager {
         this._addToQueue = addToQueue;
         this._pendingBuilders = new Map<string, QueueBuilder>();
         this._backgroundBuilders = new Map<string, QueueBuilder>();
+        this._queueInBackground = queueInBackground;
     }
 
     get log() {
@@ -106,29 +110,43 @@ export default class QueueBuilderManager {
             return;
         }
 
-        const uris = await builder.popInitialURIs();
+        if (this._queueInBackground) {
+            const uris = await builder.popInitialURIs();
 
-        const backgroundBuilder = this._backgroundBuilders.get(appId);
-        if (backgroundBuilder !== undefined) {
-            log.debug(
-                "A previous QueueBuilder is still flushing, canceling..."
-            );
-            backgroundBuilder.cancel();
-            this._backgroundBuilders.delete(appId);
-        }
+            const backgroundBuilder = this._backgroundBuilders.get(appId);
+            if (backgroundBuilder !== undefined) {
+                log.debug(
+                    "A previous QueueBuilder is still flushing, canceling..."
+                );
+                backgroundBuilder.cancel();
+                this._backgroundBuilders.delete(appId);
+            }
 
-        log.debug("Requesting playing initial URIs (async background)...", {
-            uris,
-        });
-        this._backgroundProtect(
-            this._play({
-                device_id: builder.device.id,
+            log.debug("Requesting playing initial URIs (async background)...", {
                 uris,
-            }).then(() => {
-                log.debug("Kicking off background flush...");
-                return this._backgroundFlush(builder);
-            })
-        );
+            });
+            this._backgroundProtect(
+                this._play({
+                    device_id: builder.device.id,
+                    uris,
+                }).then(() => {
+                    log.debug("Kicking off background flush...");
+                    return this._backgroundFlush(builder);
+                })
+            );
+        } else {
+            const uris = await builder.resolveAll();
+
+            log.debug("Requesting playing URIs (async background)...", {
+                uris,
+            });
+            this._backgroundProtect(
+                this._play({
+                    device_id: builder.device.id,
+                    uris,
+                })
+            );
+        }
     }
 
     protected async _backgroundFlush(builder: QueueBuilder) {

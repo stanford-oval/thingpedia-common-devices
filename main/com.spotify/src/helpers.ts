@@ -6,13 +6,10 @@ import { SimplifiedEpisodeObject } from "./api/objects";
 import { MarketPageOptions, PageOptions } from "./api/requests";
 import { ThingPlayable } from "./things";
 
-export type URIType =
-    | "track"
-    | "artist"
-    | "album"
-    | "playlist"
-    | "show"
-    | "episode";
+export type SingularURIType = "track" | "episode";
+export type ContextURIType = "artist" | "album" | "playlist" | "show";
+
+export type URIType = SingularURIType | ContextURIType;
 
 export const URI_TYPES: URIType[] = [
     "track",
@@ -91,9 +88,12 @@ export function uriType(uri: string): URIType {
     throw new Error(`Not a recognized URI type: ${uri}`);
 }
 
-export function isSingularURI(uri: string): boolean {
-    const type = uriType(uri);
+export function isSingularURIType(type: URIType): type is SingularURIType {
     return type === "track" || type === "episode";
+}
+
+export function isSingularURI(uri: string): boolean {
+    return isSingularURIType(uriType(uri));
 }
 
 export function uriId(uri: string): string {
