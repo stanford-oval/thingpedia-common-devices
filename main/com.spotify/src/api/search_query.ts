@@ -107,9 +107,9 @@ export class SearchQuery {
         if (value === undefined) {
             return "";
         } else if (value instanceof Value.Entity) {
-            value = value.display;
+            value = String(value.display).normalize("NFC");
         } else if (typeof value !== "string") {
-            value = String(value);
+            value = String(value).normalize("NFC");
         }
         return value.toLocaleLowerCase();
     }
