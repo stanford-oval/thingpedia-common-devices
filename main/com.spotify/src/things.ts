@@ -45,6 +45,7 @@ export interface ThingShow {
 
 export interface ThingEpisode {
     id: SpotifyEntity;
+    release_date: Date;
 }
 
 export type ThingPlayable =

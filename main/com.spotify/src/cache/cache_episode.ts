@@ -63,6 +63,7 @@ class CacheEpisode extends CacheEntity implements EpisodeObject {
     ): ThingEpisode {
         return {
             id: this.getEntity(formatter, forceSoftmatch),
+            release_date: new Date(this.release_date)
         };
     }
 }

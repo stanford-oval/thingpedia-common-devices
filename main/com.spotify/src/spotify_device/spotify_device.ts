@@ -27,7 +27,7 @@ import {
     uriId,
     uriType,
 } from "../helpers";
-import { CurrentlyPlayingContextObject, DeviceObject } from "../api/objects";
+import { DeviceObject } from "../api/objects";
 import {
     buildQuery,
     invokeSearch,
@@ -498,41 +498,6 @@ export default class SpotifyDevice extends BaseDevice {
             throw new ThingError("No song playing", "no_song_playing");
         }
         return response.toThing(this._displayFormatter);
-    }
-
-    @genieGet
-    async get_get_play_info(
-        params: Params,
-        hints: Runtime.CompiledQueryHints,
-        env: ExecEnvironment
-    ): Promise<undefined | CurrentlyPlayingContextObject> {
-        return this._client.player.get();
-    }
-
-    @genieGet
-    async get_get_available_devices(
-        params: Params,
-        hints: Runtime.CompiledQueryHints,
-        env: ExecEnvironment
-    ): Promise<DeviceObject[]> {
-        if (isTestMode()) {
-            // TODO This is weird like this...
-            //
-            // https://github.com/stanford-oval/thingpedia-common-devices/blob/4c20248f87d000be1aef906d34b74a820aa03788/main/com.spotify/index.js#L906
-            //
-            return [
-                {
-                    id: "mock",
-                    is_active: true,
-                    is_private_session: false,
-                    is_restricted: false,
-                    name: "Coolest Computer",
-                    type: "Computer",
-                    volume_percent: 100,
-                },
-            ];
-        }
-        return await this._client.player.getDevices();
     }
 
     @genieGet

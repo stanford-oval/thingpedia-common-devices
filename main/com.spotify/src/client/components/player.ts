@@ -9,6 +9,7 @@ export class Player extends Component {
     async getCurrentlyPlaying(): Promise<void | CacheTrack | CacheEpisode> {
         const playing = await this._api.player.getCurrentlyPlaying({
             market: "from_token",
+            additional_types: "episode"
         });
 
         if (playing === undefined) {
