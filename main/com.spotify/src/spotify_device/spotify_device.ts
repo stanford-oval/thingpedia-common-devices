@@ -641,7 +641,10 @@ export default class SpotifyDevice extends BaseDevice {
     async do_player_play(params: Params, env: ExecWrapper) {
         this._checkPremium();
         const device = await this._getPlayerDevice(env);
-        await this._negotiatePlay({
+
+        // play asynchronously: playing will call requestAudio on the audio controller,
+        // which will wait until the agent is done speaking, so we must return here
+        this._negotiatePlay({
             device_id: device.id,
         });
     }
