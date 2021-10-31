@@ -4,6 +4,7 @@ import {
     EpisodeObject,
     isAlbumObject,
     SimplifiedAlbumObject,
+    SimplifiedEpisodeObject,
     SimplifiedPlaylistObject,
     SimplifiedShowObject,
     TrackObject,
@@ -114,7 +115,7 @@ export class Augment extends Component {
         return shows.map((s) => new CacheShow(s));
     }
 
-    async episodes(episodes: EpisodeObject[]): Promise<CacheEpisode[]> {
+    async episodes(episodes: SimplifiedEpisodeObject[]): Promise<CacheEpisode[]> {
         return episodes.map((e) => new CacheEpisode(e));
     }
 

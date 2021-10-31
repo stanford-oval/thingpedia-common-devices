@@ -38,11 +38,14 @@ import {
     Users,
 } from ".";
 import { PageOptions } from "../api/requests";
+import { isEpisodeObject } from "../api/objects";
 
 // Constants
 // ===========================================================================
 
 // const LOG = Logging.get(__filename);
+
+const PODCASTS_OF_THE_MONTH_PLAYLIST_ID = "37i9dQZF1DXdlkPQJ1PlTQ";
 
 // Class Definition
 // ===========================================================================
@@ -153,16 +156,24 @@ export class Client {
         return this.browse.getFeaturedPlaylists(options);
     }
 
-    getAnyShows(options: PageOptions = {}): Promise<CacheShow[]> {
-        return this.search.shows({
-            ...options,
-            query: { year: new Date() },
-        });
+    async getAnyShows(options: PageOptions = {}): Promise<CacheShow[]> {
+        const episodes = await this.playlists.getTracks(
+            PODCASTS_OF_THE_MONTH_PLAYLIST_ID
+        );
+        
+        const showIds: string[] = [];
+        for (const playlistTrack of episodes.items) {
+            if (isEpisodeObject(playlistTrack.track)) {
+                showIds.push(playlistTrack.track.album.id);
+            }
+        }
+        
+        return this.shows.getAll(showIds);
     }
 
     async getAnyShow(): Promise<CacheShow> {
-        const top10Shows = await this.getAnyShows({ limit: 10 });
-        return sample(top10Shows);
+        const shows = await this.getAnyShows({ limit: 10 });
+        return sample(shows);
     }
 
     getAnyPlayable(): Promise<CacheEntity[]> {

@@ -5,12 +5,19 @@ import CacheEpisode from "../../cache/cache_episode";
 import { assertBounds, isUnfinished } from "../../helpers";
 import { Component } from "..";
 import Logging from "../../logging";
+import CacheShow from "../../cache/cache_show";
 
 const LOG = Logging.get(__filename);
 
 export class Shows extends Component {
     private static readonly log: Logger.TLogger = LOG.childFor(Shows);
-
+    
+    getAll(ids: string[]): Promise<CacheShow[]> {
+        return this._api.shows
+            .getAll(ids)
+            .then((shows) => this.augment.shows(shows));
+    }
+    
     getEpisodes(
         showId: string,
         options: MarketPageOptions = {}

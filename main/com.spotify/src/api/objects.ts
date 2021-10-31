@@ -364,7 +364,19 @@ export interface SimplifiedEpisodeObject extends EntityObject {
     resume_point?: ResumePointObject;
 }
 
-export interface EpisodeObject extends SimplifiedEpisodeObject {}
+export function isSimplifiedEpisodeObject(
+    x: any
+): x is SimplifiedEpisodeObject {
+    return isEntityObject(x) && x.type === "episode";
+}
+
+export interface EpisodeObject extends SimplifiedEpisodeObject {
+    album: SimplifiedShowObject;
+}
+
+export function isEpisodeObject(x: any): x is EpisodeObject {
+    return isSimplifiedEpisodeObject(x) && x.hasOwnProperty("album");
+}
 
 /**
  * @see https://developer.spotify.com/documentation/web-api/reference/#object-simplifiedplaylistobject

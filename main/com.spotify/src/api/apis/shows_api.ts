@@ -1,8 +1,8 @@
 import { assertMax, checkPageOptions } from "../../helpers";
 import {
     PagingObject,
+    ShowObject,
     SimplifiedEpisodeObject,
-    SimplifiedShowObject,
 } from "../objects";
 import { MarketPageOptions } from "../requests";
 import BaseApi from "./base_api";
@@ -11,9 +11,9 @@ export default class ShowsApi extends BaseApi {
     getAll(
         ids: string[],
         options: { market?: string } = {}
-    ): Promise<SimplifiedShowObject[]> {
+    ): Promise<ShowObject[]> {
         assertMax("ids.length", ids.length, 50);
-        return this._http.getList<SimplifiedShowObject>("/v1/shows", {
+        return this._http.getList<ShowObject>("/v1/shows", {
             ids,
             ...options,
         });

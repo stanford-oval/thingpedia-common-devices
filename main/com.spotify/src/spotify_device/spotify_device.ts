@@ -46,6 +46,7 @@ import {
 import { isRepeatState } from "../api/requests";
 import PlayerDeviceManager from "./player_device_manager";
 import { DisplayFormatter } from "../cache/cache_entity";
+import SearchFilter from "./search_filter";
 
 // Constants
 // ===========================================================================
@@ -77,6 +78,7 @@ export default class SpotifyDevice extends BaseDevice {
     protected _redis?: RedisClient;
     protected _playerDeviceManager: PlayerDeviceManager;
     protected _displayFormatter: DisplayFormatter;
+    protected _searchFilter: SearchFilter;
 
     constructor(engine: SpotifyDeviceEngine, state: SpotifyDeviceState) {
         super(engine, state);
@@ -125,6 +127,8 @@ export default class SpotifyDevice extends BaseDevice {
         });
 
         this._displayFormatter = this._formatEntityDisplay.bind(this);
+
+        this._searchFilter = new SearchFilter();
 
         this.log.debug("Constructed.");
     }
@@ -347,7 +351,7 @@ export default class SpotifyDevice extends BaseDevice {
         hints: Runtime.CompiledQueryHints,
         env: ExecWrapper
     ): Promise<ThingArtist[]> {
-        const log = this.log.childFor(this.get_artist);
+        // const log = this.log.childFor(this.get_artist);
 
         const limit = 10;
         if (!hints.filter) {
@@ -366,26 +370,32 @@ export default class SpotifyDevice extends BaseDevice {
 
         const artists = await this._client.search.artists({ query, limit });
 
-        const info: Record<string, any>[] = [];
-        const things = artists.map((artist, index) => {
-            let forceSoftmatch = false;
+        const filtered = this._searchFilter.filter(artists, query.any);
 
-            if (index === 0) {
-                forceSoftmatch = true;
-            }
+        return filtered.map((artist) =>
+            artist.toThing(this._displayFormatter, true)
+        );
 
-            info.push({
-                name: artist.name,
-                popularity: artist.popularity,
-                forceSoftmatch,
-            });
+        // const info: Record<string, any>[] = [];
+        // const things = artists.map((artist, index) => {
+        //     let forceSoftmatch = false;
 
-            return artist.toThing(this._displayFormatter, forceSoftmatch);
-        });
+        //     if (index === 0) {
+        //         forceSoftmatch = true;
+        //     }
 
-        log.info("Search info", { info });
+        //     info.push({
+        //         name: artist.name,
+        //         popularity: artist.popularity,
+        //         forceSoftmatch,
+        //     });
 
-        return things;
+        //     return artist.toThing(this._displayFormatter, forceSoftmatch);
+        // });
+
+        // log.info("Search info", { info });
+
+        // return things;
 
         // return (
         //     await invokeSearch(

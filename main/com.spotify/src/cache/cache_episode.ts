@@ -1,15 +1,15 @@
 import {
     ExternalUrlObject,
     ImageObject,
-    EpisodeObject,
     EpisodeRestrictionObject,
     ResumePointObject,
+    SimplifiedEpisodeObject,
 } from "../api/objects";
 import { ThingEpisode } from "../things";
 import CacheEntity, { DisplayFormatter } from "./cache_entity";
 import { cacheRegister } from "./cache_helpers";
 
-class CacheEpisode extends CacheEntity implements EpisodeObject {
+class CacheEpisode extends CacheEntity implements SimplifiedEpisodeObject {
     // Properties
     // =======================================================================
 
@@ -36,7 +36,7 @@ class CacheEpisode extends CacheEntity implements EpisodeObject {
     // Construction
     // =======================================================================
 
-    constructor(episode: EpisodeObject) {
+    constructor(episode: SimplifiedEpisodeObject) {
         super(episode.type, episode.id, episode.name, episode.uri);
         this.type = episode.type;
         this.audio_preview_url = episode.audio_preview_url;
