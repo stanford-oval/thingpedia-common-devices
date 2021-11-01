@@ -121,6 +121,10 @@ class @com.smartnews
                                      passive_verb_projection=["published | on", "released | on", "written | on"]
                                  }],
 
+                                 out mention: Array(String)
+                                 #[string_values="tt:word"]
+                                 #[filterable=false],
+ 
                                  out headline_audio_url: Entity(tt:url),
 
                                  out summary_audio_url: Entity(tt:url)
@@ -147,6 +151,7 @@ class @com.smartnews
   }]
   #_[formatted=[
     { type="rdl", webCallback="${link}", displayTitle="${title}" },
+    { type="text", text="${summary}" },
     { type="sound", name="news-intro", exclusive=true },
     { type="text", text="${title}. ${summary}." }
   ]]
@@ -154,6 +159,6 @@ class @com.smartnews
     unavailable="the smartnews service is unavailable. please try again later"
   }]
   #[poll_interval=3600000ms]
-  #[minimal_projection=["id", "title", "link", "headline_audio_url"]]
+  #[minimal_projection=["id", "title", "summary", "link", "headline_audio_url"]]
   #[doc="get news articles from SmartNews"];
 }
