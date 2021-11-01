@@ -1,4 +1,5 @@
 import { strict as assert } from "assert";
+
 import { Value } from "thingpedia";
 import { RedisClientType } from "redis/dist/lib/client";
 

@@ -11,7 +11,7 @@ export const DEFAULT_TTL_SECONDS = 60 * 60 * 24; // 1 day
 
 export interface CacheDecorated {
     log: Logger.TLogger;
-    redis: RedisClient|undefined;
+    redis: RedisClient | undefined;
     userId: string;
 }
 
@@ -63,6 +63,43 @@ export function cacheReviver(key: string, value: any) {
     return new cls(value);
 }
 
+export async function cacheGet(
+    redis: undefined | RedisClient,
+    key: string,
+    log?: Logger.TLogger
+): Promise<null | string> {
+    if (!redis || !redis.isOpen) {
+        return null;
+    }
+    if (log === undefined) {
+        log = LOG.childFor(cacheSet);
+    }
+    const cached = await redis.GET(key);
+    if (cached === null) {
+        log.info("CACHE MISS", {key});
+    } else {
+        log.info("CACHE HIT", {key});
+    }
+    return cached;
+}
+
+export async function cacheSet(
+    redis: undefined | RedisClient,
+    key: string,
+    data: string,
+    options: any,
+    log?: Logger.TLogger
+) {
+    if (!redis || !redis.isOpen) {
+        return null;
+    }
+    if (log === undefined) {
+        log = LOG.childFor(cacheSet);
+    }
+    log.info("CACHE SET", { key, options: options });
+    await redis.SET(key, data, options);
+}
+
 export function cache<TArgs extends any[]>(
     makeArgsKey: null | ((...args: TArgs) => undefined | string),
     setOptions: any = { EX: DEFAULT_TTL_SECONDS }
@@ -100,16 +137,13 @@ export function cache<TArgs extends any[]>(
             let isFromCache: boolean = false;
 
             const timer = log.startTimer();
-            const cached = await this.redis?.GET(key) ?? null;
+            const cached = await cacheGet(this.redis, key);
 
             if (cached === null) {
-                log.info("CACHE MISS", { key });
                 data = await fn.apply(this, args);
-                this.redis?.SET(key, JSON.stringify(data), setOptions);
-                log.info("CACHE SET", { key, options: setOptions });
+                cacheSet(this.redis, key, JSON.stringify(data), setOptions);
             } else {
                 isFromCache = true;
-                log.info("CACHE HIT", { key });
                 data = JSON.parse(cached, cacheReviver);
             }
             timer.done({

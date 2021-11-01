@@ -21,6 +21,7 @@ import { SearchQuery } from "../api/search_query";
 import Logging from "../logging";
 import {
     cast,
+    errorMetaFor,
     isString,
     isTestMode,
     RedisClient,
@@ -58,8 +59,8 @@ const LOG = Logging.get(__filename);
 
 function hasRedis() {
     return (
-        typeof process.env.REDIS_HOST === "string"
-        && process.env.REDIS_HOST.length > 0
+        typeof process.env.REDIS_HOST === "string" &&
+        process.env.REDIS_HOST.length > 0
     );
 }
 
@@ -121,7 +122,7 @@ export default class SpotifyDevice extends BaseDevice {
                 version: "v0.3.2",
             });
         }
-        
+
         if (hasRedis()) {
             this._redis = Redis.createClient({ url: getRedisURL() });
         }
@@ -190,6 +191,23 @@ export default class SpotifyDevice extends BaseDevice {
         // refreshing the access token
         this._playerDeviceManager.start();
         this.log.debug("Started.");
+    }
+
+    async stop(): Promise<void> {
+        this.log.debug("Stopping...");
+        if (this._redis) {
+            this.log.debug("Disconnecting Redis...");
+            try {
+                await this._redis?.disconnect();
+            } catch (error: any) {
+                this.log.error(
+                    "Error disconnecting Redis",
+                    errorMetaFor(error)
+                );
+            }
+        }
+        this._playerDeviceManager.stop();
+        this.log.debug("Stopped.");
     }
 
     // Helper Instance Methods
