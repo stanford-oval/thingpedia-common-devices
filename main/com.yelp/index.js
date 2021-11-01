@@ -193,10 +193,7 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
         return hours.flatMap((h) => h.open.map((h) => new TT.Builtin.RecurrentTimeRule({
             beginTime: new Tp.Value.Time(parseInt(h.start.slice(0, 2), 10), parseInt(h.start.slice(2, 4), 10)),
             endTime: new Tp.Value.Time(parseInt(h.end.slice(0, 2), 10), parseInt(h.end.slice(2, 4), 10)),
-
-            // h.day starts at 0=monday, dayOfWeek starts at 0=sunday
-            // add 1 mod 7
-            dayOfWeek: (h.day + 1) % 7
+            dayOfWeek: h.day
         }))).concat((specialHours||[]).map((h) => new TT.Builtin.RecurrentTimeRule({
             beginTime: h.start ? new Tp.Value.Time(parseInt(h.start.slice(0, 2), 10), parseInt(h.start.slice(2, 4), 10)) : new Tp.Value.Time(0,0),
             endTime: h.end ? new Tp.Value.Time(parseInt(h.end.slice(0, 2), 10), parseInt(h.end.slice(2, 4), 10)) : new Tp.Value.Time(0,0,0),
