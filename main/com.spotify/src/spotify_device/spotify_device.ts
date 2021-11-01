@@ -53,6 +53,28 @@ import SearchFilter from "./search_filter";
 
 const LOG = Logging.get(__filename);
 
+// Functions
+// ===========================================================================
+
+function hasRedis() {
+    return (
+        typeof process.env.REDIS_HOST === "string"
+        && process.env.REDIS_HOST.length > 0
+    );
+}
+
+function getRedisURL() {
+    let url = "redis://";
+    if (process.env.REDIS_USER !== null) {
+        url += process.env.REDIS_USER;
+        if (process.env.REDIS_PASSWORD !== null)
+            url += `:${process.env.REDIS_PASSWORD}`;
+        url += "@";
+    }
+    url += process.env.REDIS_HOST;
+    return url;
+}
+
 // Class Definition
 // ===========================================================================
 
@@ -99,8 +121,10 @@ export default class SpotifyDevice extends BaseDevice {
                 version: "v0.3.2",
             });
         }
-
-        this._redis = Redis.createClient({ url: "redis://redis" });
+        
+        if (hasRedis()) {
+            this._redis = Redis.createClient({ url: getRedisURL() });
+        }
 
         this._client = new Client({
             useOAuth2: this,
