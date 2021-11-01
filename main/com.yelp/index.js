@@ -298,7 +298,7 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                 rating: Number(b.rating),
                 review_count: b.review_count,
                 geo,
-                phone: b.phone
+                phone: b.phone || undefined,
             };
             if (!needsBusinessDetails)
                 return data;
