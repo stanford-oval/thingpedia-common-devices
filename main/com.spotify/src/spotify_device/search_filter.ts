@@ -27,6 +27,10 @@ export default class SearchFilter {
     ) {}
 
     public filter<T extends Filterable>(items: T[], query: string): T[] {
+        if (items.length === 0) {
+            return [];
+        }
+        
         const el = ElasticLunr<Index>(function () {
             this.setRef("id");
             this.addField("name");
