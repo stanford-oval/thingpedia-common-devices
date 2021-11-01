@@ -35,6 +35,21 @@ const interpolate = require('string-interp');
 const Tp = require('thingpedia');
 const TT = require('thingtalk');
 const qs = require('querystring');
+const Logging = require("@stanford-oval/logging");
+const Winston = require("winston");
+
+const LogFactory = new Logging.Factory({
+    runRoot: __dirname,
+    level: "http",
+    envVarPrefix: "TP_BING_LOG",
+    transports: [
+        new Winston.transports.Console({
+            format: Logging.Format.prettySimple({ colorize: true }),
+        }),
+    ],
+});
+
+const LOG = LogFactory.get(__filename);
 
 /**
  *
@@ -279,6 +294,7 @@ class BingDialogueHandler {
             };
         }
         default:
+            LOG.error(`Unexpected bing answer type`, analysis);
             throw new Error(`Unexpected bing answer type ${analysis.answerType}`);
         }
     }
