@@ -1,3 +1,5 @@
+import { strict as assert } from "assert";
+
 import ElasticLunr from "elasticlunr";
 
 import {
@@ -37,7 +39,7 @@ export class Playlists extends Component {
             page.items.map((t) => t.track.uri)
         );
     }
-
+    
     create(
         user_id: string,
         name: string,
@@ -56,23 +58,34 @@ export class Playlists extends Component {
         return this._api.playlists.add(id, arrayFor(uris), options);
     }
 
-    @cache(null)
+    // @cache(null)
     async getMy(): Promise<CachePlaylist[]> {
+        // Max limit for the request is 50, so use chunks of 50
         const limit = 50;
+        // Get the first page so we know how many playlists there are
         const firstPage = await this._api.playlists.getMy({ limit });
-        const additionalPages =
-            Math.floor(firstPage.total / limit) +
-            (firstPage.total % limit === 0 ? 0 : 1) -
-            1;
-        if (additionalPages === 0) {
+        // Make sure we got a total that make sense
+        assert(
+            typeof firstPage.total === "number"
+            && Number.isInteger(firstPage.total)
+            && firstPage.total >= 0,
+            `My playlist PagingObject.total must be a non-negative integer, ` +
+            `found ${typeof firstPage.total}: ${firstPage.total}`
+        );
+        // Compute how many more pages there are (total pages - 1)
+        const additionalPages = Math.ceil(firstPage.total / limit) - 1;
+        // If there is not at least one more page then we're done, return.
+        if (additionalPages < 1) {
             return this.augment.playlists(firstPage.items);
         }
+        // Fan out requests for the rest of the pages
         const promises: Promise<PagingObject<SimplifiedPlaylistObject>>[] = [];
-        for (let i = 1; i++; i <= additionalPages) {
+        for (let i = 1; i <= additionalPages; i++) {
             promises.push(
                 this._api.playlists.getMy({ limit, offset: i * limit })
             );
         }
+        // Wait for all the requests and concatenate the results
         const pages = await Promise.all(promises);
         const playlists: SimplifiedPlaylistObject[] = [];
         for (const page of pages) {
