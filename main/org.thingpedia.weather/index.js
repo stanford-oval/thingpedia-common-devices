@@ -10,6 +10,21 @@
 
 const Redis = require("redis");
 const Tp = require('thingpedia');
+const Logging = require("@stanford-oval/logging");
+const Winston = require("winston");
+
+const LogFactory = new Logging.Factory({
+    runRoot: __dirname,
+    level: "http",
+    envVarPrefix: "TP_WEATHER_LOG",
+    transports: [
+        new Winston.transports.Console({
+            format: Logging.Format.prettySimple({ colorize: true }),
+        }),
+    ],
+});
+
+const LOG = LogFactory.get(__filename);
 
 const MS_PER_HOUR = 60 * 60 * 1000;
 const MS_PER_DAY = 24 * MS_PER_HOUR;
@@ -32,21 +47,61 @@ class ForecastError extends Error {
     }
 }
 
+function hasRedis() {
+    return (
+        typeof process.env.REDIS_HOST === "string"
+        && process.env.REDIS_HOST.length > 0
+    );
+}
+
+function getRedisURL() {
+    let url = "redis://";
+    if (process.env.REDIS_USER !== null) {
+        url += process.env.REDIS_USER;
+        if (process.env.REDIS_PASSWORD !== null)
+            url += `:${process.env.REDIS_PASSWORD}`;
+        url += "@";
+    }
+    url += process.env.REDIS_HOST;
+    return url;
+}
+
 module.exports = class WeatherAPIDevice extends Tp.BaseDevice {
+    constructor(engine, state) {
+        super(engine, state);
+        this.redisClient = hasRedis() ? Redis.createClient({url: getRedisURL()}) : undefined;
+    }
+
+    async start() {
+        LOG.debug("Starting...");
+        if (this.redisClient) await this.redisClient.connect();
+        LOG.debug("Started.");
+    }
+
+    async _getCached(key) {
+        if (!this.redisClient) return null;
+        const cached = await this.redisClient.GET(key);
+        if (cached === null)
+            LOG.info("CACHE MISS", {key});
+        else
+            LOG.info("CACHE HIT", {key});
+        return cached;
+    }
+
+    async _setCached(key, data) {
+        if (!this.redisClient) return;
+        LOG.info("CACHE SET", {key});
+        await this.redisClient.SET(key, data, {EX: 30 * 60});
+    }
+
     async _get(url) {
-        console.log(`ENTER WeatherAPIDevice._get url=${url}`);
-        const redisClient = Redis.createClient({url: "redis://redis"});
-        await redisClient.connect();
         const key = `org.thingpedia.weather:${url}`;
-        const cached = await redisClient.GET(key);
+        const cached = await this._getCached(key);
         let xml;
         if (cached === null) {
-            console.log(`CACHE MISS WeatherAPIDevice._get key=${key}`);
             xml = await Tp.Helpers.Http.get(url);
-            console.log(`CACHE SET WeatherAPIDevice._get key=${key}`);
-            await redisClient.SET(key, xml, {EX: 30 * 60});
+            await this._setCached(key, xml);
         } else {
-            console.log(`CACHE HIT WeatherAPIDevice._get key=${key}`);
             xml = cached;
         }
         return await Tp.Helpers.Xml.parseString(xml);

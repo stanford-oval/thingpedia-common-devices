@@ -42,19 +42,6 @@ const LogFactory = new Logging.Factory({
     level: "http",
     envVarPrefix: "TP_YELP_LOG",
     transports: [
-        //
-        // - Write all logs with level `error` and below to `error.log`
-        // - Write all logs with level `info` and below to `combined.log`
-        //
-        // new Winston.transports.File({
-        //     filename: Path.resolve(REPO_ROOT, "tmp", "error.log"),
-        //     format: Winston.format.json(),
-        //     level: "error",
-        // }),
-        // new Winston.transports.File({
-        //     filename: Path.resolve(REPO_ROOT, "tmp", "all.log"),
-        //     format: Winston.format.json(),
-        // }),
         new Winston.transports.Console({
             format: Logging.Format.prettySimple({ colorize: true }),
         }),
@@ -92,6 +79,25 @@ const INVERSE_PRICE_RANGE_MAP = {
     luxury: '4'
 };
 
+function hasRedis() {
+    return (
+        typeof process.env.REDIS_HOST === "string"
+        && process.env.REDIS_HOST.length > 0
+    );
+}
+
+function getRedisURL() {
+    let url = "redis://";
+    if (process.env.REDIS_USER !== null) {
+        url += process.env.REDIS_USER;
+        if (process.env.REDIS_PASSWORD !== null)
+            url += `:${process.env.REDIS_PASSWORD}`;
+        url += "@";
+    }
+    url += process.env.REDIS_HOST;
+    return url;
+}
+
 module.exports = class YelpDevice extends Tp.BaseDevice {
     constructor(engine, state) {
         super(engine, state);
@@ -99,13 +105,25 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
         this.name = "Yelp";
         this.description = "Yelp search for Almond ";
         this.log = LOG.childFor(YelpDevice);
-        this.redisClient = Redis.createClient({url: "redis://redis"});
+        this.redisClient = hasRedis() ? Redis.createClient({url: getRedisURL()}) : undefined;
     }
 
     async start() {
         this.log.debug("Starting...");
-        await this.redisClient.connect();
+        if (this.redisClient) await this.redisClient.connect();
         this.log.debug("Started.");
+    }
+
+    async _getCached(key) {
+        if (!this.redisClient) return null;
+        return await this.redisClient.GET(key);
+    }
+
+    async _setCached(key, data, log) {
+        if (this.redisClient) {
+            log.info("CACHE SET", {key});
+            await this.redisClient.SET(key, data, {EX: 30 * 60});
+        }
     }
 
     async _get(url) {
@@ -115,10 +133,13 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
 
         let fromCache = false;
         const key = `com.yelp:${url}`;
-        const cached = await this.redisClient.GET(key);
+        const cached = await this._getCached(key);
         let data;
         if (cached === null) {
-            log.info("CACHE MISS", {key});
+            if (this.redisClient)
+                log.info("CACHE MISS", {key});
+            else
+                log.info("NO CACHE");
             const httpProfiler = log.startTimer();
             data = await Tp.Helpers.Http.get(url, {
                 auth: 'Bearer ' + this.constructor.metadata.auth.api_key
@@ -128,12 +149,9 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                 message: "Yelp API request complete",
                 url,
             };
-            if (log.isLevelEnabled("debug")) {
-                httpLogInfo.data = data;
-            }
+            if (log.isLevelEnabled("debug")) httpLogInfo.data = data;
             httpProfiler.done(httpLogInfo);
-            log.info("CACHE SET", {key});
-            await this.redisClient.SET(key, data, {EX: 30 * 60});
+            this._setCached(key, data, log);
         } else {
             console.log("CACHE HIT", {key});
             fromCache = true;
