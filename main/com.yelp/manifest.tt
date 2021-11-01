@@ -64,7 +64,7 @@ class @com.yelp
                         out cuisines: Array(Entity(com.yelp:restaurant_cuisine))
                         #[conflict_filter=["id"]]
                         #_[canonical={
-                          default="property",
+                          default="adjective",
                           base=["cuisines", "types of cuisine", "food", "types of food", "category"],
                           property=["# food", "# cuisine", "# category"],
                           adjective=["#"],
@@ -119,17 +119,28 @@ class @com.yelp
                         out phone: Entity(tt:phone_number)
                         #[filterable=false]
                         #_[canonical={
-                          default="npp",
-                          base=["telephone", "phone number"]
-                        }])
-  #_[canonical="restaurant"]
+                          default="property",
+                          base=["phone number", "telephone"],
+                          property=["phone number #"],
+                          verb=["can be reached at #"]
+                        }],
+                        out opening_hours: RecurrentTimeSpecification
+                        #_[canonical={
+                          default="property",
+                          base=["opening hours", "business hours", "hours"],
+                          verb=["opens #"]
+                        }]
+                        )
+  #_[canonical=["restaurant", "eatery", "place to eat", "food place"]]
   #_[confirmation="restaurants on Yelp"]
   #[minimal_projection=["id"]]
+  // everything but opening_hours is returned, unless we really need to
+  #[default_projection=["id", "image_url", "link", "cuisines", "price", "rating", "review_count",
+                        "geo", "phone"]]
   #_[formatted=[{
     type="rdl",
     displayTitle="${id}",
     webCallback="${link}",
-    displayText="Offers ${cuisines} food.",
     pictureUrl="${image_url}"
   }]]
   #[doc="search for restaurants on Yelp"]

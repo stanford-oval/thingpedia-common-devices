@@ -8,6 +8,7 @@
 // See LICENSE for details
 "use strict";
 
+const Redis = require("redis");
 const Tp = require('thingpedia');
 
 const MS_PER_HOUR = 60 * 60 * 1000;
@@ -32,17 +33,36 @@ class ForecastError extends Error {
 }
 
 module.exports = class WeatherAPIDevice extends Tp.BaseDevice {
+    async _get(url) {
+        console.log(`ENTER WeatherAPIDevice._get url=${url}`);
+        const redisClient = Redis.createClient({url: "redis://redis"});
+        await redisClient.connect();
+        const key = `org.thingpedia.weather:${url}`;
+        const cached = await redisClient.GET(key);
+        let xml;
+        if (cached === null) {
+            console.log(`CACHE MISS WeatherAPIDevice._get key=${key}`);
+            xml = await Tp.Helpers.Http.get(url);
+            console.log(`CACHE SET WeatherAPIDevice._get key=${key}`);
+            await redisClient.SET(key, xml, {EX: 30 * 60});
+        } else {
+            console.log(`CACHE HIT WeatherAPIDevice._get key=${key}`);
+            xml = cached;
+        }
+        return await Tp.Helpers.Xml.parseString(xml);
+    }
+
     async _sunrise_data(location, date) {
         const url = SUNRISE_URL.format(location.y, location.x, date.getFullYear(), date.getMonth()+1, date.getDate());
         console.log('Loading sunrise data from ' + url);
-        const parsed = await Tp.Helpers.Http.get(url).then(Tp.Helpers.Xml.parseString);
+        const parsed = await this._get(url);
         return parsed.astrodata.location[0].time[0];
     }
 
     async _weather_data(location) {
         const url = WEATHER_URL.format(location.y, location.x);
         console.log('Loading weather data from ' + url);
-        const parsed = await Tp.Helpers.Http.get(url).then(Tp.Helpers.Xml.parseString);
+        const parsed = await this._get(url);
         return parsed.weatherdata.product[0].time;
     }
 

@@ -77,14 +77,15 @@ abstract class @org.thingpedia.media-source
                         preposition=["in the # genre", "in #", "of the # genre",
                                      "in the # style", "in the # category"],
                       }])
-  #_[canonical=["music", "good music"]]
-  #_[canonical_short=["music"]]
+  #_[canonical=["music [plural=one]", "good music [plural=one]", "music recording"]]
+  #_[canonical_short=["music [plural=one]", "recording"]]
   #_[confirmation="playable content"]
   #_[on_error={
     dailymix_error=["spotify doesn't support daily mix playlists at this time"],
     rate_limit_error=["spotify is temporarily unavailable"]
   }]
   #[minimal_projection=["id"]]
+  #[poll_interval=1day]
   #[doc="search for content"];
 
   monitorable list query song extends playable(out id: Entity(org.thingpedia.media-source:song)
@@ -138,6 +139,7 @@ abstract class @org.thingpedia.media-source
     rate_limit_error=["spotify is temporarily unavailable"]
   }]
   #[minimal_projection=["id"]]
+  #[poll_interval=1day]
   #[doc="search for songs"];
 
   monitorable list query album extends playable (out id: Entity(org.thingpedia.media-source:album)
@@ -155,6 +157,7 @@ abstract class @org.thingpedia.media-source
     rate_limit_error=["spotify is temporarily unavailable"]
   }]
   #[minimal_projection=["id"]]
+  #[poll_interval=1day]
   #[doc="search for albums"];
 
   monitorable list query playlist extends playable (out id: Entity(org.thingpedia.media-source:playlist)
@@ -173,6 +176,7 @@ abstract class @org.thingpedia.media-source
     rate_limit_error=["spotify is temporarily unavailable"]
   }]
   #[minimal_projection=["id"]]
+  #[poll_interval=1day]
   #[doc="search for playlists"];
 
   monitorable list query show extends playable(out id: Entity(org.thingpedia.media-source:show)
@@ -184,12 +188,13 @@ abstract class @org.thingpedia.media-source
                                           passive_verb=["named #", "called #", "titled #"],
                                           property=["name #", "title #"]
                                         }])
-  #_[canonical=["show", "podcast", "audio podcast", "episodes"]]
+  #_[canonical=["show", "podcast", "audio podcast", "episode"]]
   #_[confirmation="show"]
   #_[on_error={
     rate_limit_error=["spotify is temporarily unavailable"]
   }]
   #[minimal_projection=["id"]]
+  #[poll_interval=1day]
   #[doc="search for shows"];
 
   list query artist(out id: Entity(org.thingpedia.media-source:artist)
@@ -242,7 +247,7 @@ abstract class @org.thingpedia.media-source
     monitorable query get_currently_playing extends song()
     #_[canonical=["currently playing track", "currently playing song",
                   "song currently playing", "current song", "current track"]]
-    #_[result=["currently playing ${id}", "the currently playing track is ${id}"]]
+    #_[result=["currently playing ${id} by ${artists}", "currently playing ${id}", "the currently playing track is ${id}"]]
     #_[on_error={
       no_song_playing=["no song is currently playing", "nothing is currently playing"],
       rate_limit_error=["spotify is temporarily unavailable"]
