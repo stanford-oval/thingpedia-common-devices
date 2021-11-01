@@ -132,14 +132,20 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
 
     async _getCached(key) {
         if (!this.redisClient) return null;
-        return await this.redisClient.GET(key);
+        const log = this.log.childFor(this._getCached);
+        const cached = await this.redisClient.GET(key);
+        if (cached === null)
+            log.info("CACHE MISS", {key});
+        else
+            log.info("CACHE HIT", {key});
+        return cached;
     }
 
-    async _setCached(key, data, log) {
-        if (this.redisClient) {
-            log.info("CACHE SET", {key});
-            await this.redisClient.SET(key, data, {EX: 30 * 60});
-        }
+    async _setCached(key, data) {
+        if (!this.redisClient) return;
+        const log = this.log.childFor(this._getCached);
+        log.info("CACHE SET", {key});
+        await this.redisClient.SET(key, data, {EX: 30 * 60});
     }
 
     async _get(url) {
@@ -152,10 +158,6 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
         const cached = await this._getCached(key);
         let data;
         if (cached === null) {
-            if (this.redisClient)
-                log.info("CACHE MISS", {key});
-            else
-                log.info("NO CACHE");
             const httpProfiler = log.startTimer();
             data = await Tp.Helpers.Http.get(url, {
                 auth: 'Bearer ' + this.constructor.metadata.auth.api_key
@@ -167,9 +169,8 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
             };
             if (log.isLevelEnabled("debug")) httpLogInfo.data = data;
             httpProfiler.done(httpLogInfo);
-            this._setCached(key, data, log);
+            this._setCached(key, data);
         } else {
-            console.log("CACHE HIT", {key});
             fromCache = true;
             data = cached;
         }
