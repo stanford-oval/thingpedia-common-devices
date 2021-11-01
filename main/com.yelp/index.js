@@ -34,8 +34,10 @@
 
 const Redis = require("redis");
 const Tp = require('thingpedia');
+const TT = require('thingtalk');
 const Logging = require("@stanford-oval/logging");
 const Winston = require("winston");
+const { Temporal } = require('@js-temporal/polyfill');
 
 const LogFactory = new Logging.Factory({
     runRoot: __dirname,
@@ -92,6 +94,20 @@ const INVERSE_PRICE_RANGE_MAP = {
     luxury: '4'
 };
 
+function parseDate(date, timezone = Temporal.Now.timeZone().id) {
+    const plainDate = Temporal.PlainDate.from(date);
+    const temporal = Temporal.ZonedDateTime.from({ year: plainDate.year, month: plainDate.month, day: plainDate.day, hour:0, minute:0, second:0, timeZone: timezone });
+    return new Date(temporal.epochMilliseconds);
+}
+
+function dateAdd(date, ms) {
+    return new Date(date.getTime() + ms);
+}
+
+function todayAt(time, timezone = Temporal.Now.timeZone().id) {
+    return new Date(Temporal.Now.instant().toZonedDateTimeISO(timezone).withPlainTime(time).epochMilliseconds);
+}
+
 module.exports = class YelpDevice extends Tp.BaseDevice {
     constructor(engine, state) {
         super(engine, state);
@@ -99,12 +115,13 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
         this.name = "Yelp";
         this.description = "Yelp search for Almond ";
         this.log = LOG.childFor(YelpDevice);
-        this.redisClient = Redis.createClient({url: "redis://redis"});
+        this.redisClient = null;//Redis.createClient({url: "redis://redis"});
     }
 
     async start() {
         this.log.debug("Starting...");
-        await this.redisClient.connect();
+        if (this.redisClient)
+            await this.redisClient.connect();
         this.log.debug("Started.");
     }
 
@@ -115,7 +132,7 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
 
         let fromCache = false;
         const key = `com.yelp:${url}`;
-        const cached = await this.redisClient.GET(key);
+        const cached = this.redisClient ? await this.redisClient.GET(key) : null;
         let data;
         if (cached === null) {
             log.info("CACHE MISS", {key});
@@ -128,12 +145,14 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                 message: "Yelp API request complete",
                 url,
             };
-            if (log.isLevelEnabled("debug")) {
+            if (log.isLevelEnabled("debug"))
                 httpLogInfo.data = data;
-            }
+
             httpProfiler.done(httpLogInfo);
             log.info("CACHE SET", {key});
-            await this.redisClient.SET(key, data, {EX: 30 * 60});
+
+            if (this.redisClient)
+                await this.redisClient.SET(key, data, {EX: 30 * 60});
         } else {
             console.log("CACHE HIT", {key});
             fromCache = true;
@@ -153,9 +172,27 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
         return response;
     }
 
+    _mapOpeningHours(hours, specialHours) {
+        //console.log('_mapOpeningHours', hours, specialHours);
+        return hours.flatMap((h) => h.open.map((h) => new TT.Builtin.RecurrentTimeRule({
+            beginTime: new Tp.Value.Time(parseInt(h.start.slice(0, 2), 10), parseInt(h.start.slice(2, 4), 10)),
+            endTime: new Tp.Value.Time(parseInt(h.end.slice(0, 2), 10), parseInt(h.end.slice(2, 4), 10)),
+
+            // h.day starts at 0=monday, dayOfWeek starts at 0=sunday
+            // add 1 mod 7
+            dayOfWeek: (h.day + 1) % 7
+        }))).concat((specialHours||[]).map((h) => new TT.Builtin.RecurrentTimeRule({
+            beginTime: h.start ? new Tp.Value.Time(parseInt(h.start.slice(0, 2), 10), parseInt(h.start.slice(2, 4), 10)) : new Tp.Value.Time(0,0),
+            endTime: h.end ? new Tp.Value.Time(parseInt(h.end.slice(0, 2), 10), parseInt(h.end.slice(2, 4), 10)) : new Tp.Value.Time(0,0,0),
+            beginDate: parseDate(h.date, this.platform.timezone),
+            endDate: dateAdd(parseDate(h.date, this.platform.timezone), 86400000),
+            subtract: !!h.is_closed
+        })));
+    }
+
     async get_restaurant(params, hints, env) {
         let sortBy = 'best_match';
-        let limit = 50;
+        let limit = 20;
         // NOTE sort by is not strict, so we cannot use the limit hint
         if (hints && hints.sort) {
             if (hints.sort[0] === 'reviewCount' && hints.sort[1] === 'desc')
@@ -164,6 +201,9 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                 sortBy = 'rating';
         }
 
+        console.log(`need fields`, hints.projection);
+        const needsBusinessDetails = hints.projection.includes('opening_hours');
+
         let url = `${URL}/search?limit=${limit}&sort_by=${sortBy}&locale=${this.platform.locale.replace('-', '_')}`;
 
         const query = {
@@ -171,6 +211,7 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
             location: undefined,
             categories: '',
             price: undefined,
+            open_at: undefined
         };
         const addedCategories = new Set;
 
@@ -193,6 +234,9 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                         query.categories = value;
                 } else if (pname === 'price' && op === '==') {
                     query.price = INVERSE_PRICE_RANGE_MAP[String(value)];
+                } else if (pname === 'opening_hours' && op === 'contains') {
+                    const date = (value instanceof Tp.Value.Time ? todayAt(value, this.platform.timezone) : value);
+                    query.open_at = Math.round(date.getTime()/1000);
                 }
             }
         }
@@ -215,6 +259,8 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
             url += `&categories=${query.categories}`;
         if (query.price)
             url += `&price=${query.price}`;
+        if (query.open_at)
+            url += `&open_at=${query.open_at}`;
         /*if (params.radius)
             url += `&radius=${params.radius.value}`;
         */
@@ -222,7 +268,7 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
         console.log(url);
 
         const parsed = await this._get(url);
-        return parsed.businesses.filter((b) => !b.is_closed).map((b) => {
+        return Promise.all(parsed.businesses.filter((b) => !b.is_closed).map(async (b) => {
             const id = new Tp.Value.Entity(b.id, b.name);
             const cuisines = b.categories.filter((cat) => CUISINES.has(cat.alias))
                 .map((cat) => new Tp.Value.Entity(cat.alias, cat.alias === 'creperies' ? "Crepes" : cat.title));
@@ -230,17 +276,23 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
             const geo = new Tp.Value.Location(b.coordinates.latitude, b.coordinates.longitude,
                                               prettyprintAddress(b.location));
 
-            return {
+            const data = {
                 id,
                 image_url: b.image_url,
                 link: b.url,
                 cuisines,
-                price: PRICE_RANGE_MAP[b.price] || b.price,
+                price: b.price ? (PRICE_RANGE_MAP[b.price] || /* convert weird currency symbols to $*/ PRICE_RANGE_MAP['$'.repeat(b.price.length)]) : undefined,
                 rating: Number(b.rating),
                 review_count: b.review_count,
                 geo,
                 phone: b.phone
             };
-        });
+            if (!needsBusinessDetails)
+                return data;
+
+            const details = await this._get(`https://api.yelp.com/v3/businesses/${b.id}`);
+            data.opening_hours = this._mapOpeningHours(details.hours, details.special_hours);
+            return data;
+        }));
     }
 };
