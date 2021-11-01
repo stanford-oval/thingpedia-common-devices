@@ -371,14 +371,18 @@ class BingDialogueHandler {
         }
 
         case 'places': {
-            return {
-                messages: [
-                    this._interp(this._("Using Bing, I found ${name}. Its phone number is ${phone}."), {
-                        name: analysis.response.value[0].name,
-                        phone: analysis.response.value[0].telephone,
-                    }),
-                ],
-            };
+            if (analysis.response.value && analysis.response.value.length > 0) {
+                return {
+                    messages: [
+                        this._interp(this._("Using Bing, I found ${name}. Its phone number is ${phone}."), {
+                            name: analysis.response.value[0].name,
+                            phone: analysis.response.value[0].telephone,
+                        }),
+                    ],
+                };
+            } else {
+                // fallthrough
+            }
         }
 
         default:
