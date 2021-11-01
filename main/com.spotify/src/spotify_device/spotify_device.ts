@@ -2,7 +2,7 @@ import { BaseDevice, Value } from "thingpedia";
 import * as Winston from "winston";
 import type { Runtime, ExecEnvironment } from "thingtalk";
 import { Logger } from "@stanford-oval/logging";
-//import * as Redis from "redis";
+import * as Redis from "redis";
 
 import SpotifyDaemon from "../spotify_daemon";
 import { Client } from "../client";
@@ -100,7 +100,7 @@ export default class SpotifyDevice extends BaseDevice {
             });
         }
 
-        //this._redis = Redis.createClient({ url: "redis://redis" });
+        this._redis = Redis.createClient({ url: "redis://redis" });
 
         this._client = new Client({
             useOAuth2: this,

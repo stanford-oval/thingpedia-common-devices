@@ -30,7 +30,7 @@
 // OF THE POSSIBILITY OF SUCH DAMAGE.
 "use strict";
 
-//const util = require('util');
+const util = require('util');
 const interpolate = require('string-interp');
 const Tp = require('thingpedia');
 const TT = require('thingtalk');
@@ -50,6 +50,7 @@ const LogFactory = new Logging.Factory({
 });
 
 const LOG = LogFactory.get(__filename);
+const { Temporal } = require('@js-temporal/polyfill');
 
 /**
  *
@@ -135,7 +136,8 @@ class BingDialogueHandler {
         }), {
             extraHeaders: { 'Ocp-Apim-Subscription-Key': this._apiKey }
         }));
-        //console.log(util.inspect(response, { depth: Infinity }));
+        if (process.env.TP_BING_DEBUG)
+            console.log(util.inspect(response, { depth: Infinity }));
 
         if (!response.rankingResponse)
             return { confident: Tp.DialogueHandler.Confidence.OUT_OF_DOMAIN_COMMAND, utterance, user_target: '' };
@@ -156,6 +158,19 @@ class BingDialogueHandler {
                 response: response.computation
             };
         }
+        // same for timezone answers
+        if (response.timeZone) {
+            return {
+                confident,
+                utterance,
+                user_target: `$dialogue @com.bing.timeZone;`,
+
+                query: response.queryContext,
+                answerType: 'timeZone',
+                response: response.timeZone
+            };
+        }
+
         const bestRankingItems = [];
         if (response.rankingResponse.pole && response.rankingResponse.pole.items) {
             if (response.rankingResponse.pole.items instanceof Array)
@@ -285,7 +300,7 @@ class BingDialogueHandler {
                 messages: [
                     this._interp(this._("According to Bing, the translation is “${translation}”. Data from ${attribution}."), {
                         translation: analysis.response.translatedText,
-                        attribution: analysis.response.attribution.map((a) => a.providerDisplayName)
+                        attribution: analysis.response.attributions.map((a) => a.providerDisplayName)
                     }),
                 ],
                 expecting: null,
@@ -293,9 +308,78 @@ class BingDialogueHandler {
                 agent_target: '@com.bing.reply;'
             };
         }
+
+        case 'news': {
+            return {
+                messages: [
+                    this._interp(this._("Using Bing I found ${name}. ${description}."), {
+                        name: analysis.response.value[0].name,
+                        description: analysis.response.value[0].description,
+                    }),
+                    {
+                        type: 'rdl',
+                        webCallback: analysis.response.value[0].url,
+                        displayTitle: analysis.response.value[0].name
+                    }
+                ],
+                expecting: null,
+                context: analysis.user_target,
+                agent_target: '@com.bing.reply;'
+            };
+        }
+
+        case 'timeZone': {
+            if (analysis.response.description && analysis.response.primaryResponse) {
+                return {
+                    messages: [
+                        this._interp(this._("According to Bing, ${description} is ${answer}."), {
+                            description: analysis.response.description,
+                            answer: analysis.response.primaryResponse,
+                        }),
+                    ],
+                    expecting: null,
+                    context: analysis.user_target,
+                    agent_target: '@com.bing.reply;'
+                };
+            } else if (analysis.response.primaryCityTime) {
+                return {
+                    messages: [
+                        this._interp(this._("According to Bing, right now it is ${time} in ${location}."), {
+                            time: Temporal.PlainDateTime.from(analysis.response.primaryCityTime.time).toLocaleString(this._locale, { timeStyle: 'short' }),
+                            location: analysis.response.primaryCityTime.location
+                        }),
+                    ],
+                    expecting: null,
+                    context: analysis.user_target,
+                    agent_target: '@com.bing.reply;'
+                };
+            } else if (analysis.response.primaryTimeZone) {
+                return {
+                    messages: [
+                        this._interp(this._("According to Bing, ${location} uses ${timezone}."), {
+                            location: analysis.response.primaryTimeZone.location,
+                            timezone: analysis.response.primaryTimeZone.timeZoneName,
+                        }),
+                    ],
+                    expecting: null,
+                    context: analysis.user_target,
+                    agent_target: '@com.bing.reply;'
+                };
+            } else {
+                // fallthrough
+            }
+        }
+
         default:
             LOG.error(`Unexpected bing answer type`, analysis);
-            throw new Error(`Unexpected bing answer type ${analysis.answerType}`);
+            return {
+                messages: [
+                    this._("Sorry, I don't know that one yet.")
+                ],
+                expecting: null,
+                context: analysis.user_target,
+                agent_target: '@com.bing.reply_fail;'
+            };
         }
     }
 }
