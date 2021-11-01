@@ -123,15 +123,24 @@ class @com.yelp
                           base=["phone number", "telephone"],
                           property=["phone number #"],
                           verb=["can be reached at #"]
-                        }])
+                        }],
+                        out opening_hours: RecurrentTimeSpecification
+                        #_[canonical={
+                          default="property",
+                          base=["opening hours", "business hours", "hours"],
+                          verb=["opens #"]
+                        }]
+                        )
   #_[canonical=["restaurant", "eatery", "place to eat", "food place"]]
   #_[confirmation="restaurants on Yelp"]
   #[minimal_projection=["id"]]
+  // everything but opening_hours is returned, unless we really need to
+  #[default_projection=["id", "image_url", "link", "cuisines", "price", "rating", "review_count",
+                        "geo", "phone"]]
   #_[formatted=[{
     type="rdl",
     displayTitle="${id}",
     webCallback="${link}",
-    displayText="Offers ${cuisines} food.",
     pictureUrl="${image_url}"
   }]]
   #[doc="search for restaurants on Yelp"]

@@ -38,6 +38,7 @@ const querystring = require("querystring");
 
 
 const NEWS_DB_URL = "http://54.238.163.11:5000/news";
+// const NEWS_DB_URL = "http://192.168.50.183:5000/news";
 
 
 function s3_to_http(url) {
@@ -92,6 +93,7 @@ async function* fetch_articles(args) {
             link: article.link,
             category,
             date: new Date(article.publish_timestamp * 1000),
+            mention: article.entity_mentions,
             headline_audio_url: s3_to_http(article.headline_audio_s3),
             summary_audio_url: s3_to_http(article.summary_audio_s3)
         };
