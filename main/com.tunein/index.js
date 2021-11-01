@@ -153,10 +153,27 @@ module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
         return process.env.TEST_MODE === '1';
     }
 
+    /**
+     *
+     * @param {string} blob
+     * @returns
+     */
+    async _resolveShoutcastURL(blob) {
+        const line = blob.split('\n').find((x) => x.startsWith('File'));
+        if (!line) {
+            console.log(`failed to parse shoutcast`, blob);
+            throw new Error(`Cannot parse Shoutcast playlist`);
+        }
+        return line.replace(/^File[^=+]=/, '');
+    }
+
     async _resolvePlayableURL(uriList) {
         const url = uriList.trim().split('\n')[0];
+        // HACK...
         if (url.endsWith('m3u'))
             return this._resolvePlayableURL(await Tp.Helpers.Http.get(url));
+        if (url.endsWith('pls'))
+            return this._resolveShoutcastURL(await Tp.Helpers.Http.get(url));
         return url;
     }
 
