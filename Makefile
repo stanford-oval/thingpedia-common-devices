@@ -139,7 +139,7 @@ build/%.zip: %
 		-r $(abspath $@) .
 
 define build_device =
-$(1): $(1)/package.json $(1)/package-lock.json $(wildcard $(1)/*.js $(1)/*.ts $(1)/*/*.js $(1)/*/*.ts $(1)/*/*/*.js $(1)/*/*/*.ts)
+$(1): $(1)/package.json $(1)/package-lock.json $(shell find "$(1)" -name "*.js") $(shell find "$(1)" -name "*.ts")
 	cd $$@ ; npm ci --only=prod
 	touch $$@
 endef
