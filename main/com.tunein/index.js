@@ -59,11 +59,6 @@ const DEVICE_ERROR = {
 module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
     constructor(engine, state) {
          super(engine, state);
-         this.query = {
-            term: '',
-            trending: 'trending',
-            local: 'local'
-        };
     }
 
     _format_station_output(stations) {
@@ -105,27 +100,31 @@ module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
     }
 
     async get_station(params, hints) {
+        const query_string = {
+            query: '',
+            render: RENDER_TYPE
+        };
         if (hints && hints.filter) {
             for (const [pname, op, value] of hints.filter) {
                 if (pname === 'id' && (op === '==' || op === '=~')) {
                     if (value instanceof Tp.Value.Entity)
-                        this.query.term = value.display;
+                        query_string.query = value.display;
                     else
-                        this.query.term = value;
+                        query_string.query = value;
                 }
             }
         }
-        const query_string = {
-            query: this.query.term,
-            render: RENDER_TYPE
-        };
-        const url = `${BASE_URL}${QUERY_PARAM.search}?${querystring.stringify(query_string)}`;
-        return this._get_station_details(url);
+        if (query_string.query) {
+            const url = `${BASE_URL}${QUERY_PARAM.search}?${querystring.stringify(query_string)}`;
+            return this._get_station_details(url);
+        } else {
+            return this.get_most_popular_stations();
+        }
     }
 
     async get_most_popular_stations() {
         const query_string = {
-            c: this.query.trending,
+            c: 'trending',
             render: RENDER_TYPE
         };
         const url = `${BASE_URL}${QUERY_PARAM.browse}?${querystring.stringify(query_string)}`;
@@ -137,7 +136,7 @@ module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
             throw new Error(DEVICE_ERROR.unsupported_version);
         } else {
             const query_string = {
-                c: this.query.local,
+                c: 'local',
                 render: RENDER_TYPE
             };
             const url = `${BASE_URL}${QUERY_PARAM.browse}?${querystring.stringify(query_string)}`;
