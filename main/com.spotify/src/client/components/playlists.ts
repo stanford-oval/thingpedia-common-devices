@@ -87,7 +87,7 @@ export class Playlists extends Component {
         }
         // Wait for all the requests and concatenate the results
         const pages = await Promise.all(promises);
-        const playlists: SimplifiedPlaylistObject[] = [];
+        const playlists: SimplifiedPlaylistObject[] = [...firstPage.items];
         for (const page of pages) {
             for (const playlist of page.items) {
                 playlists.push(playlist);
