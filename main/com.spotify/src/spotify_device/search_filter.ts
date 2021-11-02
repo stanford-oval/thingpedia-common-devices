@@ -50,6 +50,11 @@ export default class SearchFilter {
             }
         }
         
+        // TODO We should not let this happen...
+        if (Object.keys(calcMap).length == 0) {
+            return [];
+        }
+        
         const matches = el.search(query, {fields: {name: {boost: 1}}});
         
         for (const match of matches) {
