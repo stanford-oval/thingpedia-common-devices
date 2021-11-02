@@ -119,6 +119,12 @@ class BingDialogueHandler {
             query = utterance.substring(prefixmatch[0].length).trim();
             confident = Tp.DialogueHandler.Confidence.EXACT_IN_DOMAIN_COMMAND;
         }
+        const suffixregexp = new RegExp(this._("\\b(ask|on|using) bing$"), 'i');
+        const suffixmatch = suffixregexp.exec(utterance);
+        if (suffixmatch) {
+            query = utterance.substring(0, utterance.length-suffixmatch[0].length).trim();
+            confident = Tp.DialogueHandler.Confidence.EXACT_IN_DOMAIN_COMMAND;
+        }
 
         if (this._lastQuerySuggestion) {
             const yes = new RegExp(this._("^(yes|yeah|yep|sure)\b"));
@@ -178,17 +184,17 @@ class BingDialogueHandler {
             else if ('answerType' in response.rankingResponse.pole.items)
                 bestRankingItems.push(response.rankingResponse.pole.items);
         }
-        if (response.rankingResponse.sidebar && response.rankingResponse.sidebar.items) {
-            if (response.rankingResponse.sidebar.items instanceof Array)
-                bestRankingItems.push(...response.rankingResponse.sidebar.items);
-            else if ('answerType' in response.rankingResponse.sidebar.items)
-                bestRankingItems.push(response.rankingResponse.sidebar.items);
-        }
         if (response.rankingResponse.mainline && response.rankingResponse.mainline.items) {
             if (response.rankingResponse.mainline.items instanceof Array)
                 bestRankingItems.push(...response.rankingResponse.mainline.items);
             else if ('answerType' in response.rankingResponse.mainline.items)
                 bestRankingItems.push(response.rankingResponse.mainline.items);
+        }
+        if (response.rankingResponse.sidebar && response.rankingResponse.sidebar.items) {
+            if (response.rankingResponse.sidebar.items instanceof Array)
+                bestRankingItems.push(...response.rankingResponse.sidebar.items);
+            else if ('answerType' in response.rankingResponse.sidebar.items)
+                bestRankingItems.push(response.rankingResponse.sidebar.items);
         }
 
         for (const candidate of bestRankingItems) {
@@ -230,7 +236,7 @@ class BingDialogueHandler {
             const webPage = analysis.response;
             return {
                 messages: [
-                    this._interp(this._("Using Bing I found ${name}. ${description}."), {
+                    this._interp(this._("I found ${name}. ${description}."), {
                         name: webPage.name,
                         description: webPage.snippet
                     }),
@@ -248,7 +254,7 @@ class BingDialogueHandler {
 
         case 'computation':
             return {
-                messages: [this._interp(this._("According to Bing, ${expression} is equal to ${value}."), {
+                messages: [this._interp(this._("${expression} is equal to ${value}."), {
                     expression: analysis.response.expression,
                     value: analysis.response.value
                 })],
@@ -263,7 +269,7 @@ class BingDialogueHandler {
                 throw new Error(`Unexpected bing answer type (invalid entity)`);
             return {
                 messages: [
-                    this._interp(this._("According to Bing, ${description}."), {
+                    this._interp(this._("${description}."), {
                         name: entity.name,
                         description: entity.description
                     }),
@@ -298,7 +304,7 @@ class BingDialogueHandler {
         case 'translations': {
             return {
                 messages: [
-                    this._interp(this._("According to Bing, the translation is “${translation}”. Data from ${attribution}."), {
+                    this._interp(this._("The translation is “${translation}”. Data from ${attribution}."), {
                         translation: analysis.response.translatedText,
                         attribution: analysis.response.attributions.map((a) => a.providerDisplayName)
                     }),
@@ -312,7 +318,7 @@ class BingDialogueHandler {
         case 'news': {
             return {
                 messages: [
-                    this._interp(this._("Using Bing I found ${name}. ${description}."), {
+                    this._interp(this._("I found ${name}. ${description}."), {
                         name: analysis.response.value[0].name,
                         description: analysis.response.value[0].description,
                     }),
@@ -332,7 +338,7 @@ class BingDialogueHandler {
             if (analysis.response.description && analysis.response.primaryResponse) {
                 return {
                     messages: [
-                        this._interp(this._("According to Bing, ${description} is ${answer}."), {
+                        this._interp(this._("${description} is ${answer}."), {
                             description: analysis.response.description,
                             answer: analysis.response.primaryResponse,
                         }),
@@ -344,7 +350,7 @@ class BingDialogueHandler {
             } else if (analysis.response.primaryCityTime) {
                 return {
                     messages: [
-                        this._interp(this._("According to Bing, right now it is ${time} in ${location}."), {
+                        this._interp(this._("Right now it is ${time} in ${location}."), {
                             time: Temporal.PlainDateTime.from(analysis.response.primaryCityTime.time).toLocaleString(this._locale, { timeStyle: 'short' }),
                             location: analysis.response.primaryCityTime.location
                         }),
@@ -356,7 +362,7 @@ class BingDialogueHandler {
             } else if (analysis.response.primaryTimeZone) {
                 return {
                     messages: [
-                        this._interp(this._("According to Bing, ${location} uses ${timezone}."), {
+                        this._interp(this._("${location} uses ${timezone}."), {
                             location: analysis.response.primaryTimeZone.location,
                             timezone: analysis.response.primaryTimeZone.timeZoneName,
                         }),
@@ -374,7 +380,7 @@ class BingDialogueHandler {
             if (analysis.response.value && analysis.response.value.length > 0) {
                 return {
                     messages: [
-                        this._interp(this._("Using Bing, I found ${name}. Its phone number is ${phone}."), {
+                        this._interp(this._("I found ${name}. Its phone number is ${phone}."), {
                             name: analysis.response.value[0].name,
                             phone: analysis.response.value[0].telephone,
                         }),
