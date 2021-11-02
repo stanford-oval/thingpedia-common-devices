@@ -11,7 +11,7 @@ for release in "$@" ; do
 	if test -f "$release/manifest.tt" ; then
 		kind=$(basename "$release")
 		if test -f "$release/package.json" ; then
-			make "build/$release.zip"
+			npx make "build/$release.zip"
 			${THINGPEDIA_CLI} upload-device --approve \
 			  --zipfile "build/$release.zip" \
 			  --icon "$release/icon.png" \
@@ -31,7 +31,7 @@ for release in "$@" ; do
 
 			kind=$(basename "$d")
 			if test -f "$d/package.json" ; then
-				make "build/$d.zip"
+				npx make "build/$d.zip"
 				${THINGPEDIA_CLI} upload-device --approve \
 				  --zipfile "build/$d.zip" \
 				  --icon "$d/icon.png" \
