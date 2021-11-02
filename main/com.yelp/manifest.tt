@@ -80,7 +80,7 @@ class @com.yelp
                           base=["price range", "price"],
                           property=["# price"],
                           preposition=["in the # price range"],
-                          adjective=["#", "# -ly priced"],
+                          adjective=["${value:select: moderate{moderately priced} _{${value}}}"],
                           adjective_enum={
                             cheap=["inexpensive"],
                             luxury=["upscale", "fine-dining"]
@@ -92,9 +92,9 @@ class @com.yelp
                         #_[canonical={
                           default="passive_verb",
                           base=["rating", "overall rating", "average rating", "customer rating", "review rating"],
-                          passive_verb=["rated # star"],
-                          adjective=["# star"],
-                          property=["rating", "# star rating"],
+                          passive_verb=["rated ${value} ${value:plural: one{star} other{stars}}"],
+                          adjective=["${value} ${value:plural: one{star} other{stars}}"],
+                          property=["rating", "${value} star rating"],
                           adjective_argmax=["top rated", "top-rated", "highest rated", "best rated", "best"],
                           adjective_argmin=["worst rated", "worst"],
                           projection_pronoun=["how"],
@@ -105,7 +105,7 @@ class @com.yelp
                         #_[canonical={
                           default="property",
                           base=["review count"],
-                          property=["# reviews"],
+                          property=["${value} ${value:plural: one{review} other{reviews}}"],
                           adjective_argmax=["most reviewed"],
                           adjective_argmin=["least reviewed"]
                         }]
