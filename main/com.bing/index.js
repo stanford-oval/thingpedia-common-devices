@@ -113,13 +113,13 @@ class BingDialogueHandler {
         let confident = Tp.DialogueHandler.Confidence.NONCONFIDENT_IN_DOMAIN_COMMAND;
         let query = utterance;
 
-        const prefixregexp = new RegExp(this._("^ask bing (to|for)?\\b"), 'i');
+        const prefixregexp = new RegExp(this._("^\\s*ask bing (to|for)?\\b"), 'i');
         const prefixmatch = prefixregexp.exec(utterance);
         if (prefixmatch) {
             query = utterance.substring(prefixmatch[0].length).trim();
             confident = Tp.DialogueHandler.Confidence.EXACT_IN_DOMAIN_COMMAND;
         }
-        const suffixregexp = new RegExp(this._("\\b(ask|on|using) bing$"), 'i');
+        const suffixregexp = new RegExp(this._("\\b(ask|on|using) bing\\?*\\s*$"), 'i');
         const suffixmatch = suffixregexp.exec(utterance);
         if (suffixmatch) {
             query = utterance.substring(0, utterance.length-suffixmatch[0].length).trim();
@@ -127,7 +127,7 @@ class BingDialogueHandler {
         }
 
         if (this._lastQuerySuggestion) {
-            const yes = new RegExp(this._("^(yes|yeah|yep|sure)\b"));
+            const yes = new RegExp(this._("^\\s*(yes|yeah|yep|sure)\b"));
             const yesmatch = yes.exec(utterance);
             if (yesmatch) {
                 query = this._lastQuerySuggestion;
