@@ -57,14 +57,14 @@ const CUISINES = new Set(require('./cuisines.json').data.map((d) => d.value));
 
 function prettyprintAddress(address) {
     if (address.display_address)
-        return address.display_address.join(', ');
+        return address.display_address.join(', ').replace(/\b\s*[0-9]{5}\b/, '').trim();
 
     return [
         address.address1,
         address.address2,
         address.address3,
         address.city,
-        address.country === 'US' ? address.state + ' ' + address.zip_code : address.country
+        address.country === 'US' ? address.state : address.country
     ].filter((i) => i.length > 0).join(', ');
 }
 
