@@ -9,14 +9,11 @@ import SpotifyDaemon from "../spotify_daemon";
 import { ExecWrapper, SpotifyDeviceEngine } from "./types";
 import Logging from "../logging";
 import { ThingError } from "../things";
-import { errorMetaFor, sleepMs } from "../helpers";
-import { HTTPOptions } from "../api/http";
+import { errorMetaFor } from "../helpers";
 
 const LOG = Logging.get(__filename);
 const DESKTOP_APP_WAIT_MS = 20000; // 20 seconds
 const DEFAULT_REFRESH_INTERVAL_MS = 10000; // 10 seconds
-const GET_DEVICES_RETRY_SLEEP_MS = 1000; // 1 second
-const GET_DEVICES_MAX_RETRY = 5;
 
 type MaybeDevice = undefined | DeviceObject;
 
@@ -72,7 +69,7 @@ export default class PlayerDeviceManager {
     public async start() {
         await this._refresh();
         this._refresher = setInterval(
-            () => this._refresh({logLevel: "debug"}),
+            this._refresh.bind(this),
             this._refreshInterval
         );
     }
@@ -89,7 +86,7 @@ export default class PlayerDeviceManager {
         if (device !== undefined) {
             return device;
         }
-        
+
         device = await this._refresh();
 
         if (device !== undefined) {
@@ -101,33 +98,24 @@ export default class PlayerDeviceManager {
         if (device !== undefined) {
             return device;
         }
-        
-        let attempts = 0;
-        while (device === undefined && attempts < GET_DEVICES_MAX_RETRY) {
-            attempts += 1;
-            device = await this._refresh();
-            if (device === undefined) {
-                await sleepMs(GET_DEVICES_RETRY_SLEEP_MS);
-            }
-        }
 
         throw new ThingError("No player devices", "no_active_device");
     }
 
-    protected _refresh(options?: HTTPOptions): Promise<MaybeDevice> {
+    protected _refresh(): Promise<MaybeDevice> {
         const log = this._log.childFor(this._refresh);
 
         if (this._devicePromise === undefined) {
             log.debug("Device promise is undefined, initiating fetch...");
-            this._devicePromise = this._update(options).then(
+            this._devicePromise = this._update().then(
                 (device) => {
                     this._devicePromise = undefined;
                     return device;
                 },
                 (reason) => {
                     this._devicePromise = undefined;
-                    log.debug(
-                        "Error updating current device",
+                    log.error(
+                        "Unexpected error updating current device",
                         errorMetaFor(reason)
                     );
                     return undefined;
@@ -185,14 +173,14 @@ export default class PlayerDeviceManager {
         return activeDevice;
     }
 
-    protected async _update(options?: HTTPOptions): Promise<MaybeDevice> {
+    protected async _update(): Promise<MaybeDevice> {
         const log = this._log.childFor(this._update);
 
         log.debug("Fetching device list from Client...");
 
         let devices: DeviceObject[];
         try {
-            devices = await this._client.player.getDevices(options);
+            devices = await this._client.player.getDevices();
         } catch (error) {
             const meta = error instanceof Error ? error : { error };
             log.error("Failed to get devices from Client", meta);

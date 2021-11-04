@@ -15,9 +15,6 @@ const LOG = Logging.get(__filename);
 // ===========================================================================
 
 export type HTTPMethod = "GET" | "POST" | "PUT" | "DELETE";
-export interface HTTPOptions {
-    logLevel?: string;
-}
 
 // Class Definition
 // ===========================================================================
@@ -95,13 +92,12 @@ export default class Http {
         path,
         query,
         body,
-        logLevel = "http",
     }: {
         method: HTTPMethod;
         path: string;
         query?: Record<string, any>;
         body?: Record<string, any>;
-    } & HTTPOptions): Promise<TResponse> {
+    }): Promise<TResponse> {
         const log = this.log.childFor(this.request, {
             method,
             path,
@@ -147,7 +143,7 @@ export default class Http {
             this.handleHTTPFailure(reason);
         }
 
-        timer.done({ level: logLevel });
+        timer.done({ level: "http" });
 
         if (response === "") {
             return undefined as any as TResponse;
@@ -163,15 +159,9 @@ export default class Http {
 
     get<TResponse = any>(
         path: string,
-        query?: Record<string, any>,
-        options?: HTTPOptions
+        query?: Record<string, any>
     ): Promise<TResponse> {
-        return this.request<TResponse>({
-            method: "GET",
-            path,
-            query,
-            ...options,
-        });
+        return this.request<TResponse>({ method: "GET", path, query });
     }
 
     /**
@@ -193,39 +183,24 @@ export default class Http {
      */
     getList<TItem>(
         path: string,
-        query?: Record<string, any>,
-        options?: HTTPOptions
+        query?: Record<string, any>
     ): Promise<TItem[]> {
-        return this.get<Record<string, TItem[]>>(path, query, options).then(
-            (r) => {
-                return r[Object.keys(r)[0]];
-            }
-        );
+        return this.get<Record<string, TItem[]>>(path, query).then((r) => {
+            return r[Object.keys(r)[0]];
+        });
     }
 
     post<TResponse = any>(
         path: string,
-        body: Record<string, any>,
-        options?: HTTPOptions
+        body: Record<string, any>
     ): Promise<TResponse> {
-        return this.request<TResponse>({
-            method: "POST",
-            path,
-            body,
-            ...options,
-        });
+        return this.request<TResponse>({ method: "POST", path, body });
     }
 
     put<TResponse = any>(
         path: string,
-        body: Record<string, any>,
-        options?: HTTPOptions
+        body: Record<string, any>
     ): Promise<TResponse> {
-        return this.request<TResponse>({
-            method: "PUT",
-            path,
-            body,
-            ...options,
-        });
+        return this.request<TResponse>({ method: "PUT", path, body });
     }
 }

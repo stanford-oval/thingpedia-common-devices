@@ -4,7 +4,6 @@ import CacheEpisode from "../../cache/cache_episode";
 import CacheTrack from "../../cache/cache_track";
 import { assertUnreachable, isSingularURI } from "../../helpers";
 import { Component } from "..";
-import { HTTPOptions } from "../../api/http";
 import { ThingError } from "../../things";
 
 export class Player extends Component {
@@ -33,8 +32,8 @@ export class Player extends Component {
         return this._api.player.get();
     }
 
-    getDevices(options?: HTTPOptions): Promise<DeviceObject[]> {
-        return this._api.player.getDevices(options);
+    getDevices(): Promise<DeviceObject[]> {
+        return this._api.player.getDevices();
     }
 
     async pause(options: DeviceOptions = {}): Promise<void> {
