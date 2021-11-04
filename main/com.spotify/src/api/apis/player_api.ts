@@ -1,3 +1,4 @@
+import { HTTPOptions } from "../http";
 import {
     CurrentlyPlayingContextObject,
     CurrentlyPlayingObject,
@@ -29,8 +30,12 @@ export default class PlayerApi extends BaseApi {
         );
     }
 
-    getDevices(): Promise<DeviceObject[]> {
-        return this._http.getList<DeviceObject>("/v1/me/player/devices");
+    getDevices(options?: HTTPOptions): Promise<DeviceObject[]> {
+        return this._http.getList<DeviceObject>(
+            "/v1/me/player/devices",
+            undefined,
+            options
+        );
     }
 
     play({
