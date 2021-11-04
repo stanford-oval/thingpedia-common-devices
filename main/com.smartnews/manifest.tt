@@ -124,7 +124,7 @@ class @com.smartnews
                                  out mention: Array(String)
                                  #[string_values="tt:word"]
                                  #[filterable=false],
- 
+
                                  out headline_audio_url: Entity(tt:url),
 
                                  out summary_audio_url: Entity(tt:url)
@@ -146,14 +146,14 @@ class @com.smartnews
   #_[canonical_short=["news article", "article"]]
   #_[result={
     //top="the latest news is ${title}",
-    top=["here is the news {|${title} ${author} ${source} ${summary} ${category} ${date}}", "here is the news {|${title}}"],
+    top=["here is the news {|${title} ${author} ${source} ${summary} ${category} ${date} ${mention}}", "here is the news {|${title}}"],
     list="here is the news"
   }]
   #_[formatted=[
     { type="rdl", webCallback="${link}", displayTitle="${title}" },
-    { type="text", text="${summary}" },
     { type="sound", name="news-intro", exclusive=true },
-    { type="text", text="${title}. ${summary}." }
+    //{ type="text", text="${summary}." }
+    { type="text", text="${title}." }
   ]]
   #_[on_error={
     unavailable="the smartnews service is unavailable. please try again later"

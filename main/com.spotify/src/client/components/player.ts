@@ -5,6 +5,7 @@ import CacheTrack from "../../cache/cache_track";
 import { assertUnreachable, isSingularURI } from "../../helpers";
 import { Component } from "..";
 import { HTTPOptions } from "../../api/http";
+import { ThingError } from "../../things";
 
 export class Player extends Component {
     async getCurrentlyPlaying(): Promise<void | CacheTrack | CacheEpisode> {
@@ -36,8 +37,28 @@ export class Player extends Component {
         return this._api.player.getDevices(options);
     }
 
-    pause(options: DeviceOptions = {}): Promise<void> {
-        return this._api.player.pause(options);
+    async pause(options: DeviceOptions = {}): Promise<void> {
+        try {
+            await this._api.player.pause(options);
+        } catch(e) {
+            if (!(e instanceof ThingError))
+                throw e;
+            console.error(`Got error ${e.code} in call to Spotify pause API: ${e.message}`);
+            if (e.message === 'Device not found') {
+                // we didn't find a device at this ID
+                // ie, spotifyd crashed or was killed
+                // nothing to do
+                return;
+            }
+            if (e.message === 'Player command failed: Restriction violated') {
+                // this happens when we try to remote control
+                // a player and the player is not in the right
+                // state (ie, it's already paused)
+                return;
+            }
+            // bubble up everything else
+            throw e;
+        }
     }
 
     next(options: DeviceOptions = {}): Promise<void> {
