@@ -89,3 +89,18 @@ UT: [artists] of @org.thingpedia.media-source.get_currently_playing();
 U: find me a playlist
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.media-source.playlist();
+====
+# recording/7d8b83c4350cd297dca6843338eafd64
+U: Find me, shake it off by Taylor Swift.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("taylor swift")) && id =~ "shake it off";
+====
+# recording/75c0f6c6cbf56b995450972f4fd346fb
+U: what's the most popular podcast?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(popularity desc of @org.thingpedia.media-source.show())[1];
+====
+# recording/8165a1c40fca35f560d70431a7a0884b
+U: find the song, shake it off.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.song() filter id =~ "shake it off";
