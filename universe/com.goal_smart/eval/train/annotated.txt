@@ -34,3 +34,78 @@ UT: @com.goal_smart.fixtures(team_id=null^^com.goal_smart:soccer_team("chelsea f
 U: get la liga standings.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.goal_smart.standings(league_id=null^^com.goal_smart:soccer_league("la liga"));
+====
+# recording/d87f534f9fd0f4c1c351b23928b05007
+U: what are the serie a standings
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.goal_smart.standings(league_id=null^^com.goal_smart:soccer_league("serie a"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.goal_smart.standings(league_id="71"^^com.goal_smart:soccer_league("Serie A"))
+C: #[results=[
+C:   { team="1062"^^com.goal_smart:soccer_team("Atletico-MG"), rank=1, form=["W", "W", "D", "D", "W"], points=45, league_id="71"^^com.goal_smart:soccer_league("Serie A") },
+C:   { team="121"^^com.goal_smart:soccer_team("Palmeiras"), rank=2, form=["W", "L", "W", "L", "L"], points=38, league_id="71"^^com.goal_smart:soccer_league("Serie A") },
+C:   { team="127"^^com.goal_smart:soccer_team("Flamengo"), rank=3, form=["L", "W", "W", "D", "W"], points=34, league_id="71"^^com.goal_smart:soccer_league("Serie A") },
+C:   { team="154"^^com.goal_smart:soccer_team("Fortaleza EC"), rank=4, form=["L", "L", "L", "D", "D"], points=33, league_id="71"^^com.goal_smart:soccer_league("Serie A") },
+C:   { team="794"^^com.goal_smart:soccer_team("RB Bragantino"), rank=5, form=["D", "L", "D", "W", "L"], points=33, league_id="71"^^com.goal_smart:soccer_league("Serie A") },
+C:   { team="131"^^com.goal_smart:soccer_team("Corinthians"), rank=6, form=["D", "D", "D", "W", "W"], points=30, league_id="71"^^com.goal_smart:soccer_league("Serie A") },
+C:   { team="119"^^com.goal_smart:soccer_team("Internacional"), rank=7, form=["W", "W", "D", "D", "W"], points=29, league_id="71"^^com.goal_smart:soccer_league("Serie A") },
+C:   { team="124"^^com.goal_smart:soccer_team("Fluminense"), rank=8, form=["W", "W", "D", "W", "D"], points=28, league_id="71"^^com.goal_smart:soccer_league("Serie A") },
+C:   { team="134"^^com.goal_smart:soccer_team("Atletico Paranaense"), rank=9, form=["W", "L", "D", "L", "L"], points=27, league_id="71"^^com.goal_smart:soccer_league("Serie A") },
+C:   { team="1193"^^com.goal_smart:soccer_team("Cuiaba"), rank=10, form=["W", "W", "D", "W", "L"], points=27, league_id="71"^^com.goal_smart:soccer_league("Serie A") }
+C: ]]
+C: #[count=20];
+A: 1. Atletico-MG form: W, W, D, D, and W points: 45.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: who are the first three teams in serie a
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rank asc of @com.goal_smart.standings(league_id=null^^com.goal_smart:soccer_league("serie a")))[1 : 3];
+====
+# recording/aed0ae6a493c5a3de7705d30d9c6568d
+U: how's juventus in serie a
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.goal_smart.standings(league_id=null^^com.goal_smart:soccer_league("serie a")) filter team == null^^com.goal_smart:soccer_team("juventus");
+====
+# recording/c972ef04f64b82c6ad561320e30ee9d0
+U: tell me about alvaro morata in the champions league
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.goal_smart.player(league_id=null^^com.goal_smart:soccer_league("champions league")) filter id =~ "alvaro morata";
+====
+# recording/5849483a39ae77c827f6853ada2c24c5
+U: who is ac milan coach
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.goal_smart.teamCoach(team_id=null^^com.goal_smart:soccer_team("ac milan"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.goal_smart.teamCoach(team_id="489"^^com.goal_smart:soccer_team("AC Milan"))
+C: #[results=[
+C:   { coach="3733"^^com.goal_smart:soccer_coach("S. Pioli"), team_id="489"^^com.goal_smart:soccer_team("AC Milan") }
+C: ]];
+A: S. Pioli.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: what about fc inter
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.goal_smart.teamCoach(team_id=null^^com.goal_smart:soccer_team("fc inter"));
+====
+# recording/5b1740a5b913c2d5b505bcf6dc15d286
+U: get premier league standings
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.goal_smart.standings(league_id=null^^com.goal_smart:soccer_league("premier league"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.goal_smart.standings(league_id="39"^^com.goal_smart:soccer_league("Premier League"))
+C: #[results=[
+C:   { team="49"^^com.goal_smart:soccer_team("Chelsea"), rank=1, form=["W", "W", "D", "W", "W"], points=13, league_id="39"^^com.goal_smart:soccer_league("Premier League") },
+C:   { team="40"^^com.goal_smart:soccer_team("Liverpool"), rank=2, form=["W", "W", "D", "W", "W"], points=13, league_id="39"^^com.goal_smart:soccer_league("Premier League") },
+C:   { team="33"^^com.goal_smart:soccer_team("Manchester United"), rank=3, form=["W", "W", "W", "D", "W"], points=13, league_id="39"^^com.goal_smart:soccer_league("Premier League") },
+C:   { team="51"^^com.goal_smart:soccer_team("Brighton"), rank=4, form=["W", "W", "L", "W", "W"], points=12, league_id="39"^^com.goal_smart:soccer_league("Premier League") },
+C:   { team="50"^^com.goal_smart:soccer_team("Manchester City"), rank=5, form=["D", "W", "W", "W", "L"], points=10, league_id="39"^^com.goal_smart:soccer_league("Premier League") },
+C:   { team="45"^^com.goal_smart:soccer_team("Everton"), rank=6, form=["L", "W", "W", "D", "W"], points=10, league_id="39"^^com.goal_smart:soccer_league("Premier League") },
+C:   { team="47"^^com.goal_smart:soccer_team("Tottenham"), rank=7, form=["L", "L", "W", "W", "W"], points=9, league_id="39"^^com.goal_smart:soccer_league("Premier League") },
+C:   { team="48"^^com.goal_smart:soccer_team("West Ham"), rank=8, form=["L", "D", "D", "W", "W"], points=8, league_id="39"^^com.goal_smart:soccer_league("Premier League") },
+C:   { team="55"^^com.goal_smart:soccer_team("Brentford"), rank=9, form=["W", "L", "D", "D", "W"], points=8, league_id="39"^^com.goal_smart:soccer_league("Premier League") },
+C:   { team="66"^^com.goal_smart:soccer_team("Aston Villa"), rank=10, form=["W", "L", "D", "W", "L"], points=7, league_id="39"^^com.goal_smart:soccer_league("Premier League") }
+C: ]]
+C: #[count=20];
+A: 1. Chelsea form: W, W, D, W, and W points: 13.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: who's second in the premier league
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.goal_smart.standings(league_id=null^^com.goal_smart:soccer_league("premier league"))[2];

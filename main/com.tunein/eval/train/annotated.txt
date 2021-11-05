@@ -130,3 +130,23 @@ UT: @com.tunein.station() filter id =~ "espn" => @com.tunein.radio_play(id=id);
 U: play espn radio
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.tunein.station() filter id =~ "espn" => @com.tunein.radio_play(id=id);
+====
+# recording/386458c610c74684ab3b3b614a3e56eb
+U: played radio KQED on Saturday.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @com.tunein.station() filter id =~ "kqed" => @com.tunein.radio_play(id=id);
+====
+# recording/cc554629aecbc944977ea10fc40a8cd8
+U: Play radio kqed.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.station() filter id =~ "kqed" => @com.tunein.radio_play(id=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@com.tunein.station() filter id =~ "kqed")[1] => @com.tunein.radio_play(id=id)
+C: #[results=[
+C:   { id="station:s34804"^^com.tunein:station("KQED-FM") }
+C: ]];
+A: I played KQED-FM.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: Do this on Saturday morning.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @com.tunein.station() filter id =~ "kqed" => @com.tunein.radio_play(id=id);

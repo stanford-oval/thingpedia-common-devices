@@ -1100,3 +1100,23 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
 U: resume.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.builtin.thingengine.builtin.resume();
+====
+# recording/1f2398884afd02849fd56f5bb8b1c237
+U: are you back?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you);
+====
+# recording/b30b44acdd6e643250a95ed72e8a6021
+U: pause
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.pause();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.pause()
+C: #[results=[
+C:   {}
+C: ]];
+A: I paused for you.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: stop playback
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.stop();

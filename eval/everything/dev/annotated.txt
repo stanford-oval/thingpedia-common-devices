@@ -3471,3 +3471,206 @@ UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.t
 U: play some hip hop.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.media-source.playable() filter contains~(genres, "hip hop") => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/7610f4baf0e687561dbcdc1f5af0b8c0
+U: tell me the weather.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=21.5C, wind_speed=1.4mps, humidity=65.4, cloudiness=0.8, fog=0, status=enum sunny, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=1;content_type=image/png"^^tt:picture, location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+A: It is sunny today in Palo Alto, California and the temperature is 21.5 degrees Celsius.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: Hey Jean, how about tomorrow?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=21.5C, wind_speed=1.4mps, humidity=65.4, cloudiness=0.8, fog=0, status=enum sunny, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=1;content_type=image/png"^^tt:picture, location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+C: @org.thingpedia.weather.forecast(date=$end_of(day), location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=18.9C, wind_speed=3.1mps, humidity=66.3, cloudiness=41.4, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=3;content_type=image/png"^^tt:picture, date=new Date("2021-11-04T07:00:00.000Z"), location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+A: It will be cloudy tomorrow in Palo Alto, California and the temperature will be 18.9 degrees Celsius.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: find me some Chinese food.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=21.5C, wind_speed=1.4mps, humidity=65.4, cloudiness=0.8, fog=0, status=enum sunny, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=1;content_type=image/png"^^tt:picture, location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+C: @org.thingpedia.weather.forecast(date=$end_of(day), location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=18.9C, wind_speed=3.1mps, humidity=66.3, cloudiness=41.4, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=3;content_type=image/png"^^tt:picture, date=new Date("2021-11-04T07:00:00.000Z"), location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+C: @com.yelp.restaurant() filter contains(cuisines, "chinese"^^com.yelp:restaurant_cuisine("Chinese"))
+C: #[results=[
+C:   { id="uVploy81jeEvlvPTA6cgjw"^^com.yelp:restaurant("Mandarin Roots"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/AnLZUIDEHJsFcEMyzoggzQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/mandarin-roots-palo-alto-4?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["chinese"^^com.yelp:restaurant_cuisine("Chinese"), "asianfusion"^^com.yelp:restaurant_cuisine("Asian Fusion"), "tapasmallplates"^^com.yelp:restaurant_cuisine("Tapas/Small Plates")], price=enum moderate, rating=4, review_count=569, geo=new Location(37.42028, -122.13601, "3345 El Camino Real, Palo Alto, CA"), phone="+16505658868"^^tt:phone_number },
+C:   { id="w17EBwOBXKaYIiGf7LTD9Q"^^com.yelp:restaurant("Jing Jing Chinese Gourmet"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/fsjBluohoq0fQYUAN8fD4g/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/jing-jing-chinese-gourmet-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["chinese"^^com.yelp:restaurant_cuisine("Chinese")], price=enum moderate, rating=3.5, review_count=406, geo=new Location(37.44514, -122.16306, "443 Emerson St, Palo Alto, CA"), phone="+16503286885"^^tt:phone_number },
+C:   { id="ZimdCe2xCAOOZjt1aQAMvg"^^com.yelp:restaurant("Chef Chu's"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/Zx0yJrh7sabsjFRbGyFEEw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/chef-chus-los-altos?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["chinese"^^com.yelp:restaurant_cuisine("Chinese"), "seafood"^^com.yelp:restaurant_cuisine("Seafood")], price=enum moderate, rating=4, review_count=1882, geo=new Location(37.4006, -122.11367, "1067 N San Antonio Rd, Los Altos, CA"), phone="+16509482696"^^tt:phone_number },
+C:   { id="aLXs35royGdxEtfRmesaTw"^^com.yelp:restaurant("Green Elephant Gourmet"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/KRkh9Sxnhja1G0tNMLnIdQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/green-elephant-gourmet-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["chinese"^^com.yelp:restaurant_cuisine("Chinese"), "burmese"^^com.yelp:restaurant_cuisine("Burmese")], price=enum moderate, rating=3.5, review_count=286, geo=new Location(37.4187397433899, -122.109109532186, "3950 Middlefield Rd, Palo Alto, CA"), phone="+16504947391"^^tt:phone_number },
+C:   { id="LjI8BVHVg5vNEHYuRyxtHw"^^com.yelp:restaurant("Peking Duck"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/0kzgVrhDcpPDAaeuef1y8g/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/peking-duck-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["chinese"^^com.yelp:restaurant_cuisine("Chinese")], price=enum moderate, rating=3, review_count=353, geo=new Location(37.428471817387894, -122.14277685914219, "151 S California Ave, Palo Alto, CA"), phone="+16503219388"^^tt:phone_number },
+C:   { id="WWyaK9oskNOpjCsO6MA7Pw"^^com.yelp:restaurant("P.F. Chang's"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/SR0mlHWyUwVBqxBBbeGRaw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/p-f-changs-palo-alto-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["chinese"^^com.yelp:restaurant_cuisine("Chinese"), "asianfusion"^^com.yelp:restaurant_cuisine("Asian Fusion")], price=enum moderate, rating=2.5, review_count=787, geo=new Location(37.4436714574102, -122.168239921338, "900 Stanford Shopping Ctr, Bldg. W, Palo Alto, CA"), phone="+16503301782"^^tt:phone_number },
+C:   { id="OFUQHchaV2uqjJmO-EuVlA"^^com.yelp:restaurant("Veggie Garden"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/Vn_EOReqLYMLSGMSDIOlXQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/veggie-garden-mountain-view?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["vegan"^^com.yelp:restaurant_cuisine("Vegan"), "vegetarian"^^com.yelp:restaurant_cuisine("Vegetarian"), "chinese"^^com.yelp:restaurant_cuisine("Chinese")], price=enum moderate, rating=4.5, review_count=514, geo=new Location(37.399226131236, -122.1086273955, "2464 W El Camino Real, Ste C, Mountain View, CA"), phone="+16509616888"^^tt:phone_number },
+C:   { id="zg83ulOQw1m18kLoNHcXUA"^^com.yelp:restaurant("Phil's Kitchen"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/rpCFoxuH71QLwDoveRY9Hg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/phils-kitchen-menlo-park?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["chinese"^^com.yelp:restaurant_cuisine("Chinese"), "hawaiian"^^com.yelp:restaurant_cuisine("Hawaiian"), "bbq"^^com.yelp:restaurant_cuisine("Barbeque")], price=enum moderate, rating=4, review_count=515, geo=new Location(37.4536749590389, -122.184342294931, "625 Oak Grove Ave, Unit B, Menlo Park, CA"), phone="+16505614296"^^tt:phone_number },
+C:   { id="cm8oHti0SIPPqR8PcmcSvA"^^com.yelp:restaurant("Garden Fresh"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/EnKogtsi9rjeTVAbGjTY7Q/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/garden-fresh-mountain-view-4?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["chinese"^^com.yelp:restaurant_cuisine("Chinese"), "noodles"^^com.yelp:restaurant_cuisine("Noodles"), "soup"^^com.yelp:restaurant_cuisine("Soup")], price=enum moderate, rating=4, review_count=1341, geo=new Location(37.387904, -122.089053, "1245 W El Camino Real, Mountain View, CA"), phone="+16502541688"^^tt:phone_number },
+C:   { id="IccyNXafP876EY6vkHetbg"^^com.yelp:restaurant("MP Mongolian BBQ"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/MBjcL710bbS2OLNOjvlwvQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/mp-mongolian-bbq-menlo-park?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["buffets"^^com.yelp:restaurant_cuisine("Buffets"), "chinese"^^com.yelp:restaurant_cuisine("Chinese")], price=enum moderate, rating=4, review_count=311, geo=new Location(37.451705, -122.178848, "700 El Camino Real, Ste 170, Menlo Park, CA"), phone="+16508531118"^^tt:phone_number }
+C: ]]
+C: #[count=12];
+A: I see Mandarin Roots, Jing Jing Chinese Gourmet, and Chef Chu's. They're Chinese moderate restaurants.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_three;
+U: tell me a joke.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.icanhazdadjoke.get();
+====
+# recording/5eb80b18c808317650b39a127f97d1f8
+U: play my playlist elevator music.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playlist() filter id =~ "elevator music" => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playlist() filter id =~ "elevator music")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:playlist:0NUtHPgeWm833NU14csQZi"^^org.thingpedia.media-source:playable("Elevator music"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: I played Elevator music on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: Hey JD pause.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.pause();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playlist() filter id =~ "elevator music")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:playlist:0NUtHPgeWm833NU14csQZi"^^org.thingpedia.media-source:playable("Elevator music"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.pause()
+C: #[results=[
+C:   {}
+C: ]];
+A: Your request was completed successfully.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: tell me news about San Francisco.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="san francisco");
+====
+# recording/09d5660a5b521ec7ec0858f9b4e1336e
+U: what's your name?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_identity);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_identity)
+C: #[results=[
+C:   { reply="I'm Genie, an open-source virtual assistant created at Stanford.", question=enum about_almond_identity }
+C: ]];
+A: I'm Genie, an open-source virtual assistant created at Stanford.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: what's the news about today's politics in the United States?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="politics in the united states");
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_identity)
+C: #[results=[
+C:   { reply="I'm Genie, an open-source virtual assistant created at Stanford.", question=enum about_almond_identity }
+C: ]];
+C: @com.smartnews.article(keyword="politics in the united states")
+C: #[results=[
+C:   { id="4346253951096588000"^^com.smartnews:article, title="NJ election 2021: Live updates as Ocean County GOP wins county races", author="Mike Davis, Joshua Chung, Kathleen Hopkins, Jerry Carino, Michael L. Diamond, Ken Serrano, Alex N. Gecan, Susanne Cervenka, Amanda Oglesby, Dan Radel, Erik Larsen and Jean Mikle, Asbury Park Press", source="Asbury Park Press", summary=" Polls are open from 6 a.m. to 8 p.m. Registered voters were allowed to cast their ballots from Oct. 23 to Oct. 31 in-person at select polling places . This year's election allows the option to vote by mail, but it's not mandatory .", link="https://www.app.com/story/news/local/elections/2021/11/02/nj-election-2021-live-updates-monmouth-ocean-results/6238065001/"^^tt:url, category=["politics policy"^^com.smartnews:category("politics policy"), "politic"^^com.smartnews:category("politic"), "political"^^com.smartnews:category("political"), "policy"^^com.smartnews:category("policy"), "election"^^com.smartnews:category("election")], date=new Date("2021-11-02T09:01:24.000Z"), mention=["new jersey", "election day", "ocean county new jersey", "republican party united states"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211103/voice/headline_4346253951096587939.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211103/voice/summary_4346253951096587939.mp3"^^tt:url, keyword="politics in the united states" },
+C:   { id="4346224332570104000"^^com.smartnews:article, title="‘A new American fault line’: How new election laws will make it harder for 55 million to vote", author="Nick Penzenstadler, Phillip M. Bailey and Rachel Looker, USA TODAY", source="USA TODAY", summary=" USA TODAY analysis of 254 new laws in 45 states passed since 2020 . Americans overall will lose more than 160 days in absentee voting availability . Impact of the new laws varies by voting precinct and key battleground states .", link="https://www.usatoday.com/story/news/politics/2021/11/02/voting-access-limited-new-election-laws/8568850002/"^^tt:url, category=["politics policy"^^com.smartnews:category("politics policy"), "politic"^^com.smartnews:category("politic"), "political"^^com.smartnews:category("political"), "policy"^^com.smartnews:category("policy"), "election"^^com.smartnews:category("election")], date=new Date("2021-11-02T07:00:03.000Z"), mention=["election day", "united states"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/headline_4346224332570103919.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/summary_4346224332570103919.mp3"^^tt:url, keyword="politics in the united states" },
+C:   { id="4346269332175588000"^^com.smartnews:article, title="Meet Arabella Advisors, the Left’s Dark-Money Manager", author="Emma Green", source="The Atlantic", summary=" Democrats have quietly pulled ahead of Republicans in so-called dark-money spending . The groups that spend money this way tend to have innocuous-sounding names . The Sixteen Thirty Fund was the indisputable heavyweight of Democratic dark money .", link="https://www.theatlantic.com/politics/archive/2021/11/arabella-advisors-money-democrats/620553/"^^tt:url, category=["politics policy"^^com.smartnews:category("politics policy"), "politic"^^com.smartnews:category("politic"), "political"^^com.smartnews:category("political"), "policy"^^com.smartnews:category("policy"), "commentary"^^com.smartnews:category("commentary")], date=new Date("2021-11-02T06:01:56.000Z"), mention=["dupont circle", "opensecrets", "montana", "washington d.c.", "republican party united states"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/headline_4346269332175587911.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/summary_4346269332175587911.mp3"^^tt:url, keyword="politics in the united states" },
+C:   { id="4346193845868825000"^^com.smartnews:article, title="Biden announces rule to limit methane leaks, targeting oil and gas industry at COP26 climate summit", author="Joey Garrison and Kim Hjelmgaard, USA TODAY", source="USA TODAY", summary=" Methane contributes to about half the world's global warming, Biden says . The U.S. and more than 90 countries have signed a pledge to reduce methane emissions by 2030 .", link="https://www.usatoday.com/story/news/politics/2021/11/02/biden-targets-forest-protection-methane-emissions-day-2-cop-26/6239713001/"^^tt:url, category=["environment"^^com.smartnews:category("environment")], date=new Date("2021-11-02T05:01:08.000Z"), mention=["glasgow", "scotland", "joe biden", "united nations", "2021 united nations climate change conference"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211103/voice/headline_4346193845868825245.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211103/voice/summary_4346193845868825245.mp3"^^tt:url, keyword="politics in the united states" },
+C:   { id="4346122206623826400"^^com.smartnews:article, title="Biden, Johnson and Merkel launch dinner-time diplomacy", source="Daily Mail", summary=" World leaders joined hundreds for biggest gathering of Government representatives since the birth of the United Nations . Attended lavish royal reception at Glasgow's Kelvingrove Art Gallery and Museum with Prince Charles, Prince William, Kate Middleton and the Duchess of Cornwall .", link="https://www.dailymail.co.uk/news/article-10154599/Biden-Johnson-Merkel-Macron-launch-dinner-time-diplomacy.html"^^tt:url, category=["world"^^com.smartnews:category("world"), "uk ireland"^^com.smartnews:category("uk ireland"), "uk"^^com.smartnews:category("uk"), "northern ireland"^^com.smartnews:category("northern ireland")], date=new Date("2021-11-01T23:01:28.000Z"), mention=["glasgow", "government", "boris johnson", "united nations", "joe biden"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/headline_4346122206623826558.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/summary_4346122206623826558.mp3"^^tt:url, keyword="politics in the united states" }
+C: ]];
+A: Here is the news.
+A: NJ election 2021: Live updates as Ocean County GOP wins county races.
+A: ‘A new American fault line’: How new election laws will make it harder for 55 million to vote.
+A: Meet Arabella Advisors, the Left’s Dark-Money Manager.
+A: Biden announces rule to limit methane leaks, targeting oil and gas industry at COP26 climate summit.
+A: Biden, Johnson and Merkel launch dinner-time diplomacy.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_many;
+U: Will it rain this weekend?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast(date=new Date(enum saturday));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_identity)
+C: #[results=[
+C:   { reply="I'm Genie, an open-source virtual assistant created at Stanford.", question=enum about_almond_identity }
+C: ]];
+C: @com.smartnews.article(keyword="politics in the united states")
+C: #[results=[
+C:   { id="4346253951096588000"^^com.smartnews:article, title="NJ election 2021: Live updates as Ocean County GOP wins county races", author="Mike Davis, Joshua Chung, Kathleen Hopkins, Jerry Carino, Michael L. Diamond, Ken Serrano, Alex N. Gecan, Susanne Cervenka, Amanda Oglesby, Dan Radel, Erik Larsen and Jean Mikle, Asbury Park Press", source="Asbury Park Press", summary=" Polls are open from 6 a.m. to 8 p.m. Registered voters were allowed to cast their ballots from Oct. 23 to Oct. 31 in-person at select polling places . This year's election allows the option to vote by mail, but it's not mandatory .", link="https://www.app.com/story/news/local/elections/2021/11/02/nj-election-2021-live-updates-monmouth-ocean-results/6238065001/"^^tt:url, category=["politics policy"^^com.smartnews:category("politics policy"), "politic"^^com.smartnews:category("politic"), "political"^^com.smartnews:category("political"), "policy"^^com.smartnews:category("policy"), "election"^^com.smartnews:category("election")], date=new Date("2021-11-02T09:01:24.000Z"), mention=["new jersey", "election day", "ocean county new jersey", "republican party united states"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211103/voice/headline_4346253951096587939.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211103/voice/summary_4346253951096587939.mp3"^^tt:url, keyword="politics in the united states" },
+C:   { id="4346224332570104000"^^com.smartnews:article, title="‘A new American fault line’: How new election laws will make it harder for 55 million to vote", author="Nick Penzenstadler, Phillip M. Bailey and Rachel Looker, USA TODAY", source="USA TODAY", summary=" USA TODAY analysis of 254 new laws in 45 states passed since 2020 . Americans overall will lose more than 160 days in absentee voting availability . Impact of the new laws varies by voting precinct and key battleground states .", link="https://www.usatoday.com/story/news/politics/2021/11/02/voting-access-limited-new-election-laws/8568850002/"^^tt:url, category=["politics policy"^^com.smartnews:category("politics policy"), "politic"^^com.smartnews:category("politic"), "political"^^com.smartnews:category("political"), "policy"^^com.smartnews:category("policy"), "election"^^com.smartnews:category("election")], date=new Date("2021-11-02T07:00:03.000Z"), mention=["election day", "united states"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/headline_4346224332570103919.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/summary_4346224332570103919.mp3"^^tt:url, keyword="politics in the united states" },
+C:   { id="4346269332175588000"^^com.smartnews:article, title="Meet Arabella Advisors, the Left’s Dark-Money Manager", author="Emma Green", source="The Atlantic", summary=" Democrats have quietly pulled ahead of Republicans in so-called dark-money spending . The groups that spend money this way tend to have innocuous-sounding names . The Sixteen Thirty Fund was the indisputable heavyweight of Democratic dark money .", link="https://www.theatlantic.com/politics/archive/2021/11/arabella-advisors-money-democrats/620553/"^^tt:url, category=["politics policy"^^com.smartnews:category("politics policy"), "politic"^^com.smartnews:category("politic"), "political"^^com.smartnews:category("political"), "policy"^^com.smartnews:category("policy"), "commentary"^^com.smartnews:category("commentary")], date=new Date("2021-11-02T06:01:56.000Z"), mention=["dupont circle", "opensecrets", "montana", "washington d.c.", "republican party united states"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/headline_4346269332175587911.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/summary_4346269332175587911.mp3"^^tt:url, keyword="politics in the united states" },
+C:   { id="4346193845868825000"^^com.smartnews:article, title="Biden announces rule to limit methane leaks, targeting oil and gas industry at COP26 climate summit", author="Joey Garrison and Kim Hjelmgaard, USA TODAY", source="USA TODAY", summary=" Methane contributes to about half the world's global warming, Biden says . The U.S. and more than 90 countries have signed a pledge to reduce methane emissions by 2030 .", link="https://www.usatoday.com/story/news/politics/2021/11/02/biden-targets-forest-protection-methane-emissions-day-2-cop-26/6239713001/"^^tt:url, category=["environment"^^com.smartnews:category("environment")], date=new Date("2021-11-02T05:01:08.000Z"), mention=["glasgow", "scotland", "joe biden", "united nations", "2021 united nations climate change conference"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211103/voice/headline_4346193845868825245.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211103/voice/summary_4346193845868825245.mp3"^^tt:url, keyword="politics in the united states" },
+C:   { id="4346122206623826400"^^com.smartnews:article, title="Biden, Johnson and Merkel launch dinner-time diplomacy", source="Daily Mail", summary=" World leaders joined hundreds for biggest gathering of Government representatives since the birth of the United Nations . Attended lavish royal reception at Glasgow's Kelvingrove Art Gallery and Museum with Prince Charles, Prince William, Kate Middleton and the Duchess of Cornwall .", link="https://www.dailymail.co.uk/news/article-10154599/Biden-Johnson-Merkel-Macron-launch-dinner-time-diplomacy.html"^^tt:url, category=["world"^^com.smartnews:category("world"), "uk ireland"^^com.smartnews:category("uk ireland"), "uk"^^com.smartnews:category("uk"), "northern ireland"^^com.smartnews:category("northern ireland")], date=new Date("2021-11-01T23:01:28.000Z"), mention=["glasgow", "government", "boris johnson", "united nations", "joe biden"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/headline_4346122206623826558.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/summary_4346122206623826558.mp3"^^tt:url, keyword="politics in the united states" }
+C: ]];
+C: @org.thingpedia.weather.forecast(date=new Date(enum saturday), location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=15.8C, wind_speed=2.1mps, humidity=78.1, cloudiness=100, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=4;content_type=image/png"^^tt:picture, date=new Date("2021-11-06T07:00:00.000Z"), location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+A: It will be cloudy on Saturday in Palo Alto, California and the temperature will be 60.4 degrees Fahrenheit.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: what about in Mountain View?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast(date=new Date(enum saturday), location=new Location("mountain view"));
+====
+# recording/e666d01910bce5008eaedcdc0452eedf
+U: tell me a joke.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.icanhazdadjoke.get();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="GQuzAAXgah"^^com.icanhazdadjoke:id, text="Some people say that I never got over my obsession with Phil Collins.\r\nBut take a look at me now." }
+C: ]];
+A: Some people say that I never got over my obsession with Phil Collins. But take a look at me now.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: What's your favorite type of music?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_preference);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="GQuzAAXgah"^^com.icanhazdadjoke:id, text="Some people say that I never got over my obsession with Phil Collins.\r\nBut take a look at me now." }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_preference)
+C: #[results=[
+C:   { reply="I don't have a favorite one yet.", question=enum about_almond_preference }
+C: ]];
+A: I don't have a favorite one yet.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: what kind of music should I listen to?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="GQuzAAXgah"^^com.icanhazdadjoke:id, text="Some people say that I never got over my obsession with Phil Collins.\r\nBut take a look at me now." }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_preference)
+C: #[results=[
+C:   { reply="I don't have a favorite one yet.", question=enum about_almond_preference }
+C: ]];
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable()
+C: #[results=[
+C:   { id="spotify:track:5L9MJsGqzTRD09rSzHkCDy"^^org.thingpedia.media-source:playable("Home"), artists=["spotify:artist:57DlMWmbVIf2ssJ8QBpBau"^^org.thingpedia.media-source:artist("Toby Fox")], genres=["dream smp", "indie game soundtrack"], release_date=new Date("2015-09-15T00:00:00.000Z"), popularity=60, __device="XXXXXXXX"^^tt:device_id },
+C:   { id="spotify:track:1J03Vp93ybKIxfzYI4YJtL"^^org.thingpedia.media-source:playable("MEGALOVANIA"), artists=["spotify:artist:57DlMWmbVIf2ssJ8QBpBau"^^org.thingpedia.media-source:artist("Toby Fox")], genres=["dream smp", "indie game soundtrack"], release_date=new Date("2015-09-15T00:00:00.000Z"), popularity=69, __device="XXXXXXXX"^^tt:device_id },
+C:   { id="spotify:track:1MoAGaJNyPwaLSB6iTLNg1"^^org.thingpedia.media-source:playable("Undyne"), artists=["spotify:artist:57DlMWmbVIf2ssJ8QBpBau"^^org.thingpedia.media-source:artist("Toby Fox")], genres=["dream smp", "indie game soundtrack"], release_date=new Date("2015-09-15T00:00:00.000Z"), popularity=49, __device="XXXXXXXX"^^tt:device_id },
+C:   { id="spotify:track:3KHbBpwYdlM6uKJirvCrEA"^^org.thingpedia.media-source:playable("Determination"), artists=["spotify:artist:57DlMWmbVIf2ssJ8QBpBau"^^org.thingpedia.media-source:artist("Toby Fox")], genres=["dream smp", "indie game soundtrack"], release_date=new Date("2015-09-15T00:00:00.000Z"), popularity=51, __device="XXXXXXXX"^^tt:device_id },
+C:   { id="spotify:track:4Yqrr5SMB84skeJ8cupJgs"^^org.thingpedia.media-source:playable("Don't Give Up"), artists=["spotify:artist:57DlMWmbVIf2ssJ8QBpBau"^^org.thingpedia.media-source:artist("Toby Fox")], genres=["dream smp", "indie game soundtrack"], release_date=new Date("2015-09-15T00:00:00.000Z"), popularity=49, __device="XXXXXXXX"^^tt:device_id },
+C:   { id="spotify:track:4wBMMqeY2NnFnStBIPHxyG"^^org.thingpedia.media-source:playable("Oh! One True Love"), artists=["spotify:artist:57DlMWmbVIf2ssJ8QBpBau"^^org.thingpedia.media-source:artist("Toby Fox")], genres=["dream smp", "indie game soundtrack"], release_date=new Date("2015-09-15T00:00:00.000Z"), popularity=48, __device="XXXXXXXX"^^tt:device_id },
+C:   { id="spotify:track:6eTcxkl9G7C2mwejLJ7Amm"^^org.thingpedia.media-source:playable("An Ending"), artists=["spotify:artist:57DlMWmbVIf2ssJ8QBpBau"^^org.thingpedia.media-source:artist("Toby Fox")], genres=["dream smp", "indie game soundtrack"], release_date=new Date("2015-09-15T00:00:00.000Z"), popularity=51, __device="XXXXXXXX"^^tt:device_id },
+C:   { id="spotify:track:0KQnhlCVldP6qicvBy9IJ5"^^org.thingpedia.media-source:playable("Dating Fight!"), artists=["spotify:artist:57DlMWmbVIf2ssJ8QBpBau"^^org.thingpedia.media-source:artist("Toby Fox")], genres=["dream smp", "indie game soundtrack"], release_date=new Date("2015-09-15T00:00:00.000Z"), popularity=50, __device="XXXXXXXX"^^tt:device_id },
+C:   { id="spotify:track:0gt76DuMx7F3UZJPg7jcC5"^^org.thingpedia.media-source:playable("Quiet Water"), artists=["spotify:artist:57DlMWmbVIf2ssJ8QBpBau"^^org.thingpedia.media-source:artist("Toby Fox")], genres=["dream smp", "indie game soundtrack"], release_date=new Date("2015-09-15T00:00:00.000Z"), popularity=57, __device="XXXXXXXX"^^tt:device_id },
+C:   { id="spotify:track:0w5CRIokPrQAAq7OdIKesr"^^org.thingpedia.media-source:playable("SAVE The World"), artists=["spotify:artist:57DlMWmbVIf2ssJ8QBpBau"^^org.thingpedia.media-source:artist("Toby Fox")], genres=["dream smp", "indie game soundtrack"], release_date=new Date("2015-09-15T00:00:00.000Z"), popularity=54, __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=20];
+A: I see Home, MEGALOVANIA, and Undyne. They're recordings by Toby Fox released in September 14, 2015.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_three;
+U: can you recommend a playlist for my party this weekend?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playlist();

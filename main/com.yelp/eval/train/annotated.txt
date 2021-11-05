@@ -1095,3 +1095,123 @@ UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_c
 U: find me a chinese restaurant.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese"));
+====
+# recording/d285e41acb65d818dd8b1f8eb9c44058
+U: where is the closest Krispy Kreme?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [geo] of sort(distance(geo, $location.current_location) asc of @com.yelp.restaurant() filter id =~ "krispy kreme")[1];
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: [geo] of sort(distance(geo, new Location(37.4443293, -122.1598465, "Palo Alto, California")) asc of @com.yelp.restaurant() filter id =~ "krispy kreme")[1]
+C: #[results=[]];
+A: Sorry, there are no restaurants matching your request.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_empty_search;
+U: Like, hey genewhere is the closest donut place?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [geo] of sort(distance(geo, new Location(37.4443293, -122.1598465, "Palo Alto, California")) asc of @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("donut")))[1];
+====
+# recording/40bb91a1998f615e2cdc6183073aa888
+U: find a restaurant in the Mission district.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("mission district");
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.yelp.restaurant() filter geo == new Location(37.75993, -122.4191376, "Mission District, San Francisco, California")
+C: #[results=[
+C:   { id="ri7UUYmx21AgSpRsf4-9QA"^^com.yelp:restaurant("Tartine Bakery"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/nPUUXYVVa3CHJh5yzH8Xnw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/tartine-bakery-san-francisco-3?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["cafes"^^com.yelp:restaurant_cuisine("Cafes")], price=enum moderate, rating=4, review_count=8182, geo=new Location(37.76131, -122.42431, "600 Guerrero St, San Francisco, CA"), phone="+14154872600"^^tt:phone_number },
+C:   { id="KkAVX3Wb7E3lP5F_f_8pXg"^^com.yelp:restaurant("Liholiho Yacht Club"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/DluAA2YbM8k6qRM_mwbiNw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/liholiho-yacht-club-san-francisco-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["newamerican"^^com.yelp:restaurant_cuisine("American (New)"), "seafood"^^com.yelp:restaurant_cuisine("Seafood")], price=enum expensive, rating=4.5, review_count=2488, geo=new Location(37.7618143, -122.42296790220479, "3560 18th St, San Francisco, CA"), phone="+14155897266"^^tt:phone_number },
+C:   { id="SGRmnarrNuVEsAjYdEoA0w"^^com.yelp:restaurant("El Farolito"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/kYemXiMcYje-Da7AjPtWcg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/el-farolito-san-francisco-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum cheap, rating=4, review_count=5064, geo=new Location(37.75265, -122.41812, "2779 Mission St, San Francisco, CA"), phone="+14158247877"^^tt:phone_number },
+C:   { id="n6L5VIGunR51-D55C-eYeQ"^^com.yelp:restaurant("Foreign Cinema"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/cw5y2LSOIE-EVNjKK_d7SQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/foreign-cinema-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch"), "mediterranean"^^com.yelp:restaurant_cuisine("Mediterranean")], price=enum expensive, rating=4, review_count=5018, geo=new Location(37.75637, -122.41925, "2534 Mission St, San Francisco, CA"), phone="+14156487600"^^tt:phone_number },
+C:   { id="1hMD7RQogPDWpE-p3LKjXA"^^com.yelp:restaurant("Loló"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/QimJjz8ECFnevPcssJYfTw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/lol%C3%B3-san-francisco-4?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican"), "tapasmallplates"^^com.yelp:restaurant_cuisine("Tapas/Small Plates")], price=enum moderate, rating=4, review_count=2282, geo=new Location(37.7573462, -122.4214034, "974 Valencia St, San Francisco, CA"), phone="+14156435656"^^tt:phone_number },
+C:   { id="8kck3-K4zYKTJbJko0JlXQ"^^com.yelp:restaurant("Farmhouse Kitchen Thai Cuisine"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/kUlEaPpv0JGlHG_nrPr7wQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/farmhouse-kitchen-thai-cuisine-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["thai"^^com.yelp:restaurant_cuisine("Thai"), "comfortfood"^^com.yelp:restaurant_cuisine("Comfort Food")], price=enum moderate, rating=4, review_count=2962, geo=new Location(37.760192883932795, -122.4114188698492, "710 Florida St, San Francisco, CA"), phone="+14158142920"^^tt:phone_number },
+C:   { id="4KfQnlcSu4bbTqnvGdGptw"^^com.yelp:restaurant("Beretta"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/HKxMJ8q8fzOY76hy7ACIag/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/beretta-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["italian"^^com.yelp:restaurant_cuisine("Italian"), "pizza"^^com.yelp:restaurant_cuisine("Pizza"), "breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch")], price=enum moderate, rating=4, review_count=3828, geo=new Location(37.753869, -122.420611, "1199 Valencia St, San Francisco, CA"), phone="+14156951199"^^tt:phone_number },
+C:   { id="wEpiKz--Z2b1q_FSCCNiow"^^com.yelp:restaurant("Lolinda"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/M8J3ehcOIRRI8ys1Q0hxtw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/lolinda-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["steak"^^com.yelp:restaurant_cuisine("Steakhouses"), "tapasmallplates"^^com.yelp:restaurant_cuisine("Tapas/Small Plates"), "latin"^^com.yelp:restaurant_cuisine("Latin American")], price=enum expensive, rating=4, review_count=2070, geo=new Location(37.7566658, -122.419116, "2518 Mission St, San Francisco, CA"), phone="+14155506970"^^tt:phone_number },
+C:   { id="JARsJVKLPgs_yC3cwDnp7g"^^com.yelp:restaurant("La Taqueria"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/7LqVKYVg2GdEFKI2CFL4cA/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/la-taqueria-san-francisco-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum moderate, rating=4, review_count=4250, geo=new Location(37.75088, -122.41805, "2889 Mission St, San Francisco, CA"), phone="+14152857117"^^tt:phone_number },
+C:   { id="r7RwvYMwxDuK3u26fHbYDA"^^com.yelp:restaurant("Limón"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/uJAt6_k4J35gIFsC6FtWWg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/lim%C3%B3n-san-francisco-7?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["peruvian"^^com.yelp:restaurant_cuisine("Peruvian"), "tapasmallplates"^^com.yelp:restaurant_cuisine("Tapas/Small Plates")], price=enum moderate, rating=4, review_count=3305, geo=new Location(37.7570514, -122.416461, "1001 S Van Ness Ave, San Francisco, CA"), phone="+14158212134"^^tt:phone_number }
+C: ]]
+C: #[count=19];
+A: I see Tartine Bakery, Liholiho Yacht Club, and El Farolito. Tartine Bakery is rated 4 stars, Liholiho Yacht Club is rated 4.5 stars, and El Farolito is rated 4 stars.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_three;
+U: thank you.
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# recording/f59db00cdba55e29b624b3e2c23dbcb1
+U: Oh hey Jeannie.Find me a restaurant in Palo Alto.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("palo alto");
+====
+# recording/3adfe8a15e48767368fed4502921bc5d
+U: where's the closest sushi place?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [geo] of sort(distance(geo, $location.current_location) asc of @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("sushi")))[1];
+====
+# recording/642a3973e77ab2b3b3a3d7bb7f5b9be4
+U: find a restaurant in Palo Alto open right now.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(opening_hours, $now) && geo == new Location("palo alto");
+====
+# recording/8a2fa77a39b8c01f2106ef4572bd1278
+U: find me an ice cream store.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("ice cream"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.yelp.restaurant() filter contains(cuisines, "icecream"^^com.yelp:restaurant_cuisine("ice cream"))
+C: #[results=[]];
+A: Sorry, there are no restaurants matching your request.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_empty_search;
+U: find me an ice cream store.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("ice cream"));
+====
+# recording/78f45d000a12e6f5a6e605250b00a966
+U: What is the closest Italian restaurant?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(distance(geo, $location.current_location) asc of @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("italian")))[1];
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: sort(distance(geo, new Location(37.4443293, -122.1598465, "Palo Alto, California")) asc of @com.yelp.restaurant() filter contains(cuisines, "italian"^^com.yelp:restaurant_cuisine("Italian")))[1]
+C: #[results=[
+C:   { id="mvFvBjVC6bFRXmf9iGPvzQ"^^com.yelp:restaurant("Buca di Beppo Italian Restaurant"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/A3E_DQk_kenXhqq13F8Jbw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/buca-di-beppo-italian-restaurant-palo-alto-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["italian"^^com.yelp:restaurant_cuisine("Italian")], price=enum moderate, rating=3, review_count=969, geo=new Location(37.44355, -122.16053, "643 Emerson St, Palo Alto, CA"), phone="+16503290665"^^tt:phone_number }
+C: ]];
+A: I see Buca di Beppo Italian Restaurant. It is a Italian restaurant rated 3 stars.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: what is its phone number?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [phone] of sort(distance(geo, new Location(37.4443293, -122.1598465, "Palo Alto, California")) asc of @com.yelp.restaurant() filter contains(cuisines, "italian"^^com.yelp:restaurant_cuisine("Italian")) && id == "mvFvBjVC6bFRXmf9iGPvzQ"^^com.yelp:restaurant("Buca di Beppo Italian Restaurant"))[1];
+====
+# recording/8f0cb0886aa66528589b9dc9e772d897
+U: find me an ice cream store.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("ice cream"));
+====
+# recording/25feda9ea689610c8279cc28eb2a4354
+U: find me a restaurant in Mission Dolores Park.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("mission dolores park");
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.yelp.restaurant() filter geo == new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California")
+C: #[results=[
+C:   { id="ri7UUYmx21AgSpRsf4-9QA"^^com.yelp:restaurant("Tartine Bakery"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/nPUUXYVVa3CHJh5yzH8Xnw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/tartine-bakery-san-francisco-3?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["cafes"^^com.yelp:restaurant_cuisine("Cafes")], price=enum moderate, rating=4, review_count=8182, geo=new Location(37.76131, -122.42431, "600 Guerrero St, San Francisco, CA"), phone="+14154872600"^^tt:phone_number },
+C:   { id="KkAVX3Wb7E3lP5F_f_8pXg"^^com.yelp:restaurant("Liholiho Yacht Club"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/DluAA2YbM8k6qRM_mwbiNw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/liholiho-yacht-club-san-francisco-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["newamerican"^^com.yelp:restaurant_cuisine("American (New)"), "seafood"^^com.yelp:restaurant_cuisine("Seafood")], price=enum expensive, rating=4.5, review_count=2488, geo=new Location(37.7618143, -122.42296790220479, "3560 18th St, San Francisco, CA"), phone="+14155897266"^^tt:phone_number },
+C:   { id="SGRmnarrNuVEsAjYdEoA0w"^^com.yelp:restaurant("El Farolito"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/kYemXiMcYje-Da7AjPtWcg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/el-farolito-san-francisco-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum cheap, rating=4, review_count=5064, geo=new Location(37.75265, -122.41812, "2779 Mission St, San Francisco, CA"), phone="+14158247877"^^tt:phone_number },
+C:   { id="n6L5VIGunR51-D55C-eYeQ"^^com.yelp:restaurant("Foreign Cinema"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/cw5y2LSOIE-EVNjKK_d7SQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/foreign-cinema-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch"), "mediterranean"^^com.yelp:restaurant_cuisine("Mediterranean")], price=enum expensive, rating=4, review_count=5018, geo=new Location(37.75637, -122.41925, "2534 Mission St, San Francisco, CA"), phone="+14156487600"^^tt:phone_number },
+C:   { id="XQLmEdXoMzOpffwoFaBtaQ"^^com.yelp:restaurant("Kitchen Story"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/XIhdtd0fB2P_v_qhh1hWbg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/kitchen-story-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch"), "asianfusion"^^com.yelp:restaurant_cuisine("Asian Fusion"), "newamerican"^^com.yelp:restaurant_cuisine("American (New)")], price=enum moderate, rating=4, review_count=3589, geo=new Location(37.7642352, -122.4306936, "3499 16th St, San Francisco, CA"), phone="+14155254905"^^tt:phone_number },
+C:   { id="4KfQnlcSu4bbTqnvGdGptw"^^com.yelp:restaurant("Beretta"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/HKxMJ8q8fzOY76hy7ACIag/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/beretta-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["italian"^^com.yelp:restaurant_cuisine("Italian"), "pizza"^^com.yelp:restaurant_cuisine("Pizza"), "breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch")], price=enum moderate, rating=4, review_count=3828, geo=new Location(37.753869, -122.420611, "1199 Valencia St, San Francisco, CA"), phone="+14156951199"^^tt:phone_number },
+C:   { id="1hMD7RQogPDWpE-p3LKjXA"^^com.yelp:restaurant("Loló"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/QimJjz8ECFnevPcssJYfTw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/lol%C3%B3-san-francisco-4?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican"), "tapasmallplates"^^com.yelp:restaurant_cuisine("Tapas/Small Plates")], price=enum moderate, rating=4, review_count=2282, geo=new Location(37.7573462, -122.4214034, "974 Valencia St, San Francisco, CA"), phone="+14156435656"^^tt:phone_number },
+C:   { id="ZDvIMjJ-7I0561ckM4pAeA"^^com.yelp:restaurant("Anchor Oyster Bar"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/oKLPo1042ojJJC9OcCzAMw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/anchor-oyster-bar-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["seafood"^^com.yelp:restaurant_cuisine("Seafood")], price=enum moderate, rating=4.5, review_count=1552, geo=new Location(37.759689, -122.434609, "579 Castro St, San Francisco, CA"), phone="+14154313990"^^tt:phone_number },
+C:   { id="JARsJVKLPgs_yC3cwDnp7g"^^com.yelp:restaurant("La Taqueria"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/7LqVKYVg2GdEFKI2CFL4cA/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/la-taqueria-san-francisco-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum moderate, rating=4, review_count=4250, geo=new Location(37.75088, -122.41805, "2889 Mission St, San Francisco, CA"), phone="+14152857117"^^tt:phone_number },
+C:   { id="CYttYTEiQuhSfo3SEh79fA"^^com.yelp:restaurant("Shizen Vegan Sushi Bar & Izakaya"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/-1BWnyjrsDmTmXH_3wZl_w/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/shizen-vegan-sushi-bar-and-izakaya-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["sushi"^^com.yelp:restaurant_cuisine("Sushi Bars"), "vegan"^^com.yelp:restaurant_cuisine("Vegan"), "izakaya"^^com.yelp:restaurant_cuisine("Izakaya")], price=enum moderate, rating=4.5, review_count=1801, geo=new Location(37.768326, -122.421682, "370 14th St, San Francisco, CA"), phone="+14156785767"^^tt:phone_number }
+C: ]]
+C: #[count=19];
+A: I see Tartine Bakery, Liholiho Yacht Club, and El Farolito. Tartine Bakery is rated 4 stars, Liholiho Yacht Club is rated 4.5 stars, and El Farolito is rated 4 stars.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_three;
+U: what's the phone number?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [phone] of @com.yelp.restaurant() filter geo == new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California");
+====
+# recording/acbd23e2c9a699c0d4fa4e42289e50e7
+U: find me an ice cream restaurant.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("ice cream"));
+====
+# recording/14ccf67952ede309c3d474b6573e67bd
+U: what's a good place to eat in dolores park
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("dolores park");

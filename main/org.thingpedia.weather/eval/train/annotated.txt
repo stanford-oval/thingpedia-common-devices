@@ -741,3 +741,23 @@ UT: @org.thingpedia.weather.current(location=new Location("stanford"));
 U: i wasn't talking to you. what's the weather like today?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.weather.current();
+====
+# recording/b31789fd630e812410ec3a0ac168cd57
+U: what's the weather in Mission Dolores Park?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("mission dolores park"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California"))
+C: #[results=[
+C:   { temperature=15.1C, wind_speed=4.7mps, humidity=90.9, cloudiness=100, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=3;content_type=image/png"^^tt:picture, location=new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California") }
+C: ]];
+A: It is cloudy today in Mission Dolores Park, San Francisco, California and the temperature is 59.2 degrees Fahrenheit.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: send it to me on Saturday.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @org.thingpedia.weather.current(location=new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California"));
+====
+# recording/8392ab8cfed186b7bb1b2cadbf5fad46
+U: what's the weather on wednesday
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast(date=new Date(enum wednesday));
