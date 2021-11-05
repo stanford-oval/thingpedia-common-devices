@@ -38,6 +38,7 @@ const byline = require('byline');
 const crypto = require('crypto');
 
 const StreamUtils = require('./lib/stream_utils');
+const { assert } = require('console');
 
 // applies the device ID propagation logic to the dev and few-shot
 // train set, making it consistent with the synthesized data
@@ -110,7 +111,11 @@ function propagateDeviceIDs(context, userTarget) {
     for (let i = currentIdx+1; i < context.history.length; i++)
         context.history[i].visit(collectVisitor);
 
-    const applyVisitor = new ApplyDeviceIDVisitor(collectVisitor.collection);
+    applyDeviceId(collectVisitor.collection, userTarget);
+}
+
+function applyDeviceId(collection, userTarget) {
+    const applyVisitor = new ApplyDeviceIDVisitor(collection);
     return userTarget.history.map((item) => {
         item.visit(applyVisitor);
         return item;
@@ -150,7 +155,7 @@ class RemoveSensitiveInfoVisitor extends ThingTalk.Ast.NodeVisitor {
                 kind = 'com.spotify';
             sel.id = kind + '-XXXXXXXX';
         }
-        sel.attributes = sel.attributes.filter((ip) => ip.name !== 'name');
+        //sel.attributes = sel.attributes.filter((ip) => ip.name !== 'name');
         return true;
     }
     visitEntityValue(value) {
@@ -184,6 +189,14 @@ class RemoveSensitiveInfoVisitor extends ThingTalk.Ast.NodeVisitor {
 
 async function processDialogue(dlg) {
     const visitor = new RemoveSensitiveInfoVisitor();
+
+    const turn = dlg[0];
+    const parsedUserTarget = parseNewOrOldSyntax(turn.user_target);
+    parsedUserTarget.visit(visitor);
+    assert(parsedUserTarget instanceof ThingTalk.Ast.DialogueState);
+    applyDeviceId(new Map, parsedUserTarget);
+    dlg[0].user_target = parsedUserTarget.prettyprint();
+
     for (let turnIdx = 1; turnIdx < dlg.length; turnIdx++) {
         const turn = dlg[turnIdx];
         const context = dlg[turnIdx].context;

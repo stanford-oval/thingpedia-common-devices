@@ -162,7 +162,7 @@ UT: @com.smartnews.article() filter contains(category, "sport"^^com.smartnews:ca
 # manual/4
 U: show me news released on October 15
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.smartnews.article(), date == new Date(2021,10,15);
+UT: @com.smartnews.article() filter date == new Date("2021-10-15T07:00:00.000Z");
 ====
 # manual/5
 U: latest news on the coronavirus
@@ -227,12 +227,12 @@ UT: @com.smartnews.article(keyword="apple products");
 # manual/17
 U: cnn news
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.smartnews.article(), source =~ ("cnn");
+UT: @com.smartnews.article() filter source =~ "cnn";
 ====
 # manual/18
 U: bbc news
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.smartnews.article(), source =~ ("bbc");
+UT: @com.smartnews.article() filter source =~ "bbc";
 ====
 # manual/19
 U: news related to macbook pro
@@ -247,7 +247,7 @@ UT: @com.smartnews.article(keyword="coronavirus");
 # manual/21
 U: top fashion news on october 15
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.smartnews.article() filter contains(category, "fashion"^^com.smartnews:category("fashion")) && date == new Date(2021,10,15);
+UT: @com.smartnews.article() filter contains(category, "fashion"^^com.smartnews:category("fashion")) && date == new Date("2021-10-15T07:00:00.000Z");
 ====
 # manual/22
 U: news on integrity
@@ -447,12 +447,12 @@ UT: @com.smartnews.article() filter contains(category, "basketball"^^com.smartne
 # manual/60
 U: alright, give me some news from esports insider
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.smartnews.article(), source =~ "esports insider";
+UT: @com.smartnews.article() filter source =~ "esports insider";
 ====
 # manual/61
 U: news from the last 3 days
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.smartnews.article(), date >= $now - 3day && date <= $now;
+UT: @com.smartnews.article() filter date <= $now && date >= $now - 3day;
 ====
 # manual/62
 U: news

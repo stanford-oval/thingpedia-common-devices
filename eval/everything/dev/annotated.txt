@@ -1056,20 +1056,20 @@ UT: @com.bing.image_search(query="woman");
 # online/cheat1435976
 U: check temperature on thermostat, if it is below 13 change it to 14
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@org.thingpedia.iot.temperature.temperature()), value <= 13F => notify;
-UT: now => @org.thingpedia.iot.climate.set_target_temperature(value=14F);
+UT: @org.thingpedia.iot.temperature.temperature() filter value <= 13F;
+UT: @org.thingpedia.iot.climate.set_target_temperature(value=14F);
 ====
 # online/121049
 U: if the weather is colder than 13 c then set my thermostat to 14 c
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@org.thingpedia.weather.current(location=$?)), temperature <= 13C => notify;
-UT: now => @org.thingpedia.iot.climate.set_target_temperature(value=14C);
+UT: @org.thingpedia.weather.current(location=$?) filter temperature <= 13C;
+UT: @org.thingpedia.iot.climate.set_target_temperature(value=14C);
 ====
 # online/121527
 U: if the weather is colder than 13 c then set my thermostat to 14 f
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => (@org.thingpedia.weather.current(location=$?)), temperature <= 13C => notify;
-UT: now => @org.thingpedia.iot.climate.set_target_temperature(value=14F);
+UT: @org.thingpedia.weather.current(location=$?) filter temperature <= 13C;
+UT: @org.thingpedia.iot.climate.set_target_temperature(value=14F);
 ====
 # log/40989
 U: news summaries from bbc comma huffington post
@@ -3673,7 +3673,7 @@ A: I see Home, MEGALOVANIA, and Undyne. They're recordings by Toby Fox released 
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_three;
 U: can you recommend a playlist for my party this weekend?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-source.playlist();
+UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playlist();
 ====
 # recording/c3fed32ab5b12c18e400a86cb5d2cf87
 U: get me the news and the weather.
@@ -3914,7 +3914,7 @@ A: I played Green on Spotify for you.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
 U: stop the music.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-player.player_pause();
+UT: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_pause();
 ====
 # recording/1db0780fa51fe7fd3f4f1c59333dcad5
 U: Play my demo playlist.
