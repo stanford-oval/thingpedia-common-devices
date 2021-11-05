@@ -112,7 +112,7 @@ metrics_output ?=
 s3_model_dir ?=
 
 .PRECIOUS: %/node_modules
-.PHONY: all clean lint
+.PHONY: all clean lint upgrade-deps
 .SECONDARY:
 
 all: $($(release)_pkgfiles:%/package.json=build/%.zip)
@@ -122,17 +122,29 @@ all: $($(release)_pkgfiles:%/package.json=build/%.zip)
 # import translate.mk after all: to retain it as the first target
 -include ./translate.mk
 
-build/%.zip: % %/node_modules
+build/%.zip: %
 	mkdir -p `dirname $@`
-	cd $< ; zip -x '*.tt' '*.yml' 'node_modules/.bin/*' 'icon.png' 'secrets.json' 'eval/*' 'simulation/*' 'database-map.tsv' -r $(abspath $@) .
+	cd $< ; zip -q \
+		-x \
+			'*/.git/*' \
+			'*/.nyc_output/*' \
+			'*.tt' \
+			'*.yml' \
+			'node_modules/.bin/*' \
+			'icon.png' \
+			'secrets.json' \
+			'eval/*' \
+			'simulation/*' \
+			'database-map.tsv' \
+		-r $(abspath $@) .
 
-%/node_modules: %/package.json %/package-lock.json
-	mkdir -p $@
-	cd `dirname $@` ; npm install --only=prod --no-optional
-	touch $@
+define build_device =
+$(1): $(1)/package.json $(1)/package-lock.json $(shell find "$(1)" -name "*.js") $(shell find "$(1)" -name "*.ts")
+	cd $$@ ; npm ci --only=prod
+	touch $$@
+endef
 
-%: %/package.json %/*.js %/node_modules
-	touch $@
+$(foreach d,$($(release)_pkgfiles:%/package.json=%),$(eval $(call build_device,$(d))))
 
 $(schema_file): $(addsuffix /manifest.tt,$($(release)_devices))
 	cat $^ > $@.tmp
@@ -383,6 +395,12 @@ lint:
 	done ; \
 	exit $$any_error
 
+upgrade-deps:
+	for f in $(staging_pkgfiles) ; do \
+		d=$$(dirname $$f); \
+		echo $$d ; \
+		(cd $$d ; npm upgrade ) || exit $? ; \
+	done
 
 evaluate: eval/$(release)/$(eval_set)/$(model).dialogue.results eval/$(release)/$(eval_set)/$(model).nlu.results
 	@echo eval/$(release)/$(eval_set)/$(model).dialogue.results

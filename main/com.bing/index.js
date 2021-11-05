@@ -30,11 +30,27 @@
 // OF THE POSSIBILITY OF SUCH DAMAGE.
 "use strict";
 
-//const util = require('util');
+const util = require('util');
 const interpolate = require('string-interp');
 const Tp = require('thingpedia');
 const TT = require('thingtalk');
 const qs = require('querystring');
+const Logging = require("@stanford-oval/logging");
+const Winston = require("winston");
+
+const LogFactory = new Logging.Factory({
+    runRoot: __dirname,
+    level: "http",
+    envVarPrefix: "TP_BING_LOG",
+    transports: [
+        new Winston.transports.Console({
+            format: Logging.Format.prettySimple({ colorize: true }),
+        }),
+    ],
+});
+
+const LOG = LogFactory.get(__filename);
+const { Temporal } = require('@js-temporal/polyfill');
 
 /**
  *
@@ -97,15 +113,21 @@ class BingDialogueHandler {
         let confident = Tp.DialogueHandler.Confidence.NONCONFIDENT_IN_DOMAIN_COMMAND;
         let query = utterance;
 
-        const prefixregexp = new RegExp(this._("^ask bing (to|for)?\\b"), 'i');
+        const prefixregexp = new RegExp(this._("^\\s*ask bing (to|for)?\\b"), 'i');
         const prefixmatch = prefixregexp.exec(utterance);
         if (prefixmatch) {
             query = utterance.substring(prefixmatch[0].length).trim();
             confident = Tp.DialogueHandler.Confidence.EXACT_IN_DOMAIN_COMMAND;
         }
+        const suffixregexp = new RegExp(this._("\\b(ask|on|using) bing\\?*\\s*$"), 'i');
+        const suffixmatch = suffixregexp.exec(utterance);
+        if (suffixmatch) {
+            query = utterance.substring(0, utterance.length-suffixmatch[0].length).trim();
+            confident = Tp.DialogueHandler.Confidence.EXACT_IN_DOMAIN_COMMAND;
+        }
 
         if (this._lastQuerySuggestion) {
-            const yes = new RegExp(this._("^(yes|yeah|yep|sure)\b"));
+            const yes = new RegExp(this._("^\\s*(yes|yeah|yep|sure)\b"));
             const yesmatch = yes.exec(utterance);
             if (yesmatch) {
                 query = this._lastQuerySuggestion;
@@ -120,7 +142,8 @@ class BingDialogueHandler {
         }), {
             extraHeaders: { 'Ocp-Apim-Subscription-Key': this._apiKey }
         }));
-        //console.log(util.inspect(response, { depth: Infinity }));
+        if (process.env.TP_BING_DEBUG)
+            console.log(util.inspect(response, { depth: Infinity }));
 
         if (!response.rankingResponse)
             return { confident: Tp.DialogueHandler.Confidence.OUT_OF_DOMAIN_COMMAND, utterance, user_target: '' };
@@ -141,6 +164,19 @@ class BingDialogueHandler {
                 response: response.computation
             };
         }
+        // same for timezone answers
+        if (response.timeZone) {
+            return {
+                confident,
+                utterance,
+                user_target: `$dialogue @com.bing.timeZone;`,
+
+                query: response.queryContext,
+                answerType: 'timeZone',
+                response: response.timeZone
+            };
+        }
+
         const bestRankingItems = [];
         if (response.rankingResponse.pole && response.rankingResponse.pole.items) {
             if (response.rankingResponse.pole.items instanceof Array)
@@ -148,17 +184,17 @@ class BingDialogueHandler {
             else if ('answerType' in response.rankingResponse.pole.items)
                 bestRankingItems.push(response.rankingResponse.pole.items);
         }
-        if (response.rankingResponse.sidebar && response.rankingResponse.sidebar.items) {
-            if (response.rankingResponse.sidebar.items instanceof Array)
-                bestRankingItems.push(...response.rankingResponse.sidebar.items);
-            else if ('answerType' in response.rankingResponse.sidebar.items)
-                bestRankingItems.push(response.rankingResponse.sidebar.items);
-        }
         if (response.rankingResponse.mainline && response.rankingResponse.mainline.items) {
             if (response.rankingResponse.mainline.items instanceof Array)
                 bestRankingItems.push(...response.rankingResponse.mainline.items);
             else if ('answerType' in response.rankingResponse.mainline.items)
                 bestRankingItems.push(response.rankingResponse.mainline.items);
+        }
+        if (response.rankingResponse.sidebar && response.rankingResponse.sidebar.items) {
+            if (response.rankingResponse.sidebar.items instanceof Array)
+                bestRankingItems.push(...response.rankingResponse.sidebar.items);
+            else if ('answerType' in response.rankingResponse.sidebar.items)
+                bestRankingItems.push(response.rankingResponse.sidebar.items);
         }
 
         for (const candidate of bestRankingItems) {
@@ -200,7 +236,7 @@ class BingDialogueHandler {
             const webPage = analysis.response;
             return {
                 messages: [
-                    this._interp(this._("Using Bing I found ${name}. ${description}."), {
+                    this._interp(this._("I found ${name}. ${description}."), {
                         name: webPage.name,
                         description: webPage.snippet
                     }),
@@ -218,7 +254,7 @@ class BingDialogueHandler {
 
         case 'computation':
             return {
-                messages: [this._interp(this._("According to Bing, ${expression} is equal to ${value}."), {
+                messages: [this._interp(this._("${expression} is equal to ${value}."), {
                     expression: analysis.response.expression,
                     value: analysis.response.value
                 })],
@@ -233,7 +269,7 @@ class BingDialogueHandler {
                 throw new Error(`Unexpected bing answer type (invalid entity)`);
             return {
                 messages: [
-                    this._interp(this._("According to Bing, ${description}."), {
+                    this._interp(this._("${description}."), {
                         name: entity.name,
                         description: entity.description
                     }),
@@ -268,9 +304,9 @@ class BingDialogueHandler {
         case 'translations': {
             return {
                 messages: [
-                    this._interp(this._("According to Bing, the translation is “${translation}”. Data from ${attribution}."), {
+                    this._interp(this._("The translation is “${translation}”. Data from ${attribution}."), {
                         translation: analysis.response.translatedText,
-                        attribution: analysis.response.attribution.map((a) => a.providerDisplayName)
+                        attribution: analysis.response.attributions.map((a) => a.providerDisplayName)
                     }),
                 ],
                 expecting: null,
@@ -278,8 +314,93 @@ class BingDialogueHandler {
                 agent_target: '@com.bing.reply;'
             };
         }
+
+        case 'news': {
+            return {
+                messages: [
+                    this._interp(this._("I found ${name}. ${description}."), {
+                        name: analysis.response.value[0].name,
+                        description: analysis.response.value[0].description,
+                    }),
+                    {
+                        type: 'rdl',
+                        webCallback: analysis.response.value[0].url,
+                        displayTitle: analysis.response.value[0].name
+                    }
+                ],
+                expecting: null,
+                context: analysis.user_target,
+                agent_target: '@com.bing.reply;'
+            };
+        }
+
+        case 'timeZone': {
+            if (analysis.response.description && analysis.response.primaryResponse) {
+                return {
+                    messages: [
+                        this._interp(this._("${description} is ${answer}."), {
+                            description: analysis.response.description,
+                            answer: analysis.response.primaryResponse,
+                        }),
+                    ],
+                    expecting: null,
+                    context: analysis.user_target,
+                    agent_target: '@com.bing.reply;'
+                };
+            } else if (analysis.response.primaryCityTime) {
+                return {
+                    messages: [
+                        this._interp(this._("Right now it is ${time} in ${location}."), {
+                            time: Temporal.PlainDateTime.from(analysis.response.primaryCityTime.time).toLocaleString(this._locale, { timeStyle: 'short' }),
+                            location: analysis.response.primaryCityTime.location
+                        }),
+                    ],
+                    expecting: null,
+                    context: analysis.user_target,
+                    agent_target: '@com.bing.reply;'
+                };
+            } else if (analysis.response.primaryTimeZone) {
+                return {
+                    messages: [
+                        this._interp(this._("${location} uses ${timezone}."), {
+                            location: analysis.response.primaryTimeZone.location,
+                            timezone: analysis.response.primaryTimeZone.timeZoneName,
+                        }),
+                    ],
+                    expecting: null,
+                    context: analysis.user_target,
+                    agent_target: '@com.bing.reply;'
+                };
+            } else {
+                // fallthrough
+            }
+        }
+
+        case 'places': {
+            if (analysis.response.value && analysis.response.value.length > 0) {
+                return {
+                    messages: [
+                        this._interp(this._("I found ${name}. Its phone number is ${phone}."), {
+                            name: analysis.response.value[0].name,
+                            phone: analysis.response.value[0].telephone,
+                        }),
+                    ],
+                };
+            } else {
+                // fallthrough
+            }
+        }
+
         default:
-            throw new Error(`Unexpected bing answer type ${analysis.answerType}`);
+            LOG.error(`Unexpected bing answer type`, analysis);
+            return {
+                messages: [
+                    this._("Sorry, I don't know that one yet.")
+                ],
+                expecting: null,
+                context: analysis.user_target,
+                agent_target: '@com.bing.reply_fail;'
+            };
         }
     }
 }

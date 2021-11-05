@@ -63,6 +63,8 @@ class UnavailableError extends Error {
 }
 
 
+const MAX_ARTICLES = 5;
+
 async function* fetch_articles(args) {
     const url = `${NEWS_DB_URL}?${querystring.stringify(args)}`;
     const news_blob = JSON.parse(await Tp.Helpers.Http.get(url)).items;
@@ -80,7 +82,9 @@ async function* fetch_articles(args) {
         } else {
             throw new UnavailableError("news service not available");
         }
-    }     
+    }
+
+    let counter = MAX_ARTICLES;
     for (const article of news_blob) {
         const category = article.category.map((cat) => new Tp.Value.Entity(`${cat.toLowerCase()}`, cat.toLowerCase()));
         yield {
@@ -96,6 +100,9 @@ async function* fetch_articles(args) {
             headline_audio_url: s3_to_http(article.headline_audio_s3),
             summary_audio_url: s3_to_http(article.summary_audio_s3)
         };
+        counter--;
+        if (counter === 0)
+            break;
     }
 }
 

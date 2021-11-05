@@ -64,7 +64,7 @@ class @com.yelp
                         out cuisines: Array(Entity(com.yelp:restaurant_cuisine))
                         #[conflict_filter=["id"]]
                         #_[canonical={
-                          default="property",
+                          default="adjective",
                           base=["cuisines", "types of cuisine", "food", "types of food", "category"],
                           property=["# food", "# cuisine", "# category"],
                           adjective=["#"],
@@ -80,7 +80,7 @@ class @com.yelp
                           base=["price range", "price"],
                           property=["# price"],
                           preposition=["in the # price range"],
-                          adjective=["#", "# -ly priced"],
+                          adjective=["${value:select: moderate{moderately priced} _{${value}}}"],
                           adjective_enum={
                             cheap=["inexpensive"],
                             luxury=["upscale", "fine-dining"]
@@ -92,9 +92,9 @@ class @com.yelp
                         #_[canonical={
                           default="passive_verb",
                           base=["rating", "overall rating", "average rating", "customer rating", "review rating"],
-                          passive_verb=["rated # star"],
-                          adjective=["# star"],
-                          property=["rating", "# star rating"],
+                          passive_verb=["rated ${value} ${value:plural: one{star} other{stars}}"],
+                          adjective=["${value} ${value:plural: one{star} other{stars}}"],
+                          property=["rating", "${value} star rating"],
                           adjective_argmax=["top rated", "top-rated", "highest rated", "best rated", "best"],
                           adjective_argmin=["worst rated", "worst"],
                           projection_pronoun=["how"],
@@ -105,7 +105,7 @@ class @com.yelp
                         #_[canonical={
                           default="property",
                           base=["review count"],
-                          property=["# reviews"],
+                          property=["${value} ${value:plural: one{review} other{reviews}}"],
                           adjective_argmax=["most reviewed"],
                           adjective_argmin=["least reviewed"]
                         }]
@@ -114,22 +114,33 @@ class @com.yelp
                         #_[canonical={
                           default="preposition",
                           base=["address", "location"],
-                          preposition=["near #", "in #", "around #"]
+                          preposition=["at #", "near #", "in #", "around #"]
                         }],
                         out phone: Entity(tt:phone_number)
                         #[filterable=false]
                         #_[canonical={
-                          default="npp",
-                          base=["telephone", "phone number"]
-                        }])
-  #_[canonical="restaurant"]
+                          default="property",
+                          base=["phone number", "telephone"],
+                          property=["phone number #"],
+                          verb=["can be reached at #"]
+                        }],
+                        out opening_hours: RecurrentTimeSpecification
+                        #_[canonical={
+                          default="property",
+                          base=["opening hours", "business hours", "hours"],
+                          verb=["opens #"]
+                        }]
+                        )
+  #_[canonical=["restaurant", "eatery", "place to eat", "food place"]]
   #_[confirmation="restaurants on Yelp"]
   #[minimal_projection=["id"]]
+  // everything but opening_hours is returned, unless we really need to
+  #[default_projection=["id", "image_url", "link", "cuisines", "price", "rating", "review_count",
+                        "geo", "phone"]]
   #_[formatted=[{
     type="rdl",
     displayTitle="${id}",
     webCallback="${link}",
-    displayText="Offers ${cuisines} food.",
     pictureUrl="${image_url}"
   }]]
   #[doc="search for restaurants on Yelp"]

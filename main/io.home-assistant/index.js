@@ -280,9 +280,9 @@ module.exports = class HomeAssistantGateway extends Tp.BaseDevice {
     }
 
     async start() {
-        if (!Tp.Helpers.Content.isPubliclyAccessible(this.state.hassUrl) &&
+        /*if (!Tp.Helpers.Content.isPubliclyAccessible(this.state.hassUrl) &&
             this.platform.type === 'cloud')
-            throw new Error(`Web Almond can only connect to publicly accessible Home Assistant instances`);
+            throw new Error(`Web Almond can only connect to publicly accessible Home Assistant instances`);*/
 
         // start asynchronously as to not block Home Assistant from starting
         // while it's waiting for /devices/create to return (which causes us
