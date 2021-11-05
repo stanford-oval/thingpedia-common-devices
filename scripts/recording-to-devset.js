@@ -380,9 +380,11 @@ class Trainer {
     }
 
     async _drop(comment = '') {
+        console.log(`Dropping as ${comment} (${this._dialogues[this._serial].length-this._outputDialogue.length-1} turns lost)`);
         if (this._outputDialogue.length > 0)
             await this._finishDialogue();
         this._droppedOut.write([this._id, comment]);
+
 
         this.next();
     }
@@ -440,6 +442,11 @@ class Trainer {
 
     async _learnProgram(prediction) {
         const newCode = prediction.prettyprint();
+        if (newCode === '$stop;') {
+            this._drop('stop');
+            return;
+        }
+
         if (removeDeviceID(newCode.trim()) === removeDeviceID(this._outputTurn.user_target.trim())) {
             this._outputTurn.user_target = newCode;
             this._outputDialogue.push(this._outputTurn);
