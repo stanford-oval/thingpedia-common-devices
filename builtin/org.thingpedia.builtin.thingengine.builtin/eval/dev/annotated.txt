@@ -2302,3 +2302,21 @@ AT: $dialogue @org.thingpedia.dialogue.transaction.sys_rule_enable_success;
 U: Remind me that my bedtime is at 9:00 o'clock.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: ontimer(date=[set_time($now, new Time(21, 0))]) => @org.thingpedia.builtin.thingengine.builtin.say(message="bedtime");
+====
+# recording/ee0ab6242f1c3c5957b57ace049d1458
+U: set a reminder for February 29th, 2022.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date("2022-02-28T08:00:00.000Z")]) => @org.thingpedia.builtin.thingengine.builtin.say();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: ontimer(date=[new Date("2022-02-28T08:00:00.000Z")]) => @org.thingpedia.builtin.thingengine.builtin.say();
+A: What would you like me to say?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_slot_fill(message);
+AT: ontimer(date=[new Date("2022-02-28T08:00:00.000Z")]) => @org.thingpedia.builtin.thingengine.builtin.say();
+U: So that.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date("2022-02-28T08:00:00.000Z")]) => @org.thingpedia.builtin.thingengine.builtin.say(message="So that.");
+====
+# recording/a9c038b021830fa42fd400a24a6be5ea
+U: What time is it?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_time();

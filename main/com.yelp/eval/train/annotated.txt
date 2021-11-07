@@ -1857,3 +1857,23 @@ AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_two;
 U: what's the phone number and the address of Tartine bakery?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: [geo, phone] of @com.yelp.restaurant() filter geo == new Location(37.7790262, -122.419906, "San Francisco, California") && id == null^^com.yelp:restaurant("tartine bakery");
+====
+# recording/ec135abf69844731470624e8190e9f47
+U: find me a good Chinese food restaurant.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese"));
+====
+# recording/15b3562cf0edfa2218e6402a685ce287
+U: What's a good place to get breakfast on a Stanford campus?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("breakfast")) && geo == new Location("stanford campus");
+====
+# recording/f62340b239c2d88bcb77eca00cbd96bd
+U: still there.
+UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
+C: $dialogue @org.thingpedia.dialogue.transaction.greet;
+A: Hello! How can I help you?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_greet;
+U: what's a great place to eat near Dolores Park?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("dolores park");

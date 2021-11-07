@@ -4176,3 +4176,64 @@ AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
 U: Play hyperballad.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter id =~ "hyperballad" => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id);
+====
+# recording/06ebd40e41a81201c67acfa0d2ac9fdd
+U: How you doing?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you)
+C: #[results=[
+C:   { reply="Great, thanks for asking! How can I help you?", question=enum about_almond_how_are_you }
+C: ]];
+A: Great, thanks for asking! How can I help you?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: what time is it?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_time();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you)
+C: #[results=[
+C:   { reply="Great, thanks for asking! How can I help you?", question=enum about_almond_how_are_you }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.get_time()
+C: #[results=[
+C:   { time=new Time(15, 33, 59) }
+C: ]];
+A: Right now, it's 3:33 PM.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: how are you?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you)
+C: #[results=[
+C:   { reply="Great, thanks for asking! How can I help you?", question=enum about_almond_how_are_you }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.get_time()
+C: #[results=[
+C:   { time=new Time(15, 33, 59) }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you)
+C: #[results=[
+C:   { reply="Great, thanks for asking! How can I help you?", question=enum about_almond_how_are_you }
+C: ]];
+A: Great, thanks for asking! How can I help you?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: put on some Tedeschi trucks music.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("tedeschi trucks")) => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/f68d7420986b64843883215a5eea77a0
+U: Play some music.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/dae8bb2d04a7a8cc729a1f4567dba478
+U: Play some music.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/c4231e8a7ca2ce12ed480a9e7544369f
+U: ciao
+UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
