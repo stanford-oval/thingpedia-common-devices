@@ -1367,3 +1367,58 @@ UT: @org.thingpedia.weather.forecast();
 U: i would like to know the weather in geneva switzerland today.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.weather.current(location=new Location("geneva switzerland"));
+====
+# log/182234
+U: when: when it's raining at location mölnlycke
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.weather.current(location=new Location("mölnlycke"))) filter status == enum raining;
+====
+# log/182041
+U: the temperature outside
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [temperature] of @org.thingpedia.weather.current();
+====
+# log/181886
+U: what is the weather in cleveland, ohio
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("cleveland , ohio"));
+====
+# log/181885
+U: what is the temperature in orlando, florida
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [temperature] of @org.thingpedia.weather.current(location=new Location("orlando , florida"));
+====
+# log/181789
+U: weather?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# log/181725
+U: what is the weather outside?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# log/181708
+U: what is the temperature in amsterdam
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [temperature] of @org.thingpedia.weather.current(location=new Location("amsterdam"));
+====
+# log/181341
+U: what time is sunset tomorrow
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.sunrise(date=$end_of(day));
+====
+# log/181338
+U: what is the wheather in birigui /
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("birigui"));
+====
+# log/181296
+U: the humidity outside
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [humidity] of @org.thingpedia.weather.current();
+====
+# log/181295
+U: the wind speed outside
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [wind_speed] of @org.thingpedia.weather.current();

@@ -909,3 +909,33 @@ UT: @org.thingpedia.weather.current();
 U: whats the weather today in paris
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.weather.current(location=new Location("paris"));
+====
+# log/182235
+U: get: the temperature outside
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [temperature] of @org.thingpedia.weather.current();
+====
+# log/182070
+U: when: when it starts raining in mölnlycke
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.weather.current(location=new Location("mölnlycke"))) filter status == enum raining;
+====
+# log/181825
+U: get: sun
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.sunrise();
+====
+# log/181677
+U: what is the weather like in champlin, minnesota
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("champlin , minnesota"));
+====
+# log/181368
+U: tomorow weathers piestany
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast(location=new Location("piestany"));
+====
+# log/181294
+U: the weather tomorrow
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast();

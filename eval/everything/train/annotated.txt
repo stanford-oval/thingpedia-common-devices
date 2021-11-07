@@ -17898,3 +17898,91 @@ UT: [opening_hours] of @com.yelp.restaurant() filter geo == new Location(37.7597
 U: can you play music?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.media-source.playable() => @org.thingpedia.media-player.play(playable=id);
+====
+# log/181914
+U: play k pop songs
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.song() filter contains~(genres, "k pop") => @org.thingpedia.media-player.play(playable=id);
+====
+# log/181887
+U: if the temperature in cleveland ohio is greater than 45 degrees, turn on the heat.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.weather.current(location=new Location("cleveland ohio"))) filter temperature >= 45defaultTemperature => @org.thingpedia.iot.climate.set_hvac_mode(mode=enum heat);
+====
+# log/181788
+U: play the artist wilderun
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("wilderun")) => @org.thingpedia.media-player.play(playable=id);
+====
+# log/181787
+U: play wilderun
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("wilderun")) => @org.thingpedia.media-player.play(playable=id);
+====
+# log/181755
+U: cast leila life skills on youtube to roku tv
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.youtube.search_videos(query="leila life skills") => @org.thingpedia.iot.tv(name="roku").play_url(url=video_url);
+====
+# log/181620
+U: play random music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() => @org.thingpedia.media-player.play(playable=id);
+====
+# log/181617
+U: play liberation from harold van lennep
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("harold van lennep")) && id =~ "liberation" => @org.thingpedia.media-player.play(playable=id);
+====
+# log/181616
+U: play liberation from harold
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("harold")) && id =~ "liberation" => @org.thingpedia.media-player.play(playable=id);
+====
+# log/181615
+U: play liberation
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter id =~ "liberation" => @org.thingpedia.media-player.play(playable=id);
+====
+# log/181604
+U: play summer jam on spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter id =~ "summer jam" => @org.thingpedia.media-player.play(playable=id);
+====
+# log/181546
+U: escaperoom vera spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter id =~ "escaperoom vera" => @org.thingpedia.media-player.play(playable=id);
+====
+# log/181545
+U: play marijn geniet playlist playlist on spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playlist() filter id =~ "marijn geniet" => @org.thingpedia.media-player.play(playable=id);
+====
+# log/181544
+U: play another playlist
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playlist() => @org.thingpedia.media-player.play(playable=id);
+====
+# log/181515
+U: play something dance music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains~(genres, "dance") => @org.thingpedia.media-player.play(playable=id);
+====
+# log/181503
+U: play modjadji
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter id =~ "modjadji" => @org.thingpedia.media-player.play(playable=id);
+====
+# log/181497
+U: play marijn geniet playlist on spotify
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playlist() filter id =~ "marijn geniet" => @org.thingpedia.media-player.play(playable=id);
+====
+# log/181359
+U: good thanks
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# log/181358
+U: thenks good
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;

@@ -118,3 +118,13 @@ UT: timer(interval=2ms) => @com.xkcd.random_comic();
 U: show me the latest xkcd comics
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: sort(release_date desc of @com.xkcd.comic())[1];
+====
+# log/181784
+U: get me the xckd comid 2532
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.xkcd.comic() filter id == 2532;
+====
+# log/181297
+U: when a new xkcd is out
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(id of @com.xkcd.comic());

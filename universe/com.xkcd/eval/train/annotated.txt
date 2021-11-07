@@ -38,3 +38,18 @@ UT: attimer(time=[new Time(0, 0)]) => @com.xkcd.random_comic();
 U: give me a random xkcd comic
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.xkcd.random_comic();
+====
+# log/181785
+U: see xkcd comic 2532
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.xkcd.comic() filter id == 2532;
+====
+# log/181783
+U: see last xkcd
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.xkcd.comic();
+====
+# log/181782
+U: when a new xkcd is out notify me
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(id of @com.xkcd.comic());
