@@ -1650,3 +1650,73 @@ UT: @org.thingpedia.iot.light-bulb(all=true).set_brightness(pct=1);
 U: set the bottom light to 10 % brightness.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.light-bulb(name="bottom").set_brightness(pct=10);
+====
+# log/182494
+U: turn off neopixel light
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(name="neopixel").set_power(power=enum off);
+====
+# log/182493
+U: turn of neopixel lighr
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(name="neopixel lighr").set_power(power=enum off);
+====
+# log/182452
+U: turn on the lights in the lab
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(name="lab").set_power(power=enum on);
+====
+# log/182451
+U: turn off the lights in the lab
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(name="lab").set_power(power=enum off);
+====
+# log/182447
+U: turn all lights in datarum off
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(all=true, name="datarum").set_power(power=enum off);
+====
+# log/182446
+U: turn all lights in datarum on
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(all=true, name="datarum").set_power(power=enum on);
+====
+# log/182424
+U: turn on studio lights
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(name="studio").set_power(power=enum on);
+====
+# log/182371
+U: is the living room lights on
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(name="living room").power();
+====
+# log/182368
+U: turn on kitchen ceiling lights
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(name="kitchen ceiling").set_power(power=enum on);
+====
+# log/182352
+U: turn off the corner lamp
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(name="corner").set_power(power=enum off);
+====
+# log/182295
+U: when i turn in the living room dimming spot lights turn on kitchen ceiling lights
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.light-bulb(name="living room dimming spot").power()) filter power == enum on => @org.thingpedia.iot.light-bulb(name="kitchen ceiling").set_power(power=enum on);
+====
+# log/182290
+U: turn on kitchen cabinet lights
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(name="kitchen cabinet").set_power(power=enum on);
+====
+# log/182289
+U: turn on living room dimming spot lights
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(name="living room dimming spot").set_power(power=enum on);
+====
+# log/182287
+U: turn on kitchen ciling lights
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb(name="kitchen ciling").set_power(power=enum on);

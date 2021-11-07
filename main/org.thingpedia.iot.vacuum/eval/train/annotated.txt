@@ -72,3 +72,33 @@ U: yes
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.vacuum(all=true).set_power(power=enum off)
 UT: #[confirm=enum confirmed];
+====
+# log/182408
+U: when: when my vacuum is running
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.vacuum.state()) filter state == enum on;
+====
+# log/182407
+U: when: when my vacuum is working
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.vacuum.state()) filter state == enum on;
+====
+# log/182405
+U: get: the state of my vacuum
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.vacuum.state();
+====
+# log/182274
+U: stop cleanig
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.vacuum.stop();
+====
+# log/182273
+U: do: turn off the vacuum cleaner
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.vacuum.set_power(power=enum off);
+====
+# log/182268
+U: get: if the vacuum is on or off
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.vacuum.state();
