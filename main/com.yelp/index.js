@@ -280,32 +280,44 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
 
         console.log(url);
 
-        const parsed = await this._get(url);
-        return Promise.all(parsed.businesses.filter((b) => !b.is_closed).map(async (b) => {
-            const id = new Tp.Value.Entity(b.id, b.name);
-            const cuisines = b.categories.filter((cat) => CUISINES.has(cat.alias))
-                .map((cat) => new Tp.Value.Entity(cat.alias, cat.alias === 'creperies' ? "Crepes" : cat.title));
+        try {
+            const parsed = await this._get(url);
+            return await Promise.all(parsed.businesses.filter((b) => !b.is_closed).map(async (b) => {
+                const id = new Tp.Value.Entity(b.id, b.name);
+                const cuisines = b.categories.filter((cat) => CUISINES.has(cat.alias))
+                    .map((cat) => new Tp.Value.Entity(cat.alias, cat.alias === 'creperies' ? "Crepes" : cat.title));
 
-            const geo = new Tp.Value.Location(b.coordinates.latitude, b.coordinates.longitude,
-                                              prettyprintAddress(b.location));
+                const geo = new Tp.Value.Location(b.coordinates.latitude, b.coordinates.longitude,
+                                                prettyprintAddress(b.location));
 
-            const data = {
-                id,
-                image_url: b.image_url,
-                link: b.url,
-                cuisines,
-                price: b.price ? (PRICE_RANGE_MAP[b.price] || /* convert weird currency symbols to $*/ PRICE_RANGE_MAP['$'.repeat(b.price.length)]) : undefined,
-                rating: Number(b.rating),
-                review_count: b.review_count,
-                geo,
-                phone: b.phone || undefined,
-            };
-            if (!needsBusinessDetails)
+                const data = {
+                    id,
+                    image_url: b.image_url,
+                    link: b.url,
+                    cuisines,
+                    price: b.price ? (PRICE_RANGE_MAP[b.price] || /* convert weird currency symbols to $*/ PRICE_RANGE_MAP['$'.repeat(b.price.length)]) : undefined,
+                    rating: Number(b.rating),
+                    review_count: b.review_count,
+                    geo,
+                    phone: b.phone || undefined,
+                };
+                if (!needsBusinessDetails)
+                    return data;
+
+                try {
+                    const details = await this._get(`https://api.yelp.com/v3/businesses/${b.id}`);
+                    data.opening_hours = this._mapOpeningHours(details.hours, details.special_hours);
+                } catch(e) {
+                    console.error(`Failed to get opening hours for ${b.id} (${b.name}): ${e.message}`);
+                }
                 return data;
-
-            const details = await this._get(`https://api.yelp.com/v3/businesses/${b.id}`);
-            data.opening_hours = this._mapOpeningHours(details.hours, details.special_hours);
-            return data;
-        }));
+            }));
+        } catch(e) {
+            if (e.code === 500)
+                e.code = 'unavailable';
+            else if (typeof e.code === 'number')
+                e.code = `http_${e.code}`;
+            throw e;
+        }
     }
 };
