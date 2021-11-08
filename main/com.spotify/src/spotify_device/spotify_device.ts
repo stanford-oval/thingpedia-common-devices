@@ -504,7 +504,7 @@ export default class SpotifyDevice extends BaseDevice {
 
         const shows = await this._client.search.shows({ query, limit: 10 });
 
-        return shows.map((show) => show.toThing(this._displayFormatter));
+        return shows.map((show) => show.toThing(this._displayFormatter, true));
     }
 
     @genieGet
