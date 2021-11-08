@@ -52,6 +52,7 @@ const LogFactory = new Logging.Factory({
 
 const LOG = LogFactory.get(__filename);
 const URL = "https://api.yelp.com/v3/businesses";
+const CACHE_TTL_SECONDS = 60 * 60 * 24; // 1 day
 
 const CUISINES = new Set(require('./cuisines.json').data.map((d) => d.value));
 
@@ -145,7 +146,7 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
         if (!this.redisClient) return;
         const log = this.log.childFor(this._getCached);
         log.info("CACHE SET", {key});
-        await this.redisClient.SET(key, data, {EX: 30 * 60});
+        await this.redisClient.SET(key, data, {EX: CACHE_TTL_SECONDS});
     }
 
     async _get(url) {
