@@ -122,9 +122,14 @@ all: $($(release)_pkgfiles:%/package.json=build/%.zip)
 # import translate.mk after all: to retain it as the first target
 -include ./translate.mk
 
-build/%.zip: %
-	mkdir -p `dirname $@`
-	cd $< ; zip -q \
+define build_device =
+$(1)/node_modules: $(1)/package.json $(1)/package-lock.json $(shell find "$(1)" -name "*.js") $(shell find "$(1)" -name "*.ts")
+	cd $$(dir $$@) ; npm ci --only=prod
+	touch $$@
+
+build/$(1).zip: $(1) $(1)/node_modules
+	mkdir -p $$(dir $$@)
+	cd $$< ; zip -q \
 		-x \
 			'*/.git/*' \
 			'*/.nyc_output/*' \
@@ -136,12 +141,7 @@ build/%.zip: %
 			'eval/*' \
 			'simulation/*' \
 			'database-map.tsv' \
-		-r $(abspath $@) .
-
-define build_device =
-$(1): $(1)/package.json $(1)/package-lock.json $(shell find "$(1)" -name "*.js") $(shell find "$(1)" -name "*.ts")
-	cd $$@ ; npm ci --only=prod
-	touch $$@
+		-r $$(abspath $$@) .
 endef
 
 $(foreach d,$($(release)_pkgfiles:%/package.json=%),$(eval $(call build_device,$(d))))
