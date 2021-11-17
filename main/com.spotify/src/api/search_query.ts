@@ -295,7 +295,7 @@ export class SearchQuery {
             if (normalized.indexOf(" ") > -1)
                 normalized = JSON.stringify(value);
 
-            terms.push(`${key}:${value}`);
+            terms.push(`${key}:${normalized}`);
         }
 
         return terms.join(" ");
