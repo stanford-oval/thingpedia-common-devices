@@ -38,7 +38,7 @@ module.exports = [
                 assert(item.headline_audio_url.startsWith('http://') || item.headline_audio_url.startsWith('https://'), `Expected link to start with http:// or https://, got ${item.headline_audio_url}`);
                 assert(item.summary_audio_url.startsWith('http://') || item.summary_audio_url.startsWith('https://'), `Expected link to start with http:// or https://, got ${item.summary_audio_url}`);
             }
-        } catch (error) {
+        } catch(error) {
             console.log('parsed news items:', tmp);
             throw Error(error);
         }
@@ -72,7 +72,7 @@ module.exports = [
                 assert(item.headline_audio_url.startsWith('http://') || item.headline_audio_url.startsWith('https://'), `Expected link to start with http:// or https://, got ${item.headline_audio_url}`);
                 assert(item.summary_audio_url.startsWith('http://') || item.summary_audio_url.startsWith('https://'), `Expected link to start with http:// or https://, got ${item.summary_audio_url}`);
             }
-        } catch (error) {
+        } catch(error) {
             console.log('parsed news items:', tmp);
             throw Error(error);
         }
