@@ -391,7 +391,7 @@ lint:
 	for d in $($(release)_devices) ; do \
 		echo $$d ; \
 		$(genie) lint-device --thingpedia-url $(thingpedia_url) --manifest $$d/manifest.tt --dataset $$d/dataset.tt --thingpedia-dir main|| any_error=$$? ; \
-		test ! -f $$d/package.json || $(eslint) $$d/*.js || any_error=$$? ; \
+		test ! -f $$d/package.json || $(eslint) --ext .js,.jsx,.ts,.tsx $$d $(eslint_flags) || any_error=$$? ; \
 	done ; \
 	exit $$any_error
 
