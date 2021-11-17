@@ -14,9 +14,9 @@ import CacheEntity, { DisplayFormatter } from "./cache_entity";
 import { cacheRegister } from "./cache_helpers";
 
 function isPlaylistObject(
-    playlist: SimplifiedPlaylistObject | PlaylistObject
-): playlist is PlaylistObject {
-    return playlist.hasOwnProperty("followers");
+    playlist : SimplifiedPlaylistObject | PlaylistObject
+) : playlist is PlaylistObject {
+    return Object.prototype.hasOwnProperty.call(playlist, "followers");
 }
 
 /**
@@ -29,22 +29,22 @@ class CachePlaylist extends CacheEntity implements SimplifiedPlaylistObject {
 
     // PlaylistObject Properties
     // -----------------------------------------------------------------------
-    type: "playlist";
-    collaborative: boolean;
-    description: null | string;
-    external_urls: ExternalUrlObject;
-    href: string;
-    images: ImageObject[];
-    owner: PublicUserObject;
-    public: null | boolean;
-    snapshot_id: string;
-    followers?: FollowersObject;
-    tracks: PlaylistTracksRefObject | PagingObject<PlaylistTrackObject>;
+    type : "playlist";
+    collaborative : boolean;
+    description : null | string;
+    external_urls : ExternalUrlObject;
+    href : string;
+    images : ImageObject[];
+    owner : PublicUserObject;
+    public : null | boolean;
+    snapshot_id : string;
+    followers ?: FollowersObject;
+    tracks : PlaylistTracksRefObject | PagingObject<PlaylistTrackObject>;
 
     // Construction
     // =======================================================================
 
-    constructor(playlist: SimplifiedPlaylistObject | PlaylistObject) {
+    constructor(playlist : SimplifiedPlaylistObject | PlaylistObject) {
         super(playlist.type, playlist.id, playlist.name, playlist.uri);
         this.type = playlist.type;
         this.collaborative = playlist.collaborative;
@@ -55,16 +55,16 @@ class CachePlaylist extends CacheEntity implements SimplifiedPlaylistObject {
         this.owner = playlist.owner;
         this.public = playlist.public;
         this.snapshot_id = playlist.snapshot_id;
-        if (isPlaylistObject(playlist)) {
+        if (isPlaylistObject(playlist))
             this.followers = playlist.followers;
-        }
+
         this.tracks = playlist.tracks;
     }
 
     toThing(
-        formatter: DisplayFormatter,
-        forceSoftmatch: boolean = false
-    ): ThingPlaylist {
+        formatter : DisplayFormatter,
+        forceSoftmatch  = false
+    ) : ThingPlaylist {
         return {
             id: this.getEntity(formatter, forceSoftmatch),
         };

@@ -117,7 +117,7 @@ module.exports = class SmartNewsDevice extends Tp.BaseDevice {
     }
 
     async *get_article({ keyword="" }, hints) {
-        var args = {};
+        let args = {};
         if (hints && hints.filter) {
             for (let [pname, op, value] of hints.filter) {
                 if (pname === "date") {

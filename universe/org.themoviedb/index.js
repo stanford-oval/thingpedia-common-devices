@@ -18,7 +18,7 @@ const nowPlaying = "movie/now_playing?api_key=";
 
 
 module.exports = class MovieClass extends Tp.BaseDevice {
-    async get_movie (params, hints, env) {
+    async get_movie(params, hints, env) {
         // const queryURL = tmdbAccess + multiSearch + this.constructor.metadata.auth.api_key + finalSearch + realquery + "&page=1&include_adult=false";
         let sortURL = '';
         if (hints && hints.sort) {
@@ -43,13 +43,12 @@ module.exports = class MovieClass extends Tp.BaseDevice {
                     rating_score: Number(result.vote_average),
                     actors:[]
                 };
-                try{
+                try {
                     const actorResponse = await Tp.Helpers.Http.get(castQuery);
                     const actorsParsed = JSON.parse(actorResponse);
                     for (const person1 of (actorsParsed.cast))
                         movieObj.actors.push(new Tp.Value.Entity(String(person1.id), person1.name));
-                }
-                catch(err){
+                } catch(err) {
                     console.log("Information for one actor could not be found...");
                 }
                 return movieObj;
@@ -64,19 +63,16 @@ module.exports = class MovieClass extends Tp.BaseDevice {
                         query_term = encodeURIComponent(value.display);
                     else
                         query_term = encodeURIComponent(value);
-                }
-                else if (pname === 'actors' && (op === 'contains' || op === 'contains~')) {
+                } else if (pname === 'actors' && (op === 'contains' || op === 'contains~')) {
                     if (hints.filter.length > 1) {
                         if (value instanceof Tp.Value.Entity) {
                             query_term += value.value;
                             query_term += encodeURIComponent(",");
-                        }
-                        else {
+                        } else {
                             query_term += value;
                             query_term += encodeURIComponent(",");
                         }
-                    }
-                    else{
+                    } else {
                         if (value instanceof Tp.Value.Entity)
                             query_term = encodeURIComponent(value.value);
                         else
@@ -90,7 +86,7 @@ module.exports = class MovieClass extends Tp.BaseDevice {
             console.log("No query term identified; Here's info about The Avengers:");
             query_term = 'Avengers';
         }
-        if (searchType === 'actor'){
+        if (searchType === 'actor') {
             const movieQuery = tmdbAccess + discoverSearch + this.constructor.metadata.auth.api_key + '&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_cast=' + query_term + '&with_watch_monetization_types=flatrate';
             const response1 = await Tp.Helpers.Http.get(movieQuery);
             let parsedResponse = JSON.parse(response1);
@@ -107,19 +103,17 @@ module.exports = class MovieClass extends Tp.BaseDevice {
                     rating_score: Number(result.vote_average),
                     actors:[]
                 };
-                try{
+                try {
                     const actorResponse = await Tp.Helpers.Http.get(castQuery);
                     const actorsParsed = JSON.parse(actorResponse);
                     for (const person1 of (actorsParsed.cast))
                         movieObj.actors.push(new Tp.Value.Entity(String(person1.id), person1.name));
-                }
-                catch(err){
+                } catch(err) {
                     console.log("Information for one actor could not be found...");
                 }
                 return movieObj;
             }));
-        }
-        else {
+        } else {
             const movieQuery = tmdbAccess + multiSearch + this.constructor.metadata.auth.api_key + '&language=en-US&query=' + query_term + '&page=1%include_adult=false';
             const response1 = await Tp.Helpers.Http.get(movieQuery);
             let parsedResponse = JSON.parse(response1);
@@ -135,27 +129,26 @@ module.exports = class MovieClass extends Tp.BaseDevice {
                     rating_score: Number(result.vote_average),
                     actors:[]
                 };
-                try{
+                try {
                     const actorResponse = await Tp.Helpers.Http.get(castQuery);
                     const actorsParsed = JSON.parse(actorResponse);
                     for (const person1 of (actorsParsed.cast))
                         movieObj.actors.push(new Tp.Value.Entity(String(person1.id), person1.name));
-                }
-                catch(err){
+                } catch(err) {
                     console.log("Information for one actor could not be found...");
                 }
                 return movieObj;
             }));
         }
     }
-    get_actor(params, hints, env){
+    get_actor(params, hints, env) {
         let actorSortUrl = '';
         let actorQueryURL = "https://api.themoviedb.org/3/search/person?api_key=" + this.constructor.metadata.auth.api_key + "&language=en-US&query=";
-        if (hints && hints.sort){
+        if (hints && hints.sort) {
             if (hints.sort[0] === 'popularity' && hints.sort[1] === 'desc')
                 actorSortUrl = "https://api.themoviedb.org/3/person/popular?api_key=" + this.constructor.metadata.auth.api_key + "&language=en-US&page=1";
         }
-        if (actorSortUrl){
+        if (actorSortUrl) {
             return Tp.Helpers.Http.get(actorSortUrl).then((response) => {
                 let parsedResponse = JSON.parse(response);
                 return parsedResponse.results.map((result) => {
@@ -168,7 +161,7 @@ module.exports = class MovieClass extends Tp.BaseDevice {
             });
         }
         let actorQuery = '';
-        if (hints && hints.filter){
+        if (hints && hints.filter) {
             for (let [pname, op, value] of hints.filter) {
                 if (pname === 'id' && (op === '==' || op === '=~')) {
                     if (value instanceof Tp.Value.Entity)
@@ -185,13 +178,13 @@ module.exports = class MovieClass extends Tp.BaseDevice {
         return Tp.Helpers.Http.get(actorQueryURL).then((response) => {
             let parsedResponse = JSON.parse(response);
             console.log(parsedResponse);
-                return parsedResponse.results.map((result) => {
-                    let id = new Tp.Value.Entity(String(result.id), result.name);
-                    return ({
+            return parsedResponse.results.map((result) => {
+                let id = new Tp.Value.Entity(String(result.id), result.name);
+                return ({
                         id,
                         popularity:result.popularity,
-                    });
                 });
+            });
         });
     }
 };

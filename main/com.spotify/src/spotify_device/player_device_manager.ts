@@ -18,21 +18,21 @@ const DEFAULT_REFRESH_INTERVAL_MS = 10000; // 10 seconds
 type MaybeDevice = undefined | DeviceObject;
 
 export default class PlayerDeviceManager {
-    private readonly _log: Logger.TLogger;
+    private readonly _log : Logger.TLogger;
 
-    protected readonly _client: Client;
-    protected _currentDevice: MaybeDevice;
-    protected _devicePromise?: Promise<MaybeDevice>;
-    protected readonly _engine: SpotifyDeviceEngine;
-    protected _failedToLaunchDesktopApp: boolean = false;
-    protected readonly _hasAppLauncher: boolean;
-    protected readonly _platform: BasePlatform;
-    protected readonly _spotifyd?: SpotifyDaemon;
-    protected readonly _username: string;
-    protected _refresher?: NodeJS.Timeout;
-    protected readonly _refreshInterval: number;
+    protected readonly _client : Client;
+    protected _currentDevice : MaybeDevice;
+    protected _devicePromise ?: Promise<MaybeDevice>;
+    protected readonly _engine : SpotifyDeviceEngine;
+    protected _failedToLaunchDesktopApp  = false;
+    protected readonly _hasAppLauncher : boolean;
+    protected readonly _platform : BasePlatform;
+    protected readonly _spotifyd ?: SpotifyDaemon;
+    protected readonly _username : string;
+    protected _refresher ?: NodeJS.Timeout;
+    protected readonly _refreshInterval : number;
 
-    public accessToken?: string;
+    public accessToken ?: string;
 
     constructor({
         accessToken,
@@ -42,14 +42,14 @@ export default class PlayerDeviceManager {
         refreshInterval = DEFAULT_REFRESH_INTERVAL_MS,
         spotifyd,
         username,
-    }: {
-        accessToken?: string;
-        client: Client;
-        engine: SpotifyDeviceEngine;
-        platform: BasePlatform;
-        refreshInterval?: number;
-        spotifyd?: SpotifyDaemon;
-        username: string;
+    } : {
+        accessToken ?: string;
+        client : Client;
+        engine : SpotifyDeviceEngine;
+        platform : BasePlatform;
+        refreshInterval ?: number;
+        spotifyd ?: SpotifyDaemon;
+        username : string;
     }) {
         this.accessToken = accessToken;
         this._client = client;
@@ -75,34 +75,34 @@ export default class PlayerDeviceManager {
     }
 
     public stop() {
-        if (this._refresher) {
+        if (this._refresher)
             clearInterval(this._refresher);
-        }
+
     }
 
-    public async get(env?: ExecWrapper): Promise<DeviceObject> {
+    public async get(env ?: ExecWrapper) : Promise<DeviceObject> {
         let device = this._currentDevice;
 
-        if (device !== undefined) {
+        if (device !== undefined)
             return device;
-        }
+
 
         device = await this._refresh();
 
-        if (device !== undefined) {
+        if (device !== undefined)
             return device;
-        }
+
 
         device = await this._launch(env);
 
-        if (device !== undefined) {
+        if (device !== undefined)
             return device;
-        }
+
 
         throw new ThingError("No player devices", "no_active_device");
     }
 
-    protected _refresh(): Promise<MaybeDevice> {
+    protected _refresh() : Promise<MaybeDevice> {
         const log = this._log.childFor(this._refresh);
 
         if (this._devicePromise === undefined) {
@@ -126,7 +126,7 @@ export default class PlayerDeviceManager {
         return this._devicePromise;
     }
 
-    protected _selectDevice(devices: DeviceObject[]): MaybeDevice {
+    protected _selectDevice(devices : DeviceObject[]) : MaybeDevice {
         const log = this._log.childFor(this._selectDevice);
 
         if (devices.length === 0) {
@@ -173,15 +173,15 @@ export default class PlayerDeviceManager {
         return activeDevice;
     }
 
-    protected async _update(): Promise<MaybeDevice> {
+    protected async _update() : Promise<MaybeDevice> {
         const log = this._log.childFor(this._update);
 
         log.debug("Fetching device list from Client...");
 
-        let devices: DeviceObject[];
+        let devices : DeviceObject[];
         try {
             devices = await this._client.player.getDevices();
-        } catch (error) {
+        } catch(error) {
             const meta = error instanceof Error ? error : { error };
             log.error("Failed to get devices from Client", meta);
             this._currentDevice = undefined;
@@ -196,7 +196,7 @@ export default class PlayerDeviceManager {
         return device;
     }
 
-    protected _canLaunchDesktopApp(): boolean {
+    protected _canLaunchDesktopApp() : boolean {
         const log = this._log.childFor(this._canLaunchDesktopApp);
         if (this._failedToLaunchDesktopApp) {
             log.debug("Unable to launch desktop app -- failed to in the past");
@@ -215,7 +215,7 @@ export default class PlayerDeviceManager {
         }
     }
 
-    protected async _launchDesktopApp(): Promise<MaybeDevice> {
+    protected async _launchDesktopApp() : Promise<MaybeDevice> {
         const log = this._log.childFor(this._launchDesktopApp);
 
         const appLauncher = this._platform.getCapability("app-launcher");
@@ -231,9 +231,9 @@ export default class PlayerDeviceManager {
         log.debug(
             `Async sleeping for ${DESKTOP_APP_WAIT_MS / 1000} seconds...`
         );
-        await new Promise((resolve) =>
-            setTimeout(resolve, DESKTOP_APP_WAIT_MS)
-        );
+        await new Promise((resolve) => {
+            setTimeout(resolve, DESKTOP_APP_WAIT_MS);
+        });
 
         log.debug("Update device again...");
         const device = await this._update();
@@ -248,16 +248,16 @@ export default class PlayerDeviceManager {
         return device;
     }
 
-    protected async _launch(env?: ExecWrapper): Promise<MaybeDevice> {
+    protected async _launch(env ?: ExecWrapper) : Promise<MaybeDevice> {
         const log = this._log.childFor(this._launch);
 
         log.warn("No player devices available");
 
         if (this._canLaunchDesktopApp()) {
             const device = await this._launchDesktopApp();
-            if (device !== undefined) {
+            if (device !== undefined)
                 return device;
-            }
+
         } else {
             log.debug("Can't launch Spotify desktop app");
         }

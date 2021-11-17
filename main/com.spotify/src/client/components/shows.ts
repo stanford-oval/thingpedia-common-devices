@@ -10,28 +10,28 @@ import CacheShow from "../../cache/cache_show";
 const LOG = Logging.get(__filename);
 
 export class Shows extends Component {
-    private static readonly log: Logger.TLogger = LOG.childFor(Shows);
+    private static readonly log : Logger.TLogger = LOG.childFor(Shows);
     
-    getAll(ids: string[]): Promise<CacheShow[]> {
+    getAll(ids : string[]) : Promise<CacheShow[]> {
         return this._api.shows
             .getAll(ids)
             .then((shows) => this.augment.shows(shows));
     }
     
     getEpisodes(
-        showId: string,
-        options: MarketPageOptions = {}
-    ): Promise<CacheEpisode[]> {
+        showId : string,
+        options : MarketPageOptions = {}
+    ) : Promise<CacheEpisode[]> {
         return this._api.shows
             .getEpisodes(showId, options)
             .then((page) => this.augment.episodes(page.items));
     }
 
     async getUnfinishedEpisodes(
-        showId: string,
-        limit: number,
-        pageSize: number = 50
-    ): Promise<CacheEpisode[]> {
+        showId : string,
+        limit : number,
+        pageSize  = 50
+    ) : Promise<CacheEpisode[]> {
         assertBounds("limit", limit, 1, 10);
         const log = Shows.log.childFor(this.getUnfinishedEpisodes, {
             showId,

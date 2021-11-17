@@ -7,7 +7,7 @@ export type LangPack = Genie.I18n.LanguagePack;
 
 export type OnOff = "on" | "off";
 
-export function isOnOff(x: any): x is OnOff {
+export function isOnOff(x : any) : x is OnOff {
     return x === "on" || x === "off";
 }
 
@@ -19,15 +19,15 @@ export function isOnOff(x: any): x is OnOff {
  */
 export type CustomPlayerSpec =
     | {
-          type: "spotify";
-          username?: string;
-          accessToken?: string;
+          type : "spotify";
+          username ?: string;
+          accessToken ?: string;
       }
     | {
-          type: "url";
+          type : "url";
       }
     | {
-          type: "custom";
+          type : "custom";
           /**
            * Map a pair of OS (as returned by process.platform) and
            * CPU architecture (as returned by process.arch), separated by -,
@@ -40,7 +40,7 @@ export type CustomPlayerSpec =
            *  "win-x64": "http://example.com/downloads/linux-x86-64/my-player.exe"
            * }
            */
-          binary: Record<string, string>;
+          binary : Record<string, string>;
           /**
            * Arguments to call the player binary with.
            *
@@ -53,36 +53,36 @@ export type CustomPlayerSpec =
            * one URL to play. In that case, if multiple URLs are present, it is expected
            * that the binary will terminate successfully after playing each one.
            */
-          args: string[];
+          args : string[];
       };
 
 export interface SpotifyDeviceState extends BaseDevice.DeviceState {
-    id: string;
+    id : string;
 }
 
 export interface AudioDevice {
     /**
      * Stop all playback.
      */
-    stop(conversationId: string): void;
+    stop(conversationId : string) : void;
 
     /**
      * Pause all playback.
      */
-    pause?(conversationId: string): void;
+    pause?(conversationId : string) : void;
 
     /**
      * Resume playback.
      */
-    resume?(conversationId: string): void;
+    resume?(conversationId : string) : void;
 }
 
 export interface AudioController {
     requestAudio(
-        device: BaseDevice,
-        iface: AudioDevice | (() => Promise<void>),
-        conversationId?: string
-    ): Promise<void>;
+        device : BaseDevice,
+        iface : AudioDevice | (() => Promise<void>),
+        conversationId ?: string
+    ) : Promise<void>;
 
     /**
      * Check if the custom player backend is available.
@@ -99,14 +99,14 @@ export interface AudioController {
      * @returns
      */
     checkCustomPlayer(
-        spec: CustomPlayerSpec,
-        conversationId?: string
-    ): Promise<boolean>;
+        spec : CustomPlayerSpec,
+        conversationId ?: string
+    ) : Promise<boolean>;
 }
 
 export interface SpotifyDeviceEngine extends BaseEngine {
-    langPack: LangPack;
-    audio?: AudioController;
+    langPack : LangPack;
+    audio ?: AudioController;
 }
 
 export type Params = Record<string, any>;
@@ -115,9 +115,9 @@ export type Params = Record<string, any>;
  * @see https://github.com/stanford-oval/genie-toolkit/blob/dd3aa4d2ed78c94e0243b89d6e9c34d2fb1722cd/lib/engine/apps/exec_wrapper.ts#L218
  */
 export type ExecWrapper = ExecEnvironment & {
-    app: {
-        uniqueId: string;
+    app : {
+        uniqueId : string;
     };
-    addExitProcedureHook(hook: () => void | Promise<void>): void;
-    conversation?: string;
+    addExitProcedureHook(hook : () => void | Promise<void>) : void;
+    conversation ?: string;
 };

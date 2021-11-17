@@ -5,15 +5,15 @@ import { DeviceObject } from "../api/objects";
 import { assertUnreachable, isSingularURI, uriType } from "../helpers";
 import Logging from "../logging";
 
-export type URIResolver = (uri: string) => Promise<string[]>;
+export type URIResolver = (uri : string) => Promise<string[]>;
 
 type NextValue = {
-    done: false;
-    value: string;
+    done : false;
+    value : string;
 };
 
 type NextDone = {
-    done: true;
+    done : true;
 };
 
 const LOG = Logging.get(__filename);
@@ -21,15 +21,15 @@ const LOG = Logging.get(__filename);
 export default class QueueBuilder {
     private static readonly log = LOG.childFor(QueueBuilder);
 
-    public readonly appId: string;
+    public readonly appId : string;
     public readonly device;
-    public srcURIs: string[];
+    public srcURIs : string[];
 
-    private _destURIs: string[];
-    private _resolver: URIResolver;
-    private _canceled: boolean;
+    private _destURIs : string[];
+    private _resolver : URIResolver;
+    private _canceled : boolean;
 
-    constructor(appId: string, device: DeviceObject, resolver: URIResolver) {
+    constructor(appId : string, device : DeviceObject, resolver : URIResolver) {
         this.appId = appId;
         this.device = device;
         this.srcURIs = [];
@@ -39,19 +39,19 @@ export default class QueueBuilder {
         this._canceled = false;
     }
 
-    private get log(): Logger.TLogger {
+    private get log() : Logger.TLogger {
         return QueueBuilder.log;
     }
 
-    get deviceEntity(): Value.Entity {
+    get deviceEntity() : Value.Entity {
         return new Value.Entity(this.device.id, this.device.name);
     }
 
-    get isEmpty(): boolean {
+    get isEmpty() : boolean {
         return this.srcURIs.length === 0;
     }
 
-    async popInitialURIs(): Promise<string[]> {
+    async popInitialURIs() : Promise<string[]> {
         const log = this.log.childFor(this.popInitialURIs, {
             appId: this.appId,
         });
@@ -61,7 +61,7 @@ export default class QueueBuilder {
             return [];
         }
 
-        const readyURIs: string[] = [];
+        const readyURIs : string[] = [];
         while (this.srcURIs.length > 0 && isSingularURI(this.srcURIs[0])) {
             readyURIs.push(this.srcURIs[0]);
             this.srcURIs.shift();
@@ -80,9 +80,9 @@ export default class QueueBuilder {
 
         const srcURI = this.srcURIs.shift();
 
-        if (srcURI === undefined) {
+        if (srcURI === undefined)
             assertUnreachable();
-        }
+
 
         log.debug("No initial ready URIs found, resolving first src URI...", {
             srcURI,
@@ -95,7 +95,7 @@ export default class QueueBuilder {
         return destURIs;
     }
 
-    push(entity: Value.Entity): void {
+    push(entity : Value.Entity) : void {
         this.srcURIs.push(entity.value);
     }
 
@@ -103,7 +103,7 @@ export default class QueueBuilder {
         this._canceled = true;
     }
 
-    async next(): Promise<NextValue | NextDone> {
+    async next() : Promise<NextValue | NextDone> {
         const log = this.log.childFor(this.next, { appId: this.appId });
         log.debug("Getting next destination URI...", {
             srcURIs: this.srcURIs,
@@ -143,14 +143,14 @@ export default class QueueBuilder {
             src: srcURI,
             dest: this._destURIs,
         });
-        return await this.next();
+        return this.next();
     }
 
     [Symbol.asyncIterator]() {
         return this;
     }
 
-    resolveAll(): Promise<string[]> {
+    resolveAll() : Promise<string[]> {
         return Promise.all(this.srcURIs.map((uri) => this._resolver(uri))).then(
             (lists) => lists.flat()
         );

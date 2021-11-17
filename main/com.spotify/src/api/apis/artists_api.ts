@@ -17,7 +17,7 @@ export default class ArtistsApi extends BaseApi {
      * @param id Artist ID.
      * @returns Artist object.
      */
-    get(id: string): Promise<ArtistObject> {
+    get(id : string) : Promise<ArtistObject> {
         return this._http.get<ArtistObject>(`/v1/artists/${id}`);
     }
 
@@ -30,25 +30,25 @@ export default class ArtistsApi extends BaseApi {
      * @param ids Array of artist IDs. Limit 50. Not de-duped.
      * @returns Array of artist objects corresponding to the `ids`.
      */
-    getAll(ids: string[]): Promise<ArtistObject[]> {
+    getAll(ids : string[]) : Promise<ArtistObject[]> {
         assertMax("ids.length", ids.length, 50);
-        if (ids.length === 0) {
+        if (ids.length === 0) 
             return Promise.resolve([]);
-        }
+        
         return this._http.getList<ArtistObject>("/v1/artists", { ids });
     }
 
     getAlbums(
-        id: string,
-        options: {
-            include_groups?: Array<
+        id : string,
+        options : {
+            include_groups ?: Array<
                 "album" | "single" | "appears_on" | "compilation"
             >;
-            market?: string;
-            limit?: number;
-            offset?: number;
+            market ?: string;
+            limit ?: number;
+            offset ?: number;
         } = {}
-    ): Promise<PagingObject<SimplifiedAlbumObject>> {
+    ) : Promise<PagingObject<SimplifiedAlbumObject>> {
         return this._http.get<PagingObject<SimplifiedAlbumObject>>(
             `/v1/artists/${id}/albums`,
             options
@@ -56,16 +56,16 @@ export default class ArtistsApi extends BaseApi {
     }
 
     getTopTracks(
-        id: string,
-        options: { market?: string } = {}
-    ): Promise<TrackObject[]> {
+        id : string,
+        options : { market ?: string } = {}
+    ) : Promise<TrackObject[]> {
         return this._http.getList<TrackObject>(
             `/v1/artists/${id}/top-tracks`,
             options
         );
     }
 
-    getRelatedArtists(id: string): Promise<ArtistObject[]> {
+    getRelatedArtists(id : string) : Promise<ArtistObject[]> {
         return this._http.getList<ArtistObject>(
             `/v1/artists/${id}/related-artists`
         );

@@ -7,10 +7,10 @@ import { DeviceOptions, RepeatState } from "../requests";
 import BaseApi from "./base_api";
 
 export default class PlayerApi extends BaseApi {
-    getCurrentlyPlaying(options: {
-        market: string;
-        additional_types?: string | string[];
-    }): Promise<void | CurrentlyPlayingObject> {
+    getCurrentlyPlaying(options : {
+        market : string;
+        additional_types ?: string | string[];
+    }) : Promise<void | CurrentlyPlayingObject> {
         return this._http.get<void | CurrentlyPlayingObject>(
             "/v1/me/player/currently-playing",
             options
@@ -18,31 +18,31 @@ export default class PlayerApi extends BaseApi {
     }
 
     get(
-        options: {
-            market?: string;
-            additional_types?: string | string[];
+        options : {
+            market ?: string;
+            additional_types ?: string | string[];
         } = {}
-    ): Promise<undefined | CurrentlyPlayingContextObject> {
+    ) : Promise<undefined | CurrentlyPlayingContextObject> {
         return this._http.get<undefined | CurrentlyPlayingContextObject>(
             "/v1/me/player",
             options
         );
     }
 
-    getDevices(): Promise<DeviceObject[]> {
+    getDevices() : Promise<DeviceObject[]> {
         return this._http.getList<DeviceObject>("/v1/me/player/devices");
     }
 
     play({
         device_id,
         ...body
-    }: {
-        device_id?: string;
-        uris?: string | string[];
-        context_uri?: string;
-        offset?: number;
-        position_ms?: number;
-    } = {}): Promise<void> {
+    } : {
+        device_id ?: string;
+        uris ?: string | string[];
+        context_uri ?: string;
+        offset ?: number;
+        position_ms ?: number;
+    } = {}) : Promise<void> {
         return this._http.request<void>({
             method: "PUT",
             path: "/v1/me/player/play",
@@ -51,7 +51,7 @@ export default class PlayerApi extends BaseApi {
         });
     }
 
-    addToQueue(deviceId: string, uri: string): Promise<void> {
+    addToQueue(deviceId : string, uri : string) : Promise<void> {
         return this._http.request<void>({
             method: "POST",
             path: "/v1/me/player/queue",
@@ -59,7 +59,7 @@ export default class PlayerApi extends BaseApi {
         });
     }
 
-    pause(options: DeviceOptions = {}): Promise<void> {
+    pause(options : DeviceOptions = {}) : Promise<void> {
         return this._http.request<void>({
             method: "PUT",
             path: "/v1/me/player/pause",
@@ -67,7 +67,7 @@ export default class PlayerApi extends BaseApi {
         });
     }
 
-    next(options: DeviceOptions = {}): Promise<void> {
+    next(options : DeviceOptions = {}) : Promise<void> {
         return this._http.request<void>({
             method: "POST",
             path: "/v1/me/player/next",
@@ -75,7 +75,7 @@ export default class PlayerApi extends BaseApi {
         });
     }
 
-    previous(options: DeviceOptions = {}): Promise<void> {
+    previous(options : DeviceOptions = {}) : Promise<void> {
         return this._http.request<void>({
             method: "POST",
             path: "/v1/me/player/previous",
@@ -83,7 +83,7 @@ export default class PlayerApi extends BaseApi {
         });
     }
 
-    shuffle(state: boolean, options: DeviceOptions = {}): Promise<void> {
+    shuffle(state : boolean, options : DeviceOptions = {}) : Promise<void> {
         return this._http.request<void>({
             method: "PUT",
             path: "/v1/me/player/shuffle",
@@ -91,7 +91,7 @@ export default class PlayerApi extends BaseApi {
         });
     }
 
-    repeat(state: RepeatState, options: DeviceOptions = {}): Promise<void> {
+    repeat(state : RepeatState, options : DeviceOptions = {}) : Promise<void> {
         return this._http.request<void>({
             method: "PUT",
             path: "/v1/me/player/repeat",

@@ -9,18 +9,18 @@ class CacheArtist extends CacheEntity implements ArtistObject {
 
     // AlbumObject Properties
     // -----------------------------------------------------------------------
-    type: "artist";
-    external_urls: object;
-    href: string;
-    followers: FollowersObject;
-    genres: string[];
-    images: ImageObject[];
-    popularity: number; // int[0, 100]
+    type : "artist";
+    external_urls : object;
+    href : string;
+    followers : FollowersObject;
+    genres : string[];
+    images : ImageObject[];
+    popularity : number; // int[0, 100]
 
     // Construction
     // =======================================================================
 
-    constructor(artist: ArtistObject) {
+    constructor(artist : ArtistObject) {
         super(artist.type, artist.id, artist.name, artist.uri);
         this.type = artist.type;
         this.external_urls = artist.external_urls;
@@ -32,9 +32,9 @@ class CacheArtist extends CacheEntity implements ArtistObject {
     }
 
     toThing(
-        formatter: DisplayFormatter,
-        forceSoftmatch: boolean = false
-    ): ThingArtist {
+        formatter : DisplayFormatter,
+        forceSoftmatch  = false
+    ) : ThingArtist {
         return {
             id: this.getEntity(formatter, forceSoftmatch),
             genres: this.genres,

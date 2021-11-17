@@ -4,7 +4,7 @@ import { UserSavedAlbum, UserSavedShow, UserSavedTrack } from "../responses";
 import BaseApi from "./base_api";
 
 export default class LibraryApi extends BaseApi {
-    getShows(options: PageOptions = {}): Promise<PagingObject<UserSavedShow>> {
+    getShows(options : PageOptions = {}) : Promise<PagingObject<UserSavedShow>> {
         return this._http.get<PagingObject<UserSavedShow>>(
             "/v1/me/shows",
             options
@@ -12,8 +12,8 @@ export default class LibraryApi extends BaseApi {
     }
 
     getTracks(
-        options: PageOptions = {}
-    ): Promise<PagingObject<UserSavedTrack>> {
+        options : PageOptions = {}
+    ) : Promise<PagingObject<UserSavedTrack>> {
         return this._http.get<PagingObject<UserSavedTrack>>(
             "/v1/me/tracks",
             options
@@ -21,23 +21,23 @@ export default class LibraryApi extends BaseApi {
     }
 
     getAlbums(
-        options: PageOptions = {}
-    ): Promise<PagingObject<UserSavedAlbum>> {
+        options : PageOptions = {}
+    ) : Promise<PagingObject<UserSavedAlbum>> {
         return this._http.get<PagingObject<UserSavedAlbum>>(
             "/v1/me/albums",
             options
         );
     }
 
-    putAlbums(ids: string[]): Promise<void> {
+    putAlbums(ids : string[]) : Promise<void> {
         return this._http.put<void>("/v1/me/albums", { ids });
     }
 
-    putTracks(ids: string[]): Promise<void> {
+    putTracks(ids : string[]) : Promise<void> {
         return this._http.put<void>("/v1/me/tracks", { ids });
     }
 
-    putShows(ids: string[]): Promise<void> {
+    putShows(ids : string[]) : Promise<void> {
         return this._http.request<void>({
             method: "PUT",
             path: "/v1/me/shows",
@@ -45,7 +45,7 @@ export default class LibraryApi extends BaseApi {
         });
     }
 
-    putEpisodes(ids: string[]): Promise<void> {
+    putEpisodes(ids : string[]) : Promise<void> {
         return this._http.put<void>("/v1/me/episodes", { ids });
     }
 }

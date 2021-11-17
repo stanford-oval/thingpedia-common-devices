@@ -15,28 +15,28 @@ class CacheEpisode extends CacheEntity implements SimplifiedEpisodeObject {
 
     // EpisodeObject Properties
     // -----------------------------------------------------------------------
-    type: "episode";
-    audio_preview_url: null | string;
-    description: string;
-    duration_ms: number; // int
-    explicit?: boolean;
-    external_urls: ExternalUrlObject;
-    href: string;
-    html_description: string;
-    images: ImageObject[];
-    is_externally_hosted: boolean;
-    is_playable: boolean;
-    language?: string; // deprecated
-    languages: string[];
-    release_date: string;
-    release_date_precision: string;
-    restrictions: EpisodeRestrictionObject;
-    resume_point?: ResumePointObject;
+    type : "episode";
+    audio_preview_url : null | string;
+    description : string;
+    duration_ms : number; // int
+    explicit ?: boolean;
+    external_urls : ExternalUrlObject;
+    href : string;
+    html_description : string;
+    images : ImageObject[];
+    is_externally_hosted : boolean;
+    is_playable : boolean;
+    language ?: string; // deprecated
+    languages : string[];
+    release_date : string;
+    release_date_precision : string;
+    restrictions : EpisodeRestrictionObject;
+    resume_point ?: ResumePointObject;
 
     // Construction
     // =======================================================================
 
-    constructor(episode: SimplifiedEpisodeObject) {
+    constructor(episode : SimplifiedEpisodeObject) {
         super(episode.type, episode.id, episode.name, episode.uri);
         this.type = episode.type;
         this.audio_preview_url = episode.audio_preview_url;
@@ -58,9 +58,9 @@ class CacheEpisode extends CacheEntity implements SimplifiedEpisodeObject {
     }
 
     toThing(
-        formatter: DisplayFormatter,
-        forceSoftmatch: boolean = false
-    ): ThingEpisode {
+        formatter : DisplayFormatter,
+        forceSoftmatch  = false
+    ) : ThingEpisode {
         return {
             id: this.getEntity(formatter, forceSoftmatch),
             release_date: new Date(this.release_date)

@@ -21,15 +21,15 @@ class CacheTrack extends CacheEntity implements TrackObject {
     // =======================================================================
 
     static from(
-        track: TrackObject,
-        artists: ArtistObject[],
-        audioFeatures: undefined | null | AudioFeaturesObject
-    ): CacheTrack {
-        const genres: Set<string> = new Set();
-        for (let artist of artists) {
-            for (let genre of artist.genres) {
+        track : TrackObject,
+        artists : ArtistObject[],
+        audioFeatures : undefined | null | AudioFeaturesObject
+    ) : CacheTrack {
+        const genres : Set<string> = new Set();
+        for (const artist of artists) {
+            for (const genre of artist.genres) 
                 genres.add(genre);
-            }
+            
         }
         return new CacheTrack({
             genres: Array.from(genres),
@@ -44,23 +44,23 @@ class CacheTrack extends CacheEntity implements TrackObject {
     // TrackObject Properties
     // -----------------------------------------------------------------------
 
-    type: "track";
-    album: SimplifiedAlbumObject;
-    artists: SimplifiedArtistObject[];
-    available_markets: string[];
-    disc_number: number; // int
-    duration_ms: number; // int
-    explicit?: boolean; // may be unknown
-    external_ids: ExternalIdObject;
-    external_urls: ExternalUrlObject;
-    href: string;
-    is_local: boolean;
-    is_playable?: boolean; // relinking (when given market)
-    linked_from?: LinkedTrackObject; // relinking (when given market)
-    popularity: number; // int[0, 100]
-    preview_url: string;
-    restrictions?: TrackRestrictionObject;
-    track_number: number; // int, inside disc_number
+    type : "track";
+    album : SimplifiedAlbumObject;
+    artists : SimplifiedArtistObject[];
+    available_markets : string[];
+    disc_number : number; // int
+    duration_ms : number; // int
+    explicit ?: boolean; // may be unknown
+    external_ids : ExternalIdObject;
+    external_urls : ExternalUrlObject;
+    href : string;
+    is_local : boolean;
+    is_playable ?: boolean; // relinking (when given market)
+    linked_from ?: LinkedTrackObject; // relinking (when given market)
+    popularity : number; // int[0, 100]
+    preview_url : string;
+    restrictions ?: TrackRestrictionObject;
+    track_number : number; // int, inside disc_number
 
     // Additional Cached Properties
     // -----------------------------------------------------------------------
@@ -69,40 +69,40 @@ class CacheTrack extends CacheEntity implements TrackObject {
      * Genie consumes track genres, but genres are a property of artists, so
      * we cache that union.
      */
-    genres: string[];
+    genres : string[];
 
     /**
      * Genie consumes track audio features, which is an additional API hit, so
      * we cache them along with the props.
      */
-    audioFeatures: undefined | null | AudioFeaturesObject;
+    audioFeatures : undefined | null | AudioFeaturesObject;
 
     // Construction
     // =======================================================================
 
-    constructor(props: {
-        type: "track";
-        id: string;
-        name: string;
-        uri: string;
-        album: SimplifiedAlbumObject;
-        artists: SimplifiedArtistObject[];
-        available_markets: string[];
-        disc_number: number; // int
-        duration_ms: number; // int
-        explicit?: boolean; // may be unknown
-        external_ids: ExternalIdObject;
-        external_urls: ExternalUrlObject;
-        href: string;
-        is_local: boolean;
-        is_playable?: boolean; // relinking (when given market)
-        linked_from?: LinkedTrackObject; // relinking (when given market)
-        popularity: number; // int[0, 100]
-        preview_url: string;
-        restrictions?: TrackRestrictionObject;
-        track_number: number; // int, inside disc_number
-        genres: string[];
-        audioFeatures: undefined | null | AudioFeaturesObject;
+    constructor(props : {
+        type : "track";
+        id : string;
+        name : string;
+        uri : string;
+        album : SimplifiedAlbumObject;
+        artists : SimplifiedArtistObject[];
+        available_markets : string[];
+        disc_number : number; // int
+        duration_ms : number; // int
+        explicit ?: boolean; // may be unknown
+        external_ids : ExternalIdObject;
+        external_urls : ExternalUrlObject;
+        href : string;
+        is_local : boolean;
+        is_playable ?: boolean; // relinking (when given market)
+        linked_from ?: LinkedTrackObject; // relinking (when given market)
+        popularity : number; // int[0, 100]
+        preview_url : string;
+        restrictions ?: TrackRestrictionObject;
+        track_number : number; // int, inside disc_number
+        genres : string[];
+        audioFeatures : undefined | null | AudioFeaturesObject;
     }) {
         super(props.type, props.id, props.name, props.uri);
         this.type = props.type;
@@ -126,38 +126,38 @@ class CacheTrack extends CacheEntity implements TrackObject {
         this.audioFeatures = props.audioFeatures;
     }
 
-    get energy(): number {
-        if (!this.audioFeatures) {
+    get energy() : number {
+        if (!this.audioFeatures) 
             return DEFAULT_AUDIO_FEATURE;
-        }
+        
         return this.audioFeatures.energy * 100;
     }
 
-    get danceability(): number {
-        if (!this.audioFeatures) {
+    get danceability() : number {
+        if (!this.audioFeatures) 
             return DEFAULT_AUDIO_FEATURE;
-        }
+        
         return this.audioFeatures.danceability * 100;
     }
 
-    getArtistEntities(formatter: DisplayFormatter): SpotifyEntity[] {
+    getArtistEntities(formatter : DisplayFormatter) : SpotifyEntity[] {
         return this.artists.map(
             (artist) => new SpotifyEntity(artist.uri, artist.name, formatter)
         );
     }
 
-    getAlbumEntity(formatter: DisplayFormatter): SpotifyEntity {
+    getAlbumEntity(formatter : DisplayFormatter) : SpotifyEntity {
         return new SpotifyEntity(this.album.uri, this.album.name, formatter);
     }
 
-    get releaseDate(): Date {
+    get releaseDate() : Date {
         return new Date(this.album.release_date);
     }
 
     toThing(
-        formatter: DisplayFormatter,
-        forceSoftmatch: boolean = false
-    ): ThingTrack {
+        formatter : DisplayFormatter,
+        forceSoftmatch  = false
+    ) : ThingTrack {
         return {
             id: this.getEntity(formatter, forceSoftmatch),
             artists: this.getArtistEntities(formatter),

@@ -53,32 +53,32 @@ const PODCASTS_OF_THE_MONTH_PLAYLIST_ID = "37i9dQZF1DXdlkPQJ1PlTQ";
 export class Client {
     // private static readonly log = LOG.childFor(Client);
 
-    public readonly api: Api;
-    public readonly redis?: RedisClient;
-    public readonly userId: string;
+    public readonly api : Api;
+    public readonly redis ?: RedisClient;
+    public readonly userId : string;
 
-    public readonly augment: Augment;
-    public readonly albums: Albums;
-    public readonly artists: Artists;
-    public readonly browse: Browse;
-    public readonly follow: Follow;
-    public readonly library: Library;
-    public readonly personalization: Personalization;
-    public readonly player: Player;
-    public readonly playlists: Playlists;
-    public readonly search: Search;
-    public readonly shows: Shows;
-    public readonly tracks: Tracks;
-    public readonly users: Users;
+    public readonly augment : Augment;
+    public readonly albums : Albums;
+    public readonly artists : Artists;
+    public readonly browse : Browse;
+    public readonly follow : Follow;
+    public readonly library : Library;
+    public readonly personalization : Personalization;
+    public readonly player : Player;
+    public readonly playlists : Playlists;
+    public readonly search : Search;
+    public readonly shows : Shows;
+    public readonly tracks : Tracks;
+    public readonly users : Users;
 
     constructor({
         useOAuth2,
         redis,
         userId,
-    }: {
-        useOAuth2: Helpers.Http.HTTPRequestOptions["useOAuth2"];
-        redis?: RedisClient;
-        userId: string;
+    } : {
+        useOAuth2 : Helpers.Http.HTTPRequestOptions["useOAuth2"];
+        redis ?: RedisClient;
+        userId : string;
     }) {
         this.api = new Api({ useOAuth2 });
         this.redis = redis;
@@ -110,26 +110,26 @@ export class Client {
     //     return Client.log;
     // }
 
-    resolveURI(uri: string): Promise<string[]> {
+    resolveURI(uri : string) : Promise<string[]> {
         const id = uriId(uri);
         switch (uriType(uri)) {
-            case "track":
-            case "episode":
+        case "track":
+        case "episode":
                 // Really shouldn't bother calling for these, but whatever we'll
                 // support them...
-                return Promise.resolve([uri]);
-            case "album":
-                return this.albums.getTrackURIs(id);
-            case "artist":
-                return this.artists.getTopTrackURIs(id);
-            case "playlist":
-                return this.playlists.getPlaylistTrackURIs(id);
-            case "show":
-                return this.shows
-                    .getUnfinishedEpisodes(id, 10)
-                    .then((episodes) => episodes.map((e) => e.uri));
-            default:
-                assertUnreachable();
+            return Promise.resolve([uri]);
+        case "album":
+            return this.albums.getTrackURIs(id);
+        case "artist":
+            return this.artists.getTopTrackURIs(id);
+        case "playlist":
+            return this.playlists.getPlaylistTrackURIs(id);
+        case "show":
+            return this.shows
+                .getUnfinishedEpisodes(id, 10)
+                .then((episodes) => episodes.map((e) => e.uri));
+        default:
+            return assertUnreachable();
         }
     }
 
@@ -140,43 +140,43 @@ export class Client {
     // "play a X" sort of things.
     //
 
-    getAnyArtists(options: PageOptions = {}): Promise<CacheArtist[]> {
+    getAnyArtists(options : PageOptions = {}) : Promise<CacheArtist[]> {
         return this.personalization.getMyTopArtists(options);
     }
 
-    getAnyTracks(options: PageOptions = {}): Promise<CacheTrack[]> {
+    getAnyTracks(options : PageOptions = {}) : Promise<CacheTrack[]> {
         return this.personalization.getMyTopTracks(options);
     }
 
-    getAnyAlbums(options: PageOptions = {}): Promise<CacheAlbum[]> {
+    getAnyAlbums(options : PageOptions = {}) : Promise<CacheAlbum[]> {
         return this.browse.getNewReleases(options);
     }
 
-    getAnyPlaylists(options: PageOptions = {}): Promise<CachePlaylist[]> {
+    getAnyPlaylists(options : PageOptions = {}) : Promise<CachePlaylist[]> {
         return this.browse.getFeaturedPlaylists(options);
     }
 
-    async getAnyShows(options: PageOptions = {}): Promise<CacheShow[]> {
+    async getAnyShows(options : PageOptions = {}) : Promise<CacheShow[]> {
         const episodes = await this.playlists.getTracks(
             PODCASTS_OF_THE_MONTH_PLAYLIST_ID
         );
-        
-        const showIds: string[] = [];
+
+        const showIds : string[] = [];
         for (const playlistTrack of episodes.items) {
-            if (isEpisodeObject(playlistTrack.track)) {
+            if (isEpisodeObject(playlistTrack.track))
                 showIds.push(playlistTrack.track.album.id);
-            }
+
         }
-        
+
         return this.shows.getAll(showIds);
     }
 
-    async getAnyShow(): Promise<CacheShow> {
+    async getAnyShow() : Promise<CacheShow> {
         const shows = await this.getAnyShows({ limit: 10 });
         return sample(shows);
     }
 
-    getAnyPlayable(): Promise<CacheEntity[]> {
+    getAnyPlayable() : Promise<CacheEntity[]> {
         return this.getAnyTracks();
     }
 }

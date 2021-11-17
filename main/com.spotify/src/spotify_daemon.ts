@@ -43,15 +43,15 @@ const SPOTIFYD_DIST_URL =
 
 const LOG = Logging.get(__filename);
 
-function safeMkdir(dir: fs.PathLike) {
+function safeMkdir(dir : fs.PathLike) {
     try {
         fs.mkdirSync(dir);
-    } catch (e: any) {
+    } catch(e : any) {
         if (e.code !== "EEXIST") throw e;
     }
 }
 
-async function asyncSpawn(cmd: string, args: string[]) {
+async function asyncSpawn(cmd : string, args : string[]) {
     const child = child_process.spawn(cmd, args, {
         stdio: ["inherit", "inherit", "inherit"],
     });
@@ -65,23 +65,23 @@ async function asyncSpawn(cmd: string, args: string[]) {
 }
 
 export interface SpotifyDaemonOptions {
-    cacheDir: string;
-    username: string;
-    device_name: string;
-    token?: string;
-    version: string;
+    cacheDir : string;
+    username : string;
+    device_name : string;
+    token ?: string;
+    version : string;
 }
 
 export default class SpotifyDaemon {
-    public readonly log: Logger.TLogger;
-    public options: SpotifyDaemonOptions;
-    public cacheDir: string;
-    public spotifydPath: string;
+    public readonly log : Logger.TLogger;
+    public options : SpotifyDaemonOptions;
+    public cacheDir : string;
+    public spotifydPath : string;
 
-    protected _killed: boolean = false;
-    protected _child: null | child_process.ChildProcess = null;
+    protected _killed  = false;
+    protected _child : null | child_process.ChildProcess = null;
 
-    constructor(options: SpotifyDaemonOptions) {
+    constructor(options : SpotifyDaemonOptions) {
         this.log = LOG.childFor(SpotifyDaemon, {
             username: options.username,
             version: options.version,
@@ -98,7 +98,7 @@ export default class SpotifyDaemon {
         this.log.debug("Constructed.");
     }
 
-    set token(token: undefined | string) {
+    set token(token : undefined | string) {
         this.options.token = token;
     }
 
@@ -120,7 +120,7 @@ export default class SpotifyDaemon {
     protected _checkIfInstalled() {
         try {
             return fs.existsSync(this.spotifydPath);
-        } catch (e: any) {
+        } catch(e : any) {
             if (e.code === "ENOENT") return false;
             else throw new Error(e);
         }
@@ -135,29 +135,29 @@ export default class SpotifyDaemon {
 
         let arch = "";
         switch (process.arch) {
-            case "x64":
-                break;
-            case "arm":
-                arch = "-armhf";
-                break;
-            case "arm64":
-                arch = "-arm64";
-                break;
-            default:
-                throw new Error("spotifyd unsupported architecture");
+        case "x64":
+            break;
+        case "arm":
+            arch = "-armhf";
+            break;
+        case "arm64":
+            arch = "-arm64";
+            break;
+        default:
+            throw new Error("spotifyd unsupported architecture");
         }
 
-        let url =
+        const url =
             SPOTIFYD_DIST_URL +
             this.options.version +
             "/spotifyd-linux" +
             arch +
             "-slim.zip";
-        let destTempFile = path.join(this.cacheDir, "spotifyd.zip");
+        const destTempFile = path.join(this.cacheDir, "spotifyd.zip");
 
         try {
             await asyncSpawn("wget", [url, "-O", destTempFile]);
-        } catch (e) {
+        } catch(e) {
             throw new Error("failed to retrieve spotifyd binary package: " + e);
         }
 
@@ -167,13 +167,13 @@ export default class SpotifyDaemon {
                 "-d",
                 path.join(this.cacheDir, "spotifyd"),
             ]);
-        } catch (e) {
+        } catch(e) {
             throw new Error("failed to unpack spotifyd package: " + e);
         }
 
         try {
             fs.unlinkSync(destTempFile);
-        } catch (e: any) {
+        } catch(e : any) {
             throw new Error(
                 "failed to remove temporary spotifyd package: " + e.message
             );
@@ -205,7 +205,7 @@ export default class SpotifyDaemon {
 
         if (!this._checkIfInstalled()) await this._download();
 
-        let envs = Object.assign({}, process.env);
+        const envs = Object.assign({}, process.env);
         envs["PULSE_PROP"] = "media.role=music";
 
         const args = [

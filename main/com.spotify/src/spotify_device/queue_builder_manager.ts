@@ -5,26 +5,26 @@ import { DeviceObject } from "../api/objects";
 
 const LOG = Logging.get(__filename);
 
-export type ActiveDeviceResolver = (env: ExecWrapper) => Promise<DeviceObject>;
-export type PlayCallback = (kwds: {
-    uris: string | string[];
-    device_id?: string;
+export type ActiveDeviceResolver = (env : ExecWrapper) => Promise<DeviceObject>;
+export type PlayCallback = (kwds : {
+    uris : string | string[];
+    device_id ?: string;
 }) => Promise<void>;
 export type AddToQueueCallback = (
-    device_id: string,
-    uri: string
+    device_id : string,
+    uri : string
 ) => Promise<void>;
 
 export default class QueueBuilderManager {
     private static readonly LOG = LOG.childFor(QueueBuilderManager);
 
-    protected _resolveURI: URIResolver;
-    protected _getActiveDevice: ActiveDeviceResolver;
-    protected _play: PlayCallback;
-    protected _addToQueue: AddToQueueCallback;
-    protected _pendingBuilders: Map<string, QueueBuilder>;
-    protected _backgroundBuilders: Map<string, QueueBuilder>;
-    protected _queueInBackground: boolean;
+    protected _resolveURI : URIResolver;
+    protected _getActiveDevice : ActiveDeviceResolver;
+    protected _play : PlayCallback;
+    protected _addToQueue : AddToQueueCallback;
+    protected _pendingBuilders : Map<string, QueueBuilder>;
+    protected _backgroundBuilders : Map<string, QueueBuilder>;
+    protected _queueInBackground : boolean;
 
     constructor({
         resolveURI,
@@ -32,12 +32,12 @@ export default class QueueBuilderManager {
         play,
         addToQueue,
         queueInBackground = false,
-    }: {
-        resolveURI: URIResolver;
-        getActiveDevice: ActiveDeviceResolver;
-        play: PlayCallback;
-        addToQueue: AddToQueueCallback;
-        queueInBackground?: boolean;
+    } : {
+        resolveURI : URIResolver;
+        getActiveDevice : ActiveDeviceResolver;
+        play : PlayCallback;
+        addToQueue : AddToQueueCallback;
+        queueInBackground ?: boolean;
     }) {
         this._resolveURI = resolveURI;
         this._getActiveDevice = getActiveDevice;
@@ -52,13 +52,13 @@ export default class QueueBuilderManager {
         return QueueBuilderManager.LOG;
     }
 
-    async get(env: ExecWrapper): Promise<QueueBuilder> {
+    async get(env : ExecWrapper) : Promise<QueueBuilder> {
         const appId = env.app.uniqueId;
         // const log = LOG.childFor(this.get, { appId });
         let builder = this._pendingBuilders.get(appId);
-        if (builder !== undefined) {
+        if (builder !== undefined) 
             return builder;
-        }
+        
         const device = await this._getActiveDevice(env);
         builder = new QueueBuilder(appId, device, this._resolveURI);
         env.addExitProcedureHook(() => this._flush(appId));
@@ -66,18 +66,18 @@ export default class QueueBuilderManager {
         return builder;
     }
 
-    protected _backgroundProtect(promise: Promise<unknown>): void {
-        promise.catch((reason: any) => {
+    protected _backgroundProtect(promise : Promise<unknown>) : void {
+        promise.catch((reason : any) => {
             const log = this.log.childFor(this._backgroundProtect);
-            if (reason instanceof Error) {
+            if (reason instanceof Error) 
                 log.error("Background process rejected", reason);
-            } else {
+            else 
                 log.error("Background process rejected", { reason });
-            }
+            
         });
     }
 
-    protected async _flush(appId: string): Promise<void> {
+    protected async _flush(appId : string) : Promise<void> {
         const log = this.log.childFor(this._flush, { appId });
 
         log.debug("Flushing QueueBuilder...");
@@ -149,7 +149,7 @@ export default class QueueBuilderManager {
         }
     }
 
-    protected async _backgroundFlush(builder: QueueBuilder) {
+    protected async _backgroundFlush(builder : QueueBuilder) {
         const log = this.log.childFor(this._backgroundFlush, {
             appId: builder.appId,
         });
