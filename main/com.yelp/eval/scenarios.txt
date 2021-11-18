@@ -1,7 +1,7 @@
 # 1-basic
 U: \t @com.yelp.restaurant();
 
-A: I (see|have( found)?) Ramen Nagi, Evvia Estiatorio,? and Zareen's. (All of them are|They're) restaurants rated 4.5 stars?.
+A: I (see|have( found)?) Ramen Nagi, Evvia Estiatorio,? and Zareen's. (Ramen Nagi is rated 4.5 stars, Evvia Estiatorio is rated 4.5 stars, and Zareen's is rated 4.5 stars|(All of them are|They're) restaurants rated 4.5 stars?).
 A: rdl: Ramen Nagi https://www.yelp.com/biz/ramen-nagi-palo-alto.*
 A: rdl: Evvia Estiatorio https://www.yelp.com/biz/evvia-estiatorio-palo-alto.*
 A: rdl: Zareen's https://www.yelp.com/biz/zareens-palo-alto.*
@@ -12,7 +12,7 @@ A: >> expecting = null
 # 2-by-location
 U: \t @com.yelp.restaurant() filter geo == new Location(37.442156, -122.1634471, "Palo Alto, California");
 
-A: I (see|have( found)?) Ramen Nagi, Evvia Estiatorio,? and Oren's Hummus\. Ramen Nagi is a restaurant rated 4.5 star, Evvia Estiatorio is rated 4.5 star,? and Oren's Hummus is rated 4 star\.
+A: I (see|have( found)?) Ramen Nagi, Evvia Estiatorio,? and Oren's Hummus\. Ramen Nagi is (a restaurant )?rated 4.5 stars?, Evvia Estiatorio is rated 4.5 stars?,? and Oren's Hummus is rated 4 stars?\.
 A: rdl: Ramen Nagi https://www.yelp.com/biz/ramen-nagi-palo-alto.*
 A: rdl: Evvia Estiatorio https://www.yelp.com/biz/evvia-estiatorio-palo-alto.*
 A: rdl: Oren's Hummus https://www.yelp.com/biz/orens-hummus-palo-alto.*
@@ -22,7 +22,7 @@ A: >> expecting = null
 # 3-by-category-and-location
 U: \t @com.yelp.restaurant() filter contains(cuisines, "chinese"^^com.yelp:restaurant_cuisine("Chinese")) && geo == new Location(37.2856948, -121.9432202, "Campbell");
 
-A: I (see|have( found)?) Blue Sky Chinese Restaurant, Sweet Mango,? and Hometown Noodle\. (All of them are|They're) moderate restaurants (with|having) Chinese food\.
+A: I (see|have( found)?) Blue Sky Chinese Restaurant, Sweet Mango,? and Hometown Noodle\. (All of them are|They're) (Chinese moderate restaurants|moderate restaurants (with|having) Chinese food)\.
 A: rdl: Blue Sky Chinese Restaurant https://www.yelp.com/biz/blue-sky-chinese-restaurant-campbell.*
 A: rdl: Sweet Mango https://www.yelp.com/biz/sweet-mango-san-jose.*
 A: rdl: Hometown Noodle https://www.yelp.com/biz/hometown-noodle-san-jose-5.*
@@ -32,7 +32,7 @@ A: >> expecting = null
 # 4-sort-by-rating
 U: \t sort(rating desc of @com.yelp.restaurant() filter geo == new Location(37.442156, -122.1634471, "Palo Alto, California"))[1];
 
-A: The top rated restaurant is Zadna Bowl. It is a restaurant near 461 Emerson St, Palo Alto, CA 94301( rated 5 star)?\.
+A: The top rated restaurant is Zadna Bowl. It is (a Mediterranean restaurant rated 5 stars|a restaurant near 461 Emerson St, Palo Alto, CA 94301( rated 5 star)?)\.
 A: rdl: Zadna Bowl https://www.yelp.com/biz/zadna-bowl-palo-alto.*
 A: >> expecting = null
 
@@ -40,6 +40,6 @@ A: >> expecting = null
 # 5-ask-for-address
 U: \t [geo] of @com.yelp.restaurant() filter geo == new Location(37.442156, -122.1634471, "Palo Alto, California");
 
-A: I (see|have( found)?) Ramen Nagi\. It is a restaurant near 541 Bryant St, Palo Alto, CA 94301\.
+A: I see Ramen Nagi, Evvia Estiatorio, and Oren's Hummus\. Ramen Nagi is at 541 Bryant St, Palo Alto, CA, Evvia Estiatorio is at 420 Emerson St, Palo Alto, CA, and Oren's Hummus is at 261 University Ave, Palo Alto, CA\.
 A: >> expecting = null
 

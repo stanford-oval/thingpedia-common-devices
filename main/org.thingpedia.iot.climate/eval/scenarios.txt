@@ -126,18 +126,18 @@ A: choice 1: Hvac
 A: choice 2: Ecobee
 
 U: Hvac
-A: What high temperature do you want to set\?
-A: >> expecting = generic
-
-U: 85°F
 
 A: What low temperature do you want to set\?
 A: >> expecting = generic
 
-# FIXME
-#U: 60 °F
-U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
-U: @org.thingpedia.iot.climate(id="io.home-assistant/http://127.0.0.1:8123/climate.hvac"^^tt:device_id("Hvac")).set_minmax_temperature(high=85F, low=60F);
+U: 60 F
+
+A: What high temperature do you want to set\?
+A: >> expecting = generic
+
+U: 85 F
+#U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
+#U: @org.thingpedia.iot.climate(id="io.home-assistant/http://127.0.0.1:8123/climate.hvac"^^tt:device_id("Hvac")).set_minmax_temperature(high=85F, low=60F);
 
 A: Ok, do you want me to set the temperature between [0-9\.]+ degrees Fahrenheit and [0-9\.]+ degrees Fahrenheit on your Hvac\?
 A: >> expecting = yesno

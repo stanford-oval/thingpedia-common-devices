@@ -1,14 +1,14 @@
 # 1-basic
 U: get news
 
-A: Here (is|are) the news\.( They're us news\.)?\n(rdl: (.|[\n])*)+
+A: Here is the news\.( They're us news\.)?\n(rdl: (.|[\n])*)+
 A: >> expecting = null
 
 ====
 # 2-basic-2
 U: recent news
 
-A: Here (is|are) the news\.( They're us news\.)?\n(rdl: (.|[\n])*)+
+A: Here is the news\.( They're us news\.)?\n(rdl: (.|[\n])*)+
 A: >> expecting = null
 
 ====
@@ -17,7 +17,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => @com.smartnews.article() => notify;
 
-A: Here (is|are) the news\.( They're us news\.)?\n(rdl: (.|[\n])*)+
+A: Here is the news\.( They're us news\.)?\n(rdl: (.|[\n])*)+
 A: >> expecting = null
 
 ====
@@ -26,7 +26,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => @com.smartnews.article(), date <= $now => notify;
 
-A: Here (is|are) the news\.( They're us news\.)?\n(rdl: (.|[\n])*)+
+A: Here is the news\.( They're us news\.)?\n(rdl: (.|[\n])*)+
 A: >> expecting = null
 
 ====
@@ -35,7 +35,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => @com.smartnews.article(), date <= $now - 1day => notify;
 
-A: Here (is|are) the news\.( They're us news\.)?\n(rdl: (.|[\n])*)+
+A: Here is the news\.( They're us news\.)?\n(rdl: (.|[\n])*)+
 A: >> expecting = null
 
 ====
@@ -44,7 +44,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => @com.smartnews.article(), date >= new Date(2021,10,6) && date <= new Date(2021,10,6) + 1day;
 
-A: Here (is|are) the news\.( They're us news\.)?\n(rdl: (.|[\n])*)+
+A: Here is the news\.( They're us news\.)?\n(rdl: (.|[\n])*)+
 A: >> expecting = null
 
 ====
@@ -53,7 +53,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => @com.smartnews.article(), date >= $start_of(day);
 
-A: (Sorry, there are no news at the moment matching your request. Would you like to be notified when there are new news\?|Here (is|are) the news\.( They're us news\.)?\n(rdl: (.|[\n])*)+)
+A: (Sorry, there are no news articles at the moment matching your request. Would you like to be notified when there are new news articles\?|Here (is|are) the news\.( They're us news\.)?\n(rdl: (.|[\n])*)+)
 A: >> expecting = (null|yesno)
 
 ====
@@ -62,7 +62,7 @@ A: >> expecting = (null|yesno)
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => @com.smartnews.article()[1:10] => notify;
 
-A: Here (is|are) the news\.( They're us news\.)?\n(rdl: (.|[\n])*)+
+A: Here is the news\.( They're us news\.)?\n(rdl: (.|[\n])*)+
 A: >> expecting = null
 
 ====
@@ -71,7 +71,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => @com.smartnews.article() filter contains(category, "sports"^^com.smartnews:category("sports")) => notify;
 
-A: Here (is|are) the news\.\n(rdl: (.|[\n])*)+
+A: Here is the news\.\n(rdl: (.|[\n])*)+
 A: >> expecting = null
 
 ====
@@ -80,7 +80,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => @com.smartnews.article() filter contains(category, "sports"^^com.smartnews:category("sports")) && date >= new Date(2021,10,6) && date <= new Date(2021,10,6) + 1day;
 
-A: Here (is|are) the news\.\n(rdl: (.|[\n])*)+
+A: Here is the news\.\n(rdl: (.|[\n])*)+
 A: >> expecting = null
 
 ====
@@ -89,7 +89,7 @@ A: >> expecting = null
 U: \t $dialogue @org.thingpedia.dialogue.transaction.execute;
 U: now => @com.smartnews.article(), source =~ ("android authority");
 
-A: Here is the news\. They're news from Android Authority\.\n(rdl: (.|[\n])*)+
+A: Here is the news\.\n(rdl: (.|[\n])*)+
 A: >> expecting = null
 
 ====
