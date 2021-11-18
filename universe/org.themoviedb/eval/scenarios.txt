@@ -1,7 +1,7 @@
 # 1-basic-movie-search
 U: \t @org.themoviedb.movie();
 
-A: I see (?=.*The Avengers)(?=.*Avengers\: Endgame)(?=.*Avengers\: Infinity\sWar).+\. (They're movies by Robert Downey Jr|Avengers: Endgame is a movie released on April 23, 2019, The Avengers is released on April 24, 2012, and Avengers: Infinity War is released on April 24, 2018).
+A: I see (?=.*The Avengers)(?=.*Avengers\: Endgame)(?=.*Avengers\: Infinity\sWar).+\. (They're movies by Robert Downey Jr|Avengers: Endgame is (a movie )?released on April 23, 2019, The Avengers is released on April 24, 2012, and Avengers: Infinity War is released on April 24, 2018).
 A: >> expecting = null
 
 ====
@@ -18,7 +18,7 @@ A: >> expecting = null
 # 3-by-release-date
 U: \t sort(release_date desc of @org.themoviedb.movie());
 
-A: I see (.*), (.*), and (.*). \1 is a movie released .*, \2 is released .*, and \3 is released .*.
+A: I see (.*), (.*), and (.*). \1 is (a movie )?released .*, \2 is released .*, and \3 is released .*.
 A: >> expecting = null
 
 ====
@@ -26,7 +26,7 @@ A: >> expecting = null
 # 4-sort-by-rating
 U: \t sort(rating_score desc of @org.themoviedb.movie());
 
-A: I see (.*), (.*), and (.*). \1 is a movie released .*, \2 is released .*, and \3 is released .*.
+A: I see (.*), (.*), and (.*). \1 is (a movie )?released .*, \2 is released .*, and \3 is released .*.
 A: >> expecting = null
 
 ====
@@ -51,11 +51,11 @@ A: Tom Hanks is an actor with the popularity equal to .*.
 # 8-filter-movie-by-actor
 U: \t @org.themoviedb.movie() filter contains(actors, null^^org.themoviedb:actor("Christian Bale"));
 
-A: I see .*, .*, and .*. They're movies by Christian Bale.
+A: I see (.*), (.*), and (.*). (\1 is (a movie )?released .*, \2 is released .*, and \3 is released .*|They're movies by Christian Bale).
 
 ====
 # 9-movie-containing-two-plus-actors
 # U: Is there a movie with Denzel Washington and Russell Crowe?
 U: \t @org.themoviedb.movie() filter contains(actors, null^^org.themoviedb:actor("Denzel Washington")) && contains(actors, null^^org.themoviedb:actor("Russell Crowe"));
 
-A: I see American Gangster, Virtuosity, and And the Oscar Goes To... They're movies by Denzel Washington.
+A: I see American Gangster, Virtuosity, and And the Oscar Goes To... (American Gangster is released on November 1, 2007, Virtuosity is released on August 3, 1995, and And the Oscar Goes To... Is released on January 31, 2014|They're movies by Denzel Washington).
