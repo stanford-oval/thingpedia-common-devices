@@ -20,29 +20,29 @@ class CacheAlbum extends CacheEntity implements AlbumObject {
 
     // AlbumObject Properties
     // -----------------------------------------------------------------------
-    type: "album";
-    album_type: string;
-    artists: SimplifiedArtistObject[];
-    available_markets: string[];
-    external_urls: ExternalUrlObject;
-    href: string;
-    images: ImageObject[];
-    release_date: string;
-    release_date_precision: string;
-    restrictions?: AlbumRestrictionObject;
-    total_tracks: number; // int
-    copyrights: CopyrightObject[];
-    external_ids: ExternalIdObject;
+    type : "album";
+    album_type : string;
+    artists : SimplifiedArtistObject[];
+    available_markets : string[];
+    external_urls : ExternalUrlObject;
+    href : string;
+    images : ImageObject[];
+    release_date : string;
+    release_date_precision : string;
+    restrictions ?: AlbumRestrictionObject;
+    total_tracks : number; // int
+    copyrights : CopyrightObject[];
+    external_ids : ExternalIdObject;
     // Seems to always be empty..?
-    genres: string[];
-    label: string;
-    popularity: number; // int[0, 100]
-    tracks: PagingObject<SimplifiedTrackObject>;
+    genres : string[];
+    label : string;
+    popularity : number; // int[0, 100]
+    tracks : PagingObject<SimplifiedTrackObject>;
 
     // Construction
     // =======================================================================
 
-    constructor(album: AlbumObject) {
+    constructor(album : AlbumObject) {
         super(album.type, album.id, album.name, album.uri);
         this.type = album.type;
         this.album_type = album.album_type;
@@ -64,20 +64,20 @@ class CacheAlbum extends CacheEntity implements AlbumObject {
         this.tracks = album.tracks;
     }
 
-    getArtistEntities(formatter: DisplayFormatter): SpotifyEntity[] {
+    getArtistEntities(formatter : DisplayFormatter) : SpotifyEntity[] {
         return this.artists.map(
             (artist) => new SpotifyEntity(artist.uri, artist.name, formatter)
         );
     }
 
-    get releaseDate(): Date {
+    get releaseDate() : Date {
         return new Date(this.release_date);
     }
 
     toThing(
-        formatter: DisplayFormatter,
-        forceSoftmatch: boolean = false
-    ): ThingAlbum {
+        formatter : DisplayFormatter,
+        forceSoftmatch  = false
+    ) : ThingAlbum {
         return {
             id: this.getEntity(formatter, forceSoftmatch),
             artists: this.getArtistEntities(formatter),

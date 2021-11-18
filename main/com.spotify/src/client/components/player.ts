@@ -7,36 +7,35 @@ import { Component } from "..";
 import { ThingError } from "../../things";
 
 export class Player extends Component {
-    async getCurrentlyPlaying(): Promise<void | CacheTrack | CacheEpisode> {
+    async getCurrentlyPlaying() : Promise<void | CacheTrack | CacheEpisode> {
         const playing = await this._api.player.getCurrentlyPlaying({
             market: "from_token",
             additional_types: "episode"
         });
 
-        if (playing === undefined) {
+        if (playing === undefined)
             return undefined;
-        }
 
-        if (playing.item === null) {
+
+        if (playing.item === null)
             return undefined;
-        } else if (playing.item.type === "track") {
+        else if (playing.item.type === "track")
             return this.augment.track(playing.item);
-        } else if (playing.item.type === "episode") {
+        else if (playing.item.type === "episode")
             return this.augment.episode(playing.item);
-        } else {
-            assertUnreachable();
-        }
+        else
+            return assertUnreachable();
     }
 
-    get(): Promise<undefined | CurrentlyPlayingContextObject> {
+    get() : Promise<undefined | CurrentlyPlayingContextObject> {
         return this._api.player.get();
     }
 
-    getDevices(): Promise<DeviceObject[]> {
+    getDevices() : Promise<DeviceObject[]> {
         return this._api.player.getDevices();
     }
 
-    async pause(options: DeviceOptions = {}): Promise<void> {
+    async pause(options : DeviceOptions = {}) : Promise<void> {
         try {
             await this._api.player.pause(options);
         } catch(e) {
@@ -60,23 +59,23 @@ export class Player extends Component {
         }
     }
 
-    next(options: DeviceOptions = {}): Promise<void> {
+    next(options : DeviceOptions = {}) : Promise<void> {
         return this._api.player.next(options);
     }
 
-    previous(options: DeviceOptions = {}): Promise<void> {
+    previous(options : DeviceOptions = {}) : Promise<void> {
         return this._api.player.previous(options);
     }
 
-    shuffle(state: boolean, options: DeviceOptions = {}): Promise<void> {
+    shuffle(state : boolean, options : DeviceOptions = {}) : Promise<void> {
         return this._api.player.shuffle(state, options);
     }
 
-    repeat(state: RepeatState, options: DeviceOptions = {}): Promise<void> {
+    repeat(state : RepeatState, options : DeviceOptions = {}) : Promise<void> {
         return this._api.player.repeat(state, options);
     }
 
-    addToQueue(deviceId: string, uri: string): Promise<void> {
+    addToQueue(deviceId : string, uri : string) : Promise<void> {
         return this._api.player.addToQueue(deviceId, uri);
     }
 
@@ -85,13 +84,13 @@ export class Player extends Component {
         uris,
         offset,
         position_ms,
-    }: {
-        device_id?: string;
-        uris?: string | string[];
-        offset?: number;
-        position_ms?: number;
-    }): Promise<void> {
-        let context_uri: undefined | string = undefined;
+    } : {
+        device_id ?: string;
+        uris ?: string | string[];
+        offset ?: number;
+        position_ms ?: number;
+    }) : Promise<void> {
+        let context_uri : undefined | string = undefined;
 
         if (typeof uris === "string") {
             // A single string was passed as `uris`

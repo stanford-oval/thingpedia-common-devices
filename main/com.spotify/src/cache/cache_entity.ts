@@ -1,6 +1,6 @@
 import SpotifyEntity from "../spotify_entity";
 
-export type DisplayFormatter = (name: string) => string;
+export type DisplayFormatter = (name : string) => string;
 
 /**
  * Cached  that we can represent as `thingpedia.Value.Entity`
@@ -10,16 +10,16 @@ export type DisplayFormatter = (name: string) => string;
  */
 export default abstract class CacheEntity {
     constructor(
-        public type: string,
-        public id: string,
-        public name: string,
-        public uri: string
+        public type : string,
+        public id : string,
+        public name : string,
+        public uri : string
     ) {}
 
     getEntity(
-        formatter: DisplayFormatter,
-        forceSoftmatch: boolean = false
-    ): SpotifyEntity {
+        formatter : DisplayFormatter,
+        forceSoftmatch  = false
+    ) : SpotifyEntity {
         return new SpotifyEntity(
             this.uri,
             this.name,
@@ -28,13 +28,13 @@ export default abstract class CacheEntity {
         );
     }
 
-    toThing(formatter: DisplayFormatter, forceSoftmatch: boolean = false) {
+    toThing(formatter : DisplayFormatter, forceSoftmatch  = false) {
         return {
             id: this.getEntity(formatter, forceSoftmatch),
         };
     }
 
-    toJSON(): any {
+    toJSON() : any {
         return Object.assign({ __class__: this.constructor.name }, this);
     }
 }

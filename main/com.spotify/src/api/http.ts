@@ -22,35 +22,35 @@ export type HTTPMethod = "GET" | "POST" | "PUT" | "DELETE";
 export default class Http {
     private static readonly LOG = LOG.childFor(Http);
 
-    useOAuth2: Helpers.Http.HTTPRequestOptions["useOAuth2"];
-    urlBase: string;
+    useOAuth2 : Helpers.Http.HTTPRequestOptions["useOAuth2"];
+    urlBase : string;
 
     constructor({
         useOAuth2,
         urlBase,
-    }: {
-        useOAuth2: Helpers.Http.HTTPRequestOptions["useOAuth2"];
-        urlBase: string;
+    } : {
+        useOAuth2 : Helpers.Http.HTTPRequestOptions["useOAuth2"];
+        urlBase : string;
     }) {
         this.useOAuth2 = useOAuth2;
         this.urlBase = urlBase;
     }
 
-    private get log(): Logger.TLogger {
+    private get log() : Logger.TLogger {
         return Http.LOG;
     }
 
-    makeURL(path: string, query?: Record<string, any>): URL {
+    makeURL(path : string, query ?: Record<string, any>) : URL {
         const url = new URL(path, this.urlBase);
         if (query !== undefined) {
-            const searchQueryObj: Record<string, string> = {};
+            const searchQueryObj : Record<string, string> = {};
             for (const [key, value] of Object.entries(query)) {
                 if (value !== undefined && value !== null) {
-                    if (value instanceof Date) {
+                    if (value instanceof Date)
                         searchQueryObj[key] = value.toISOString();
-                    } else {
+                    else
                         searchQueryObj[key] = String(value);
-                    }
+
                 }
             }
             url.search = String(new URLSearchParams(searchQueryObj));
@@ -58,32 +58,35 @@ export default class Http {
         return url;
     }
 
-    private handleHTTPError(error: Helpers.Http.HTTPError): never {
+    private handleHTTPError(error : Helpers.Http.HTTPError) : never {
         switch (error.code) {
-            case 429:
-                throw new ThingError(`Too many requests`, "rate_limit_error");
-            default:
-                if (!error.detail) throw error;
-                let detail: any = undefined;
-                try {
-                    detail = JSON.parse(error.detail);
-                } catch (parseError) {}
-                const message = detail?.error?.message;
-                if (message) {
-                    throw new ThingError(String(message), `http_${error.code}`);
-                } else {
-                    throw new ThingError(
-                        `HTTP ${error.code} Error`,
-                        `http_${error.code}`
-                    );
-                }
+        case 429:
+            throw new ThingError(`Too many requests`, "rate_limit_error");
+        default: {
+            if (!error.detail) throw error;
+            let detail : any = undefined;
+            try {
+                detail = JSON.parse(error.detail);
+            } catch(parseError) {
+                // ignore the error
+            }
+            const message = detail?.error?.message;
+            if (message) {
+                throw new ThingError(String(message), `http_${error.code}`);
+            } else {
+                throw new ThingError(
+                    `HTTP ${error.code} Error`,
+                    `http_${error.code}`
+                );
+            }
+        }
         }
     }
 
-    private handleHTTPFailure(reason: any): never {
-        if (reason instanceof Helpers.Http.HTTPError) {
+    private handleHTTPFailure(reason : any) : never {
+        if (reason instanceof Helpers.Http.HTTPError)
             this.handleHTTPError(reason);
-        }
+
         throw new Error(`Unknown HTTP Error, reason: ${reason}`);
     }
 
@@ -92,12 +95,12 @@ export default class Http {
         path,
         query,
         body,
-    }: {
-        method: HTTPMethod;
-        path: string;
-        query?: Record<string, any>;
-        body?: Record<string, any>;
-    }): Promise<TResponse> {
+    } : {
+        method : HTTPMethod;
+        path : string;
+        query ?: Record<string, any>;
+        body ?: Record<string, any>;
+    }) : Promise<TResponse> {
         const log = this.log.childFor(this.request, {
             method,
             path,
@@ -106,28 +109,28 @@ export default class Http {
         });
         const url = this.makeURL(path, query);
 
-        const options: Helpers.Http.HTTPRequestOptions = {
+        const options : Helpers.Http.HTTPRequestOptions = {
             useOAuth2: this.useOAuth2,
             accept: "application/json",
         };
 
-        let encodedBody: null | string = null;
+        let encodedBody : null | string = null;
         if (body !== undefined) {
             options.dataContentType = "application/json";
             try {
                 encodedBody = JSON.stringify(body);
-            } catch (error: any) {
+            } catch(error : any) {
                 log.error("Failed to JSON encode request body --", error);
                 throw error;
             }
             // Don't send empty JSON objects (happens when _all_ properties of
             // `body` are `undefined`)
-            if (encodedBody === "{}") {
+            if (encodedBody === "{}")
                 encodedBody = null;
-            }
+
         }
 
-        let response: string;
+        let response : string;
         const timer = log.startTimer();
 
         try {
@@ -137,7 +140,7 @@ export default class Http {
                 encodedBody,
                 options
             );
-        } catch (reason: any) {
+        } catch(reason : any) {
             const status = reason?.code || 600; // 600 means ???
             timer.done({ level: "http", status });
             this.handleHTTPFailure(reason);
@@ -145,22 +148,22 @@ export default class Http {
 
         timer.done({ level: "http" });
 
-        if (response === "") {
+        if (response === "")
             return undefined as any as TResponse;
-        }
+
 
         try {
             return JSON.parse(response) as TResponse;
-        } catch (error: any) {
+        } catch(error : any) {
             log.error("Failed to JSON parse response --", error);
             throw error;
         }
     }
 
     get<TResponse = any>(
-        path: string,
-        query?: Record<string, any>
-    ): Promise<TResponse> {
+        path : string,
+        query ?: Record<string, any>
+    ) : Promise<TResponse> {
         return this.request<TResponse>({ method: "GET", path, query });
     }
 
@@ -182,25 +185,25 @@ export default class Http {
      * @returns
      */
     getList<TItem>(
-        path: string,
-        query?: Record<string, any>
-    ): Promise<TItem[]> {
+        path : string,
+        query ?: Record<string, any>
+    ) : Promise<TItem[]> {
         return this.get<Record<string, TItem[]>>(path, query).then((r) => {
             return r[Object.keys(r)[0]];
         });
     }
 
     post<TResponse = any>(
-        path: string,
-        body: Record<string, any>
-    ): Promise<TResponse> {
+        path : string,
+        body : Record<string, any>
+    ) : Promise<TResponse> {
         return this.request<TResponse>({ method: "POST", path, body });
     }
 
     put<TResponse = any>(
-        path: string,
-        body: Record<string, any>
-    ): Promise<TResponse> {
+        path : string,
+        body : Record<string, any>
+    ) : Promise<TResponse> {
         return this.request<TResponse>({ method: "PUT", path, body });
     }
 }

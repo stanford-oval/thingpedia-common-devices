@@ -252,15 +252,15 @@ class TestRunner {
 
         console.log(`Testing ${testType} @${deviceKind}.${functionName}`);
         switch (testType) {
-            case 'query':
-                await this._testQuery(deviceKind, instance, functionName, input, hints, expected);
-                break;
-            case 'monitor':
-                // do something
-                break;
-            case 'action':
-                // do something
-                break;
+        case 'query':
+            await this._testQuery(deviceKind, instance, functionName, input, hints, expected);
+            break;
+        case 'monitor':
+            // do something
+            break;
+        case 'action':
+            // do something
+            break;
         }
     }
 

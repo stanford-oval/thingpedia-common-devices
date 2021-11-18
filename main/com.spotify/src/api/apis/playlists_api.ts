@@ -15,26 +15,26 @@ import BaseApi from "./base_api";
 
 export default class PlaylistsApi extends BaseApi {
     get(
-        id: string,
-        options: {
-            market?: string;
-            fields?: string;
-            additional_types?: string | string[];
+        id : string,
+        options : {
+            market ?: string;
+            fields ?: string;
+            additional_types ?: string | string[];
         } = {}
-    ): Promise<PlaylistObject> {
+    ) : Promise<PlaylistObject> {
         return this._http.get<PlaylistObject>(`/v1/playlists/${id}`, options);
     }
 
     getTracks(
-        id: string,
-        options: {
-            market?: string;
-            fields?: string;
-            additional_types?: string | string[];
-            limit?: number;
-            offset?: number;
+        id : string,
+        options : {
+            market ?: string;
+            fields ?: string;
+            additional_types ?: string | string[];
+            limit ?: number;
+            offset ?: number;
         } = {}
-    ): Promise<PagingObject<PlaylistTrackObject>> {
+    ) : Promise<PagingObject<PlaylistTrackObject>> {
         return this._http.get<PagingObject<PlaylistTrackObject>>(
             `/v1/playlists/${id}/tracks`,
             options
@@ -42,10 +42,10 @@ export default class PlaylistsApi extends BaseApi {
     }
 
     create(
-        user_id: string,
-        name: string,
-        options: PlaylistCreateOptions = {}
-    ): Promise<PlaylistObject> {
+        user_id : string,
+        name : string,
+        options : PlaylistCreateOptions = {}
+    ) : Promise<PlaylistObject> {
         return this._http.post(`/v1/users/${user_id}/playlists`, {
             name,
             ...options,
@@ -53,14 +53,14 @@ export default class PlaylistsApi extends BaseApi {
     }
 
     getMy(
-        options: PageOptions = {}
-    ): Promise<PagingObject<SimplifiedPlaylistObject>> {
-        if (options.limit !== undefined) {
+        options : PageOptions = {}
+    ) : Promise<PagingObject<SimplifiedPlaylistObject>> {
+        if (options.limit !== undefined) 
             assertBounds("options.limit", options.limit, 1, 50);
-        }
-        if (options.offset !== undefined) {
+        
+        if (options.offset !== undefined) 
             assertBounds("options.offset", options.offset, 0, 100000);
-        }
+        
         return this._http.get<PagingObject<SimplifiedPlaylistObject>>(
             "/v1/me/playlists",
             options
@@ -68,10 +68,10 @@ export default class PlaylistsApi extends BaseApi {
     }
 
     add(
-        id: string,
-        uris: string[],
-        options: PlaylistAddOptions = {}
-    ): Promise<PlaylistSnapshotResponse> {
+        id : string,
+        uris : string[],
+        options : PlaylistAddOptions = {}
+    ) : Promise<PlaylistSnapshotResponse> {
         return this._http.post<PlaylistSnapshotResponse>(
             `/v1/playlists/${id}/tracks`,
             { uris, ...options }

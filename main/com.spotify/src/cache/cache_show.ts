@@ -14,23 +14,23 @@ class CacheShow extends CacheEntity implements ShowObject {
 
     // ShowObject Properties
     // -----------------------------------------------------------------------
-    available_markets: string[];
-    copyrights: CopyrightObject[];
-    description: string;
-    explicit?: boolean;
-    external_urls: ExternalUrlObject;
-    href: string;
-    html_description: string;
-    images: ImageObject[];
-    is_externally_hosted: boolean;
-    languages: string[];
-    media_type: string;
-    publisher: string;
+    available_markets : string[];
+    copyrights : CopyrightObject[];
+    description : string;
+    explicit ?: boolean;
+    external_urls : ExternalUrlObject;
+    href : string;
+    html_description : string;
+    images : ImageObject[];
+    is_externally_hosted : boolean;
+    languages : string[];
+    media_type : string;
+    publisher : string;
 
     // Construction
     // =======================================================================
 
-    constructor(show: ShowObject) {
+    constructor(show : ShowObject) {
         super(show.type, show.id, show.name, show.uri);
         this.available_markets = show.available_markets;
         this.copyrights = show.copyrights;
@@ -47,9 +47,9 @@ class CacheShow extends CacheEntity implements ShowObject {
     }
 
     toThing(
-        formatter: DisplayFormatter,
-        forceSoftmatch: boolean = false
-    ): ThingShow {
+        formatter : DisplayFormatter,
+        forceSoftmatch  = false
+    ) : ThingShow {
         return {
             id: this.getEntity(formatter, forceSoftmatch),
             publisher: this.publisher,

@@ -29,26 +29,26 @@ import UsersApi from "./apis/users_api";
 export default class Api {
     static readonly DEFAULT_URL_BASE = "https://api.spotify.com";
 
-    public readonly http: Http;
-    public readonly albums: AlbumsApi;
-    public readonly artists: ArtistsApi;
-    public readonly browse: BrowseApi;
-    public readonly follow: FollowApi;
-    public readonly library: LibraryApi;
-    public readonly personalization: PersonalizationApi;
-    public readonly player: PlayerApi;
-    public readonly playlists: PlaylistsApi;
-    public readonly search: SearchApi;
-    public readonly shows: ShowsApi;
-    public readonly tracks: TracksApi;
-    public readonly users: UsersApi;
+    public readonly http : Http;
+    public readonly albums : AlbumsApi;
+    public readonly artists : ArtistsApi;
+    public readonly browse : BrowseApi;
+    public readonly follow : FollowApi;
+    public readonly library : LibraryApi;
+    public readonly personalization : PersonalizationApi;
+    public readonly player : PlayerApi;
+    public readonly playlists : PlaylistsApi;
+    public readonly search : SearchApi;
+    public readonly shows : ShowsApi;
+    public readonly tracks : TracksApi;
+    public readonly users : UsersApi;
 
     constructor({
         useOAuth2,
         urlBase = Api.DEFAULT_URL_BASE,
-    }: {
-        useOAuth2: Helpers.Http.HTTPRequestOptions["useOAuth2"];
-        urlBase?: string;
+    } : {
+        useOAuth2 : Helpers.Http.HTTPRequestOptions["useOAuth2"];
+        urlBase ?: string;
     }) {
         this.http = new Http({ useOAuth2, urlBase });
         this.albums = new AlbumsApi(this.http);

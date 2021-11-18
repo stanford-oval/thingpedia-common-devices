@@ -58,12 +58,12 @@ const DEVICE_ERROR = {
 
 module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
     constructor(engine, state) {
-         super(engine, state);
+        super(engine, state);
 
          /**
           * @type {{ uniqueId: string, timestamp: number }|null}
           */
-         this._lastPlay = null;
+        this._lastPlay = null;
     }
 
     _format_station_output(stations) {
@@ -84,12 +84,12 @@ module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
         if (typeof content !== 'undefined' && content.length > 0) {
             if (content.find((item) => item.text.toLowerCase() === CONTENT_KEYS.stations)) {
                 stations = content.filter((item) => item.text.toLowerCase() === CONTENT_KEYS.stations)
-                                  .flatMap(({children}) => children)
-                                  .filter((channel) => (channel.type.toLowerCase() === CONTENT_KEYS.audio && channel.item.toLowerCase() === CONTENT_KEYS.station));
+                    .flatMap(({ children }) => children)
+                    .filter((channel) => (channel.type.toLowerCase() === CONTENT_KEYS.audio && channel.item.toLowerCase() === CONTENT_KEYS.station));
             } else if (content.find((item) => [CONTENT_KEYS.fm, CONTENT_KEYS.am, CONTENT_KEYS.internet].includes(item.text.toLowerCase()))) {
                 stations = content.filter((item) => [CONTENT_KEYS.fm, CONTENT_KEYS.am, CONTENT_KEYS.internet].includes(item.text.toLowerCase()))
-                                  .flatMap(({children}) => children)
-                                  .filter((channel) => (channel.type.toLowerCase() === CONTENT_KEYS.audio && channel.item.toLowerCase() === CONTENT_KEYS.station));
+                    .flatMap(({ children }) => children)
+                    .filter((channel) => (channel.type.toLowerCase() === CONTENT_KEYS.audio && channel.item.toLowerCase() === CONTENT_KEYS.station));
             } else {
                 stations = content.filter((channel) => (
                     'type' in channel &&
@@ -217,10 +217,10 @@ module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
             throw new Error(DEVICE_ERROR.unsupported_version);
         } else {
             // const playable_link = this._http_post(url);
-            try{
+            try {
                 audio_player.play(playable_link);
                 return;
-            } catch (e) {
+            } catch(e) {
                 throw new Error(DEVICE_ERROR.service_unavailable);
             }
         }

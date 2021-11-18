@@ -12,7 +12,7 @@ import { cache } from "../../cache/cache_helpers";
 export type CachePlayable = CacheTrack | CacheAlbum | CachePlaylist | CacheShow;
 export type TypedSearchKwds = Omit<SearchKwds, "type">;
 
-function makeCacheKey(kwds: TypedSearchKwds): string {
+function makeCacheKey(kwds : TypedSearchKwds) : string {
     return JSON.stringify(
         orderedPairsFor({
             ...kwds,
@@ -23,67 +23,67 @@ function makeCacheKey(kwds: TypedSearchKwds): string {
 
 export class Search extends Component {
     @cache(makeCacheKey)
-    async artists(kwds: TypedSearchKwds): Promise<CacheArtist[]> {
+    async artists(kwds : TypedSearchKwds) : Promise<CacheArtist[]> {
         const response = await this._api.search.search({
             type: "artist",
             market: "from_token",
             ...kwds,
         });
-        if (response.artists) {
-            return await this.augment.artists(response.artists.items);
-        }
+        if (response.artists)
+            return this.augment.artists(response.artists.items);
+
         return [];
     }
 
     @cache(makeCacheKey)
-    async albums(kwds: TypedSearchKwds): Promise<CacheAlbum[]> {
+    async albums(kwds : TypedSearchKwds) : Promise<CacheAlbum[]> {
         const response = await this._api.search.search({
             type: "album",
             market: "from_token",
             ...kwds,
         });
-        if (response.albums) {
-            return await this.augment.albums(response.albums.items);
-        }
+        if (response.albums)
+            return this.augment.albums(response.albums.items);
+
         return [];
     }
 
     @cache(makeCacheKey)
-    async tracks(kwds: TypedSearchKwds): Promise<CacheTrack[]> {
+    async tracks(kwds : TypedSearchKwds) : Promise<CacheTrack[]> {
         const response = await this._api.search.search({
             type: "track",
             market: "from_token",
             ...kwds,
         });
-        if (response.tracks) {
-            return await this.augment.tracks(response.tracks.items);
-        }
+        if (response.tracks)
+            return this.augment.tracks(response.tracks.items);
+
         return [];
     }
 
     @cache(makeCacheKey)
-    async shows(kwds: TypedSearchKwds): Promise<CacheShow[]> {
+    async shows(kwds : TypedSearchKwds) : Promise<CacheShow[]> {
         const response = await this._api.search.search({
             type: "show",
             market: "from_token",
             ...kwds,
         });
-        if (response.shows) {
-            return await this.augment.shows(response.shows.items);
-        }
+        if (response.shows)
+            return this.augment.shows(response.shows.items);
+
         return [];
     }
 
     @cache(makeCacheKey)
-    async playlists(kwds: TypedSearchKwds): Promise<CachePlaylist[]> {
+    async playlists(kwds : TypedSearchKwds) : Promise<CachePlaylist[]> {
         const response = await this._api.search.search({
             type: "playlist",
             market: "from_token",
             ...kwds,
         });
-        if (response.playlists) {
-            return await this.augment.playlists(response.playlists.items);
-        }
+        if (response.playlists)
+            return this.augment.playlists(response.playlists.items);
+
         return [];
     }
 
@@ -94,7 +94,7 @@ export class Search extends Component {
         limit,
         offset,
         include_external,
-    }: TypedSearchKwds): Promise<CachePlayable[]> {
+    } : TypedSearchKwds) : Promise<CachePlayable[]> {
         const results = await this._api.search.search({
             query,
             type: "track,album,playlist,show",
@@ -103,31 +103,31 @@ export class Search extends Component {
             offset,
         });
 
-        const promises: Promise<CachePlayable[]>[] = [];
+        const promises : Array<Promise<CachePlayable[]>> = [];
 
-        if (results.tracks && results.tracks.total > 0) {
+        if (results.tracks && results.tracks.total > 0)
             promises.push(this.augment.tracks(results.tracks.items));
-        }
 
-        if (results.albums && results.albums.total > 0) {
+
+        if (results.albums && results.albums.total > 0)
             promises.push(this.augment.albums(results.albums.items));
-        }
 
-        if (results.playlists && results.playlists.total > 0) {
+
+        if (results.playlists && results.playlists.total > 0)
             promises.push(this.augment.playlists(results.playlists.items));
-        }
 
-        if (results.shows && results.shows.total > 0) {
+
+        if (results.shows && results.shows.total > 0)
             promises.push(this.augment.shows(results.shows.items));
-        }
+
 
         const lists = await Promise.all(promises);
 
-        const playables: CachePlayable[] = [];
+        const playables : CachePlayable[] = [];
         for (const list of lists) {
-            for (const playable of list) {
+            for (const playable of list)
                 playables.push(playable);
-            }
+
         }
 
         return playables;

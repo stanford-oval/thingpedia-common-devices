@@ -12,25 +12,25 @@ import { cache, orderedPairsFor } from "../../cache/cache_helpers";
  * @param options
  * @returns Arguments part of the cache key
  */
-function argsKey(options?: BrowseOptions): undefined | string {
-    if (options === undefined) {
+function argsKey(options ?: BrowseOptions) : undefined | string {
+    if (options === undefined) 
         return undefined;
-    }
+    
     return JSON.stringify(orderedPairsFor(options));
 }
 
 export class Browse extends Component {
     @cache(argsKey)
     getFeaturedPlaylists(
-        options: BrowseOptions = {}
-    ): Promise<CachePlaylist[]> {
+        options : BrowseOptions = {}
+    ) : Promise<CachePlaylist[]> {
         return this._api.browse
             .getFeaturedPlaylists(options)
             .then((r) => this.augment.playlists(r.playlists.items));
     }
 
     @cache(argsKey)
-    getNewReleases(options: BrowseOptions = {}): Promise<CacheAlbum[]> {
+    getNewReleases(options : BrowseOptions = {}) : Promise<CacheAlbum[]> {
         return this._api.browse
             .getNewReleases(options)
             .then((r) => this.augment.albums(r.items));

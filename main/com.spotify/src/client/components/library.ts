@@ -8,7 +8,7 @@ import { Component } from "..";
 export class Library extends Component {
     // TODO Get all pages
     @cache(null)
-    getShows(): Promise<CacheShow[]> {
+    getShows() : Promise<CacheShow[]> {
         return this._api.library
             .getShows({ limit: 50 })
             .then((r) =>
@@ -18,7 +18,7 @@ export class Library extends Component {
 
     // TODO Get all pages
     @cache(null)
-    getTracks(): Promise<CacheTrack[]> {
+    getTracks() : Promise<CacheTrack[]> {
         return this._api.library
             .getTracks({ limit: 50 })
             .then((page) =>
@@ -28,7 +28,7 @@ export class Library extends Component {
 
     // TODO Get all pages
     @cache(null)
-    getAlbums(): Promise<CacheAlbum[]> {
+    getAlbums() : Promise<CacheAlbum[]> {
         return this._api.library
             .getAlbums({ limit: 50 })
             .then((page) =>
@@ -37,22 +37,22 @@ export class Library extends Component {
     }
 
     // TODO Break cache
-    putAlbums(ids: string | string[]): Promise<void> {
+    putAlbums(ids : string | string[]) : Promise<void> {
         return this._api.library.putAlbums(arrayFor(ids));
     }
 
     // TODO Break cache
-    putTracks(ids: string | string[]): Promise<void> {
+    putTracks(ids : string | string[]) : Promise<void> {
         return this._api.library.putTracks(arrayFor(ids));
     }
 
     // TODO Break cache
-    putShows(ids: string | string[]): Promise<void> {
+    putShows(ids : string | string[]) : Promise<void> {
         return this._api.library.putShows(arrayFor(ids));
     }
 
     // TODO Break cache
-    putEpisodes(ids: string | string[]): Promise<void> {
+    putEpisodes(ids : string | string[]) : Promise<void> {
         return this._api.library.putEpisodes(arrayFor(ids));
     }
 }

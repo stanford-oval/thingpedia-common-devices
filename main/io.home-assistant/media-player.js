@@ -37,16 +37,16 @@ module.exports = class HomeAssistantMediaPlayer extends HomeAssistantDevice {
     }
 
     async do_mute() {
-        await this._callService("media_player", "volume_mute", {is_volume_muted: true});
+        await this._callService("media_player", "volume_mute", { is_volume_muted: true });
     }
 
     async do_unmute() {
-        await this._callService("media_player", "volume_mute", {is_volume_muted: false});
+        await this._callService("media_player", "volume_mute", { is_volume_muted: false });
     }
 
     async do_set_volume({ volume }) {
         volume = Math.max(0, Math.min(1, volume / 100.));
-        await this._callService("media_player", "volume_set", {volume_level: volume});
+        await this._callService("media_player", "volume_set", { volume_level: volume });
     }
 
     async do_player_play() {
@@ -69,7 +69,7 @@ module.exports = class HomeAssistantMediaPlayer extends HomeAssistantDevice {
         await this._callService("media_player", "media_previous_track");
     }
 
-    async do_player_shuffle({shuffle}) {
+    async do_player_shuffle({ shuffle }) {
         if (shuffle === "on") {
             await this._callService("media_player", "shuffle_set", {
                 shuffle: true
@@ -81,7 +81,7 @@ module.exports = class HomeAssistantMediaPlayer extends HomeAssistantDevice {
         }
     }
 
-    async do_player_repeat({repeat}){
+    async do_player_repeat({ repeat }) {
         if (repeat === "off") {
             await this._callService("media_player", "repeat_set", {
                 repeat: "off"

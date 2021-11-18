@@ -122,7 +122,7 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
         this.name = "Yelp";
         this.description = "Yelp search for Almond ";
         this.log = LOG.childFor(YelpDevice);
-        this.redisClient = hasRedis() ? Redis.createClient({url: getRedisURL()}) : null;
+        this.redisClient = hasRedis() ? Redis.createClient({ url: getRedisURL() }) : null;
     }
 
     async start() {
@@ -136,23 +136,23 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
         const log = this.log.childFor(this._getCached);
         const cached = await this.redisClient.GET(key);
         if (cached === null)
-            log.info("CACHE MISS", {key});
+            log.info("CACHE MISS", { key });
         else
-            log.info("CACHE HIT", {key});
+            log.info("CACHE HIT", { key });
         return cached;
     }
 
     async _setCached(key, data) {
         if (!this.redisClient) return;
         const log = this.log.childFor(this._getCached);
-        log.info("CACHE SET", {key});
-        await this.redisClient.SET(key, data, {EX: CACHE_TTL_SECONDS});
+        log.info("CACHE SET", { key });
+        await this.redisClient.SET(key, data, { EX: CACHE_TTL_SECONDS });
     }
 
     async _get(url) {
         const log = this.log.childFor(this._get);
         const profiler = log.startTimer();
-        log.debug("Start GET request...", {url});
+        log.debug("Start GET request...", { url });
 
         let fromCache = false;
         const key = `com.yelp:${url}`;
@@ -289,7 +289,7 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                     .map((cat) => new Tp.Value.Entity(cat.alias, cat.alias === 'creperies' ? "Crepes" : cat.title));
 
                 const geo = new Tp.Value.Location(b.coordinates.latitude, b.coordinates.longitude,
-                                                prettyprintAddress(b.location));
+                    prettyprintAddress(b.location));
 
                 const data = {
                     id,

@@ -37,7 +37,7 @@ const Url = require('url');
 const querystring = require("querystring");
 
 
-const NEWS_DB_URL = "http://54.238.163.11:5000/news";
+const NEWS_DB_URL = "http://news.api.genie.stanford.edu:5000/news";
 // const NEWS_DB_URL = "http://192.168.50.183:5000/news";
 
 
@@ -117,7 +117,7 @@ module.exports = class SmartNewsDevice extends Tp.BaseDevice {
     }
 
     async *get_article({ keyword="" }, hints) {
-        var args = {};
+        let args = {};
         if (hints && hints.filter) {
             for (let [pname, op, value] of hints.filter) {
                 if (pname === "date") {

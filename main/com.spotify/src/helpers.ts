@@ -12,7 +12,7 @@ export type ContextURIType = "artist" | "album" | "playlist" | "show";
 
 export type URIType = SingularURIType | ContextURIType;
 
-export const URI_TYPES: URIType[] = [
+export const URI_TYPES : URIType[] = [
     "track",
     "artist",
     "album",
@@ -42,149 +42,149 @@ export type RedisClient = RedisClientType;
 export function pick<
     TObject extends Record<string, unknown>,
     TKeys extends keyof TObject
->(keys: TKeys[], record: TObject): Pick<TObject, TKeys> {
-    const out: any = {};
-    for (const key of keys) {
+>(keys : TKeys[], record : TObject) : Pick<TObject, TKeys> {
+    const out : any = {};
+    for (const key of keys) 
         out[key] = record[key];
-    }
+    
     return out;
 }
 
-export function sample<T>(items: T[]): T;
-export function sample<T>(items: T[], n: number): T[];
-export function sample<T>(items: T[], n?: number) {
-    if (n === undefined) {
+export function sample<T>(items : T[]) : T;
+export function sample<T>(items : T[], n : number) : T[];
+export function sample<T>(items : T[], n ?: number) {
+    if (n === undefined) 
         return items[Math.floor(Math.random() * items.length)];
-    }
-    const result: T[] = [];
-    const workCopy: T[] = Array.from(items);
+    
+    const result : T[] = [];
+    const workCopy : T[] = Array.from(items);
     while (result.length < n) {
         // Pick a random index
         const index = Math.floor(Math.random() * workCopy.length);
         // Add that item to the result
         result.push(workCopy[index]);
         // Put the first item into it's place (if needed)
-        if (index !== 0) {
+        if (index !== 0) 
             workCopy[index] = workCopy[0];
-        }
+        
         // Drop the first element
         workCopy.shift();
     }
     return result;
 }
 
-export function errorMetaFor(error: any): Error | { error: any } {
-    if (error instanceof Error) {
+export function errorMetaFor(error : any) : Error | { error : any } {
+    if (error instanceof Error) 
         return error;
-    }
+    
     return { error };
 }
 
-export function uriType(uri: string): URIType {
+export function uriType(uri : string) : URIType {
     for (const type of URI_TYPES) {
-        if (uri.startsWith(`spotify:${type}`)) {
+        if (uri.startsWith(`spotify:${type}`)) 
             return type;
-        }
+        
     }
     throw new Error(`Not a recognized URI type: ${uri}`);
 }
 
-export function isSingularURIType(type: URIType): type is SingularURIType {
+export function isSingularURIType(type : URIType) : type is SingularURIType {
     return type === "track" || type === "episode";
 }
 
-export function isSingularURI(uri: string): boolean {
+export function isSingularURI(uri : string) : boolean {
     return isSingularURIType(uriType(uri));
 }
 
-export function uriId(uri: string): string {
+export function uriId(uri : string) : string {
     const parts = uri.split(":");
     return parts[parts.length - 1];
 }
 
-export function arrayFor<TItem>(arrayOrItem: TItem | TItem[]): TItem[] {
-    if (Array.isArray(arrayOrItem)) {
+export function arrayFor<TItem>(arrayOrItem : TItem | TItem[]) : TItem[] {
+    if (Array.isArray(arrayOrItem)) 
         return arrayOrItem;
-    }
+    
     return [arrayOrItem];
 }
 
 // Assertion Helper Functions
 // ---------------------------------------------------------------------------
 
-export function assertMin(name: string, value: number, min: number): void {
+export function assertMin(name : string, value : number, min : number) : void {
     assert(value >= min, `Expected ${name} ≥ ${min}, given ${name} = ${value}`);
 }
 
-export function assertMax(name: string, value: number, max: number): void {
+export function assertMax(name : string, value : number, max : number) : void {
     assert(value <= max, `Expected ${name} ≤ ${max}, given ${name} = ${value}`);
 }
 
 export function assertBounds(
-    name: string,
-    value: number,
-    min: number,
-    max: number
-): void {
+    name : string,
+    value : number,
+    min : number,
+    max : number
+) : void {
     assert(
         min <= value && value <= max,
         `Expected ${min} ≤ ${name} ≤ ${max}, given ${name} = ${value}`
     );
 }
 
-export function assertUnreachable(): never {
+export function assertUnreachable() : never {
     assert(false, "Expected to be unreachable");
 }
 
 export function checkPageOptions(
-    options: PageOptions,
+    options : PageOptions,
     {
         min = 1,
         max = 50,
-    }: {
-        min?: number;
-        max?: number;
+    } : {
+        min ?: number;
+        max ?: number;
     } = {}
-): void {
-    if (options.limit !== undefined) {
+) : void {
+    if (options.limit !== undefined) 
         assertBounds("options.limit", options.limit, min, max);
-    }
-    if (options.offset !== undefined) {
+    
+    if (options.offset !== undefined) 
         assertMin("options.offset", options.offset, 0);
-    }
+    
 }
 
-export type IsFn<T> = (x: any) => x is T;
+export type IsFn<T> = (x : any) => x is T;
 
-export function cast<T>(is: IsFn<T>, x: any, message?: string): T {
-    if (is(x)) {
+export function cast<T>(is : IsFn<T>, x : any, message ?: string) : T {
+    if (is(x)) 
         return x;
-    }
-    if (message === undefined) {
+    
+    if (message === undefined) 
         message = `Expected ${is.name} to return true`;
-    }
+    
     throw new TypeError(`message; given ${typeof x}: ${x}`);
 }
 
-export function isString(x: any): x is string {
+export function isString(x : any) : x is string {
     return typeof x === "string";
 }
 
-export function checkEntity(name: string, x: any): Value.Entity {
-    if (typeof x === "object" && x instanceof Value.Entity) {
+export function checkEntity(name : string, x : any) : Value.Entity {
+    if (typeof x === "object" && x instanceof Value.Entity) 
         return x;
-    }
+    
     throw new TypeError(
         `Expected ${name} to be an Entity, given ${typeof x}: ${x}`
     );
 }
 
 export function defaultFromToken(
-    options: MarketPageOptions
-): MarketPageOptions {
-    if (options.market === undefined) {
+    options : MarketPageOptions
+) : MarketPageOptions {
+    if (options.market === undefined) 
         return { ...options, market: "from_token" };
-    }
+    
     return options;
 }
 
@@ -196,32 +196,32 @@ export function defaultFromToken(
 // https://github.com/stanford-oval/thingpedia-common-devices/blob/4c20248f87d000be1aef906d34b74a820aa03788/main/com.spotify/index.js
 //
 
-export function isUnfinished(episode: SimplifiedEpisodeObject): boolean {
+export function isUnfinished(episode : SimplifiedEpisodeObject) : boolean {
     return !episode?.resume_point?.fully_played;
 }
 
-export function isTestMode(): boolean {
+export function isTestMode() : boolean {
     return process.env.TEST_MODE === "1";
 }
 
 export function entityMatchScore(
-    searchTerm: string,
-    candidate: string
-): number {
+    searchTerm : string,
+    candidate : string
+) : number {
     if (searchTerm === candidate) return 1000;
 
     candidate = removeParenthesis(candidate);
     searchTerm = removeParenthesis(searchTerm);
-    let searchTermTokens = searchTerm.split(" ");
+    const searchTermTokens = searchTerm.split(" ");
 
     let score = 0;
     score -= 0.1 * editDistance(searchTerm, candidate);
 
     const candidateTokens = new Set(candidate.split(" "));
 
-    for (let candidateToken of candidateTokens) {
+    for (const candidateToken of candidateTokens) {
         let found = false;
-        for (let token of searchTermTokens) {
+        for (const token of searchTermTokens) {
             if (
                 token === candidateToken ||
                 (editDistance(token, candidateToken) <= 1 && token.length > 1)
@@ -245,11 +245,11 @@ export function entityMatchScore(
     return score;
 }
 
-function removeParenthesis(str: string): string {
+function removeParenthesis(str : string) : string {
     return str.replace(/ \(.*?\)/g, "");
 }
 
-function extractSongName(str: string): string {
+function extractSongName(str : string) : string {
     str = removeParenthesis(str);
     str = str.split(" - ")[0];
     return str;
@@ -259,8 +259,8 @@ function extractSongName(str: string): string {
 //
 // TODO Fix this up
 //
-export function filterPlayables(playables: ThingPlayable[]): ThingPlayable[] {
-    const names: Set<string> = new Set();
+export function filterPlayables(playables : ThingPlayable[]) : ThingPlayable[] {
+    const names : Set<string> = new Set();
     const filteredPlayables = Array.from(
         new Set(playables.map((playable) => String(playable.id.display)))
     )
@@ -277,21 +277,21 @@ export function filterPlayables(playables: ThingPlayable[]): ThingPlayable[] {
     return filteredPlayables as ThingPlayable[];
 }
 
-function editDistance(one: string, two: string): number {
+function editDistance(one : string, two : string) : number {
     if (one === two) return 0;
     if (one.indexOf(two) >= 0) return one.length - two.length;
     if (two.indexOf(one) >= 0) return two.length - one.length;
 
     const R = one.length + 1;
     const C = two.length + 1;
-    const matrix: number[] = new Array(R * C);
+    const matrix : number[] = new Array(R * C);
 
-    function set(i: number, j: number, v: number) {
+    function set(i : number, j : number, v : number) {
         // assert(i * C + j < R * C);
         matrix[i * C + j] = v;
     }
 
-    function get(i: number, j: number): number {
+    function get(i : number, j : number) : number {
         // assert(i * C + j < R * C);
         return matrix[i * C + j];
     }
@@ -300,8 +300,9 @@ function editDistance(one: string, two: string): number {
     for (let i = 1; i < R; i++) set(i, 0, i);
     for (let i = 1; i <= one.length; i++) {
         for (let j = 1; j <= two.length; j++) {
-            if (one[i - 1] === two[j - 1]) set(i, j, get(i - 1, j - 1));
-            else
+            if (one[i - 1] === two[j - 1]) {
+                set(i, j, get(i - 1, j - 1)); 
+            } else {
                 set(
                     i,
                     j,
@@ -310,7 +311,8 @@ function editDistance(one: string, two: string): number {
                             Math.min(get(i - 1, j), get(i, j - 1)),
                             get(i - 1, j - 1)
                         )
-                );
+                ); 
+            }
         }
     }
 

@@ -16,7 +16,7 @@ jobs:
     -
       name: "Unit Tests"
       before_script:
-      - make
+      - npx make
       - ./travis/start-home-assistant.sh
       script:
       - npm run lint
@@ -25,14 +25,14 @@ jobs:
     -
       name: "Scenario Tests"
       before_script:
-      - make
+      - npx make
       - ./travis/start-home-assistant.sh
       script:
       - TZ="America/Los_Angeles" npx nyc node ./test/scenarios -r universe builtin main universe
       after_success: npm run coverage
     -
       name: "Dataset Generation"
-      before_script: make
+      before_script: npx make
       script:
       - ./travis/test-dataset.sh
 

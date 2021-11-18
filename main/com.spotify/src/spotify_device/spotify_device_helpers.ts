@@ -10,52 +10,52 @@ import type SpotifyDevice from "./spotify_device";
 import { Params, ExecWrapper } from "./types";
 
 export function buildQuery(
-    filter: Runtime.CompiledFilterHint[],
-    idProp: keyof SearchQuery
-): SearchQuery {
+    filter : Runtime.CompiledFilterHint[],
+    idProp : keyof SearchQuery
+) : SearchQuery {
     const query = new SearchQuery();
 
-    for (let [name, op, value] of filter) {
+    for (const [name, op, value] of filter) {
         switch (name) {
-            case "id":
-                if (op === "==" || op === "=~") {
-                    query[idProp] = value;
-                }
-                break;
-            case "artists":
-                if (op === "contains" || op === "contains~") {
-                    query.artist = value;
-                }
-                break;
-            case "release_date":
-                if (!(value instanceof Date)) {
-                    console.warn(
-                        `Expected release_date to be Date, ` +
+        case "id":
+            if (op === "==" || op === "=~")
+                query[idProp] = value;
+
+            break;
+        case "artists":
+            if (op === "contains" || op === "contains~")
+                query.artist = value;
+
+            break;
+        case "release_date":
+            if (!(value instanceof Date)) {
+                console.warn(
+                    `Expected release_date to be Date, ` +
                             `found ${typeof value}: ${value}`
-                    );
-                    continue;
-                }
-                if (op === "==") {
-                    query.year = value;
-                } else if (op === ">=") {
-                    query.minYear = value;
-                } else if (op === "<=") {
-                    query.maxYear = value;
-                }
-                break;
-            case "genres":
-                if (op === "contains" || op === "contains~") {
-                    query.genre = value;
-                }
-                break;
-            case "album":
-                if (op === "==" || op === "=~") {
-                    query.album = value;
-                }
-                break;
-            default:
-                console.warn(`Un-recognized filter name '${name}'`);
-                break;
+                );
+                continue;
+            }
+            if (op === "==")
+                query.year = value;
+            else if (op === ">=")
+                query.minYear = value;
+            else if (op === "<=")
+                query.maxYear = value;
+
+            break;
+        case "genres":
+            if (op === "contains" || op === "contains~")
+                query.genre = value;
+
+            break;
+        case "album":
+            if (op === "==" || op === "=~")
+                query.album = value;
+
+            break;
+        default:
+            console.warn(`Un-recognized filter name '${name}'`);
+            break;
         }
     }
 
@@ -63,21 +63,21 @@ export function buildQuery(
 }
 
 export function invokeSearch<T>(
-    hints: Runtime.CompiledQueryHints,
-    idProp: keyof SearchQuery,
-    searchMethod: (kwds: Omit<SearchKwds, "type">) => Promise<T[]>,
-    fallbackMethod: (options: PageOptions) => Promise<T[]>,
-    otherSearchKwds: Omit<SearchKwds, "query" | "type"> = {}
-): Promise<T[]> {
-    if (!hints.filter) {
+    hints : Runtime.CompiledQueryHints,
+    idProp : keyof SearchQuery,
+    searchMethod : (kwds : Omit<SearchKwds, "type">) => Promise<T[]>,
+    fallbackMethod : (options : PageOptions) => Promise<T[]>,
+    otherSearchKwds : Omit<SearchKwds, "query" | "type"> = {}
+) : Promise<T[]> {
+    if (!hints.filter)
         return fallbackMethod(pick(["limit", "offset"], otherSearchKwds));
-    }
+
 
     const query = buildQuery(hints.filter, idProp);
 
-    if (query.isEmpty()) {
+    if (query.isEmpty())
         return fallbackMethod(pick(["limit", "offset"], otherSearchKwds));
-    }
+
 
     return searchMethod({ query, ...otherSearchKwds });
 }
@@ -91,9 +91,9 @@ export function invokeSearch<T>(
 //
 
 export function genieGet(
-    target: Object,
-    propertyKey: string,
-    descriptor: PropertyDescriptor
+    target : any,
+    propertyKey : string,
+    descriptor : PropertyDescriptor
 ) {
     const fn = descriptor.value;
 
@@ -102,11 +102,11 @@ export function genieGet(
         `genieGet() can only decorate functions, given ${typeof fn}: ${fn}`
     );
 
-    descriptor.value = async function (
-        this: SpotifyDevice,
-        params: Params,
-        hints: Runtime.CompiledQueryHints,
-        env: ExecWrapper
+    descriptor.value = async function(
+        this : SpotifyDevice,
+        params : Params,
+        hints : Runtime.CompiledQueryHints,
+        env : ExecWrapper
     ) {
         const log = this.log.childFor(fn, {
             "request.type": "genie.get",
@@ -119,18 +119,18 @@ export function genieGet(
         });
         const proxy = new Proxy(this, {
             get(target, prop, receiver) {
-                if (prop === "log") {
+                if (prop === "log")
                     return log;
-                }
+
                 return Reflect.get(target, prop, receiver);
             },
         });
         log.debug("Start Genie GET request");
         const profiler = log.startTimer();
-        let response: ReturnType<typeof fn>;
+        let response : ReturnType<typeof fn>;
         try {
             response = await fn.call(proxy, params, hints, env);
-        } catch (error: any) {
+        } catch(error : any) {
             this._handleError(profiler, error);
         }
 
@@ -151,9 +151,9 @@ export function genieGet(
 }
 
 export function genieDo(
-    target: Object,
-    propertyKey: string,
-    descriptor: PropertyDescriptor
+    target : any,
+    propertyKey : string,
+    descriptor : PropertyDescriptor
 ) {
     const fn = descriptor.value;
 
@@ -162,10 +162,10 @@ export function genieDo(
         `genieDo() can only decorate functions, given ${typeof fn}: ${fn}`
     );
 
-    descriptor.value = async function (
-        this: SpotifyDevice,
-        params: Params,
-        env: ExecWrapper
+    descriptor.value = async function(
+        this : SpotifyDevice,
+        params : Params,
+        env : ExecWrapper
     ) {
         const log = this.log.childFor(fn, {
             "request.type": "genie.do",
@@ -174,22 +174,22 @@ export function genieDo(
         });
         if (isTestMode()) {
             log.debug("In test mode, aborting.");
-            return;
+            return undefined;
         }
         log.debug("Start Genie DO request");
         const proxy = new Proxy(this, {
             get(target, prop, receiver) {
-                if (prop === "log") {
+                if (prop === "log")
                     return log;
-                }
+
                 return Reflect.get(target, prop, receiver);
             },
         });
         const profiler = log.startTimer();
-        let response: ReturnType<typeof fn>;
+        let response : ReturnType<typeof fn>;
         try {
             response = await fn.call(proxy, params, env);
-        } catch (error: any) {
+        } catch(error : any) {
             this._handleError(profiler, error);
         }
         profiler.done({

@@ -83,27 +83,27 @@ export default class SpotifyDevice extends BaseDevice {
     // private static readonly log = LOG.childFor(SpotifyDevice);
 
     // TODO Unsure what this is here for...
-    public uniqueId: string;
+    public uniqueId : string;
     // WARN Do _NOT_ initialize this!!! It's done automatically, and
     // initialization will break things!
-    public accessToken: undefined | string;
+    public accessToken : undefined | string;
 
-    public readonly spotifyd: undefined | SpotifyDaemon = undefined;
-    public readonly log: Logger.TLogger;
+    public readonly spotifyd : undefined | SpotifyDaemon = undefined;
+    public readonly log : Logger.TLogger;
 
-    public state: SpotifyDeviceState;
+    public state : SpotifyDeviceState;
 
-    protected _tokenizer: Tokenizer;
-    protected _failedToLaunchDesktopApp: boolean = false;
-    protected _client: Client;
-    protected _queueBuilders: QueueBuilderManager;
-    protected _playerDevice: undefined | DeviceObject;
-    protected _redis?: RedisClient;
-    protected _playerDeviceManager: PlayerDeviceManager;
-    protected _displayFormatter: DisplayFormatter;
-    protected _searchFilter: SearchFilter;
+    protected _tokenizer : Tokenizer;
+    protected _failedToLaunchDesktopApp  = false;
+    protected _client : Client;
+    protected _queueBuilders : QueueBuilderManager;
+    protected _playerDevice : undefined | DeviceObject;
+    protected _redis ?: RedisClient;
+    protected _playerDeviceManager : PlayerDeviceManager;
+    protected _displayFormatter : DisplayFormatter;
+    protected _searchFilter : SearchFilter;
 
-    constructor(engine: SpotifyDeviceEngine, state: SpotifyDeviceState) {
+    constructor(engine : SpotifyDeviceEngine, state : SpotifyDeviceState) {
         super(engine, state);
         this.state = state;
         this.uniqueId = `com.spotify-${this.state.id}`;
@@ -123,9 +123,9 @@ export default class SpotifyDevice extends BaseDevice {
             });
         }
 
-        if (hasRedis()) {
+        if (hasRedis()) 
             this._redis = Redis.createClient({ url: getRedisURL() });
-        }
+        
 
         this._client = new Client({
             useOAuth2: this,
@@ -158,17 +158,17 @@ export default class SpotifyDevice extends BaseDevice {
         this.log.debug("Constructed.");
     }
 
-    get engine(): SpotifyDeviceEngine {
+    get engine() : SpotifyDeviceEngine {
         return super.engine as SpotifyDeviceEngine;
     }
 
     async updateOAuth2Token(
-        accessToken: string,
-        refreshToken: string,
-        extraData: {
-            [key: string]: unknown;
+        accessToken : string,
+        refreshToken : string,
+        extraData : {
+            [key : string] : unknown;
         }
-    ): Promise<void> {
+    ) : Promise<void> {
         this.log.debug("Updating access token...");
         if (this.accessToken !== accessToken) {
             if (this.spotifyd) {
@@ -184,7 +184,7 @@ export default class SpotifyDevice extends BaseDevice {
         this.log.debug("Access token updated.");
     }
 
-    async start(): Promise<void> {
+    async start() : Promise<void> {
         this.log.debug("Starting...");
         await this._redis?.connect();
         // Try to get a device to play on, which has the added benefit of
@@ -193,13 +193,13 @@ export default class SpotifyDevice extends BaseDevice {
         this.log.debug("Started.");
     }
 
-    async stop(): Promise<void> {
+    async stop() : Promise<void> {
         this.log.debug("Stopping...");
         if (this._redis) {
             this.log.debug("Disconnecting Redis...");
             try {
                 await this._redis?.disconnect();
-            } catch (error: any) {
+            } catch(error : any) {
                 this.log.error(
                     "Error disconnecting Redis",
                     errorMetaFor(error)
@@ -221,11 +221,11 @@ export default class SpotifyDevice extends BaseDevice {
      *      "one" => "1"
      *
      */
-    protected _formatEntityDisplay(input: string): string {
+    protected _formatEntityDisplay(input : string) : string {
         return this._tokenizer.tokenize(input).rawTokens.join(" ");
     }
 
-    protected _handleError(profiler: Winston.Profiler, error: any): never {
+    protected _handleError(profiler : Winston.Profiler, error : any) : never {
         if (error instanceof ThingError) {
             profiler.done({
                 level: "info",
@@ -265,17 +265,17 @@ export default class SpotifyDevice extends BaseDevice {
         }
     }
 
-    protected async _getPlayerDevice(env?: ExecWrapper): Promise<DeviceObject> {
+    protected async _getPlayerDevice(env ?: ExecWrapper) : Promise<DeviceObject> {
         return this._playerDeviceManager.get(env);
     }
 
     protected async _negotiatePlay({
         device_id,
         uris,
-    }: {
-        device_id?: string;
-        uris?: string | string[];
-    }): Promise<void> {
+    } : {
+        device_id ?: string;
+        uris ?: string | string[];
+    }) : Promise<void> {
         const log = this.log.childFor(this._negotiatePlay, { device_id, uris });
 
         log.debug("Negotiating play...");
@@ -292,7 +292,7 @@ export default class SpotifyDevice extends BaseDevice {
                     log.debug("Audio controller -- resuming audio");
                     try {
                         await this._client.player.play({ device_id });
-                    } catch (error: any) {
+                    } catch(error : any) {
                         log.error("Failed to resume audio --", error);
                     }
                 },
@@ -301,7 +301,7 @@ export default class SpotifyDevice extends BaseDevice {
                     log.debug("Audio controller -- stopping audio");
                     try {
                         await this._client.player.pause({ device_id });
-                    } catch (error: any) {
+                    } catch(error : any) {
                         console.error("Failed to stop audio --", error);
                     }
                 },
@@ -315,7 +315,7 @@ export default class SpotifyDevice extends BaseDevice {
                 device_id,
                 uris,
             });
-        } catch (error) {
+        } catch(error) {
             log.error("Error playing", { error });
             const player_info = await this._client.player.get();
             if (player_info) {
@@ -337,10 +337,10 @@ export default class SpotifyDevice extends BaseDevice {
 
     @genieGet
     async get_playable(
-        params: Params,
-        hints: Runtime.CompiledQueryHints,
-        env: ExecWrapper
-    ): Promise<ThingPlayable[]> {
+        params : Params,
+        hints : Runtime.CompiledQueryHints,
+        env : ExecWrapper
+    ) : Promise<ThingPlayable[]> {
         if (!hints.filter) {
             return (await this._client.getAnyPlayable()).map((playable) =>
                 playable.toThing(this._displayFormatter)
@@ -389,10 +389,10 @@ export default class SpotifyDevice extends BaseDevice {
 
     @genieGet
     async get_artist(
-        params: Params,
-        hints: Runtime.CompiledQueryHints,
-        env: ExecWrapper
-    ): Promise<ThingArtist[]> {
+        params : Params,
+        hints : Runtime.CompiledQueryHints,
+        env : ExecWrapper
+    ) : Promise<ThingArtist[]> {
         // const log = this.log.childFor(this.get_artist);
 
         const limit = 10;
@@ -452,10 +452,10 @@ export default class SpotifyDevice extends BaseDevice {
 
     @genieGet
     async get_song(
-        params: Params,
-        hints: Runtime.CompiledQueryHints,
-        env: ExecWrapper
-    ): Promise<ThingTrack[]> {
+        params : Params,
+        hints : Runtime.CompiledQueryHints,
+        env : ExecWrapper
+    ) : Promise<ThingTrack[]> {
         return (
             await invokeSearch(
                 hints,
@@ -469,10 +469,10 @@ export default class SpotifyDevice extends BaseDevice {
 
     @genieGet
     async get_album(
-        params: Params,
-        hints: Runtime.CompiledQueryHints,
-        env: ExecEnvironment
-    ): Promise<ThingAlbum[]> {
+        params : Params,
+        hints : Runtime.CompiledQueryHints,
+        env : ExecEnvironment
+    ) : Promise<ThingAlbum[]> {
         return (
             await invokeSearch(
                 hints,
@@ -486,10 +486,10 @@ export default class SpotifyDevice extends BaseDevice {
 
     @genieGet
     async get_show(
-        params: Params,
-        hints: Runtime.CompiledQueryHints,
-        env: ExecEnvironment
-    ): Promise<ThingShow[]> {
+        params : Params,
+        hints : Runtime.CompiledQueryHints,
+        env : ExecEnvironment
+    ) : Promise<ThingShow[]> {
         if (!hints.filter) {
             const show = await this._client.getAnyShow();
             return [show.toThing(this._displayFormatter)];
@@ -504,15 +504,15 @@ export default class SpotifyDevice extends BaseDevice {
 
         const shows = await this._client.search.shows({ query, limit: 10 });
 
-        return shows.map((show) => show.toThing(this._displayFormatter));
+        return shows.map((show) => show.toThing(this._displayFormatter, true));
     }
 
     @genieGet
     async get_playlist(
-        params: Params,
-        hints: Runtime.CompiledQueryHints,
-        env: ExecEnvironment
-    ): Promise<ThingPlaylist[]> {
+        params : Params,
+        hints : Runtime.CompiledQueryHints,
+        env : ExecEnvironment
+    ) : Promise<ThingPlaylist[]> {
         return (
             await invokeSearch(
                 hints,
@@ -526,10 +526,10 @@ export default class SpotifyDevice extends BaseDevice {
 
     @genieGet
     get_get_user_top_tracks(
-        params: Params,
-        hints: Runtime.CompiledQueryHints,
-        env: ExecEnvironment
-    ): Promise<Array<{ song: ThingTrack }>> {
+        params : Params,
+        hints : Runtime.CompiledQueryHints,
+        env : ExecEnvironment
+    ) : Promise<Array<{ song : ThingTrack }>> {
         // TODO https://api.spotify.com/v1/me/top/tracks?limit=20&time_range=short_term
         return this._client.personalization.getMyTopTracks().then((tracks) =>
             tracks.map((track) => ({
@@ -540,24 +540,24 @@ export default class SpotifyDevice extends BaseDevice {
 
     @genieGet
     async get_get_currently_playing(
-        params: Params,
-        hints: Runtime.CompiledQueryHints,
-        env: ExecEnvironment
-    ): Promise<ThingTrack | ThingEpisode> {
+        params : Params,
+        hints : Runtime.CompiledQueryHints,
+        env : ExecEnvironment
+    ) : Promise<ThingTrack | ThingEpisode> {
         const response = await this._client.player.getCurrentlyPlaying();
 
-        if (response === undefined) {
+        if (response === undefined) 
             throw new ThingError("No song playing", "no_song_playing");
-        }
+        
         return response.toThing(this._displayFormatter);
     }
 
     @genieGet
     get_get_song_from_library(
-        params: Params,
-        hints: Runtime.CompiledQueryHints,
-        env: ExecEnvironment
-    ): Promise<ThingTrack[]> {
+        params : Params,
+        hints : Runtime.CompiledQueryHints,
+        env : ExecEnvironment
+    ) : Promise<ThingTrack[]> {
         return this._client.library
             .getTracks()
             .then((list) =>
@@ -567,10 +567,10 @@ export default class SpotifyDevice extends BaseDevice {
 
     @genieGet
     get_get_album_from_library(
-        params: Params,
-        hints: Runtime.CompiledQueryHints,
-        env: ExecEnvironment
-    ): Promise<ThingAlbum[]> {
+        params : Params,
+        hints : Runtime.CompiledQueryHints,
+        env : ExecEnvironment
+    ) : Promise<ThingAlbum[]> {
         return this._client.library
             .getAlbums()
             .then((list) =>
@@ -580,10 +580,10 @@ export default class SpotifyDevice extends BaseDevice {
 
     @genieGet
     get_get_show_from_library(
-        params: Params,
-        hints: Runtime.CompiledQueryHints,
-        env: ExecEnvironment
-    ): Promise<ThingShow[]> {
+        params : Params,
+        hints : Runtime.CompiledQueryHints,
+        env : ExecEnvironment
+    ) : Promise<ThingShow[]> {
         return this._client.library
             .getShows()
             .then((list) =>
@@ -593,10 +593,10 @@ export default class SpotifyDevice extends BaseDevice {
 
     @genieGet
     get_get_artist_from_library(
-        params: Params,
-        hints: Runtime.CompiledQueryHints,
-        env: ExecEnvironment
-    ): Promise<ThingArtist[]> {
+        params : Params,
+        hints : Runtime.CompiledQueryHints,
+        env : ExecEnvironment
+    ) : Promise<ThingArtist[]> {
         return this._client.follow
             .getMyArtists()
             .then((list) =>
@@ -610,9 +610,9 @@ export default class SpotifyDevice extends BaseDevice {
 
     @genieDo
     async do_play(
-        params: Params,
-        env: ExecWrapper
-    ): Promise<{ device: Value.Entity }> {
+        params : Params,
+        env : ExecWrapper
+    ) : Promise<{ device : Value.Entity }> {
         const playable = cast(
             isEntity,
             params.playable,
@@ -627,9 +627,9 @@ export default class SpotifyDevice extends BaseDevice {
 
     @genieDo
     async do_add_item_to_library(
-        params: Params,
-        env: ExecWrapper
-    ): Promise<void> {
+        params : Params,
+        env : ExecWrapper
+    ) : Promise<void> {
         const playable = cast(
             isEntity,
             params.playable,
@@ -637,33 +637,33 @@ export default class SpotifyDevice extends BaseDevice {
         );
         const id = uriId(playable.value);
         const type = uriType(playable.value);
-        let method: (id: string) => Promise<void>;
+        let method : (id : string) => Promise<void>;
 
         switch (type) {
-            case "album":
-                method = this._client.library.putAlbums;
-                break;
-            case "track":
-                method = this._client.library.putTracks;
-                break;
-            case "show":
-                method = this._client.library.putShows;
-                break;
-            case "episode":
-                method = this._client.library.putEpisodes;
-                break;
-            default:
-                throw new ThingError(
-                    `Can not add ${type} to library`,
-                    "disallowed_action"
-                );
+        case "album":
+            method = this._client.library.putAlbums;
+            break;
+        case "track":
+            method = this._client.library.putTracks;
+            break;
+        case "show":
+            method = this._client.library.putShows;
+            break;
+        case "episode":
+            method = this._client.library.putEpisodes;
+            break;
+        default:
+            throw new ThingError(
+                `Can not add ${type} to library`,
+                "disallowed_action"
+            );
         }
 
         await method.bind(this._client.library)(id);
     }
 
     @genieDo
-    async do_add_artist_to_library(params: Params, env: ExecWrapper) {
+    async do_add_artist_to_library(params : Params, env : ExecWrapper) {
         const artist = cast(
             isEntity,
             params.artist,
@@ -680,7 +680,7 @@ export default class SpotifyDevice extends BaseDevice {
     }
 
     @genieDo
-    async do_create_playlist(params: Params, env: ExecWrapper): Promise<void> {
+    async do_create_playlist(params : Params, env : ExecWrapper) : Promise<void> {
         const name = cast(
             isString,
             params.name,
@@ -690,7 +690,7 @@ export default class SpotifyDevice extends BaseDevice {
     }
 
     @genieDo
-    async do_player_play(params: Params, env: ExecWrapper) {
+    async do_player_play(params : Params, env : ExecWrapper) {
         this._checkPremium();
         const device = await this._getPlayerDevice(env);
 
@@ -702,7 +702,7 @@ export default class SpotifyDevice extends BaseDevice {
     }
 
     @genieDo
-    async do_player_pause(params: Params, env: ExecWrapper) {
+    async do_player_pause(params : Params, env : ExecWrapper) {
         this._checkPremium();
         const device = await this._getPlayerDevice(env);
         return this._client.player.pause({
@@ -711,7 +711,7 @@ export default class SpotifyDevice extends BaseDevice {
     }
 
     @genieDo
-    async do_player_next(params: Params, env: ExecWrapper) {
+    async do_player_next(params : Params, env : ExecWrapper) {
         this._checkPremium();
         const device = await this._getPlayerDevice(env);
         return this._client.player.next({
@@ -720,7 +720,7 @@ export default class SpotifyDevice extends BaseDevice {
     }
 
     @genieDo
-    async do_player_previous(params: Params, env: ExecWrapper) {
+    async do_player_previous(params : Params, env : ExecWrapper) {
         this._checkPremium();
         const device = await this._getPlayerDevice(env);
         return this._client.player.previous({
@@ -729,7 +729,7 @@ export default class SpotifyDevice extends BaseDevice {
     }
 
     @genieDo
-    async do_player_shuffle(params: Params, env: ExecWrapper) {
+    async do_player_shuffle(params : Params, env : ExecWrapper) {
         const shuffle = cast(
             isOnOff,
             params.shuffle,
@@ -743,7 +743,7 @@ export default class SpotifyDevice extends BaseDevice {
     }
 
     @genieDo
-    async do_player_repeat(params: Params, env: ExecWrapper) {
+    async do_player_repeat(params : Params, env : ExecWrapper) {
         const repeat = cast(
             isRepeatState,
             params.repeat,
@@ -757,7 +757,7 @@ export default class SpotifyDevice extends BaseDevice {
     }
 
     @genieDo
-    async do_add_song_to_playlist(params: Params, env: ExecWrapper) {
+    async do_add_song_to_playlist(params : Params, env : ExecWrapper) {
         const song = cast(
             isEntity,
             params.song,

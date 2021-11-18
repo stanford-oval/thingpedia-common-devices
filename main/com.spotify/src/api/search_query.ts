@@ -3,19 +3,19 @@ import { Value } from "thingpedia";
 export type YearRange = [undefined | number, undefined | number];
 
 export type SearchQueryProps = {
-    album?: string | Value.Entity;
-    any?: string | Value.Entity;
-    artist?: string | Value.Entity;
-    genre?: string;
-    tag?: string;
-    track?: string | Value.Entity;
-    year?: string | number | Date | YearRange;
+    album ?: string | Value.Entity;
+    any ?: string | Value.Entity;
+    artist ?: string | Value.Entity;
+    genre ?: string;
+    tag ?: string;
+    track ?: string | Value.Entity;
+    year ?: string | number | Date | YearRange;
 };
 
-function stringFor(value: any): undefined | string {
-    if (value === undefined) {
+function stringFor(value : any) : undefined | string {
+    if (value === undefined)
         return undefined;
-    }
+
     const valueType = typeof value;
     if (valueType !== "string") {
         console.warn(`Converting unexpected ${valueType} to string: ${value}`);
@@ -28,21 +28,21 @@ function stringFor(value: any): undefined | string {
     return value;
 }
 
-function stringOrEntityFor(value: any): undefined | string | Value.Entity {
-    if (value instanceof Value.Entity) {
+function stringOrEntityFor(value : any) : undefined | string | Value.Entity {
+    if (value instanceof Value.Entity)
         return value;
-    }
+
     return stringFor(value);
 }
 
-function yearNumberFor(value: any): undefined | number {
+function yearNumberFor(value : any) : undefined | number {
     if (value === undefined) {
         // Pass-through undefined, which is equivalent to un-setting a property
         return undefined;
     }
-    if (value instanceof Date) {
+    if (value instanceof Date)
         return value.getFullYear();
-    }
+
     const number = Number(value);
     if (Number.isNaN(number)) {
         console.warn(`Value ${value} is not a number (NaN)`);
@@ -59,7 +59,7 @@ function yearNumberFor(value: any): undefined | number {
     return number;
 }
 
-function yearFor(value: any): undefined | string | number | YearRange {
+function yearFor(value : any) : undefined | string | number | YearRange {
     if (value === undefined) {
         // Pass-through undefined, which is equivalent to un-setting a property
         return undefined;
@@ -70,9 +70,9 @@ function yearFor(value: any): undefined | string | number | YearRange {
         // validate
         return value;
     }
-    if (value instanceof Date) {
+    if (value instanceof Date)
         return value.getFullYear();
-    }
+
     if (Array.isArray(value)) {
         if (value.length !== 2) {
             console.warn(
@@ -86,48 +86,48 @@ function yearFor(value: any): undefined | string | number | YearRange {
 }
 
 function encodeYear(
-    year: undefined | string | number | YearRange
-): undefined | string {
-    if (year === undefined) {
+    year : undefined | string | number | YearRange
+) : undefined | string {
+    if (year === undefined)
         return undefined;
-    }
+
     if (Array.isArray(year)) {
         const min = year[0] === undefined ? 0 : year[0];
         const max = year[1] === undefined ? new Date().getFullYear() : year[1];
         return `${min}-${max}`;
     }
-    if (typeof year === "string") {
+    if (typeof year === "string")
         return year;
-    }
+
     return String(year);
 }
 
 export class SearchQuery {
-    public static normalize(value: any): string {
-        if (value === undefined) {
+    public static normalize(value : any) : string {
+        if (value === undefined)
             return "";
-        } else if (value instanceof Value.Entity) {
+        else if (value instanceof Value.Entity)
             value = String(value.display).normalize("NFC");
-        } else if (typeof value !== "string") {
+        else if (typeof value !== "string")
             value = String(value).normalize("NFC");
-        }
+
         return value.toLocaleLowerCase();
     }
 
-    public static from(value: SearchQueryProps | SearchQuery) {
-        if (value instanceof SearchQuery) {
+    public static from(value : SearchQueryProps | SearchQuery) {
+        if (value instanceof SearchQuery)
             return value;
-        }
+
         return new SearchQuery(value);
     }
 
-    private _album?: string | Value.Entity;
-    private _any?: string | Value.Entity;
-    private _artist?: string | Value.Entity;
-    private _genre?: string;
-    private _tag?: string;
-    private _track?: string | Value.Entity;
-    private _year?: string | number | YearRange;
+    private _album ?: string | Value.Entity;
+    private _any ?: string | Value.Entity;
+    private _artist ?: string | Value.Entity;
+    private _genre ?: string;
+    private _tag ?: string;
+    private _track ?: string | Value.Entity;
+    private _year ?: string | number | YearRange;
 
     constructor({
         album,
@@ -137,7 +137,7 @@ export class SearchQuery {
         tag,
         track,
         year,
-    }: SearchQueryProps = {}) {
+    } : SearchQueryProps = {}) {
         this.album = album;
         this.any = any;
         this.artist = artist;
@@ -150,70 +150,63 @@ export class SearchQuery {
     get album() {
         return this._album;
     }
+    set album(value : any) {
+        this._album = stringOrEntityFor(value);
+    }
 
     get any() {
         return this._any;
+    }
+    set any(value : any) {
+        this._any = stringOrEntityFor(value);
     }
 
     get artist() {
         return this._artist;
     }
+    set artist(value : any) {
+        this._artist = stringOrEntityFor(value);
+    }
 
     get genre() {
         return this._genre;
+    }
+    set genre(value : any) {
+        this._genre = stringFor(value);
     }
 
     get tag() {
         return this._tag;
     }
+    set tag(value : any) {
+        this._tag = stringFor(value);
+    }
 
     get track() {
         return this._track;
+    }
+    set track(value : any) {
+        this._track = stringOrEntityFor(value);
     }
 
     get year() {
         return this._year;
     }
-
-    set album(value: any) {
-        this._album = stringOrEntityFor(value);
-    }
-
-    set any(value: any) {
-        this._any = stringOrEntityFor(value);
-    }
-
-    set artist(value: any) {
-        this._artist = stringOrEntityFor(value);
-    }
-
-    set genre(value: any) {
-        this._genre = stringFor(value);
-    }
-
-    set tag(value: any) {
-        this._tag = stringFor(value);
-    }
-
-    set track(value: any) {
-        this._track = stringOrEntityFor(value);
-    }
-
-    set year(value: any) {
+    set year(value : any) {
         this._year = yearFor(value);
     }
 
-    set minYear(value: any) {
-        if (!Array.isArray(this._year)) {
+    set minYear(value : any) {
+        if (!Array.isArray(this._year))
             this._year = [undefined, undefined];
-        }
+
         this._year[0] = yearNumberFor(value);
     }
 
-    set maxYear(value: any) {
-        if (!Array.isArray(this._year)) {
+    set maxYear(value : any) {
+        if (!Array.isArray(this._year))
             this._year = [undefined, undefined];
-        }
+
         // HACK Thingtalk generates songs from 2010 as
         //
         //          release_date >= makeDate(2010,1,1)
@@ -229,14 +222,14 @@ export class SearchQuery {
             value instanceof Date &&
             value.getMonth() === 0 &&
             value.getDate() === 1
-        ) {
+        )
             this._year[1] = value.getFullYear() - 1;
-        } else {
+        else
             this._year[1] = yearNumberFor(value);
-        }
+
     }
 
-    isEmpty(): boolean {
+    isEmpty() : boolean {
         return [
             this._album,
             this._any,
@@ -248,7 +241,7 @@ export class SearchQuery {
         ].every((v) => v === undefined);
     }
 
-    isArtistQuery(): boolean {
+    isArtistQuery() : boolean {
         return (
             [
                 this._album,
@@ -261,7 +254,7 @@ export class SearchQuery {
         );
     }
 
-    isAlbumQuery(): boolean {
+    isAlbumQuery() : boolean {
         return (
             [
                 this._artist,
@@ -274,18 +267,10 @@ export class SearchQuery {
         );
     }
 
-    encodeYear(): undefined | string {
-        if (this._year === undefined) {
-            return undefined;
-        }
-        if (Array.isArray(this._year)) {
-        }
-    }
-
-    protected _valueMap(): Array<
+    protected _valueMap() : Array<
         [string, undefined | string | Value.Entity | YearRange]
-    > {
-        const pairs: Array<
+        > {
+        const pairs : Array<
             [string, undefined | string | Value.Entity | YearRange]
         > = [
             ["album", this._album],
@@ -298,19 +283,19 @@ export class SearchQuery {
         return pairs.filter((pair) => pair[1] !== undefined);
     }
 
-    toString(): string {
-        const terms: string[] = [];
+    toString() : string {
+        const terms : string[] = [];
 
-        if (this._any !== undefined) {
+        if (this._any !== undefined)
             terms.push(SearchQuery.normalize(this._any));
-        }
 
-        for (let [key, value] of this._valueMap()) {
-            value = SearchQuery.normalize(value);
-            if (value.indexOf(" ") > -1) {
-                value = JSON.stringify(value);
-            }
-            terms.push(`${key}:${value}`);
+
+        for (const [key, value] of this._valueMap()) {
+            let normalized = SearchQuery.normalize(value);
+            if (normalized.indexOf(" ") > -1)
+                normalized = JSON.stringify(value);
+
+            terms.push(`${key}:${normalized}`);
         }
 
         return terms.join(" ");

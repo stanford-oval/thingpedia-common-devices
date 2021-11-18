@@ -11,26 +11,26 @@ const HomeAssistantSensor = require('./sensor');
 
 module.exports = class HomeAssistantLock extends HomeAssistantSensor {
     async get_state() {
-            return [{ state: this.state.state }];
+        return [{ state: this.state.state }];
     }
     // note: subscribe_ must NOT be async, or an ImplementationError will occur at runtime
     subscribe_state() {
-            return this._subscribeState(() => {
-                return { state: this.state.state };
-            });
+        return this._subscribeState(() => {
+            return { state: this.state.state };
+        });
     }
     async do_set_state({ state, code }) {
         if (this.domain === 'lock') {
             if (state === 'lock') {
-               if (code === undefined) 
+                if (code === undefined) 
                     await this._callService('lock', 'lock');
                 else
-                    await this._callService('lock', 'lock', {code: code});
+                    await this._callService('lock', 'lock', { code: code });
             } else {
                 if (code === undefined)
                     await this._callService('lock', 'unlock');
                 else
-                    await this._callService('lock', 'unlock', {code: code});
+                    await this._callService('lock', 'unlock', { code: code });
             }
         } else {
             throw new Error('Sorry! Your lock doesn\'t seem to support remote locking or unlocking.');

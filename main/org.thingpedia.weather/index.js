@@ -60,7 +60,7 @@ function getRedisURL() {
 module.exports = class WeatherAPIDevice extends Tp.BaseDevice {
     constructor(engine, state) {
         super(engine, state);
-        this.redisClient = hasRedis() ? Redis.createClient({url: getRedisURL()}) : undefined;
+        this.redisClient = hasRedis() ? Redis.createClient({ url: getRedisURL() }) : undefined;
     }
 
     async start() {
@@ -73,16 +73,16 @@ module.exports = class WeatherAPIDevice extends Tp.BaseDevice {
         if (!this.redisClient) return null;
         const cached = await this.redisClient.GET(key);
         if (cached === null)
-            LOG.info("CACHE MISS", {key});
+            LOG.info("CACHE MISS", { key });
         else
-            LOG.info("CACHE HIT", {key});
+            LOG.info("CACHE HIT", { key });
         return cached;
     }
 
     async _setCached(key, data) {
         if (!this.redisClient) return;
-        LOG.info("CACHE SET", {key});
-        await this.redisClient.SET(key, data, {EX: 30 * 60});
+        LOG.info("CACHE SET", { key });
+        await this.redisClient.SET(key, data, { EX: 30 * 60 });
     }
 
     async _get(url) {
@@ -95,7 +95,7 @@ module.exports = class WeatherAPIDevice extends Tp.BaseDevice {
         } else {
             xml = cached;
         }
-        return await Tp.Helpers.Xml.parseString(xml);
+        return Tp.Helpers.Xml.parseString(xml);
     }
 
     async _sunrise_data(location, date) {
@@ -196,7 +196,7 @@ module.exports = class WeatherAPIDevice extends Tp.BaseDevice {
     async get_forecast({ date, location }) {
         const data = await this._weather_data(location);
         const now = Temporal.Now.zonedDateTimeISO(this.platform.timezone);
-        const today = now.withPlainTime({ hour: 0, minute: 0});
+        const today = now.withPlainTime({ hour: 0, minute: 0 });
 
         let datetz;
         // do forecast for tomorrow if time is unspecified

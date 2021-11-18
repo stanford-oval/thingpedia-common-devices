@@ -5,25 +5,25 @@ import Logging from "../logging";
 import { RedisClient } from "../helpers";
 
 const LOG = Logging.get(__filename);
-const REGISTRY: Record<string, any> = {};
+const REGISTRY : Record<string, any> = {};
 
 export const DEFAULT_TTL_SECONDS = 60 * 60 * 24; // 1 day
 
 export interface CacheDecorated {
-    log: Logger.TLogger;
-    redis: RedisClient | undefined;
-    userId: string;
+    log : Logger.TLogger;
+    redis : RedisClient | undefined;
+    userId : string;
 }
 
-export function cacheRegister(cls: any) {
+export function cacheRegister(cls : any) {
     REGISTRY[cls.name] = cls;
 }
 
 export function orderedPairsFor(
-    record: Record<string, any>,
-    omit: string[] = []
-): Array<[string, any]> {
-    const pairs: Array<[string, any]> = [];
+    record : Record<string, any>,
+    omit : string[] = []
+) : Array<[string, any]> {
+    const pairs : Array<[string, any]> = [];
     for (const key of Object.keys(record).sort()) {
         if (!omit.includes(key)) {
             const value = record[key];
@@ -33,14 +33,14 @@ export function orderedPairsFor(
     return pairs;
 }
 
-export function cacheReviver(key: string, value: any) {
+export function cacheReviver(key : string, value : any) {
     const log = LOG.childFor(cacheReviver);
-    if (value === null || typeof value !== "object") {
+    if (value === null || typeof value !== "object")
         return value;
-    }
-    if (!value.hasOwnProperty("__class__")) {
+
+    if (!Object.prototype.hasOwnProperty.call(value, "__class__"))
         return value;
-    }
+
     const className = value.__class__;
     log.debug(`Reviving...`, { __class__: className });
     if (typeof className !== "string") {
@@ -64,50 +64,50 @@ export function cacheReviver(key: string, value: any) {
 }
 
 export async function cacheGet(
-    redis: undefined | RedisClient,
-    key: string,
-    log?: Logger.TLogger
-): Promise<null | string> {
-    if (!redis || !redis.isOpen) {
+    redis : undefined | RedisClient,
+    key : string,
+    log ?: Logger.TLogger
+) : Promise<null | string> {
+    if (!redis || !redis.isOpen)
         return null;
-    }
-    if (log === undefined) {
+
+    if (log === undefined)
         log = LOG.childFor(cacheSet);
-    }
+
     const cached = await redis.GET(key);
-    if (cached === null) {
-        log.info("CACHE MISS", {key});
-    } else {
-        log.info("CACHE HIT", {key});
-    }
+    if (cached === null)
+        log.info("CACHE MISS", { key });
+    else
+        log.info("CACHE HIT", { key });
+
     return cached;
 }
 
 export async function cacheSet(
-    redis: undefined | RedisClient,
-    key: string,
-    data: string,
-    options: any,
-    log?: Logger.TLogger
+    redis : undefined | RedisClient,
+    key : string,
+    data : string,
+    options : any,
+    log ?: Logger.TLogger
 ) {
-    if (!redis || !redis.isOpen) {
-        return null;
-    }
-    if (log === undefined) {
+    if (!redis || !redis.isOpen)
+        return;
+
+    if (log === undefined)
         log = LOG.childFor(cacheSet);
-    }
+
     log.info("CACHE SET", { key, options: options });
     await redis.SET(key, data, options);
 }
 
 export function cache<TArgs extends any[]>(
-    makeArgsKey: null | ((...args: TArgs) => undefined | string),
-    setOptions: any = { EX: DEFAULT_TTL_SECONDS }
+    makeArgsKey : null | ((...args : TArgs) => undefined | string),
+    setOptions : any = { EX: DEFAULT_TTL_SECONDS }
 ) {
-    return function (
-        target: Object,
-        propertyKey: string,
-        descriptor: PropertyDescriptor
+    return function(
+        target : any,
+        propertyKey : string,
+        descriptor : PropertyDescriptor
     ) {
         const fn = descriptor.value;
 
@@ -116,9 +116,9 @@ export function cache<TArgs extends any[]>(
             `cache() can only decorate functions, given ${typeof fn}: ${fn}`
         );
 
-        descriptor.value = async function (
-            this: CacheDecorated,
-            ...args: TArgs
+        descriptor.value = async function(
+            this : CacheDecorated,
+            ...args : TArgs
         ) {
             const log = this.log.childFor(fn, { userId: this.userId });
             log.debug("START client cache request...", { args });
@@ -128,13 +128,13 @@ export function cache<TArgs extends any[]>(
             let key = `com.spotify:${this.userId}:${fnKey}`;
             if (makeArgsKey !== null) {
                 const argsKey = makeArgsKey.apply(this, args);
-                if (argsKey !== undefined) {
+                if (argsKey !== undefined)
                     key = `${key}:${makeArgsKey.apply(this, args)}`;
-                }
+
             }
 
-            let data: any;
-            let isFromCache: boolean = false;
+            let data : any;
+            let isFromCache  = false;
 
             const timer = log.startTimer();
             const cached = await cacheGet(this.redis, key);
@@ -156,6 +156,6 @@ export function cache<TArgs extends any[]>(
     };
 }
 
-export function idKey(id: string): string {
+export function idKey(id : string) : string {
     return id;
 }

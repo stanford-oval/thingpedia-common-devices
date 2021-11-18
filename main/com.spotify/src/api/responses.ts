@@ -11,34 +11,34 @@ import {
 } from "./objects";
 
 export interface SearchResponse {
-    albums?: PagingObject<SimplifiedAlbumObject>;
-    artists?: PagingObject<ArtistObject>;
-    episodes?: PagingObject<SimplifiedEpisodeObject>;
-    playlists?: PagingObject<SimplifiedPlaylistObject>;
-    shows?: PagingObject<SimplifiedShowObject>;
-    tracks?: PagingObject<TrackObject>;
+    albums ?: PagingObject<SimplifiedAlbumObject>;
+    artists ?: PagingObject<ArtistObject>;
+    episodes ?: PagingObject<SimplifiedEpisodeObject>;
+    playlists ?: PagingObject<SimplifiedPlaylistObject>;
+    shows ?: PagingObject<SimplifiedShowObject>;
+    tracks ?: PagingObject<TrackObject>;
 }
 
 export interface FeaturedPlaylistsResponse {
-    message: string;
-    playlists: PagingObject<SimplifiedPlaylistObject>;
+    message : string;
+    playlists : PagingObject<SimplifiedPlaylistObject>;
 }
 
 export interface UserSavedAlbum {
-    added_at: string;
-    album: AlbumObject;
+    added_at : string;
+    album : AlbumObject;
 }
 
 export interface UserSavedShow {
-    added_at: string;
-    show: ShowObject;
+    added_at : string;
+    show : ShowObject;
 }
 
 export interface UserSavedTrack {
-    added_at: string;
-    track: TrackObject;
+    added_at : string;
+    track : TrackObject;
 }
 
 export interface PlaylistSnapshotResponse {
-    snapshot_id: string;
+    snapshot_id : string;
 }

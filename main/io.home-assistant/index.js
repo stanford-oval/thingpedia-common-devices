@@ -241,7 +241,7 @@ module.exports = class HomeAssistantGateway extends Tp.BaseDevice {
 
     async _reconnect() {
         try {
-            await this._connection.setSocket(await this._createSocket({ setupRetry: 10}));
+            await this._connection.setSocket(await this._createSocket({ setupRetry: 10 }));
         } catch(e) {
             console.error(`Failed to reconnect to Home Assistant: ` + e);
         }
