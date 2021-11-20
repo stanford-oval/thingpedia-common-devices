@@ -2251,7 +2251,7 @@ UT: ontimer(date=[set_time($end_of(day), new Time(9, 0))]) => @org.thingpedia.bu
 # mturk/100003
 U: Set a reminder for my AA meeting tomorrow
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time($end_of(day), new Time(8, 0))]) => @org.thingpedia.builtin.thingengine.builtin.say(message="AA meeting");
+UT: ontimer(date=[$end_of(day)]) => @org.thingpedia.builtin.thingengine.builtin.say(message="AA meeting");
 ====
 # mturk/100004
 U: Enter a reminder for my date on Friday night
@@ -2261,12 +2261,12 @@ UT: ontimer(date=[set_time(new Date(enum friday), $time.evening)]) => @org.thing
 # mturk/100006
 U: Set a reminder for my parent-teacher conference meeting Monday at 7:15am.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum monday), new Time(7, 15))]) => @org.thingpedia.builtin.thingengine.builtin.say(message="my parent-teacher conference meeting");
+UT: ontimer(date=[new Date(enum monday, 7, 15)]) => @org.thingpedia.builtin.thingengine.builtin.say(message="my parent-teacher conference meeting");
 ====
 # mturk/100008
 U: Set the alarm for 3am in the morning, so I won't oversleep.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[new Date(, , , 3, 0))]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+UT: ontimer(date=[new Date(, , , 3, 0)]) => @org.thingpedia.builtin.thingengine.builtin.alert();
 ====
 # mturk/100011
 U: Remind me to call my brother in 45 minutes.
@@ -2276,7 +2276,7 @@ UT: ontimer(date=[$now + 45min]) => @org.thingpedia.builtin.thingengine.builtin.
 # mturk/100012
 U: Set a reminder for my family reunion on August 7th at 2PM.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[new Date(, 08, 07, 14, 0)]) => @org.thingpedia.builtin.thingengine.builtin.say(message="my family reunion");
+UT: ontimer(date=[new Date(, 8, 7, 14, 0)]) => @org.thingpedia.builtin.thingengine.builtin.say(message="my family reunion");
 ====
 # mturk/100013
 U: Remind me to pick up my medication from the pharmacy at 4:30PM.
@@ -2286,7 +2286,7 @@ UT: ontimer(date=[new Date(, , , 16, 30)]) => @org.thingpedia.builtin.thingengin
 # mturk/100014
 U: Will you set my alarm for 8AM on Sunday.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(eum sunday), new Time(8, 0))]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+UT: ontimer(date=[new Date(enum sunday, 8, 0)]) => @org.thingpedia.builtin.thingengine.builtin.alert();
 ====
 # mturk/100015
 U: Start a 40 minute timer for the chicken in the oven.
@@ -2296,12 +2296,12 @@ UT: ontimer(date=[$now + 40min]) => @org.thingpedia.builtin.thingengine.builtin.
 # mturk/100016
 U: Set an alarm for 7am on Monday.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(eum monday), ew Time(7, 0))]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+UT: ontimer(date=[new Date(enum monday, 7, 0)]) => @org.thingpedia.builtin.thingengine.builtin.alert();
 ====
 # mturk/100017
 U: Set a reminder for dinner at 6pm on Tuesday.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(eum tuesday), new Time(18, 0))]) => @org.thingpedia.builtin.thingengine.builtin.say(message="dinner");
+UT: ontimer(date=[new Date(enum tuesday, 18, 0)]) => @org.thingpedia.builtin.thingengine.builtin.say(message="dinner");
 ====
 # mturk/100018
 U: create an alarm for 8am tomorrow.
@@ -2341,7 +2341,7 @@ UT: ontimer(date=[$now + 3h]) => @org.thingpedia.builtin.thingengine.builtin.say
 # mturk/100025
 U: Set calendar event for August 7th at 1PM to leave for Andrew's birthday party.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[new Date(, 08, 07, 13, 0)]) => @org.thingpedia.builtin.thingengine.builtin.say(message="lveave for Andrew's birthday party");
+UT: ontimer(date=[new Date(, 8, 7, 13, 0)]) => @org.thingpedia.builtin.thingengine.builtin.say(message="lveave for Andrew's birthday party");
 ====
 # mturk/100026
 U: Set a reminder for me every 20th of August at 10:00 am that Rick's birthday is the 28th.
@@ -2356,7 +2356,7 @@ UT: ontimer(date=[set_time($end_of(day), new Time(6, 0))]) => @org.thingpedia.bu
 # mturk/100028
 U: Remind me at 4:00 Thursday afternoon that I have a massage at 9 Saturday morning.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(eum thursday), new Time(16, 0))]) => @org.thingpedia.builtin.thingengine.builtin.say(message="I have a massage at 9 Saturday morning");
+UT: ontimer(date=[new Date(enum thursday, 16, 0)]) => @org.thingpedia.builtin.thingengine.builtin.say(message="I have a massage at 9 Saturday morning");
 ====
 # mturk/100029
 U: Start a timer for 30 minutes from now for me to check the chicken.
@@ -2471,7 +2471,7 @@ UT: ontimer(date=[set_time($end_of(day), new Time(7, 30))]) => @org.thingpedia.b
 # mturk/100055
 U: Set up a reminder for me to take out the trash at 11:00 PM this Sunday.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum sunday), new Time(23, 0))]) => @org.thingpedia.builtin.thingengine.builtin.say(message="take out the trash");
+UT: ontimer(date=[new Date(enum sunday, 23, 0)]) => @org.thingpedia.builtin.thingengine.builtin.say(message="take out the trash");
 ====
 # mturk/100056
 U: Set my timer in 15 minutes to remind me to check my email.
@@ -2536,7 +2536,7 @@ UT: ontimer(date=[$end_of(day)]) => @org.thingpedia.builtin.thingengine.builtin.
 # mturk/100068
 U: Can you set an alarm on Saturday at 11:00 in the morning to attend the Farmer's Market?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum saturday, new Time(11, 0))]) => @org.thingpedia.builtin.thingengine.builtin.say(message="attend the Farmer's Market");
+UT: ontimer(date=[new Date(enum saturday, 11, 0)]) => @org.thingpedia.builtin.thingengine.builtin.say(message="attend the Farmer's Market");
 ====
 # mturk/100069
 U: Please set a kitchen timer for 5 minutes.
@@ -2551,7 +2551,7 @@ UT: ontimer(date=[new Date(, , , 20, 55)]) => @org.thingpedia.builtin.thingengin
 # mturk/100071
 U: Set timer for 6:30pm on Tuesday
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum tuesday), new Time(18, 30))]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+UT: ontimer(date=[new Date(enum tuesday, 18, 30)]) => @org.thingpedia.builtin.thingengine.builtin.alert();
 ====
 # mturk/100072
 U: Place a reminder on July 22 at 6pm
@@ -2581,7 +2581,7 @@ UT: ontimer(date=[$now + 2h]) => @org.thingpedia.builtin.thingengine.builtin.tim
 # mturk/100078
 U: Can you set a reminder for my doctor's appointment on Monday at 9:00 AM please.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum monday), new Time(9, 0))]) => @org.thingpedia.builtin.thingingine.builtin.say(message="my doctor's appointment");
+UT: ontimer(date=[new Date(enum monday, 9, 0)]) => @org.thingpedia.builtin.thingingine.builtin.say(message="my doctor's appointment");
 ====
 # mturk/100079
 U: Please set an alarm for tomorrow at 5:30 AM.
@@ -2591,7 +2591,7 @@ UT: ontimer(date=[set_time($end_of(day), new Time(5, 30))]) => @org.thingpedia.b
 # mturk/100080
 U: Set a reminder to shop for groceries online for Friday at 8:00 AM.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum friday), new Time(8, 0))]) => @org.thingpedia.builtin.thingingine.builtin.say(message="shop for groceries online");
+UT: ontimer(date=[new Date(enum friday, 8, 0)]) => @org.thingpedia.builtin.thingingine.builtin.say(message="shop for groceries online");
 ====
 # mturk/100081
 U: Create an alarm for 4:45 am tomorrow
@@ -2816,7 +2816,7 @@ UT: ontimer(date=[set_time($end_of(day), new Time(8, 0))]) => @org.thingpedia.bu
 # mturk/1000127
 U: Set a reminder for grocery shopping at 5PM on Tuesday.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum tuesday), new Time(17, 0))]) => @org.thingpedia.builtin.thingengine.builtin.say(message="grocery shopping");
+UT: ontimer(date=[new Date(enum tuesday, 17, 0)]) => @org.thingpedia.builtin.thingengine.builtin.say(message="grocery shopping");
 ====
 # mturk/1000128
 U: Create a reminder to start laundry machine in 30 minutes.
@@ -2881,7 +2881,7 @@ UT: ontimer(date=[new Date(, 7, 30)]) => @org.thingpedia.builtin.thingengine.bui
 # mturk/1000140
 U: Set my alarm for 10 a.m. this Saturday only.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum saturday), new Time(10, 0))]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+UT: ontimer(date=[new Date(enum saturday, 10, 0)]) => @org.thingpedia.builtin.thingengine.builtin.alert();
 ====
 # mturk/1000141
 U: Can you remind me to check oven at 3:30?
@@ -2901,7 +2901,7 @@ UT: ontimer(date=[$now + 30min]) => @org.thingpedia.builtin.thingengine.builtin.
 # mturk/1000144
 U: Could you remind me Tuesday at 5pm that I have to run to CVS?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum tuesday), new Time(17, 0))]) => @org.thingpedia.builtin.thingengine.builtin.say(message="I have  to run to CVS");
+UT: ontimer(date=[new Date(enum tuesday, 17, 0))]) => @org.thingpedia.builtin.thingengine.builtin.say(message="I have  to run to CVS");
 ====
 # mturk/1000145
 U: Please set an alarm to go off in two hours.
@@ -2916,7 +2916,7 @@ UT: ontimer(date=[$now + 35s]) => @org.thingpedia.builtin.thingengine.builtin.ti
 # mturk/1000147
 U: please set alarm for monday mornings at 8:00am
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: timer(base=(set_time(new Date(enum monday), 8, 0), interval=1week]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+UT: timer(base=(new Date(enum monday, 8, 0), interval=1week) => @org.thingpedia.builtin.thingengine.builtin.alert();
 ====
 # mturk/1000148
 U: remind me to get eggs at the grocery store at noon
@@ -2926,7 +2926,7 @@ UT: ontimer(date=[new Date(, , , 12, 0)]) => @org.thingpedia.builtin.thingengine
 # mturk/1000149
 U: set my alarm for this friday at 9:00am
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum friday), new Time(9, 0))]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+UT: ontimer(date=[new Date(enum friday, 9, 0)]) => @org.thingpedia.builtin.thingengine.builtin.alert();
 ====
 # mturk/1000150
 U: set reminder to pick up my guitar at 2:00pm tomorrow
@@ -2941,7 +2941,7 @@ UT: ontimer(date=[$now + 30min]) => @org.thingpedia.builtin.thingengine.builtin.
 # mturk/1000152
 U: I'd like to set an alarm for 7:00 am on Tuesday morning.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum tuesday), new Time(7, 0))]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+UT: ontimer(date=[new Date(enum tuesday, 7, 0)]) => @org.thingpedia.builtin.thingengine.builtin.alert();
 ====
 # mturk/1000153
 U: Set an alarm to go off at 10:15 pm tonight to remind me to pick up Jane from the school dance.
@@ -2951,7 +2951,7 @@ UT: ontimer(date=[set_time($now, new Time(22, 15))]) => @org.thingpedia.builtin.
 # mturk/1000154
 U: I need a reminder for Saturday at noon. Make sure to tell me to meet my sister at the bridal salon for her dress fitting.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum saturday), new Time(12, 0))]) => @org.thingpedia.builtin.thingengine.builtin.say(message="meet my sister at the bridal salon for her dress fitting");
+UT: ontimer(date=[new Date(enum saturday, 12, 0)]) => @org.thingpedia.builtin.thingengine.builtin.say(message="meet my sister at the bridal salon for her dress fitting");
 ====
 # mturk/1000156
 U: I want to be notified when 10 minutes is up.
@@ -3001,7 +3001,7 @@ UT: ontimer(date=[($now + 5min) + 10min]) => @org.thingpedia.builtin.thingengine
 # mturk/1000165
 U: Set a reminder for my gym renewal at 4 pm next Monday
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum monday), new Time(16, 0))]) => @org.thingpedia.builtin.thingengine.builtin.say(message="my gym renewal");
+UT: ontimer(date=[new Date(enum monday, 16, 0)]) => @org.thingpedia.builtin.thingengine.builtin.say(message="my gym renewal");
 ====
 # mturk/1000166
 U: Set an alarm for 7:00 am every weekday morning for me.
@@ -3131,7 +3131,7 @@ UT: ontimer(date=[new Date(, , , 12, 0)]) => @org.thingpedia.builtin.thingengine
 # mturk/1000191
 U: Set an alarm for waking up at 6 AM on Monday.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum monday), new Time(6, 0))]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+UT: ontimer(date=[new Date(enum monday, 6, 0)]) => @org.thingpedia.builtin.thingengine.builtin.alert();
 ====
 # mturk/1000192
 U: Give me an alarm today 30 minutes from right now for when the wash is done.
@@ -3236,7 +3236,7 @@ UT: ontimer(date=[$end_of(day), new Time(7, 0)]) => @org.thingpedia.builtin.thin
 # mturk/1000214
 U: Schedule a recurring alarm for 9:00 AM every Sunday.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: timer(base=set_time(new Date(enum sunday), new Time(9, 0)), interval=1week) => @org.thingpedia.builtin.thingengine.builtin.alert();
+UT: timer(base=new Date(enum sunday, 9, 0), interval=1week) => @org.thingpedia.builtin.thingengine.builtin.alert();
 ====
 # mturk/1000215
 U: Remind me to go to Sarah's house at 4:00 PM today.
@@ -3271,7 +3271,7 @@ UT: attimer(time=[new Time(5, 0)]) => @org.thingpedia.builtin.thingengine.builti
 # mturk/1000221
 U: Please set a reminder at 11:00 in the morning next Monday for a meeting with my boss.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum monday), new Time(11, 0))]) => @org.thingpedia.builtin.thingengine.builtin.say(message="a meeting with my boss");
+UT: ontimer(date=[new Date(enum monday, 11, 0)]) => @org.thingpedia.builtin.thingengine.builtin.say(message="a meeting with my boss");
 ====
 # mturk/1000222
 U: I need to set an alarm for tomorrow morning at 6:15 AM so I can wake up for work.
@@ -3291,7 +3291,7 @@ UT: ontimer(date=[new Date(, 9, 15, 12, 0)]) => @org.thingpedia.builtin.thingeng
 # mturk/1000225
 U: I'd like to set an alarm for Saturday morning at 10:00 AM so I can get up and do some jogging.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum sunday), new Time(10, 0))]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+UT: ontimer(date=[new Date(enum sunday, 10, 0)]) => @org.thingpedia.builtin.thingengine.builtin.alert();
 ====
 # mturk/1000226
 U: Please remind me to attend the staff meeting at noon on July 21, 2021.
@@ -3361,7 +3361,7 @@ UT: ontimer(date=[new Date(, 7, 14, 3, 0) - 1day]) => @org.thingpedia.builtin.th
 # mturk/1000239
 U: Set an alarm for next Friday at 5:00
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum friday), new Time(17, 0))]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+UT: ontimer(date=[new Date(enum friday, 17, 0)]) => @org.thingpedia.builtin.thingengine.builtin.alert();
 ====
 # mturk/1000240
 U: Set the timer for 60 seconds
@@ -3491,7 +3491,7 @@ UT: ontimer(date=[$now + 30min]) => @org.thingpedia.builtin.thingengine.builtin.
 # mturk/1000268
 U: Set my alarm for 6:15 AM Saturday morning.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum saturday), new Time(6, 15))]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+UT: ontimer(date=[new Date(enum saturday, 6, 15)]) => @org.thingpedia.builtin.thingengine.builtin.alert();
 ====
 # mturk/1000269
 U: Remind me to double check that the Visa bill was paid on the 20th of July.
@@ -3531,7 +3531,7 @@ UT: ontimer(date=[new Date(, , , 16, 0)]) => @org.thingpedia.builtin.thingengine
 # mturk/1000276
 U: I need an alarm to wake me at 7:45 Tuesday morning.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum tuesday), new Time(7, 45))]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+UT: ontimer(date=[new Date(enum tuesday, 7, 45)]) => @org.thingpedia.builtin.thingengine.builtin.alert();
 ====
 # mturk/1000277
 U: Give me a reminder to water the lawn at 10:30 AM for 15 minutes.
@@ -3576,7 +3576,7 @@ UT: ontimer(date=[set_time($end_of(day), new Time(4, 0))]) => @org.thingpedia.bu
 # mturk/1000287
 U: I need a timer to go off Monday at 4 pm
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum monday), new Time(16, 0))]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+UT: ontimer(date=[new Date(enum monday, 16, 0))]) => @org.thingpedia.builtin.thingengine.builtin.alert();
 ====
 # mturk/1000288
 U: Remind me to turn off the dryer at 4:30
@@ -3596,7 +3596,7 @@ UT: ontimer(date=[$now + 2h]) => @org.thingpedia.builtin.thingengine.builtin.tim
 # mturk/1000291
 U: Set an alarm for 8:00 AM on Friday.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum friday), new Time(8, 0))]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+UT: ontimer(date=[new Date(enum friday, 8, 0)]) => @org.thingpedia.builtin.thingengine.builtin.alert();
 ====
 # mturk/1000292
 U: Start a count down for 300 minutes
@@ -3671,7 +3671,7 @@ UT: ontimer(date=[$now + 15min]) => @org.thingpedia.builtin.thingengine.builtin.
 # mturk/1000308
 U: Use an alarm to wake me up on Sunday morning at 7AM to get ready for church.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum sunday), new Time(7, 0))]) => @org.thingpedia.builtin.thingengine.builtin.say(message="get ready for church");
+UT: ontimer(date=[new Date(enum sunday, 7, 0)]) => @org.thingpedia.builtin.thingengine.builtin.say(message="get ready for church");
 ====
 # mturk/1000309
 U: Set a timer to go off in half an hour.
@@ -3686,7 +3686,7 @@ UT: ontimer(date=[new Date(, 8, 16, 10, 0) - 1h]) => @org.thingpedia.builtin.thi
 # mturk/1000311
 U: Remind me not to forget my 11:30am doctor's appointment on Friday.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum friday), new Time(11, 30))]) => @org.thingpedia.builtin.thingengine.builtin.say(message="not to forget my doctor's appointment");
+UT: ontimer(date=[new Date(enum friday, 11, 30)]) => @org.thingpedia.builtin.thingengine.builtin.say(message="not to forget my doctor's appointment");
 ====
 # mturk/1000312
 U: Set the timer for 30 minutes, so I can take my cake out of the oven.
@@ -3696,7 +3696,7 @@ UT: ontimer(date=[$now + 30min]) => @org.thingpedia.builtin.thingengine.builtin.
 # mturk/1000313
 U: I have to be at work early Monday, set the alarm for 5am.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum monday), new Time(5, 0))]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+UT: ontimer(date=[new Date(enum monday, 5, 0)]) => @org.thingpedia.builtin.thingengine.builtin.alert();
 ====
 # mturk/1000314
 U: I'm going to take a nap, wake me up in 40 minutes.
@@ -3706,7 +3706,7 @@ UT: ontimer(date=[$now + 40min]) => @org.thingpedia.builtin.thingengine.builtin.
 # mturk/1000315
 U: Remind me to pick up a party platter for John's party on Saturday at 7:00pm.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum saturday), new Time(19, 0))]) => @org.thingpedia.builtin.thingengine.builtin.say(message="pick up a party platter for John's party");
+UT: ontimer(date=[new Date(enum saturday, 19, 0)]) => @org.thingpedia.builtin.thingengine.builtin.say(message="pick up a party platter for John's party");
 ====
 # mturk/1000316
 U: Start a ten minute timer immediately.
@@ -3756,12 +3756,12 @@ UT: ontimer(date=[new Date(, 8, 27, 17, 0)]) => @org.thingpedia.builtin.thingeng
 # mturk/1000325
 U: Will you set a reminder for noon on Monday?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum monday), new Time(12, 0))]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+UT: ontimer(date=[new Date(enum monday, 12, 0)]) => @org.thingpedia.builtin.thingengine.builtin.alert();
 ====
 # mturk/1000326
 U: Remind me to pick up my daughter from her grandma's at 5pm on Tuesday.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum tuesday), new Time(17, 0))]) => @org.thingpedia.builtin.thingengine.builtin.say(message="pick up my daughter");
+UT: ontimer(date=[new Date(enum tuesday, 17, 0)]) => @org.thingpedia.builtin.thingengine.builtin.say(message="pick up my daughter");
 ====
 # mturk/1000327
 U: Wake me up for work at 5:30 am tomorrow morning.
@@ -3921,7 +3921,7 @@ UT: ontimer(date=[$now + 10min]) => @org.thingpedia.builtin.thingengine.builtin.
 # mturk/1000359
 U: Set my Monday morning wake up alarm to go off at 6:00 AM
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum monday), new Time(6, 0))]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+UT: ontimer(date=[new Date(enum monday, 6, 0)]) => @org.thingpedia.builtin.thingengine.builtin.alert();
 ====
 # mturk/1000360
 U: Add a reminder to call my lawyer tomorrow at noon.
@@ -3931,7 +3931,7 @@ UT: ontimer(date=[set_time($end_of(day), new Time(12, 0))]) => @org.thingpedia.b
 # mturk/1000361
 U: Set an alarm for 7 am on Monday
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum monday), new Time(7, 00))]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+UT: ontimer(date=[new Date(enum monday, 7, 0)]) => @org.thingpedia.builtin.thingengine.builtin.alert();
 ====
 # mturk/1000362
 U: Set a timer for 20 minutes
@@ -4016,7 +4016,7 @@ UT: ontimer(date=[set_time(new Date(, , 22, 14, 0))]) => @org.thingpedia.builtin
 # mturk/1000380
 U: Send me a notification this Friday at 6:00 PM and the subject should be new pizza place opens.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum friday), new Time(18, 0))]) => @org.thingpedia.builtin.thingengine.builtin.say(message="new pizza place opens");
+UT: ontimer(date=[new Date(enum friday, 18, 0)]) => @org.thingpedia.builtin.thingengine.builtin.say(message="new pizza place opens");
 ====
 # mturk/1000381
 U: Assistant, please set alarm to 3:00pm.
@@ -4046,7 +4046,7 @@ UT: ontimer(date=[set_time($now, new Time(15, 0))]) => @org.thingpedia.builtin.t
 # mturk/1000387
 U: Tell me to put in my grocery order on Friday at noon.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum friday), new Time(12, 0))]) => @org.thingpedia.builtin.thingengine.builtin.say(message="put in my grocery order");
+UT: ontimer(date=[new Date(enum friday), 12, 0)]) => @org.thingpedia.builtin.thingengine.builtin.say(message="put in my grocery order");
 ====
 # mturk/1000388
 U: Wake me up with an alarm at 6:00 AM.
@@ -4056,7 +4056,7 @@ UT: ontimer(date=[new Time(, , , 6, 0)]) => @org.thingpedia.builtin.thingengine.
 # mturk/1000389
 U: Remind me to take out the trash on Tuesdays at 7:00 PM.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: timer(base=set_time(new Date(enum tuesday), new Time(7, 0)), interval=1week) => @org.thingpedia.builtin.thingengine.builtin.say(message="take out the trash");
+UT: timer(base=new Date(enum tuesday, 7, 0), interval=1week) => @org.thingpedia.builtin.thingengine.builtin.say(message="take out the trash");
 ====
 # mturk/1000390
 U: Set an alarm for 7:00 AM.
@@ -4126,12 +4126,12 @@ UT: ontimer(date=[set_time($end_of(day), new Time(7, 0))]) => @org.thingpedia.bu
 # mturk/1000406
 U: Please set an alarm for 4 PM on Tuesday.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum tuesday), new Time(16, 0))]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+UT: ontimer(date=[new Date(enum tuesday, 16, 0)]) => @org.thingpedia.builtin.thingengine.builtin.alert();
 ====
 # mturk/1000407
 U: Remind me about grocery shopping Sunday at 7:00 PM.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum sunday), new Time(19, 0))]) => @org.thingpedia.builtin.thingengine.builtin.say(message="grocery shopping");
+UT: ontimer(date=[new Date(enum sunday, 19, 0)]) => @org.thingpedia.builtin.thingengine.builtin.say(message="grocery shopping");
 ====
 # mturk/1000408
 U: Set a timer for 12 noon tomorrow please.
@@ -4166,7 +4166,7 @@ UT: ontimer(date=[set_time($now, new Time(18, 0))]) => @org.thingpedia.builtin.t
 # mturk/1000415
 U: Set an 8 PM dinner reminder for this Saturday.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum saturday), new Time(20, 0))]) => @org.thingpedia.builtin.thingengine.builtin.say(message="dinner");
+UT: ontimer(date=[new Date(enum saturday, 20, 0)]) => @org.thingpedia.builtin.thingengine.builtin.say(message="dinner");
 ====
 # mturk/1000416
 U: Set my alarm to go off at 10:00 am tomorrow morning.
@@ -4196,7 +4196,7 @@ UT: ontimer(date=[set_time($now, new Time(17, 0))]) => @org.thingpedia.builtin.t
 # mturk/1000421
 U: Set an alarm for 8:00PM Wednesday.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum wednesday), new Time(20, 0))]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+UT: ontimer(date=[new Date(enum wednesday, 20, 0)]) => @org.thingpedia.builtin.thingengine.builtin.alert();
 ====
 # mturk/1000422
 U: I want to set a reminder an hour from now for the oven.
@@ -4231,7 +4231,7 @@ UT: timer(base=new Date(, , , 5, 0), interval=1week, frequency=5) => @org.thingp
 # mturk/1000428
 U: Set a reminder at 6 p.m. on Tuesday to take out the trash.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum tuesday), new Time(18, 0))]) => @org.thingpedia.builtin.thingengine.builtin.say(message="take out the trash");
+UT: ontimer(date=[new Date(enum tuesday, 18, 0)]) => @org.thingpedia.builtin.thingengine.builtin.say(message="take out the trash");
 ====
 # mturk/1000429
 U: Remind me at 8:45 a.m. that on July 31st I have a 9:30 a.m. dental appointment.
@@ -4286,12 +4286,12 @@ UT: ontimer(date=[set_time($now, new Time(12, 0))]) => @org.thingpedia.builtin.t
 # mturk/1000440
 U: Please create a reminder for next Tuesday at 5:00PM for dinner with my parents.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum tuesday), new Time(17, 0))]) => @org.thingpedia.builtin.thingengine.builtin.say(message="dinner with my parents");
+UT: ontimer(date=[new Date(enum tuesday, 17, 0)]) => @org.thingpedia.builtin.thingengine.builtin.say(message="dinner with my parents");
 ====
 # mturk/1000441
 U: I need a 10 AM wake up call for next Friday.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum friday), new Time(10, 0))]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+UT: ontimer(date=[new Date(enum friday, 10, 0)]) => @org.thingpedia.builtin.thingengine.builtin.alert();
 ====
 # mturk/1000442
 U: Remind me at 8 AM on the 25th of this month to pay my phone bill.
@@ -4301,7 +4301,7 @@ UT: ontimer(date=[new Date(, , 25, 8, 0)]) => @org.thingpedia.builtin.thingengin
 # mturk/1000443
 U: Inform me when it is 15 minutes after 11 PM on Friday.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum friday), new Time(23, 15))]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+UT: ontimer(date=[new Date(enum friday, 23, 15)]) => @org.thingpedia.builtin.thingengine.builtin.alert();
 ====
 # mturk/1000444
 U: I need an alarm in exactly one hour from right now.
@@ -4436,7 +4436,7 @@ UT: ontimer(date=[$now + 0.5h]) => @org.thingpedia.builtin.thingengine.builtin.t
 # mturk/1000470
 U: I want to be reminded on Wednesday at 6 PM to make a cake for Liz's birthday party.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum wednesday), new Time(18, 0))]) => @org.thingpedia.builtin.thingengine.builtin.say(message="make a cake for Liz's birthday party");
+UT: ontimer(date=[new Date(enum wednesday, 18, 0)]) => @org.thingpedia.builtin.thingengine.builtin.say(message="make a cake for Liz's birthday party");
 ====
 # mturk/1000471
 U: Set the alarm for 12 noon, please.
@@ -4571,7 +4571,7 @@ UT: ontimer(date=[new Date(, 7, 26, 8, 0)]) => @org.thingpedia.builtin.thingengi
 # mturk/1000498
 U: Set a reminder for a meeting with tom on Friday at 6:00 pm.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum friday), new Time(6, 0))]) => @org.thingpedia.builtin.thingengine.builtin.say(message="meeting with tom");
+UT: ontimer(date=[new Date(enum friday, 6, 0)]) => @org.thingpedia.builtin.thingengine.builtin.say(message="meeting with tom");
 ====
 # mturk/1000499
 U: Please set an alarm for 2 hours from now.
@@ -4651,7 +4651,7 @@ UT: ontimer(date=[$now + 60min]) => @org.thingpedia.builtin.thingengine.builtin.
 # mturk/1000515
 U: I need a reminder to go to the dentist at 8:00 am on Thursday
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum thursday), new Time(8, 0))]) => @org.thingpedia.builtin.thingengine.builtin.say(message="go to the dentist");
+UT: ontimer(date=[new Date(enum thursday, 8, 0)]) => @org.thingpedia.builtin.thingengine.builtin.say(message="go to the dentist");
 ====
 # mturk/1000516
 U: Wake me up at 9:00 tomorrow morning.
@@ -4671,7 +4671,7 @@ UT: ontimer(date=[set_time($now, new Time(8, 30))]) => @org.thingpedia.builtin.t
 # mturk/1000519
 U: Please create an alert for my dentist appointment Monday at noon.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum monday), new Time(12, 0))]) => @org.thingpedia.builtin.thingengine.builtin.say(message="my dentist appointment");
+UT: ontimer(date=[new Date(enum monday, 12, 0)]) => @org.thingpedia.builtin.thingengine.builtin.say(message="my dentist appointment");
 ====
 # mturk/1000520
 U: I want an alarm set for 7:00 tomorrow morning.
@@ -4731,7 +4731,7 @@ UT: ontimer(date=[set_time($end_of(day), new Time(7, 0))]) => @org.thingpedia.bu
 # mturk/1000531
 U: Set an alarm for Tuesday, at 9:00 AM
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum tuesday), new Time(9, 0))]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+UT: ontimer(date=[new Date(enum tuesday, 9, 0)]) => @org.thingpedia.builtin.thingengine.builtin.alert();
 ====
 # mturk/1000532
 U: Can you remind me in 3 days that I have an appointment at 3:00 PM
@@ -4806,7 +4806,7 @@ UT: ontimer(date=[set_time($end_of(day), new Time(12, 0))]) => @org.thingpedia.b
 # mturk/1000547
 U: Remind me of the district meeting at 1:00pm on Thursday.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum thursday), new Time(13, 0))]) => @org.thingpedia.builtin.thingengine.builtin.say(message="the district meeting");
+UT: ontimer(date=[new Date(enum thursday, 13, 0)]) => @org.thingpedia.builtin.thingengine.builtin.say(message="the district meeting");
 ====
 # mturk/1000548
 U: Set the alarm for 10:00 in the morning.
@@ -4821,7 +4821,7 @@ UT: ontimer(date=[$now + 2h]) => @org.thingpedia.builtin.thingengine.builtin.tim
 # mturk/1000550
 U: Remind me to schedule a zoom meeting for Friday at 14:00 hours.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum friday), new Time(14, 0))]) => @org.thingpedia.builtin.thingengine.builtin.say(message="schedule a zoom meeting");
+UT: ontimer(date=[new Date(enum friday, 14, 0)]) => @org.thingpedia.builtin.thingengine.builtin.say(message="schedule a zoom meeting");
 ====
 # mturk/1000551
 U: Please set a reminder for staff meeting on July 20th at 10:00 am.
@@ -4841,7 +4841,7 @@ UT: timer(base=new Date(, , , 6, 30), interval=1week, frequency=5) => @org.thing
 # mturk/1000554
 U: Remind me about doctor's appointment this Thursday at 3:00 pm.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: ontimer(date=[set_time(new Date(enum thursday), new Time(15, 0))]) => @org.thingpedia.builtin.thingengine.builtin.say(message="doctor's appointment");
+UT: ontimer(date=[new Date(enum thursday, 15, 0)]) => @org.thingpedia.builtin.thingengine.builtin.say(message="doctor's appointment");
 ====
 # mturk/1000555
 U: Please set homework timer for the next 30 minutes.
