@@ -32,7 +32,11 @@ jobs:
       after_success: npm run coverage
     -
       name: "Dataset Generation"
-      before_script: npx make
+      before_script:
+      - pyenv global 3.8.1
+      - pip3 install --upgrade pip
+      - pip3 install 'genienlp==v0.7.0a3'
+      - npx make
       script:
       - ./travis/test-dataset.sh
 

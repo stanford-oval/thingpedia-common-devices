@@ -7,6 +7,7 @@ source ?= user
 
 translate_num_columns = 4
 clean_input_quotes = true
+requote_skip_errors =
 
 
 eval/$(experiment)/$(source)/input: datadir/$(source)
@@ -24,7 +25,7 @@ eval/$(experiment)/$(source)/input-qpis: eval/$(experiment)/$(source)/input
 	mkdir -p $@
 
 	# qpis input data
-	for f in $(all_names) ; do $(genie) requote --mode qpis --contextual -o $@/$$f.tsv $</$$f.tsv; done
+	for f in $(all_names) ; do $(genie) requote --mode qpis --contextual $(if $(requote_skip_errors),--skip-errors --output-errors $@/$$f.tsv,) -o $@/$$f.tsv $</$$f.tsv; done
 
 
 eval/$(experiment)/$(source)/input-nmt: eval/$(experiment)/$(source)/input-qpis
@@ -54,7 +55,7 @@ model_name_or_path=Helsinki-NLP/opus-mt-$(src_lang)-$(tgt_lang)
 src_lang =
 tgt_lang =
 
-return_raw_outputs = false
+return_raw_outputs = true
 
 val_batch_size = 2000
 temperature = 0.2
@@ -96,12 +97,13 @@ translate_data: eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/translated
 ##### Postprocess Translated dataset                 ###############################################################
 ####################################################################################################################
 augment_default_args = --num-attempts 10000 --target-language thingtalk --contextual --synthetic-expand-factor $(synthetic_expand_factor) --quoted-paraphrasing-expand-factor $(quoted_paraphrase_expand_factor) --no-quote-paraphrasing-expand-factor $(noquote_paraphrase_expand_factor) --quoted-fraction $(quoted_fraction)
+augment_override_flags = S
 
 eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/refined-qpis: eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/translated-qpis
 	mkdir -p $@
 	for f in $(all_names) ; do \
 		paste <(cut -f1,2 ./eval/$(experiment)/$(source)/input/$$f.tsv) <(cut -f2 $</$$f.tsv) <(cut -f4 ./eval/$(experiment)/$(source)/input/$$f.tsv) > $@/$$f.tmp.tsv ; \
-		python3 ./scripts/text_edit.py --no_lower_case --refine_sentence --post_process_translation --unnormalize_punctuation --experiment $(experiment) --param_language $(src_lang) --num_columns $(translate_num_columns) --input_file $@/$$f.tmp.tsv --output_file $@/$$f.tsv ; \
+		python3 ./scripts/text_edit.py --no_lower_case --refine_sentence --post_process_translation --experiment $(experiment) --param_language $(src_lang) --num_columns $(translate_num_columns) --input_file $@/$$f.tmp.tsv --output_file $@/$$f.tsv ; \
 	done
 	rm -rf $@/*.tmp*
 
@@ -126,18 +128,13 @@ eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/quoted: eval/$(experiment)
 	mkdir -p $@
 	# requote dataset (if successful, verifies parameters match in the sentence and in the program)
 	for f in $(all_names) ; do \
-		$(genie) requote --mode replace --contextual -o $@/$$f.tsv $</$$f.tsv  ; \
+		$(genie) requote --mode replace --contextual $(if $(requote_skip_errors),--skip-errors --output-errors $@/$$f.tsv,) -o $@/$$f.tsv $</$$f.tsv  ; \
 	done
 
 # expand parameter-datasets.tsv to include locale for target language
 update_param_set: parameter-datasets.tsv
 	cat $< > $<.tmp
-	if command -v gsed &> /dev/null ; \
-	then \
-		cat $< | sort | uniq | gsed -r "s|^(\w*)\ten-US|\1\t$(tgt_lang)|g" >> $<.tmp ; \
-	else \
-  		cat $< | sort | uniq | sed -r "s|^(\w*)\ten-US|\1\t$(tgt_lang)|g" >> $<.tmp ; \
-	fi
+	cat $< | sort | uniq | $(if $(shell command -v gsed), gsed, sed) -r "s|^(\w*)\ten-US|\1\t$(tgt_lang)|g" >> $<.tmp ; \
 	cat $<.tmp | sort | uniq > $<
 	rm -rf $<.tmp
 
@@ -145,7 +142,7 @@ eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/augmented: eval/$(experime
 	mkdir -p $@
 	# augment dataset in target language
 	for f in $(all_names) ; do \
-		$(genie) augment -o $@/$$f.tsv --override-flags S --param-locale $(tgt_lang) -l en-US \
+		$(genie) augment -o $@/$$f.tsv $(if $(augment_override_flags) --override-flags $(augment_override_flags),) --param-locale $(tgt_lang) -l en-US \
 		 		--thingpedia $(schema_file) --parameter-datasets parameter-datasets.tsv $(augment_default_args) $</$$f.tsv ; \
 	done
 
