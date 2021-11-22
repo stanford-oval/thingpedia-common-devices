@@ -11,15 +11,20 @@ const HomeAssistantSensor = require('./sensor');
 
 module.exports = class HomeAssistantCover extends HomeAssistantSensor {
     async get_state() {
-        return [{ state: this.state.state }];
+        if (this.domain === 'cover')
+            return [{ state: this.state.state }];
+        return super.get_state();
     }
     // note: subscribe_ must NOT be async, or an ImplementationError will occur at runtime
     subscribe_state() {
-        return this._subscribeState(() => {
-            return { state: this.state.state };
-        });
+        if (this.domain === 'cover') {
+            return this._subscribeState(() => {
+                return { state: this.state.state };
+            });
+        }
+        return super.subscribe_state();
     }
-    
+
     async do_set_openclose({ state }) {
         if (this.domain === 'cover') {
             if (state === 'open')

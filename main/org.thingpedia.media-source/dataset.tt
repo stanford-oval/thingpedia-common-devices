@@ -4,6 +4,12 @@ dataset @org.thingpedia.media-source language "en" {
     #_[utterances=["${p_song:no-undefined} by ${p_artist}",
                    "${p_song:no-undefined} from ${p_artist}"]];
 
+    stream (p_artist :Entity(org.thingpedia.media-source:artist)) := monitor(id of @org.thingpedia.media-source.playable(), contains(artists, p_artist))
+    #_[utterances=["when ${p_artist} releases new music",
+                   "when ${p_artist} releases something new"]];
+    stream (p_artist :Entity(org.thingpedia.media-source:artist)) := monitor(id of @org.thingpedia.media-source.album(), contains(artists, p_artist))
+    #_[utterances=["when ${p_artist} releases a new album"]];
+
     query (p_artist :Entity(org.thingpedia.media-source:artist)) := sort(popularity desc of @org.thingpedia.media-source.playable(), contains(artists, p_artist))
     #_[utterances=[/*"${p_artist}'s greatest hits",*/
                    "popular music by ${p_artist:no-undefined}"]];

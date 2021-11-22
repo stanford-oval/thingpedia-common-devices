@@ -37,7 +37,8 @@ const Url = require('url');
 const querystring = require("querystring");
 
 
-const NEWS_DB_URL = "http://54.238.163.11:5000/news";
+const NEWS_DB_URL = "http://news.api.genie.stanford.edu:5000/news";
+// const NEWS_DB_URL = "http://192.168.50.183:5000/news";
 
 
 function s3_to_http(url) {
@@ -63,6 +64,8 @@ class UnavailableError extends Error {
 }
 
 
+const MAX_ARTICLES = 5;
+
 async function* fetch_articles(args) {
     const url = `${NEWS_DB_URL}?${querystring.stringify(args)}`;
     const news_blob = JSON.parse(await Tp.Helpers.Http.get(url)).items;
@@ -80,7 +83,9 @@ async function* fetch_articles(args) {
         } else {
             throw new UnavailableError("news service not available");
         }
-    }     
+    }
+
+    let counter = MAX_ARTICLES;
     for (const article of news_blob) {
         const category = article.category.map((cat) => new Tp.Value.Entity(`${cat.toLowerCase()}`, cat.toLowerCase()));
         yield {
@@ -92,9 +97,13 @@ async function* fetch_articles(args) {
             link: article.link,
             category,
             date: new Date(article.publish_timestamp * 1000),
+            mention: article.entity_mentions,
             headline_audio_url: s3_to_http(article.headline_audio_s3),
             summary_audio_url: s3_to_http(article.summary_audio_s3)
         };
+        counter--;
+        if (counter === 0)
+            break;
     }
 }
 
@@ -108,7 +117,7 @@ module.exports = class SmartNewsDevice extends Tp.BaseDevice {
     }
 
     async *get_article({ keyword="" }, hints) {
-        var args = {};
+        let args = {};
         if (hints && hints.filter) {
             for (let [pname, op, value] of hints.filter) {
                 if (pname === "date") {

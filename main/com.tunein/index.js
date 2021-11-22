@@ -58,12 +58,12 @@ const DEVICE_ERROR = {
 
 module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
     constructor(engine, state) {
-         super(engine, state);
-         this.query = {
-            term: '',
-            trending: 'trending',
-            local: 'local'
-        };
+        super(engine, state);
+
+         /**
+          * @type {{ uniqueId: string, timestamp: number }|null}
+          */
+        this._lastPlay = null;
     }
 
     _format_station_output(stations) {
@@ -84,12 +84,12 @@ module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
         if (typeof content !== 'undefined' && content.length > 0) {
             if (content.find((item) => item.text.toLowerCase() === CONTENT_KEYS.stations)) {
                 stations = content.filter((item) => item.text.toLowerCase() === CONTENT_KEYS.stations)
-                                  .flatMap(({children}) => children)
-                                  .filter((channel) => (channel.type.toLowerCase() === CONTENT_KEYS.audio && channel.item.toLowerCase() === CONTENT_KEYS.station));
+                    .flatMap(({ children }) => children)
+                    .filter((channel) => (channel.type.toLowerCase() === CONTENT_KEYS.audio && channel.item.toLowerCase() === CONTENT_KEYS.station));
             } else if (content.find((item) => [CONTENT_KEYS.fm, CONTENT_KEYS.am, CONTENT_KEYS.internet].includes(item.text.toLowerCase()))) {
                 stations = content.filter((item) => [CONTENT_KEYS.fm, CONTENT_KEYS.am, CONTENT_KEYS.internet].includes(item.text.toLowerCase()))
-                                  .flatMap(({children}) => children)
-                                  .filter((channel) => (channel.type.toLowerCase() === CONTENT_KEYS.audio && channel.item.toLowerCase() === CONTENT_KEYS.station));
+                    .flatMap(({ children }) => children)
+                    .filter((channel) => (channel.type.toLowerCase() === CONTENT_KEYS.audio && channel.item.toLowerCase() === CONTENT_KEYS.station));
             } else {
                 stations = content.filter((channel) => (
                     'type' in channel &&
@@ -105,27 +105,31 @@ module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
     }
 
     async get_station(params, hints) {
+        const query_string = {
+            query: '',
+            render: RENDER_TYPE
+        };
         if (hints && hints.filter) {
             for (const [pname, op, value] of hints.filter) {
                 if (pname === 'id' && (op === '==' || op === '=~')) {
                     if (value instanceof Tp.Value.Entity)
-                        this.query.term = value.display;
+                        query_string.query = value.display;
                     else
-                        this.query.term = value;
+                        query_string.query = value;
                 }
             }
         }
-        const query_string = {
-            query: this.query.term,
-            render: RENDER_TYPE
-        };
-        const url = `${BASE_URL}${QUERY_PARAM.search}?${querystring.stringify(query_string)}`;
-        return this._get_station_details(url);
+        if (query_string.query) {
+            const url = `${BASE_URL}${QUERY_PARAM.search}?${querystring.stringify(query_string)}`;
+            return this._get_station_details(url);
+        } else {
+            return this.get_most_popular_stations();
+        }
     }
 
     async get_most_popular_stations() {
         const query_string = {
-            c: this.query.trending,
+            c: 'trending',
             render: RENDER_TYPE
         };
         const url = `${BASE_URL}${QUERY_PARAM.browse}?${querystring.stringify(query_string)}`;
@@ -137,7 +141,7 @@ module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
             throw new Error(DEVICE_ERROR.unsupported_version);
         } else {
             const query_string = {
-                c: this.query.local,
+                c: 'local',
                 render: RENDER_TYPE
             };
             const url = `${BASE_URL}${QUERY_PARAM.browse}?${querystring.stringify(query_string)}`;
@@ -149,14 +153,43 @@ module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
         return process.env.TEST_MODE === '1';
     }
 
+    /**
+     *
+     * @param {string} blob
+     * @returns
+     */
+    async _resolveShoutcastURL(blob) {
+        const line = blob.split('\n').find((x) => x.startsWith('File'));
+        if (!line) {
+            console.log(`failed to parse shoutcast`, blob);
+            throw new Error(`Cannot parse Shoutcast playlist`);
+        }
+        return line.replace(/^File[^=+]=/, '');
+    }
+
     async _resolvePlayableURL(uriList) {
         const url = uriList.trim().split('\n')[0];
+        // HACK...
         if (url.endsWith('m3u'))
             return this._resolvePlayableURL(await Tp.Helpers.Http.get(url));
+        if (url.endsWith('pls'))
+            return this._resolveShoutcastURL(await Tp.Helpers.Http.get(url));
         return url;
     }
 
     async do_radio_play({ id }, env) {
+        // HACK: prevent repeated calls to play from the same program
+        // (generated by something like "play the radio")
+        const now = Date.now();
+        if (this._lastPlay && this._lastPlay.uniqueId === env.app.uniqueId && now - this._lastPlay.timestamp < 300000) {
+            this._lastPlay.timestamp = now;
+            return;
+        }
+        this._lastPlay = {
+            uniqueId: env.app.uniqueId,
+            timestamp: now
+        };
+
         const query_string = {
             id: String(id).split(':')[1],
         };
@@ -184,10 +217,10 @@ module.exports = class TuneinRadioDevice extends Tp.BaseDevice {
             throw new Error(DEVICE_ERROR.unsupported_version);
         } else {
             // const playable_link = this._http_post(url);
-            try{
+            try {
                 audio_player.play(playable_link);
                 return;
-            } catch (e) {
+            } catch(e) {
                 throw new Error(DEVICE_ERROR.service_unavailable);
             }
         }

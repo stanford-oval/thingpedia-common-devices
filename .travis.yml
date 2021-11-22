@@ -16,7 +16,7 @@ jobs:
     -
       name: "Unit Tests"
       before_script:
-      - make
+      - npx make
       - ./travis/start-home-assistant.sh
       script:
       - npm run lint
@@ -25,7 +25,7 @@ jobs:
     -
       name: "Scenario Tests"
       before_script:
-      - make
+      - npx make
       - ./travis/start-home-assistant.sh
       script:
       - TZ="America/Los_Angeles" npx nyc node ./test/scenarios -r universe builtin main universe
@@ -36,7 +36,7 @@ jobs:
       - pyenv global 3.8.1
       - pip3 install --upgrade pip
       - pip3 install 'genienlp==v0.7.0a3'
-      - make
+      - npx make
       script:
       - ./travis/test-dataset.sh
 

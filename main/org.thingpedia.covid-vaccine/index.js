@@ -106,13 +106,13 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
                 }
             };
             let cursor = provider_collection.find(query).limit(25);
-            var providers = await cursor.toArray();
+            let providers = await cursor.toArray();
             console.timeEnd('query provider');
             await cursor.close();
 
             // Sort providers by zipcode.
-            var providers_same_zip = [];
-            var providers_diff_zip = [];
+            let providers_same_zip = [];
+            let providers_diff_zip = [];
             for (const p of providers) {
                 if (p.postal_code === zip_code)
                     providers_same_zip.push(p);
@@ -184,7 +184,7 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
             retval = [appointments[0]];
             console.log(retval);
             return retval;
-        } catch (error) {
+        } catch(error) {
             console.error(error);
             throw new Error('Failed to get vaccine appointments');
         }
@@ -206,7 +206,7 @@ module.exports = class COVIDVaccineAPIDevice extends Tp.BaseDevice {
             const update = { $set: { user_marked_validity: validity } };
             const resp = await appointment_collection.updateOne(query, update);
             console.log(resp.modifiedCount);
-        } catch (error) {
+        } catch(error) {
             console.error(error);
             throw new Error('Failed to mark appointment');
         }

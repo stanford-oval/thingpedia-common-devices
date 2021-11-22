@@ -11,8 +11,8 @@ const HomeAssistantDevice = require('./base');
 
 module.exports = class HomeAssistantFan extends HomeAssistantDevice {
     async get_state() {
-            return [{ state: this.state.state }];
-        }
+        return [{ state: this.state.state }];
+    }
         // note: subscribe_ must NOT be async, or an ImplementationError will occur at runtime
     subscribe_state() {
         return this._subscribeState(() => {
@@ -20,15 +20,15 @@ module.exports = class HomeAssistantFan extends HomeAssistantDevice {
         });
     }
     async get_oscillation() {
-            if (this.state.attributes.oscillating === undefined) {
-                throw new Error("Oh no! I couldn't retrieve the oscillation state of your fan");
-            } else {
-                if (this.state.attributes.oscillating)
-                    return [{ state: 'oscillating' }];
-                else
-                    return [{ state: 'not_oscillating' }];
-            }
+        if (this.state.attributes.oscillating === undefined) {
+            throw new Error("Oh no! I couldn't retrieve the oscillation state of your fan");
+        } else {
+            if (this.state.attributes.oscillating)
+                return [{ state: 'oscillating' }];
+            else
+                return [{ state: 'not_oscillating' }];
         }
+    }
         // note: subscribe_ must NOT be async, or an ImplementationError will occur at runtime
     subscribe_oscillation() {
         return this._subscribeState(() => {
