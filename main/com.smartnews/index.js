@@ -42,7 +42,6 @@ const NEWS_DB_URL = "http://54.249.222.246:5000/news";
 // const NEWS_DB_URL = "http://192.168.50.183:5000/news";
 
 
-
 function s3_to_http(url) {
     const parsed = Url.parse(url);
     if (parsed.protocol !== "s3:")
