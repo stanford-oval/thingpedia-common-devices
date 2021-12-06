@@ -172,8 +172,6 @@ class BingDialogueHandler {
         }
         // same for timezone answers
         if (response.timeZone) {
-            if (confident !== Tp.DialogueHandler.Confidence.EXACT_IN_DOMAIN_COMMAND)
-                confident = Tp.DialogueHandler.Confidence.STRONLY_CONFIDENT_IN_DOMAIN_COMMAND; // FIXME
             return {
                 confident,
                 utterance,
