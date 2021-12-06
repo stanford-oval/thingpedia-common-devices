@@ -13,11 +13,6 @@ module.exports = [
             assert.strictEqual(typeof result.title, 'string');
             assert.strictEqual(typeof result.description, 'string');
             assert(String(result.link).startsWith('http'));
-
-            // either the title or the description should have pizza
-            // somewhere
-            assert(result.title.toLowerCase().indexOf('pizza') >= 0 ||
-                   result.description.toLowerCase().indexOf('pizza') >= 0);
         }
     }],
 
