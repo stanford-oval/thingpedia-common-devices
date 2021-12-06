@@ -4,7 +4,6 @@ import type { Runtime, ExecEnvironment } from "thingtalk";
 import { Logger } from "@stanford-oval/logging";
 import * as Redis from "redis";
 
-import SpotifyDaemon from "../spotify_daemon";
 import { Client } from "../client";
 import {
     isEntity,
@@ -88,7 +87,6 @@ export default class SpotifyDevice extends BaseDevice {
     // initialization will break things!
     public accessToken : undefined | string;
 
-    public readonly spotifyd : undefined | SpotifyDaemon = undefined;
     public readonly log : Logger.TLogger;
 
     public state : SpotifyDeviceState;
@@ -111,17 +109,6 @@ export default class SpotifyDevice extends BaseDevice {
 
         this.log = LOG.childFor(SpotifyDevice, { "state.id": state.id });
         this.log.debug("Constructing...");
-
-        if (this.platform.type === "server") {
-            this.spotifyd = new SpotifyDaemon({
-                cacheDir: this.platform.getCacheDir(),
-                username: this.state.id,
-                device_name: this.state.id,
-                token: this.accessToken,
-                // TODO Upgrade?
-                version: "v0.3.2",
-            });
-        }
 
         if (hasRedis()) 
             this._redis = Redis.createClient({ url: getRedisURL() });
@@ -147,7 +134,6 @@ export default class SpotifyDevice extends BaseDevice {
             client: this._client,
             engine: this.engine,
             platform: this.platform,
-            spotifyd: this.spotifyd,
             username: this.state.id,
         });
 
@@ -170,16 +156,8 @@ export default class SpotifyDevice extends BaseDevice {
         }
     ) : Promise<void> {
         this.log.debug("Updating access token...");
-        if (this.accessToken !== accessToken) {
-            if (this.spotifyd) {
-                this.log.debug(
-                    "Setting spotifyd access token and triggering reload..."
-                );
-                this.spotifyd.token = accessToken;
-                this.spotifyd.reload();
-            }
+        if (this.accessToken !== accessToken)
             this._playerDeviceManager.accessToken = accessToken;
-        }
         await super.updateOAuth2Token(accessToken, refreshToken, extraData);
         this.log.debug("Access token updated.");
     }
