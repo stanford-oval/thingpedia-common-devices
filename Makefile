@@ -189,7 +189,7 @@ entities.json:
 
 parameter_dataset_url = https://almond-static.stanford.edu/test-data/parameter-datasets-en-US-20211206.tar.xz
 parameter-datasets.tsv:
-	wget --no-verbose $(parameter_dataset_url) -O parameter-datasets.tar.xz
+	curl $(parameter_dataset_url) -o parameter-datasets.tar.xz
 	tar xf parameter-datasets.tar.xz
 
 .embeddings/paraphraser-bart:
