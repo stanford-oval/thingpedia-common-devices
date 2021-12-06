@@ -5,7 +5,6 @@ import { Logger } from "@stanford-oval/logging";
 
 import { DeviceObject } from "../api/objects";
 import { Client } from "../client";
-import SpotifyDaemon from "../spotify_daemon";
 import { ExecWrapper, SpotifyDeviceEngine } from "./types";
 import Logging from "../logging";
 import { ThingError } from "../things";
@@ -27,7 +26,6 @@ export default class PlayerDeviceManager {
     protected _failedToLaunchDesktopApp  = false;
     protected readonly _hasAppLauncher : boolean;
     protected readonly _platform : BasePlatform;
-    protected readonly _spotifyd ?: SpotifyDaemon;
     protected readonly _username : string;
     protected _refresher ?: NodeJS.Timeout;
     protected readonly _refreshInterval : number;
@@ -40,7 +38,6 @@ export default class PlayerDeviceManager {
         engine,
         platform,
         refreshInterval = DEFAULT_REFRESH_INTERVAL_MS,
-        spotifyd,
         username,
     } : {
         accessToken ?: string;
@@ -48,14 +45,12 @@ export default class PlayerDeviceManager {
         engine : SpotifyDeviceEngine;
         platform : BasePlatform;
         refreshInterval ?: number;
-        spotifyd ?: SpotifyDaemon;
         username : string;
     }) {
         this.accessToken = accessToken;
         this._client = client;
         this._engine = engine;
         this._platform = platform;
-        this._spotifyd = spotifyd;
         this._username = username;
 
         this._log = LOG.childFor(PlayerDeviceManager, { username });
@@ -132,19 +127,6 @@ export default class PlayerDeviceManager {
         if (devices.length === 0) {
             log.debug("No devices returned by Client, returning.");
             return undefined;
-        }
-
-        // Prefer spotifyd if we have one ("server" platform)
-        if (this._spotifyd !== undefined) {
-            const spotifydDevice = devices.find(
-                (device) => device.id === this._spotifyd?.deviceId
-            );
-            if (spotifydDevice !== undefined) {
-                log.debug(`Found spotifyd device, returning`, {
-                    device: spotifydDevice,
-                });
-                return spotifydDevice;
-            }
         }
 
         // Prefer the Genie C++ client, if available

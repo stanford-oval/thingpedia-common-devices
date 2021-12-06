@@ -154,6 +154,12 @@ class BingDialogueHandler {
 
         // choose computation over other types of results, regardless of what bing returns (bing ranking is terrible)
         if (response.computation) {
+            // computation should take over from thingtalk
+            // unless the reply is just a measure answer, in which case we should let
+            // thingtalk interpret it
+            if (confident !== Tp.DialogueHandler.Confidence.EXACT_IN_DOMAIN_COMMAND &&
+                !/^\s*[0-9.-]+\s+[a-z]+\.?\s*$/i.test(utterance))
+                confident = Tp.DialogueHandler.Confidence.STRONLY_CONFIDENT_IN_DOMAIN_COMMAND; // FIXME
             return {
                 confident,
                 utterance,
@@ -166,6 +172,8 @@ class BingDialogueHandler {
         }
         // same for timezone answers
         if (response.timeZone) {
+            if (confident !== Tp.DialogueHandler.Confidence.EXACT_IN_DOMAIN_COMMAND)
+                confident = Tp.DialogueHandler.Confidence.STRONLY_CONFIDENT_IN_DOMAIN_COMMAND; // FIXME
             return {
                 confident,
                 utterance,
