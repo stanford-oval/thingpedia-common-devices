@@ -35,8 +35,10 @@ jobs:
       name: "Dataset Generation"
       before_script:
       - pyenv global 3.8.1
-      - $(pyenv which pip3) install --upgrade pip
-      - $(pyenv which pip3) install 'genienlp==v0.7.0a3'
+      - virtualenv --py $(pyenv which python3) ./datagen-venv
+      - . ./datagen-venv/bin/activate
+      - pip3 install --upgrade pip
+      - pip3 install 'genienlp==v0.7.0a3'
       - npx make
       script:
       - ./travis/test-dataset.sh
