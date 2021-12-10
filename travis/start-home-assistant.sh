@@ -7,8 +7,9 @@ pyenv global 3.8.1
 
 mkdir -p ./tmp
 
-test -d ./tmp/homeassistant-venv || virtualenv --py $(which python3) ./tmp/homeassistant-venv
+test -d ./tmp/homeassistant-venv || virtualenv --py $(pyenv which python3) ./tmp/homeassistant-venv
 . ./tmp/homeassistant-venv/bin/activate
+python3 --version
 pip3 install 'homeassistant==2021.6.3'
 deactivate
 

@@ -293,7 +293,7 @@ export class SearchQuery {
         for (const [key, value] of this._valueMap()) {
             let normalized = SearchQuery.normalize(value);
             if (normalized.indexOf(" ") > -1)
-                normalized = JSON.stringify(value);
+                normalized = JSON.stringify(normalized);
 
             terms.push(`${key}:${normalized}`);
         }
