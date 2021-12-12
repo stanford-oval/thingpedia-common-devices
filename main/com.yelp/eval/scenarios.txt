@@ -43,3 +43,11 @@ U: \t [geo] of @com.yelp.restaurant() filter geo == new Location(37.442156, -122
 A: I see Ramen Nagi, Evvia Estiatorio, and Oren's Hummus\. Ramen Nagi is at 541 Bryant St, Palo Alto, CA, Evvia Estiatorio is at 420 Emerson St, Palo Alto, CA, and Oren's Hummus is at 261 University Ave, Palo Alto, CA\.
 A: >> expecting = null
 
+====
+# 6-within-distance
+U: \t @com.yelp.restaurant() filter distance(geo, new Location("san francisco")) <= 5mi;
+A: I see Brenda's French Soul Food, Saigon Sandwich, and Marufuku Ramen. Brenda's French Soul Food is rated 4 stars, Saigon Sandwich is rated 4.5 stars, and Marufuku Ramen is rated 4.5 stars.
+A: rdl: Brenda's French Soul Food https://www.yelp.com/biz/brendas-french-soul-food-san-francisco-5.*
+A: rdl: Saigon Sandwich https://www.yelp.com/biz/saigon-sandwich-san-francisco.*
+A: rdl: Marufuku Ramen https://www.yelp.com/biz/marufuku-ramen-san-francisco-5.*
+A: >> expecting = null
