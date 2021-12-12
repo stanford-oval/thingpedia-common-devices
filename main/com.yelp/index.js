@@ -238,6 +238,8 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                         query.term += ' ' + value;
                 } else if (pname === 'geo' && (op === '==' || op === '=~')) {
                     query.location = value;
+                } else if (pname === 'distance' && op === 'geo') {
+                    query.location = value;
                 } else if (pname === 'cuisines' && op === 'contains') {
                     if (addedCategories.has(String(value)))
                         continue;
