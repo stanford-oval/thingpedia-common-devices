@@ -284,28 +284,28 @@ eval/$(release)/augmented.agent.tsv : eval/$(release)/synthetic.agent.tsv $(sche
 eval/$(release)/$(eval_set)/agent.tsv : $(eval_files) $(schema_file)
 	$(genie) dialog-to-contextual \
 	  --locale en-US --target-language thingtalk --no-tokenized \
-	  --thingpedia $(schema_file) --side agent --flags E \
+	  --thingpedia $(schema_file) --side agent --deduplicate --flags E \
 	  -o $@.tmp $(eval_files)
 	mv $@.tmp $@
 
 eval/$(release)/$(eval_set)/user.tsv : $(eval_files) $(schema_file)
 	$(genie) dialog-to-contextual \
 	  --locale en-US --target-language thingtalk --no-tokenized \
-	  --thingpedia $(schema_file) --side user --flags E \
+	  --thingpedia $(schema_file) --side user --deduplicate --flags E \
 	  -o $@.tmp $(eval_files)
 	if test -f $@ && cmp $@.tmp $@ ; then rm $@.tmp ; else mv $@.tmp $@ ; fi
 
 eval/$(release)/train/user.tsv : $(fewshot_train_files) $(schema_file)
 	$(genie) dialog-to-contextual \
 	  --locale en-US --target-language thingtalk --no-tokenized \
-	  --thingpedia $(schema_file) --side user \
+	  --thingpedia $(schema_file) --side user --deduplicate \
 	  -o $@.tmp $(fewshot_train_files)
 	if test -f $@ && cmp $@.tmp $@ ; then rm $@.tmp ; else mv $@.tmp $@ ; fi
 
 eval/$(release)/train/agent.tsv : $(fewshot_train_files) $(schema_file)
 	$(genie) dialog-to-contextual \
 	  --locale en-US --target-language thingtalk --no-tokenized \
-	  --thingpedia $(schema_file) --side agent \
+	  --thingpedia $(schema_file) --side agent --deduplicate \
 	  -o $@.tmp $(fewshot_train_files)
 	if test -f $@ && cmp $@.tmp $@ ; then rm $@.tmp ; else mv $@.tmp $@ ; fi
 
