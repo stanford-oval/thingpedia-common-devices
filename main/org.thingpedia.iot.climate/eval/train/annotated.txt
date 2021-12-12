@@ -2,42 +2,42 @@
 # online/ep38
 U: turn the thermostat to 13
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.climate.set_target_temperature(value=13F);
+UT: @org.thingpedia.iot.climate.set_target_temperature(value=13F);
 ====
 # online/121187
 U: set my thermostat between 13 c and high 14 c
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.climate.set_minmax_temperature(high=14C, low=13C);
+UT: @org.thingpedia.iot.climate.set_minmax_temperature(high=14C, low=13C);
 ====
 # online/123034
 U: is my heating on in my thermostat
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.climate.hvac_action() => notify;
+UT: @org.thingpedia.iot.climate.hvac_action();
 ====
 # online/123036
 U: is the heater on
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.climate.hvac_action() => notify;
+UT: @org.thingpedia.iot.climate.hvac_action();
 ====
 # online/1657822
 U: 13 s
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.climate.set_target_temperature(value=13F);
+UT: @org.thingpedia.iot.climate.set_target_temperature(value=13F);
 ====
 # online/ac60
 U: cool down the room by turning on the ac
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.climate.set_hvac_mode(mode=enum(cool));
+UT: @org.thingpedia.iot.climate.set_hvac_mode(mode=enum cool);
 ====
 # online/123028
 U: get hvac state
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.climate.hvac_action() => notify;
+UT: @org.thingpedia.iot.climate.hvac_action();
 ====
 # online/1519396
 U: set min temperature to 13 f on my thermostat
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.climate.set_minmax_temperature(low=13F, high=$?);
+UT: @org.thingpedia.iot.climate.set_minmax_temperature(high=$?, low=13F);
 ====
 # online/62110323
 U: set the ac off
@@ -433,3 +433,8 @@ UT: monitor(@org.thingpedia.builtin.thingengine.builtin.get_gps()) filter locati
 U: Turn on the AC in 15 minutes.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: ontimer(date=[$now + 15min]) => @org.thingpedia.iot.climate.set_hvac_mode(mode=enum cool);
+====
+# log/182355
+U: switch on the thermo
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.set_hvac_mode(mode=enum heat);

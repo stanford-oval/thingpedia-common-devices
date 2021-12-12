@@ -2,87 +2,87 @@
 # online/120711
 U: what's the weather here
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.weather.current() => notify;
+UT: @org.thingpedia.weather.current();
 ====
 # online/1439970
 U: what is the weather here
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.weather.current() => notify;
+UT: @org.thingpedia.weather.current();
 ====
 # online/1475330
 U: show me the weather
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.weather.current() => notify;
+UT: @org.thingpedia.weather.current();
 ====
 # online/1475352
 U: is it going to rain today
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.weather.current() => notify;
+UT: @org.thingpedia.weather.current();
 ====
 # online/121169
 U: what's the weather today
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.weather.current() => notify;
+UT: @org.thingpedia.weather.current();
 ====
 # online/121183
 U: what's the weather
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.weather.current() => notify;
+UT: @org.thingpedia.weather.current();
 ====
 # online/131455
 U: what is the weather like
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.weather.current() => notify;
+UT: @org.thingpedia.weather.current();
 ====
 # online/340491
 U: what's the weather today?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.weather.current() => notify;
+UT: @org.thingpedia.weather.current();
 ====
 # online/341433
 U: what is the weather in palo alto?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.weather.current(location=new Location("palo alto")) => notify;
+UT: @org.thingpedia.weather.current(location=new Location("palo alto"));
 ====
 # online/1435445
 U: what is the weather
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.weather.current() => notify;
+UT: @org.thingpedia.weather.current();
 ====
 # online/1435456
 U: weather
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.weather.current() => notify;
+UT: @org.thingpedia.weather.current();
 ====
 # online/1435499
 U: what the weather link today
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.weather.current() => notify;
+UT: @org.thingpedia.weather.current();
 ====
 # online/1439971
 U: weather here
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.weather.current() => notify;
+UT: @org.thingpedia.weather.current();
 ====
 # online/1441557
 U: what's the weather like today in palo alto?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.weather.current(location=new Location("palo alto")) => notify;
+UT: @org.thingpedia.weather.current(location=new Location("palo alto"));
 ====
 # online/1475324
 U: whats the weather here
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.weather.current() => notify;
+UT: @org.thingpedia.weather.current();
 ====
 # online/62745188
 U: what is the weather in montreal?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.weather.current(location=new Location("montreal")) => notify;
+UT: @org.thingpedia.weather.current(location=new Location("montreal"));
 ====
 # online/62767540
 U: what's the weather?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.weather.current() => notify;
+UT: @org.thingpedia.weather.current();
 ====
 # online/62110328
 U: what's the wind speed?
@@ -102,7 +102,7 @@ UT: @org.thingpedia.weather.current(location=new Location("davangere , india"));
 # log/120588
 U: how the temperature and humidity now?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: [temperature, humidity] of @org.thingpedia.weather.current();
+UT: [humidity, temperature] of @org.thingpedia.weather.current();
 ====
 # log/19620
 U: the location of the weather should be mannheim
@@ -739,5 +739,491 @@ UT: @org.thingpedia.weather.current(location=new Location("stanford"));
 ====
 # log-dev/12500
 U: i wasn't talking to you. what's the weather like today?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# recording/b31789fd630e812410ec3a0ac168cd57
+U: what's the weather in Mission Dolores Park?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("mission dolores park"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California"))
+C: #[results=[
+C:   { temperature=15.1C, wind_speed=4.7mps, humidity=90.9, cloudiness=100, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=3;content_type=image/png"^^tt:picture, location=new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California") }
+C: ]];
+A: It is cloudy today in Mission Dolores Park, San Francisco, California and the temperature is 59.2 degrees Fahrenheit.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: send it to me on Saturday.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @org.thingpedia.weather.current(location=new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California"));
+====
+# recording/8392ab8cfed186b7bb1b2cadbf5fad46
+U: what's the weather on wednesday
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast(date=new Date(enum wednesday));
+====
+# recording/c0ea9c57300e5d772eac5befba13d8a5
+U: What's the weather in San Francisco?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("san francisco"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.7790262, -122.419906, "San Francisco, California"))
+C: #[results=[
+C:   { temperature=14.8C, wind_speed=2.3mps, humidity=89.9, cloudiness=38.3, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=3;content_type=image/png"^^tt:picture, location=new Location(37.7790262, -122.419906, "San Francisco, California") }
+C: ]];
+A: It is cloudy today in San Francisco, California and the temperature is 14.8 degrees Celsius.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: What's the wind speed?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [wind_speed] of @org.thingpedia.weather.current(location=new Location(37.7790262, -122.419906, "San Francisco, California"));
+====
+# recording/b029aec9ffd1188fabab3ef01f6c572d
+U: what's the weather?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=21.4C, wind_speed=3.4mps, humidity=71, cloudiness=11.7, fog=0, status=enum sunny, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=1;content_type=image/png"^^tt:picture, location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+A: It is sunny today in Palo Alto, California and the temperature is 21.4 degrees Celsius.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: But he will be tonight.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast(date=set_time($now, $time.evening), location=new Location(37.4443293, -122.1598465, "Palo Alto, California"));
+====
+# recording/39bd40abe73d9779c3f423a8da693c40
+U: what will the weather be tonight?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast(date=set_time($now, $time.evening));
+====
+# recording/e156ec6ff974b0f707fdfc090f1d935f
+U: what will be the weather today at 12:00 PM?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast(date=set_time($start_of(day), new Time(12, 0)));
+====
+# recording/ccaa7910e7e447bfb86736c3c6089e3b
+U: what will be the weather today at 12:00 PM?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast(date=set_time($start_of(day), new Time(12, 0)));
+====
+# recording/d67c9078832b544955b719eb567b90b2
+U: What is the weather today
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# recording/6d83e3113c340712678c659c6451983d
+U: what's the weather in San Francisco?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("san francisco"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.7790262, -122.419906, "San Francisco, California"))
+C: #[results=[
+C:   { temperature=18.1C, wind_speed=2.7mps, humidity=79, cloudiness=96.1, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=3;content_type=image/png"^^tt:picture, location=new Location(37.7790262, -122.419906, "San Francisco, California") }
+C: ]];
+A: It is cloudy today in San Francisco, California and the temperature is 64.6 degrees Fahrenheit.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: Send this to me on Saturday.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @org.thingpedia.weather.current(location=new Location(37.7790262, -122.419906, "San Francisco, California"));
+====
+# recording/77cba8a382c0dc4996ed2faaabe95c63
+U: On Saturday, can you tell me the weather in San Francisco?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @org.thingpedia.weather.current(location=new Location("san francisco"));
+====
+# recording/8501037d380660652ecbd1cd670534ea
+U: Next Saturday, tell me the weather in San Francisco.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @org.thingpedia.weather.current(location=new Location("san francisco"));
+====
+# recording/df9778209950e4715cb7f877eafc996c
+U: What's the what's the weather at Mission Dolores Park in San Francisco?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("mission dolores park in san francisco"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, CA 94114"))
+C: #[results=[
+C:   { temperature=18.1C, wind_speed=2.7mps, humidity=79, cloudiness=96.1, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=3;content_type=image/png"^^tt:picture, location=new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, CA 94114") }
+C: ]];
+A: It is cloudy today in Mission Dolores Park, San Francisco, CA 94114 and the temperature is 64.6 degrees Fahrenheit.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: I want this on Saturday.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @org.thingpedia.weather.current(location=new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, CA 94114"));
+====
+# recording/4c149d4bacc701c4ab51f8f5a15d0375
+U: get the weather.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=20C, wind_speed=1.9mps, humidity=77, cloudiness=99.2, fog=0, status=enum raining, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=9;content_type=image/png"^^tt:picture, location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+A: It is raining today in Palo Alto, California and the temperature is 68 degrees Fahrenheit.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: Do this next Saturday.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=20C, wind_speed=1.9mps, humidity=77, cloudiness=99.2, fog=0, status=enum raining, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=9;content_type=image/png"^^tt:picture, location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+C: ontimer(date=[new Date(enum saturday)]) => @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[]];
+A: Alright, I will get the current weather in Palo Alto, California at start of day on Saturday.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_rule_enable_success;
+U: What's the weather in Mission Dolores Park in San Francisco?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("mission dolores park in san francisco"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[
+C:   { temperature=20C, wind_speed=1.9mps, humidity=77, cloudiness=99.2, fog=0, status=enum raining, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=9;content_type=image/png"^^tt:picture, location=new Location(37.4443293, -122.1598465, "Palo Alto, California") }
+C: ]];
+C: ontimer(date=[new Date(enum saturday)]) => @org.thingpedia.weather.current(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"))
+C: #[results=[]];
+C: @org.thingpedia.weather.current(location=new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, CA 94114"))
+C: #[results=[
+C:   { temperature=18.1C, wind_speed=2.7mps, humidity=79, cloudiness=96.1, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=3;content_type=image/png"^^tt:picture, location=new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, CA 94114") }
+C: ]];
+A: It is cloudy today in Mission Dolores Park, San Francisco, CA 94114 and the temperature is 64.6 degrees Fahrenheit.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: Can you do this next Saturday?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @org.thingpedia.weather.current(location=new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, CA 94114"));
+====
+# recording/111eed9683051b5d9c7a97c51f37fb06
+U: What's the weather?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# recording/a070cadda6513fc854e2a1b5d4996998
+U: what's the weather?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# log/182299
+U: whats the weather today in paris
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("paris"));
+====
+# log/182235
+U: get: the temperature outside
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [temperature] of @org.thingpedia.weather.current();
+====
+# log/182070
+U: when: when it starts raining in mölnlycke
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.weather.current(location=new Location("mölnlycke"))) filter status == enum raining;
+====
+# log/181825
+U: get: sun
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.sunrise();
+====
+# log/181677
+U: what is the weather like in champlin, minnesota
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("champlin , minnesota"));
+====
+# log/181368
+U: tomorow weathers piestany
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast(location=new Location("piestany"));
+====
+# log/181294
+U: the weather tomorrow
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast();
+====
+# recording/0fe6b9b48010c3e4f84cca62c7acb161
+U: what's the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# recording/557b60e3e35c13a7fe9ce85742c6215b
+U: what's the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# recording/07f9ed961e88803317bf471dfe33be21
+U: What's the weather in mission Duraspark?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("mission duraspark"));
+====
+# recording/0bcb7d489a00eec5dbc3046a0418ce12
+U: What's the weather in Dolores Park?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("dolores park"));
+====
+# recording/0f787f284c8f9d5704c179cec33b0afe
+U: send me the weather on Saturday.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast(date=new Date(enum saturday));
+====
+# recording/6dbb839c6ea2b587839ec578869c8c1e
+U: what's the weather at Mission Dolores Park?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("mission dolores park"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California"))
+C: #[results=[
+C:   { temperature=13.4C, wind_speed=4.6mps, humidity=78.7, cloudiness=100, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=3;content_type=image/png"^^tt:picture, location=new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California") }
+C: ]];
+A: It is cloudy today in Mission Dolores Park, San Francisco, California and the temperature is 56.1 degrees Fahrenheit.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: send this to me on Saturday.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @org.thingpedia.weather.current(location=new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California"));
+====
+# recording/1e2ac784ed5e6d144cb660a04617ceda
+U: What's the weather in Miami tomorrow?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast(location=new Location("miami"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.forecast(date=$end_of(day), location=new Location(25.7741728, -80.19362, "Miami, Florida"))
+C: #[results=[
+C:   { temperature=23C, wind_speed=5.9mps, humidity=62.1, cloudiness=0.8, fog=0, status=enum sunny, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=1;content_type=image/png"^^tt:picture, date=new Date("2021-11-06T07:00:00.000Z"), location=new Location(25.7741728, -80.19362, "Miami, Florida") }
+C: ]];
+A: It will be sunny tomorrow in Miami, Florida and the temperature will be 73.4 degrees Fahrenheit.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: What is the weather for Sunday in Shanghai, China?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast(date=new Date(enum sunday), location=new Location("shanghai , china"));
+====
+# recording/517d1f2adbadef84d3f996896ccfbaa9
+U: what's the weather in tahoe
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("tahoe"));
+====
+# recording/5398769569c3f4902ce94a24bb9a0591
+U: what's the weather like
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# recording/f5360e5cde9440f13d85229a46201b7e
+U: how is the weather in berin
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("berin"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(46.1211669, 0.2223498, "Saint-Macoux"))
+C: #[results=[
+C:   { temperature=8.2C, wind_speed=3mps, humidity=97.1, cloudiness=100, fog=1.6, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=4;content_type=image/png"^^tt:picture, location=new Location(46.1211669, 0.2223498, "Saint-Macoux") }
+C: ]];
+A: It is cloudy today in Saint-Macoux and the temperature is 47 degrees Fahrenheit.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: how is the weather in berin germany
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("berin germany"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(46.1211669, 0.2223498, "Saint-Macoux"))
+C: #[results=[
+C:   { temperature=8.2C, wind_speed=3mps, humidity=97.1, cloudiness=100, fog=1.6, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=4;content_type=image/png"^^tt:picture, location=new Location(46.1211669, 0.2223498, "Saint-Macoux") }
+C: ]];
+C: @org.thingpedia.weather.current(location=new Location(48.0549985, 8.4535097, "Anton-Berin-Straße, Villingen-Schwenningen"))
+C: #[results=[
+C:   { temperature=0C, wind_speed=2.3mps, humidity=84.5, cloudiness=100, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=4;content_type=image/png"^^tt:picture, location=new Location(48.0549985, 8.4535097, "Anton-Berin-Straße, Villingen-Schwenningen") }
+C: ]];
+A: It is cloudy today in Anton-Berin-Straße, Villingen-Schwenningen and the temperature is 32 degrees Fahrenheit.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: weather in berlin germany
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("berlin germany"));
+====
+# recording/c17dcfc5c570375466f34bb043e8eacb
+U: What's the weather forecast for springfield?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast(location=new Location("springfield"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.forecast(date=$end_of(day), location=new Location(39.7990175, -89.6439575, "Springfield, Illinois"))
+C: #[results=[
+C:   { temperature=4.5C, wind_speed=7.8mps, humidity=59.8, cloudiness=93, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=4;content_type=image/png"^^tt:picture, date=new Date("2021-11-12T08:00:00.000Z"), location=new Location(39.7990175, -89.6439575, "Springfield, Illinois") }
+C: ]];
+A: It will be cloudy tomorrow in Springfield, Illinois and the temperature will be 40 degrees Fahrenheit.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: What's the temperature in Paris?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [temperature] of @org.thingpedia.weather.current(location=new Location("paris"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.forecast(date=$end_of(day), location=new Location(39.7990175, -89.6439575, "Springfield, Illinois"))
+C: #[results=[
+C:   { temperature=4.5C, wind_speed=7.8mps, humidity=59.8, cloudiness=93, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=4;content_type=image/png"^^tt:picture, date=new Date("2021-11-12T08:00:00.000Z"), location=new Location(39.7990175, -89.6439575, "Springfield, Illinois") }
+C: ]];
+C: [temperature] of @org.thingpedia.weather.current(location=new Location(33.6617962, -95.555513, "Paris, Texas"))
+C: #[results=[
+C:   { location=new Location(33.6617962, -95.555513, "Paris, Texas"), temperature=18.4C, status=enum sunny }
+C: ]];
+A: The temperature is 65 degrees Fahrenheit.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: What's the temperature in Springfield?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [temperature] of @org.thingpedia.weather.current(location=new Location("springfield"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.forecast(date=$end_of(day), location=new Location(39.7990175, -89.6439575, "Springfield, Illinois"))
+C: #[results=[
+C:   { temperature=4.5C, wind_speed=7.8mps, humidity=59.8, cloudiness=93, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=4;content_type=image/png"^^tt:picture, date=new Date("2021-11-12T08:00:00.000Z"), location=new Location(39.7990175, -89.6439575, "Springfield, Illinois") }
+C: ]];
+C: [temperature] of @org.thingpedia.weather.current(location=new Location(33.6617962, -95.555513, "Paris, Texas"))
+C: #[results=[
+C:   { location=new Location(33.6617962, -95.555513, "Paris, Texas"), temperature=18.4C, status=enum sunny }
+C: ]];
+C: [temperature] of @org.thingpedia.weather.current(location=new Location(39.7990175, -89.6439575, "Springfield, Illinois"))
+C: #[results=[
+C:   { location=new Location(39.7990175, -89.6439575, "Springfield, Illinois"), temperature=12.5C, status=enum sunny }
+C: ]];
+A: It is sunny today in Springfield, Illinois and the temperature is 55 degrees Fahrenheit.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: What's the temperature in Springfield, or?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [temperature] of @org.thingpedia.weather.current(location=new Location("springfield , or"));
+====
+# recording/3cf54aed1681ca5c9b305d213c88f830
+U: How's the weather in Phoenix az
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("phoenix az"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(33.4484367, -112.0741417, "Phoenix, Arizona"))
+C: #[results=[
+C:   { temperature=12C, wind_speed=2.6mps, humidity=41.4, cloudiness=43, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=3;content_type=image/png"^^tt:picture, location=new Location(33.4484367, -112.0741417, "Phoenix, Arizona") }
+C: ]];
+A: It is cloudy today in Phoenix, Arizona and the temperature is 54 degrees Fahrenheit.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: How's the weather in Phoenix az
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("phoenix az"));
+====
+# recording/eccb11dbad0dde5ab3be506644b5ac7b
+U: what is the weather now
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# recording/10e980a230bc06376618c456a29712c1
+U: weather of seoul
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("seoul"));
+====
+# recording/69af4d0481619d7b60d5e979e06055f8
+U: weathe
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# recording/02149d9d0d29c02321df3cc3832c9b9b
+U: whats the weather in paris ?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("paris"));
+====
+# recording/f927ec9b86d50c1e92678a04e316da9d
+U: What is the weather in Dallas
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("dallas"));
+====
+# recording/7178a459e6630e2134a2cfee34e99752
+U: tell me the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(38.628683, -92.5659635, "California, Missouri"))
+C: #[results=[
+C:   { temperature=13.3C, wind_speed=3.4mps, humidity=73.2, cloudiness=100, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=3;content_type=image/png"^^tt:picture, location=new Location(38.628683, -92.5659635, "California, Missouri") }
+C: ]];
+A: Where are you now?
+A: It is cloudy today in California, Missouri and the temperature is 56 degrees Fahrenheit.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: no, i meant california the state
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("california state"));
+====
+# recording/2134bb18175a92e8620fbbfdc3d8c021
+U: whats the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(51.5460532, 0.0059223, "Maryland, Leytonstone Road"))
+C: #[results=[
+C:   { temperature=10.4C, wind_speed=1.9mps, humidity=97.7, cloudiness=68, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=3;content_type=image/png"^^tt:picture, location=new Location(51.5460532, 0.0059223, "Maryland, Leytonstone Road") }
+C: ]];
+A: Where are you now?
+A: It is cloudy today in Maryland, Leytonstone Road and the temperature is 51 degrees Fahrenheit.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: olney md
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("olney md"));
+====
+# recording/346daf050a74539f2988315aabf22a98
+U: Weather in Odessa]
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("odessa"));
+====
+# recording/06502ceb5978344de0839ffd83fa3130
+U: what is the weather like where I am?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# recording/68c4424fd211516153987d8c816e3a88
+U: What’s the overnight weather in Lafayette, LA?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast(location=new Location("lafayette , la"));
+====
+# recording/3abdc036651beebe550093a77500e469
+U: is it going to rain tomorrow in Los Gatos?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast(location=new Location("los gatos"));
+====
+# recording/b3f1eea6ac89aca814a31aea3596546e
+U: What's the weather like in Twain Harte, CA?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("twain harte , ca"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(38.0337345, -120.2384940780943, "Twain Harte, Tuolumne County, California"))
+C: #[results=[
+C:   { temperature=5.2C, wind_speed=2.1mps, humidity=60.2, cloudiness=0, fog=0, status=enum sunny, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=1;content_type=image/png"^^tt:picture, location=new Location(38.0337345, -120.2384940780943, "Twain Harte, Tuolumne County, California") }
+C: ]];
+A: It is sunny today in Twain Harte, Tuolumne County, California and the temperature is 41 degrees Fahrenheit.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: What's the weather like in twala me, California?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("twala me , california"));
+====
+# recording/17f1028fc9b0ea34b8e7c151328220fd
+U: show me sunrise time
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.sunrise();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.sunrise(location=new Location(34.0536909, -118.242766, "Los Angeles, California"))
+C: #[results=[
+C:   { location=new Location(34.0536909, -118.242766, "Los Angeles, California"), date=new Date("2021-11-22T21:32:31.097Z"), sunrise_time=new Time(6, 32, 15), sunset_time=new Time(16, 45, 57) }
+C: ]];
+A: Where are you now?
+A: In Los Angeles, California, the sun rises at 6:32 AM and sets at 4:45 PM.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: show me sunrise time
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.sunrise();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.sunrise(location=new Location(34.0536909, -118.242766, "Los Angeles, California"))
+C: #[results=[
+C:   { location=new Location(34.0536909, -118.242766, "Los Angeles, California"), date=new Date("2021-11-22T21:32:31.097Z"), sunrise_time=new Time(6, 32, 15), sunset_time=new Time(16, 45, 57) }
+C: ]];
+C: @org.thingpedia.weather.sunrise(location=new Location(34.0536909, -118.242766, "Los Angeles, California"))
+C: #[results=[
+C:   { location=new Location(34.0536909, -118.242766, "Los Angeles, California"), date=new Date("2021-11-22T21:32:58.443Z"), sunrise_time=new Time(6, 32, 15), sunset_time=new Time(16, 45, 57) }
+C: ]];
+A: In Los Angeles, California, the sun rises at 6:32 AM and sets at 4:45 PM.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: show me sunrise time in jonestown
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.sunrise(location=new Location("jonestown"));
+====
+# recording/25eeda0133635d9d4322f43f7be54b24
+U: what weathers in paris
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("paris"));
+====
+# recording/34532e00f7725a0b0f39b538b7b62d20
+U: what's the weather like?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.weather.current();

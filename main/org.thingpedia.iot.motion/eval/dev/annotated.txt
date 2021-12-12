@@ -88,3 +88,8 @@ UT: @org.thingpedia.iot.motion(name="children room").motion();
 U: is someone at the front door?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.motion(name="front").motion();
+====
+# log/182074
+U: when: when the motion sensor sees something move
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.motion.motion()) filter state == enum detecting;

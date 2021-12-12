@@ -2,12 +2,12 @@
 # online/61553991
 U: ask vacuum cleaner is it on
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.vacuum.state() => notify;
+UT: @org.thingpedia.iot.vacuum.state();
 ====
 # online/61553990
 U: ask vacuum cleaner the status
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.vacuum.state() => notify;
+UT: @org.thingpedia.iot.vacuum.state();
 ====
 # online/62915488
 U: start the roomba.
@@ -72,3 +72,58 @@ U: yes
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.vacuum(all=true).set_power(power=enum off)
 UT: #[confirm=enum confirmed];
+====
+# log/182408
+U: when: when my vacuum is running
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.vacuum.state()) filter state == enum on;
+====
+# log/182407
+U: when: when my vacuum is working
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.vacuum.state()) filter state == enum on;
+====
+# log/182405
+U: get: the state of my vacuum
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.vacuum.state();
+====
+# log/182274
+U: stop cleanig
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.vacuum.stop();
+====
+# log/182273
+U: do: turn off the vacuum cleaner
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.vacuum.set_power(power=enum off);
+====
+# log/182268
+U: get: if the vacuum is on or off
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.vacuum.state();
+====
+# log/182262
+U: when: when my vacuum is runing
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.vacuum.state()) filter state == enum on;
+====
+# log/182160
+U: get status from vacum
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.vacuum.state();
+====
+# log/181313
+U: what's my mop doing
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.vacuum.state();
+====
+# log/181309
+U: is my mop mopping
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.vacuum.state();
+====
+# log/181307
+U: what is darth roomba doing
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.vacuum(name="darth").state();

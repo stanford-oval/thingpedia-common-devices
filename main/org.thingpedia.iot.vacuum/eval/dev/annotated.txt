@@ -2,47 +2,47 @@
 # online/55016205
 U: turn on the vacuum
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.vacuum.set_power(power=enum(on));
+UT: @org.thingpedia.iot.vacuum.set_power(power=enum on);
 ====
 # online/55016211
 U: dock the vacuum
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.vacuum.return_to_base();
+UT: @org.thingpedia.iot.vacuum.return_to_base();
 ====
 # online/61553989
 U: ask vacuum cleaner to turn off
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.vacuum.set_power(power=enum(off));
+UT: @org.thingpedia.iot.vacuum.set_power(power=enum off);
 ====
 # online/55016197
 U: turn on my vacuum
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.vacuum.set_power(power=enum(on));
+UT: @org.thingpedia.iot.vacuum.set_power(power=enum on);
 ====
 # online/55016204
 U: turn off the vacuum
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.vacuum.set_power(power=enum(off));
+UT: @org.thingpedia.iot.vacuum.set_power(power=enum off);
 ====
 # online/55016206
 U: turn on the fan
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.vacuum.set_power(power=enum(on));
+UT: @org.thingpedia.iot.vacuum.set_power(power=enum on);
 ====
 # online/55016212
 U: ask the vacuum to return to the base
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.vacuum.return_to_base();
+UT: @org.thingpedia.iot.vacuum.return_to_base();
 ====
 # online/55016213
 U: ask the vacuum to dock itself
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.vacuum.return_to_base();
+UT: @org.thingpedia.iot.vacuum.return_to_base();
 ====
 # online/61553992
 U: ask vacuum cleaner to start
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.vacuum.start();
+UT: @org.thingpedia.iot.vacuum.start();
 ====
 # log/60894
 U: vacuum status bender
@@ -149,3 +149,53 @@ UT: @org.thingpedia.iot.vacuum.state();
 U: start my 2 _second_floor vacuum
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.vacuum(name="2 _second_floor").start();
+====
+# log/182402
+U: set the power on the vacuum
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.vacuum.set_power();
+====
+# log/182401
+U: set the power of the vacuum
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.vacuum.set_power();
+====
+# log/182275
+U: dock vacuum
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.vacuum.return_to_base();
+====
+# log/182269
+U: do: set the power of the vacuum
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.vacuum.set_power();
+====
+# log/182261
+U: when: when my vacuum is clening
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.vacuum.state()) filter state == enum on;
+====
+# log/182259
+U: when: when the vacuum is docking
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.vacuum.state()) filter state == enum docked;
+====
+# log/182231
+U: when: when my vacuum is cleaning
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.vacuum.state()) filter state == enum on;
+====
+# log/182075
+U: do: start vacuum
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.vacuum.start();
+====
+# log/181308
+U: is my vacuum cleaning
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.vacuum.state();
+====
+# log/181306
+U: let's start the roomba doing
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.vacuum.start();

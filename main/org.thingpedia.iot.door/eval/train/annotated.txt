@@ -2,82 +2,82 @@
 # online/55592321
 U: is the door ajar?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.door.state() => notify;
+UT: @org.thingpedia.iot.door.state();
 ====
 # online/55592334
 U: whether the door is open or closed
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.door.state() => notify;
+UT: @org.thingpedia.iot.door.state();
 ====
 # online/55592472
 U: is my backyard door open?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.door(name="backyard").state() => notify;
+UT: @org.thingpedia.iot.door(name="backyard").state();
 ====
 # online/55592499
 U: alert me if my front door is open or closed
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.door(name="front").state() => notify;
+UT: @org.thingpedia.iot.door(name="front").state();
 ====
 # online/55592655
 U: did someone open the door?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.door.state() => notify;
+UT: @org.thingpedia.iot.door.state();
 ====
 # online/55592658
 U: check if the door is closed
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.door.state() => notify;
+UT: @org.thingpedia.iot.door.state();
 ====
 # online/55592335
 U: alert me whether the door is open or closed
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.door.state() => notify;
+UT: @org.thingpedia.iot.door.state();
 ====
 # online/55592341
 U: whether anyone opened the door
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.door.state() => notify;
+UT: @org.thingpedia.iot.door.state();
 ====
 # online/55592479
 U: is the backyard door closed?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.door(name="backyard").state() => notify;
+UT: @org.thingpedia.iot.door(name="backyard").state();
 ====
 # online/55592489
 U: update me whether my backyard door is open or closed
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.door(name="backyard").state() => notify;
+UT: @org.thingpedia.iot.door(name="backyard").state();
 ====
 # online/55592544
 U: tell me if my front door is open or not
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.door(name="front").state() => notify;
+UT: @org.thingpedia.iot.door(name="front").state();
 ====
 # online/55592552
 U: update me if my backyard door is open or closed
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.door(name="backyard").state() => notify;
+UT: @org.thingpedia.iot.door(name="backyard").state();
 ====
 # online/55592474
 U: is my front door open?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.door(name="front").state() => notify;
+UT: @org.thingpedia.iot.door(name="front").state();
 ====
 # online/55592485
 U: check whether my backyard door is open or closed
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.door(name="backyard").state() => notify;
+UT: @org.thingpedia.iot.door(name="backyard").state();
 ====
 # online/55592520
 U: did someone leave my backyard door open?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.door(name="backyard").state() => notify;
+UT: @org.thingpedia.iot.door(name="backyard").state();
 ====
 # online/55592663
 U: did i close the bedroom door?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.door(name="bedroom").state() => notify;
+UT: @org.thingpedia.iot.door(name="bedroom").state();
 ====
 # log/82140
 U: is my door opeb?
@@ -363,3 +363,18 @@ UT: @org.thingpedia.iot.door.state();
 U: did somebody open the door?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.door.state();
+====
+# recording/ea9c99894e48dc83afdb7347d026b475
+U: door state
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.door.state();
+====
+# recording/164e1e567f419fb24c884cd0d4ddb9a8
+U: hi
+UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
+C: $dialogue @org.thingpedia.dialogue.transaction.greet;
+A: Hello! How can I help you?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_greet;
+U: when my door opens
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.door.state()) filter state == enum open;

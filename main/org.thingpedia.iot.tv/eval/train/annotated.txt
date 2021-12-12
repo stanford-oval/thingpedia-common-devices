@@ -2,17 +2,17 @@
 # online/122832
 U: tv off
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.tv.set_power(power=enum(off));
+UT: @org.thingpedia.iot.tv.set_power(power=enum off);
 ====
 # online/1641950
 U: turn on my tv
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.tv.set_power(power=enum(on));
+UT: @org.thingpedia.iot.tv.set_power(power=enum on);
 ====
 # online/120671
 U: turn off my tv
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.tv.set_power(power=enum(off));
+UT: @org.thingpedia.iot.tv.set_power(power=enum off);
 ====
 # log/86143
 U: turn off tv
@@ -33,3 +33,13 @@ UT: @org.thingpedia.iot.tv.set_power(power=enum off);
 U: turn off living room tv
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.tv(name="living room").set_power(power=enum off);
+====
+# log/181757
+U: play str:URL::0: on roku tv
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.tv(name="roku").play_url(url="str:URL::0:"^^tt:url);
+====
+# log/181756
+U: str:URL::0: on roku tv
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.tv(name="roku").play_url(url="str:URL::0:"^^tt:url);

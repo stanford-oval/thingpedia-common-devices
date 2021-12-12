@@ -2,17 +2,17 @@
 # online/1691800
 U: get an xkcd comic
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.xkcd.comic() => notify;
+UT: @com.xkcd.comic();
 ====
 # online/121317
 U: get xkcd 13
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.xkcd.comic(), id==13 => notify;
+UT: @com.xkcd.comic() filter id == 13;
 ====
 # online/121518
 U: get a random xkcd
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @com.xkcd.random_comic() => notify;
+UT: @com.xkcd.random_comic();
 ====
 # online/1544261
 U: show me the latest xkcd
@@ -22,7 +22,7 @@ UT: sort(release_date asc of @com.xkcd.comic())[1];
 # online/62110299
 U: get today's xkcd
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.xkcd.comic(), release_date==$start_of(day);
+UT: @com.xkcd.comic() filter release_date == $start_of(day);
 ====
 # online/1435530
 U: get an xkcd everyday.
@@ -38,3 +38,18 @@ UT: attimer(time=[new Time(0, 0)]) => @com.xkcd.random_comic();
 U: give me a random xkcd comic
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.xkcd.random_comic();
+====
+# log/181785
+U: see xkcd comic 2532
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.xkcd.comic() filter id == 2532;
+====
+# log/181783
+U: see last xkcd
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.xkcd.comic();
+====
+# log/181782
+U: when a new xkcd is out notify me
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(id of @com.xkcd.comic());

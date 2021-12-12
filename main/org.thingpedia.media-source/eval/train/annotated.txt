@@ -84,3 +84,48 @@ UT: @org.thingpedia.media-source.get_currently_playing();
 U: who is the artist of the currently playing track?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: [artists] of @org.thingpedia.media-source.get_currently_playing();
+====
+# recording/8e62c473a821e7b3a926e35e44c8e517
+U: find me a playlist
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playlist();
+====
+# recording/7d8b83c4350cd297dca6843338eafd64
+U: Find me, shake it off by Taylor Swift.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("taylor swift")) && id =~ "shake it off";
+====
+# recording/75c0f6c6cbf56b995450972f4fd346fb
+U: what's the most popular podcast?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(popularity desc of @org.thingpedia.media-source.show())[1];
+====
+# recording/8165a1c40fca35f560d70431a7a0884b
+U: find the song, shake it off.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.song() filter id =~ "shake it off";
+====
+# recording/37e2944a16fa32e2b17507fd232e49a8
+U: What are some podcasts about cars?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.show() filter id =~ "cars";
+====
+# log/181778
+U: what is the name of this song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.get_currently_playing();
+====
+# recording/a2d6d96dceaf4e3c544252763a3a87ef
+U: find me songs by bob marley
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.song() filter contains(artists, null^^org.thingpedia.media-source:artist("bob marley"));
+====
+# recording/5a67b556182c3c4cdc93b4d9bd0f38d5
+U: find me songs by bob marley
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.song() filter contains(artists, null^^org.thingpedia.media-source:artist("bob marley"));
+====
+# recording/d2bc961b633a3c160a27e17c5c8efc27
+U: never gonna give you up
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter id =~ "never gonna give you up";

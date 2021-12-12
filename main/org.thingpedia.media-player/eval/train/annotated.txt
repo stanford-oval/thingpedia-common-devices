@@ -129,3 +129,82 @@ UT: @org.thingpedia.media-player.player_next();
 U: stop this * * * *.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.builtin.thingengine.builtin.stop();
+====
+# recording/d48c50873a9dfef8243a5c3206ae9829
+U: Next song.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player.player_next();
+====
+# recording/a8df5df02070396d738420ff3872d2e1
+U: Stop the music.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player.player_pause();
+====
+# recording/d27e0d8815ee0116fb8c2b7c67d218e2
+U: stop the music.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player.player_pause();
+====
+# recording/b80f76e986131fbf74868f3668641280
+U: next
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player.player_next();
+====
+# recording/86abb8379aad2c04138dcaaf59533e8d
+U: stop music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player.player_pause();
+====
+# log/182346
+U: stop playing music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player.player_pause();
+====
+# log/181953
+U: can you turn off music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player.player_pause();
+====
+# log/181634
+U: next song please
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player.player_next();
+====
+# log/181584
+U: one song back
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player.player_previous();
+====
+# log/181516
+U: nex
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player.player_next();
+====
+# recording/a058c3ad2d15a4f77e2d7f6c78f05bdf
+U: turn on shuffle.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player.player_shuffle(shuffle=enum on);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_shuffle(shuffle=enum on)
+C: #[results=[
+C:   { shuffle=enum on, __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: I turned shuffle on.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: next song.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_shuffle(shuffle=enum on)
+C: #[results=[
+C:   { shuffle=enum on, __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next()
+C: #[results=[
+C:   { __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: I played the next song for you.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: next song.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next();

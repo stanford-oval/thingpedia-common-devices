@@ -2,77 +2,77 @@
 # online/ep41
 U: is the ac on?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.climate.hvac_action() => notify;
+UT: @org.thingpedia.iot.climate.hvac_action();
 ====
 # online/120725
 U: set my thermostat to 13 c
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.climate.set_target_temperature(value=13C);
+UT: @org.thingpedia.iot.climate.set_target_temperature(value=13C);
 ====
 # online/1519399
 U: set max temperature to 13 f on my thermostat
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.climate.set_minmax_temperature(high=13F, low=$?);
+UT: @org.thingpedia.iot.climate.set_minmax_temperature(high=13F, low=$?);
 ====
 # online/1520079
 U: set min and max temperature on my thermostat
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.climate.set_minmax_temperature(low=$?, high=$?);
+UT: @org.thingpedia.iot.climate.set_minmax_temperature(high=$?, low=$?);
 ====
 # online/ep37
 U: set the ac off
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.climate.set_hvac_mode(mode=enum(off));
+UT: @org.thingpedia.iot.climate.set_hvac_mode(mode=enum off);
 ====
 # online/ifttt226314p
 U: set the temperature
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.climate.set_target_temperature(value=$?);
+UT: @org.thingpedia.iot.climate.set_target_temperature(value=$?);
 ====
 # online/120488
 U: set my thermostat between 13 c and 14 c
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.climate.set_minmax_temperature(high=14C, low=13C);
+UT: @org.thingpedia.iot.climate.set_minmax_temperature(high=14C, low=13C);
 ====
 # online/120794
 U: set my thermostat to 13 f
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.climate.set_target_temperature(value=13F);
+UT: @org.thingpedia.iot.climate.set_target_temperature(value=13F);
 ====
 # online/121273
 U: set my thermostat min and max
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.climate.set_minmax_temperature(low=$?, high=$?);
+UT: @org.thingpedia.iot.climate.set_minmax_temperature(high=$?, low=$?);
 ====
 # online/123035
 U: is my heating on
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.climate.hvac_action() => notify;
+UT: @org.thingpedia.iot.climate.hvac_action();
 ====
 # online/123037
 U: is the hvac cooling or heating
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.climate.hvac_action() => notify;
+UT: @org.thingpedia.iot.climate.hvac_action();
 ====
 # online/123038
 U: is the ac cooling or heating
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.climate.hvac_action() => notify;
+UT: @org.thingpedia.iot.climate.hvac_action();
 ====
 # online/123039
 U: get ac state
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.climate.hvac_action() => notify;
+UT: @org.thingpedia.iot.climate.hvac_action();
 ====
 # online/1519394
 U: set minimum temperature to 13 f
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.climate.set_minmax_temperature(low=13F, high=$?);
+UT: @org.thingpedia.iot.climate.set_minmax_temperature(high=$?, low=13F);
 ====
 # online/1519395
 U: set min temperature to 13 f
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: now => @org.thingpedia.iot.climate.set_minmax_temperature(low=13F, high=$?);
+UT: @org.thingpedia.iot.climate.set_minmax_temperature(high=$?, low=13F);
 ====
 # online/62110255
 U: turn the thermostat to 13
@@ -952,3 +952,8 @@ UT: monitor(@org.thingpedia.iot.climate.current_temperature()) filter value == 8
 U: Is the AC fan set on automatic?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.set_fan_mode(mode=enum auto);
+====
+# log/181398
+U: turn heat off.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.set_hvac_mode(mode=enum off);

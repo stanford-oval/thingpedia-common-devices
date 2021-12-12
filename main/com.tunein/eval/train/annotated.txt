@@ -130,3 +130,340 @@ UT: @com.tunein.station() filter id =~ "espn" => @com.tunein.radio_play(id=id);
 U: play espn radio
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.tunein.station() filter id =~ "espn" => @com.tunein.radio_play(id=id);
+====
+# recording/386458c610c74684ab3b3b614a3e56eb
+U: played radio KQED on Saturday.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @com.tunein.station() filter id =~ "kqed" => @com.tunein.radio_play(id=id);
+====
+# recording/cc554629aecbc944977ea10fc40a8cd8
+U: Play radio kqed.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.station() filter id =~ "kqed" => @com.tunein.radio_play(id=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@com.tunein.station() filter id =~ "kqed")[1] => @com.tunein.radio_play(id=id)
+C: #[results=[
+C:   { id="station:s34804"^^com.tunein:station("KQED-FM") }
+C: ]];
+A: I played KQED-FM.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: Do this on Saturday morning.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @com.tunein.station() filter id =~ "kqed" => @com.tunein.radio_play(id=id);
+====
+# recording/dd30b46dc2499d15372d01433d986bda
+U: Find radio stations.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.station();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.tunein.station()
+C: #[results=[
+C:   { id="station:s34804"^^com.tunein:station("KQED-FM"), show="The World: Latest Edition", link="http://opml.radiotime.com/Tune.ashx?id=s34804"^^tt:url, image="http://cdn-profiles.tunein.com/s34804/images/logoq.png?t=158759"^^tt:picture }
+C: ]];
+A: I see KQED-FM. It is a radio currently streaming The World: Latest Edition. Would you like to play it?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+AT: @com.tunein.radio_play(id="station:s34804"^^com.tunein:station("KQED-FM"))
+AT: #[confirm=enum proposed];
+U: No.
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# recording/d35f81ae02d5a6375a7a5702ec2d1be0
+U: Play the radio.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.station() => @com.tunein.radio_play(id=id);
+====
+# recording/9c429207a4770ae8d0e6bb347bd8c939
+U: play the radio.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.station() => @com.tunein.radio_play(id=id);
+====
+# recording/83a2885f594ad8b8d4d17c8cffc47841
+U: play the radio.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.station() => @com.tunein.radio_play(id=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.tunein.station() => @com.tunein.radio_play(id=id)
+C: #[results=[
+C:   { id="station:s24939"^^com.tunein:station("BBC Radio 1") },
+C:   { id="station:s25670"^^com.tunein:station("RTHK 3") },
+C:   { id="station:s27437"^^com.tunein:station("WBGO") },
+C:   { id="station:s17077"^^com.tunein:station("talkSPORT") },
+C:   { id="station:s25419"^^com.tunein:station("BBC Radio 4") },
+C:   { id="station:s24948"^^com.tunein:station("BBC World Service News") },
+C:   { id="station:s27111"^^com.tunein:station("WAMU") },
+C:   { id="station:s238256"^^com.tunein:station("Sun Radio - Café (Café - Soulside Radio)") },
+C:   { id="station:s24940"^^com.tunein:station("BBC Radio 2") },
+C:   { id="station:s34682"^^com.tunein:station("Jazz24 - KNKX-HD2") }
+C: ]]
+C: #[count=50]
+C: #[more=true];
+A: I played radio stations.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: play the radio.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.station() => @com.tunein.radio_play(id=id);
+====
+# recording/e6bbd16e8d8ee9c9472fbfb2b586dd62
+U: find radio stations.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.station();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.tunein.station()
+C: #[results=[
+C:   { id="station:s25670"^^com.tunein:station("RTHK 3"), show="Night Music", link="http://opml.radiotime.com/Tune.ashx?id=s25670"^^tt:url, image="http://cdn-radiotime-logos.tunein.com/s25670q.png"^^tt:picture },
+C:   { id="station:s27437"^^com.tunein:station("WBGO"), show="The World's Premier Jazz Radio Station, NYC And NJ", link="http://opml.radiotime.com/Tune.ashx?id=s27437"^^tt:url, image="http://cdn-profiles.tunein.com/s27437/images/logoq.png?t=1"^^tt:picture },
+C:   { id="station:s17077"^^com.tunein:station("talkSPORT"), show="What Real Sport Sounds Like", link="http://opml.radiotime.com/Tune.ashx?id=s17077"^^tt:url, image="http://cdn-profiles.tunein.com/s17077/images/logoq.png?t=1"^^tt:picture },
+C:   { id="station:s27533"^^com.tunein:station("98.5 The Sports Hub"), show="Boston's Home For Sports!", link="http://opml.radiotime.com/Tune.ashx?id=s27533"^^tt:url, image="http://cdn-profiles.tunein.com/s27533/images/logoq.png?t=3"^^tt:picture },
+C:   { id="station:s22469"^^com.tunein:station("98.7 FM ESPN New York"), show="The Michael Kay Show", link="http://opml.radiotime.com/Tune.ashx?id=s22469"^^tt:url, image="http://cdn-profiles.tunein.com/s22469/images/logoq.jpg?t=1"^^tt:picture },
+C:   { id="station:s27111"^^com.tunein:station("WAMU"), show="All Things Considered", link="http://opml.radiotime.com/Tune.ashx?id=s27111"^^tt:url, image="http://cdn-profiles.tunein.com/s27111/images/logoq.png"^^tt:picture },
+C:   { id="station:s24940"^^com.tunein:station("BBC Radio 2"), show="The Blues Show with Cerys Matthews", link="http://opml.radiotime.com/Tune.ashx?id=s24940"^^tt:url, image="http://cdn-radiotime-logos.tunein.com/s24940q.png"^^tt:picture },
+C:   { id="station:s24948"^^com.tunein:station("BBC World Service News"), show="Discovery", link="http://opml.radiotime.com/Tune.ashx?id=s24948"^^tt:url, image="http://cdn-profiles.tunein.com/s24948/images/logoq.jpg?t=1"^^tt:picture },
+C:   { id="station:s25419"^^com.tunein:station("BBC Radio 4"), show="Start the Week", link="http://opml.radiotime.com/Tune.ashx?id=s25419"^^tt:url, image="http://cdn-radiotime-logos.tunein.com/s25419q.png"^^tt:picture },
+C:   { id="station:s17487"^^com.tunein:station("Hitrádio Zlín"), show="Hitrádio Zlín - rádio které hraje", link="http://opml.radiotime.com/Tune.ashx?id=s17487"^^tt:url, image="http://cdn-radiotime-logos.tunein.com/s16388q.png"^^tt:picture }
+C: ]]
+C: #[count=50]
+C: #[more=true];
+A: I see RTHK 3 and WBGO. RTHK 3 is currently streaming Night Music, while WBGO is currently streaming The World's Premier Jazz Radio Station, NYC And NJ.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_two;
+U: Play WBGL.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.station() filter id == null^^com.tunein:station("wbgl") => @com.tunein.radio_play(id=id);
+====
+# recording/9f5496e4f838ebdc5fa1391638c01569
+U: find the most popular radio stations.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.most_popular_stations();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.tunein.most_popular_stations()
+C: #[results=[
+C:   { id="station:s25670"^^com.tunein:station("RTHK 3"), show="Night Music", link="http://opml.radiotime.com/Tune.ashx?id=s25670"^^tt:url, image="http://cdn-radiotime-logos.tunein.com/s25670q.png"^^tt:picture },
+C:   { id="station:s27437"^^com.tunein:station("WBGO"), show="The World's Premier Jazz Radio Station, NYC And NJ", link="http://opml.radiotime.com/Tune.ashx?id=s27437"^^tt:url, image="http://cdn-profiles.tunein.com/s27437/images/logoq.png?t=1"^^tt:picture },
+C:   { id="station:s17077"^^com.tunein:station("talkSPORT"), show="What Real Sport Sounds Like", link="http://opml.radiotime.com/Tune.ashx?id=s17077"^^tt:url, image="http://cdn-profiles.tunein.com/s17077/images/logoq.png?t=1"^^tt:picture },
+C:   { id="station:s27533"^^com.tunein:station("98.5 The Sports Hub"), show="Boston's Home For Sports!", link="http://opml.radiotime.com/Tune.ashx?id=s27533"^^tt:url, image="http://cdn-profiles.tunein.com/s27533/images/logoq.png?t=3"^^tt:picture },
+C:   { id="station:s22469"^^com.tunein:station("98.7 FM ESPN New York"), show="The Michael Kay Show", link="http://opml.radiotime.com/Tune.ashx?id=s22469"^^tt:url, image="http://cdn-profiles.tunein.com/s22469/images/logoq.jpg?t=1"^^tt:picture },
+C:   { id="station:s27111"^^com.tunein:station("WAMU"), show="All Things Considered", link="http://opml.radiotime.com/Tune.ashx?id=s27111"^^tt:url, image="http://cdn-profiles.tunein.com/s27111/images/logoq.png"^^tt:picture },
+C:   { id="station:s24940"^^com.tunein:station("BBC Radio 2"), show="The Blues Show with Cerys Matthews", link="http://opml.radiotime.com/Tune.ashx?id=s24940"^^tt:url, image="http://cdn-radiotime-logos.tunein.com/s24940q.png"^^tt:picture },
+C:   { id="station:s24948"^^com.tunein:station("BBC World Service News"), show="TuneIn.com offers BBC...", link="http://opml.radiotime.com/Tune.ashx?id=s24948"^^tt:url, image="http://cdn-profiles.tunein.com/s24948/images/logoq.jpg?t=1"^^tt:picture },
+C:   { id="station:s25419"^^com.tunein:station("BBC Radio 4"), show="Start the Week", link="http://opml.radiotime.com/Tune.ashx?id=s25419"^^tt:url, image="http://cdn-radiotime-logos.tunein.com/s25419q.png"^^tt:picture },
+C:   { id="station:s17487"^^com.tunein:station("Hitrádio Zlín"), show="Hitrádio Zlín - rádio které hraje", link="http://opml.radiotime.com/Tune.ashx?id=s17487"^^tt:url, image="http://cdn-radiotime-logos.tunein.com/s16388q.png"^^tt:picture }
+C: ]]
+C: #[count=50]
+C: #[more=true];
+A: I see RTHK 3, WBGO, and talkSPORT. RTHK 3 is currently streaming Night Music, WBGO is currently streaming The World's Premier Jazz Radio Station, NYC And NJ, and talkSPORT is currently streaming What Real Sport Sounds Like.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_three;
+U: play talksport
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.radio_play(id=null^^com.tunein:station("talksport"));
+====
+# recording/1d8954cedf312f87cf1a6f5adc4c9f79
+U: can you play the radio?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.station() => @com.tunein.radio_play(id=id);
+====
+# recording/fdfb0cc5a4324aff394587bb0e19bcd6
+U: Play Saturday radio station KQED.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @com.tunein.station() filter id =~ "kqed" => @com.tunein.radio_play(id=id);
+====
+# recording/90e3ee8992d01c206828f32329c3bb42
+U: Set an alarm to play KQED radio station on Saturday.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @com.tunein.station() filter id =~ "kqed" => @com.tunein.radio_play(id=id);
+====
+# recording/55c6c4e2797dca77749bb82481ea6e35
+U: On Saturday, play radio station KQED.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @com.tunein.station() filter id =~ "kqed" => @com.tunein.radio_play(id=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: ontimer(date=[new Date(enum saturday)]) => (@com.tunein.station() filter id =~ "kqed")[1] => @com.tunein.radio_play(id=id)
+C: #[results=[]];
+A: Alright, I will do the following: at start of day on Saturday, get the first radio station that has name kqed, and then play them.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_rule_enable_success;
+U: Please remember to play radio station KQED on Saturday at 8:00 AM.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday, new Time(8, 0))]) => @com.tunein.station() filter id =~ "kqed" => @com.tunein.radio_play(id=id);
+====
+# recording/5630a05097ecb158bff02c41a523de54
+U: On Saturday morning play. KQED radio.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @com.tunein.station() filter id =~ "kqed" => @com.tunein.radio_play(id=id);
+====
+# recording/007b67575368fbe84095147bbedf7bc0
+U: On Saturday morning play radio station KQED.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @com.tunein.station() filter id =~ "kqed" => @com.tunein.radio_play(id=id);
+====
+# recording/d89c8a9e3c717bc2d50cd2cfd6bcf57f
+U: On Saturday, play radio KQED.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @com.tunein.station() filter id =~ "kqed" => @com.tunein.radio_play(id=id);
+====
+# recording/aefe333a33a4a7472789eb8c0c65bff9
+U: Play radio station KQED.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.station() filter id =~ "kqed" => @com.tunein.radio_play(id=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@com.tunein.station() filter id =~ "kqed")[1] => @com.tunein.radio_play(id=id)
+C: #[results=[
+C:   { id="station:s34804"^^com.tunein:station("KQED-FM") }
+C: ]];
+A: I played KQED-FM.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: Send this to me on Saturday.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @com.tunein.station() filter id =~ "kqed" => @com.tunein.radio_play(id=id);
+====
+# recording/fb2feec89242b40c128537f1980a3695
+U: Also, on Saturday play radio station KQED.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @com.tunein.station() filter id =~ "kqed" => @com.tunein.radio_play(id=id);
+====
+# recording/9dd5f93f3b63583f92ee74d7bf6a0d03
+U: Play radio station KBLX.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.station() filter id =~ "kblx" => @com.tunein.radio_play(id=id);
+====
+# recording/0f3cbb03854db527ed9fbb3c237a26e1
+U: On Saturday, play radio station KQED.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @com.tunein.station() filter id =~ "kqed" => @com.tunein.radio_play(id=id);
+====
+# recording/92fa195ac98f907a64dd0cdec82c9967
+U: what is the most popular radio station?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.most_popular_stations();
+====
+# recording/baa6fe6bde76f6ae3bd3854064c1ecdc
+U: On Saturday, play radio station KQED.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @com.tunein.station() filter id =~ "kqed" => @com.tunein.radio_play(id=id);
+====
+# recording/fa683d882782293d28e9113e76eb298f
+U: Play KCSU.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.station() filter id =~ "kcsu" => @com.tunein.radio_play(id=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@com.tunein.station() filter id =~ "kcsu")[1] => @com.tunein.radio_play(id=id)
+C: #[results=[
+C:   { id="station:s32170"^^com.tunein:station("KCSU Fort Collins") }
+C: ]];
+A: I played KCSU Fort Collins.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: Play radio station KSU.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.station() filter id =~ "ksu" => @com.tunein.radio_play(id=id);
+====
+# recording/48fb8e0a66be1e1a9c667e47b1d5b2f8
+U: play radio station KQED.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.station() filter id =~ "kqed" => @com.tunein.radio_play(id=id);
+====
+# recording/c07e15eab338bfe1878eca902715a216
+U: play radio station KZSU.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.station() filter id =~ "kzsu" => @com.tunein.radio_play(id=id);
+====
+# recording/e10186ee422ef06f8878953741891de4
+U: Play KQED radio station at.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.station() filter id =~ "kqed" => @com.tunein.radio_play(id=id);
+====
+# recording/52c8b20ae552f3006bb620d89c3b16b5
+U: play the news from KQED radio.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.station() filter id =~ "kqed" => @com.tunein.radio_play(id=id);
+====
+# recording/a8d9a599f43792d6b4c0a3b3500d485d
+U: Play gnn radio on tunein
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.station() filter id =~ "gnn" => @com.tunein.radio_play(id=id);
+====
+# recording/b0536ec643f289a0f17490284ac9475b
+U: open NPR
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.station() filter id =~ "npr" => @com.tunein.radio_play(id=id);
+====
+# recording/058da1a3e5207af1b06395a9a8ea6ad9
+U: play radio station KQED.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.station() filter id =~ "kqed" => @com.tunein.radio_play(id=id);
+====
+# recording/d4fba90345a52f2cc30093522cad9cac
+U: play kqed.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.station() filter id =~ "kqed" => @com.tunein.radio_play(id=id);
+====
+# recording/65d34de8452d5d278bbc8d2c9375528c
+U: Play KQED FM.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.station() filter id =~ "kqed fm" => @com.tunein.radio_play(id=id);
+====
+# recording/ace8b0065a8b62be6c49d1a6fe103e0a
+U: on Saturday play kqed.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @com.tunein.station() filter id =~ "kqed" => @com.tunein.radio_play(id=id);
+====
+# recording/6c29eda140bbc04bf881a07b0a80a08b
+U: Play radio station KQED.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.station() filter id =~ "kqed" => @com.tunein.radio_play(id=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@com.tunein.station() filter id =~ "kqed")[1] => @com.tunein.radio_play(id=id)
+C: #[results=[
+C:   { id="station:s34804"^^com.tunein:station("KQED-FM") }
+C: ]];
+A: I played KQED-FM.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: Play radio station KQED on Saturday.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @com.tunein.station() filter id =~ "kqed" => @com.tunein.radio_play(id=id);
+====
+# recording/12b0cf93ec6a3ff95a58b6f2710cec51
+U: Send KQED radio to me on Saturday.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @com.tunein.station() filter id =~ "kqed";
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: ontimer(date=[new Date(enum saturday, new Time(8, 0))]) => @com.tunein.station() filter id =~ "kqed"
+C: #[results=[]];
+A: Alright, I will get kqed at 8:00 AM on Saturday.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_rule_enable_success;
+U: Thank you.
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# recording/1ed326d83c08b047cf9b720bfecc87f2
+U: On Saturday, play radio station KQED.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @com.tunein.station() filter id =~ "kqed" => @com.tunein.radio_play(id=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: ontimer(date=[new Date(enum saturday, new Time(8, 0))]) => (@com.tunein.station() filter id =~ "kqed")[1] => @com.tunein.radio_play(id=id)
+C: #[results=[]];
+A: Alright, I will play kqed at 8:00 AM on Saturday.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_rule_enable_success;
+U: Play.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.station() filter id =~ "kqed" => @com.tunein.radio_play(id=id);
+====
+# recording/71ea28f78002866c75995b3b6aa8c56a
+U: play radio station KQED.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.station() filter id =~ "kqed" => @com.tunein.radio_play(id=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@com.tunein.station() filter id =~ "kqed")[1] => @com.tunein.radio_play(id=id)
+C: #[results=[
+C:   { id="station:s34804"^^com.tunein:station("KQED-FM") }
+C: ]];
+A: I played KQED-FM.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: On Saturday, play radio station KQED.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @com.tunein.station() filter id =~ "kqed" => @com.tunein.radio_play(id=id);
+====
+# recording/33ae2c87fa6ecf8d2af188475882c1d9
+U: Play radio station KQED.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.station() filter id =~ "kqed" => @com.tunein.radio_play(id=id);
+====
+# recording/0f7643ddf371c85045c3e3f93330c461
+U: play kqed.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.station() filter id =~ "kqed" => @com.tunein.radio_play(id=id);
