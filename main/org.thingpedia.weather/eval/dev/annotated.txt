@@ -1422,3 +1422,28 @@ UT: [humidity] of @org.thingpedia.weather.current();
 U: the wind speed outside
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: [wind_speed] of @org.thingpedia.weather.current();
+====
+# recording/9aaa012af0ea91b2d02b3b9029112c07
+U: what's the forecast for Dolores Park on Saturday?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast(date=new Date(enum saturday), location=new Location("dolores park"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.forecast(date=new Date(enum saturday), location=new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California"))
+C: #[results=[
+C:   { temperature=18.7C, wind_speed=4.5mps, humidity=77.2, cloudiness=3.1, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=3;content_type=image/png"^^tt:picture, date=new Date("2021-11-13T08:00:00.000Z"), location=new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California") }
+C: ]];
+A: It will be cloudy on Saturday in Mission Dolores Park, San Francisco, California and the temperature will be 65.7 degrees Fahrenheit.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: Send this to me on Saturday.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @org.thingpedia.weather.forecast(date=new Date(enum saturday), location=new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California"));
+====
+# recording/a03afcb0ad2603baa013fe1f052ebace
+U: What will the weather be in Palo Alto this evening?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast(date=set_time($now, $time.evening), location=new Location("palo alto"));
+====
+# recording/c67b17fb8bf4424600861c0f55d3fe1d
+U: What's the weather like tomorrow?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast();

@@ -179,3 +179,32 @@ UT: @org.thingpedia.media-player.player_previous();
 U: nex
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.media-player.player_next();
+====
+# recording/a058c3ad2d15a4f77e2d7f6c78f05bdf
+U: turn on shuffle.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player.player_shuffle(shuffle=enum on);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_shuffle(shuffle=enum on)
+C: #[results=[
+C:   { shuffle=enum on, __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: I turned shuffle on.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: next song.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_shuffle(shuffle=enum on)
+C: #[results=[
+C:   { shuffle=enum on, __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next()
+C: #[results=[
+C:   { __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: I played the next song for you.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: next song.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next();

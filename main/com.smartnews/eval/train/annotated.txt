@@ -1163,3 +1163,269 @@ UT: sort(date desc of @com.smartnews.article(keyword="astros"))[1];
 U: tell me about biden
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.smartnews.article(keyword="biden");
+====
+# recording/6e40581957791883af7ceead2ceb86bc
+U: tell me the news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# recording/c91826a966a3dbc33453448d43bd6627
+U: show me the news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# recording/2f28c1ee71bbb183d6ec9f5380599035
+U: show me the news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# recording/467e880b77ddd2cede4db54e3fd5300c
+U: let me know whenever there is news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(id of @com.smartnews.article());
+====
+# recording/2b20893a8a057608f4e1f991579a1747
+U: get me the news in San Francisco.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="san francisco");
+====
+# recording/8aa59ef564c9e7af3e267d5b4301c7de
+U: Tell me the news.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# recording/4d24d6d063c87983f83d36e4b9928fb2
+U: Send me the news on Saturday about San Francisco.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="san francisco") filter date == new Date(enum saturday);
+====
+# recording/908aafa42034b40c70040202126a7bce
+U: tell me the latest news about science.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(date desc of @com.smartnews.article(keyword="science"))[1];
+====
+# recording/67d3f67aead2a613cd62042f548afea8
+U: tell me this news about San Francisco from KQED.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="san francisco") filter source =~ "kqed";
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.smartnews.article(keyword="san francisco") filter source =~ "kqed"
+C: #[results=[
+C:   { id="4341429211962018000"^^com.smartnews:article, title="San Francisco Offers Cash Rewards in Bid to Crack Down on Auto Burglary Crime Rings", author="Marisa Lagos", source="KQED - San Francisco, CA", summary=" San Francisco will give out cash awards of up to $100,000 for information about the ringleaders of \"smash-and-grab\" auto burglaries . The rewards would come from private donors in the tourism and hospitality industry, Mayor London Breed said .", link="https://www.kqed.org/news/11892879/san-francisco-offers-big-cash-rewards-to-clamp-down-on-auto-burglary-crime-rings"^^tt:url, category=["crime"^^com.smartnews:category("crime"), "criminal"^^com.smartnews:category("criminal")], date=new Date("2021-10-20T01:20:29.000Z"), mention=["london breed", "email", "facebook", "marisa lagos"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211020/voice/headline_4341429211962017982.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211020/voice/summary_4341429211962017982.mp3"^^tt:url, keyword="san francisco" },
+C:   { id="4341062999117660700"^^com.smartnews:article, title="Recall of 3 San Francisco School Board Members Heads to Voters", author="Guy Marzorati", source="KQED - San Francisco, CA", summary=" Recall campaign submitted enough valid signatures to put questions before voters next year . San Francisco's Department of Elections announced Monday that recalls against Alison Collins, Gabriela L ?? pez and Faauuga Moliga will appear as three separate questions on a referendum on the district's handling of the coronavirus pandemic and its stewardship of the city's schools.", link="https://www.kqed.org/news/11892743/recall-of-3-san-francisco-school-board-members-headed-to-ballot"^^tt:url, category=["education"^^com.smartnews:category("education")], date=new Date("2021-10-19T01:08:41.000Z"), mention=["faauuga moliga", "email", "alison collins", "facebook"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211019/voice/headline_4341062999117660830.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211019/voice/summary_4341062999117660830.mp3"^^tt:url, keyword="san francisco" }
+C: ]];
+A: Here is the news.
+A: San Francisco Offers Cash Rewards in Bid to Crack Down on Auto Burglary Crime Rings.
+A: Recall of 3 San Francisco School Board Members Heads to Voters.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_two;
+U: On Saturday, send me the news about San Francisco.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @com.smartnews.article(keyword="san francisco");
+====
+# recording/5f81316b8a7938cfcb9989ad096df4d1
+U: Tell me the news about San Francisco vaccination rate.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="san francisco vaccination rate");
+====
+# recording/5d40a0f4d4595d67fe25e24dca9a3fc3
+U: tell me the news about the SF Bay Area.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="sf bay area");
+====
+# recording/7256b06babb34563c14c90921bfb25f9
+U: Tell me the news about San Francisco 49ers?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="san francisco 49 ers");
+====
+# recording/0bca9b958e9e0397a3089bd19921c71c
+U: Tell me the news about San Francisco art.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="san francisco art");
+====
+# recording/85273333c52ef080fb5f449e062cc285
+U: what's the news in San Francisco?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="san francisco");
+====
+# recording/de47fade0ec606abff81dfd0aa21fa90
+U: Tell me the news about San Francisco.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="san francisco");
+====
+# recording/d6fb6d2ac1e015afd6cd207b18704578
+U: tell me the news about San Francisco transportation.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="san francisco transportation");
+====
+# recording/48e463abdbc512261d8892b35669bb19
+U: Tell me about San Francisco COVID.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="san francisco covid");
+====
+# recording/d1d5fa5a5ba0393305df065cc6610e9b
+U: tell me the news.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# recording/4f7bb6ba59d7bf3788aef4dc5205f7ab
+U: Tell me new news about Biden.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="biden");
+====
+# recording/7241aa9d2734013ef1a42396752aa71a
+U: Tell me the news about San Francisco mask mandate.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="san francisco mask mandate");
+====
+# recording/32028599bf084102019d572896686fab
+U: Send me the news about San Francisco on Saturday.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @com.smartnews.article(keyword="san francisco");
+====
+# recording/8c2bb4886f41260b52420bc94b764b18
+U: what's the news?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# recording/093ce3f601d5208ca09e1c9c92dc5fb1
+U: what's the news?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# recording/9d1e8f20977e1e2ddc4233f8741ea9f3
+U: what's the news?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# recording/35e70744b9983edad20f2540a73b9328
+U: what's the news?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# recording/7d6e8e368df01cde4a8e23b3184d6bfd
+U: Tell me the news about San Francisco art.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="san francisco art");
+====
+# recording/87e65545875b2dcbbf012bff5aa2efb1
+U: What's the news in San Francisco?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="san francisco");
+====
+# recording/d8265661fea86c27a6a9e7bacb326ea7
+U: What's the news?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.smartnews.article()
+C: #[results=[
+C:   { id="4346824403728739000"^^com.smartnews:article, title="As Civic Center Park Slowly Reopens, Drugs & Crime ‘Will Not Be Tolerated’", author="Kelly Werthmann", source="CBS Denver", summary=" Denver's health department shut down Civic Center Park in mid-September . Crews have been busy cleaning the park and making restorations . From illegal drugs to human waste, a rat infestation and loads of litter, the historic park was closed because it was a health hazard .", link="https://denver.cbslocal.com/2021/11/03/civic-center-park-reopen-denver/"^^tt:url, category=["national"^^com.smartnews:category("national")], date=new Date("2021-11-03T22:44:36.000Z"), mention=["scott gilmore", "brian maass", "denver parks and recreation", "kcnc tv"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211104/voice/headline_4346824403728738702.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211104/voice/summary_4346824403728738702.mp3"^^tt:url },
+C:   { id="4346794430263462400"^^com.smartnews:article, title="Judge orders Jan. 6 defendant with cancer freed after ‘deplorable’ conditions found at DC jail", author="Joseph Choi", source="The Hill", summary=" A federal judge on Wednesday ordered that a Jan. 6 defendant diagnosed with cancer be transferred to another prison after an inspection at a D.C jail found that prisoners were living in \"deplorable\" conditions . Judge Royce Lamberth ordered that Christopher Worrell, a member of the Proud Boys, be immediately transferred to another jail and then released to home detention for chemotherapy as soon as possible .", link="https://thehill.com/regulation/court-battles/579935-judge-orders-jan-6-defendant-with-cancer-freed-after-deplorable"^^tt:url, category=["national"^^com.smartnews:category("national")], date=new Date("2021-11-03T20:47:02.000Z"), mention=["royce lamberth", "proud boys", "wanda patten", "washington d.c."], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211104/voice/headline_4346794430263462206.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211104/voice/summary_4346794430263462206.mp3"^^tt:url },
+C:   { id="4346728201297332000"^^com.smartnews:article, title="Friend testifies Rittenhouse was ‘freaking out’ after shooting", author="Monique Beals", source="The Hill", summary=" A friend of Kyle Rittenhouse, who fatally shot two people during Black Lives Matter protests last year, testified that the teenager was \"freaking out\" after the shooting . Dominick Black said in court Tuesday that then-17-year-old Rittenhouse was pale and \"really scared\" after he fired shots at an Aug. 2020 protest . Black is set to face charges himself for purchasing the AR-15-style rifle used by Rittenhouse, who at 17 years old was too young to legally buy or own the weapon .", link="https://thehill.com/regulation/court-battles/579845-friend-testifies-rittenhouse-was-freaking-out-after-shooting"^^tt:url, category=["national"^^com.smartnews:category("national")], date=new Date("2021-11-03T16:24:09.000Z"), mention=["dominick black", "black lives matter", "gaige grosskreutz", "wisconsin"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211103/voice/headline_4346728201297332287.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211103/voice/summary_4346728201297332287.mp3"^^tt:url },
+C:   { id="4346713604234412000"^^com.smartnews:article, title="New York’s business leaders hopeful they have an ally in new mayor, Eric Adams", author="Reuters", source="Reuters", summary=" Democrat Eric Adams won the largest U.S. city's mayoral race on Tuesday . His approach to the business community stands in contrast to that of Mayor Bill de Blasio . De Blasio had openly distanced himself from parts of the business community .", link="https://www.reuters.com/world/us/new-york-mayor-eric-adams-aims-reset-ties-with-business-community-2021-11-03/"^^tt:url, category=["national"^^com.smartnews:category("national")], date=new Date("2021-11-03T15:20:30.000Z"), mention=["eric adams", "new york city", "bill de blasio", "cnbc"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211104/voice/headline_4346713604234412263.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211104/voice/summary_4346713604234412263.mp3"^^tt:url },
+C:   { id="4346647694123478500"^^com.smartnews:article, title="Exclusive: More Americans understand LGBTQ people, but visibility has ‘double-edged sword’, GLAAD report says", author="David Oliver, USA TODAY", source="USA TODAY", summary=" GLAAD's annual Accelerating Acceptance Study was released Wednesday . Study: 43% of non-LGBTQ people think gender is not exclusively male and female . 81% of non-LGBTQ people anticipate nonbinary and transgender people will become familiar .", link="https://www.usatoday.com/story/life/health-wellness/2021/11/03/glaad-accelerating-acceptance-more-americans-accept-lgbtq-people/6198204001/"^^tt:url, category=["national"^^com.smartnews:category("national")], date=new Date("2021-11-03T11:00:49.000Z"), mention=["lgbt", "glaad", "sarah kate ellis", "united states"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211103/voice/headline_4346647694123478760.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211103/voice/summary_4346647694123478760.mp3"^^tt:url }
+C: ]];
+A: Here is the news.
+A: As Civic Center Park Slowly Reopens, Drugs & Crime ‘Will Not Be Tolerated’.
+A: Judge orders Jan. 6 defendant with cancer freed after ‘deplorable’ conditions found at DC jail.
+A: Friend testifies Rittenhouse was ‘freaking out’ after shooting.
+A: New York’s business leaders hopeful they have an ally in new mayor, Eric Adams.
+A: Exclusive: More Americans understand LGBTQ people, but visibility has ‘double-edged sword’, GLAAD report says.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_many;
+U: Tell me the news about San Francisco.About
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="san francisco");
+====
+# recording/96cb0b0ca82e9e1a3957156a0b3ab673
+U: Tell me the news about San Francisco from KQED.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="san francisco") filter source =~ "kqed";
+====
+# recording/652d0c59fdbcebdc28ffcf9cc8713b38
+U: Tell me the news about Stanford.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="stanford");
+====
+# recording/5f91bd2ae7eca2fb27ab34a1a8e4969a
+U: tell me the news about San Francisco.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="san francisco");
+====
+# recording/d20b004ddaef34673dafa6cadc1cd1a9
+U: tell me the news.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# recording/1c47a7e08802ea1b2edfd2ea83af5a9b
+U: Tell me the news about the new infrastructure bill.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="new infrastructure bill");
+====
+# recording/5a3f32b60030275410a51ac480c39fa4
+U: Tell me the news about San Francisco.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="san francisco");
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.smartnews.article(keyword="san francisco")
+C: #[results=[
+C:   { id="4346725270590325000"^^com.smartnews:article, title="Michelle Wu makes history as Boston’s first female and first POC elected mayor", author="Carl Samson", source="NextShark", summary=" Wu, 36, is the daughter of Taiwanese immigrants . She defeated Polish Arab American and fellow Democrat Annissa Essaibi George, 47, who secured 50,879 votes (35.8%)", link="https://nextshark.com/michelle-wu-boston-mayor/"^^tt:url, category=["politics policy"^^com.smartnews:category("politics policy"), "politic"^^com.smartnews:category("politic"), "political"^^com.smartnews:category("political"), "policy"^^com.smartnews:category("policy")], date=new Date("2021-11-03T16:13:53.000Z"), mention=["michelle wu", "annissa essaibi george", "person of color", "andrea campbell"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211103/voice/headline_4346725270590325474.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211103/voice/summary_4346725270590325474.mp3"^^tt:url, keyword="san francisco" },
+C:   { id="4346661828508525600"^^com.smartnews:article, title="Death on the high seas: Cruise passengers face head winds with COVID lawsuits", author="Hugo Martín", source="Los Angeles Times", summary=" The cruise industry faces a wave of lawsuits from passengers and their families . Many say they or their loved ones contracted COVID-19 on a ship . maritime and corporate law makes it difficult to extract significant damages from cruise lines .", link="https://www.latimes.com/business/story/2021-11-03/covid-cruises-lawsuits-maritime-law-princess-battles"^^tt:url, category=["lifestyle"^^com.smartnews:category("lifestyle"), "travel"^^com.smartnews:category("travel")], date=new Date("2021-11-03T12:00:59.000Z"), mention=["grand princess", "princess cruises", "americans", "carnival corporation plc"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211103/voice/headline_4346661828508525518.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211103/voice/summary_4346661828508525518.mp3"^^tt:url, keyword="san francisco" },
+C:   { id="4346654431836635000"^^com.smartnews:article, title="Investors surf the life sciences wave in the Bay Area", author="By Matthew Niksa", source="The Real Deal National", summary=" The Bay Area’s life science real estate sector has hit a fever pitch . Bay Area has the second-largest life science cluster in the U.S. after Boston .", link="https://therealdeal.com/national/2021/11/03/investors-surf-the-life-sciences-wave-in-the-bay-area/"^^tt:url, category=["technology"^^com.smartnews:category("technology"), "biotechmedical"^^com.smartnews:category("biotechmedical")], date=new Date("2021-11-03T11:30:28.000Z"), mention=["biomed realty", "longfellow real estate partners", "oracle corporation"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211103/voice/headline_4346654431836635191.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211103/voice/summary_4346654431836635191.mp3"^^tt:url, keyword="san francisco" },
+C:   { id="4346651929074470000"^^com.smartnews:article, title="California changed the country with weed legalization — is it high time for the feds to catch up?", author="Evan Halper", source="Los Angeles Times", summary=" Paul Scott, who is HIV positive, enlisted in the medical marijuana movement decades ago to bring relief to the chronically ill . He joined a loose affiliation of chronically ill patients and cannabis culture icons who would use California as a springboard to reshape drug policy nationwide .", link="https://www.latimes.com/politics/story/2021-11-03/california-changed-the-country-with-weed-legalization-is-it-high-time-for-the-feds-to-catch-up"^^tt:url, category=["politics policy"^^com.smartnews:category("politics policy"), "politic"^^com.smartnews:category("politic"), "political"^^com.smartnews:category("political"), "policy"^^com.smartnews:category("policy")], date=new Date("2021-11-03T11:20:50.000Z"), mention=["inglewood california"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211104/voice/headline_4346651929074470047.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211104/voice/summary_4346651929074470047.mp3"^^tt:url, keyword="san francisco" },
+C:   { id="4346633667397820000"^^com.smartnews:article, title="San Francisco’s new rapid response teams race to save lives as ODs dramatically rise", author="Eric Westervelt", source="NPR", summary=" Nicholas thought he was smoking meth when he started getting high in a San Francisco park . He was actually doing fentanyl, a synthetic opioid many times more powerful than heroin . Someone who administered life-saving naloxone was a nearby volunteer and street cleaner carrying Narcan .", link="https://www.npr.org/2021/11/03/1049637659/drug-overdose-deaths-san-francisco-mobile-response"^^tt:url, category=["health"^^com.smartnews:category("health")], date=new Date("2021-11-03T10:00:25.000Z"), mention=["naloxone", "san francisco fire department", "love"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211103/voice/headline_4346633667397819755.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211103/voice/summary_4346633667397819755.mp3"^^tt:url, keyword="san francisco" }
+C: ]];
+A: Here is the news.
+A: Michelle Wu makes history as Boston’s first female and first POC elected mayor.
+A: Death on the high seas: Cruise passengers face head winds with COVID lawsuits.
+A: Investors surf the life sciences wave in the Bay Area.
+A: California changed the country with weed legalization — is it high time for the feds to catch up?.
+A: San Francisco’s new rapid response teams race to save lives as ODs dramatically rise.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_many;
+U: what's the news about Boston?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="boston");
+====
+# recording/60a271d43bd70eebb103282d4b7d5217
+U: what's the news?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# recording/7652f02a2096defd70e874b88ebd9e9d
+U: what's up with the news?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# recording/88ee416fc9eb351bb733b1d6a4c5dcd8
+U: tell me the news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# recording/0e1b81400c17305d8e2d327ee330502a
+U: hi
+UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
+C: $dialogue @org.thingpedia.dialogue.transaction.greet;
+A: Hello! How can I help you?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_greet;
+U: covid cases
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="covid cases");
+====
+# recording/d8a2fb843f47d6595174a375757118b8
+U: show me the latest news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(date desc of @com.smartnews.article())[1];
+====
+# recording/fab083bea215702cfb200b39eaaef49f
+U: what are the news?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# recording/abf2845077784e79d0fd773c9d6d0c46
+U: continue the Music Awards Action News.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="music awards action");
+====
+# recording/6078a487a9c643015f4f883cf9b471fe
+U: send me the news on Saturday.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @com.smartnews.article();

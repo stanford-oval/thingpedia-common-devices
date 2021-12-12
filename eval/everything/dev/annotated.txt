@@ -4359,3 +4359,1112 @@ UT: @com.thedogapi.dog();
 # log/181401
 U: thank you but later
 UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# recording/fae417de629064360edae4f479593e15
+U: Can you tell me how many reviews Tartines has?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [review_count] of @com.yelp.restaurant() filter id =~ "tartines";
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: [review_count] of @com.yelp.restaurant() filter id =~ "tartines"
+C: #[results=[
+C:   { id="ri7UUYmx21AgSpRsf4-9QA"^^com.yelp:restaurant("Tartine Bakery"), review_count=8186 },
+C:   { id="TdXsIPBVRLP3DR-A3sKdpg"^^com.yelp:restaurant("Tartine Manufactory"), review_count=1304 },
+C:   { id="45W9g3pArmsMlOK8pYnKcA"^^com.yelp:restaurant("Tartine Inner Sunset"), review_count=214 },
+C:   { id="-3fK2BLviJhDkZugVAjA5A"^^com.yelp:restaurant("Cafe La Tartine"), review_count=748 }
+C: ]];
+A: Tartine Bakery has 8,186 reviews.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: can you tell me the phone number and address of Tartine Bakery?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [geo, phone] of @com.yelp.restaurant() filter id == null^^com.yelp:restaurant("tartine bakery");
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: [review_count] of @com.yelp.restaurant() filter id =~ "tartines"
+C: #[results=[
+C:   { id="ri7UUYmx21AgSpRsf4-9QA"^^com.yelp:restaurant("Tartine Bakery"), review_count=8186 },
+C:   { id="TdXsIPBVRLP3DR-A3sKdpg"^^com.yelp:restaurant("Tartine Manufactory"), review_count=1304 },
+C:   { id="45W9g3pArmsMlOK8pYnKcA"^^com.yelp:restaurant("Tartine Inner Sunset"), review_count=214 },
+C:   { id="-3fK2BLviJhDkZugVAjA5A"^^com.yelp:restaurant("Cafe La Tartine"), review_count=748 }
+C: ]];
+C: [geo, phone] of @com.yelp.restaurant() filter id == "ri7UUYmx21AgSpRsf4-9QA"^^com.yelp:restaurant("Tartine Bakery")
+C: #[results=[
+C:   { id="ri7UUYmx21AgSpRsf4-9QA"^^com.yelp:restaurant("Tartine Bakery"), geo=new Location(37.76131, -122.42431, "600 Guerrero St, San Francisco, CA"), phone="+14154872600"^^tt:phone_number }
+C: ]];
+A: Tartine Bakery is a restaurant at 600 Guerrero St, San Francisco, CA with phone number (415) 487-2600.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: can you tell me the weather there?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location(37.76131, -122.42431, "600 Guerrero St, San Francisco, CA"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: [review_count] of @com.yelp.restaurant() filter id =~ "tartines"
+C: #[results=[
+C:   { id="ri7UUYmx21AgSpRsf4-9QA"^^com.yelp:restaurant("Tartine Bakery"), review_count=8186 },
+C:   { id="TdXsIPBVRLP3DR-A3sKdpg"^^com.yelp:restaurant("Tartine Manufactory"), review_count=1304 },
+C:   { id="45W9g3pArmsMlOK8pYnKcA"^^com.yelp:restaurant("Tartine Inner Sunset"), review_count=214 },
+C:   { id="-3fK2BLviJhDkZugVAjA5A"^^com.yelp:restaurant("Cafe La Tartine"), review_count=748 }
+C: ]];
+C: [geo, phone] of @com.yelp.restaurant() filter id == "ri7UUYmx21AgSpRsf4-9QA"^^com.yelp:restaurant("Tartine Bakery")
+C: #[results=[
+C:   { id="ri7UUYmx21AgSpRsf4-9QA"^^com.yelp:restaurant("Tartine Bakery"), geo=new Location(37.76131, -122.42431, "600 Guerrero St, San Francisco, CA"), phone="+14154872600"^^tt:phone_number }
+C: ]];
+C: @org.thingpedia.weather.current(location=new Location(37.76131, -122.42431, "600 Guerrero St, San Francisco, CA"))
+C: #[results=[
+C:   { temperature=13.2C, wind_speed=5mps, humidity=78, cloudiness=100, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=3;content_type=image/png"^^tt:picture, location=new Location(37.76131, -122.42431, "600 Guerrero St, San Francisco, CA") }
+C: ]];
+A: It is cloudy today in 600 Guerrero St, San Francisco, CA and the temperature is 55.8 degrees Fahrenheit.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: Send this to me on Saturday.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @org.thingpedia.weather.current(location=new Location(37.76131, -122.42431, "600 Guerrero St, San Francisco, CA"));
+====
+# recording/7c3cbc76986be93c01ecaa6156623fcf
+U: play Grimes on Spotify.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("grimes")) => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:053q0ukIDRgzwTr4vNSwab"^^org.thingpedia.media-source:artist("Grimes")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3LGsgpx4TfxhXbr07OFKqs"^^org.thingpedia.media-source:playable("Oblivion"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3WXhshrs1fzwF3rQE399Gq"^^org.thingpedia.media-source:playable("Kill V. Maim"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3cjvqsvvU80g7WJPMVh8iq"^^org.thingpedia.media-source:playable("Genesis"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3KeOFns3LGJuh1lapMm9eA"^^org.thingpedia.media-source:playable("Violence - Original Mix"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:album:3HED2IUaNSnbOe88a7ZdwM"^^org.thingpedia.media-source:playable("Visions"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:album:4zyqNfmTrnvUejh8M1IEh9"^^org.thingpedia.media-source:playable("Miss Anthropocene (Deluxe Edition)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:album:7J84ixPVFehy6FcLk8rhk3"^^org.thingpedia.media-source:playable("Art Angels"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:album:2FQYkZIuXLy222CVzgPbQ0"^^org.thingpedia.media-source:playable("Miss Anthropocene (Rave Edition)"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: I played music recordings by Grimes on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: Play violence by Grimes on Spotify.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, null^^org.thingpedia.media-source:artist("grimes")) && id =~ "violence" => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:053q0ukIDRgzwTr4vNSwab"^^org.thingpedia.media-source:artist("Grimes")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3LGsgpx4TfxhXbr07OFKqs"^^org.thingpedia.media-source:playable("Oblivion"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3WXhshrs1fzwF3rQE399Gq"^^org.thingpedia.media-source:playable("Kill V. Maim"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3cjvqsvvU80g7WJPMVh8iq"^^org.thingpedia.media-source:playable("Genesis"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3KeOFns3LGJuh1lapMm9eA"^^org.thingpedia.media-source:playable("Violence - Original Mix"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:album:3HED2IUaNSnbOe88a7ZdwM"^^org.thingpedia.media-source:playable("Visions"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:album:4zyqNfmTrnvUejh8M1IEh9"^^org.thingpedia.media-source:playable("Miss Anthropocene (Deluxe Edition)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:album:7J84ixPVFehy6FcLk8rhk3"^^org.thingpedia.media-source:playable("Art Angels"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:album:2FQYkZIuXLy222CVzgPbQ0"^^org.thingpedia.media-source:playable("Miss Anthropocene (Rave Edition)"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:053q0ukIDRgzwTr4vNSwab"^^org.thingpedia.media-source:artist("Grimes")) && id =~ "violence")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3KeOFns3LGJuh1lapMm9eA"^^org.thingpedia.media-source:playable("Violence - Original Mix"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: I played Violence - Original Mix on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: Play GUY by Lady Gaga on Spotify.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, null^^org.thingpedia.media-source:artist("lady gaga")) && id =~ "guy" => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:053q0ukIDRgzwTr4vNSwab"^^org.thingpedia.media-source:artist("Grimes")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3LGsgpx4TfxhXbr07OFKqs"^^org.thingpedia.media-source:playable("Oblivion"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3WXhshrs1fzwF3rQE399Gq"^^org.thingpedia.media-source:playable("Kill V. Maim"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3cjvqsvvU80g7WJPMVh8iq"^^org.thingpedia.media-source:playable("Genesis"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3KeOFns3LGJuh1lapMm9eA"^^org.thingpedia.media-source:playable("Violence - Original Mix"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:album:3HED2IUaNSnbOe88a7ZdwM"^^org.thingpedia.media-source:playable("Visions"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:album:4zyqNfmTrnvUejh8M1IEh9"^^org.thingpedia.media-source:playable("Miss Anthropocene (Deluxe Edition)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:album:7J84ixPVFehy6FcLk8rhk3"^^org.thingpedia.media-source:playable("Art Angels"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:album:2FQYkZIuXLy222CVzgPbQ0"^^org.thingpedia.media-source:playable("Miss Anthropocene (Rave Edition)"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:053q0ukIDRgzwTr4vNSwab"^^org.thingpedia.media-source:artist("Grimes")) && id =~ "violence")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3KeOFns3LGJuh1lapMm9eA"^^org.thingpedia.media-source:playable("Violence - Original Mix"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:1HY2Jd0NmPuamShAr6KMms"^^org.thingpedia.media-source:artist("Lady Gaga")) && id =~ "guy")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[]];
+A: Sorry, there are no recordings at the moment matching your request. Would you like to be notified when there are new recordings?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_empty_search;
+AT: monitor(id of (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:1HY2Jd0NmPuamShAr6KMms"^^org.thingpedia.media-source:artist("Lady Gaga")) && id =~ "guy")[1])
+AT: #[confirm=enum proposed];
+U: Play Lady Gaga on Spotify.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, null^^org.thingpedia.media-source:artist("lady gaga")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:053q0ukIDRgzwTr4vNSwab"^^org.thingpedia.media-source:artist("Grimes")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3LGsgpx4TfxhXbr07OFKqs"^^org.thingpedia.media-source:playable("Oblivion"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3WXhshrs1fzwF3rQE399Gq"^^org.thingpedia.media-source:playable("Kill V. Maim"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3cjvqsvvU80g7WJPMVh8iq"^^org.thingpedia.media-source:playable("Genesis"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3KeOFns3LGJuh1lapMm9eA"^^org.thingpedia.media-source:playable("Violence - Original Mix"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:album:3HED2IUaNSnbOe88a7ZdwM"^^org.thingpedia.media-source:playable("Visions"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:album:4zyqNfmTrnvUejh8M1IEh9"^^org.thingpedia.media-source:playable("Miss Anthropocene (Deluxe Edition)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:album:7J84ixPVFehy6FcLk8rhk3"^^org.thingpedia.media-source:playable("Art Angels"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:album:2FQYkZIuXLy222CVzgPbQ0"^^org.thingpedia.media-source:playable("Miss Anthropocene (Rave Edition)"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:053q0ukIDRgzwTr4vNSwab"^^org.thingpedia.media-source:artist("Grimes")) && id =~ "violence")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3KeOFns3LGJuh1lapMm9eA"^^org.thingpedia.media-source:playable("Violence - Original Mix"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:1HY2Jd0NmPuamShAr6KMms"^^org.thingpedia.media-source:artist("Lady Gaga")) && id =~ "guy")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[]];
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:1HY2Jd0NmPuamShAr6KMms"^^org.thingpedia.media-source:artist("Lady Gaga")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:0SiywuOBRcynK0uKGWdCnn"^^org.thingpedia.media-source:playable("Bad Romance"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:2VxeLyX666F8uXCJ0dZF8B"^^org.thingpedia.media-source:playable("Shallow"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:5R8dQOPq8haW94K7mgERlO"^^org.thingpedia.media-source:playable("Poker Face"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:2x7MyWybabEz6Y6wvHuwGE"^^org.thingpedia.media-source:playable("Just Dance"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:24ySl2hOPGCDcxBxFIqWBu"^^org.thingpedia.media-source:playable("Rain On Me (with Ariana Grande)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:album:1jpUMnKpRlng1OJN7LJauV"^^org.thingpedia.media-source:playable("The Fame"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:album:4sLtOBOzn4s3GDUv3c5oJD"^^org.thingpedia.media-source:playable("A Star Is Born Soundtrack"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:album:6rePArBMb5nLWEaY9aQqL4"^^org.thingpedia.media-source:playable("The Fame Monster (Deluxe Edition)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:album:05c49JgPmL4Uz2ZeqRx5SP"^^org.thingpedia.media-source:playable("Chromatica"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:album:3edjzMAVB9RYRd4UcZBchx"^^org.thingpedia.media-source:playable("A Star Is Born Soundtrack (Without Dialogue)"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: I played music recordings by Lady Gaga on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: played Zhihui on Spotify by Lady Gaga.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, null^^org.thingpedia.media-source:artist("lady gaga")) && id =~ "zhihui" => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id);
+====
+# recording/bc5546c78d59c512bb124ed6f458183f
+U: Play the Conan O'Brien podcast.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.show() filter id =~ "conan o 'brien" => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/c9ef55946d2c0cb786917c9e66737882
+U: on Saturday play radio station KQED.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @com.tunein.station() filter id =~ "kqed" => @com.tunein.radio_play(id=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: ontimer(date=[new Date(enum saturday, new Time(8, 0))]) => (@com.tunein.station() filter id =~ "kqed")[1] => @com.tunein.radio_play(id=id)
+C: #[results=[]];
+A: Alright, I will play kqed at 8:00 AM on Saturday.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_rule_enable_success;
+U: What's the weather in San Francisco at Dolores Park?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("san francisco at dolores park"));
+====
+# recording/875588cab53169cf08e5d61c3f14edf5
+U: Play Adele.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("adele")) => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:4dpARuHxo51G3z768sgnrY"^^org.thingpedia.media-source:artist("Adele")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:0gplL1WMoJ6iYaPgMCL0gX"^^org.thingpedia.media-source:playable("Easy On Me"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:7GgWAITsYJaRM3r50rfh5w"^^org.thingpedia.media-source:playable("When We Were Young"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:1zwMYTA5nlNjZxYrvBB2pV"^^org.thingpedia.media-source:playable("Someone Like You"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:1c8gk2PeTE04A1pIDH9YMk"^^org.thingpedia.media-source:playable("Rolling in the Deep"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:7B5Npv8NjjTCzk8PLpU66h"^^org.thingpedia.media-source:playable("Love In The Dark"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:album:3AvPX1B1HiFROvYjLb5Qwi"^^org.thingpedia.media-source:playable("25"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:album:224jZ4sUX7OhAuMwaxp86S"^^org.thingpedia.media-source:playable("Easy On Me"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:album:0Lg1uZvI312TPqxNWShFXL"^^org.thingpedia.media-source:playable("21"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:album:59ULskOkBMij4zL8pS7mi0"^^org.thingpedia.media-source:playable("19"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:album:6TwN6Lq9glwnG8kNp6chHY"^^org.thingpedia.media-source:playable("Skyfall"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: I played music recordings by Adele on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: Play.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:4dpARuHxo51G3z768sgnrY"^^org.thingpedia.media-source:artist("Adele")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:0gplL1WMoJ6iYaPgMCL0gX"^^org.thingpedia.media-source:playable("Easy On Me"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:7GgWAITsYJaRM3r50rfh5w"^^org.thingpedia.media-source:playable("When We Were Young"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:1zwMYTA5nlNjZxYrvBB2pV"^^org.thingpedia.media-source:playable("Someone Like You"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:1c8gk2PeTE04A1pIDH9YMk"^^org.thingpedia.media-source:playable("Rolling in the Deep"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:7B5Npv8NjjTCzk8PLpU66h"^^org.thingpedia.media-source:playable("Love In The Dark"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:album:3AvPX1B1HiFROvYjLb5Qwi"^^org.thingpedia.media-source:playable("25"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:album:224jZ4sUX7OhAuMwaxp86S"^^org.thingpedia.media-source:playable("Easy On Me"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:album:0Lg1uZvI312TPqxNWShFXL"^^org.thingpedia.media-source:playable("21"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:album:59ULskOkBMij4zL8pS7mi0"^^org.thingpedia.media-source:playable("19"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:album:6TwN6Lq9glwnG8kNp6chHY"^^org.thingpedia.media-source:playable("Skyfall"), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:6kqsNp22xUmUyfsaUt7VpB"^^org.thingpedia.media-source:playable("Center of Gravity"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:5QO79kh1waicV47BqGRL3g"^^org.thingpedia.media-source:playable("Save Your Tears"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:37y7iDayfwm3WXn5BiAoRk"^^org.thingpedia.media-source:playable("Dark Red"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:4ZaRg5Sf4TKr0YcFRLh7QJ"^^org.thingpedia.media-source:playable("Love Affair"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3ACQkIMv6nGYHRpPGyS4BK"^^org.thingpedia.media-source:playable("I Could Fall In Love"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:5lpDAHGne3yWphLa5pio5J"^^org.thingpedia.media-source:playable("Out of Time"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:7vgTNTaEz3CsBZ1N4YQalM"^^org.thingpedia.media-source:playable("Ghost Town"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:5CZ40GBx1sQ9agT82CLQCT"^^org.thingpedia.media-source:playable("traitor"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:1FWoak0OgTq1jrYfRKfXsj"^^org.thingpedia.media-source:playable("Loverboy"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:1V6gIisPpYqgFeWbMLI0bA"^^org.thingpedia.media-source:playable("Heart Attack"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=20];
+A: I played music recordings on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: Play lex Friedman.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, null^^org.thingpedia.media-source:artist("lex friedman")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id);
+====
+# recording/1f6c49870c518331f2bc1559d2cd61fd
+U: play San Francisco 49ers podcast.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.show() filter id =~ "san francisco 49 ers" => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).show() filter id =~ "san francisco 49 ers")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[]];
+A: Sorry, there are no shows at the moment matching your request. Would you like to be notified when there are new shows?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_empty_search;
+AT: monitor(id of (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).show() filter id =~ "san francisco 49 ers")[1])
+AT: #[confirm=enum proposed];
+U: No.
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# recording/7815ce1b17d9e147b658168cb759557b
+U: Play some music.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/dbfac7d319fbb7faabaf3f25cd801c04
+U: play my favorites.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.get_song_from_library() => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).get_song_from_library() => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3Y6XWs8xMlCngyIxNOFnsp"^^org.thingpedia.media-source:playable("Sound of da Police"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:5OU9pkK0wkHJMCOBVYafye"^^org.thingpedia.media-source:playable("My Favorite Accident"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:5i7fZq3chLyCHo3VeB6goD"^^org.thingpedia.media-source:playable("First of the Year (Equinox)"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:0y0J3pe45KwRVWCveF4q46"^^org.thingpedia.media-source:playable("Jessie & My Whetstone"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:4XpQ2F8NtzWMZ3g5t8qv2Y"^^org.thingpedia.media-source:playable("No Children"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3HaslE7EEnVLVGZhLggwfB"^^org.thingpedia.media-source:playable("Brother's Blood"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:4oZ2Xkline6CvRDebjbi8Q"^^org.thingpedia.media-source:playable("Singularity"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:5S3F5GL8LASIjPg2PMiU1Q"^^org.thingpedia.media-source:playable("Emerald Rush"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:1rbH1KmfxUjVlt8GCjgZSE"^^org.thingpedia.media-source:playable("Neon Pattern Drum"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3oWBMOzkjjkCmV6abncBUd"^^org.thingpedia.media-source:playable("Everything Connected"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=50];
+A: I played your favorites on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: next song.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_next();
+====
+# recording/6ddfa102b3c686eb3cf899d01e7c7bb7
+U: Play some music.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/e0f3857eaa23f3766d69e39650816eab
+U: play some music.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:1J03Vp93ybKIxfzYI4YJtL"^^org.thingpedia.media-source:playable("MEGALOVANIA"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:3KHbBpwYdlM6uKJirvCrEA"^^org.thingpedia.media-source:playable("Determination"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:4wBMMqeY2NnFnStBIPHxyG"^^org.thingpedia.media-source:playable("Oh! One True Love"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:6eTcxkl9G7C2mwejLJ7Amm"^^org.thingpedia.media-source:playable("An Ending"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:0KQnhlCVldP6qicvBy9IJ5"^^org.thingpedia.media-source:playable("Dating Fight!"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:0gplL1WMoJ6iYaPgMCL0gX"^^org.thingpedia.media-source:playable("Easy On Me"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:0gt76DuMx7F3UZJPg7jcC5"^^org.thingpedia.media-source:playable("Quiet Water"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:0w5CRIokPrQAAq7OdIKesr"^^org.thingpedia.media-source:playable("SAVE The World"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:0ybMBs8mKdAP9WSnFTiZvs"^^org.thingpedia.media-source:playable("ASGORE"), __device="XXXXXXXX"^^tt:device_id },
+C:   { device="XXXXXXXX"^^org.thingpedia.media-player:device, playable="spotify:track:2FZ99j224ohiGLavqjijza"^^org.thingpedia.media-source:playable("Undertale"), __device="XXXXXXXX"^^tt:device_id }
+C: ]]
+C: #[count=20];
+A: I played music recordings on Spotify.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: Stop the music.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).player_pause();
+====
+# recording/6520f556153b0e65e18f16cee035d136
+U: What is the weather?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.4519671, -122.1779927, "Menlo Park"))
+C: #[results=[
+C:   { temperature=15.3C, wind_speed=1mps, humidity=63.5, cloudiness=0, fog=0, status=enum sunny, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=1;content_type=image/png"^^tt:picture, location=new Location(37.4519671, -122.1779927, "Menlo Park") }
+C: ]];
+A: It is sunny today in Menlo Park and the temperature is 60 degrees Fahrenheit.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: What is the temperature?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [temperature] of @org.thingpedia.weather.current(location=new Location(37.4519671, -122.1779927, "Menlo Park"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.4519671, -122.1779927, "Menlo Park"))
+C: #[results=[
+C:   { temperature=15.3C, wind_speed=1mps, humidity=63.5, cloudiness=0, fog=0, status=enum sunny, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=1;content_type=image/png"^^tt:picture, location=new Location(37.4519671, -122.1779927, "Menlo Park") }
+C: ]];
+C: [temperature] of @org.thingpedia.weather.current(location=new Location(37.4519671, -122.1779927, "Menlo Park"))
+C: #[results=[
+C:   { location=new Location(37.4519671, -122.1779927, "Menlo Park"), temperature=15.3C, status=enum sunny }
+C: ]];
+A: Did you mean get the temperature of current weather in Menlo Park?
+A: The temperature is 60 degrees Fahrenheit.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: What is the time?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_time();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.4519671, -122.1779927, "Menlo Park"))
+C: #[results=[
+C:   { temperature=15.3C, wind_speed=1mps, humidity=63.5, cloudiness=0, fog=0, status=enum sunny, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=1;content_type=image/png"^^tt:picture, location=new Location(37.4519671, -122.1779927, "Menlo Park") }
+C: ]];
+C: [temperature] of @org.thingpedia.weather.current(location=new Location(37.4519671, -122.1779927, "Menlo Park"))
+C: #[results=[
+C:   { location=new Location(37.4519671, -122.1779927, "Menlo Park"), temperature=15.3C, status=enum sunny }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.get_time()
+C: #[results=[
+C:   { time=new Time(20, 12, 1) }
+C: ]];
+A: Right now, it's 8:12 PM.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: Alarm for 8:30 PM.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[set_time($now, new Time(20, 30))]) => @org.thingpedia.builtin.thingengine.builtin.alert();
+====
+# recording/22983cd8bf789cdd82302625485392a8
+U: genie does as you wish
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help)
+C: #[results=[
+C:   { reply="I'm a new virtual assistant. At the moment, I can help you with music, jokes, news, podcasts, weather, reminders, and managing IoT devices.", question=enum general_help }
+C: ]];
+A: I'm a new virtual assistant. At the moment, I can help you with music, jokes, news, podcasts, weather, reminders, and managing IoT devices.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: Music kardi?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter id =~ "kardi";
+====
+# recording/abe6685647e39b4badf2d6f9a82e7b28
+U: what is your name?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_identity);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_identity)
+C: #[results=[
+C:   { reply="I'm Genie, an open-source virtual assistant created at Stanford.", question=enum about_almond_identity }
+C: ]];
+A: I'm Genie, an open-source virtual assistant created at Stanford.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: what's the weather ?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_identity)
+C: #[results=[
+C:   { reply="I'm Genie, an open-source virtual assistant created at Stanford.", question=enum about_almond_identity }
+C: ]];
+C: @org.thingpedia.weather.current(location=new Location(36.1554157, 126.6794253, "Pangyo, Jongpan-ro"))
+C: #[results=[
+C:   { temperature=9.7C, wind_speed=7.3mps, humidity=62.1, cloudiness=100, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=4;content_type=image/png"^^tt:picture, location=new Location(36.1554157, 126.6794253, "Pangyo, Jongpan-ro") }
+C: ]];
+A: Where are you now?
+A: It is cloudy today in Pangyo, Jongpan-ro and the temperature is 49.5 degrees Fahrenheit.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: in celcius?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.set_temperature_unit(unit=enum celsius);
+====
+# recording/e8c5ab95b290fdb5ef582cd116acc032
+U: hi
+UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
+====
+# recording/a8469ad0b100e9910a751f0ef53e9807
+U: Ok, let's do something else
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help)
+C: #[results=[
+C:   { reply="I'm a new virtual assistant. At the moment, I can help you with music, jokes, news, podcasts, weather, reminders, and managing IoT devices.", question=enum general_help }
+C: ]];
+A: I'm a new virtual assistant. At the moment, I can help you with music, jokes, news, podcasts, weather, reminders, and managing IoT devices.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: What about news?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help)
+C: #[results=[
+C:   { reply="I'm a new virtual assistant. At the moment, I can help you with music, jokes, news, podcasts, weather, reminders, and managing IoT devices.", question=enum general_help }
+C: ]];
+C: @com.smartnews.article()
+C: #[results=[
+C:   { id="4348051123844689400"^^com.smartnews:article, title="Far-right figures in Charlottesville court over deadly violence of 2017", source="The Guardian", summary=" A civil lawsuit alleges a conspiracy to commit racially motivated violence against nine residents of Charlottesville during the white-supremacist Unite the Right march and rally . The case, Sines v Kessler, alleges that 14 people, including Richard Spencer and podcaster Chris Cantwell, white nationalists and 10 far-right groups, violated an obscure federal law known the Ku Klux Klan Act of 1871 .", link="https://www.theguardian.com/us-news/2021/nov/07/charlottesville-virginia-court-trial-violence"^^tt:url, category=["national"^^com.smartnews:category("national")], date=new Date("2021-11-07T08:00:14.000Z"), mention=["unite the right rally", "charlottesville virginia", "donald trump", "christopher cantwell", "sines v. kessler"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211107/voice/headline_4348051123844689377.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211107/voice/summary_4348051123844689377.mp3"^^tt:url },
+C:   { id="4347938665184374000"^^com.smartnews:article, title="L.A County asks for Vanessa Bryant’s therapy records in lawsuit over leaked Kobe Bryant crash photos", source="NBC News", summary=" Los Angeles County wants Kobe Bryant's widow to produce all therapy records dating back to 2010 . The county says Vanessa Bryant's therapy records are necessary for its defense against a lawsuit she filed last year . Bryant's attorneys did not immediately respond to a request for comment .", link="https://www.nbcnews.com/news/us-news/l-county-asks-vanessa-bryant-s-therapy-records-lawsuit-over-n1283407"^^tt:url, category=["national"^^com.smartnews:category("national")], date=new Date("2021-11-06T23:45:00.000Z"), mention=["vanessa bryant", "los angeles", "kobe bryant", "los angeles county california", "national basketball association"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211107/voice/headline_4347938665184373757.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211107/voice/summary_4347938665184373757.mp3"^^tt:url },
+C:   { id="4347945134990566000"^^com.smartnews:article, title="U.S. administers 429.4 mln doses of COVID-19 vaccines –CDC", author="Reuters", source="Reuters", summary=" The United States has administered 429,442,508 doses of COVID-19 vaccines . The CDC tally includes two-dose vaccines from Moderna and Pfizer/BioNTech . About 23.2 million people have received a booster dose of either Moderna or Johnson & Johnson's vaccine .", link="https://www.reuters.com/world/us/us-administers-4294-mln-doses-covid-19-vaccines-cdc-2021-11-06/"^^tt:url, category=["national"^^com.smartnews:category("national")], date=new Date("2021-11-06T21:06:02.000Z"), mention=["pfizer", "united states", "biontech", "centers for disease control and prevention"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211107/voice/headline_4347945134990565766.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211107/voice/summary_4347945134990565766.mp3"^^tt:url },
+C:   { id="4347845233073981000"^^com.smartnews:article, title="U.S. federal appeals court freezes Biden’s vaccine rule for companies", author="Mike Scarcella", source="Reuters", summary=" A U.S. federal appeals court issued a stay Saturday freezing the Biden administration's efforts . The ruling comes after numerous Republican-led states filed legal challenges against the new rule . The White House declined to comment on the ruling, and referred questions to the Labor Department .", link="https://www.reuters.com/world/us/us-federal-appeals-court-issues-stay-bidens-vaccine-rule-us-companies-2021-11-06/"^^tt:url, category=["national"^^com.smartnews:category("national")], date=new Date("2021-11-06T18:04:14.000Z"), mention=["united states", "united states court of appeals for the fifth circuit", "occupational safety and health administration", "joe biden"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211107/voice/headline_4347845233073980759.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211107/voice/summary_4347845233073980759.mp3"^^tt:url },
+C:   { id="4347833881274095000"^^com.smartnews:article, title="Clocks Fall Back 1 Hour Sunday, Starting 70 Days With Sunsets Before 5 P.M. In Denver", author="Chris Spears", source="CBS Denver", summary=" It will be the last sunset of the year that takes place after 5 p.m. thanks to the end of daylight saving time . Daylight saving officially ends at 2 a.m. on Sunday, Nov. 7 .", link="https://denver.cbslocal.com/2021/11/06/daylight-saving-time-denver-sunset/"^^tt:url, category=["national"^^com.smartnews:category("national")], date=new Date("2021-11-06T17:30:00.000Z"), mention=["denver", "colorado", "yoon s. byun", "portland press herald"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211106/voice/headline_4347833881274095327.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211106/voice/summary_4347833881274095327.mp3"^^tt:url }
+C: ]];
+A: Here is the news.
+A: Far-right figures in Charlottesville court over deadly violence of 2017.
+A: L.A County asks for Vanessa Bryant’s therapy records in lawsuit over leaked Kobe Bryant crash photos.
+A: U.S. administers 429.4 mln doses of COVID-19 vaccines –CDC.
+A: U.S. federal appeals court freezes Biden’s vaccine rule for companies.
+A: Clocks Fall Back 1 Hour Sunday, Starting 70 Days With Sunsets Before 5 P.M. In Denver.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_many;
+U: Anything from Europe?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="europe");
+====
+# recording/f9e82de6b7b37cc25aea59dc962aa73e
+U: bark
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.thedogapi.dog();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.thedogapi.dog()
+C: #[results=[
+C:   { id="LMjrDDwSJ"^^com.thedogapi:dog("Alaskan Husky"), picture_url="https://cdn2.thedogapi.com/images/LMjrDDwSJ.jpg"^^tt:picture }
+C: ]];
+A: Here is a picture of a Alaskan Husky.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: meow
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.thecatapi.cat();
+====
+# recording/566cc810c353dd9137fc61e3502036ad
+U: What can you do?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help)
+C: #[results=[
+C:   { reply="I'm a new virtual assistant. At the moment, I can help you with music, jokes, news, podcasts, weather, reminders, and managing IoT devices.", question=enum general_help }
+C: ]];
+A: I'm a new virtual assistant. At the moment, I can help you with music, jokes, news, podcasts, weather, reminders, and managing IoT devices.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: Tell me a joke, please
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.icanhazdadjoke.get();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help)
+C: #[results=[
+C:   { reply="I'm a new virtual assistant. At the moment, I can help you with music, jokes, news, podcasts, weather, reminders, and managing IoT devices.", question=enum general_help }
+C: ]];
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="wA5wX0wXLmb"^^com.icanhazdadjoke:id, text="What animal is always at a game of cricket? A bat." }
+C: ]];
+A: What animal is always at a game of cricket? A bat.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: what's the weather at New York
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("new york"));
+====
+# recording/028cc0b10dd8c923bce9c8d32e5ffc5a
+U: tell me a joke
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.icanhazdadjoke.get();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="9prWnjyImyd"^^com.icanhazdadjoke:id, text="Why do bears have hairy coats? Fur protection." }
+C: ]];
+A: Why do bears have hairy coats? Fur protection.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: find me a restaurant in palo alto
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("palo alto");
+====
+# recording/942f1db5b4c002b54f9261e23726200a
+U: what time is it?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_time();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.get_time()
+C: #[results=[
+C:   { time=new Time(1, 56, 53) }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.get_time()
+C: #[results=[
+C:   { time=new Time(2, 4, 59) }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.get_time()
+C: #[results=[
+C:   { time=new Time(2, 15, 45) }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.get_time()
+C: #[results=[
+C:   { time=new Time(2, 21, 6) }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.get_time()
+C: #[results=[
+C:   { time=new Time(2, 23, 26) }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.get_time()
+C: #[results=[
+C:   { time=new Time(2, 33, 43) }
+C: ]];
+A: Right now, it's 2:33 AM.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: What's the weather like?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+====
+# recording/9ae89696d6c0c5a517eeded4841e1280
+U: play Bay curious podcast.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.show() filter id =~ "bay curious" => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/7b17f7d3ad7585f1717231a8aebe413b
+U: Get me the news about San Francisco art.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="san francisco art");
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.smartnews.article(keyword="san francisco art")
+C: #[results=[
+C:   { id="4334840903001710600"^^com.smartnews:article, title="Dinosaurs have next in the art of San Francisco painter Michael Kerbow", author="Mary Corbin", source="48 hills", summary=" San Francisco painter Michael Kerbow wants to make art that matters . His paintings aim to distill what he sees happening today and what possibly awaits us tomorrow .", link="https://48hills.org/2021/10/dinosaurs-have-next-in-the-art-of-san-francisco-painter-michael-kerbow/"^^tt:url, category=["art"^^com.smartnews:category("art")], date=new Date("2021-10-01T21:04:06.000Z"), mention=["michael kerbow", "san francisco", "united states"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211003/voice/headline_4334840903001710421.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211003/voice/summary_4334840903001710421.mp3"^^tt:url, keyword="san francisco art" },
+C:   { id="4334579186652948000"^^com.smartnews:article, title="Art Showcase Featuring Resilience During COVID-19 Opens in San Francisco", author="Bay City News", source="NBC Bay Area", summary=" The exhibition will feature art and photography from CatchLight fellows and San Francisco's COVID Command Center artists in residence that capture the hopeful spirit of San Franciscans during the pandemic .", link="https://www.nbcbayarea.com/news/local/san-francisco/art-showcase-featuring-resilience-during-covid-19-opens-in-san-francisco/2670828/"^^tt:url, category=["art"^^com.smartnews:category("art")], date=new Date("2021-09-30T20:37:35.000Z"), mention=["san francisco", "san franciscans", "san francisco arts commission", "catch light", "android operating system"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211005/voice/headline_4334579186652947861.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211005/voice/summary_4334579186652947861.mp3"^^tt:url, keyword="san francisco art" }
+C: ]];
+A: Here is the news.
+A: Dinosaurs have next in the art of San Francisco painter Michael Kerbow.
+A: Art Showcase Featuring Resilience During COVID-19 Opens in San Francisco.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_two;
+U: play radio station KQED.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.station() filter id =~ "kqed" => @com.tunein.radio_play(id=id);
+====
+# recording/d52af9e6e38688353e77589f62c6bac4
+U: on Saturday send me radio station KQED.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @com.tunein.station() filter id =~ "kqed";
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: ontimer(date=[new Date(enum saturday, new Time(8, 0))]) => @com.tunein.station() filter id =~ "kqed"
+C: #[results=[]];
+A: Alright, I will get kqed at 8:00 AM on Saturday.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_rule_enable_success;
+U: Play POD San Francisco podcast.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.show() filter id =~ "pod san francisco" => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/8fcdcc87959a96e7ad8c31d09de552dd
+U: Play some music.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/5551da2f9135461bdc628e22f2f81b9f
+U: Can you recommend any great places to eat near Dolores Park?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("dolores park");
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.yelp.restaurant() filter geo == new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California")
+C: #[results=[
+C:   { id="ri7UUYmx21AgSpRsf4-9QA"^^com.yelp:restaurant("Tartine Bakery"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/nPUUXYVVa3CHJh5yzH8Xnw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/tartine-bakery-san-francisco-3?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["cafes"^^com.yelp:restaurant_cuisine("Cafes")], price=enum moderate, rating=4, review_count=8185, geo=new Location(37.76131, -122.42431, "600 Guerrero St, San Francisco, CA"), phone="+14154872600"^^tt:phone_number },
+C:   { id="KkAVX3Wb7E3lP5F_f_8pXg"^^com.yelp:restaurant("Liholiho Yacht Club"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/DluAA2YbM8k6qRM_mwbiNw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/liholiho-yacht-club-san-francisco-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["newamerican"^^com.yelp:restaurant_cuisine("American (New)"), "seafood"^^com.yelp:restaurant_cuisine("Seafood")], price=enum expensive, rating=4.5, review_count=2488, geo=new Location(37.7618143, -122.42296790220479, "3560 18th St, San Francisco, CA"), phone="+14155897266"^^tt:phone_number },
+C:   { id="SGRmnarrNuVEsAjYdEoA0w"^^com.yelp:restaurant("El Farolito"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/kYemXiMcYje-Da7AjPtWcg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/el-farolito-san-francisco-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum cheap, rating=4, review_count=5063, geo=new Location(37.75265, -122.41812, "2779 Mission St, San Francisco, CA"), phone="+14158247877"^^tt:phone_number },
+C:   { id="n6L5VIGunR51-D55C-eYeQ"^^com.yelp:restaurant("Foreign Cinema"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/cw5y2LSOIE-EVNjKK_d7SQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/foreign-cinema-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch"), "mediterranean"^^com.yelp:restaurant_cuisine("Mediterranean")], price=enum expensive, rating=4, review_count=5022, geo=new Location(37.75637, -122.41925, "2534 Mission St, San Francisco, CA"), phone="+14156487600"^^tt:phone_number },
+C:   { id="XQLmEdXoMzOpffwoFaBtaQ"^^com.yelp:restaurant("Kitchen Story"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/XIhdtd0fB2P_v_qhh1hWbg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/kitchen-story-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch"), "asianfusion"^^com.yelp:restaurant_cuisine("Asian Fusion"), "newamerican"^^com.yelp:restaurant_cuisine("American (New)")], price=enum moderate, rating=4, review_count=3591, geo=new Location(37.7642352, -122.4306936, "3499 16th St, San Francisco, CA"), phone="+14155254905"^^tt:phone_number },
+C:   { id="4KfQnlcSu4bbTqnvGdGptw"^^com.yelp:restaurant("Beretta"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/HKxMJ8q8fzOY76hy7ACIag/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/beretta-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["italian"^^com.yelp:restaurant_cuisine("Italian"), "pizza"^^com.yelp:restaurant_cuisine("Pizza"), "breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch")], price=enum moderate, rating=4, review_count=3830, geo=new Location(37.753869, -122.420611, "1199 Valencia St, San Francisco, CA"), phone="+14156951199"^^tt:phone_number },
+C:   { id="1hMD7RQogPDWpE-p3LKjXA"^^com.yelp:restaurant("Loló"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/QimJjz8ECFnevPcssJYfTw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/lol%C3%B3-san-francisco-4?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican"), "tapasmallplates"^^com.yelp:restaurant_cuisine("Tapas/Small Plates")], price=enum moderate, rating=4, review_count=2283, geo=new Location(37.7573462, -122.4214034, "974 Valencia St, San Francisco, CA"), phone="+14156435656"^^tt:phone_number },
+C:   { id="ZDvIMjJ-7I0561ckM4pAeA"^^com.yelp:restaurant("Anchor Oyster Bar"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/oKLPo1042ojJJC9OcCzAMw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/anchor-oyster-bar-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["seafood"^^com.yelp:restaurant_cuisine("Seafood")], price=enum moderate, rating=4.5, review_count=1552, geo=new Location(37.759689, -122.434609, "579 Castro St, San Francisco, CA"), phone="+14154313990"^^tt:phone_number },
+C:   { id="JARsJVKLPgs_yC3cwDnp7g"^^com.yelp:restaurant("La Taqueria"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/7LqVKYVg2GdEFKI2CFL4cA/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/la-taqueria-san-francisco-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum moderate, rating=4, review_count=4256, geo=new Location(37.75088, -122.41805, "2889 Mission St, San Francisco, CA"), phone="+14152857117"^^tt:phone_number },
+C:   { id="CYttYTEiQuhSfo3SEh79fA"^^com.yelp:restaurant("Shizen Vegan Sushi Bar & Izakaya"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/-1BWnyjrsDmTmXH_3wZl_w/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/shizen-vegan-sushi-bar-and-izakaya-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["sushi"^^com.yelp:restaurant_cuisine("Sushi Bars"), "vegan"^^com.yelp:restaurant_cuisine("Vegan"), "izakaya"^^com.yelp:restaurant_cuisine("Izakaya")], price=enum moderate, rating=4.5, review_count=1801, geo=new Location(37.768326, -122.421682, "370 14th St, San Francisco, CA"), phone="+14156785767"^^tt:phone_number }
+C: ]]
+C: #[count=19];
+A: I see Tartine Bakery, Liholiho Yacht Club, and El Farolito. Tartine Bakery is rated 4 stars, Liholiho Yacht Club is rated 4.5 stars, and El Farolito is rated 4 stars.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_three;
+U: How many reviews does tartine have?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [review_count] of @com.yelp.restaurant() filter geo == new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California") && id == null^^com.yelp:restaurant("tartine");
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.yelp.restaurant() filter geo == new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California")
+C: #[results=[
+C:   { id="ri7UUYmx21AgSpRsf4-9QA"^^com.yelp:restaurant("Tartine Bakery"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/nPUUXYVVa3CHJh5yzH8Xnw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/tartine-bakery-san-francisco-3?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["cafes"^^com.yelp:restaurant_cuisine("Cafes")], price=enum moderate, rating=4, review_count=8185, geo=new Location(37.76131, -122.42431, "600 Guerrero St, San Francisco, CA"), phone="+14154872600"^^tt:phone_number },
+C:   { id="KkAVX3Wb7E3lP5F_f_8pXg"^^com.yelp:restaurant("Liholiho Yacht Club"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/DluAA2YbM8k6qRM_mwbiNw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/liholiho-yacht-club-san-francisco-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["newamerican"^^com.yelp:restaurant_cuisine("American (New)"), "seafood"^^com.yelp:restaurant_cuisine("Seafood")], price=enum expensive, rating=4.5, review_count=2488, geo=new Location(37.7618143, -122.42296790220479, "3560 18th St, San Francisco, CA"), phone="+14155897266"^^tt:phone_number },
+C:   { id="SGRmnarrNuVEsAjYdEoA0w"^^com.yelp:restaurant("El Farolito"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/kYemXiMcYje-Da7AjPtWcg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/el-farolito-san-francisco-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum cheap, rating=4, review_count=5063, geo=new Location(37.75265, -122.41812, "2779 Mission St, San Francisco, CA"), phone="+14158247877"^^tt:phone_number },
+C:   { id="n6L5VIGunR51-D55C-eYeQ"^^com.yelp:restaurant("Foreign Cinema"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/cw5y2LSOIE-EVNjKK_d7SQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/foreign-cinema-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch"), "mediterranean"^^com.yelp:restaurant_cuisine("Mediterranean")], price=enum expensive, rating=4, review_count=5022, geo=new Location(37.75637, -122.41925, "2534 Mission St, San Francisco, CA"), phone="+14156487600"^^tt:phone_number },
+C:   { id="XQLmEdXoMzOpffwoFaBtaQ"^^com.yelp:restaurant("Kitchen Story"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/XIhdtd0fB2P_v_qhh1hWbg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/kitchen-story-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch"), "asianfusion"^^com.yelp:restaurant_cuisine("Asian Fusion"), "newamerican"^^com.yelp:restaurant_cuisine("American (New)")], price=enum moderate, rating=4, review_count=3591, geo=new Location(37.7642352, -122.4306936, "3499 16th St, San Francisco, CA"), phone="+14155254905"^^tt:phone_number },
+C:   { id="4KfQnlcSu4bbTqnvGdGptw"^^com.yelp:restaurant("Beretta"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/HKxMJ8q8fzOY76hy7ACIag/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/beretta-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["italian"^^com.yelp:restaurant_cuisine("Italian"), "pizza"^^com.yelp:restaurant_cuisine("Pizza"), "breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch")], price=enum moderate, rating=4, review_count=3830, geo=new Location(37.753869, -122.420611, "1199 Valencia St, San Francisco, CA"), phone="+14156951199"^^tt:phone_number },
+C:   { id="1hMD7RQogPDWpE-p3LKjXA"^^com.yelp:restaurant("Loló"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/QimJjz8ECFnevPcssJYfTw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/lol%C3%B3-san-francisco-4?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican"), "tapasmallplates"^^com.yelp:restaurant_cuisine("Tapas/Small Plates")], price=enum moderate, rating=4, review_count=2283, geo=new Location(37.7573462, -122.4214034, "974 Valencia St, San Francisco, CA"), phone="+14156435656"^^tt:phone_number },
+C:   { id="ZDvIMjJ-7I0561ckM4pAeA"^^com.yelp:restaurant("Anchor Oyster Bar"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/oKLPo1042ojJJC9OcCzAMw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/anchor-oyster-bar-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["seafood"^^com.yelp:restaurant_cuisine("Seafood")], price=enum moderate, rating=4.5, review_count=1552, geo=new Location(37.759689, -122.434609, "579 Castro St, San Francisco, CA"), phone="+14154313990"^^tt:phone_number },
+C:   { id="JARsJVKLPgs_yC3cwDnp7g"^^com.yelp:restaurant("La Taqueria"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/7LqVKYVg2GdEFKI2CFL4cA/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/la-taqueria-san-francisco-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum moderate, rating=4, review_count=4256, geo=new Location(37.75088, -122.41805, "2889 Mission St, San Francisco, CA"), phone="+14152857117"^^tt:phone_number },
+C:   { id="CYttYTEiQuhSfo3SEh79fA"^^com.yelp:restaurant("Shizen Vegan Sushi Bar & Izakaya"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/-1BWnyjrsDmTmXH_3wZl_w/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/shizen-vegan-sushi-bar-and-izakaya-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["sushi"^^com.yelp:restaurant_cuisine("Sushi Bars"), "vegan"^^com.yelp:restaurant_cuisine("Vegan"), "izakaya"^^com.yelp:restaurant_cuisine("Izakaya")], price=enum moderate, rating=4.5, review_count=1801, geo=new Location(37.768326, -122.421682, "370 14th St, San Francisco, CA"), phone="+14156785767"^^tt:phone_number }
+C: ]]
+C: #[count=19];
+C: [review_count] of @com.yelp.restaurant() filter geo == new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California") && id == "ri7UUYmx21AgSpRsf4-9QA"^^com.yelp:restaurant("Tartine Bakery")
+C: #[results=[
+C:   { id="ri7UUYmx21AgSpRsf4-9QA"^^com.yelp:restaurant("Tartine Bakery"), review_count=8185 }
+C: ]];
+A: Tartine Bakery has 8,185 reviews.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: How's the weather there?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.yelp.restaurant() filter geo == new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California")
+C: #[results=[
+C:   { id="ri7UUYmx21AgSpRsf4-9QA"^^com.yelp:restaurant("Tartine Bakery"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/nPUUXYVVa3CHJh5yzH8Xnw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/tartine-bakery-san-francisco-3?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["cafes"^^com.yelp:restaurant_cuisine("Cafes")], price=enum moderate, rating=4, review_count=8185, geo=new Location(37.76131, -122.42431, "600 Guerrero St, San Francisco, CA"), phone="+14154872600"^^tt:phone_number },
+C:   { id="KkAVX3Wb7E3lP5F_f_8pXg"^^com.yelp:restaurant("Liholiho Yacht Club"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/DluAA2YbM8k6qRM_mwbiNw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/liholiho-yacht-club-san-francisco-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["newamerican"^^com.yelp:restaurant_cuisine("American (New)"), "seafood"^^com.yelp:restaurant_cuisine("Seafood")], price=enum expensive, rating=4.5, review_count=2488, geo=new Location(37.7618143, -122.42296790220479, "3560 18th St, San Francisco, CA"), phone="+14155897266"^^tt:phone_number },
+C:   { id="SGRmnarrNuVEsAjYdEoA0w"^^com.yelp:restaurant("El Farolito"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/kYemXiMcYje-Da7AjPtWcg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/el-farolito-san-francisco-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum cheap, rating=4, review_count=5063, geo=new Location(37.75265, -122.41812, "2779 Mission St, San Francisco, CA"), phone="+14158247877"^^tt:phone_number },
+C:   { id="n6L5VIGunR51-D55C-eYeQ"^^com.yelp:restaurant("Foreign Cinema"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/cw5y2LSOIE-EVNjKK_d7SQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/foreign-cinema-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch"), "mediterranean"^^com.yelp:restaurant_cuisine("Mediterranean")], price=enum expensive, rating=4, review_count=5022, geo=new Location(37.75637, -122.41925, "2534 Mission St, San Francisco, CA"), phone="+14156487600"^^tt:phone_number },
+C:   { id="XQLmEdXoMzOpffwoFaBtaQ"^^com.yelp:restaurant("Kitchen Story"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/XIhdtd0fB2P_v_qhh1hWbg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/kitchen-story-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch"), "asianfusion"^^com.yelp:restaurant_cuisine("Asian Fusion"), "newamerican"^^com.yelp:restaurant_cuisine("American (New)")], price=enum moderate, rating=4, review_count=3591, geo=new Location(37.7642352, -122.4306936, "3499 16th St, San Francisco, CA"), phone="+14155254905"^^tt:phone_number },
+C:   { id="4KfQnlcSu4bbTqnvGdGptw"^^com.yelp:restaurant("Beretta"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/HKxMJ8q8fzOY76hy7ACIag/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/beretta-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["italian"^^com.yelp:restaurant_cuisine("Italian"), "pizza"^^com.yelp:restaurant_cuisine("Pizza"), "breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch")], price=enum moderate, rating=4, review_count=3830, geo=new Location(37.753869, -122.420611, "1199 Valencia St, San Francisco, CA"), phone="+14156951199"^^tt:phone_number },
+C:   { id="1hMD7RQogPDWpE-p3LKjXA"^^com.yelp:restaurant("Loló"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/QimJjz8ECFnevPcssJYfTw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/lol%C3%B3-san-francisco-4?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican"), "tapasmallplates"^^com.yelp:restaurant_cuisine("Tapas/Small Plates")], price=enum moderate, rating=4, review_count=2283, geo=new Location(37.7573462, -122.4214034, "974 Valencia St, San Francisco, CA"), phone="+14156435656"^^tt:phone_number },
+C:   { id="ZDvIMjJ-7I0561ckM4pAeA"^^com.yelp:restaurant("Anchor Oyster Bar"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/oKLPo1042ojJJC9OcCzAMw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/anchor-oyster-bar-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["seafood"^^com.yelp:restaurant_cuisine("Seafood")], price=enum moderate, rating=4.5, review_count=1552, geo=new Location(37.759689, -122.434609, "579 Castro St, San Francisco, CA"), phone="+14154313990"^^tt:phone_number },
+C:   { id="JARsJVKLPgs_yC3cwDnp7g"^^com.yelp:restaurant("La Taqueria"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/7LqVKYVg2GdEFKI2CFL4cA/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/la-taqueria-san-francisco-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum moderate, rating=4, review_count=4256, geo=new Location(37.75088, -122.41805, "2889 Mission St, San Francisco, CA"), phone="+14152857117"^^tt:phone_number },
+C:   { id="CYttYTEiQuhSfo3SEh79fA"^^com.yelp:restaurant("Shizen Vegan Sushi Bar & Izakaya"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/-1BWnyjrsDmTmXH_3wZl_w/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/shizen-vegan-sushi-bar-and-izakaya-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["sushi"^^com.yelp:restaurant_cuisine("Sushi Bars"), "vegan"^^com.yelp:restaurant_cuisine("Vegan"), "izakaya"^^com.yelp:restaurant_cuisine("Izakaya")], price=enum moderate, rating=4.5, review_count=1801, geo=new Location(37.768326, -122.421682, "370 14th St, San Francisco, CA"), phone="+14156785767"^^tt:phone_number }
+C: ]]
+C: #[count=19];
+C: [review_count] of @com.yelp.restaurant() filter geo == new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California") && id == "ri7UUYmx21AgSpRsf4-9QA"^^com.yelp:restaurant("Tartine Bakery")
+C: #[results=[
+C:   { id="ri7UUYmx21AgSpRsf4-9QA"^^com.yelp:restaurant("Tartine Bakery"), review_count=8185 }
+C: ]];
+C: @org.thingpedia.weather.current(location=new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California"))
+C: #[results=[
+C:   { temperature=14.5C, wind_speed=6.9mps, humidity=89.2, cloudiness=100, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=4;content_type=image/png"^^tt:picture, location=new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California") }
+C: ]];
+A: It is cloudy today in Mission Dolores Park, San Francisco, California and the temperature is 58 degrees Fahrenheit.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: Send that to me on Saturday.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @org.thingpedia.weather.current(location=new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.yelp.restaurant() filter geo == new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California")
+C: #[results=[
+C:   { id="ri7UUYmx21AgSpRsf4-9QA"^^com.yelp:restaurant("Tartine Bakery"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/nPUUXYVVa3CHJh5yzH8Xnw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/tartine-bakery-san-francisco-3?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["cafes"^^com.yelp:restaurant_cuisine("Cafes")], price=enum moderate, rating=4, review_count=8185, geo=new Location(37.76131, -122.42431, "600 Guerrero St, San Francisco, CA"), phone="+14154872600"^^tt:phone_number },
+C:   { id="KkAVX3Wb7E3lP5F_f_8pXg"^^com.yelp:restaurant("Liholiho Yacht Club"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/DluAA2YbM8k6qRM_mwbiNw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/liholiho-yacht-club-san-francisco-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["newamerican"^^com.yelp:restaurant_cuisine("American (New)"), "seafood"^^com.yelp:restaurant_cuisine("Seafood")], price=enum expensive, rating=4.5, review_count=2488, geo=new Location(37.7618143, -122.42296790220479, "3560 18th St, San Francisco, CA"), phone="+14155897266"^^tt:phone_number },
+C:   { id="SGRmnarrNuVEsAjYdEoA0w"^^com.yelp:restaurant("El Farolito"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/kYemXiMcYje-Da7AjPtWcg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/el-farolito-san-francisco-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum cheap, rating=4, review_count=5063, geo=new Location(37.75265, -122.41812, "2779 Mission St, San Francisco, CA"), phone="+14158247877"^^tt:phone_number },
+C:   { id="n6L5VIGunR51-D55C-eYeQ"^^com.yelp:restaurant("Foreign Cinema"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/cw5y2LSOIE-EVNjKK_d7SQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/foreign-cinema-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch"), "mediterranean"^^com.yelp:restaurant_cuisine("Mediterranean")], price=enum expensive, rating=4, review_count=5022, geo=new Location(37.75637, -122.41925, "2534 Mission St, San Francisco, CA"), phone="+14156487600"^^tt:phone_number },
+C:   { id="XQLmEdXoMzOpffwoFaBtaQ"^^com.yelp:restaurant("Kitchen Story"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/XIhdtd0fB2P_v_qhh1hWbg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/kitchen-story-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch"), "asianfusion"^^com.yelp:restaurant_cuisine("Asian Fusion"), "newamerican"^^com.yelp:restaurant_cuisine("American (New)")], price=enum moderate, rating=4, review_count=3591, geo=new Location(37.7642352, -122.4306936, "3499 16th St, San Francisco, CA"), phone="+14155254905"^^tt:phone_number },
+C:   { id="4KfQnlcSu4bbTqnvGdGptw"^^com.yelp:restaurant("Beretta"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/HKxMJ8q8fzOY76hy7ACIag/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/beretta-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["italian"^^com.yelp:restaurant_cuisine("Italian"), "pizza"^^com.yelp:restaurant_cuisine("Pizza"), "breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch")], price=enum moderate, rating=4, review_count=3830, geo=new Location(37.753869, -122.420611, "1199 Valencia St, San Francisco, CA"), phone="+14156951199"^^tt:phone_number },
+C:   { id="1hMD7RQogPDWpE-p3LKjXA"^^com.yelp:restaurant("Loló"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/QimJjz8ECFnevPcssJYfTw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/lol%C3%B3-san-francisco-4?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican"), "tapasmallplates"^^com.yelp:restaurant_cuisine("Tapas/Small Plates")], price=enum moderate, rating=4, review_count=2283, geo=new Location(37.7573462, -122.4214034, "974 Valencia St, San Francisco, CA"), phone="+14156435656"^^tt:phone_number },
+C:   { id="ZDvIMjJ-7I0561ckM4pAeA"^^com.yelp:restaurant("Anchor Oyster Bar"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/oKLPo1042ojJJC9OcCzAMw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/anchor-oyster-bar-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["seafood"^^com.yelp:restaurant_cuisine("Seafood")], price=enum moderate, rating=4.5, review_count=1552, geo=new Location(37.759689, -122.434609, "579 Castro St, San Francisco, CA"), phone="+14154313990"^^tt:phone_number },
+C:   { id="JARsJVKLPgs_yC3cwDnp7g"^^com.yelp:restaurant("La Taqueria"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/7LqVKYVg2GdEFKI2CFL4cA/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/la-taqueria-san-francisco-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum moderate, rating=4, review_count=4256, geo=new Location(37.75088, -122.41805, "2889 Mission St, San Francisco, CA"), phone="+14152857117"^^tt:phone_number },
+C:   { id="CYttYTEiQuhSfo3SEh79fA"^^com.yelp:restaurant("Shizen Vegan Sushi Bar & Izakaya"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/-1BWnyjrsDmTmXH_3wZl_w/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/shizen-vegan-sushi-bar-and-izakaya-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["sushi"^^com.yelp:restaurant_cuisine("Sushi Bars"), "vegan"^^com.yelp:restaurant_cuisine("Vegan"), "izakaya"^^com.yelp:restaurant_cuisine("Izakaya")], price=enum moderate, rating=4.5, review_count=1801, geo=new Location(37.768326, -122.421682, "370 14th St, San Francisco, CA"), phone="+14156785767"^^tt:phone_number }
+C: ]]
+C: #[count=19];
+C: [review_count] of @com.yelp.restaurant() filter geo == new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California") && id == "ri7UUYmx21AgSpRsf4-9QA"^^com.yelp:restaurant("Tartine Bakery")
+C: #[results=[
+C:   { id="ri7UUYmx21AgSpRsf4-9QA"^^com.yelp:restaurant("Tartine Bakery"), review_count=8185 }
+C: ]];
+C: @org.thingpedia.weather.current(location=new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California"))
+C: #[results=[
+C:   { temperature=14.5C, wind_speed=6.9mps, humidity=89.2, cloudiness=100, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=4;content_type=image/png"^^tt:picture, location=new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California") }
+C: ]];
+C: ontimer(date=[new Date(enum saturday, new Time(8, 0))]) => @org.thingpedia.weather.current(location=new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California"))
+C: #[results=[]];
+A: Alright, I will get the current weather in Mission Dolores Park, San Francisco, California at 8:00 AM on Saturday.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_rule_enable_success;
+U: tell me the news about San Francisco art.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="san francisco art");
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.yelp.restaurant() filter geo == new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California")
+C: #[results=[
+C:   { id="ri7UUYmx21AgSpRsf4-9QA"^^com.yelp:restaurant("Tartine Bakery"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/nPUUXYVVa3CHJh5yzH8Xnw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/tartine-bakery-san-francisco-3?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["cafes"^^com.yelp:restaurant_cuisine("Cafes")], price=enum moderate, rating=4, review_count=8185, geo=new Location(37.76131, -122.42431, "600 Guerrero St, San Francisco, CA"), phone="+14154872600"^^tt:phone_number },
+C:   { id="KkAVX3Wb7E3lP5F_f_8pXg"^^com.yelp:restaurant("Liholiho Yacht Club"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/DluAA2YbM8k6qRM_mwbiNw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/liholiho-yacht-club-san-francisco-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["newamerican"^^com.yelp:restaurant_cuisine("American (New)"), "seafood"^^com.yelp:restaurant_cuisine("Seafood")], price=enum expensive, rating=4.5, review_count=2488, geo=new Location(37.7618143, -122.42296790220479, "3560 18th St, San Francisco, CA"), phone="+14155897266"^^tt:phone_number },
+C:   { id="SGRmnarrNuVEsAjYdEoA0w"^^com.yelp:restaurant("El Farolito"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/kYemXiMcYje-Da7AjPtWcg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/el-farolito-san-francisco-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum cheap, rating=4, review_count=5063, geo=new Location(37.75265, -122.41812, "2779 Mission St, San Francisco, CA"), phone="+14158247877"^^tt:phone_number },
+C:   { id="n6L5VIGunR51-D55C-eYeQ"^^com.yelp:restaurant("Foreign Cinema"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/cw5y2LSOIE-EVNjKK_d7SQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/foreign-cinema-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch"), "mediterranean"^^com.yelp:restaurant_cuisine("Mediterranean")], price=enum expensive, rating=4, review_count=5022, geo=new Location(37.75637, -122.41925, "2534 Mission St, San Francisco, CA"), phone="+14156487600"^^tt:phone_number },
+C:   { id="XQLmEdXoMzOpffwoFaBtaQ"^^com.yelp:restaurant("Kitchen Story"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/XIhdtd0fB2P_v_qhh1hWbg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/kitchen-story-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch"), "asianfusion"^^com.yelp:restaurant_cuisine("Asian Fusion"), "newamerican"^^com.yelp:restaurant_cuisine("American (New)")], price=enum moderate, rating=4, review_count=3591, geo=new Location(37.7642352, -122.4306936, "3499 16th St, San Francisco, CA"), phone="+14155254905"^^tt:phone_number },
+C:   { id="4KfQnlcSu4bbTqnvGdGptw"^^com.yelp:restaurant("Beretta"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/HKxMJ8q8fzOY76hy7ACIag/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/beretta-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["italian"^^com.yelp:restaurant_cuisine("Italian"), "pizza"^^com.yelp:restaurant_cuisine("Pizza"), "breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch")], price=enum moderate, rating=4, review_count=3830, geo=new Location(37.753869, -122.420611, "1199 Valencia St, San Francisco, CA"), phone="+14156951199"^^tt:phone_number },
+C:   { id="1hMD7RQogPDWpE-p3LKjXA"^^com.yelp:restaurant("Loló"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/QimJjz8ECFnevPcssJYfTw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/lol%C3%B3-san-francisco-4?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican"), "tapasmallplates"^^com.yelp:restaurant_cuisine("Tapas/Small Plates")], price=enum moderate, rating=4, review_count=2283, geo=new Location(37.7573462, -122.4214034, "974 Valencia St, San Francisco, CA"), phone="+14156435656"^^tt:phone_number },
+C:   { id="ZDvIMjJ-7I0561ckM4pAeA"^^com.yelp:restaurant("Anchor Oyster Bar"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/oKLPo1042ojJJC9OcCzAMw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/anchor-oyster-bar-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["seafood"^^com.yelp:restaurant_cuisine("Seafood")], price=enum moderate, rating=4.5, review_count=1552, geo=new Location(37.759689, -122.434609, "579 Castro St, San Francisco, CA"), phone="+14154313990"^^tt:phone_number },
+C:   { id="JARsJVKLPgs_yC3cwDnp7g"^^com.yelp:restaurant("La Taqueria"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/7LqVKYVg2GdEFKI2CFL4cA/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/la-taqueria-san-francisco-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum moderate, rating=4, review_count=4256, geo=new Location(37.75088, -122.41805, "2889 Mission St, San Francisco, CA"), phone="+14152857117"^^tt:phone_number },
+C:   { id="CYttYTEiQuhSfo3SEh79fA"^^com.yelp:restaurant("Shizen Vegan Sushi Bar & Izakaya"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/-1BWnyjrsDmTmXH_3wZl_w/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/shizen-vegan-sushi-bar-and-izakaya-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["sushi"^^com.yelp:restaurant_cuisine("Sushi Bars"), "vegan"^^com.yelp:restaurant_cuisine("Vegan"), "izakaya"^^com.yelp:restaurant_cuisine("Izakaya")], price=enum moderate, rating=4.5, review_count=1801, geo=new Location(37.768326, -122.421682, "370 14th St, San Francisco, CA"), phone="+14156785767"^^tt:phone_number }
+C: ]]
+C: #[count=19];
+C: [review_count] of @com.yelp.restaurant() filter geo == new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California") && id == "ri7UUYmx21AgSpRsf4-9QA"^^com.yelp:restaurant("Tartine Bakery")
+C: #[results=[
+C:   { id="ri7UUYmx21AgSpRsf4-9QA"^^com.yelp:restaurant("Tartine Bakery"), review_count=8185 }
+C: ]];
+C: @org.thingpedia.weather.current(location=new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California"))
+C: #[results=[
+C:   { temperature=14.5C, wind_speed=6.9mps, humidity=89.2, cloudiness=100, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=4;content_type=image/png"^^tt:picture, location=new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California") }
+C: ]];
+C: ontimer(date=[new Date(enum saturday, new Time(8, 0))]) => @org.thingpedia.weather.current(location=new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California"))
+C: #[results=[]];
+C: @com.smartnews.article(keyword="san francisco art")
+C: #[results=[
+C:   { id="4334840903001710600"^^com.smartnews:article, title="Dinosaurs have next in the art of San Francisco painter Michael Kerbow", author="Mary Corbin", source="48 hills", summary=" San Francisco painter Michael Kerbow wants to make art that matters . His paintings aim to distill what he sees happening today and what possibly awaits us tomorrow .", link="https://48hills.org/2021/10/dinosaurs-have-next-in-the-art-of-san-francisco-painter-michael-kerbow/"^^tt:url, category=["art"^^com.smartnews:category("art")], date=new Date("2021-10-01T21:04:06.000Z"), mention=["michael kerbow", "san francisco", "united states"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211003/voice/headline_4334840903001710421.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211003/voice/summary_4334840903001710421.mp3"^^tt:url, keyword="san francisco art" },
+C:   { id="4334579186652948000"^^com.smartnews:article, title="Art Showcase Featuring Resilience During COVID-19 Opens in San Francisco", author="Bay City News", source="NBC Bay Area", summary=" The exhibition will feature art and photography from CatchLight fellows and San Francisco's COVID Command Center artists in residence that capture the hopeful spirit of San Franciscans during the pandemic .", link="https://www.nbcbayarea.com/news/local/san-francisco/art-showcase-featuring-resilience-during-covid-19-opens-in-san-francisco/2670828/"^^tt:url, category=["art"^^com.smartnews:category("art")], date=new Date("2021-09-30T20:37:35.000Z"), mention=["san francisco", "san franciscans", "san francisco arts commission", "catch light", "android operating system"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211005/voice/headline_4334579186652947861.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211005/voice/summary_4334579186652947861.mp3"^^tt:url, keyword="san francisco art" }
+C: ]];
+A: Here is the news.
+A: Dinosaurs have next in the art of San Francisco painter Michael Kerbow.
+A: Art Showcase Featuring Resilience During COVID-19 Opens in San Francisco.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_two;
+U: Play radio station KQED.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.tunein.station() filter id =~ "kqed" => @com.tunein.radio_play(id=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.yelp.restaurant() filter geo == new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California")
+C: #[results=[
+C:   { id="ri7UUYmx21AgSpRsf4-9QA"^^com.yelp:restaurant("Tartine Bakery"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/nPUUXYVVa3CHJh5yzH8Xnw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/tartine-bakery-san-francisco-3?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["cafes"^^com.yelp:restaurant_cuisine("Cafes")], price=enum moderate, rating=4, review_count=8185, geo=new Location(37.76131, -122.42431, "600 Guerrero St, San Francisco, CA"), phone="+14154872600"^^tt:phone_number },
+C:   { id="KkAVX3Wb7E3lP5F_f_8pXg"^^com.yelp:restaurant("Liholiho Yacht Club"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/DluAA2YbM8k6qRM_mwbiNw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/liholiho-yacht-club-san-francisco-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["newamerican"^^com.yelp:restaurant_cuisine("American (New)"), "seafood"^^com.yelp:restaurant_cuisine("Seafood")], price=enum expensive, rating=4.5, review_count=2488, geo=new Location(37.7618143, -122.42296790220479, "3560 18th St, San Francisco, CA"), phone="+14155897266"^^tt:phone_number },
+C:   { id="SGRmnarrNuVEsAjYdEoA0w"^^com.yelp:restaurant("El Farolito"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/kYemXiMcYje-Da7AjPtWcg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/el-farolito-san-francisco-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum cheap, rating=4, review_count=5063, geo=new Location(37.75265, -122.41812, "2779 Mission St, San Francisco, CA"), phone="+14158247877"^^tt:phone_number },
+C:   { id="n6L5VIGunR51-D55C-eYeQ"^^com.yelp:restaurant("Foreign Cinema"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/cw5y2LSOIE-EVNjKK_d7SQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/foreign-cinema-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch"), "mediterranean"^^com.yelp:restaurant_cuisine("Mediterranean")], price=enum expensive, rating=4, review_count=5022, geo=new Location(37.75637, -122.41925, "2534 Mission St, San Francisco, CA"), phone="+14156487600"^^tt:phone_number },
+C:   { id="XQLmEdXoMzOpffwoFaBtaQ"^^com.yelp:restaurant("Kitchen Story"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/XIhdtd0fB2P_v_qhh1hWbg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/kitchen-story-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch"), "asianfusion"^^com.yelp:restaurant_cuisine("Asian Fusion"), "newamerican"^^com.yelp:restaurant_cuisine("American (New)")], price=enum moderate, rating=4, review_count=3591, geo=new Location(37.7642352, -122.4306936, "3499 16th St, San Francisco, CA"), phone="+14155254905"^^tt:phone_number },
+C:   { id="4KfQnlcSu4bbTqnvGdGptw"^^com.yelp:restaurant("Beretta"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/HKxMJ8q8fzOY76hy7ACIag/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/beretta-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["italian"^^com.yelp:restaurant_cuisine("Italian"), "pizza"^^com.yelp:restaurant_cuisine("Pizza"), "breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch")], price=enum moderate, rating=4, review_count=3830, geo=new Location(37.753869, -122.420611, "1199 Valencia St, San Francisco, CA"), phone="+14156951199"^^tt:phone_number },
+C:   { id="1hMD7RQogPDWpE-p3LKjXA"^^com.yelp:restaurant("Loló"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/QimJjz8ECFnevPcssJYfTw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/lol%C3%B3-san-francisco-4?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican"), "tapasmallplates"^^com.yelp:restaurant_cuisine("Tapas/Small Plates")], price=enum moderate, rating=4, review_count=2283, geo=new Location(37.7573462, -122.4214034, "974 Valencia St, San Francisco, CA"), phone="+14156435656"^^tt:phone_number },
+C:   { id="ZDvIMjJ-7I0561ckM4pAeA"^^com.yelp:restaurant("Anchor Oyster Bar"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/oKLPo1042ojJJC9OcCzAMw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/anchor-oyster-bar-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["seafood"^^com.yelp:restaurant_cuisine("Seafood")], price=enum moderate, rating=4.5, review_count=1552, geo=new Location(37.759689, -122.434609, "579 Castro St, San Francisco, CA"), phone="+14154313990"^^tt:phone_number },
+C:   { id="JARsJVKLPgs_yC3cwDnp7g"^^com.yelp:restaurant("La Taqueria"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/7LqVKYVg2GdEFKI2CFL4cA/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/la-taqueria-san-francisco-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum moderate, rating=4, review_count=4256, geo=new Location(37.75088, -122.41805, "2889 Mission St, San Francisco, CA"), phone="+14152857117"^^tt:phone_number },
+C:   { id="CYttYTEiQuhSfo3SEh79fA"^^com.yelp:restaurant("Shizen Vegan Sushi Bar & Izakaya"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/-1BWnyjrsDmTmXH_3wZl_w/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/shizen-vegan-sushi-bar-and-izakaya-san-francisco?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["sushi"^^com.yelp:restaurant_cuisine("Sushi Bars"), "vegan"^^com.yelp:restaurant_cuisine("Vegan"), "izakaya"^^com.yelp:restaurant_cuisine("Izakaya")], price=enum moderate, rating=4.5, review_count=1801, geo=new Location(37.768326, -122.421682, "370 14th St, San Francisco, CA"), phone="+14156785767"^^tt:phone_number }
+C: ]]
+C: #[count=19];
+C: [review_count] of @com.yelp.restaurant() filter geo == new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California") && id == "ri7UUYmx21AgSpRsf4-9QA"^^com.yelp:restaurant("Tartine Bakery")
+C: #[results=[
+C:   { id="ri7UUYmx21AgSpRsf4-9QA"^^com.yelp:restaurant("Tartine Bakery"), review_count=8185 }
+C: ]];
+C: @org.thingpedia.weather.current(location=new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California"))
+C: #[results=[
+C:   { temperature=14.5C, wind_speed=6.9mps, humidity=89.2, cloudiness=100, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=4;content_type=image/png"^^tt:picture, location=new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California") }
+C: ]];
+C: ontimer(date=[new Date(enum saturday, new Time(8, 0))]) => @org.thingpedia.weather.current(location=new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California"))
+C: #[results=[]];
+C: @com.smartnews.article(keyword="san francisco art")
+C: #[results=[
+C:   { id="4334840903001710600"^^com.smartnews:article, title="Dinosaurs have next in the art of San Francisco painter Michael Kerbow", author="Mary Corbin", source="48 hills", summary=" San Francisco painter Michael Kerbow wants to make art that matters . His paintings aim to distill what he sees happening today and what possibly awaits us tomorrow .", link="https://48hills.org/2021/10/dinosaurs-have-next-in-the-art-of-san-francisco-painter-michael-kerbow/"^^tt:url, category=["art"^^com.smartnews:category("art")], date=new Date("2021-10-01T21:04:06.000Z"), mention=["michael kerbow", "san francisco", "united states"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211003/voice/headline_4334840903001710421.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211003/voice/summary_4334840903001710421.mp3"^^tt:url, keyword="san francisco art" },
+C:   { id="4334579186652948000"^^com.smartnews:article, title="Art Showcase Featuring Resilience During COVID-19 Opens in San Francisco", author="Bay City News", source="NBC Bay Area", summary=" The exhibition will feature art and photography from CatchLight fellows and San Francisco's COVID Command Center artists in residence that capture the hopeful spirit of San Franciscans during the pandemic .", link="https://www.nbcbayarea.com/news/local/san-francisco/art-showcase-featuring-resilience-during-covid-19-opens-in-san-francisco/2670828/"^^tt:url, category=["art"^^com.smartnews:category("art")], date=new Date("2021-09-30T20:37:35.000Z"), mention=["san francisco", "san franciscans", "san francisco arts commission", "catch light", "android operating system"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211005/voice/headline_4334579186652947861.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211005/voice/summary_4334579186652947861.mp3"^^tt:url, keyword="san francisco art" }
+C: ]];
+C: (@com.tunein.station() filter id =~ "kqed")[1] => @com.tunein.radio_play(id=id)
+C: #[results=[
+C:   { id="station:s34804"^^com.tunein:station("KQED-FM") }
+C: ]];
+A: I played KQED-FM.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: Send KQED to me on Saturday.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @com.tunein.station() filter id =~ "kqed";
+====
+# recording/f8b1fb03bf180483bf7d60db31101cb5
+U: how about some salsa music for the break?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains~(genres, "salsa") => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/ff19ab7359223387c99624b826ea1ae5
+U: How about some salsa music for the break?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains~(genres, "salsa") => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/2c25105f3f141cc586f42cfb1e37bef7
+U: thank you.
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# recording/afeebf8980c65c3237964197c00ff59f
+U: Send KQED to me on Saturday.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @com.tunein.station() filter id =~ "kqed";
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: ontimer(date=[new Date(enum saturday, new Time(8, 0))]) => @com.tunein.station() filter id =~ "kqed"
+C: #[results=[]];
+A: Alright, I will get kqed at 8:00 AM on Saturday.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_rule_enable_success;
+U: Play Bay curious podcast.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.show() filter id =~ "bay curious" => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/d421021af81fe5bee931ef1d553aeff8
+U: set my location.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.set_location();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.set_location(type=enum current);
+A: What place do you want?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_slot_fill(location);
+AT: @org.thingpedia.builtin.thingengine.builtin.set_location(type=enum current);
+U: Sonora, CA.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.set_location(location=new Location("sonora , ca"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.set_location(location=new Location(37.9840911, -120.3821381, "Sonora, California"), type=enum current)
+C: #[results=[
+C:   { location=new Location(37.9840911, -120.3821381, "Sonora, California"), type=enum current }
+C: ]];
+A: I set your current location.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: What's the weather like?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.set_location(location=new Location(37.9840911, -120.3821381, "Sonora, California"), type=enum current)
+C: #[results=[
+C:   { location=new Location(37.9840911, -120.3821381, "Sonora, California"), type=enum current }
+C: ]];
+C: @org.thingpedia.weather.current(location=new Location(37.9840911, -120.3821381, "Sonora, California"))
+C: #[results=[
+C:   { temperature=4.3C, wind_speed=1.3mps, humidity=76.9, cloudiness=100, fog=26.6, status=enum foggy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=15;content_type=image/png"^^tt:picture, location=new Location(37.9840911, -120.3821381, "Sonora, California") }
+C: ]];
+A: It is foggy today in Sonora, California and the temperature is 40 degrees Fahrenheit.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: what's a good Mexican restaurant to go to around here?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("mexican")) && geo == $location.current_location;
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.set_location(location=new Location(37.9840911, -120.3821381, "Sonora, California"), type=enum current)
+C: #[results=[
+C:   { location=new Location(37.9840911, -120.3821381, "Sonora, California"), type=enum current }
+C: ]];
+C: @org.thingpedia.weather.current(location=new Location(37.9840911, -120.3821381, "Sonora, California"))
+C: #[results=[
+C:   { temperature=4.3C, wind_speed=1.3mps, humidity=76.9, cloudiness=100, fog=26.6, status=enum foggy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=15;content_type=image/png"^^tt:picture, location=new Location(37.9840911, -120.3821381, "Sonora, California") }
+C: ]];
+C: @com.yelp.restaurant() filter contains(cuisines, "mexican"^^com.yelp:restaurant_cuisine("Mexican")) && geo == new Location(37.9840911, -120.3821381, "Sonora, California")
+C: #[results=[
+C:   { id="cUMT3-385LurvOyW4UqkrQ"^^com.yelp:restaurant("Taqueria Sonora"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/NUTIe35cHWLfEQZi1u3DAw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/taqueria-sonora-sonora?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican"), "latin"^^com.yelp:restaurant_cuisine("Latin American")], price=enum cheap, rating=4.5, review_count=208, geo=new Location(37.9843909248909, -120.382722660668, "74 S Washington St, Sonora, CA"), phone="+12096947047"^^tt:phone_number },
+C:   { id="G7Kr0HPGnJDt1AZYMWVkBQ"^^com.yelp:restaurant("Cazadora Restaurante"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/ip9uOBEd9K53ULkQY800NA/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/cazadora-restaurante-sonora-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican"), "spanish"^^com.yelp:restaurant_cuisine("Spanish")], price=enum moderate, rating=4.5, review_count=103, geo=new Location(37.9830562859695, -120.38315499099, "70 W Stockton St, Sonora, CA"), phone="+12095324000"^^tt:phone_number },
+C:   { id="7fyOTlJkrGiYxJnKB-lQnQ"^^com.yelp:restaurant("El Arroyo"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/T9M5_tv_UCQOCajK2d-YPQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/el-arroyo-sonora?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum moderate, rating=4, review_count=106, geo=new Location(37.983895, -120.382388, "126 S Washington St, Sonora, CA"), phone="+12096947175"^^tt:phone_number },
+C:   { id="EA4FNZdDHUefPfbR_4_cyw"^^com.yelp:restaurant("El Jardin Restaurant"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/4yEu_1To_SeY-EToawa2Hg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/el-jardin-restaurant-sonora?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum moderate, rating=3, review_count=127, geo=new Location(37.98612, -120.38413, "76 N Washington St, Sonora, CA"), phone="+12095880770"^^tt:phone_number },
+C:   { id="ZXaYFDhUDoJf3yemhteiIQ"^^com.yelp:restaurant("Cocina Michoacana"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/KO8znnU3zp-kzMjyFWMuDw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/cocina-michoacana-sonora?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum moderate, rating=3.5, review_count=111, geo=new Location(37.975839, -120.369462, "770 Mono Way, Sonora, CA"), phone="+12095333841"^^tt:phone_number },
+C:   { id="jzsEKMDsdyk3unSmCpKvgA"^^com.yelp:restaurant("Pablito's Burrito Express"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/a5ZU_FjioANV2FwxanJDwg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/pablitos-burrito-express-sonora-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum cheap, rating=4.5, review_count=20, geo=new Location(37.9758143398168, -120.379544790179, "1155B Mono Way, Sonora, CA"), phone="+12095592708"^^tt:phone_number }
+C: ]];
+A: I see Taqueria Sonora, Cazadora Restaurante, and El Arroyo. Taqueria Sonora is rated 4.5 stars, Cazadora Restaurante is rated 4.5 stars, and El Arroyo is rated 4 stars.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_three;
+U: play some Bob.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("bob")) => @org.thingpedia.media-player.play(playable=id);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.set_location(location=new Location(37.9840911, -120.3821381, "Sonora, California"), type=enum current)
+C: #[results=[
+C:   { location=new Location(37.9840911, -120.3821381, "Sonora, California"), type=enum current }
+C: ]];
+C: @org.thingpedia.weather.current(location=new Location(37.9840911, -120.3821381, "Sonora, California"))
+C: #[results=[
+C:   { temperature=4.3C, wind_speed=1.3mps, humidity=76.9, cloudiness=100, fog=26.6, status=enum foggy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=15;content_type=image/png"^^tt:picture, location=new Location(37.9840911, -120.3821381, "Sonora, California") }
+C: ]];
+C: @com.yelp.restaurant() filter contains(cuisines, "mexican"^^com.yelp:restaurant_cuisine("Mexican")) && geo == new Location(37.9840911, -120.3821381, "Sonora, California")
+C: #[results=[
+C:   { id="cUMT3-385LurvOyW4UqkrQ"^^com.yelp:restaurant("Taqueria Sonora"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/NUTIe35cHWLfEQZi1u3DAw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/taqueria-sonora-sonora?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican"), "latin"^^com.yelp:restaurant_cuisine("Latin American")], price=enum cheap, rating=4.5, review_count=208, geo=new Location(37.9843909248909, -120.382722660668, "74 S Washington St, Sonora, CA"), phone="+12096947047"^^tt:phone_number },
+C:   { id="G7Kr0HPGnJDt1AZYMWVkBQ"^^com.yelp:restaurant("Cazadora Restaurante"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/ip9uOBEd9K53ULkQY800NA/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/cazadora-restaurante-sonora-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican"), "spanish"^^com.yelp:restaurant_cuisine("Spanish")], price=enum moderate, rating=4.5, review_count=103, geo=new Location(37.9830562859695, -120.38315499099, "70 W Stockton St, Sonora, CA"), phone="+12095324000"^^tt:phone_number },
+C:   { id="7fyOTlJkrGiYxJnKB-lQnQ"^^com.yelp:restaurant("El Arroyo"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/T9M5_tv_UCQOCajK2d-YPQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/el-arroyo-sonora?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum moderate, rating=4, review_count=106, geo=new Location(37.983895, -120.382388, "126 S Washington St, Sonora, CA"), phone="+12096947175"^^tt:phone_number },
+C:   { id="EA4FNZdDHUefPfbR_4_cyw"^^com.yelp:restaurant("El Jardin Restaurant"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/4yEu_1To_SeY-EToawa2Hg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/el-jardin-restaurant-sonora?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum moderate, rating=3, review_count=127, geo=new Location(37.98612, -120.38413, "76 N Washington St, Sonora, CA"), phone="+12095880770"^^tt:phone_number },
+C:   { id="ZXaYFDhUDoJf3yemhteiIQ"^^com.yelp:restaurant("Cocina Michoacana"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/KO8znnU3zp-kzMjyFWMuDw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/cocina-michoacana-sonora?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum moderate, rating=3.5, review_count=111, geo=new Location(37.975839, -120.369462, "770 Mono Way, Sonora, CA"), phone="+12095333841"^^tt:phone_number },
+C:   { id="jzsEKMDsdyk3unSmCpKvgA"^^com.yelp:restaurant("Pablito's Burrito Express"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/a5ZU_FjioANV2FwxanJDwg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/pablitos-burrito-express-sonora-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum cheap, rating=4.5, review_count=20, geo=new Location(37.9758143398168, -120.379544790179, "1155B Mono Way, Sonora, CA"), phone="+12095592708"^^tt:phone_number }
+C: ]];
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:2QsynagSdAqZj3U9HgDzjD"^^org.thingpedia.media-source:artist("Bob Marley & The Wailers")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[]]
+C: #[error=enum no_active_device];
+A: Sorry, you must open the Spotify app first.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
+U: How you doing?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.set_location(location=new Location(37.9840911, -120.3821381, "Sonora, California"), type=enum current)
+C: #[results=[
+C:   { location=new Location(37.9840911, -120.3821381, "Sonora, California"), type=enum current }
+C: ]];
+C: @org.thingpedia.weather.current(location=new Location(37.9840911, -120.3821381, "Sonora, California"))
+C: #[results=[
+C:   { temperature=4.3C, wind_speed=1.3mps, humidity=76.9, cloudiness=100, fog=26.6, status=enum foggy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=15;content_type=image/png"^^tt:picture, location=new Location(37.9840911, -120.3821381, "Sonora, California") }
+C: ]];
+C: @com.yelp.restaurant() filter contains(cuisines, "mexican"^^com.yelp:restaurant_cuisine("Mexican")) && geo == new Location(37.9840911, -120.3821381, "Sonora, California")
+C: #[results=[
+C:   { id="cUMT3-385LurvOyW4UqkrQ"^^com.yelp:restaurant("Taqueria Sonora"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/NUTIe35cHWLfEQZi1u3DAw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/taqueria-sonora-sonora?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican"), "latin"^^com.yelp:restaurant_cuisine("Latin American")], price=enum cheap, rating=4.5, review_count=208, geo=new Location(37.9843909248909, -120.382722660668, "74 S Washington St, Sonora, CA"), phone="+12096947047"^^tt:phone_number },
+C:   { id="G7Kr0HPGnJDt1AZYMWVkBQ"^^com.yelp:restaurant("Cazadora Restaurante"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/ip9uOBEd9K53ULkQY800NA/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/cazadora-restaurante-sonora-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican"), "spanish"^^com.yelp:restaurant_cuisine("Spanish")], price=enum moderate, rating=4.5, review_count=103, geo=new Location(37.9830562859695, -120.38315499099, "70 W Stockton St, Sonora, CA"), phone="+12095324000"^^tt:phone_number },
+C:   { id="7fyOTlJkrGiYxJnKB-lQnQ"^^com.yelp:restaurant("El Arroyo"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/T9M5_tv_UCQOCajK2d-YPQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/el-arroyo-sonora?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum moderate, rating=4, review_count=106, geo=new Location(37.983895, -120.382388, "126 S Washington St, Sonora, CA"), phone="+12096947175"^^tt:phone_number },
+C:   { id="EA4FNZdDHUefPfbR_4_cyw"^^com.yelp:restaurant("El Jardin Restaurant"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/4yEu_1To_SeY-EToawa2Hg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/el-jardin-restaurant-sonora?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum moderate, rating=3, review_count=127, geo=new Location(37.98612, -120.38413, "76 N Washington St, Sonora, CA"), phone="+12095880770"^^tt:phone_number },
+C:   { id="ZXaYFDhUDoJf3yemhteiIQ"^^com.yelp:restaurant("Cocina Michoacana"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/KO8znnU3zp-kzMjyFWMuDw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/cocina-michoacana-sonora?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum moderate, rating=3.5, review_count=111, geo=new Location(37.975839, -120.369462, "770 Mono Way, Sonora, CA"), phone="+12095333841"^^tt:phone_number },
+C:   { id="jzsEKMDsdyk3unSmCpKvgA"^^com.yelp:restaurant("Pablito's Burrito Express"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/a5ZU_FjioANV2FwxanJDwg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/pablitos-burrito-express-sonora-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum cheap, rating=4.5, review_count=20, geo=new Location(37.9758143398168, -120.379544790179, "1155B Mono Way, Sonora, CA"), phone="+12095592708"^^tt:phone_number }
+C: ]];
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:2QsynagSdAqZj3U9HgDzjD"^^org.thingpedia.media-source:artist("Bob Marley & The Wailers")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[]]
+C: #[error=enum no_active_device];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you)
+C: #[results=[
+C:   { reply="Great, thanks for asking! How can I help you?", question=enum about_almond_how_are_you }
+C: ]];
+A: Great, thanks for asking! How can I help you?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: How's it going?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.set_location(location=new Location(37.9840911, -120.3821381, "Sonora, California"), type=enum current)
+C: #[results=[
+C:   { location=new Location(37.9840911, -120.3821381, "Sonora, California"), type=enum current }
+C: ]];
+C: @org.thingpedia.weather.current(location=new Location(37.9840911, -120.3821381, "Sonora, California"))
+C: #[results=[
+C:   { temperature=4.3C, wind_speed=1.3mps, humidity=76.9, cloudiness=100, fog=26.6, status=enum foggy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=15;content_type=image/png"^^tt:picture, location=new Location(37.9840911, -120.3821381, "Sonora, California") }
+C: ]];
+C: @com.yelp.restaurant() filter contains(cuisines, "mexican"^^com.yelp:restaurant_cuisine("Mexican")) && geo == new Location(37.9840911, -120.3821381, "Sonora, California")
+C: #[results=[
+C:   { id="cUMT3-385LurvOyW4UqkrQ"^^com.yelp:restaurant("Taqueria Sonora"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/NUTIe35cHWLfEQZi1u3DAw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/taqueria-sonora-sonora?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican"), "latin"^^com.yelp:restaurant_cuisine("Latin American")], price=enum cheap, rating=4.5, review_count=208, geo=new Location(37.9843909248909, -120.382722660668, "74 S Washington St, Sonora, CA"), phone="+12096947047"^^tt:phone_number },
+C:   { id="G7Kr0HPGnJDt1AZYMWVkBQ"^^com.yelp:restaurant("Cazadora Restaurante"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/ip9uOBEd9K53ULkQY800NA/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/cazadora-restaurante-sonora-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican"), "spanish"^^com.yelp:restaurant_cuisine("Spanish")], price=enum moderate, rating=4.5, review_count=103, geo=new Location(37.9830562859695, -120.38315499099, "70 W Stockton St, Sonora, CA"), phone="+12095324000"^^tt:phone_number },
+C:   { id="7fyOTlJkrGiYxJnKB-lQnQ"^^com.yelp:restaurant("El Arroyo"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/T9M5_tv_UCQOCajK2d-YPQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/el-arroyo-sonora?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum moderate, rating=4, review_count=106, geo=new Location(37.983895, -120.382388, "126 S Washington St, Sonora, CA"), phone="+12096947175"^^tt:phone_number },
+C:   { id="EA4FNZdDHUefPfbR_4_cyw"^^com.yelp:restaurant("El Jardin Restaurant"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/4yEu_1To_SeY-EToawa2Hg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/el-jardin-restaurant-sonora?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum moderate, rating=3, review_count=127, geo=new Location(37.98612, -120.38413, "76 N Washington St, Sonora, CA"), phone="+12095880770"^^tt:phone_number },
+C:   { id="ZXaYFDhUDoJf3yemhteiIQ"^^com.yelp:restaurant("Cocina Michoacana"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/KO8znnU3zp-kzMjyFWMuDw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/cocina-michoacana-sonora?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum moderate, rating=3.5, review_count=111, geo=new Location(37.975839, -120.369462, "770 Mono Way, Sonora, CA"), phone="+12095333841"^^tt:phone_number },
+C:   { id="jzsEKMDsdyk3unSmCpKvgA"^^com.yelp:restaurant("Pablito's Burrito Express"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/a5ZU_FjioANV2FwxanJDwg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/pablitos-burrito-express-sonora-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum cheap, rating=4.5, review_count=20, geo=new Location(37.9758143398168, -120.379544790179, "1155B Mono Way, Sonora, CA"), phone="+12095592708"^^tt:phone_number }
+C: ]];
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:2QsynagSdAqZj3U9HgDzjD"^^org.thingpedia.media-source:artist("Bob Marley & The Wailers")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[]]
+C: #[error=enum no_active_device];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you)
+C: #[results=[
+C:   { reply="Great, thanks for asking! How can I help you?", question=enum about_almond_how_are_you }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you)
+C: #[results=[
+C:   { reply="Great, thanks for asking! How can I help you?", question=enum about_almond_how_are_you }
+C: ]];
+A: Great, thanks for asking! How can I help you?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: How you doing?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(37.9840911, -120.3821381, "Sonora, California"))
+C: #[results=[
+C:   { temperature=4.3C, wind_speed=1.3mps, humidity=76.9, cloudiness=100, fog=26.6, status=enum foggy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=15;content_type=image/png"^^tt:picture, location=new Location(37.9840911, -120.3821381, "Sonora, California") }
+C: ]];
+C: @com.yelp.restaurant() filter contains(cuisines, "mexican"^^com.yelp:restaurant_cuisine("Mexican")) && geo == new Location(37.9840911, -120.3821381, "Sonora, California")
+C: #[results=[
+C:   { id="cUMT3-385LurvOyW4UqkrQ"^^com.yelp:restaurant("Taqueria Sonora"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/NUTIe35cHWLfEQZi1u3DAw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/taqueria-sonora-sonora?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican"), "latin"^^com.yelp:restaurant_cuisine("Latin American")], price=enum cheap, rating=4.5, review_count=208, geo=new Location(37.9843909248909, -120.382722660668, "74 S Washington St, Sonora, CA"), phone="+12096947047"^^tt:phone_number },
+C:   { id="G7Kr0HPGnJDt1AZYMWVkBQ"^^com.yelp:restaurant("Cazadora Restaurante"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/ip9uOBEd9K53ULkQY800NA/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/cazadora-restaurante-sonora-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican"), "spanish"^^com.yelp:restaurant_cuisine("Spanish")], price=enum moderate, rating=4.5, review_count=103, geo=new Location(37.9830562859695, -120.38315499099, "70 W Stockton St, Sonora, CA"), phone="+12095324000"^^tt:phone_number },
+C:   { id="7fyOTlJkrGiYxJnKB-lQnQ"^^com.yelp:restaurant("El Arroyo"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/T9M5_tv_UCQOCajK2d-YPQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/el-arroyo-sonora?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum moderate, rating=4, review_count=106, geo=new Location(37.983895, -120.382388, "126 S Washington St, Sonora, CA"), phone="+12096947175"^^tt:phone_number },
+C:   { id="EA4FNZdDHUefPfbR_4_cyw"^^com.yelp:restaurant("El Jardin Restaurant"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/4yEu_1To_SeY-EToawa2Hg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/el-jardin-restaurant-sonora?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum moderate, rating=3, review_count=127, geo=new Location(37.98612, -120.38413, "76 N Washington St, Sonora, CA"), phone="+12095880770"^^tt:phone_number },
+C:   { id="ZXaYFDhUDoJf3yemhteiIQ"^^com.yelp:restaurant("Cocina Michoacana"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/KO8znnU3zp-kzMjyFWMuDw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/cocina-michoacana-sonora?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum moderate, rating=3.5, review_count=111, geo=new Location(37.975839, -120.369462, "770 Mono Way, Sonora, CA"), phone="+12095333841"^^tt:phone_number },
+C:   { id="jzsEKMDsdyk3unSmCpKvgA"^^com.yelp:restaurant("Pablito's Burrito Express"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/a5ZU_FjioANV2FwxanJDwg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/pablitos-burrito-express-sonora-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum cheap, rating=4.5, review_count=20, geo=new Location(37.9758143398168, -120.379544790179, "1155B Mono Way, Sonora, CA"), phone="+12095592708"^^tt:phone_number }
+C: ]];
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:2QsynagSdAqZj3U9HgDzjD"^^org.thingpedia.media-source:artist("Bob Marley & The Wailers")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[]]
+C: #[error=enum no_active_device];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you)
+C: #[results=[
+C:   { reply="Great, thanks for asking! How can I help you?", question=enum about_almond_how_are_you }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you)
+C: #[results=[
+C:   { reply="Great, thanks for asking! How can I help you?", question=enum about_almond_how_are_you }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you)
+C: #[results=[
+C:   { reply="Great, thanks for asking! How can I help you?", question=enum about_almond_how_are_you }
+C: ]];
+A: Great, thanks for asking! How can I help you?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: What's the weather like?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.yelp.restaurant() filter contains(cuisines, "mexican"^^com.yelp:restaurant_cuisine("Mexican")) && geo == new Location(37.9840911, -120.3821381, "Sonora, California")
+C: #[results=[
+C:   { id="cUMT3-385LurvOyW4UqkrQ"^^com.yelp:restaurant("Taqueria Sonora"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/NUTIe35cHWLfEQZi1u3DAw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/taqueria-sonora-sonora?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican"), "latin"^^com.yelp:restaurant_cuisine("Latin American")], price=enum cheap, rating=4.5, review_count=208, geo=new Location(37.9843909248909, -120.382722660668, "74 S Washington St, Sonora, CA"), phone="+12096947047"^^tt:phone_number },
+C:   { id="G7Kr0HPGnJDt1AZYMWVkBQ"^^com.yelp:restaurant("Cazadora Restaurante"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/ip9uOBEd9K53ULkQY800NA/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/cazadora-restaurante-sonora-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican"), "spanish"^^com.yelp:restaurant_cuisine("Spanish")], price=enum moderate, rating=4.5, review_count=103, geo=new Location(37.9830562859695, -120.38315499099, "70 W Stockton St, Sonora, CA"), phone="+12095324000"^^tt:phone_number },
+C:   { id="7fyOTlJkrGiYxJnKB-lQnQ"^^com.yelp:restaurant("El Arroyo"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/T9M5_tv_UCQOCajK2d-YPQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/el-arroyo-sonora?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum moderate, rating=4, review_count=106, geo=new Location(37.983895, -120.382388, "126 S Washington St, Sonora, CA"), phone="+12096947175"^^tt:phone_number },
+C:   { id="EA4FNZdDHUefPfbR_4_cyw"^^com.yelp:restaurant("El Jardin Restaurant"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/4yEu_1To_SeY-EToawa2Hg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/el-jardin-restaurant-sonora?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum moderate, rating=3, review_count=127, geo=new Location(37.98612, -120.38413, "76 N Washington St, Sonora, CA"), phone="+12095880770"^^tt:phone_number },
+C:   { id="ZXaYFDhUDoJf3yemhteiIQ"^^com.yelp:restaurant("Cocina Michoacana"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/KO8znnU3zp-kzMjyFWMuDw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/cocina-michoacana-sonora?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum moderate, rating=3.5, review_count=111, geo=new Location(37.975839, -120.369462, "770 Mono Way, Sonora, CA"), phone="+12095333841"^^tt:phone_number },
+C:   { id="jzsEKMDsdyk3unSmCpKvgA"^^com.yelp:restaurant("Pablito's Burrito Express"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/a5ZU_FjioANV2FwxanJDwg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/pablitos-burrito-express-sonora-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mexican"^^com.yelp:restaurant_cuisine("Mexican")], price=enum cheap, rating=4.5, review_count=20, geo=new Location(37.9758143398168, -120.379544790179, "1155B Mono Way, Sonora, CA"), phone="+12095592708"^^tt:phone_number }
+C: ]];
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:2QsynagSdAqZj3U9HgDzjD"^^org.thingpedia.media-source:artist("Bob Marley & The Wailers")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[]]
+C: #[error=enum no_active_device];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you)
+C: #[results=[
+C:   { reply="Great, thanks for asking! How can I help you?", question=enum about_almond_how_are_you }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you)
+C: #[results=[
+C:   { reply="Great, thanks for asking! How can I help you?", question=enum about_almond_how_are_you }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you)
+C: #[results=[
+C:   { reply="Great, thanks for asking! How can I help you?", question=enum about_almond_how_are_you }
+C: ]];
+C: @org.thingpedia.weather.current(location=new Location(37.9840911, -120.3821381, "Sonora, California"))
+C: #[results=[
+C:   { temperature=16.8C, wind_speed=0.9mps, humidity=72.6, cloudiness=0, fog=0, status=enum sunny, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=1;content_type=image/png"^^tt:picture, location=new Location(37.9840911, -120.3821381, "Sonora, California") }
+C: ]];
+A: It is sunny today in Sonora, California and the temperature is 62 degrees Fahrenheit.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: set my location.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.set_location();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:2QsynagSdAqZj3U9HgDzjD"^^org.thingpedia.media-source:artist("Bob Marley & The Wailers")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[]]
+C: #[error=enum no_active_device];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you)
+C: #[results=[
+C:   { reply="Great, thanks for asking! How can I help you?", question=enum about_almond_how_are_you }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you)
+C: #[results=[
+C:   { reply="Great, thanks for asking! How can I help you?", question=enum about_almond_how_are_you }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you)
+C: #[results=[
+C:   { reply="Great, thanks for asking! How can I help you?", question=enum about_almond_how_are_you }
+C: ]];
+C: @org.thingpedia.weather.current(location=new Location(37.9840911, -120.3821381, "Sonora, California"))
+C: #[results=[
+C:   { temperature=16.8C, wind_speed=0.9mps, humidity=72.6, cloudiness=0, fog=0, status=enum sunny, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=1;content_type=image/png"^^tt:picture, location=new Location(37.9840911, -120.3821381, "Sonora, California") }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.set_location(type=enum current);
+A: What place do you want?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_slot_fill(location);
+AT: @org.thingpedia.builtin.thingengine.builtin.set_location(type=enum current);
+U: Palo Alto, CA.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.set_location(location=new Location("palo alto , ca"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:2QsynagSdAqZj3U9HgDzjD"^^org.thingpedia.media-source:artist("Bob Marley & The Wailers")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: #[results=[]]
+C: #[error=enum no_active_device];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you)
+C: #[results=[
+C:   { reply="Great, thanks for asking! How can I help you?", question=enum about_almond_how_are_you }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you)
+C: #[results=[
+C:   { reply="Great, thanks for asking! How can I help you?", question=enum about_almond_how_are_you }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you)
+C: #[results=[
+C:   { reply="Great, thanks for asking! How can I help you?", question=enum about_almond_how_are_you }
+C: ]];
+C: @org.thingpedia.weather.current(location=new Location(37.9840911, -120.3821381, "Sonora, California"))
+C: #[results=[
+C:   { temperature=16.8C, wind_speed=0.9mps, humidity=72.6, cloudiness=0, fog=0, status=enum sunny, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=1;content_type=image/png"^^tt:picture, location=new Location(37.9840911, -120.3821381, "Sonora, California") }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.set_location(location=new Location(37.4443293, -122.1598465, "Palo Alto, California"), type=enum current)
+C: #[results=[
+C:   { location=new Location(37.4443293, -122.1598465, "Palo Alto, California"), type=enum current }
+C: ]];
+A: I set your current location.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: It's gone today.
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# recording/b9e39a025ebb2f5ca601c4e6e60c7e7a
+U: how you doing man?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you)
+C: #[results=[
+C:   { reply="Great, thanks for asking! How can I help you?", question=enum about_almond_how_are_you }
+C: ]];
+A: Great, thanks for asking! How can I help you?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: Play some Bob.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("bob")) => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/c2aff5dcda10e7b252cee59311bebcb5
+U: tell me joke
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.icanhazdadjoke.get();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="KeqOmOZDYDd"^^com.icanhazdadjoke:id, text="Why is it so windy inside an arena? All those fans." }
+C: ]];
+A: Why is it so windy inside an arena? All those fans.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: songs in my library
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.get_song_from_library();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="KeqOmOZDYDd"^^com.icanhazdadjoke:id, text="Why is it so windy inside an arena? All those fans." }
+C: ]];
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).get_song_from_library()
+C: #[results=[]];
+A: Sorry, there are no your favorites matching your request.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_empty_search;
+U: when my switch changes stat
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.switch.state());
+====
+# recording/a397da7756b739000eabff392a45b1f1
+U: play some music.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() => @org.thingpedia.media-player.play(playable=id);

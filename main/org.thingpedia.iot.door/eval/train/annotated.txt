@@ -363,3 +363,18 @@ UT: @org.thingpedia.iot.door.state();
 U: did somebody open the door?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.door.state();
+====
+# recording/ea9c99894e48dc83afdb7347d026b475
+U: door state
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.door.state();
+====
+# recording/164e1e567f419fb24c884cd0d4ddb9a8
+U: hi
+UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
+C: $dialogue @org.thingpedia.dialogue.transaction.greet;
+A: Hello! How can I help you?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_greet;
+U: when my door opens
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.door.state()) filter state == enum open;
