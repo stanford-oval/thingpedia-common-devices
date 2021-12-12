@@ -3557,3 +3557,165 @@ UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum how_to_c
 U: what time is it?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.builtin.thingengine.builtin.get_time();
+====
+# recording/74f798f1024179b02b4b9af8f90ce319
+U: configure home assistant
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.configure(device=null^^tt:device("home assistant"));
+====
+# recording/6be4c647a7131a1778cd2114c1c9c346
+U: What time is it?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_time();
+====
+# recording/8abdcd54ca48df6966e7a6929e2eddaa
+U: What can you do?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help)
+C: #[results=[
+C:   { reply="I'm a new virtual assistant. At the moment, I can help you with music, jokes, and managing some IoT devices.", question=enum general_help }
+C: ]];
+A: I'm a new virtual assistant. At the moment, I can help you with music, jokes, and managing some IoT devices.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: What IoT devices can you help with?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum iot_help);
+====
+# recording/34e5aed1828d71a0b7f20f282fa0bff1
+U: do you speak french ?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.set_language(language=null^^tt:iso_lang_code("french"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.set_language(language="fr"^^tt:iso_lang_code("French"))
+C: #[results=[]]
+C: #[error=enum unsupported_platform_cloud];
+A: Sorry, you need to go to the user profile page to change the language.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
+U: where is the user profile page ?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum how_to_access_settings);
+====
+# recording/017095a854ff19d60d23aec41b9cfdb4
+U: Trying to talk to you.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.set_voice_output(status=enum on);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.set_voice_output(status=enum on)
+C: #[results=[]]
+C: #[error=enum unsupported];
+A: Sorry, voice output is not supported on this platform.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
+U: i am trying to talk to you.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.set_voice_output(status=enum on);
+====
+# recording/37410c46d346c77de8053480ac53e758
+U: Wich language do you speak?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum how_to_set_language);
+====
+# recording/f2c0eedeabd35df7f982985d611cabef
+U: how are you?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you)
+C: #[results=[
+C:   { reply="Great. Thanks for asking. How can I help you?", question=enum about_almond_how_are_you }
+C: ]];
+A: Great. Thanks for asking. How can I help you?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: what IoT devices can you work with?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum iot_help);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_how_are_you)
+C: #[results=[
+C:   { reply="Great. Thanks for asking. How can I help you?", question=enum about_almond_how_are_you }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum iot_help)
+C: #[results=[
+C:   { reply="At the moment, I can control lights, switches, as well as various sensors. Check the Thingpedia website for the full, up-to-date list, and check your My Skills page to see which of your devices I recognize.", question=enum iot_help }
+C: ]];
+A: At the moment, I can control lights, switches, as well as various sensors. Check the Thingpedia website for the full, up-to-date list, and check your My Skills page to see which of your devices I recognize.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: how do i enable audio
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum how_to_use_wakeword);
+====
+# recording/78eb5721f3ec4536afcddb397f13f99b
+U: What is the wake word?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum how_to_use_wakeword);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum how_to_use_wakeword)
+C: #[results=[
+C:   { reply="I am sorry, continuous voice input with wake word detection is not available in the web version of Almond.", question=enum how_to_use_wakeword }
+C: ]];
+A: I am sorry, continuous voice input with wake word detection is not available in the web version of Almond.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: What should I do?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum how_to_use_wakeword)
+C: #[results=[
+C:   { reply="I am sorry, continuous voice input with wake word detection is not available in the web version of Almond.", question=enum how_to_use_wakeword }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help)
+C: #[results=[
+C:   { reply="I'm a new virtual assistant. At the moment, I can help you with music, jokes, and managing some IoT devices.", question=enum general_help }
+C: ]];
+A: I'm a new virtual assistant. At the moment, I can help you with music, jokes, and managing some IoT devices.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: log a message
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.say();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum how_to_use_wakeword)
+C: #[results=[
+C:   { reply="I am sorry, continuous voice input with wake word detection is not available in the web version of Almond.", question=enum how_to_use_wakeword }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help)
+C: #[results=[
+C:   { reply="I'm a new virtual assistant. At the moment, I can help you with music, jokes, and managing some IoT devices.", question=enum general_help }
+C: ]];
+C: @org.thingpedia.builtin.thingengine.builtin.say();
+A: What do you want me to say?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_slot_fill(message);
+AT: @org.thingpedia.builtin.thingengine.builtin.say();
+U: hi giovanni! -tE
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.say(message="hi giovanni! -tE");
+====
+# recording/586cde8a62bfa2debb47273006739883
+U: time
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_time();
+====
+# recording/12b667a4a1767ce1965be810c1f7fc55
+U: today's date
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.get_date();
+====
+# recording/5da2e5bceb8374d88faa375d27c67411
+U: remind me to eat in one hour
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[$now + 1h]) => @org.thingpedia.builtin.thingengine.builtin.say(message="eat");
+====
+# recording/340f2dc0709b766b1dab2b27eb6c4cc5
+U: What to do next?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
+====
+# recording/08424c1b74a127563778b3406321687b
+U: Hello
+UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
+C: $dialogue @org.thingpedia.dialogue.transaction.greet;
+A: Hello! How can I help you?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_greet;
+U: Home assistant
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.configure(device=null^^tt:device("home assistant"));
