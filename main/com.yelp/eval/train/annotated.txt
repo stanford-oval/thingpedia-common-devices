@@ -2515,3 +2515,13 @@ AT: $dialogue @org.thingpedia.dialogue.transaction.sys_empty_search;
 U: show me moderately priced restaurants in san francisco within 0.5 miles of san francisco
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.yelp.restaurant() filter distance(geo, new Location(37.7792808, -122.4192363, "San Francisco, California")) <= 0.5mi && geo == new Location("san francisco") && price == enum moderate;
+====
+# log/185177
+U: i'm hungry what do you recommend?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant();
+====
+# log/93741
+U: get 5 star reviews
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter rating == 5;

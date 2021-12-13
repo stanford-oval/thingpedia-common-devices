@@ -164,3 +164,8 @@ UT: @org.thingpedia.iot.lock(all=true).set_state(state=enum lock);
 U: Remotely unlock the front door at 5 PM each evening.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: attimer(time=[new Time(17, 0)]) => @org.thingpedia.iot.lock(name="front door").set_state(state=enum unlock);
+====
+# log/184047
+U: what is the status of the smart door lock
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.lock(name="smart door").state();

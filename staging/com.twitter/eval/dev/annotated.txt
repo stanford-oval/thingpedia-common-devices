@@ -542,3 +542,18 @@ UT: @com.twitter.post();
 # log-dev/4920
 U: search for super bowl on twitter
 UT: @com.twitter.tweet() filter text =~ "super bowl";
+====
+# log/9769
+U: tweet happy new year
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.twitter.post(status="happy new year");
+====
+# log/54093
+U: show me vitalik buterin latest tweet
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.twitter.tweet() filter author == null^^tt:username("vitalik buterin");
+====
+# log/40823
+U: send a dm to sileixu
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.twitter.send_direct_message(to="sileixu"^^tt:username);

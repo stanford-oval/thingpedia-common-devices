@@ -72,3 +72,13 @@ UT: ontimer(date=[set_time($now, new Time(20, 0))]) => @org.thingpedia.iot.lock(
 U: Lock the front door after I come home.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: monitor(@org.thingpedia.builtin.thingengine.builtin.get_gps()) filter location == $location.home => @org.thingpedia.iot.lock(name="front door").set_state(state=enum lock);
+====
+# log/184046
+U: is the smart door lock unlocked
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.lock(name="smart door").state();
+====
+# log/184044
+U: unlock the smart door lock
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.lock(name="smart door").set_state(state=enum unlock);

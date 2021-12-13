@@ -5476,3 +5476,80 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
 # recording/f9e34712903dc45f48b832a1dbac815d
 U: Hi.
 UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
+====
+# log/185025
+U: byee
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# log/184964
+U: thank you go to sleep
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# log/184887
+U: weather in celcius
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.set_temperature_unit(unit=enum celsius);
+UT: @org.thingpedia.weather.current();
+====
+# log/184662
+U: can you play me a song?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.song() => @org.thingpedia.media-player.play(playable=id);
+====
+# log/184505
+U: helloi
+UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
+====
+# log/184183
+U: get weather tomorrow in celsius
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.set_temperature_unit(unit=enum celsius);
+UT: @org.thingpedia.weather.forecast();
+====
+# log/179683
+U: play black hot rolling monkey stones playlist on spotify.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playlist() filter id =~ "black hot rolling monkey stones" => @org.thingpedia.media-player.play(playable=id);
+====
+# log/62705
+U: what is the forecast for tomorrow in bradenton, fl in farenheit
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.set_temperature_unit(unit=enum fahrenheit);
+UT: @org.thingpedia.weather.forecast(location=new Location("bradenton , fl"));
+====
+# log/7656
+U: play kajagoogoo on spotif5
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("kajagoogoo")) => @org.thingpedia.media-player.play(playable=id);
+====
+# log/79730
+U: do not tell me a joke
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# log/54885
+U: turn my light on when motion is detected
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.motion.motion()) filter state == enum detecting => @org.thingpedia.iot.light-bulb.set_power(power=enum on);
+====
+# log/157691
+U: hi ho
+UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
+====
+# log/6304
+U: add this song to my playlist
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.get_currently_playing() => @com.spotify.add_song_to_playlist(song=id);
+====
+# log/133643
+U: nice to meet you
+UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
+====
+# log/96377
+U: play burlap to cashmere
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("burlap to cashmere")) => @org.thingpedia.media-player.play(playable=id);
+====
+# log/12006
+U: tweet "str:QUOTED_STRING::0:" when i get home
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.builtin.thingengine.builtin.get_gps()) filter location == $location.home => @com.twitter.post(status="str:QUOTED_STRING::0:");

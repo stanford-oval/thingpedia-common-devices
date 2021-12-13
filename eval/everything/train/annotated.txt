@@ -25005,3 +25005,41 @@ AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
 U: If the temperature in Cleveland Ohio is greater than 45 degrees, turn on the heat.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: monitor(@org.thingpedia.weather.current(location=new Location("cleveland ohio"))) filter temperature >= 45defaultTemperature => @org.thingpedia.iot.climate.set_hvac_mode(mode=enum heat);
+====
+# log/185169
+U: hey henrik
+UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
+====
+# log/185070
+U: get: the temperature in barcelona catalonia in celsius
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.set_temperature_unit(unit=enum celsius);
+UT: [temperature] of @org.thingpedia.weather.current(location=new Location("barcelona catalonia"));
+====
+# log/184252
+U: that will be all.
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# log/183744
+U: goodmorning
+UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
+====
+# log/88818
+U: turn off living room light when the living room tv is turned off
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.tv(name="living room").power()) filter state == enum off => @org.thingpedia.iot.light-bulb(name="living room").set_power(power=enum off);
+====
+# log/40591
+U: when my security camera detects motion and i'm not home send it to str:EMAIL_ADDRESS::0:
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.security-camera.current_event()) filter any(@org.thingpedia.builtin.thingengine.builtin.get_gps() filter !(location == $location.home)) && has_motion == false => @com.gmail.send_picture(subject=$result, to="str:EMAIL_ADDRESS::0:"^^tt:email_address);
+====
+# log/41705
+U: play some music by bonnie raitt
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("bonnie raitt")) => @org.thingpedia.media-player.play(playable=id);
+====
+# log/174962
+U: play depeche mode
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("depeche mode")) => @org.thingpedia.media-player.play(playable=id);

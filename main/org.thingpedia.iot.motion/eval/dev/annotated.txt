@@ -93,3 +93,18 @@ UT: @org.thingpedia.iot.motion(name="front").motion();
 U: when: when the motion sensor sees something move
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: monitor(@org.thingpedia.iot.motion.motion()) filter state == enum detecting;
+====
+# log/183713
+U: when ewelink ms01 detects movement let me know
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.motion(name="ewelink ms01").motion()) filter state == enum detecting;
+====
+# log/136819
+U: tell me when my ring doorbell see's motion
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.motion(name="ring doorbell").motion());
+====
+# log/182553
+U: when: when the motion sensor detects or stops detecting movement
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.motion.motion());

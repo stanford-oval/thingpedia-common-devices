@@ -438,3 +438,28 @@ UT: ontimer(date=[$now + 15min]) => @org.thingpedia.iot.climate.set_hvac_mode(mo
 U: switch on the thermo
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.climate.set_hvac_mode(mode=enum heat);
+====
+# log/184597
+U: can you turn off the heater
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.set_hvac_mode(mode=enum off);
+====
+# log/184034
+U: what's the heating set to
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.target_temperature();
+====
+# log/183843
+U: what is the set point of upstairs heat
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate(name="upstairs").target_temperature();
+====
+# log/183840
+U: today for one time only in one hour set upstairs heat to 63 degrees
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[$now + 1h]) => @org.thingpedia.iot.climate(name="upstairs").set_target_temperature(value=63defaultTemperature);
+====
+# log/60757
+U: turn the heater on
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.climate.set_hvac_mode(mode=enum heat);

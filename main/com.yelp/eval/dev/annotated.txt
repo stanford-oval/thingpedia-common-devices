@@ -2769,3 +2769,13 @@ AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_three;
 U: How many reviews does tartine have?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: [review_count] of @com.yelp.restaurant() filter geo == new Location(37.7597203, -122.4271322952394, "Mission Dolores Park, San Francisco, California") && id == null^^com.yelp:restaurant("tartine");
+====
+# log/185178
+U: find me a restaurant within 10 kilometres
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter distance(geo, $location.current_location) <= 10km;
+====
+# log/184187
+U: find restaurant in swindon
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("swindon");

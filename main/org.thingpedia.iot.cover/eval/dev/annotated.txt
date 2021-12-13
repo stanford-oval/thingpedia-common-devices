@@ -484,3 +484,28 @@ UT: @org.thingpedia.iot.cover(name="front").set_openclose(state=enum close);
 U: open the door
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.cover.set_openclose(state=enum open);
+====
+# log/184729
+U: open blinds
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.cover.set_openclose(state=enum open);
+====
+# log/88600
+U: how many windows are open
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: count(@org.thingpedia.iot.cover.state() filter state == enum open);
+====
+# log/136529
+U: open cover force
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.cover(name="force").set_openclose(state=enum open);
+====
+# log/179000
+U: pull the double garage door close
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.cover(name="double garage").set_openclose(state=enum close);
+====
+# log/138084
+U: is the garage door open
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.cover(name="garage door").state();
