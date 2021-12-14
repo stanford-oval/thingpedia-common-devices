@@ -33,3 +33,13 @@ UT: @com.slack.setPresence(presence=enum away);
 U: send a message on slack to str:HASHTAG::0: saying "str:QUOTED_STRING::0:"
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @com.slack.send(channel="str:HASHTAG::0:"^^tt:hashtag, message="str:QUOTED_STRING::0:");
+====
+# log/148685
+U: read last slack message
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.slack.channel_history();
+====
+# log/40739
+U: get slack messages
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.slack.channel_history();

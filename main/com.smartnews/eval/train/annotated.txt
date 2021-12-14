@@ -1429,3 +1429,47 @@ UT: @com.smartnews.article(keyword="music awards action");
 U: send me the news on Saturday.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: ontimer(date=[new Date(enum saturday)]) => @com.smartnews.article();
+====
+# recording/47946a2c93cdd8380e65d8a1375db119
+U: News.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.smartnews.article()
+C: #[results=[]]
+C: #[error=enum unavailable];
+A: Sorry, the smartnews service is unavailable. Please try again later.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_error;
+U: What is today's news?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log/185156
+U: read the latest headlines on smartnews
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log/185154
+U: smartnews latest
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(date desc of @com.smartnews.article())[1];
+====
+# log/185150
+U: get the latest news from npr
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(date desc of @com.smartnews.article() filter source =~ "npr")[1];
+====
+# log/183813
+U: what was the kyle rittenhouse verdict in kenosha, wi?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="kyle rittenhouse verdict in kenosha, wi");
+====
+# log/137150
+U: news now
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log/143791
+U: news headline
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();

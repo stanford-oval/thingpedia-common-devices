@@ -23560,13 +23560,13 @@ UT: ontimer(date=[new Date(enum saturday)]) => @org.thingpedia.weather.forecast(
 # recording/acec922f02131cd3cd5dc5dc09a099dc
 U: Play the Bay. Curious podcast from NPR.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-source.show() filter id =~ "the bay . curious" => @org.thingpedia.media-player.play(playable=id);
+UT: @org.thingpedia.media-source.show() filter id =~ "bay . curious" => @org.thingpedia.media-player.play(playable=id);
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).show() filter id =~ "the bay . curious")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).show() filter id =~ "bay . curious")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
 C: #[results=[]];
 A: Sorry, there are no shows at the moment matching your request. Would you like to be notified when there are new shows?
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_empty_search;
-AT: monitor(id of (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).show() filter id =~ "the bay . curious")[1])
+AT: monitor(id of (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).show() filter id =~ "bay . curious")[1])
 AT: #[confirm=enum proposed];
 U: Play the Bay Curious podcast.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
@@ -24798,3 +24798,248 @@ AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
 U: can you remind me of stuff
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: ontimer(date=$?) => @org.thingpedia.builtin.thingengine.builtin.say();
+====
+# recording/78605a864d635e2feea872ca74f1b4b2
+U: what's your name
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_identity);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum about_almond_identity)
+C: #[results=[
+C:   { reply="I'm Almond, an open-source virtual assistant created at Stanford.", question=enum about_almond_identity }
+C: ]];
+A: I'm Almond, an open-source virtual assistant created at Stanford.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: turn on the light
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.iot.light-bulb.set_power(power=enum on);
+====
+# recording/7f76280c2db7f2ecb46caa0aa4a2c78b
+U: play music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/a38301684f9446f1125c91ac8a3bc94c
+U: Play Spotify.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/b0784b8a137b6e149d662db57f711b90
+U: tell a joke
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.icanhazdadjoke.get();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="ORK6UDA5hqc"^^com.icanhazdadjoke:id, text="When my wife told me to stop impersonating a flamingo, I had to put my foot down." }
+C: ]];
+A: When my wife told me to stop impersonating a flamingo, I had to put my foot down.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: troubleshoot microphone
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum how_to_use_wakeword);
+====
+# recording/ab115b458f8aaa5a70651d3e522e4d05
+U: Thank you
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# recording/f535366b33be7683e1a89abb652f4280
+U: play madonna
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("madonna")) => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/7c42fb9e897bcead176ae3f3076b91b7
+U: can you tell me a good japanese restaurant
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("japanese"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.yelp.restaurant() filter contains(cuisines, "japanese"^^com.yelp:restaurant_cuisine("Japanese"))
+C: #[results=[
+C:   { id="APcouAOJlP0sdKZU3Ev_7w"^^com.yelp:restaurant("Odori Japanese Cuisine"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/fpIf_fClDVr8MFD8268AyQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/odori-japanese-cuisine-palo-alto-4?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["japanese"^^com.yelp:restaurant_cuisine("Japanese"), "sushi"^^com.yelp:restaurant_cuisine("Sushi Bars")], price=enum moderate, rating=3.5, review_count=612, geo=new Location(37.4270973205566, -122.14794921875, "2111 El Camino Real, Palo Alto, CA 94306"), phone="+16503272222"^^tt:phone_number },
+C:   { id="AUktvLJ9j7gANenwNga1fg"^^com.yelp:restaurant("Taro San Japanese Noodle Bar"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/89qobB8Zp7uNq4_p3Zw01Q/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/taro-san-japanese-noodle-bar-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["japanese"^^com.yelp:restaurant_cuisine("Japanese"), "noodles"^^com.yelp:restaurant_cuisine("Noodles"), "sushi"^^com.yelp:restaurant_cuisine("Sushi Bars")], price=enum moderate, rating=3.5, review_count=660, geo=new Location(37.4429175780446, -122.172707300397, "717 Stanford Shopping Ctr, Palo Alto, CA 94304"), phone="+16508152700"^^tt:phone_number },
+C:   { id="LEp5w5lF3AD2UGRfolFoDQ"^^com.yelp:restaurant("YAYOI"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/ebhtMam6i1HBJl83qaY4UQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/yayoi-palo-alto-3?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["japanese"^^com.yelp:restaurant_cuisine("Japanese"), "sushi"^^com.yelp:restaurant_cuisine("Sushi Bars")], price=enum moderate, rating=3.5, review_count=634, geo=new Location(37.44737, -122.16052, "403 University Ave, Palo Alto, CA 94301"), phone="+16504944437"^^tt:phone_number },
+C:   { id="xNNURK1vIGEDqwVb9pFRlg"^^com.yelp:restaurant("Go Fish Poke Bar"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/GCbABrUn_UArevjk--lwUg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/go-fish-poke-bar-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["japanese"^^com.yelp:restaurant_cuisine("Japanese"), "sushi"^^com.yelp:restaurant_cuisine("Sushi Bars")], price=enum moderate, rating=4, review_count=348, geo=new Location(37.4427026586894, -122.170617845337, "660 Stanford Shopping Ctr, Ste 244B, Palo Alto, CA 94304"), phone="+16503281370"^^tt:phone_number },
+C:   { id="WAo42c41_0Y0tifXbwuo8w"^^com.yelp:restaurant("Fuki Sushi"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/K84YCh7eNy0fxkUSLmVzyg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/fuki-sushi-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["sushi"^^com.yelp:restaurant_cuisine("Sushi Bars"), "japanese"^^com.yelp:restaurant_cuisine("Japanese")], price=enum expensive, rating=3.5, review_count=887, geo=new Location(37.4138844, -122.125805, "4119 El Camino Real, Palo Alto, CA 94306"), phone="+16504949383"^^tt:phone_number },
+C:   { id="hvB8fOsqPmVAFFrnmAMz_w"^^com.yelp:restaurant("Daigo"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/MmFuZOxqQs---nLw7izPGQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/daigo-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["sushi"^^com.yelp:restaurant_cuisine("Sushi Bars"), "japanese"^^com.yelp:restaurant_cuisine("Japanese")], price=enum moderate, rating=4, review_count=152, geo=new Location(37.4278, -122.14425, "2363 Birch St, Ste B, Palo Alto, CA 94306"), phone="+16503846880"^^tt:phone_number },
+C:   { id="xcUJ7qlO60Cu-ZyCaD-23Q"^^com.yelp:restaurant("Jin Sho"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/kdCwUep8tyRy6xatkgoivg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/jin-sho-palo-alto-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["japanese"^^com.yelp:restaurant_cuisine("Japanese"), "asianfusion"^^com.yelp:restaurant_cuisine("Asian Fusion"), "sushi"^^com.yelp:restaurant_cuisine("Sushi Bars")], price=enum expensive, rating=3.5, review_count=556, geo=new Location(37.42596, -122.14555, "454 S California Ave, Palo Alto, CA 94306"), phone="+16503213454"^^tt:phone_number },
+C:   { id="arrdif21CgXnCliP_Kcnjw"^^com.yelp:restaurant("Onigilly Palo Alto"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/ji-6Mbvur2YPPQ4XSFBwKg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/onigilly-palo-alto-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["japanese"^^com.yelp:restaurant_cuisine("Japanese")], price=enum cheap, rating=4, review_count=272, geo=new Location(37.44408, -122.16296, "164 University Ave, Palo Alto, CA 94301"), phone="+16503132104"^^tt:phone_number },
+C:   { id="64ClD5HpRafRXjQ79w0SYw"^^com.yelp:restaurant("Nobu Palo Alto"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/JYWEZlLP6ZLWAzVsgQRFKQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/nobu-palo-alto-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["sushi"^^com.yelp:restaurant_cuisine("Sushi Bars"), "japanese"^^com.yelp:restaurant_cuisine("Japanese"), "breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch")], price=enum luxury, rating=3.5, review_count=464, geo=new Location(37.4436, -122.16152, "180 Hamilton Ave, Palo Alto, CA 94301"), phone="+16507988396"^^tt:phone_number },
+C:   { id="JnLNfQtW9GLGRF1pzAd55w"^^com.yelp:restaurant("Sushi House"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/6fbc1tdrD1tFqjYb6SM8tQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/sushi-house-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["sushi"^^com.yelp:restaurant_cuisine("Sushi Bars"), "noodles"^^com.yelp:restaurant_cuisine("Noodles"), "japanese"^^com.yelp:restaurant_cuisine("Japanese")], price=enum moderate, rating=3.5, review_count=272, geo=new Location(37.4392332, -122.1582318, "855 El Camino Real, Ste 158, Palo Alto, CA 94301"), phone="+16503213453"^^tt:phone_number }
+C: ]]
+C: #[count=41];
+A: I see Odori Japanese Cuisine, Taro San Japanese Noodle Bar, and YAYOI. They're moderate restaurants rated 3.5 star.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_three;
+U: can you remind me to take a break every hour?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: timer(interval=1h) => @org.thingpedia.builtin.thingengine.builtin.say(message="take a break");
+====
+# recording/54270ec963df895a79c5db7b34f233d9
+U: set my location to new york
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.set_location(location=new Location("new york"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.set_location(location=new Location(40.7306458, -73.9866136, "New York City, New York"), type=enum current)
+C: #[results=[]];
+A: I set your current location for you to New York City, New York.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: tell me the weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.set_location(location=new Location(40.7306458, -73.9866136, "New York City, New York"), type=enum current)
+C: #[results=[]];
+C: @org.thingpedia.weather.current(location=new Location(40.7306458, -73.9866136, "New York City, New York"))
+C: #[results=[
+C:   { temperature=25C, wind_speed=3.6mps, humidity=87, cloudiness=0.8, fog=0, status=enum sunny, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=1;content_type=image/png"^^tt:picture, location=new Location(40.7306458, -73.9866136, "New York City, New York") }
+C: ]];
+A: It is sunny today in New York City, New York and the temperature is 77 F.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: what's the forecast for tomorrow?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast(location=new Location(40.7306458, -73.9866136, "New York City, New York"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.set_location(location=new Location(40.7306458, -73.9866136, "New York City, New York"), type=enum current)
+C: #[results=[]];
+C: @org.thingpedia.weather.current(location=new Location(40.7306458, -73.9866136, "New York City, New York"))
+C: #[results=[
+C:   { temperature=25C, wind_speed=3.6mps, humidity=87, cloudiness=0.8, fog=0, status=enum sunny, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=1;content_type=image/png"^^tt:picture, location=new Location(40.7306458, -73.9866136, "New York City, New York") }
+C: ]];
+C: @org.thingpedia.weather.forecast(date=$end_of(day), location=new Location(40.7306458, -73.9866136, "New York City, New York"))
+C: #[results=[
+C:   { temperature=30.3C, wind_speed=3.2mps, humidity=69.9, cloudiness=29.7, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=2;content_type=image/png"^^tt:picture, date=new Date("2021-07-16T21:00:00.000Z"), location=new Location(40.7306458, -73.9866136, "New York City, New York") }
+C: ]];
+A: It will be cloudy tomorrow at 2:00 PM in New York City, New York and the temperature will be 86.5 F.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: what will the weather be next week?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.forecast(date=$end_of(week), location=new Location(40.7306458, -73.9866136, "New York City, New York"));
+====
+# recording/521884680046843c6eca7a49c5b0b50d
+U: play music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/5bcb01117ef2fb1fc5b625bd9330aa91
+U: cancel
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# recording/2d932aeae8cd56ce0a355f0d2ef7051c
+U: play music
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/aeada84a34f6cb8dbd1c7f3da6e08a64
+U: Good question. How can you help me?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help);
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.builtin.thingengine.builtin.faq_reply(question=enum general_help)
+C: #[results=[
+C:   { reply="I'm a new virtual assistant. At the moment, I can help you with music, jokes, and managing some IoT devices.", question=enum general_help }
+C: ]];
+A: I'm a new virtual assistant. At the moment, I can help you with music, jokes, and managing some IoT devices.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
+U: So let's play some Bob Marley, would you?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("bob marley")) => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/c4fdf6921fa94986cbf8e513e89c8087
+U: Todays weather, please
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.weather.current(location=new Location(58.2713175, 13.7133276, "Stenstorps distrikt, Stenstorps distrikt"))
+C: #[results=[
+C:   { temperature=-1.4C, wind_speed=5.9mps, humidity=84.5, cloudiness=76.6, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=2;content_type=image/png"^^tt:picture, location=new Location(58.2713175, 13.7133276, "Stenstorps distrikt, Stenstorps distrikt") }
+C: ]];
+A: Where are you now?
+A: It is cloudy today in Stenstorps distrikt, Stenstorps distrikt and the temperature is 29.5 F.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: Temperature in celcius
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.set_temperature_unit(unit=enum celsius);
+====
+# recording/2e624539c1b828a507829cb1fdde3f8e
+U: Tell me a joke
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.icanhazdadjoke.get();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="g3LZTCYDYg"^^com.icanhazdadjoke:id, text="What do you call a pig with three eyes? Piiig" }
+C: ]];
+A: What do you call a pig with three eyes? Piiig.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: What is the temperature in Orlando, Florida
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [temperature] of @org.thingpedia.weather.current(location=new Location("orlando , florida"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="g3LZTCYDYg"^^com.icanhazdadjoke:id, text="What do you call a pig with three eyes? Piiig" }
+C: ]];
+C: [temperature] of @org.thingpedia.weather.current(location=new Location(28.5421097, -81.3790388, "Orlando, Florida"))
+C: #[results=[
+C:   { location=new Location(28.5421097, -81.3790388, "Orlando, Florida"), temperature=20.4C, status=enum cloudy }
+C: ]];
+A: It is cloudy today in Orlando, Florida and the temperature is 68.7 F.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: What is the weather in Cleveland, Ohio
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.weather.current(location=new Location("cleveland , ohio"));
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.icanhazdadjoke.get()
+C: #[results=[
+C:   { id="g3LZTCYDYg"^^com.icanhazdadjoke:id, text="What do you call a pig with three eyes? Piiig" }
+C: ]];
+C: [temperature] of @org.thingpedia.weather.current(location=new Location(28.5421097, -81.3790388, "Orlando, Florida"))
+C: #[results=[
+C:   { location=new Location(28.5421097, -81.3790388, "Orlando, Florida"), temperature=20.4C, status=enum cloudy }
+C: ]];
+C: @org.thingpedia.weather.current(location=new Location(41.5051613, -81.6934446, "Cleveland, Ohio"))
+C: #[results=[
+C:   { temperature=7.6C, wind_speed=3.3mps, humidity=92.8, cloudiness=100, fog=0, status=enum cloudy, icon="http://api.met.no/weatherapi/weathericon/1.1/?symbol=3;content_type=image/png"^^tt:picture, location=new Location(41.5051613, -81.6934446, "Cleveland, Ohio") }
+C: ]];
+A: It is cloudy today in Cleveland, Ohio and the temperature is 45.7 F.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: If the temperature in Cleveland Ohio is greater than 45 degrees, turn on the heat.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.weather.current(location=new Location("cleveland ohio"))) filter temperature >= 45defaultTemperature => @org.thingpedia.iot.climate.set_hvac_mode(mode=enum heat);
+====
+# log/185169
+U: hey henrik
+UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
+====
+# log/185070
+U: get: the temperature in barcelona catalonia in celsius
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.set_temperature_unit(unit=enum celsius);
+UT: [temperature] of @org.thingpedia.weather.current(location=new Location("barcelona catalonia"));
+====
+# log/184252
+U: that will be all.
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# log/183744
+U: goodmorning
+UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
+====
+# log/88818
+U: turn off living room light when the living room tv is turned off
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.tv(name="living room").power()) filter state == enum off => @org.thingpedia.iot.light-bulb(name="living room").set_power(power=enum off);
+====
+# log/40591
+U: when my security camera detects motion and i'm not home send it to str:EMAIL_ADDRESS::0:
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.security-camera.current_event()) filter any(@org.thingpedia.builtin.thingengine.builtin.get_gps() filter !(location == $location.home)) && has_motion == false => @com.gmail.send_picture(subject=$result, to="str:EMAIL_ADDRESS::0:"^^tt:email_address);
+====
+# log/41705
+U: play some music by bonnie raitt
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("bonnie raitt")) => @org.thingpedia.media-player.play(playable=id);
+====
+# log/174962
+U: play depeche mode
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("depeche mode")) => @org.thingpedia.media-player.play(playable=id);

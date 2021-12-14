@@ -103,3 +103,8 @@ UT: @org.thingpedia.iot.humidity.humidity();
 U: How humid is it in the basement?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.iot.humidity(name="basement").humidity();
+====
+# log/183718
+U: when the room's humidity is higher than 70 ( humidity ) percent
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.humidity.humidity()) filter value >= 70;

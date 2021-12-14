@@ -1827,7 +1827,7 @@ UT: monitor(@org.thingpedia.iot.smoke.state()) filter state == enum detecting =>
 # recording/cce30ec414554394e63f9ac3b6c25f76
 U: play baba riley by the who
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("the who")) && id =~ "baba riley" => @org.thingpedia.media-player.play(playable=id);
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("who")) && id =~ "baba riley" => @org.thingpedia.media-player.play(playable=id);
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
 C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:67ea9eGLXYMsO2eYQRui3w"^^org.thingpedia.media-source:artist("The Who")) && id =~ "baba riley")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
 C: #[results=[
@@ -1863,7 +1863,7 @@ A: I played the next song.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
 U: play the who
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("the who")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id);
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("who")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id);
 ====
 # recording/8d1d57109d0565e79262c53b2a3a7702
 U: can you tell me a good japanese restaurant
@@ -2071,7 +2071,7 @@ A: I played Armchair Expert on Spotify.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
 U: play joe rogan podcast
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).show() filter contains(artists, null^^org.thingpedia.media-source:artist("joe rogan")) => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id);
+UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).show() filter id =~ "joe rogan" => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id);
 ====
 # recording/a485bad6463afc7da82b38a464667972
 U: play chopin
@@ -2208,7 +2208,7 @@ UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
 # recording/814752db1994701bb5ca955c8e6c215e
 U: play tony's playlist
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-source.playlist() filter id =~ "tony 's playlist" => @org.thingpedia.media-player.play(playable=id);
+UT: @org.thingpedia.media-source.playlist() filter id =~ "tony 's" => @org.thingpedia.media-player.play(playable=id);
 ====
 # recording/9590418aeabe0ce1c680f272461a0021
 U: play the artist the cure on spotify
@@ -3160,7 +3160,7 @@ A: I played music by The Stone Roses on Spotify.
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_action_success;
 U: like song
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).song() => @com.spotify.add_item_to_library(playable=id);
+UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).get_currently_playing() => @com.spotify.add_item_to_library(playable=id);
 ====
 # recording/0bb94bf160fe9e94907ac795763becc2
 U: stop music
@@ -5468,3 +5468,88 @@ UT: monitor(@org.thingpedia.iot.switch.state());
 U: play some music.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
 UT: @org.thingpedia.media-source.playable() => @org.thingpedia.media-player.play(playable=id);
+====
+# recording/dacc7ac1da8c92ed4975bdeb265ce7be
+U: get greeting
+UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
+====
+# recording/f9e34712903dc45f48b832a1dbac815d
+U: Hi.
+UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
+====
+# log/185025
+U: byee
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# log/184964
+U: thank you go to sleep
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# log/184887
+U: weather in celcius
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.set_temperature_unit(unit=enum celsius);
+UT: @org.thingpedia.weather.current();
+====
+# log/184662
+U: can you play me a song?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.song() => @org.thingpedia.media-player.play(playable=id);
+====
+# log/184505
+U: helloi
+UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
+====
+# log/184183
+U: get weather tomorrow in celsius
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.set_temperature_unit(unit=enum celsius);
+UT: @org.thingpedia.weather.forecast();
+====
+# log/179683
+U: play black hot rolling monkey stones playlist on spotify.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playlist() filter id =~ "black hot rolling monkey stones" => @org.thingpedia.media-player.play(playable=id);
+====
+# log/62705
+U: what is the forecast for tomorrow in bradenton, fl in farenheit
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.builtin.thingengine.builtin.set_temperature_unit(unit=enum fahrenheit);
+UT: @org.thingpedia.weather.forecast(location=new Location("bradenton , fl"));
+====
+# log/7656
+U: play kajagoogoo on spotif5
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("kajagoogoo")) => @org.thingpedia.media-player.play(playable=id);
+====
+# log/79730
+U: do not tell me a joke
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# log/54885
+U: turn my light on when motion is detected
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.iot.motion.motion()) filter state == enum detecting => @org.thingpedia.iot.light-bulb.set_power(power=enum on);
+====
+# log/157691
+U: hi ho
+UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
+====
+# log/6304
+U: add this song to my playlist
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.get_currently_playing() => @com.spotify.add_song_to_playlist(song=id);
+====
+# log/133643
+U: nice to meet you
+UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
+====
+# log/96377
+U: play burlap to cashmere
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("burlap to cashmere")) => @org.thingpedia.media-player.play(playable=id);
+====
+# log/12006
+U: tweet "str:QUOTED_STRING::0:" when i get home
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@org.thingpedia.builtin.thingengine.builtin.get_gps()) filter location == $location.home => @com.twitter.post(status="str:QUOTED_STRING::0:");
