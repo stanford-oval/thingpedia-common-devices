@@ -23560,13 +23560,13 @@ UT: ontimer(date=[new Date(enum saturday)]) => @org.thingpedia.weather.forecast(
 # recording/acec922f02131cd3cd5dc5dc09a099dc
 U: Play the Bay. Curious podcast from NPR.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @org.thingpedia.media-source.show() filter id =~ "the bay . curious" => @org.thingpedia.media-player.play(playable=id);
+UT: @org.thingpedia.media-source.show() filter id =~ "bay . curious" => @org.thingpedia.media-player.play(playable=id);
 C: $dialogue @org.thingpedia.dialogue.transaction.execute;
-C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).show() filter id =~ "the bay . curious")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
+C: (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).show() filter id =~ "bay . curious")[1] => @org.thingpedia.media-player(id="com.spotify-XXXXXXXX"^^tt:device_id).play(playable=id)
 C: #[results=[]];
 A: Sorry, there are no shows at the moment matching your request. Would you like to be notified when there are new shows?
 AT: $dialogue @org.thingpedia.dialogue.transaction.sys_empty_search;
-AT: monitor(id of (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).show() filter id =~ "the bay . curious")[1])
+AT: monitor(id of (@org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).show() filter id =~ "bay . curious")[1])
 AT: #[confirm=enum proposed];
 U: Play the Bay Curious podcast.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;

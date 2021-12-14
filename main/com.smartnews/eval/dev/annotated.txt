@@ -52,7 +52,7 @@ UT: @com.smartnews.article();
 # log/122534
 U: what are the news today?
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.smartnews.article() filter date >= $start_of(day);
+UT: @com.smartnews.article();
 ====
 # log/66222
 U: current news
@@ -173,12 +173,12 @@ UT: @com.smartnews.article(keyword="coronavirus");
 # manual/5
 U: get news from yesterday
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.smartnews.article() filter date >= $start_of(day) - 1day;
+UT: @com.smartnews.article() filter date >= $start_of(day) - 1day && date <= $start_of(day);
 ====
 # manual/6
 U: get news in the last 3 hours
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.smartnews.article() filter date >= $now - 3h;
+UT: @com.smartnews.article() filter date >= $now - 3h && date <= $now;
 ====
 # manual/7
 U: get news from the guardian
@@ -263,7 +263,7 @@ UT: @com.smartnews.article();
 # manual/4
 U: A roundup of the latest news
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.smartnews.article();
+UT: sort(date desc of @com.smartnews.article())[1];
 ====
 # manual/5
 U: news on anti-corruption
@@ -313,7 +313,7 @@ UT: (@com.smartnews.article() filter date == new Date("2021-10-10T07:00:00.000Z"
 # manual/14
 U: 3 most recent news on weather
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: sort(date desc of @com.smartnews.article(keyword="weather"))[1];
+UT: sort(date desc of @com.smartnews.article(keyword="weather"))[1:3];
 ====
 # manual/15
 U: tell me news about celebrity
@@ -423,7 +423,7 @@ UT: @com.smartnews.article() filter contains(category, "education"^^com.smartnew
 # manual/36
 U: latest news on cars
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.smartnews.article(keyword="cars")[1];
+UT: sort(date desc of @com.smartnews.article(keyword="cars"))[1];
 ====
 # manual/37
 U: news on horseracing
@@ -438,7 +438,7 @@ UT: @com.smartnews.article(keyword="football");
 # manual/39
 U: latest news on etfs
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.smartnews.article(keyword="etfs");
+UT: sort(date desc of @com.smartnews.article(keyword="etfs"))[1];
 ====
 # manual/40
 U: finance news from bloomberg
@@ -448,7 +448,7 @@ UT: @com.smartnews.article() filter contains(category, "finance"^^com.smartnews:
 # manual/41
 U: latest breaking news on election
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: (@com.smartnews.article() filter contains(category, "election"^^com.smartnews:category("election")))[1];
+UT: sort(date desc of @com.smartnews.article() filter contains(category, "election"^^com.smartnews:category("election")))[1];
 ====
 # manual/42
 U: latest news on the facebook outage from reuters
@@ -463,7 +463,7 @@ UT: sort(date desc of @com.smartnews.article(keyword="google announcement"))[1];
 # manual/44
 U: show me yesterday's news
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.smartnews.article() filter date <= $now - 1day;
+UT: @com.smartnews.article() filter date <= $start_of(day) && date >= $start_of(day) - 1day;
 ====
 # manual/45
 U: latest news on iphone
@@ -628,7 +628,6 @@ UT: @com.smartnews.article();
 # recording/0aae7d0f67c1385c73e3f6a47dd7cf0d
 U: play the news from KQED.
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.smartnews.article();
 UT: @com.smartnews.article() filter source =~ "kqed";
 ====
 # recording/b4dc8bd20d08338cc0f3aaff9d46ef96
@@ -728,7 +727,7 @@ UT: @com.smartnews.article();
 # log/185170
 U: read the latest news
 UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
-UT: @com.smartnews.article();
+UT: sort(date desc of @com.smartnews.article())[1];
 ====
 # log/185151
 U: breaking news
