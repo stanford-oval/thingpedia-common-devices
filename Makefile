@@ -354,12 +354,13 @@ datadir/user: eval/$(release)/synthetic.user.tsv eval/$(release)/augmented.user.
 	cp eval/$(release)/dev/user.tsv $@/eval.tsv ; \
 	touch $@
 
-datadir/fewshot: eval/$(release)/train/user.tsv eval/$(release)/dev/user.tsv eval/$(release)/train/agent.tsv eval/$(release)/dev/agent.tsv
+datadir/fewshot: eval/$(release)/train/user.tsv eval/$(release)/dev/user.tsv eval/$(release)/train/agent.tsv eval/$(release)/dev/agent.tsv oracle-type-mapping.json bootleg-type-mapping.json
 	mkdir -p $@/user $@/agent
 	cp eval/$(release)/train/user.tsv $@/user/train.tsv
 	cp eval/$(release)/dev/user.tsv $@/user/eval.tsv
 	cp eval/$(release)/train/agent.tsv $@/agent/train.tsv
 	cp eval/$(release)/dev/agent.tsv $@/agent/eval.tsv
+	cp oracle-type-mapping.json bootleg-type-mapping.json $@
 	touch $@
 
 datadir/ood: datadir/user
@@ -372,8 +373,9 @@ datadir/ood: datadir/user
         fi
 	touch $@
 
-datadir: datadir/agent datadir/nlg datadir/user datadir/fewshot datadir/ood $(all_synthetic_files)
+datadir: datadir/agent datadir/nlg datadir/user datadir/fewshot datadir/ood $(all_synthetic_files) oracle-type-mapping.json bootleg-type-mapping.json
 	cat eval/$(release)/synthetic-*.txt > $@/synthetic.txt
+	cp oracle-type-mapping.json bootleg-type-mapping.json $@
 	$(genie) measure-training-set $@ > $@/stats
 	touch $@
 
