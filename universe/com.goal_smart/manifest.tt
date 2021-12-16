@@ -27,9 +27,9 @@
 // STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 // OF THE POSSIBILITY OF SUCH DAMAGE.
- 
- 
- 
+
+
+
 class @com.goal_smart
   #_[thingpedia_name="GoalSmart"]
   #_[thingpedia_description="Keep up with the latest in soccer."]
@@ -37,17 +37,17 @@ class @com.goal_smart
   #[license="MIT"]
   #[license_gplcompatible=true]
   #[subcategory="media"]
- 
+
 {
   import loader from @org.thingpedia.v2();
   import config from @org.thingpedia.config.none(api_key=$?);
- 
+
   entity soccer_team #_[description="Soccer Teams in the World"];
   entity soccer_league #_[description="Soccer Leagues in the World"];
   entity soccer_player #_[description="Soccer Players in the World"];
   entity soccer_coach #_[description="Soccer Coaches in the World"];
 
- 
+
   monitorable list query standings(in req league_id: Entity(com.goal_smart:soccer_league) #_[prompt="what league standings do you want out check out"],
                         out team : Entity(com.goal_smart:soccer_team)
                         #_[canonical={
@@ -62,7 +62,8 @@ class @com.goal_smart
                         out form: Array(String)
                         #_[canonical = {
                           base = ["form", "momentum"]
-                        }],
+                        }]
+                        #[filterable=false],
                         out points: Number
                         #_[canonical = {
                           base = ["results", "points"],
@@ -100,7 +101,8 @@ class @com.goal_smart
                                   out score: String
                                   #_[canonical = {
                                     base = ["score", "result", "outcome"]
-                                  }],
+                                  }]
+                                  #[filterable=false],
                                   out result: Enum(tied, won, lost, play)
                                   #_[canonical = {
                                     base = ["result", "final", "outcome"]
@@ -112,7 +114,8 @@ class @com.goal_smart
                                   out venue: String
                                   #_[canonical = {
                                     base = ["location", "place", "venue"]
-                                  }])
+                                  }]
+                                  #[string_values="tt:soccer_stadium"])
   #_[canonical=["soccer fixture", "soccer match", "soccer game", "upcoming soccer game"]]
   #_[canonical_short=["fixture", "match", "game"]]
   #_[result=["${our_team} ${result} against ${opposition_team} on ${date} at ${venue} for the ${league}. The score ${score}"]]
@@ -236,7 +239,9 @@ class @com.goal_smart
   #[doc="Get the lineup of the team"];
 
   monitorable list query teamCoach(in req team_id: Entity(com.goal_smart:soccer_team) #_[prompt="what coach do you want out check out "],
-                        out coach : Entity(com.goal_smart:soccer_coach))
+                                   out coach : Entity(com.goal_smart:soccer_coach)
+                                   // FIXME
+                                   #[string_values="tt:person_full_name"])
   #_[canonical=["team coach", "team manager"]]
   #_[confirmation="coach has been found"]
   #_[result=["${coach}"]]
@@ -247,15 +252,18 @@ class @com.goal_smart
                         out trophy : String
                         #_[canonical = {
                           base = ["trophy", "accolades", "wins", "championships"]
-                        }],
+                        }]
+                        #[filterable=false],
                         out rank : String
                         #_[canonical = {
                           base = ["rank", "place", "order"]
-                        }],
+                        }]
+                        #[filterable=false],
                         out season : String
                         #_[canonical = {
                           base = ["season", "year"]
-                        }])
+                        }]
+                        #[filterable=false])
   #_[canonical=["player accolades", "player trophies"]]
   #_[confirmation="trophies of $player_id"]
   #_[result=["${player_id} was the ${rank} in the ${trophy} in ${season}"]]
@@ -275,19 +283,17 @@ class @com.goal_smart
                         #_[canonical = {
                           base = ["league", "division"]
                         }],
-                        out chance_of_winning: String, 
-                        out history_head_to_head: String,
-                        out previous_meeting_score: String, 
-                        out prediction_score: String)
+                        out chance_of_winning: String
+                        #[filterable=false],
+                        out history_head_to_head: String
+                        #[filterable=false],
+                        out previous_meeting_score: String
+                        #[filterable=false],
+                        out prediction_score: String
+                        #[filterable=false])
   #_[canonical=["team predictions", "team odds"]]
   #_[confirmation="predictions of $team_id"]
   #_[result=["${our_team} has a ${chance_of_winning} of winning against ${opposition_team} in the ${league}. The predicted score is ${prediction_score}. The last time they played, the score was ${previous_meeting_score}, and historically, ${our_team} has won the matchup ${history_head_to_head} of the time."]]
   #[poll_interval=3600000ms]
   #[doc="Get the predictions of the team"];
-
-  
- 
 }
- 
- 
-
