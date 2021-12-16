@@ -110,6 +110,8 @@ genie_k8s_owner ?=
 s3_metrics_output ?=
 metrics_output ?=
 s3_model_dir ?=
+parameter_dataset_s3_path ?= /gcampax/parameter-datasets-en-US-20211216.tar.xz
+parameter_dataset_url = https://almond-static.stanford.edu/test-data/parameter-datasets-en-US-20211206.tar.xz
 
 .PRECIOUS: %/node_modules
 .PHONY: all clean lint upgrade-deps
@@ -187,10 +189,15 @@ eval/$(release)/database-map.tsv: $(wildcard $(addsuffix /database-map.tsv,$($(r
 entities.json:
 	$(genie) download-entities --thingpedia-url $(thingpedia_url) --developer-key $(developer_key) -o $@
 
-parameter_dataset_url = https://almond-static.stanford.edu/test-data/parameter-datasets-en-US-20211206.tar.xz
 parameter-datasets.tsv:
-	curl $(parameter_dataset_url) -o parameter-datasets.tar.xz
-	tar xf parameter-datasets.tar.xz
+	if ! test -z $(s3_bucket) ; then \
+		aws s3 cp s3://$(s3_bucket)$(parameter_dataset_s3_path) . ; \
+		tar xf $(notdir $(parameter_dataset_s3_path)) ; \
+	else \
+		curl $(parameter_dataset_url) -o parameter-datasets.tar.xz ; \
+		tar xf parameter-datasets.tar.xz ; \
+	fi
+
 
 .embeddings/paraphraser-bart:
 	mkdir -p .embeddings
