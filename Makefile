@@ -367,7 +367,8 @@ datadir/fewshot: eval/$(release)/train/user.tsv eval/$(release)/dev/user.tsv eva
 	cp eval/$(release)/dev/user.tsv $@/user/eval.tsv
 	cp eval/$(release)/train/agent.tsv $@/agent/train.tsv
 	cp eval/$(release)/dev/agent.tsv $@/agent/eval.tsv
-	cp oracle-type-mapping.json bootleg-type-mapping.json $@
+	cp oracle-type-mapping.json $@/
+	cp bootleg-type-mapping.json $@/type-mapping.json
 	touch $@
 
 datadir/ood: datadir/user
@@ -382,7 +383,8 @@ datadir/ood: datadir/user
 
 datadir: datadir/agent datadir/nlg datadir/user datadir/fewshot datadir/ood $(all_synthetic_files) oracle-type-mapping.json bootleg-type-mapping.json
 	cat eval/$(release)/synthetic-*.txt > $@/synthetic.txt
-	cp oracle-type-mapping.json bootleg-type-mapping.json $@
+	cp oracle-type-mapping.json $@/
+	cp bootleg-type-mapping.json $@/type-mapping.json
 	$(genie) measure-training-set $@ > $@/stats
 	touch $@
 
