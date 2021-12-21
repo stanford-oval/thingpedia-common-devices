@@ -110,9 +110,9 @@ export default class SpotifyDevice extends BaseDevice {
         this.log = LOG.childFor(SpotifyDevice, { "state.id": state.id });
         this.log.debug("Constructing...");
 
-        if (hasRedis()) 
+        if (hasRedis())
             this._redis = Redis.createClient({ url: getRedisURL() });
-        
+
 
         this._client = new Client({
             useOAuth2: this,
@@ -265,26 +265,32 @@ export default class SpotifyDevice extends BaseDevice {
 
         if (this.engine.audio) {
             log.debug("Engine has audio controller, requesting audio...");
-            await this.engine.audio.requestAudio(this, {
-                resume: async () => {
-                    log.debug("Audio controller -- resuming audio");
-                    try {
-                        await this._client.player.play({ device_id });
-                    } catch(error : any) {
-                        log.error("Failed to resume audio --", error);
-                    }
-                },
+            try {
+                await this.engine.audio.requestAudio(this, {
+                    resume: async () => {
+                        log.debug("Audio controller -- resuming audio");
+                        try {
+                            await this._client.player.play({ device_id });
+                        } catch(error : any) {
+                            log.error("Failed to resume audio --", error);
+                        }
+                    },
 
-                stop: async () => {
-                    log.debug("Audio controller -- stopping audio");
-                    try {
-                        await this._client.player.pause({ device_id });
-                    } catch(error : any) {
-                        console.error("Failed to stop audio --", error);
-                    }
-                },
-            });
-            log.debug("Audio control received.");
+                    stop: async () => {
+                        log.debug("Audio controller -- stopping audio");
+                        try {
+                            await this._client.player.pause({ device_id });
+                        } catch(error : any) {
+                            console.error("Failed to stop audio --", error);
+                        }
+                    },
+                });
+                log.debug("Audio control received.");
+            } catch(e : any) {
+                if (e.code !== 'unsupported')
+                    throw e;
+                log.warn("No audio control available, playing on Spotify directly");
+            }
         }
 
         log.debug("Playing...");
@@ -524,9 +530,9 @@ export default class SpotifyDevice extends BaseDevice {
     ) : Promise<ThingTrack | ThingEpisode> {
         const response = await this._client.player.getCurrentlyPlaying();
 
-        if (response === undefined) 
+        if (response === undefined)
             throw new ThingError("No song playing", "no_song_playing");
-        
+
         return response.toThing(this._displayFormatter);
     }
 
