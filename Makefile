@@ -98,7 +98,7 @@ eslint ?= node_modules/.bin/eslint
 
 geniedir ?= node_modules/genie-toolkit
 memsize ?= 8500
-parallel ?= 7
+parallel = 1
 genie ?= node --experimental_worker --max_old_space_size=$(memsize) $(geniedir)/dist/tool/genie.js
 
 thingpedia_url ?= https://dev.almond.stanford.edu/thingpedia
@@ -110,6 +110,8 @@ genie_k8s_owner ?=
 s3_metrics_output ?=
 metrics_output ?=
 s3_model_dir ?=
+parameter_dataset_s3_path ?= /gcampax/parameter-datasets-en-US-20211216.tar.xz
+parameter_dataset_url = https://almond-static.stanford.edu/test-data/parameter-datasets-en-US-20211206.tar.xz
 
 .PRECIOUS: %/node_modules
 .PHONY: all clean lint upgrade-deps
@@ -187,10 +189,15 @@ eval/$(release)/database-map.tsv: $(wildcard $(addsuffix /database-map.tsv,$($(r
 entities.json:
 	$(genie) download-entities --thingpedia-url $(thingpedia_url) --developer-key $(developer_key) -o $@
 
-parameter_dataset_url = https://almond-static.stanford.edu/test-data/parameter-datasets-en-US-20211206.tar.xz
 parameter-datasets.tsv:
-	curl $(parameter_dataset_url) -o parameter-datasets.tar.xz
-	tar xf parameter-datasets.tar.xz
+	if ! test -z $(s3_bucket) ; then \
+		aws s3 cp s3://$(s3_bucket)$(parameter_dataset_s3_path) . ; \
+		tar xf $(notdir $(parameter_dataset_s3_path)) ; \
+	else \
+		curl $(parameter_dataset_url) -o parameter-datasets.tar.xz ; \
+		tar xf parameter-datasets.tar.xz ; \
+	fi
+
 
 .embeddings/paraphraser-bart:
 	mkdir -p .embeddings
@@ -354,12 +361,14 @@ datadir/user: eval/$(release)/synthetic.user.tsv eval/$(release)/augmented.user.
 	cp eval/$(release)/dev/user.tsv $@/eval.tsv ; \
 	touch $@
 
-datadir/fewshot: eval/$(release)/train/user.tsv eval/$(release)/dev/user.tsv eval/$(release)/train/agent.tsv eval/$(release)/dev/agent.tsv
+datadir/fewshot: eval/$(release)/train/user.tsv eval/$(release)/dev/user.tsv eval/$(release)/train/agent.tsv eval/$(release)/dev/agent.tsv oracle-type-mapping.json bootleg-type-mapping.json
 	mkdir -p $@/user $@/agent
 	cp eval/$(release)/train/user.tsv $@/user/train.tsv
 	cp eval/$(release)/dev/user.tsv $@/user/eval.tsv
 	cp eval/$(release)/train/agent.tsv $@/agent/train.tsv
 	cp eval/$(release)/dev/agent.tsv $@/agent/eval.tsv
+	cp oracle-type-mapping.json $@/
+	cp bootleg-type-mapping.json $@/type-mapping.json
 	touch $@
 
 datadir/ood: datadir/user
@@ -372,8 +381,10 @@ datadir/ood: datadir/user
         fi
 	touch $@
 
-datadir: datadir/agent datadir/nlg datadir/user datadir/fewshot datadir/ood $(all_synthetic_files)
+datadir: datadir/agent datadir/nlg datadir/user datadir/fewshot datadir/ood $(all_synthetic_files) oracle-type-mapping.json bootleg-type-mapping.json
 	cat eval/$(release)/synthetic-*.txt > $@/synthetic.txt
+	cp oracle-type-mapping.json $@/
+	cp bootleg-type-mapping.json $@/type-mapping.json
 	$(genie) measure-training-set $@ > $@/stats
 	touch $@
 
