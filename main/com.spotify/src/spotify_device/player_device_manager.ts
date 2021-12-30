@@ -21,6 +21,7 @@ export default class PlayerDeviceManager {
 
     protected readonly _client : Client;
     protected _currentDevice : MaybeDevice;
+    protected _currentDeviceAge : number;
     protected _devicePromise ?: Promise<MaybeDevice>;
     protected readonly _engine : SpotifyDeviceEngine;
     protected _failedToLaunchDesktopApp  = false;
@@ -28,7 +29,6 @@ export default class PlayerDeviceManager {
     protected readonly _platform : BasePlatform;
     protected readonly _username : string;
     protected _refresher ?: NodeJS.Timeout;
-    protected readonly _refreshInterval : number;
 
     public accessToken ?: string;
 
@@ -37,14 +37,12 @@ export default class PlayerDeviceManager {
         client,
         engine,
         platform,
-        refreshInterval = DEFAULT_REFRESH_INTERVAL_MS,
         username,
     } : {
         accessToken ?: string;
         client : Client;
         engine : SpotifyDeviceEngine;
         platform : BasePlatform;
-        refreshInterval ?: number;
         username : string;
     }) {
         this.accessToken = accessToken;
@@ -58,41 +56,34 @@ export default class PlayerDeviceManager {
 
         this._hasAppLauncher = platform.hasCapability("app-launcher");
 
-        this._refreshInterval = refreshInterval;
+        this._currentDevice = undefined;
+        this._currentDeviceAge = 0;
     }
 
     public async start() {
         await this._refresh();
-        this._refresher = setInterval(
-            this._refresh.bind(this),
-            this._refreshInterval
-        );
     }
 
     public stop() {
-        if (this._refresher)
-            clearInterval(this._refresher);
-
     }
 
     public async get(env ?: ExecWrapper) : Promise<DeviceObject> {
+        const now = Date.now();
+
         let device = this._currentDevice;
 
-        if (device !== undefined)
+        if (device !== undefined && (now - this._currentDeviceAge) <= DEFAULT_REFRESH_INTERVAL_MS)
             return device;
-
 
         device = await this._refresh();
 
         if (device !== undefined)
             return device;
 
-
         device = await this._launch(env);
 
         if (device !== undefined)
             return device;
-
 
         throw new ThingError("No player devices", "no_active_device");
     }
@@ -167,6 +158,7 @@ export default class PlayerDeviceManager {
             const meta = error instanceof Error ? error : { error };
             log.error("Failed to get devices from Client", meta);
             this._currentDevice = undefined;
+            this._currentDeviceAge = 0;
             return undefined;
         }
 
@@ -174,6 +166,7 @@ export default class PlayerDeviceManager {
 
         log.debug("Setting current device", { device });
         this._currentDevice = device;
+        this._currentDeviceAge = Date.now();
 
         return device;
     }
