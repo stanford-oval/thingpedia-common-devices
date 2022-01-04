@@ -718,8 +718,9 @@ async function main() {
 
     const tpClient = new Tp.HttpClient(platform, 'https://dev.almond.stanford.edu/thingpedia');
 
+    // set contextual: true for log-dev.tsv and contextual: false for log.tsv
     const lines = await readAllLines(args.input)
-        .pipe(new Genie.DatasetParser({ contextual: false }))
+        .pipe(new Genie.DatasetParser({ contextual: true }))
         .pipe(new StreamUtils.ArrayAccumulator())
         .read();
 
