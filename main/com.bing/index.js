@@ -159,7 +159,7 @@ class BingDialogueHandler {
             // thingtalk interpret it
             if (confident !== Tp.DialogueHandler.Confidence.EXACT_IN_DOMAIN_COMMAND &&
                 !/^\s*[0-9.-]+\s+[a-z]+\.?\s*$/i.test(utterance))
-                confident = Tp.DialogueHandler.Confidence.STRONLY_CONFIDENT_IN_DOMAIN_COMMAND; // FIXME
+                confident = Tp.DialogueHandler.Confidence.STRONGLY_CONFIDENT_IN_DOMAIN_COMMAND;
             return {
                 confident,
                 utterance,
