@@ -47,7 +47,7 @@ process_data: eval/$(experiment)/$(source)/input-nmt
 ##### translate dialogs using open-source NMT models ###############################################################
 ####################################################################################################################
 
-model_name_or_path=Helsinki-NLP/opus-mt-$(src_lang)-$(tgt_lang)
+model_name_or_path = Helsinki-NLP/opus-mt-$(src_lang)-$(tgt_lang)
 # model_name_or_path=facebook/mbart-large-50-many-to-many-mmt
 # model_name_or_path=facebook/m2m100_418M
 # model_name_or_path=facebook/m2m100_1.2B
@@ -61,6 +61,7 @@ val_batch_size = 2000
 temperature = 0.2
 
 nmt_model = marian
+skip_translation = false
 
 translate_fixed_default_args = --eval_set_name eval --override_question= --train_tasks almond_translate --train_languages $(src_lang) --train_tgt_languages $(tgt_lang) --eval_languages $(src_lang) --eval_tgt_languages $(tgt_lang) --model TransformerSeq2Seq --save $(GENIENLP_EMBEDDINGS)/$(model_name_or_path)/ --embeddings $(GENIENLP_EMBEDDINGS) --exist_ok --skip_cache --no_commit --preserve_case
 translate_pred_default_args = --translate_example_split --translate_no_answer --tasks almond_translate --evaluate valid --pred_languages $(src_lang) --pred_tgt_languages $(tgt_lang) --path $(GENIENLP_EMBEDDINGS)/$(model_name_or_path)/ --embeddings $(GENIENLP_EMBEDDINGS) --overwrite --silent
@@ -72,26 +73,58 @@ SENTENCE_TRANSFORMERS_HOME ?= $(genienlpdir)/.embeddings
 GENIENLP_DATABASE_DIR ?=
 genienlp ?= GENIENLP_EMBEDDINGS=$(GENIENLP_EMBEDDINGS) ; SENTENCE_TRANSFORMERS_HOME=$(SENTENCE_TRANSFORMERS_HOME) ; genienlp
 
-eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/translated-qpis: eval/$(experiment)/$(source)/input-nmt/
-	mkdir -p $@
 
+do_translate:
 	rm -rf tmp/
 	mkdir -p tmp/almond/
-	ln -f $</*.tsv tmp/almond/
-	for f in $(all_names) ; do \
+	ln -f $(input_folder)/*.tsv tmp/almond/
+	if ! $(skip_translation) ; then \
 		if [ ! -f $(GENIENLP_EMBEDDINGS)/$(model_name_or_path)/best.pth ] ; then \
-			$(genienlp) train --do_alignment --train_iterations 0 --pretrained_model $(model_name_or_path) $(translate_fixed_default_args) ; \
+			$(genienlp) train --train_iterations 0 --pretrained_model $(model_name_or_path) $(train_default_args) ; \
 		fi ; \
-		$(genienlp) predict --pred_set_name $$f --do_alignment --data tmp/ $(if $(return_raw_outputs), --translate_return_raw_outputs, ) --eval_dir $@/ $(translate_pred_default_args) $(custom_translation_hparams) || exit 1 ; \
-		mv $@/valid/almond_translate.tsv $@/$$f.tsv ; \
-		if [ -e "$@/valid/almond_translate.raw.tsv" ] ; then mv $@/valid/almond_translate.raw.tsv $@/$$f.raw.tsv ; fi ; \
-		rm -rf $@/valid ; \
-	done ; \
+		for f in $(all_names) ; do \
+			$(genienlp) predict --pred_set_name $$f --data tmp/ --do_alignment $(if $(return_raw_outputs), --translate_return_raw_outputs, ) --eval_dir $(output_folder)/ $(translate_pred_default_args) $(custom_translation_hparams) || exit 1 ; \
+			mv $(output_folder)/valid/almond_translate.tsv $(output_folder)/$$f.tsv ; \
+			if [ -e "$(output_folder)/valid/almond_translate.raw.tsv" ] ; then mv $(output_folder)/valid/almond_translate.raw.tsv $(output_folder)/$$f.raw.tsv ; fi ; \
+			rm -rf $(output_folder)/valid ; \
+		done ; \
+	fi
 	rm -rf tmp/
+
+
+eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/translated-qpis: eval/$(experiment)/$(source)/input-nmt/
+	mkdir -p $@
+	make input_folder="$<" output_folder="$@" do_translate
 
 translate_data: eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/translated-qpis
 	# done!
 	echo $@
+
+
+translate_params: parameter-datasets.tsv
+#	rm -rf tmp-param/$(src_lang)
+#	mkdir -p tmp-param/$(src_lang)
+#	for file in parameter-datasets/$(src_lang)/* ; do \
+#		python3 ./scripts/process_param_set.py --task prepare_input --input_file parameter-datasets/$(src_lang)/$${file##*/} --output_file tmp-param/$(src_lang)/$${file##*/} ; \
+#	done
+
+
+	for file in tmp-param/$(src_lang)/* ; do \
+		echo $${file##*/} >> tmp-param/all-names.tsv ; \
+		wc -l < $$file | sed 's/ //g' >> tmp-param/all-numbers.tsv ; \
+		cat $$file >> tmp-param/all.tsv ; \
+	done
+
+	make all_names="all" input_folder="tmp-param/$(src_lang)/" output_folder="tmp-param/$(tgt_lang)/" do_translate
+
+#	rm -rf tmp-param/$(src_lang)
+
+
+shame:
+	file=parameter-datasets/en/dasda/com.wyt-yelp:restaurant.json ; \
+	echo $${file##*/} ; \
+	echo $(patsubst %.json,%.tsv,$${file##*/}) ; \
+	echo $(addsuffix .tsv,$(basename $${file##*/})) ; \
 
 ####################################################################################################################
 ##### Postprocess Translated dataset                 ###############################################################
@@ -132,11 +165,16 @@ eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/quoted: eval/$(experiment)
 	done
 
 # expand parameter-datasets.tsv to include locale for target language
+#update_param_set: parameter-datasets.tsv
+#	cat $< > $<.tmp
+#	cat $< | sort | uniq | $(if $(shell command -v gsed), gsed, sed) -r "s|^(\w*)\ten-US|\1\t$(tgt_lang)|g" >> $<.tmp ; \
+#	cat $<.tmp | sort | uniq > $<
+#	rm -rf $<.tmp
+
 update_param_set: parameter-datasets.tsv
-	cat $< > $<.tmp
-	cat $< | sort | uniq | $(if $(shell command -v gsed), gsed, sed) -r "s|^(\w*)\ten-US|\1\t$(tgt_lang)|g" >> $<.tmp ; \
-	cat $<.tmp | sort | uniq > $<
-	rm -rf $<.tmp
+	cat $< | sort | uniq > $<.tmp
+	cat $< | sort | uniq | $(if $(shell command -v gsed), gsed, sed) -r "s|\tparameter-datasets/|\tparameter-datasets/$(tgt_lang)/|g" | $(if $(shell command -v gsed), gsed, sed) -r "s|^(\w*)\ten-US|\1\t$(tgt_lang)|g" >> $<.tmp ; \
+	mv $<.tmp $<
 
 eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/augmented: eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/quoted update_param_set $(schema_file)
 	mkdir -p $@
