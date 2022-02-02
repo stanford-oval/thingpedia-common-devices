@@ -116,7 +116,7 @@ param_files ?= \
 	com.yelp:restaurant_names.tsv \
 	com.yelp:restaurants.tsv \
 	org.openstreetmap:restaurant.tsv \
-	tt:location.tsv
+	tt:location.tsv \
 	tt:short_free_text.tsv
 
 
