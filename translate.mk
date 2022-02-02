@@ -102,28 +102,28 @@ translate_data: eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/translated
 	echo $@
 
 
+####################################################################################################################
+##### translate parameter-datasets using open-source NMT models ####################################################
+####################################################################################################################
+
+
 all_param_files = $(foreach f, $(wildcard parameter-datasets/$(src_lang)/*), $(notdir $f))
-param_files = com.yelp:restaurant.json com.yelp:restaurant_category.tsv com.yelp:restaurant_cuisine.json com.yelp:restaurant_names.tsv com.yelp:restaurants.tsv
-max_lines = 300
+max_param_lines = 5
+param_files ?= \
+	com.yelp:restaurant.json \
+	com.yelp:restaurant_category.tsv \
+	com.yelp:restaurant_cuisine.json \
+	com.yelp:restaurant_names.tsv \
+	com.yelp:restaurants.tsv \
+	org.openstreetmap:restaurant.tsv \
+	tt:location.tsv
+	tt:short_free_text.tsv
 
-shame:
-	for param in $(param_files) ; do \
-  		echo $${param%.*} ; \
-  		echo $${param%.*}.tsv ; \
-  	done
 
-translate_params: parameter-datasets.tsv
-	rm -rf tmp-param/
-	mkdir -p tmp-param/$(src_lang)
-	mkdir -p tmp-param/$(tgt_lang)
-	mkdir -p tmp-param/merged/src
-	mkdir -p tmp-param/merged/tgt
-#	for file in parameter-datasets/$(src_lang)/* ; do \
-#		 python3 ./scripts/process_param_set.py --task prepare_input --input_file parameter-datasets/$(src_lang)/$${file##*/} --output_file tmp-param/$(src_lang)/$${file##*/} ; \
-#		# make all_names="$${file##*/}" do_alignment= input_folder="tmp-param/$(src_lang)" output_folder="tmp-param/$(tgt_lang)" do_translate ; \
-#	done
-#
-
+parameter-datasets/$(tgt_lang): parameter-datasets.tsv
+	rm -rf tmp-param/$(src_lang)
+	mkdir -p tmp-param/$(src_lang) tmp-param/$(tgt_lang) tmp-param/merged/src tmp-param/merged/tgt
+	mkdir -p parameter-datasets/$(tgt_lang)
 
 	for param in $(param_files) ; do \
   		python3 ./scripts/process_param_set.py --task prepare_input --input_file parameter-datasets/$(src_lang)/$$param --output_file tmp-param/$(src_lang)/$${param%.*}.tsv ; \
@@ -131,9 +131,9 @@ translate_params: parameter-datasets.tsv
 
 	# merge files
 	for param in $(param_files) ; do \
-		echo $$param >> tmp-param/merged/src/all-names.tsv ; \
-		head -n $(max_lines) tmp-param/$(src_lang)/$${param%.*}.tsv | wc -l | sed 's/ //g' >> tmp-param/merged/src/all-numbers.tsv  ; \
-		head -n $(max_lines) tmp-param/$(src_lang)/$${param%.*}.tsv >> tmp-param/merged/src/all.tsv  ; \
+		echo $${param%.*}.tsv >> tmp-param/merged/src/all-names.tsv ; \
+		head -n $(max_param_lines) tmp-param/$(src_lang)/$${param%.*}.tsv | wc -l | sed 's/ //g' >> tmp-param/merged/src/all-numbers.tsv  ; \
+		head -n $(max_param_lines) tmp-param/$(src_lang)/$${param%.*}.tsv >> tmp-param/merged/src/all.tsv  ; \
 	done
 
 	make all_names="all" do_alignment= return_raw_outputs= input_folder="tmp-param/merged/src" output_folder="tmp-param/merged/tgt" do_translate
@@ -142,11 +142,23 @@ translate_params: parameter-datasets.tsv
 	python3 ./scripts/split_translations.py --input_file tmp-param/merged/tgt/all.tsv --input_names tmp-param/merged/src/all-names.tsv --input_numbers tmp-param/merged/src/all-numbers.tsv --output_folder tmp-param/$(tgt_lang)
 
 	# construct new param files
-#	for file in parameter-datasets/$(src_lang)/* ; do \
-#		python3 ./scripts/process_param_set.py --task postprocess_output --input_file parameter-datasets/$(src_lang)/$${file##*/} --output_file tmp-param/$(src_lang)/$${file##*/} ; \
-#	done
+	for param in $(param_files) ; do \
+		python3 ./scripts/process_param_set.py --task postprocess_output --input_file parameter-datasets/$(src_lang)/$$param --translated_file tmp-param/$(tgt_lang)/$${param%.*}.tsv --output_file parameter-datasets/$(tgt_lang)/$$param ; \
+	done
 
-#	rm -rf tmp-param/$(src_lang)
+	# update parameter-datasets.tsv
+	cat $< > $<.tmp
+	cat $< | \
+	$(if $(shell command -v gsed), gsed, sed) -r "s@\ten-US\t(.*?)\tparameter-datasets/$(src_lang)/@\t$(tgt_lang)\t\1\tparameter-datasets/$(tgt_lang)/@g" >> $<.tmp ; \
+	cat $<.tmp | sort -k2 | uniq > $<
+	rm -rf $<.tmp
+
+	#rm -rf tmp-param/
+
+translate_params: parameter-datasets/$(tgt_lang)
+	# done!
+	echo $@
+
 
 ####################################################################################################################
 ##### Postprocess Translated dataset                 ###############################################################
@@ -186,23 +198,12 @@ eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/quoted: eval/$(experiment)
 		$(genie) requote --mode replace --contextual $(if $(requote_skip_errors),--skip-errors --output-errors $@/$$f.tsv,) -o $@/$$f.tsv $</$$f.tsv  ; \
 	done
 
-# expand parameter-datasets.tsv to include locale for target language
-#update_param_set: parameter-datasets.tsv
-#	cat $< > $<.tmp
-#	cat $< | sort | uniq | $(if $(shell command -v gsed), gsed, sed) -r "s|^(\w*)\ten-US|\1\t$(tgt_lang)|g" >> $<.tmp ; \
-#	cat $<.tmp | sort | uniq > $<
-#	rm -rf $<.tmp
 
-update_param_set: parameter-datasets.tsv
-	cat $< | sort | uniq > $<.tmp
-	cat $< | sort | uniq | $(if $(shell command -v gsed), gsed, sed) -r "s|\tparameter-datasets/|\tparameter-datasets/$(tgt_lang)/|g" | $(if $(shell command -v gsed), gsed, sed) -r "s|^(\w*)\ten-US|\1\t$(tgt_lang)|g" >> $<.tmp ; \
-	mv $<.tmp $<
-
-eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/augmented: eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/quoted update_param_set $(schema_file)
+eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/augmented: eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/quoted $(schema_file) translate_params
 	mkdir -p $@
 	# augment dataset in target language
 	for f in $(all_names) ; do \
-		$(genie) augment -o $@/$$f.tsv $(if $(augment_override_flags) --override-flags $(augment_override_flags),) --param-locale $(tgt_lang) -l en-US \
+		$(genie) augment -o $@/$$f.tsv $(if $(augment_override_flags), --override-flags $(augment_override_flags),) --param-locale $(tgt_lang) -l en-US \
 		 		--thingpedia $(schema_file) --parameter-datasets parameter-datasets.tsv $(augment_default_args) $</$$f.tsv ; \
 	done
 
