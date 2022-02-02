@@ -56,6 +56,7 @@ src_lang =
 tgt_lang =
 
 return_raw_outputs = true
+do_alignment = true
 
 val_batch_size = 2000
 temperature = 0.2
@@ -63,8 +64,8 @@ temperature = 0.2
 nmt_model = marian
 skip_translation = false
 
-translate_fixed_default_args = --eval_set_name eval --override_question= --train_tasks almond_translate --train_languages $(src_lang) --train_tgt_languages $(tgt_lang) --eval_languages $(src_lang) --eval_tgt_languages $(tgt_lang) --model TransformerSeq2Seq --save $(GENIENLP_EMBEDDINGS)/$(model_name_or_path)/ --embeddings $(GENIENLP_EMBEDDINGS) --exist_ok --skip_cache --no_commit --preserve_case
-translate_pred_default_args = --translate_example_split --translate_no_answer --tasks almond_translate --evaluate valid --pred_languages $(src_lang) --pred_tgt_languages $(tgt_lang) --path $(GENIENLP_EMBEDDINGS)/$(model_name_or_path)/ --embeddings $(GENIENLP_EMBEDDINGS) --overwrite --silent
+translate_fixed_default_args = --eval_set_name eval --min_output_length 2 --override_question= --train_tasks almond_translate --train_languages $(src_lang) --train_tgt_languages $(tgt_lang) --eval_languages $(src_lang) --eval_tgt_languages $(tgt_lang) --model TransformerSeq2Seq --save $(GENIENLP_EMBEDDINGS)/$(model_name_or_path)/ --embeddings $(GENIENLP_EMBEDDINGS) --exist_ok --skip_cache --no_commit --preserve_case
+translate_pred_default_args = $(if $(return_raw_outputs), --translate_return_raw_outputs,) --translate_example_split --translate_no_answer --tasks almond_translate --evaluate valid --pred_languages $(src_lang) --pred_tgt_languages $(tgt_lang) --path $(GENIENLP_EMBEDDINGS)/$(model_name_or_path)/ --embeddings $(GENIENLP_EMBEDDINGS) --overwrite --silent
 custom_translation_hparams = --val_batch_size $(val_batch_size) --temperature $(temperature)
 
 genienlpdir ?= ../genienlp
@@ -80,10 +81,10 @@ do_translate:
 	ln -f $(input_folder)/*.tsv tmp/almond/
 	if ! $(skip_translation) ; then \
 		if [ ! -f $(GENIENLP_EMBEDDINGS)/$(model_name_or_path)/best.pth ] ; then \
-			$(genienlp) train --train_iterations 0 --pretrained_model $(model_name_or_path) $(train_default_args) ; \
+			$(genienlp) train --train_iterations 0 --pretrained_model $(model_name_or_path) $(translate_fixed_default_args) ; \
 		fi ; \
 		for f in $(all_names) ; do \
-			$(genienlp) predict --pred_set_name $$f --data tmp/ --do_alignment $(if $(return_raw_outputs), --translate_return_raw_outputs, ) --eval_dir $(output_folder)/ $(translate_pred_default_args) $(custom_translation_hparams) || exit 1 ; \
+			$(genienlp) predict --pred_set_name $$f --data tmp/ $(if $(do_alignment), --do_alignment,) --eval_dir $(output_folder)/ $(translate_pred_default_args) $(custom_translation_hparams) || exit 1 ; \
 			mv $(output_folder)/valid/almond_translate.tsv $(output_folder)/$$f.tsv ; \
 			if [ -e "$(output_folder)/valid/almond_translate.raw.tsv" ] ; then mv $(output_folder)/valid/almond_translate.raw.tsv $(output_folder)/$$f.raw.tsv ; fi ; \
 			rm -rf $(output_folder)/valid ; \
@@ -101,30 +102,51 @@ translate_data: eval/$(experiment)/$(source)/$(nmt_model)/$(tgt_lang)/translated
 	echo $@
 
 
-translate_params: parameter-datasets.tsv
-#	rm -rf tmp-param/$(src_lang)
-#	mkdir -p tmp-param/$(src_lang)
-#	for file in parameter-datasets/$(src_lang)/* ; do \
-#		python3 ./scripts/process_param_set.py --task prepare_input --input_file parameter-datasets/$(src_lang)/$${file##*/} --output_file tmp-param/$(src_lang)/$${file##*/} ; \
-#	done
-
-
-	for file in tmp-param/$(src_lang)/* ; do \
-		echo $${file##*/} >> tmp-param/all-names.tsv ; \
-		wc -l < $$file | sed 's/ //g' >> tmp-param/all-numbers.tsv ; \
-		cat $$file >> tmp-param/all.tsv ; \
-	done
-
-	make all_names="all" input_folder="tmp-param/$(src_lang)/" output_folder="tmp-param/$(tgt_lang)/" do_translate
-
-#	rm -rf tmp-param/$(src_lang)
-
+all_param_files = $(foreach f, $(wildcard parameter-datasets/$(src_lang)/*), $(notdir $f))
+param_files = com.yelp:restaurant.json com.yelp:restaurant_category.tsv com.yelp:restaurant_cuisine.json com.yelp:restaurant_names.tsv com.yelp:restaurants.tsv
+max_lines = 300
 
 shame:
-	file=parameter-datasets/en/dasda/com.wyt-yelp:restaurant.json ; \
-	echo $${file##*/} ; \
-	echo $(patsubst %.json,%.tsv,$${file##*/}) ; \
-	echo $(addsuffix .tsv,$(basename $${file##*/})) ; \
+	for param in $(param_files) ; do \
+  		echo $${param%.*} ; \
+  		echo $${param%.*}.tsv ; \
+  	done
+
+translate_params: parameter-datasets.tsv
+	rm -rf tmp-param/
+	mkdir -p tmp-param/$(src_lang)
+	mkdir -p tmp-param/$(tgt_lang)
+	mkdir -p tmp-param/merged/src
+	mkdir -p tmp-param/merged/tgt
+#	for file in parameter-datasets/$(src_lang)/* ; do \
+#		 python3 ./scripts/process_param_set.py --task prepare_input --input_file parameter-datasets/$(src_lang)/$${file##*/} --output_file tmp-param/$(src_lang)/$${file##*/} ; \
+#		# make all_names="$${file##*/}" do_alignment= input_folder="tmp-param/$(src_lang)" output_folder="tmp-param/$(tgt_lang)" do_translate ; \
+#	done
+#
+
+
+	for param in $(param_files) ; do \
+  		python3 ./scripts/process_param_set.py --task prepare_input --input_file parameter-datasets/$(src_lang)/$$param --output_file tmp-param/$(src_lang)/$${param%.*}.tsv ; \
+  	done
+
+	# merge files
+	for param in $(param_files) ; do \
+		echo $$param >> tmp-param/merged/src/all-names.tsv ; \
+		head -n $(max_lines) tmp-param/$(src_lang)/$${param%.*}.tsv | wc -l | sed 's/ //g' >> tmp-param/merged/src/all-numbers.tsv  ; \
+		head -n $(max_lines) tmp-param/$(src_lang)/$${param%.*}.tsv >> tmp-param/merged/src/all.tsv  ; \
+	done
+
+	make all_names="all" do_alignment= return_raw_outputs= input_folder="tmp-param/merged/src" output_folder="tmp-param/merged/tgt" do_translate
+
+	# split translations
+	python3 ./scripts/split_translations.py --input_file tmp-param/merged/tgt/all.tsv --input_names tmp-param/merged/src/all-names.tsv --input_numbers tmp-param/merged/src/all-numbers.tsv --output_folder tmp-param/$(tgt_lang)
+
+	# construct new param files
+#	for file in parameter-datasets/$(src_lang)/* ; do \
+#		python3 ./scripts/process_param_set.py --task postprocess_output --input_file parameter-datasets/$(src_lang)/$${file##*/} --output_file tmp-param/$(src_lang)/$${file##*/} ; \
+#	done
+
+#	rm -rf tmp-param/$(src_lang)
 
 ####################################################################################################################
 ##### Postprocess Translated dataset                 ###############################################################
