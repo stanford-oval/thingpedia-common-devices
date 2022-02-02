@@ -111,6 +111,7 @@ s3_metrics_output ?=
 metrics_output ?=
 s3_model_dir ?=
 parameter_dataset_s3_path ?= /gcampax/parameter-datasets-en-US-20211216.tar.xz
+multilingual_parameter_dataset_s3_path ?= /mehrad/extras/parameter-datasets/parameter-datasets-01312022.tar.xz
 parameter_dataset_url = https://almond-static.stanford.edu/test-data/parameter-datasets-en-US-20211206.tar.xz
 
 .PRECIOUS: %/node_modules
@@ -190,7 +191,10 @@ entities.json:
 	$(genie) download-entities --thingpedia-url $(thingpedia_url) --developer-key $(developer_key) -o $@
 
 parameter-datasets.tsv:
-	if ! test -z $(s3_bucket) ; then \
+	if [ "${genie_k8s_owner}" = "mehrad" ] ; then \
+  		aws s3 cp s3://$(s3_bucket)$(multilingual_parameter_dataset_s3_path) . ; \
+  		tar xf $(notdir $(multilingual_parameter_dataset_s3_path)) ; \
+	elif ! test -z $(s3_bucket) ; then \
 		aws s3 cp s3://$(s3_bucket)$(parameter_dataset_s3_path) . ; \
 		tar xf $(notdir $(parameter_dataset_s3_path)) ; \
 	else \
