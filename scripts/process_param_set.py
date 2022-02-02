@@ -7,6 +7,7 @@ parser.add_argument('--input_file', )
 parser.add_argument('--output_file', )
 parser.add_argument('--translated_file', )
 parser.add_argument('--task', )
+# parser.add_argument('--param_name', )
 
 args = parser.parse_args()
 
@@ -50,7 +51,9 @@ elif args.task == 'postprocess_output':
 
         with open(args.output_file, 'w') as fout:
             final = {'result': 'ok', 'data': new_data}
-            json.dump(new_data, fout)
+
+            # compact encoding to save space
+            json.dump(final, fout, ensure_ascii=False, separators=(',', ':'))
 
     elif type == 'tsv':
         with open(args.input_file) as fin, open(args.translated_file) as ftrans, open(args.output_file, 'w') as fout:
