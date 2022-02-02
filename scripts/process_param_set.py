@@ -10,12 +10,16 @@ parser.add_argument('--task', )
 
 args = parser.parse_args()
 
-args.output_file = args.output_file.rsplit('.', 1)[0] + '.tsv'
+# args.output_file = args.output_file.rsplit('.', 1)[0] + '.tsv'
 
 if args.input_file.endswith('.json'):
     type = 'json'
 else:
     type = 'tsv'
+
+def remove_quotes(text):
+    text = text.replace('"', '').replace('  ', ' ')
+    return text
 
 if args.task == 'prepare_input':
     if type == 'json':
@@ -24,16 +28,13 @@ if args.task == 'prepare_input':
 
         with open(args.output_file, 'w') as fout:
             for i, item in enumerate(data):
-                fout.write('\t'.join([str(i), data[i]['canonical']]) + '\n')
+                fout.write('\t'.join([str(i), remove_quotes(data[i]['canonical'])]) + '\n')
 
     elif type == 'tsv':
         with open(args.input_file) as fin, open(args.output_file, 'w') as fout:
             for i, line in enumerate(fin):
                 parts = line.strip('\n').split('\t')
-                try:
-                    fout.write('\t'.join([str(i), parts[1]]) + '\n')
-                except:
-                    print(f'{parts}')
+                fout.write('\t'.join([str(i), remove_quotes(parts[1])]) + '\n')
 
 elif args.task == 'postprocess_output':
     if type == 'json':
