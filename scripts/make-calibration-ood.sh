@@ -3,6 +3,9 @@
 set -e
 set -x
 
+GENIE=node_modules/.bin/genie
+
+
 test -f dropped-log.tsv || aws s3 cp s3://geniehai/gcampax/dropped-log.tsv dropped-log.tsv
 
 # These are in-domain: ok|contextual command|ambiguous|meta-command|skill-help|stream
@@ -12,7 +15,7 @@ sed -E -e '/\t(chatty|faq|foreign language|junk|math|new device.*|new function.*
 
 # Add all the commands that come in the staging devices (which are implicitly "new device")
 make release=staging eval/staging/schema.tt
-genie dialog-to-contextual -o staging-devtrain.tsv --thingpedia eval/staging/schema.tt \
+node ${GENIE} dialog-to-contextual -o staging-devtrain.tsv --thingpedia eval/staging/schema.tt \
   --side user --flags E --id-prefix staging/ --deduplicate --no-tokenized --ignore-errors \
   staging/*/eval/dev/annotated.txt staging/*/eval/train/annotated.txt
 
