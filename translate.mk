@@ -120,8 +120,8 @@ param_files ?= \
 	tt:short_free_text.tsv
 
 
-parameter-datasets/$(tgt_lang): parameter-datasets.tsv
-	rm -rf tmp-param/$(src_lang)
+parameter-datasets/$(tgt_lang):
+	rm -rf tmp-param/
 	mkdir -p tmp-param/$(src_lang) tmp-param/$(tgt_lang) tmp-param/merged/src tmp-param/merged/tgt
 	mkdir -p parameter-datasets/$(tgt_lang)
 
@@ -146,6 +146,11 @@ parameter-datasets/$(tgt_lang): parameter-datasets.tsv
 		python3 ./scripts/process_param_set.py --task postprocess_output --input_file parameter-datasets/$(src_lang)/$$param --translated_file tmp-param/$(tgt_lang)/$${param%.*}.tsv --output_file parameter-datasets/$(tgt_lang)/$$param ; \
 	done
 
+	rm -rf tmp-param/
+
+
+update_param_set: parameter-datasets.tsv
+
 	# update parameter-datasets.tsv
 	cat $< > $<.tmp
 	cat $< | \
@@ -153,9 +158,8 @@ parameter-datasets/$(tgt_lang): parameter-datasets.tsv
 	cat $<.tmp | sort -k2 | uniq > $<
 	rm -rf $<.tmp
 
-	#rm -rf tmp-param/
 
-translate_params: parameter-datasets/$(tgt_lang)
+translate_params: update_param_set parameter-datasets/$(tgt_lang)
 	# done!
 	echo $@
 
