@@ -110,9 +110,11 @@ genie_k8s_owner ?=
 s3_metrics_output ?=
 metrics_output ?=
 s3_model_dir ?=
-parameter_dataset_s3_path ?= /gcampax/parameter-datasets-en-US-20211216.tar.xz
-multilingual_parameter_dataset_s3_path ?= /mehrad/extras/parameter-datasets/parameter-datasets-02012022.tar.xz
-parameter_dataset_url = https://almond-static.stanford.edu/test-data/parameter-datasets-en-US-20211206.tar.xz
+
+parameter_dataset_s3_file ?=
+parameter_dataset_s3_path ?= /gcampax/$(if $(parameter_dataset_s3_file),$(parameter_dataset_s3_file),parameter-datasets-en-US-20211216.tar.xz)
+multilingual_parameter_dataset_s3_path ?= /mehrad/extras/parameter-datasets/$(if $(parameter_dataset_s3_file),$(parameter_dataset_s3_file),parameter-datasets-02042022.tar.xz)
+parameter_dataset_url = https://almond-static.stanford.edu/test-data/$(if $(parameter_dataset_s3_file),$(parameter_dataset_s3_file),parameter-datasets-en-US-20211206.tar.xz)
 
 .PRECIOUS: %/node_modules
 .PHONY: all clean lint upgrade-deps
