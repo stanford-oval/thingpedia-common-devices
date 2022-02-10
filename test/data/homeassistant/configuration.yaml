@@ -2,18 +2,20 @@
 # Configure a default setup of Home Assistant (frontend, api, etc)
 default_config:
 
-#demo:
+## Genie integration still uses old name (Almond)
+almond:
+  type: local
+  host: http://127.0.0.1:3000
 
-air_quality:
-  - platform: demo
+## To enable all the devices available in Home Assistant
+## https://www.home-assistant.io/integrations/demo/
+
+#demo:
 
 alarm_control_panel:
   - platform: demo
 
 binary_sensor:
-  - platform: demo
-
-camera:
   - platform: demo
 
 climate:
@@ -25,13 +27,7 @@ cover:
 fan:
   - platform: demo
 
-geo_location:
-  - platform: demo
-
 humidifier:
-  - platform: demo
-
-image_processing:
   - platform: demo
 
 light:
@@ -40,25 +36,13 @@ light:
 lock:
   - platform: demo
 
-mailbox:
-  - platform: demo
-
 notify:
-  - platform: demo
-
-number:
-  - platform: demo
-
-remote:
   - platform: demo
 
 sensor:
   - platform: demo
 
 switch:
-  - platform: demo
-
-tts:
   - platform: demo
 
 vacuum:
@@ -68,9 +52,9 @@ weather:
   - platform: demo
 
 
-#almond:
-#  type: local
-#  host: http://127.0.0.1:3000
+# Text to speech
+tts:
+  - platform: google_translate
 
 group: !include groups.yaml
 automation: !include automations.yaml
