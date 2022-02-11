@@ -1,0 +1,129 @@
+class @com.yelp
+#_[thingpedia_name="Yelp"]
+#_[thingpedia_description="Cerca ristoranti su Yelp"]
+#_[canonical="Yelp"]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="service"] {
+  import loader from @org.thingpedia.v2();
+
+  import config from @org.thingpedia.config.none(api_key=$?);
+
+  entity restaurant
+    #_[description="Restaurants on Yelp"];
+
+  entity restaurant_cuisine
+    #_[description="Cuisines in Yelp"];
+
+  list query restaurant(out id : Entity(com.yelp:restaurant)
+                        #_[canonical={
+                          default="base",
+                          base="nome [pos=base]",
+                          enum_filter={}
+                        }]
+                        #[conflict_filter=["cuisines", "price_range"]]
+                        #[unique=true]
+                        #[string_values="org.openstreetmap:restaurant"],
+                        out image_url : Entity(tt:picture)
+                        #_[canonical={
+                          default="base",
+                          base="{immagine [pos=base]|immagine [pos=base]|foto [pos=base]}",
+                          enum_filter={}
+                        }]
+                        #[filterable=false],
+                        out link : Entity(tt:url)
+                        #_[canonical={
+                          default="base",
+                          base="collegamento",
+                          filter_phrase="collegamento ${value} [pos=property]",
+                          enum_filter={}
+                        }]
+                        #[filterable=false],
+                        out cuisines : Array(Entity(com.yelp:restaurant_cuisine))
+                        #_[canonical={
+                          default="aggettivo",
+                          base="{cucine [pos=base]|tipi di cucina [pos=base]|alimenti [pos=base]|tipi di alimenti [pos=base]|categoria [pos=base]}",
+                          base_projection="{alimenti [pos=base]|cucina [pos=base]}",
+                          projection="{servizio [pos=verb]|offerta [pos=verb]|hanno [pos=verb]}",
+                          filter_phrase="{${value} alimenti [pos=property]|${value} cucina [pos=property]|${value} categoria [pos=property]|${value} [pos=adjective]|serve ${value} cucina [pos=verb]|serve ${value} cibo [pos=verb]|offerta ${value} cucina [pos=verb]|offerta ${value} alimenti [pos=verb]|serve ${value} [pos=verb]|offerte ${value} [pos=verb]|nella ${value} categoria [pos=preposition]}",
+                          enum_filter={}
+                        }]
+                        #[conflict_filter=["id"]],
+                        out price : Enum(cheap, moderate, expensive, luxury)
+                        #_[canonical={
+                          default="aggettivo",
+                          base="{fascia di prezzo [pos=base]|prezzo [pos=base]}",
+                          filter_phrase="{${value} prezzo [pos=property]|nella ${value} intervallo di prezzo [pos=preposition]|${value:select:moderate{moderately priced} - No. {${value}}} [pos=adjective]}",
+                          enum_filter={
+                            cheap="poco costoso [pos=adjective]",
+                            luxury="{upscale [pos=adjective]|fine-pranzo [pos=adjective]}"
+                          },
+                          enum_value={
+                            cheap="economico",
+                            moderate="moderata",
+                            expensive="costoso",
+                            luxury="lusso"
+                          }
+                        }]
+                        #[conflict_filter=["id"]],
+                        out rating : Number
+                        #_[canonical={
+                          default="passive_verb",
+                          base="{valutazione [pos=base]|Valutazione complessiva [pos=base]|rating medio [pos=base]|Valutazione dei clienti [pos=base]|valutazione di riesame [pos=base]}",
+                          argmin="{Valutazione più bassa [pos=adjective]|peggiore [pos=adjective]}",
+                          argmax="{superiore nominale [pos=adjective]|superiore [pos=adjective]|più alto grado [pos=adjective]|migliore valutato [pos=adjective]|migliore [pos=adjective]}",
+                          projection="nominale [pos=passive_verb]",
+                          filter_phrase="{nominale ${value} ${value:plural:one{star} altri {stelle}} [pos=passive_verb]|${value} ${value:plural:one{star} altri {stelle}} [pos=adjective]|valutazione ${value} [pos=property]|${value} classificazione stella [pos=property]}",
+                          enum_filter={}
+                        }]
+                        #_[counted_object="stelle"]
+                        #[min_number=1]
+                        #[max_number=5],
+                        out review_count : Number
+                        #_[canonical={
+                          default="property",
+                          base="conteggio revisione [pos=base]",
+                          argmin="meno rivisto [pos=adjective]",
+                          argmax="più rivisto [pos=adjective]",
+                          filter_phrase="${value} ${value:plural:one{review} altri { revisioni } } [pos=property]",
+                          enum_filter={}
+                        }]
+                        #_[counted_object="revisioni"],
+                        out geo : Location
+                        #_[canonical={
+                          default="preposition",
+                          base="{indirizzo [pos=base]|posizione [pos=base]}",
+                          filter_phrase="{a ${value} [pos=preposition]|vicino ${value} [pos=preposition]|in ${value} [pos=preposition]|intorno ${value} [pos=preposition]}",
+                          enum_filter={}
+                        }],
+                        out phone : Entity(tt:phone_number)
+                        #_[canonical={
+                          default="property",
+                          base="{numero di telefono [pos=base]|telefono [pos=base]}",
+                          filter_phrase="{numero di telefono ${value} [pos=property]|può essere raggiunto a ${value} [pos=verb]}",
+                          enum_filter={}
+                        }]
+                        #[filterable=false],
+                        out opening_hours : RecurrentTimeSpecification
+                        #_[canonical={
+                          default="property",
+                          base="{Orario di apertura [pos=base]|Orario di lavoro [pos=base]|ore [pos=base]}",
+                          filter_phrase="apre ${value} [pos=verb]",
+                          enum_filter={}
+                        }])
+  #_[canonical="{ristorante [plural=one]|ristoranti [plural=other]|ristorazione [plural=one]|ristoranti [plural=other]|luogo da mangiare|luogo di cibo [plural=one]|luoghi di cibo [plural=other]}"]
+  #_[confirmation="ristoranti su Yelp"]
+  #_[formatted=[{
+    type="rdl",
+    displayTitle="${id}",
+    webCallback="${link}",
+    pictureUrl="${image_url}"
+  }]]
+  #_[on_error={
+    unavailable=["il servizio yelp non è disponibile al momento"]
+  }]
+  #[minimal_projection=["id"]]
+  #[default_projection=["id", "image_url", "link", "cuisines", "price", "rating", "review_count", "geo", "phone"]]
+  #[doc="search for restaurants on Yelp"]
+  #[confirm=false];
+}
