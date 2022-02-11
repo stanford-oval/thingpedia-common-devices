@@ -3,14 +3,16 @@
 set -e
 set -x
 
-pyenv global 3.8.1
+test -d  ~/.pyenv/versions/3.10.2 || pyenv install 3.10.2
+
+pyenv global 3.10.2
 
 mkdir -p ./tmp
 
-test -d ./tmp/homeassistant-venv || virtualenv --py $(pyenv which python3) ./tmp/homeassistant-venv
+test -d ./tmp/homeassistant-venv || virtualenv --py $(pyenv which python3.10) .tmp/homeassistant-venv
 . ./tmp/homeassistant-venv/bin/activate
 python3 --version
-pip3 install 'homeassistant==2021.6.3'
+pip3 install 'homeassistant==2022.2.5'
 deactivate
 
 ./scripts/run-home-assistant.sh &
