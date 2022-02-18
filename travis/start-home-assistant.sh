@@ -9,12 +9,12 @@ echo "This OS is $check_os"
 if [[ $check_os == *"Ubuntu"* ]];
 then
     echo "Setting Ubuntu for Home assistant installation"
-    sleep 15
+    sleep 10
     . ./scripts/set-ha-inst-ubuntu.sh
 elif [[ $check_os == *"Fedora"* ]];
 then
     echo "Setting Fedora for Home assistant installation"
-    sleep 15
+    sleep 10
     . ./scripts/set-ha-inst-fedora.sh
 else
     echo "OS NOT RECOGNIZED"
@@ -59,8 +59,8 @@ deactivate
 
 ./scripts/run-home-assistant.sh &
 echo "wait 30 seconds for Home Assistant to install itself and set up"
-sleep 30
+sleep 15
 
-./scripts/setup-ha-virtual-devices.js main universe
+#./scripts/setup-ha-virtual-devices.js main universe
 echo "Set virtual devices"
-sleep 30
+#sleep 30
