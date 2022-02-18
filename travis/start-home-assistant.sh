@@ -22,6 +22,15 @@ else
     exit 0
 fi
 
+echo "About to install nvm and nodejs 14"
+sleep 15
+
+if [[ -n $(nvm -v 2>&1) ]] ; then
+	wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+	\. $HOME/.nvm/nvm.sh --no-use
+fi
+nvm install 14.18
+
 python3 -m pip install wheel
 
 echo "Check if pyenv is available"
