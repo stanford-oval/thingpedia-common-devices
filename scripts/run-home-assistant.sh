@@ -2,7 +2,7 @@
 
 srcdir=`dirname $0`
 . $srcdir/lib.sh
-parse_args "$0" "venv=./tmp/homeassistant-venv config=./tmp/homeassistant-config" "$@"
+parse_args "$0" "venv=./ha/homeassistant-venv config=./ha/homeassistant-config" "$@"
 shift $n
 
 set -e

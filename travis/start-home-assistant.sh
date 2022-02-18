@@ -1,23 +1,45 @@
 #!/bin/bash
 
 set -e
-set -x
 
-test -d  ~/.pyenv/versions/3.10.2 || pyenv install 3.10.2
+check_os=[`. /etc/os-release; echo "$NAME"`]
 
-pyenv global 3.10.2
+echo "This OS is $check_os"
 
-mkdir -p ./tmp
+if [[ $check_os == *"Ubuntu"* ]];
+then
+    echo "Setting Ubuntu for Home assistant installation"
+    sleep 15
+    . ./scripts/set-ha-inst-ubuntu.sh
+elif [[ $check_os == *"Fedora"* ]];
+then
+    echo "Setting Fedora for Home assistant installation"
+    sleep 15
+    . ./scripts/set-ha-inst-fedora.sh
+else
+    echo "OS NOT RECOGNIZED"
+    sleep 15
+    exit 0
+fi
 
-test -d ./tmp/homeassistant-venv || virtualenv --py $(pyenv which python3.10) .tmp/homeassistant-venv
-. ./tmp/homeassistant-venv/bin/activate
-python3 --version
-pip3 install 'homeassistant==2022.2.5'
+pyenv global 3.9.10
+
+test -d ./ha || mkdir -p ./ha
+test -d ./ha/homeassistant-venv || mkdir -p ./ha/homeassistant-venv
+test -d ./ha/homeassistant-config || mkdir -p ./ha/homeassistant-config
+
+python3 -m venv ./ha/homeassistant-venv
+
+source ./ha/homeassistant-venv/bin/activate
+
+pip3 install 'homeassistant==2022.2.6'
+
 deactivate
 
 ./scripts/run-home-assistant.sh &
-# wait 30 seconds for Home Assistant to install itself and set up
+echo "wait 30 seconds for Home Assistant to install itself and set up"
 sleep 30
 
 ./scripts/setup-ha-virtual-devices.js main universe
+echo "Set virtual devices"
 sleep 30

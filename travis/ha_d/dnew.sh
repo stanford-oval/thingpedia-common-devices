@@ -14,17 +14,9 @@ test -d  ~/.pyenv/versions/3.9.10 || pyenv install 3.9.10
 
 pyenv global 3.9.10
 
-#mkdir -p ./tmp
-
-#cd tmp
-
-python3 -m pip install wheel
-
 test -d ./tmp || mkdir -p ./tmp
 test -d ./tmp/homeassistant-venv || mkdir -p ./tmp/homeassistant-venv
 test -d ./tmp/homeassistant-config || mkdir -p ./tmp/homeassistant-config
-
-#cd ./homeassistant-venv
 
 python3 -m venv ./tmp/homeassistant-venv 
 
