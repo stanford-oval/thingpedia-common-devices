@@ -22,6 +22,15 @@ else
     exit 0
 fi
 
+python3 -m pip install wheel
+
+echo "Check if pyenv is available"
+
+test ! -d  ~/.pyenv && git clone https://github.com/pyenv/pyenv.git ~/.pyenv || echo "PYENV already installed"
+test ! -d  ~/.pyenv && echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bash_profile
+test ! -d  ~/.pyenv && (echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bash_profile && echo "NOW PLEASE CLOSE THE TERMINAL AND REOPEN IT" && sleep 30 && exit 0 )
+test -d  ~/.pyenv/versions/3.9.10 || pyenv install 3.9.10
+
 pyenv global 3.9.10
 
 test -d ./ha || mkdir -p ./ha
