@@ -11,5 +11,5 @@ set -x
 source "${venv}"/bin/activate
 #mkdir -p $(dirname "${config}")
 #test -d "${config}" || cp -r "${srcdir}/../test/data/homeassistant" "${config}"
-test -d "${config}" && cp -r "./test/data/homeassistant/*" "${config}"
+test -d "${config}" && cp -r ./test/data/homeassistant/* "${config}"
 exec python3 -m homeassistant -c "${config}"

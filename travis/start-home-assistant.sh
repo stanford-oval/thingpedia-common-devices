@@ -23,17 +23,18 @@ else
 fi
 
 echo "About to install nvm and nodejs 14"
-sleep 15
+sleep 10
 
 if [[ -n $(nvm -v 2>&1) ]] ; then
 	wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 	\. $HOME/.nvm/nvm.sh --no-use
 fi
-nvm install 14.18
 
-python3 -m pip install wheel
+nvm install 14.18
+nvm use 14.18
 
 echo "Check if pyenv is available"
+sleep 10
 
 test ! -d  ~/.pyenv && git clone https://github.com/pyenv/pyenv.git ~/.pyenv || echo "PYENV already installed"
 test ! -d  ~/.pyenv && echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bash_profile
@@ -49,6 +50,8 @@ test -d ./ha/homeassistant-config || mkdir -p ./ha/homeassistant-config
 python3 -m venv ./ha/homeassistant-venv
 
 source ./ha/homeassistant-venv/bin/activate
+
+python3 -m pip install wheel
 
 pip3 install 'homeassistant==2022.2.6'
 
