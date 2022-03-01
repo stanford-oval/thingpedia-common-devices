@@ -1,21 +1,66 @@
 #!/bin/bash
 
 set -e
-set -x
 
-pyenv global 3.8.1
+check_os=[`. /etc/os-release; echo "$NAME"`]
 
-mkdir -p ./tmp
+echo "This OS is $check_os"
 
-test -d ./tmp/homeassistant-venv || virtualenv --py $(pyenv which python3) ./tmp/homeassistant-venv
-. ./tmp/homeassistant-venv/bin/activate
-python3 --version
-pip3 install 'homeassistant==2021.6.3'
+if [[ $check_os == *"Ubuntu"* ]];
+then
+    echo "Setting Ubuntu for Home assistant installation"
+    #sleep 10
+    #. ./scripts/set-ha-inst-ubuntu.sh
+elif [[ $check_os == *"Fedora"* ]];
+then
+    echo "Setting Fedora for Home assistant installation"
+    sleep 10
+    . ./scripts/set-ha-inst-fedora.sh
+else
+    echo "OS NOT RECOGNIZED"
+    sleep 15
+    exit 0
+fi
+
+echo "About to install nvm and nodejs 14"
+sleep 10
+
+##if [[ -n $(nvm -v 2>&1) ]] ; then
+	wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+#	\. $HOME/.nvm/nvm.sh --no-use
+#fi
+
+nvm install 14.18
+nvm use 14.18
+
+echo "Check if pyenv is available"
+sleep 10
+
+test ! -d  ~/.pyenv && git clone https://github.com/pyenv/pyenv.git ~/.pyenv || echo "PYENV already installed"
+test ! -d  ~/.pyenv && echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bash_profile
+test ! -d  ~/.pyenv && (echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bash_profile && echo "NOW PLEASE CLOSE THE TERMINAL AND REOPEN IT" && sleep 30 && exit 0 )
+test -d  ~/.pyenv/versions/3.9.10 || pyenv install 3.9.10
+
+pyenv global 3.9.10
+
+test -d ./ha || mkdir -p ./ha
+test -d ./ha/homeassistant-venv || mkdir -p ./ha/homeassistant-venv
+test -d ./ha/homeassistant-config || mkdir -p ./ha/homeassistant-config
+
+python3 -m venv ./ha/homeassistant-venv
+
+source ./ha/homeassistant-venv/bin/activate
+
+python3 -m pip install wheel
+
+pip3 install 'homeassistant==2022.2.6'
+
 deactivate
 
 ./scripts/run-home-assistant.sh &
-# wait 30 seconds for Home Assistant to install itself and set up
-sleep 30
+echo "wait 30 seconds for Home Assistant to install itself and set up"
+sleep 15
 
-./scripts/setup-ha-virtual-devices.js main universe
-sleep 30
+#./scripts/setup-ha-virtual-devices.js main universe
+echo "Set virtual devices"
+#sleep 30
