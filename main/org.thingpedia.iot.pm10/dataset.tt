@@ -1,0 +1,115 @@
+dataset @org.thingpedia.iot.pm10 language "en" {
+    program := @org.thingpedia.iot.pm10.state() 
+    #_[utterances=["is there any particulate matter 1.0?",
+                   "check if there is any particulate matter 1.0",
+                   "check whether PM1.0 is detected",
+                   "is there any particulate matter 1.0?",
+                   "check if the sensor is detecting any particulate matter 1.0",
+                   "do you smell PM1.0?",
+                   "is there a PM1.0 leak?",
+                   "is there particulate matter 1.0?",
+                   "there is presence of particulate matter 1.0?"]]
+    #[id=54304068]
+    #[name="StateThenNotify"];
+
+    query := @org.thingpedia.iot.pm10.state()
+    #_[utterances=["if the sensor is detecting any PM1.0",
+                   "whether the sensor is detecting particulate matter 1.0",
+                   "if the PM1.0 detector is catching any particulate matter 1.0",
+                   "if the particulate matter 1.0 sensor is detecting something",
+                   "whether the particulate matter 1.0 sensor is detecting anything",
+                   "whether there is any PM1.0"]]
+    #[id=54304077]
+    #[name="State"];
+
+    stream := monitor (@org.thingpedia.iot.pm10.state())
+    #_[utterances=["when the particulate matter 1.0 detector starts or stops detecting something",
+                   "when the PM1.0 detector starts or stops detecting particulate matter 1.0",
+                   "when the particulate matter 1.0 detector starts or stops detecting any PM1.0",
+                   "when the quality of the air is affected by presence of any particulate matter 1.0",
+                   "when my sensor starts detecting particulate matter 1.0",
+                   "when my detector is detecting PM1.0",
+                   "the moment my sensor detects particulate matter 1.0"]]
+    #[id=54304085]
+    #[name="MonitorState"];
+
+    stream (p_state :Enum(detected,not_detected)) := monitor (@org.thingpedia.iot.pm10.state()), (pm10_state == p_state)
+    #_[utterances=["when PM1.0 is ${p_state}",
+                   "when particulate matter 1.0 is ${p_state}",
+                   "as soon as PM1.0 is ${p_state}",
+                   "when particulate matter 1.0 is ${p_state} in the air"]]
+    #[id=5430049116]
+    #[name="MonitorStateByStatePM10"];
+
+    stream := monitor (@org.thingpedia.iot.pm10.state()), pm10_state == enum(detected)
+    #_[utterances=["when PM1.0 is detected",
+                   "when there is particulate matter 1.0",
+                   "when you smell PM1.0",
+                   "when particulate matter 1.0 appears",
+                   "when there is particulate matter 1.0 in the air"]]
+    #[id=5430049116]
+    #[name="MonitordetectedPM10"];
+
+    stream := monitor (@org.thingpedia.iot.pm10.state()), pm10_state == enum(not_detected)
+    #_[utterances=["when no particulate matter 1.0 is detected",
+                   "when PM1.0 is not detected anymore",
+                   "when there is no PM1.0",
+                   "when particulate matter 1.0 clears",
+                   "when the particulate matter 1.0 goes away",
+                   "when the PM1.0 is gone",
+                   "when there is no more particulate matter 1.0"]]
+    #[id=543040101]
+    #[name="Monitornot_detectedNothing"];
+
+    program (p_name : String) := @org.thingpedia.iot.pm10(name=p_name).state() 
+    #_[utterances=["check the ${p_name:const} particulate matter 1.0 sensor reading",
+                   "check whether ${p_name:const} PM1.0 sensor detects",
+                   "check if the ${p_name:const} sensor is detecting any particulate matter 1.0",
+                   "the ${p_name:const} smells PM1.0?"]]
+    #[id=54304168]
+    #[name="StateThenNotifyName"];
+
+    query (p_name : String) := @org.thingpedia.iot.pm10(name=p_name).state()
+    #_[utterances=["if the ${p_name:const} sensor is detecting any PM1.0",
+                   "whether the ${p_name:const} sensor is detecting particulate matter 1.0",
+                   "if the ${p_name:const} PM1.0 detector is catching any particulate matter 1.0",
+                   "if the ${p_name:const} particulate matter 1.0 sensor is detecting something",
+                   "whether the ${p_name:const} particulate matter 1.0 sensor is detecting anything"]]
+    #[id=54304277]
+    #[name="StateName"];
+
+    stream (p_name : String) := monitor (@org.thingpedia.iot.pm10(name=p_name).state())
+    #_[utterances=["when the ${p_name:const} particulate matter 1.0 detector starts or stops detecting something",
+                   "when the ${p_name:const} PM1.0 detector starts or stops detecting particulate matter 1.0",
+                   "when the ${p_name:const} particulate matter 1.0 detector starts or stops detecting any PM1.0",
+                   "when my ${p_name:const} sensor starts detecting particulate matter 1.0",
+                   "when my ${p_name:const} detector is detecting PM1.0",
+                   "the moment my ${p_name:const} sensor detects particulate matter 1.0"]]
+    #[id=54304385]
+    #[name="MonitorStateName"];
+
+    stream (p_name : String, p_state :Enum(detected,not_detected)) := monitor (@org.thingpedia.iot.pm10(name=p_name).state()), (pm10_state == p_state)
+    #_[utterances=["when ${p_name:const} sensor says PM1.0 is ${p_state}",
+                   "when ${p_name:const} detector read that particulate matter 1.0 is ${p_state}",
+                   "as soon as ${p_name:const} sensor says PM1.0 is ${p_state}"]]
+    #[id=5430044116]
+    #[name="MonitorStateByStatePM10Name"];
+
+    stream (p_name : String) := monitor (@org.thingpedia.iot.pm10.state()), pm10_state == enum(detected)
+    #_[utterances=["when PM1.0 is detected by ${p_name:const}",
+                   "when the ${p_name:const} sensor says that there is particulate matter 1.0",
+                   "when ${p_name:const} sensor smell PM1.0",
+                   "when particulate matter 1.0 appears on ${p_name:const} sensor",
+                   "when there is particulate matter 1.0 in the air detected by ${p_name:const} PM1.0 sensor"]]
+    #[id=5430045116]
+    #[name="MonitordetectedPM10Name"];
+
+    stream (p_name : String) := monitor (@org.thingpedia.iot.pm10.state()), pm10_state == enum(not_detected)
+    #_[utterances=["when no particulate matter 1.0 is detected by ${p_name:const}",
+                   "when PM1.0 is not detected anymore by ${p_name:const}",
+                   "when there is no PM1.0 detected by ${p_name:const}",
+                   "when ${p_name:const} says that particulate matter 1.0 clears",
+                   "when there is no more particulate matter 1.0 in the air detected by ${p_name:const} PM1.0 sensor"]]
+    #[id=543046101]
+    #[name="Monitornot_detectedNothingName"];
+}

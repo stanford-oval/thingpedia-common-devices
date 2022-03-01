@@ -1,0 +1,77 @@
+dataset @org.thingpedia.iot.energy language "en" {
+    program := @org.thingpedia.iot.energy.state()
+    #_[utterances=["which is the energy consumption ",
+                   "tell me the energy absorbed",
+                   "which is the total energy reading",
+                   "check the total energy consumption"]]
+    #[id=140001]
+    #[name="StateThenNotify"];
+
+    query := @org.thingpedia.iot.energy.state()
+    #_[utterances=["the energy reading",
+                   "the value of the energy",
+                   "the energy level",
+                   "the energy consumption"]]
+    #[id=140002]
+    #[name="State"];
+
+    stream := monitor(@org.thingpedia.iot.energy.state())
+    #_[utterances=["when the energy value change",
+                   "when the energy consumption rise",
+                   "if the energy level lower",
+                   "when the energy consumption updates"]]
+    #[id=140003]
+    #[name="MonitorState"];
+
+    stream (p_check : Number) := monitor(@org.thingpedia.iot.energy.state()), energy >= p_check
+    #_[utterances=["when the energy value go over ${p_check}",
+                   "when the energy consumption rise more than ${p_check}",
+                   "if the energy level is higher of ${p_check}",
+                   "when the energy consumption goes above ${p_check}"]]
+    #[id=140004]
+    #[name="MonitorStateCheckGreater"];
+
+    stream (p_check : Number) := monitor(@org.thingpedia.iot.energy.state()), energy <= p_check
+    #_[utterances=["when the energy value go below ${p_check}",
+                   "when the energy consumption drops under ${p_check}",
+                   "if the energy level is lower of ${p_check}",
+                   "when the  energy consumption goes below ${p_check}"]]
+    #[id=140005]
+    #[name="MonitorStateCheckless"];
+
+    program (p_name : String) := @org.thingpedia.iot.energy.state()
+    #_[utterances=["what is my ${p_name:const} total energy consumption?",
+                   "what does the ${p_name:const} reads as total energy consumption ",
+                   "How many energy is absorbed according to my ${p_name:const}?",
+                   "Check the ${p_name:const} total energy reading",
+                   "which is the energy level reading from ${p_name:const}"]]
+    #[name="StateThenNotifyName"];
+
+    query (p_name : String) := @org.thingpedia.iot.energy.state()
+    #_[utterances=["the energy reading according to my ${p_name:const}",
+                   "the total energy read by the ${p_name:const}",
+                   "the energy level read by ${p_name:const}",
+                   "the total energy consumption gathered from ${p_name:const}"]]
+    #[name="StateName"];
+
+    stream (p_name : String) := monitor(@org.thingpedia.iot.energy.state())
+    #_[utterances=["when the energy value of ${p_name:const} change",
+                   "when the energy consumption read by ${p_name:const} rise",
+                   "if the energy level from ${p_name:const} lowers",
+                   "when the ${p_name:const}'s energy consumption reading updates"]]
+    #[name="MonitorStateName"];
+
+    stream (p_name : String, p_check : Number) := monitor(@org.thingpedia.iot.energy.state()), energy >= p_check
+    #_[utterances=["when the energy value of ${p_name:const} go over ${p_check}",
+                   "when the total energy consumption read by ${p_name:const} rise more than ${p_check}",
+                   "if the energy level from ${p_name:const} is higher of ${p_check}",
+                   "when the ${p_name:const}'s energy consumption goes above ${p_check}"]]
+    #[name="MonitorStateCheckGreaterName"];
+
+    stream (p_name : String, p_check : Number) := monitor(@org.thingpedia.iot.energy.state()), energy <= p_check
+    #_[utterances=["when the energy value of ${p_name:const} go over ${p_check}",
+                   "when the total energy consumption read by ${p_name:const} drops under ${p_check}",
+                   "if the energy level from ${p_name:const} is lower of ${p_check}",
+                   "when the ${p_name:const}'s energy consumption goes below ${p_check}"]]
+    #[name="MonitorStateChecklessName"];
+}

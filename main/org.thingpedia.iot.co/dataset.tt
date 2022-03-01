@@ -1,0 +1,117 @@
+dataset @org.thingpedia.iot.co language "en" {
+    program := @org.thingpedia.iot.co.state() 
+    #_[utterances=["is there any carbon monoxide?",
+                   "check if there is any carbon monoxide",
+                   "check whether CO is detected",
+                   "is there any carbon monoxide?",
+                   "check if the sensor is detecting any carbon monoxide",
+                   "do you smell CO?",
+                   "is there a CO leak?",
+                   "is there carbon monoxide?",
+                   "there is presence of carbon monoxide?",
+                   "is there any monoxide in the air?"]]
+    #[id=54304068]
+    #[name="StateThenNotify"];
+
+    query := @org.thingpedia.iot.co.state()
+    #_[utterances=["if the sensor is detecting any CO",
+                   "whether the sensor is detecting carbon monoxide",
+                   "if the CO detector is catching any carbon monoxide",
+                   "if the carbon monoxide sensor is detecting something",
+                   "whether the carbon monoxide sensor is detecting anything",
+                   "whether there is any CO",
+                   "whether there is monoxide"]]
+    #[id=54304077]
+    #[name="State"];
+
+    stream := monitor (@org.thingpedia.iot.co.state())
+    #_[utterances=["when the carbon monoxide detector starts or stops detecting any monoxide",
+                   "when the CO detector starts or stops detecting carbon monoxide",
+                   "when the carbon monoxide detector starts or stops detecting any CO",
+                   "when the quality of the air is affected by presence of any carbon monoxide",
+                   "when my sensor starts detecting carbon monoxide",
+                   "when my detector is detecting CO",
+                   "the moment my sensor detects carbon monoxide"]]
+    #[id=54304085]
+    #[name="MonitorState"];
+
+    stream (p_state :Enum(detected,not_detected)) := monitor (@org.thingpedia.iot.co.state()), (co_state == p_state)
+    #_[utterances=["when CO is ${p_state}",
+                   "when carbon monoxide is ${p_state}",
+                   "as soon as CO is ${p_state}",
+                   "when carbon monoxide is ${p_state} in the air"]]
+    #[id=5430049116]
+    #[name="MonitorStateByStateCO"];
+
+    stream := monitor (@org.thingpedia.iot.co.state()), co_state == enum(detected)
+    #_[utterances=["when CO is detected",
+                   "when there is carbon monoxide",
+                   "when you smell CO",
+                   "when carbon monoxide appears",
+                   "when there is carbon monoxide in the air"]]
+    #[id=5430049116]
+    #[name="MonitordetectedCO"];
+
+    stream := monitor (@org.thingpedia.iot.co.state()), co_state == enum(not_detected)
+    #_[utterances=["when no carbon monoxide is detected",
+                   "when CO is not detected anymore",
+                   "when there is no CO",
+                   "when carbon monoxide clears",
+                   "when the carbon monoxide goes away",
+                   "when the CO is gone",
+                   "when there is no more carbon monoxide"]]
+    #[id=543040101]
+    #[name="Monitornot_detectedNothing"];
+
+    program (p_name : String) := @org.thingpedia.iot.co(name=p_name).state() 
+    #_[utterances=["check the ${p_name:const} carbon monoxide sensor reading",
+                   "check whether ${p_name:const} CO sensor detects",
+                   "check if the ${p_name:const} sensor is detecting any carbon monoxide",
+                   "the ${p_name:const} smells CO?"]]
+    #[id=54304168]
+    #[name="StateThenNotifyName"];
+
+    query (p_name : String) := @org.thingpedia.iot.co(name=p_name).state()
+    #_[utterances=["if the ${p_name:const} sensor is detecting any CO",
+                   "whether the ${p_name:const} sensor is detecting carbon monoxide",
+                   "if the ${p_name:const} CO detector is catching any carbon monoxide",
+                   "if the ${p_name:const} carbon monoxide sensor is detecting something",
+                   "whether the ${p_name:const} carbon monoxide sensor is detecting anything"]]
+    #[id=54304277]
+    #[name="StateName"];
+
+    stream (p_name : String) := monitor (@org.thingpedia.iot.co(name=p_name).state())
+    #_[utterances=["when the ${p_name:const} carbon monoxide detector starts or stops detecting any monoxide",
+                   "when the ${p_name:const} CO detector starts or stops detecting carbon monoxide",
+                   "when the ${p_name:const} carbon monoxide detector starts or stops detecting any CO",
+                   "when my ${p_name:const} sensor starts detecting carbon monoxide",
+                   "when my ${p_name:const} detector is detecting CO",
+                   "the moment my ${p_name:const} sensor detects carbon monoxide"]]
+    #[id=54304385]
+    #[name="MonitorStateName"];
+
+    stream (p_name : String, p_state :Enum(detected,not_detected)) := monitor (@org.thingpedia.iot.co(name=p_name).state()), (co_state == p_state)
+    #_[utterances=["when ${p_name:const} sensor says CO is ${p_state}",
+                   "when ${p_name:const} detector read that carbon monoxide is ${p_state}",
+                   "as soon as ${p_name:const} sensor says CO is ${p_state}"]]
+    #[id=5430044116]
+    #[name="MonitorStateByStateCOName"];
+
+    stream (p_name : String) := monitor (@org.thingpedia.iot.co.state()), co_state == enum(detected)
+    #_[utterances=["when CO is detected by ${p_name:const}",
+                   "when the ${p_name:const} sensor says that there is carbon monoxide",
+                   "when ${p_name:const} sensor smell CO",
+                   "when carbon monoxide appears on ${p_name:const} sensor",
+                   "when there is carbon monoxide in the air detected by ${p_name:const} CO sensor"]]
+    #[id=5430045116]
+    #[name="MonitordetectedCOName"];
+
+    stream (p_name : String) := monitor (@org.thingpedia.iot.co.state()), co_state == enum(not_detected)
+    #_[utterances=["when no carbon monoxide is detected by ${p_name:const}",
+                   "when CO is not detected anymore by ${p_name:const}",
+                   "when there is no CO detected by ${p_name:const}",
+                   "when ${p_name:const} says that carbon monoxide clears",
+                   "when there is no more carbon monoxide in the air detected by ${p_name:const} CO sensor"]]
+    #[id=543046101]
+    #[name="Monitornot_detectedNothingName"];
+}

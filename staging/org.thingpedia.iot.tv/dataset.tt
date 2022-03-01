@@ -1,0 +1,128 @@
+dataset @org.thingpedia.iot.tv language "en" {
+
+    program := @org.thingpedia.iot.tv.power()
+    #_[utterances=["is my tv on?",
+                   "check if my television is off",
+                   "is the tv turned on?",
+                   "check if my tv is switched off",
+                   "check if my television is turned on or off",
+                   "check if my tv is switched on or switched off"]];
+
+    query := @org.thingpedia.iot.tv.power()
+    #_[utterances=["if my television is on or off",
+                   "whether my tv is switched on or switched off"]];
+
+    stream := monitor(@org.thingpedia.iot.tv.power())
+    #_[utterances=["when my television changes state"]];
+
+    stream (p_state : Enum(on, off)) := monitor(@org.thingpedia.iot.tv.power()), (state == p_state)
+    #_[utterances=["when my tv turns ${p_state}",
+                   "if my television switches ${p_state}",
+                   "when the tv becomes ${p_state}",
+                   "if my television is ${p_state}",
+                   "when my tv changes to ${p_state}"]];
+
+    stream := monitor(@org.thingpedia.iot.tv.power()), (state == enum(on))
+    #_[utterances=["when my tv turns on",
+                   "when I switch on the television",
+                   "if the television becomes on",
+                   "when my tv gets switched to on",
+                   "if my television is on",
+                   "when my television is turned on",
+                   "the moment my tv is switched on"]];
+
+    stream := monitor(@org.thingpedia.iot.tv.power()), (state == enum(off))
+    #_[utterances=["when my tv is turned off",
+                   "if my television switches off",
+                   "the moment my tv becomes off",
+                   "if my television is off",
+                   "when my tv gets turned off"]];
+
+    action (p_power :Enum(on,off)) := @org.thingpedia.iot.tv.set_power(power=p_power)
+    #_[utterances=["turn ${p_power} my television",
+                   "switch ${p_power} the television",
+                   "${p_power} the tv",
+                   "turn ${p_power} my tv",
+                   "set the power on my tv to ${p_power}"]];
+
+    action := @org.thingpedia.iot.tv.set_power(power=enum(on))
+    #_[utterances=["turn on the tv",
+                   "switch on my television",
+                   "help me turn on the tv",
+                   "switch on the tv for me"]];
+
+    action := @org.thingpedia.iot.tv.set_power(power=enum(off))
+    #_[utterances=["turn off my television",
+                   "switch off the tv",
+                   "turn off the tv",
+                   "help to off the tv",
+                   "shut off my tv"]];
+
+    program (p_name : String) := @org.thingpedia.iot.tv(name=p_name).power()
+    #_[utterances=["is my ${p_name} tv on?",
+                   "check if my ${p_name} television is off",
+                   "is the ${p_name} tv turned on?",
+                   "check if my ${p_name} tv is switched off",
+                   "check if my ${p_name} television is turned on or off",
+                   "check if my ${p_name} tv is switched on or switched off"]];
+
+    query (p_name : String) := @org.thingpedia.iot.tv(name=p_name).power()
+    #_[utterances=["if my ${p_name} television is on or off",
+                   "whether my ${p_name} tv is switched on or switched off"]];
+
+    stream (p_name : String) := monitor(@org.thingpedia.iot.tv(name=p_name).power())
+    #_[utterances=["when my ${p_name} television changes state"]];
+
+    stream (p_name : String, p_state : Enum(on, off)) := monitor(@org.thingpedia.iot.tv(name=p_name).power()), (state == p_state)
+    #_[utterances=["when my ${p_name} tv turns ${p_state}",
+                   "if my ${p_name} television switches ${p_state}",
+                   "when the ${p_name} tv becomes ${p_state}",
+                   "if my ${p_name} television is ${p_state}",
+                   "when my ${p_name} tv changes to ${p_state}"]];
+
+    stream (p_name : String) := monitor(@org.thingpedia.iot.tv(name=p_name).power()), (state == enum(on))
+    #_[utterances=["when my ${p_name} tv turns on",
+                   "when I switch on the ${p_name} television",
+                   "if the ${p_name} television becomes on",
+                   "when my ${p_name} tv gets switched to on",
+                   "if my ${p_name} television is on",
+                   "when my ${p_name} television is turned on",
+                   "the moment my ${p_name} tv is switched on"]];
+
+    stream (p_name : String) := monitor(@org.thingpedia.iot.tv(name=p_name).power()), (state == enum(off))
+    #_[utterances=["when my ${p_name} tv is turned off",
+                   "if my ${p_name} television switches off",
+                   "the moment my ${p_name} tv becomes off",
+                   "if my ${p_name} television is off",
+                   "when my ${p_name} tv gets turned off"]];
+
+    action (p_name : String, p_power :Enum(on,off)) := @org.thingpedia.iot.tv(name=p_name).set_power(power=p_power)
+    #_[utterances=["turn ${p_power} my ${p_name} television",
+                   "switch ${p_power} the ${p_name} television",
+                   "${p_power} the ${p_name} tv",
+                   "turn ${p_power} my ${p_name} tv",
+                   "set the power on my ${p_name} tv to ${p_power}"]];
+
+    action (p_name : String) := @org.thingpedia.iot.tv(name=p_name).set_power(power=enum(on))
+    #_[utterances=["turn on the ${p_name} tv",
+                   "switch on my ${p_name} television",
+                   "help me turn on the ${p_name} tv",
+                   "switch on the ${p_name} tv for me"]];
+
+    action (p_name : String) := @org.thingpedia.iot.tv(name=p_name).set_power(power=enum(off))
+    #_[utterances=["turn off my ${p_name} television",
+                   "switch off the ${p_name} tv",
+                   "turn off the ${p_name} tv",
+                   "help to off the ${p_name} tv",
+                   "shut off my ${p_name} tv"]];
+
+
+    action (p_url :Entity(tt:url)) := @org.thingpedia.iot.tv.play_url(url=p_url)
+    #_[utterances=["play link ${p_url:const} on my tv",
+                   "play ${p_url} on my tv"]];
+
+
+    action (p_name : String, p_url :Entity(tt:url)) := @org.thingpedia.iot.tv(name=p_name).play_url(url=p_url)
+    #_[utterances=["play link ${p_url:const} on my ${p_name} tv",
+                   "play ${p_url} on my ${p_name} tv"]];
+}

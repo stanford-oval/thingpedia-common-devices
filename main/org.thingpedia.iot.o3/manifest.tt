@@ -1,0 +1,16 @@
+abstract class @org.thingpedia.iot.o3
+#_[thingpedia_name="Ozone Sensor"]
+#_[thingpedia_description="Interface for Ozone Sensor."]
+#_[description="Interface for Ozone Sensor."]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="home"]
+{
+  monitorable query state(out o3_value : Number, out o3_state : Enum(detected,not_detected) )
+  #_[canonical=["ozone sensor state",
+                "ozone reading"]]
+  #_[confirmation="the ozone index from $__device"]
+  #[confirm=false]
+  #_[result=["the ozone reading ${o3_value}", "it is ${o3_state} O3 in the room"]]
+  #[minimal_projection=["o3_state","o3_value"]];
+}

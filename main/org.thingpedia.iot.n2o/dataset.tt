@@ -1,0 +1,115 @@
+dataset @org.thingpedia.iot.n2o language "en" {
+    program := @org.thingpedia.iot.n2o.state() 
+    #_[utterances=["is there any nitrogen oxide?",
+                   "check if there is any nitrogen oxide",
+                   "check whether N2O is detected",
+                   "is there any nitrogen oxide?",
+                   "check if the sensor is detecting any nitrogen oxide",
+                   "do you smell N2O?",
+                   "is there a N2O leak?",
+                   "is there nitrogen oxide?",
+                   "there is presence of nitrogen oxide?"]]
+    #[id=54304068]
+    #[name="StateThenNotify"];
+
+    query := @org.thingpedia.iot.n2o.state()
+    #_[utterances=["if the sensor is detecting any N2O",
+                   "whether the sensor is detecting nitrogen oxide",
+                   "if the N2O detector is catching any nitrogen oxide",
+                   "if the nitrogen oxide sensor is detecting something",
+                   "whether the nitrogen oxide sensor is detecting anything",
+                   "whether there is any N2O"]]
+    #[id=54304077]
+    #[name="State"];
+
+    stream := monitor (@org.thingpedia.iot.n2o.state())
+    #_[utterances=["when the nitrogen oxide detector starts or stops detecting something",
+                   "when the N2O detector starts or stops detecting nitrogen oxide",
+                   "when the nitrogen oxide detector starts or stops detecting any N2O",
+                   "when the quality of the air is affected by presence of any nitrogen oxide",
+                   "when my sensor starts detecting nitrogen oxide",
+                   "when my detector is detecting N2O",
+                   "the moment my sensor detects nitrogen oxide"]]
+    #[id=54304085]
+    #[name="MonitorState"];
+
+    stream (p_state :Enum(detected,not_detected)) := monitor (@org.thingpedia.iot.n2o.state()), (n2o_state == p_state)
+    #_[utterances=["when N2O is ${p_state}",
+                   "when nitrogen oxide is ${p_state}",
+                   "as soon as N2O is ${p_state}",
+                   "when nitrogen oxide is ${p_state} in the air"]]
+    #[id=5430049116]
+    #[name="MonitorStateByStateN2O"];
+
+    stream := monitor (@org.thingpedia.iot.n2o.state()), n2o_state == enum(detected)
+    #_[utterances=["when N2O is detected",
+                   "when there is nitrogen oxide",
+                   "when you smell N2O",
+                   "when nitrogen oxide appears",
+                   "when there is nitrogen oxide in the air"]]
+    #[id=5430049116]
+    #[name="MonitordetectedN2O"];
+
+    stream := monitor (@org.thingpedia.iot.n2o.state()), n2o_state == enum(not_detected)
+    #_[utterances=["when no nitrogen oxide is detected",
+                   "when N2O is not detected anymore",
+                   "when there is no N2O",
+                   "when nitrogen oxide clears",
+                   "when the nitrogen oxide goes away",
+                   "when the N2O is gone",
+                   "when there is no more nitrogen oxide"]]
+    #[id=543040101]
+    #[name="Monitornot_detectedNothing"];
+
+    program (p_name : String) := @org.thingpedia.iot.n2o(name=p_name).state() 
+    #_[utterances=["check the ${p_name:const} nitrogen oxide sensor reading",
+                   "check whether ${p_name:const} N2O sensor detects",
+                   "check if the ${p_name:const} sensor is detecting any nitrogen oxide",
+                   "the ${p_name:const} smells N2O?"]]
+    #[id=54304168]
+    #[name="StateThenNotifyName"];
+
+    query (p_name : String) := @org.thingpedia.iot.n2o(name=p_name).state()
+    #_[utterances=["if the ${p_name:const} sensor is detecting any N2O",
+                   "whether the ${p_name:const} sensor is detecting nitrogen oxide",
+                   "if the ${p_name:const} N2O detector is catching any nitrogen oxide",
+                   "if the ${p_name:const} nitrogen oxide sensor is detecting something",
+                   "whether the ${p_name:const} nitrogen oxide sensor is detecting anything"]]
+    #[id=54304277]
+    #[name="StateName"];
+
+    stream (p_name : String) := monitor (@org.thingpedia.iot.n2o(name=p_name).state())
+    #_[utterances=["when the ${p_name:const} nitrogen oxide detector starts or stops detecting something",
+                   "when the ${p_name:const} N2O detector starts or stops detecting nitrogen oxide",
+                   "when the ${p_name:const} nitrogen oxide detector starts or stops detecting any N2O",
+                   "when my ${p_name:const} sensor starts detecting nitrogen oxide",
+                   "when my ${p_name:const} detector is detecting N2O",
+                   "the moment my ${p_name:const} sensor detects nitrogen oxide"]]
+    #[id=54304385]
+    #[name="MonitorStateName"];
+
+    stream (p_name : String, p_state :Enum(detected,not_detected)) := monitor (@org.thingpedia.iot.n2o(name=p_name).state()), (n2o_state == p_state)
+    #_[utterances=["when ${p_name:const} sensor says N2O is ${p_state}",
+                   "when ${p_name:const} detector read that nitrogen oxide is ${p_state}",
+                   "as soon as ${p_name:const} sensor says N2O is ${p_state}"]]
+    #[id=5430044116]
+    #[name="MonitorStateByStateN2OName"];
+
+    stream (p_name : String) := monitor (@org.thingpedia.iot.n2o.state()), n2o_state == enum(detected)
+    #_[utterances=["when N2O is detected by ${p_name:const}",
+                   "when the ${p_name:const} sensor says that there is nitrogen oxide",
+                   "when ${p_name:const} sensor smell N2O",
+                   "when nitrogen oxide appears on ${p_name:const} sensor",
+                   "when there is nitrogen oxide in the air detected by ${p_name:const} N2O sensor"]]
+    #[id=5430045116]
+    #[name="MonitordetectedN2OName"];
+
+    stream (p_name : String) := monitor (@org.thingpedia.iot.n2o.state()), n2o_state == enum(not_detected)
+    #_[utterances=["when no nitrogen oxide is detected by ${p_name:const}",
+                   "when N2O is not detected anymore by ${p_name:const}",
+                   "when there is no N2O detected by ${p_name:const}",
+                   "when ${p_name:const} says that nitrogen oxide clears",
+                   "when there is no more nitrogen oxide in the air detected by ${p_name:const} N2O sensor"]]
+    #[id=543046101]
+    #[name="Monitornot_detectedNothingName"];
+}

@@ -1,0 +1,16 @@
+abstract class @org.thingpedia.iot.co2
+#_[thingpedia_name="Carbon Dioxide Sensor"]
+#_[thingpedia_description="Interface for Carbon Dioxide Sensor."]
+#_[description="Interface for Carbon Dioxide Sensor."]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="home"]
+{
+  monitorable query state(out co2_value : Number, out co2_state : Enum(detected,not_detected) )
+  #_[canonical=["carbon dioxide sensor state",
+                "carbon dioxide reading"]]
+  #_[confirmation="the carbon dioxide index from $__device"]
+  #[confirm=false]
+  #_[result=["the carbon dioxide reading ${co2_value}", "it is ${co2_state} CO2 in the room"]]
+  #[minimal_projection=["co2_state","co2_value"]];
+}

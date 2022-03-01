@@ -1,0 +1,115 @@
+dataset @org.thingpedia.iot.o3 language "en" {
+    program := @org.thingpedia.iot.o3.state() 
+    #_[utterances=["is there any ozone?",
+                   "check if there is any ozone",
+                   "check whether O3 is detected",
+                   "is there any ozone?",
+                   "check if the sensor is detecting any ozone",
+                   "do you smell O3?",
+                   "is there a O3 leak?",
+                   "is there ozone?",
+                   "there is presence of ozone?"]]
+    #[id=54304068]
+    #[name="StateThenNotify"];
+
+    query := @org.thingpedia.iot.o3.state()
+    #_[utterances=["if the sensor is detecting any O3",
+                   "whether the sensor is detecting ozone",
+                   "if the O3 detector is catching any ozone",
+                   "if the ozone sensor is detecting something",
+                   "whether the ozone sensor is detecting anything",
+                   "whether there is any O3"]]
+    #[id=54304077]
+    #[name="State"];
+
+    stream := monitor (@org.thingpedia.iot.o3.state())
+    #_[utterances=["when the ozone detector starts or stops detecting something",
+                   "when the O3 detector starts or stops detecting ozone",
+                   "when the ozone detector starts or stops detecting any O3",
+                   "when the quality of the air is affected by presence of any ozone",
+                   "when my sensor starts detecting ozone",
+                   "when my detector is detecting O3",
+                   "the moment my sensor detects ozone"]]
+    #[id=54304085]
+    #[name="MonitorState"];
+
+    stream (p_state :Enum(detected,not_detected)) := monitor (@org.thingpedia.iot.o3.state()), (o3_state == p_state)
+    #_[utterances=["when O3 is ${p_state}",
+                   "when ozone is ${p_state}",
+                   "as soon as O3 is ${p_state}",
+                   "when ozone is ${p_state} in the air"]]
+    #[id=5430049116]
+    #[name="MonitorStateByStateO3"];
+
+    stream := monitor (@org.thingpedia.iot.o3.state()), o3_state == enum(detected)
+    #_[utterances=["when O3 is detected",
+                   "when there is ozone",
+                   "when you smell O3",
+                   "when ozone appears",
+                   "when there is ozone in the air"]]
+    #[id=5430049116]
+    #[name="MonitordetectedO3"];
+
+    stream := monitor (@org.thingpedia.iot.o3.state()), o3_state == enum(not_detected)
+    #_[utterances=["when no ozone is detected",
+                   "when O3 is not detected anymore",
+                   "when there is no O3",
+                   "when ozone clears",
+                   "when the ozone goes away",
+                   "when the O3 is gone",
+                   "when there is no more ozone"]]
+    #[id=543040101]
+    #[name="Monitornot_detectedNothing"];
+
+    program (p_name : String) := @org.thingpedia.iot.o3(name=p_name).state() 
+    #_[utterances=["check the ${p_name:const} ozone sensor reading",
+                   "check whether ${p_name:const} O3 sensor detects",
+                   "check if the ${p_name:const} sensor is detecting any ozone",
+                   "the ${p_name:const} smells O3?"]]
+    #[id=54304168]
+    #[name="StateThenNotifyName"];
+
+    query (p_name : String) := @org.thingpedia.iot.o3(name=p_name).state()
+    #_[utterances=["if the ${p_name:const} sensor is detecting any O3",
+                   "whether the ${p_name:const} sensor is detecting ozone",
+                   "if the ${p_name:const} O3 detector is catching any ozone",
+                   "if the ${p_name:const} ozone sensor is detecting something",
+                   "whether the ${p_name:const} ozone sensor is detecting anything"]]
+    #[id=54304277]
+    #[name="StateName"];
+
+    stream (p_name : String) := monitor (@org.thingpedia.iot.o3(name=p_name).state())
+    #_[utterances=["when the ${p_name:const} ozone detector starts or stops detecting something",
+                   "when the ${p_name:const} O3 detector starts or stops detecting ozone",
+                   "when the ${p_name:const} ozone detector starts or stops detecting any O3",
+                   "when my ${p_name:const} sensor starts detecting ozone",
+                   "when my ${p_name:const} detector is detecting O3",
+                   "the moment my ${p_name:const} sensor detects ozone"]]
+    #[id=54304385]
+    #[name="MonitorStateName"];
+
+    stream (p_name : String, p_state :Enum(detected,not_detected)) := monitor (@org.thingpedia.iot.o3(name=p_name).state()), (o3_state == p_state)
+    #_[utterances=["when ${p_name:const} sensor says O3 is ${p_state}",
+                   "when ${p_name:const} detector read that ozone is ${p_state}",
+                   "as soon as ${p_name:const} sensor says O3 is ${p_state}"]]
+    #[id=5430044116]
+    #[name="MonitorStateByStateO3Name"];
+
+    stream (p_name : String) := monitor (@org.thingpedia.iot.o3.state()), o3_state == enum(detected)
+    #_[utterances=["when O3 is detected by ${p_name:const}",
+                   "when the ${p_name:const} sensor says that there is ozone",
+                   "when ${p_name:const} sensor smell O3",
+                   "when ozone appears on ${p_name:const} sensor",
+                   "when there is ozone in the air detected by ${p_name:const} O3 sensor"]]
+    #[id=5430045116]
+    #[name="MonitordetectedO3Name"];
+
+    stream (p_name : String) := monitor (@org.thingpedia.iot.o3.state()), o3_state == enum(not_detected)
+    #_[utterances=["when no ozone is detected by ${p_name:const}",
+                   "when O3 is not detected anymore by ${p_name:const}",
+                   "when there is no O3 detected by ${p_name:const}",
+                   "when ${p_name:const} says that ozone clears",
+                   "when there is no more ozone in the air detected by ${p_name:const} O3 sensor"]]
+    #[id=543046101]
+    #[name="Monitornot_detectedNothingName"];
+}

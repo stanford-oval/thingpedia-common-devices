@@ -1,0 +1,19 @@
+abstract class @org.thingpedia.iot.opening
+#_[thingpedia_name="Opening Sensor"]
+#_[thingpedia_description="Interface for Opening Sensors."]
+#_[description="Interface for Opening Sensors."]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="home"]
+{
+  monitorable query state(out state : Enum(open,closed))
+  #_[canonical="opening state"]
+  #_[confirmation="the state of $__device"]
+  #[confirm=false]
+  #_[result=["the {${__device}|} opening is ${state}"]];
+
+  action set_state(in req state: Enum(open,close) #_[prompt="Do you want to open or close?"] #_[canonical="state"])
+  #_[canonical="open or close"]
+  #_[confirmation="$state $__device"]
+  #[confirm=true];
+}

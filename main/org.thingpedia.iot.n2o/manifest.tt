@@ -1,0 +1,16 @@
+abstract class @org.thingpedia.iot.n2o
+#_[thingpedia_name="Nitrogen Oxide Sensor"]
+#_[thingpedia_description="Interface for Nitrogen Oxide Sensor."]
+#_[description="Interface for Nitrogen Oxide Sensor."]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="home"]
+{
+  monitorable query state(out n2o_value : Number, out n2o_state : Enum(detected,not_detected) )
+  #_[canonical=["nitrogen oxide sensor state",
+                "nitrogen oxide reading"]]
+  #_[confirmation="the nitrogen oxide index from $__device"]
+  #[confirm=false]
+  #_[result=["the nitrogen oxide reading ${n2o_value}", "it is ${n2o_state} N2O in the room"]]
+  #[minimal_projection=["n2o_state","n2o_value"]];
+}

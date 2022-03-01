@@ -1,0 +1,16 @@
+abstract class @org.thingpedia.iot.so2
+#_[thingpedia_name="Sulphur Dioxide Sensor"]
+#_[thingpedia_description="Interface for Sulphur Dioxide Sensor."]
+#_[description="Interface for Sulphur Dioxide Sensor."]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="home"]
+{
+  monitorable query state(out so2_value : Number, out so2_state : Enum(detected,not_detected) )
+  #_[canonical=["sulphur dioxide sensor state",
+                "sulphur dioxide reading"]]
+  #_[confirmation="the sulphur dioxide index from $__device"]
+  #[confirm=false]
+  #_[result=["the sulphur dioxide reading ${so2_value}", "it is ${so2_state} SO2 in the room"]]
+  #[minimal_projection=["so2_state","so2_value"]];
+}

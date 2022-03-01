@@ -1,0 +1,50 @@
+dataset @org.thingpedia.iot.alarm language "en" {
+
+    program := @org.thingpedia.iot.alarm.state()
+    #_[utterances=["is it armed?",
+                 "check if my alarm is triggered",
+                 "what does my alarm panel says?",
+                 "what is the alarm state?"]]
+    #[name="StateThenNotify"];
+
+    action (p_mode :Enum(disarmed,armed_home,armed_away,armed_night,armed_custom_bypass,pending,arming,disarming,triggered)) := @org.thingpedia.iot.alarm.set_alarm_mode(mode=p_mode)
+    #_[utterances=["set my alarm to ${p_mode}",
+                    "configure the alarm state to ${p_mode}",
+                    "switch the alarm to ${p_mode}"]]
+    #[name="State"];
+
+    query := @org.thingpedia.iot.alarm.state()
+    #_[utterances=["the state of my alarm",
+                   "the current alarm configuration"]]
+    #[name="StateQuery"];
+
+    stream (p_mode :Enum(disarmed,armed_home,armed_away,armed_night,armed_custom_bypass,pending,arming,disarming,triggered)) := monitor (@org.thingpedia.iot.alarm.state()), mode == p_mode
+    #_[utterances=["when my alarm change state to ${p_mode}",
+                   "when my alarm is set to ${p_mode}",
+                   "the configuration of my alarm is changed to ${p_mode}"]]
+    #[name="MonitorState"];
+
+    program (p_name : String) := @org.thingpedia.iot.alarm(name=p_name).state()
+    #_[utterances=["my ${p_name} is it armed?",
+                 "check if ${p_name} is triggered",
+                 "what does ${p_name} says?",
+                 "what is the ${p_name} state?"]]
+    #[name="StateThenNotifyByName"];
+
+    action (p_name : String, p_mode :Enum(disarmed,armed_home,armed_away,armed_night,armed_custom_bypass,pending,arming,disarming,triggered)) := @org.thingpedia.iot.alarm(name=p_name).set_alarm_mode(mode=p_mode)        
+    #_[utterances=["set ${p_name} to ${p_mode}",
+                    "configure ${p_name} to ${p_mode}",
+                    "switch ${p_name}  to ${p_mode}"]]
+    #[name="StateName"];
+
+    query (p_name : String) := @org.thingpedia.iot.alarm(name=p_name).state()
+    #_[utterances=["the state of my ${p_name} ",
+                   "the current ${p_name} configuration"]]
+    #[name="StateQueryName"];
+
+    stream (p_name : String, p_mode :Enum(disarmed,armed_home,armed_away,armed_night,armed_custom_bypass,pending,arming,disarming,triggered)) := monitor (@org.thingpedia.iot.alarm(name=p_name).state()), mode == p_mode
+    #_[utterances=["when my ${p_name} change state to ${p_mode}",
+                   "when my ${p_name} is set to ${p_mode}",
+                   "the configuration of my ${p_name} is changed to ${p_mode}"]]
+    #[name="MonitorStateName"];
+}

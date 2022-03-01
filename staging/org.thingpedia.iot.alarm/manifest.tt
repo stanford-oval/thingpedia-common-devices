@@ -1,0 +1,20 @@
+abstract class @org.thingpedia.iot.alarm
+#_[thingpedia_name="Alarm Control Panel"]
+#_[thingpedia_description="Interface for Alarm Control Panel."]
+#_[description="Interface for Alarm Control Panel."]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="home"]
+{
+  monitorable query state(out mode: Enum(disarmed,armed_home,armed_away,armed_night,armed_custom_bypass,pending,arming,disarming,triggered))
+  #_[canonical="get alarm panel state"]
+  #_[confirmation="the state of ${__device}"]
+  #_[result=["the alarm system is ${state}"]]
+  #[confirm=false];
+  
+
+  action set_alarm_mode(in req mode: Enum(disarmed,armed_home,armed_away,armed_night,armed_custom_bypass,pending,arming,disarming,triggered) #_[prompt="What mode do you want to set?"] #_[canonical="mode"])
+  #_[canonical="set alarm mode on panel"]
+  #_[confirmation="set ${__device} to $mode"]
+  #[confirm=true];
+}

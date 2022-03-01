@@ -1,0 +1,81 @@
+dataset @org.thingpedia.iot.current language "en" {
+    program := @org.thingpedia.iot.current.state()
+    #_[utterances=["which is the actual current consumption",
+                   "tell me the current absorbed",
+                   "which is the current level reading"]]
+    #[id=130001]               
+    #[name="StateThenNotify"];
+
+    query := @org.thingpedia.iot.current.state()
+    #_[utterances=["the current reading",
+                   "the value of the current",
+                   "the current level",
+                   "the current consumption"]]
+    #[id=130002] 
+    #[name="State"];
+
+    stream := monitor(@org.thingpedia.iot.current.state())
+    #_[utterances=["when the current value change",
+                   "when the current consumption rise",
+                   "if the current level lower",
+                   "when the current consumption updates"]]
+    #[id=130003] 
+    #[name="MonitorState"];
+
+    stream (p_check : Number) := monitor(@org.thingpedia.iot.current.state()), current >= p_check
+    #_[utterances=["when the current value go over ${p_check}",
+                    "when the current consumption rise more than ${p_check}",
+                    "if the current level is higher than ${p_check}",
+                    "when the current consumption goes above ${p_check}"]]
+    #[id=130004] 
+    #[name="MonitorStateCheckGreater"];
+
+    stream (p_check : Number) := monitor(@org.thingpedia.iot.current.state()), current <= p_check
+    #_[utterances=["when the current value go under ${p_check}",
+                   "when the current consumption drops under ${p_check}",
+                   "if the current level is lower than ${p_check}",
+                   "when the current consumption goes below ${p_check}"]]
+    #[id=130005]               
+    #[name="MonitorStateCheckless"];
+
+    program (p_name : String) := @org.thingpedia.iot.current.state()
+    #_[utterances=["what does the ${p_name:const} reads as actual current consumption",
+                   "how many current is absorbed according to my ${p_name:const} ?",
+                   "check the ${p_name:const} meter current reading",
+                   "which is the current level reading from ${p_name:const}",
+                   "what is my ${p_name:const} current consumption?"]]
+    #[id=130006] 
+    #[name="StateThenNotifyName"];
+
+    query (p_name : String) := @org.thingpedia.iot.current.state()
+    #_[utterances=["the current reading according to my ${p_name:const} meter",
+                    "the value of the current from the ${p_name:const}",
+                    "the current level read by ${p_name:const} meter",
+                    "the current consumption gathered from ${p_name:const}"]]
+    #[id=130007] 
+    #[name="StateName"];
+
+    stream (p_name : String) := monitor(@org.thingpedia.iot.current.state())
+    #_[utterances=["when the current value of ${p_name:const} meter change",
+                    "when the current consumption read by ${p_name:const} rise",
+                    "if the current level from ${p_name:const} meter lowers",
+                    "when the ${p_name:const}'s current consumption reading updates"]]
+    #[id=130008] 
+    #[name="MonitorStateName"];
+
+    stream (p_name : String, p_check : Number) := monitor(@org.thingpedia.iot.current.state()), current >= p_check
+    #_[utterances=["when the current value of ${p_name:const} go over ${p_check}",
+                    "when the current consumption read by ${p_name:const} rise more than ${p_check}",
+                    "if the current level from ${p_name:const} is higher of ${p_check}",
+                    "when the ${p_name:const} 's current consumption goes above ${p_check}"]]
+    #[id=130009] 
+    #[name="MonitorStateCheckGreaterName"];
+
+    stream (p_name : String, p_check : Number) := monitor(@org.thingpedia.iot.current.state()), current <= p_check
+    #_[utterances=["when the current value of ${p_name:const} go below ${p_check}",
+                    "when the current consumption read by ${p_name:const} drops under ${p_check}",
+                    "if the current level from ${p_name:const} is lower of ${p_check}",
+                    "when the ${p_name:const} 's current consumption goes below ${p_check}"]]
+    #[id=130010] 
+    #[name="MonitorStateChecklessName"];
+}
