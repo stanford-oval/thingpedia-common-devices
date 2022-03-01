@@ -9,8 +9,8 @@ echo "This OS is $check_os"
 if [[ $check_os == *"Ubuntu"* ]];
 then
     echo "Setting Ubuntu for Home assistant installation"
-    sleep 10
-    . ./scripts/set-ha-inst-ubuntu.sh
+    #sleep 10
+    #. ./scripts/set-ha-inst-ubuntu.sh
 elif [[ $check_os == *"Fedora"* ]];
 then
     echo "Setting Fedora for Home assistant installation"
