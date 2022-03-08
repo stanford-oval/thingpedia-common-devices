@@ -1,0 +1,63 @@
+dataset @org.thingpedia.iot.aqi language "en" {
+    program  := @org.thingpedia.iot.aqi.state() 
+    #_[utterances=["how is the quality of the air index?",
+                   "check the AQI",
+                   "tell me the Air Quality Index value"]]
+    #[id=54300068]
+    #[name="StateThenNotify"];
+
+    query := @org.thingpedia.iot.aqi.state()
+    #_[utterances=["the value of the AQI",
+                   "the Air Quality Index read"]]
+    #[id=54300077]
+    #[name="State"];
+
+    stream (p_aqi_value :Number) := monitor (@org.thingpedia.iot.aqi.state()), aqi_value >= p_aqi_value
+    #_[utterances=["when the Air Quality Index is higher than ${p_aqi_value}",
+                   "if the AQI level goes above ${p_aqi_value} "]]
+    #[id=54300177]
+    #[name="MonitorStateByValueGreaterThan"];
+
+    stream (p_aqi_value :Number) := monitor (@org.thingpedia.iot.aqi.state()), aqi_value <= p_aqi_value
+    #_[utterances=["when the Air Quality Index is lower than ${p_aqi_value}",
+                   "if the AQI level goes below ${p_aqi_value}"]]
+    #[id=54300277]
+    #[name="MonitorStateByValuelowerThan"];
+
+    stream := monitor (@org.thingpedia.iot.aqi.state())
+    #_[utterances=["when AQI variation is detected",
+                   "when there is air quality index reported"]]
+    #[id=5430009114]
+    #[name="MonitorStateByStateAQI"];
+
+    program (p_name :String) := @org.thingpedia.iot.aqi(name=p_name).state()
+    #_[utterances=["how is the quality of the ${p_name:const} air index?",
+                   "check the ${p_name:const} AQI",
+                   "tell me the ${p_name:const} Air Quality Index value"]]
+    #[id=54300111]
+    #[name="StateThenNotifyName"];
+
+    query (p_name :String) := @org.thingpedia.iot.aqi(name=p_name).state()
+    #_[utterances=["the value of the ${p_name:const} AQI",
+                   "theAir Quality Index read by ${p_name:const}"]]
+    #[id=54300077]
+    #[name="StateName"];
+
+    stream (p_name :String, p_aqi_value :Number) := monitor (@org.thingpedia.iot.aqi(name=p_name).state()), aqi_value >= p_aqi_value
+    #_[utterances=["when the ${p_name:const} Air Quality Index is higher than ${p_aqi_value}",
+                   "if the ${p_name:const} AQI level goes above ${p_aqi_value} "]]
+    #[id=54300177]
+    #[name="MonitorStateByValueGreaterThanName"];
+
+    stream (p_name :String, p_aqi_value :Number) := monitor (@org.thingpedia.iot.aqi(name=p_name).state()), aqi_value <= p_aqi_value
+    #_[utterances=["when the ${p_name:const} Air Quality Index is lower than ${p_aqi_value}",
+                   "if the ${p_name:const} AQI level goes below ${p_aqi_value} "]]
+    #[id=54300277]
+    #[name="MonitorStateByValuelowerThanName"];
+
+    stream (p_name :String) := monitor (@org.thingpedia.iot.aqi(name=p_name).state())
+    #_[utterances=["when AQI variation is detected by ${p_name:const}",
+                   "when there is air quality index reported by ${p_name:const}"]]
+    #[id=54300132]
+    #[name="MonitorStateByStateAQIName"];
+}

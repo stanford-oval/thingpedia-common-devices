@@ -1,0 +1,16 @@
+abstract class @org.thingpedia.iot.gas
+#_[thingpedia_name="Gas Sensor"]
+#_[thingpedia_description="Interface for Gas Sensor."]
+#_[description="Interface for Gas Sensor."]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="home"]
+{
+  monitorable query state(out gas_value : Number, out gas_state : Enum(detected,not_detected) )
+  #_[canonical=["gas sensor state",
+                "gas reading"]]
+  #_[confirmation="the gas index from $__device"]
+  #[confirm=false]
+  #_[result=["the gas reading ${gas_value}", "it is ${gas_state} gas in the room"]]
+  #[minimal_projection=["gas_state","gas_value"]];
+}

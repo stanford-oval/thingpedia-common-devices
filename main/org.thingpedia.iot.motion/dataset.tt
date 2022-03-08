@@ -4,21 +4,25 @@ dataset @org.thingpedia.iot.motion language "en" {
                    "check if the motion sensor is detecting anything",
                    "is there anything moving in front of the motion sensor",
                    "check whether the motion sensor has detected any movement"]]
+    #[id=420031120]
     #[name="StateThenNotify"];
 
     query  := @org.thingpedia.iot.motion.motion()
     #_[utterances=["the state of the motion sensor",
                    "if the motion sensor is detecting movement or not",
                    "whether the motion sensor is detecting any movement"]]
+    #[id=420031121]
     #[name="State"];
 
     stream  := monitor (@org.thingpedia.iot.motion.motion())
     #_[utterances=["when the motion sensor detects or stops detecting movement"]]
+    #[id=420031122]
     #[name="MonitorState"];
 
     stream (p_state :Enum(detecting,not_detecting))  := monitor (@org.thingpedia.iot.motion.motion()), state == p_state
     #_[utterances=["when the motion sensor starts ${p_state} movement",
                    "once the motion sensor starts ${p_state} movement"]]
+    #[id=420031123]               
     #[name="MonitorStateByState"];
 
     stream  := monitor (@org.thingpedia.iot.motion.motion()), state == enum(detecting)
@@ -30,6 +34,7 @@ dataset @org.thingpedia.iot.motion language "en" {
                    "when something moves in front of my motion sensor",
                    "when my motion sensor detects someone",
                    "when the motion sensor detects a person"]]
+    #[id=420031124]
     #[name="MonitorStateByStateDetecting"];
 
     stream  := monitor (@org.thingpedia.iot.motion.motion()), state == enum(not_detecting)
@@ -38,6 +43,7 @@ dataset @org.thingpedia.iot.motion language "en" {
                    "when nothing is detected by my motion sensor",
                    "when nothing moves in front of my motion sensor",
                    "when my motion sensor is not detecting anything"]]
+    #[id=420031125]
     #[name="MonitorStateByStateNotDetecting"];
 
     program (p_name :String)  := @org.thingpedia.iot.motion(name=p_name).motion()
@@ -45,16 +51,19 @@ dataset @org.thingpedia.iot.motion language "en" {
                    "check if the ${p_name:const} motion sensor is detecting anything",
                    "is there anything moving in front of the ${p_name:const} motion sensor",
                    "check whether the ${p_name:const} motion sensor has detected any movement"]]
+    #[id=420031126]
     #[name="StateThenNotify1"];
 
     query (p_name :String)  := @org.thingpedia.iot.motion(name=p_name).motion()
     #_[utterances=["the state of the ${p_name:const} motion sensor",
                    "if the ${p_name:const} motion sensor is detecting movement or not",
                    "whether the ${p_name:const} motion sensor is detecting any movement"]]
+    #[id=420031127]
     #[name="State1"];
 
     stream (p_name :String)  := monitor (@org.thingpedia.iot.motion(name=p_name).motion())
     #_[utterances=["when the ${p_name:const} motion sensor detects or stops detecting movement"]]
+    #[id=420031128]
     #[name="MonitorState1"];
 
     stream (p_name :String)  := monitor (@org.thingpedia.iot.motion(name=p_name).motion()), state == enum(detecting)
@@ -66,6 +75,7 @@ dataset @org.thingpedia.iot.motion language "en" {
                    "when something moves in front of my ${p_name:const} motion sensor",
                    "when my ${p_name:const} motion sensor detects someone",
                    "when the ${p_name:const} motion sensor detects a person"]]
+    #[id=420031129]
     #[name="MonitorStateByStateDetecting1"];
 
     stream (p_name :String)  := monitor (@org.thingpedia.iot.motion(name=p_name).motion()), state == enum(not_detecting)
@@ -74,10 +84,11 @@ dataset @org.thingpedia.iot.motion language "en" {
                    "when nothing is detected by my ${p_name:const} motion sensor",
                    "when nothing moves in front of my ${p_name:const} motion sensor",
                    "when my ${p_name:const} motion sensor is not detecting anything"]]
+    #[id=420031130]
     #[name="MonitorStateByStateNotDetecting1"];
 
     stream (p_name :String, p_state :Enum(detecting,not_detecting))  := monitor (@org.thingpedia.iot.motion(name=p_name).motion()), state == p_state
     #_[utterances=["when the ${p_name:const} motion sensor starts ${p_state} movement"]]
+    #[id=420031131]
     #[name="MonitorStateByState1"];
-
 }

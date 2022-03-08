@@ -1,88 +1,147 @@
 dataset @org.thingpedia.iot.lock language "en" {
-
   program := @org.thingpedia.iot.lock.state()
   #_[utterances=["did I lock my door",
                  "did I leave my door unlocked?",
                  "did I forget to lock my door?",
                  "check whether I locked the door",
                  "is it unlocked?",
-                 "check if it is locked"]];
+                 "check if it is locked"]]
+  #[id=44003211]
+  #[name="LockStateThenNotify"];
 
   query := @org.thingpedia.iot.lock.state()
   #_[utterances=["whether the door is locked",
-                 "whether it is locked or not"]];
+                 "if the entrance is locked or not"]]
+  #[id=44003212]
+  #[name="State"];
 
   stream := monitor (@org.thingpedia.iot.lock.state())
-  #_[utterances=["when my door is locked or unlocked"]];
+  #_[utterances=["when my door is locked or unlocked",
+                 "as soon as the locking state of the entrance changes",
+                 "whenever someone interact with the locking system"]]
+  #[id=44003213]
+  #[name="MonitorState"];
 
   stream (p_state : Enum(unlocked, locked)) := monitor (@org.thingpedia.iot.lock.state()), (state == p_state)
   #_[utterances=["when my door becomes ${p_state}",
-                "when the door is ${p_state}",
-                "when the door gets ${p_state}",
-                "when it becomes ${p_state}",
-                "when it is ${p_state}",
-                "when it gets ${p_state}"]];
+                 "when the door is ${p_state}",
+                 "when the door gets ${p_state}",
+                 "when it becomes ${p_state}",
+                 "when it is ${p_state}",
+                 "when it gets ${p_state}"]]
+  #[id=44003214]
+  #[name="MonitorStatebyState"];
 
   stream := monitor (@org.thingpedia.iot.lock.state()), (state == enum(unlocked))
   #_[utterances=["when I open the lock",
-                "when I unlock the door",
-                "when someone unlocks the door",
-                "when anyone unlocks the door"]];
+                 "when I unlock the door",
+                 "when someone unlocks the door",
+                 "when anyone unlocks the door"]]
+  #[id=44003215]
+  #[name="MonitorStatebyStateUnlocked"];
 
   stream := monitor (@org.thingpedia.iot.lock.state()), (state == enum(locked))
   #_[utterances=["when I close the lock",
                 "when I lock my door",
                 "when someone locks the door",
-                "when anyone locks the door"]];
+                "when anyone locks the door"]]
+  #[id=44003216]
+  #[name="MonitorStatebyStateLocked"];
+
+  action (p_state :Enum(lock,unlock)) := @org.thingpedia.iot.lock.set_state(state=p_state)
+  #_[utterances=["${p_state} my door",
+                 "${p_state} the smart lock",
+                 "${p_state} the entrance",
+                 "help me ${p_state} the door",
+                 "${p_state} the lock for me"]]
+  #[id=44003217]
+  #[name="ActionStatebyState"];
+
+  action := @org.thingpedia.iot.lock.set_state(state=enum(lock))
+  #_[utterances=["close the lock of the entrance"]]
+  #[id=44003218]
+  #[name="ActionStatebyStateLock"];
+
+  action := @org.thingpedia.iot.lock.set_state(state=enum(unlock))
+  #_[utterances=["open the lock of the entrance"]]
+  #[id=44003219]
+  #[name="ActionStatebyStateUnlock"];
+
+  action (p_state :Enum(lock,unlock)) := @org.thingpedia.iot.lock(all=true).set_state(state=p_state)
+  #_[utterances=["${p_state} all the doors",
+                 "${p_state} the smart locks",
+                 "${p_state} the entrances",
+                 "help me ${p_state} all doors",
+                 "${p_state} all locks for me"]]
+  #[id=440032201]
+  #[name="ActionStatebyStateAll"];
 
   program (p_name : String) :=  @org.thingpedia.iot.lock(name=p_name).state()
   #_[utterances=["did I lock my ${p_name:const} door",
                  "did I leave my ${p_name:const} door unlocked?",
                  "did I forget to lock my ${p_name:const} door?",
-                 "check whether I locked the ${p_name:const} door"]];
-
-  action (p_state :Enum(lock,unlock)) := @org.thingpedia.iot.lock.set_state(state=p_state)
-  #_[utterances=["${p_state} my door"]];
-
-  action := @org.thingpedia.iot.lock.set_state(state=enum(lock))
-  #_[utterances=["help me lock the door",
-                 "lock the door for me"]];
-
-  action := @org.thingpedia.iot.lock.set_state(state=enum(unlock))
-  #_[utterances=["help me unlock the door",
-                 "unlock the door for me"]];
+                 "check whether I locked the ${p_name:const} door",
+                 "${p_name:const} is it unlocked?",
+                 "check if ${p_name:const} is locked or unlocked"]]
+  #[id=44003220]
+  #[name="LockStateThenNotifyName"];
 
   query (p_name : String) := @org.thingpedia.iot.lock(name=p_name).state()
-  #_[utterances=["whether the ${p_name:const} door is locked"]];
+  #_[utterances=["whether the ${p_name:const} door is locked",
+                 "if the ${p_name:const} is locked or not"]]
+  #[id=44003221]
+  #[name="StateName"];
 
   stream (p_name : String) := monitor (@org.thingpedia.iot.lock(name=p_name).state())
-  #_[utterances=["when my ${p_name:const} door is locked or unlocked"]];
+  #_[utterances=["when my ${p_name:const} door is locked or unlocked",
+                 "as soon as the locking state of the ${p_name:const} changes",
+                 "whenever someone interact with the ${p_name:const} locking system"]]
+  #[id=44003222]
+  #[name="MonitorStateName"];
 
   stream (p_name : String, p_state : Enum(unlocked, locked)) :=  monitor (@org.thingpedia.iot.lock(name=p_name).state()), (state == p_state)
   #_[utterances=["when my ${p_name:const} door becomes ${p_state}",
-                "when the ${p_name:const} door is ${p_state}",
-                "when the ${p_name:const} door gets ${p_state}"]];
+                 "when the ${p_name:const} door is ${p_state}",
+                 "when the ${p_name:const} door gets ${p_state}",
+                 "when ${p_name:const} becomes ${p_state}",
+                 "when ${p_name:const} is ${p_state}",
+                 "when ${p_name:const} gets ${p_state}"]]
+  #[id=44003223]
+  #[name="MonitorStatebyStateName"];
 
   stream (p_name : String) := monitor (@org.thingpedia.iot.lock(name=p_name).state()), (state == enum(unlocked))
   #_[utterances=["when I open the ${p_name:const} lock",
-                "when I unlock the ${p_name:const} door",
-                "when someone unlocks the ${p_name:const} door",
-                "when anyone unlocks the ${p_name:const} door"]];
+                 "when I unlock the ${p_name:const} door",
+                 "when someone unlocks the ${p_name:const} door",
+                 "when anyone unlocks the ${p_name:const} door"]]
+  #[id=44003224]
+  #[name="MonitorStatebyStateNameUnlocked"];
 
   stream (p_name : String) :=  monitor (@org.thingpedia.iot.lock(name=p_name).state()), (state == enum(locked))
   #_[utterances=["when I close the ${p_name:const} lock",
                 "when I lock my ${p_name:const} door",
                 "when someone locks the ${p_name:const} door",
-                "when anyone locks the ${p_name:const} door"]];
+                "when anyone locks the ${p_name:const} door"]]
+  #[id=44003225]
+  #[name="MonitorStatebyStateNameLocked"];
 
   action (p_name : String, p_state :Enum(lock,unlock)) := @org.thingpedia.iot.lock(name=p_name).set_state(state=p_state)
-  #_[utterances=["${p_state} my ${p_name:const} door"]];
+  #_[utterances=["${p_state} my ${p_name:const} door",
+                 "${p_state} the ${p_name:const} smart lock",
+                 "${p_state} the ${p_name:const} entrance",
+                 "help me ${p_state} the ${p_name:const} door",
+                 "${p_state} the ${p_name:const} lock for me"]]
+  #[id=44003226]
+  #[name="ActionStatebyStateName"];
 
   action (p_name : String) := @org.thingpedia.iot.lock(name=p_name).set_state(state=enum(lock))
-  #_[utterances=["help me lock the ${p_name:const} door",
-                 "lock the ${p_name:const} door for me"]];
+  #_[utterances=["close the ${p_name:const} of the entrance"]]
+  #[id=44003227]
+  #[name="ActionStatebyStateLockName"];
 
   action (p_name : String) := @org.thingpedia.iot.lock(name=p_name).set_state(state=enum(unlock))
-  #_[utterances=["help me unlock the ${p_name:const} door",
-                 "unlock the ${p_name:const} door for me"]];
+  #_[utterances=["open the ${p_name:const} of the entrance"]]
+  #[id=44003228]
+  #[name="ActionStatebyStateUnlockName"];
+
 }

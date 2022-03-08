@@ -1,0 +1,53 @@
+dataset @org.thingpedia.iot.conductivity language "en" {
+    program := @org.thingpedia.iot.conductivity.state()
+    #_[utterances=["check the soil conductivity",
+                   "what is the ground conductivity?",
+                   "how is the earth conductivity?",
+                   "what does the conductivity sensor say?",
+                   "what is the conductivity sensor level?",
+                   "which percentage the conductivity sensor is reading?"]]
+    #[id=111001]
+    #[name="State"];
+
+    query := @org.thingpedia.iot.conductivity.state()
+    #_[utterances=["the state of the soil conductivity",
+                   "the ground conductivity",
+                   "how earth conductivity is",
+                   "the conductivity read by the sensor"]]
+    #[id=111002]
+    #[name="StateAsk"];
+
+    stream := monitor(@org.thingpedia.iot.conductivity.state())
+    #_[utterances=["when the soil conductivity changes",
+                   "when there is a variation in conductivity percentage",
+                   "when the conductivity will rise or lower",
+                   "if the conductivity level has a variation"]]
+    #[id=111003]
+    #[name="StateNotify"];
+
+    program (p_name : String) := @org.thingpedia.iot.conductivity(name=p_name).state()
+    #_[utterances=["check the ${p_name:const} conductivity",
+                   "what is the ${p_name:const} conductivity?",
+                   "how is the ${p_name:const} earth conductivity?",
+                   "what does the ${p_name:const} soil sensor say?",
+                   "what is the ${p_name:const} conductivity level?",
+                   "which percentage the ${p_name:const} soil conductivity is reading?"]]
+    #[id=111004]
+    #[name="StateName"];
+
+    query (p_name : String) := @org.thingpedia.iot.conductivity(name=p_name).state()
+    #_[utterances=["the state of the ${p_name:const} soil conductivity",
+                   "the ${p_name:const} ground conductivity",
+                   "how ${p_name:const} earth conductivity is",
+                   "the ${p_name:const} conductivity read"]]
+    #[id=111005]
+    #[name="StateAskName"];
+
+    stream (p_name : String) := monitor(@org.thingpedia.iot.conductivity(name=p_name).state())
+    #_[utterances=["when the ${p_name:const} conductivity changes",
+                   "when there is a variation in ${p_name:const} conductivity percentage",
+                   "when the ${p_name:const} soil conductivity will rise or lower",
+                   "if the ${p_name:const} conductivity level has a variation"]]
+    #[id=111006]
+    #[name="StateNotifyName"];                    
+}

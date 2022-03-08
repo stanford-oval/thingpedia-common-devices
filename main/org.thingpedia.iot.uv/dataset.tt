@@ -1,51 +1,71 @@
 dataset @org.thingpedia.iot.uv language "en" {
 
   program := @org.thingpedia.iot.uv.uv()
-  #_[utterances=["is the indoor uv high?",
-                 "check if the indoor uv is high",
-                 "is the indoor uv low?",
-                 "check if the home uv is low",
-                 "check if the room uv is high or low",
-                 "what is the indoor uv?",
-                 "how high is the indoor uv?"]];
+  #_[utterances=["which is the uv sensor reading?",
+                 "what is the uv according to the sensor?",
+                 "check the ultraviolet level"]]
+  #[id=26001231]
+  #[name="StateThenNotify"];
 
   query := @org.thingpedia.iot.uv.uv()
-  #_[utterances=["the state of the room uv",
-                 "the room uv",
-                 "how high the home uv is",
-                 "if the inside uv is high or low",
-                 "whether the home uv is high or low"]];
+  #_[utterances=["the state of the uv read by the sensor",
+                 "the ultraviolet level from the sensor",
+                 "the uv sensor reading according to the sensor"]]
+  #[id=26001232]
+  #[name="State"];
 
   stream := monitor(@org.thingpedia.iot.uv.uv())
-  #_[utterances=["when the home uv changes"]];
+  #_[utterances=["when the uv sensor detects changes",
+                 "as soon as the ultraviolet level read by the sensor changes",
+                 "on uv change according to the sensor"]]
+  #[id=26001233]
+  #[name="MonitorState"];
 
   stream (p_uv :Number) := monitor (@org.thingpedia.iot.uv.uv()), value >= p_uv
-  #_[utterances=["when the sensor 's room uv is higher than $p_uv",
-                   "if the room uv  of the sensor is higher than $p_uv",
-                   "when the room uv of the sensor goes above $p_uv"]];
+  #_[utterances=["when the sensor detects uv higher than $p_uv",
+                 "if the ultraviolet level is higher than $p_uv",
+                 "when the uv reading goes above $p_uv"]]
+  #[id=26001234]
+  #[name="MonitorStateHigher"];
 
   stream (p_uv :Number) := monitor (@org.thingpedia.iot.uv.uv()), value <= p_uv
-  #_[utterances=["when the sensor 's room uv is lower than $p_uv",
-                   "if the room uv of the sensor is lower than $p_uv",
-                   "when the inside uv of the sensor goes below $p_uv"]];
+  #_[utterances=["when the sensor detects uv lower than $p_uv",
+                 "if the ultraviolet level is lower than $p_uv",
+                 "when the uv reading goes below $p_uv"]]
+  #[id=26001235]
+  #[name="MonitorStatelower"];
 
   program (p_name : String) := @org.thingpedia.iot.uv(name=p_name).uv()
-  #_[utterances=["what does the ${p_name:const} indoor uv sensor say?"]];
+  #_[utterances=["what does the ${p_name:const} uv sensor say?",
+                 "which is the ${p_name:const} uv sensor reading?"]]
+  #[id=26001236]
+  #[name="StateThenNotifyName"];
 
   query (p_name : String) := @org.thingpedia.iot.uv(name=p_name).uv()
-  #_[utterances=["what the ${p_name:const} home uv sensor says",
-                 "the uv of the ${p_name:const} room uv sensor"]];
+  #_[utterances=["the state of the uv read by ${p_name:const}",
+                 "the ultraviolet level from the ${p_name:const} sensor",
+                 "the uv sensor reading according to the ${p_name:const} sensor"]]
+  #[id=26001237]
+  #[name="StateName"];               
 
   stream (p_name : String) := monitor(@org.thingpedia.iot.uv(name=p_name).uv())
-  #_[utterances=["when the ${p_name:const} room uv changes"]];
+  #_[utterances=["when the ${p_name:const} uv sensor detects changes",
+                 "as soon as the ultraviolet level read by ${p_name:const} changes",
+                 "on uv change according to ${p_name:const}"]]
+  #[id=26001238]
+  #[name="MonitorStateName"];
 
   stream (p_name : String, p_uv :Number) := monitor (@org.thingpedia.iot.uv(name=p_name).uv()), value >= p_uv
-  #_[utterances=["when the ${p_name:const} sensor 's room uv is hotter than $p_uv",
-                   "if the uv inside of the ${p_name:const} sensor is higher than $p_uv",
-                   "when the uv inside of the ${p_name:const} sensor goes above $p_uv"]];
+  #_[utterances=["when the ${p_name:const} sensor detects uv higher than $p_uv",
+                 "if the ultraviolet level read by ${p_name:const} is higher than $p_uv",
+                 "when the uv reading of the ${p_name:const} sensor goes above $p_uv"]]
+  #[id=26001239]
+  #[name="MonitorStateHigherName"];                 
 
   stream (p_name : String, p_uv :Number) := monitor (@org.thingpedia.iot.uv(name=p_name).uv()), value <= p_uv
-  #_[utterances=["when the ${p_name:const} sensor 's indoor uv is lower than $p_uv",
-                   "if the uv of the ${p_name:const} room sensor is lower than $p_uv",
-                   "when the uv of the ${p_name:const} home sensor goes below $p_uv"]];
+  #_[utterances=["when the ${p_name:const} sensor detects uv lower than $p_uv",
+                 "if the ultraviolet level read by ${p_name:const} is lower than $p_uv",
+                 "when the uv reading from ${p_name:const} goes below $p_uv"]]
+  #[id=26001240]
+  #[name="MonitorStateLowerName"];                    
 }

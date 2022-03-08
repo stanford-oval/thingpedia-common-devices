@@ -1,0 +1,16 @@
+abstract class @org.thingpedia.iot.co
+#_[thingpedia_name="Carbon Monoxide Sensor"]
+#_[thingpedia_description="Interface for Carbon Monoxide Sensor."]
+#_[description="Interface for Carbon Monoxide Sensor."]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="home"]
+{
+  monitorable query state(out co_value : Number, out co_state : Enum(detected,not_detected) )
+  #_[canonical=["carbon monoxide sensor state",
+                "carbon monoxide reading"]]
+  #_[confirmation="the carbon monoxide index from $__device"]
+  #[confirm=false]
+  #_[result=["the carbon monoxide reading ${co_value}", "it is ${co_state} CO in the room"]]
+  #[minimal_projection=["co_state","co_value"]];
+}

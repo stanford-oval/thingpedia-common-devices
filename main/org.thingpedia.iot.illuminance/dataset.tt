@@ -1,51 +1,72 @@
 dataset @org.thingpedia.iot.illuminance language "en" {
 
   program := @org.thingpedia.iot.illuminance.illuminance()
-  #_[utterances=["is the indoor illuminance high?",
-                 "check if the indoor illuminance is high",
-                 "is the indoor illuminance low?",
-                 "check if the home illuminance is low",
-                 "check if the room illuminance is high or low",
-                 "what is the indoor illuminance?",
-                 "how high is the indoor illuminance?"]];
+  #_[utterances=["which is the illuminance sensor reading?",
+                 "what is the illuminance according to the sensor?",
+                 "check the light intensity",
+                 "check the illuminance level"]]
+  #[id=170001]
+  #[name="stateThenNotify"];
 
   query := @org.thingpedia.iot.illuminance.illuminance()
   #_[utterances=["the state of the room illuminance",
-                 "the room illuminance",
-                 "how high the home illuminance is",
-                 "if the inside illuminance is high or low",
-                 "whether the home illuminance is high or low"]];
+                 "the luminance level from the sensor",
+                 "the light level reading according to the sensor"]]
+  #[id=170002]
+  #[name="State"];
 
   stream := monitor(@org.thingpedia.iot.illuminance.illuminance())
-  #_[utterances=["when the home illuminance changes"]];
+  #_[utterances=["when the home illuminance changes",
+                 "as soon as the illuminance has a variation",
+                 "when the luminance level changes"]]
+  #[id=170003]
+  #[name="MonitorState"];
 
   stream (p_illuminance :Measure(lx)) := monitor (@org.thingpedia.iot.illuminance.illuminance()), value >= p_illuminance
-  #_[utterances=["when the sensor 's room illuminance is hotter than $p_illuminance",
-                   "if the room illuminance  of the sensor is higher than $p_illuminance",
-                   "when the room illuminance of the sensor goes above $p_illuminance"]];
+  #_[utterances=["when the sensor detects illuminance brighter than $p_illuminance",
+                 "if the illuminance level is higher than $p_illuminance",
+                 "when the luminance reading goes above $p_illuminance"]]
+  #[id=170004]
+  #[name="MonitorStateHigher"];
 
   stream (p_illuminance :Measure(lx)) := monitor (@org.thingpedia.iot.illuminance.illuminance()), value <= p_illuminance
-  #_[utterances=["when the sensor 's room illuminance is lower than $p_illuminance",
-                   "if the room illuminance of the sensor is lower than $p_illuminance",
-                   "when the inside illuminance of the sensor goes below $p_illuminance"]];
+  #_[utterances=["when the sensor detects illuminance darker than $p_illuminance",
+                 "if the illuminance level is lower than $p_illuminance",
+                 "when the illuminance reading goes below $p_illuminance"]]
+  #[id=170005]
+  #[name="MonitorStatelower"];
 
   program (p_name : String) := @org.thingpedia.iot.illuminance(name=p_name).illuminance()
-  #_[utterances=["what does the ${p_name:const} indoor illuminance sensor say?"]];
+  #_[utterances=["what does the ${p_name:const}  illuminance sensor say?",
+                 "which is the ${p_name:const} luminance sensor reading?"]]
+  #[id=170006]
+  #[name="StateThenNotifyName"];
 
   query (p_name : String) := @org.thingpedia.iot.illuminance(name=p_name).illuminance()
-  #_[utterances=["what the ${p_name:const} home illuminance sensor says",
-                 "the illuminance of the ${p_name:const} room illuminance sensor"]];
+  #_[utterances=["the state of the illuminance read by ${p_name:const}",
+                 "the luminance level from the ${p_name:const} sensor",
+                 "the illuminance sensor reading according to the ${p_name:const} sensor"]]
+  #[id=170007]
+  #[name="StateName"];
 
   stream (p_name : String) := monitor(@org.thingpedia.iot.illuminance(name=p_name).illuminance())
-  #_[utterances=["when the ${p_name:const} room illuminance changes"]];
+  #_[utterances=["when the ${p_name:const} illuminance sensor detects changes",
+                 "as soon as the illuminance level read by ${p_name:const} changes",
+                 "on luminance change according to ${p_name:const}"]]
+  #[id=170008]
+  #[name="MonitorStateName"];
 
   stream (p_name : String, p_illuminance :Measure(lx)) := monitor (@org.thingpedia.iot.illuminance(name=p_name).illuminance()), value >= p_illuminance
-  #_[utterances=["when the ${p_name:const} sensor 's room illuminance is hotter than $p_illuminance",
-                   "if the illuminance inside of the ${p_name:const} sensor is higher than $p_illuminance",
-                   "when the illuminance inside of the ${p_name:const} sensor goes above $p_illuminance"]];
+  #_[utterances=["when the ${p_name:const} sensor detects illuminance brighter than $p_illuminance",
+                 "if the luminance level read by ${p_name:const} is higher than $p_illuminance",
+                 "when the illuminance reading of the ${p_name:const} sensor goes above $p_illuminance"]]
+  #[id=170009]
+  #[name="MonitorStateHigherName"];
 
   stream (p_name : String, p_illuminance :Measure(lx)) := monitor (@org.thingpedia.iot.illuminance(name=p_name).illuminance()), value <= p_illuminance
-  #_[utterances=["when the ${p_name:const} sensor 's indoor illuminance is lower than $p_illuminance",
-                   "if the illuminance of the ${p_name:const} room sensor is lower than $p_illuminance",
-                   "when the illuminance of the ${p_name:const} home sensor goes below $p_illuminance"]];
+  #_[utterances=["when the ${p_name:const} sensor detects illuminance darker than $p_illuminance",
+                 "if the luminance level read by ${p_name:const} is lower than $p_illuminance",
+                 "when the illuminance reading of the ${p_name:const} goes below $p_illuminance"]]
+  #[id=170010]
+  #[name="MonitorStateLowerName"];
 }

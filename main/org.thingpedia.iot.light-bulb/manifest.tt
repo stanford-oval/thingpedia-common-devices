@@ -44,6 +44,13 @@ abstract class @org.thingpedia.iot.light-bulb extends @org.thingpedia.iot.switch
   #_[confirmation="set ${__device} $color"]
   #[confirm=false];
 
+  monitorable query brightness(out brightness : Number)
+  #_[canonical=["the brightness of the light bulb",
+                "the intensity of my light"]]
+  #_[confirmation="the brightness state of ${__device}"]
+  #[confirm=false]
+  #_[result=["your {${__device}|} light brightness is ${brightness} %"]];
+
   action set_brightness(in req pct: Number #_[prompt="from 0 to 100, which brightness do you want to set"]
                     #_[canonical={
                       base=["brightness", "value"],

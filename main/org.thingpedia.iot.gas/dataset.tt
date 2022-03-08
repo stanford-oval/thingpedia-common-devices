@@ -1,0 +1,115 @@
+dataset @org.thingpedia.iot.gas language "en" {
+    program := @org.thingpedia.iot.gas.state() 
+    #_[utterances=["is there any gas?",
+                   "check if there is any gas",
+                   "check whether gas is detected",
+                   "check if the sensor is detecting any gas",
+                   "do you smell gas?",
+                   "is there a gas leak?",
+                   "is there gas?",
+                   "there is presence of gas?",
+                   "is there any gas in the air?"]]
+    #[id=55304068]
+    #[name="StateThenNotify"];
+
+    query := @org.thingpedia.iot.gas.state()
+    #_[utterances=["if the sensor is detecting any gas",
+                   "whether the sensor is detecting gas",
+                   "if the gas detector is catching any gas",
+                   "if the gas sensor is detecting something",
+                   "whether the gas sensor is detecting anything",
+                   "whether there is any gas",
+                   "whether there is gas"]]
+    #[id=55304077]
+    #[name="State"];
+
+    stream := monitor (@org.thingpedia.iot.gas.state())
+    #_[utterances=["when the gas detector starts or stops detecting any gas",
+                   "when the gas detector starts or stops detecting gas",
+                   "when the quality of the air is affected by presence of gas",
+                   "when my sensor starts detecting gas",
+                   "when my detector is detecting gas",
+                   "the moment my sensor detects gas"]]
+    #[id=55304085]
+    #[name="MonitorState"];
+
+    stream (p_state :Enum(detected,not_detected)) := monitor (@org.thingpedia.iot.gas.state()), (gas_state == p_state)
+    #_[utterances=["when gas is ${p_state}",
+                   "when gas is ${p_state}",
+                   "as soon as gas is ${p_state}",
+                   "when gas is ${p_state} in the air"]]
+    #[id=5530049116]
+    #[name="MonitorStateByStategas"];
+
+    stream := monitor (@org.thingpedia.iot.gas.state()), gas_state == enum(detected)
+    #_[utterances=["when gas is detected",
+                   "when there is gas",
+                   "when you smell gas",
+                   "when gas appears",
+                   "when there is gas in the air"]]
+    #[id=5530049116]
+    #[name="Monitordetectedgas"];
+
+    stream := monitor (@org.thingpedia.iot.gas.state()), gas_state == enum(not_detected)
+    #_[utterances=["when no gas is detected",
+                   "when gas is not detected anymore",
+                   "when there is no gas",
+                   "when gas clears",
+                   "when the gas goes away",
+                   "when the gas is gone",
+                   "when there is no more gas"]]
+    #[id=553040101]
+    #[name="Monitornot_detectedNothing"];
+
+    program (p_name : String) := @org.thingpedia.iot.gas(name=p_name).state() 
+    #_[utterances=["check the ${p_name:const} gas sensor reading",
+                   "check whether ${p_name:const} gas sensor detects",
+                   "check if the ${p_name:const} sensor is detecting any gas",
+                   "the ${p_name:const} smells gas?"]]
+    #[id=55304168]
+    #[name="StateThenNotifyName"];
+
+    query (p_name : String) := @org.thingpedia.iot.gas(name=p_name).state()
+    #_[utterances=["if the ${p_name:const} sensor is detecting any gas",
+                   "whether the ${p_name:const} sensor is detecting gas",
+                   "if the ${p_name:const} gas detector is catching any gas",
+                   "if the ${p_name:const} gas sensor is detecting something",
+                   "whether the ${p_name:const} gas sensor is detecting anything"]]
+    #[id=55304277]
+    #[name="StateName"];
+
+    stream (p_name : String) := monitor (@org.thingpedia.iot.gas(name=p_name).state())
+    #_[utterances=["when the ${p_name:const} gas detector starts or stops detecting anything",
+                   "when the ${p_name:const} gas detector starts or stops detecting gas",
+                   "when the ${p_name:const} gas detector starts or stops detecting any gas",
+                   "when my ${p_name:const} sensor starts detecting gas",
+                   "when my ${p_name:const} detector is detecting gas",
+                   "the moment my ${p_name:const} sensor detects gas"]]
+    #[id=55304385]
+    #[name="MonitorStateName"];
+
+    stream (p_name : String, p_state :Enum(detected,not_detected)) := monitor (@org.thingpedia.iot.gas(name=p_name).state()), (gas_state == p_state)
+    #_[utterances=["when ${p_name:const} sensor says gas is ${p_state}",
+                   "when ${p_name:const} detector read that gas is ${p_state}",
+                   "as soon as ${p_name:const} sensor says gas is ${p_state}"]]
+    #[id=5530044116]
+    #[name="MonitorStateByStategasName"];
+
+    stream (p_name : String) := monitor (@org.thingpedia.iot.gas.state()), gas_state == enum(detected)
+    #_[utterances=["when gas is detected by ${p_name:const}",
+                   "when the ${p_name:const} sensor says that there is gas",
+                   "when ${p_name:const} sensor smell gas",
+                   "when gas appears on ${p_name:const} sensor",
+                   "when there is gas in the air detected by ${p_name:const} gas sensor"]]
+    #[id=5530045116]
+    #[name="MonitordetectedgasName"];
+
+    stream (p_name : String) := monitor (@org.thingpedia.iot.gas.state()), gas_state == enum(not_detected)
+    #_[utterances=["when no gas is detected by ${p_name:const}",
+                   "when gas is not detected anymore by ${p_name:const}",
+                   "when there is no gas detected by ${p_name:const}",
+                   "when ${p_name:const} says that gas clears",
+                   "when there is no more gas in the air detected by ${p_name:const} gas sensor"]]
+    #[id=553046101]
+    #[name="Monitornot_detectedNothingName"];
+}

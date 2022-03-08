@@ -1,10 +1,5 @@
 dataset @org.thingpedia.iot.light-bulb language "en" {
-    action = @org.thingpedia.iot.light-bulb.set_power(power=enum(off))
-    #_[utterances=["shut down the lights"]]
-    #[id=52295275]
-    #[name="SetPowerOnLightBulbWithPowerOff"];
-
-    program = @org.thingpedia.iot.light-bulb.power()
+    program := @org.thingpedia.iot.light-bulb.power()
     #_[utterances=["are the lights on?",
                    "are the lights off?",
                    "is my light-bulb on or off?",
@@ -16,7 +11,31 @@ dataset @org.thingpedia.iot.light-bulb language "en" {
     #[id=52298563]
     #[name="LightBulbPowerStateThenNotify"];
 
-    program = @org.thingpedia.iot.light-bulb(all=true).power()
+    query  := @org.thingpedia.iot.light-bulb.power()
+    #_[utterances=["whether the light is on or off",
+                   "the power state of my light-bulb",
+                   "the power state of the lamp"]]
+    #[id=54339869]
+    #[name="State"];
+
+    stream := monitor (@org.thingpedia.iot.light-bulb.power())
+    #_[utterances=["when the state of my light changes",
+                   "whenever the state of my light-bulb has changed",
+                   "when the state of the lamp changes"]]
+    #[id=52298575]
+    #[name="MonitorLightBulbPowerState"];
+
+    stream (p_power :Enum(on,off)) := monitor (@org.thingpedia.iot.light-bulb.power()), power == p_power
+    #_[utterances=["when my light turn ${p_power}",
+                   "when my light are ${p_power}",
+                   "when I turn ${p_power} the light-bulb",
+                   "when somebody turns ${p_power} my lamp",
+                   "when my light are switched ${p_power}",
+                   "when I switch ${p_power} my light"]]
+    #[id=52298577]
+    #[name="MonitorLightBulbPowerStateByPower"];
+
+    program := @org.thingpedia.iot.light-bulb(all=true).power()
     #_[utterances=["which lights are on?",
                    "are any lights on?",
                    "are all the lights on?",
@@ -29,39 +48,63 @@ dataset @org.thingpedia.iot.light-bulb language "en" {
     #[id=52298563]
     #[name="LightBulbPowerStateAllThenNotify"];
 
-    stream = monitor (@org.thingpedia.iot.light-bulb.power())
-    #_[utterances=["when the state of my lights changes",
-                   "whenever the state of my lights has changed",
-                   "when the state of the lights changes"]]
-    #[id=52298575]
-    #[name="MonitorLightBulbPowerState"];
-
-    stream (p_power :Enum(on,off)) = monitor (@org.thingpedia.iot.light-bulb.power()), power == p_power
-    #_[utterances=["when my lights turn ${p_power}",
-                   "when my lights are ${p_power}",
-                   "when I turn ${p_power} the lights",
-                   "when somebody turns ${p_power} my lights",
-                   "when my lights are switched ${p_power}",
-                   "when I switch ${p_power} my lights"]]
-    #[id=52298577]
-    #[name="MonitorLightBulbPowerStateByPower"];
-
-    action (p_power :Enum(on,off)) = @org.thingpedia.iot.light-bulb.set_power(power=p_power)
-    #_[utterances=["set ${p_power} the lights",
+    action (p_power :Enum(on,off)) := @org.thingpedia.iot.light-bulb.set_power(power=p_power)
+    #_[utterances=["set ${p_power} the light",
                    "turn ${p_power} my light bulb",
                    "turn ${p_power} the light",
                    "turn ${p_power} the lamp",
-                   "turn ${p_power} my lights",
-                   "set the lights ${p_power}",
+                   "set the light ${p_power}",
                    "turn my light bulb ${p_power}",
                    "turn the light ${p_power}",
                    "turn the lamp ${p_power}",
-                   "turn the led ${p_power}",
-                   "turn my lights ${p_power}"]]
+                   "turn the led ${p_power}"]]
     #[id=52298582]
     #[name="SetPowerOnLightBulbWithPower"];
 
-    action (p_color :Enum(white,black,red,orange,yellow,green,blue,purple,pink,brown,gray,chartreuse,cyan,azure,violet,magenta,rose,amber,teal,indigo)) = @org.thingpedia.iot.light-bulb.set_color(color=p_color)
+    action := @org.thingpedia.iot.light-bulb.set_power(power=enum(off))
+    #_[utterances=["shut down the lights"]]
+    #[id=52295275]
+    #[name="SetPowerOnLightBulbWithPowerOff"];
+
+    action (p_power :Enum(on,off)) := @org.thingpedia.iot.light-bulb(all=true).set_power(power=p_power)
+    #_[utterances=["set ${p_power} all the lights",
+                   "turn ${p_power} all my light bulbs",
+                   "turn ${p_power} all the lamps",
+                   "turn ${p_power} all my lights"]]
+    #[id=52298579]
+    #[name="SetPowerOnLightBulbWithPowerAll"];
+
+    action := @org.thingpedia.iot.light-bulb.alert_long()
+    #_[utterances=["flash the light",
+                   "alert me by flashing the light"]]
+    #[id=54033642]
+    #[name="AlertLong"];
+
+    action := @org.thingpedia.iot.light-bulb(all=true).alert_long()
+    #_[utterances=["flash all the lights",
+                   "alert me by flashing the lights"]]
+    #[id=54033649]
+    #[name="AlertLongAll"];
+
+    action := @org.thingpedia.iot.light-bulb.color_loop()
+    #_[utterances=["color loop the light",
+                   "loop the color in my light bulb",
+                   "start disco lights for my light",
+                   "color loop on my lamp",
+                   "loop colors on the light-bulb"]]
+    #[id=54033639]
+    #[name="ColorLoop"];
+
+    action := @org.thingpedia.iot.light-bulb(all=true).color_loop()
+    #_[utterances=["color loop the lights",
+                   "loop the color in my light bulbs",
+                   "start disco lights for my lights",
+                   "color loop on my lamps",
+                   "loop colors on the light-bulbs"]]
+    #[id=54034639]
+    #[name="ColorLoopAll"];
+
+    action (p_color :Enum(white,black,red,orange,yellow,green,blue,purple,pink,brown,gray,chartreuse,cyan,azure,violet,magenta,rose,amber,teal,indigo)) := @org.thingpedia.iot.light-bulb.set_color(color=p_color)
     #_[utterances=["set ${p_color} the lights",
                    "turn ${p_color} my light bulb",
                    "turn ${p_color} the light",
@@ -76,39 +119,7 @@ dataset @org.thingpedia.iot.light-bulb language "en" {
     #[id=52298576]
     #[name="SetColorNoChoice"];
 
-    action (p_brt :Number) = @org.thingpedia.iot.light-bulb.set_brightness(pct=p_brt)
-    #_[utterances=["set ${p_brt:const} intensity for the lights",
-                   "turn to ${p_brt:const} my light bulb brightness",
-                   "set ${p_brt:const} the lamp intensity",
-                   "change to ${p_brt:const} the brightness",
-                   "set the light brightness to ${p_brt:const}",
-                   "turn my light bulb brightness to ${p_brt:const}",
-                   "turn the light intensity to ${p_brt:const}",
-                   "change the lamp luminosity to ${p_brt:const}",
-                   "set to ${p_brt:const} the led light",
-                   "set the brightness to ${p_brt:const}"]]
-    #[id=52298599]
-    #[name="SetBrigthnessNoChoice"];
-
-    action = @org.thingpedia.iot.light-bulb.raise_brightness()
-    #_[utterances=["raise the intensity for the lights",
-                   "turn to higher brightness all my light bulb brightness",
-                   "set higher britghness the lamp intensity",
-                   "move to higher the brightness",
-                   "raise the light brightness"]]
-    #[id=522985991]
-    #[name="RaiseBrightnessNoChoice"];
-
-    action = @org.thingpedia.iot.light-bulb.lower_brightness()
-    #_[utterances=["lower the intensity for the lights",
-                   "turn to lower brightness all my light bulb brightness",
-                   "set lower britghness the lamp intensity",
-                   "move to lower the brightness",
-                   "lower the light brightness"]]
-    #[id=522985991]
-    #[name="LowerBrightnessNoChoice"];
-
-    action (p_color :Enum(white,black,red,orange,yellow,green,blue,purple,pink,brown,gray,chartreuse,cyan,azure,violet,magenta,rose,amber,teal,indigo)) = @org.thingpedia.iot.light-bulb(all=true).set_color(color=p_color)
+    action (p_color :Enum(white,black,red,orange,yellow,green,blue,purple,pink,brown,gray,chartreuse,cyan,azure,violet,magenta,rose,amber,teal,indigo)) := @org.thingpedia.iot.light-bulb(all=true).set_color(color=p_color)
     #_[utterances=["set ${p_color} all the lights",
                    "turn ${p_color} all my light bulbs",
                    "turn ${p_color} all the lamps",
@@ -116,148 +127,171 @@ dataset @org.thingpedia.iot.light-bulb language "en" {
     #[id=52298578]
     #[name="SetAllColorNoChoice"];
 
-    action (p_brt :Number) = @org.thingpedia.iot.light-bulb(all=true).set_brightness(pct=p_brt)
-    #_[utterances=["set ${p_brt:const} percent brightness all the lights",
-                   "turn to ${p_brt:const} percent the brightness of all my light bulbs",
-                   "change all the lamps brightness to ${p_brt:const} percent"]]
+    program := @org.thingpedia.iot.light-bulb.brightness()
+    #_[utterances=["the level of brightness of the lightbulb",
+                   "check the light 's brightness level",
+                   "check the brightness amount for the lamp"]]
+    #[id=52298663]
+    #[name="LightBulbbrightnessStateThenNotify"];
+
+    query  := @org.thingpedia.iot.light-bulb.brightness()
+    #_[utterances=["whether the brightness is high or low",
+                   "the brightness state of my light-bulb",
+                   "the brightness state of the lamp"]]
+    #[id=54339870]
+    #[name="Statebrightness"];
+
+    stream := monitor (@org.thingpedia.iot.light-bulb.brightness())
+    #_[utterances=["when the brightness of my light changes",
+                   "whenever the brightness of my light-bulb has changed",
+                   "when the brightness of the lamp changes"]]
+    #[id=52298575]
+    #[name="MonitorLightBulbbrightnessState"];
+
+    program := @org.thingpedia.iot.light-bulb(all=true).brightness()
+    #_[utterances=["the level of brightness of all lightbulbs",
+                   "check all light 's brightness level",
+                   "check the brightness amount for all lamps"]]
+    #[id=52298563]
+    #[name="LightBulbbrightnessStateThenNotifyAll"];
+
+    action (p_brt :Number) := @org.thingpedia.iot.light-bulb.set_brightness(pct=p_brt)
+    #_[utterances=["set ${p_brt} intensity for the lights",
+                   "turn to ${p_brt} my light bulb brightness",
+                   "set ${p_brt} the lamp intensity",
+                   "change to ${p_brt} the brightness",
+                   "set the light brightness to ${p_brt}",
+                   "turn my light bulb brightness to ${p_brt}",
+                   "turn the light intensity to ${p_brt}",
+                   "change the lamp luminosity to ${p_brt}",
+                   "set to ${p_brt} the led light",
+                   "set the brightness to ${p_brt}"]]
+    #[id=52298599]
+    #[name="SetBrigthnessNoChoice"];
+
+    action (p_brt :Number) := @org.thingpedia.iot.light-bulb(all=true).set_brightness(pct=p_brt)
+    #_[utterances=["set ${p_brt} brightness all the lights",
+                   "turn to ${p_brt} the brightness of all my light bulbs",
+                   "change all the lamps brightness to  ${p_brt}"]]
     #[id=52298580]
     #[name="SetAllBrightnessNoChoice"];
 
-    action = @org.thingpedia.iot.light-bulb(all=true).raise_brightness()
-    #_[utterances=["raise the brightness of all the lights",
-                   "turn up the brightness of all my light bulbs",
-                   "change all the lamps brightness to higher value"]]
-    #[id=52298580]
-    #[name="SetRaiseBrightnessNoChoice"];
-
-    action = @org.thingpedia.iot.light-bulb(all=true).lower_brightness()
-    #_[utterances=["lower the brightness of all the lights",
-                   "turn down the brightness of all my light bulbs",
-                   "change all the lamps brightness to lower value"]]
-    #[id=52298580]
-    #[name="SetLowerBrightnessNoChoice"];
-
-    action (p_power :Enum(on,off)) = @org.thingpedia.iot.light-bulb(all=true).set_power(power=p_power)
-    #_[utterances=["set ${p_power} all the lights",
-                   "turn ${p_power} all my light bulbs",
-                   "turn ${p_power} all the lamps",
-                   "turn ${p_power} all my lights"]]
-    #[id=52298579]
-    #[name="SetPowerOnLightBulbWithPowerAll"];
-
-    program (p_name :String) = @org.thingpedia.iot.light-bulb(name=p_name).power()
-    #_[utterances=["are the ${p_name:const} lights off?",
-                   "is my ${p_name:const} light-bulb on or off?",
+    program (p_name :String) := @org.thingpedia.iot.light-bulb(name=p_name).power()
+    #_[utterances=["is my ${p_name:const} light-bulb on or off?",
                    "is my ${p_name:const} lightbulb on?",
                    "check if my ${p_name:const} lightbulb is on",
-                   "check if my ${p_name:const} lights are on",
-                   "check if my ${p_name:const} lights are off",
-                   "check if the ${p_name:const} lights are on or off",
-                   "is my ${p_name:const} light bulb on?",
-                   "are the ${p_name:const} lights on?"]]
+                   "check if my ${p_name:const} light is off",
+                   "check if the ${p_name:const} light is on or off",
+                   "is my ${p_name:const} light bulb on?"]]
     #[id=54033614]
-    #[name="PowerThenNotify"];
+    #[name="LightBulbPowerStateThenNotifyName"];
 
-    query (p_name :String) = @org.thingpedia.iot.light-bulb(name=p_name).power()
+    query (p_name :String) := @org.thingpedia.iot.light-bulb(name=p_name).power()
     #_[utterances=["the power state of my ${p_name:const} lights",
                    "whether the ${p_name:const} lights are on or off",
                    "the power state of the ${p_name:const} light bulb"]]
     #[id=54033623]
-    #[name="Power"];
+    #[name="PowerName"];
 
-    stream (p_name :String) = monitor (@org.thingpedia.iot.light-bulb(name=p_name).power())
+    stream (p_name :String) := monitor (@org.thingpedia.iot.light-bulb(name=p_name).power())
     #_[utterances=["when I switch on or off my ${p_name:const} lights",
-                   "when the state of my ${p_name:const} lights changes"]]
+                   "when the state of my ${p_name:const} lights changes",
+                   "whenever the state of my ${p_name:const} light-bulb has changed"]]
     #[id=54033626]
-    #[name="MonitorPower"];
+    #[name="MonitorLightBulbPowerStateName"];
 
-    stream (p_name :String, p_power :Enum(on,off)) = monitor (@org.thingpedia.iot.light-bulb(name=p_name).power()), power == p_power
+    stream (p_name :String, p_power :Enum(on,off)) := monitor (@org.thingpedia.iot.light-bulb(name=p_name).power()), power == p_power
     #_[utterances=["when I turn ${p_power} the ${p_name:const} lights",
                    "when somebody turns ${p_power} my ${p_name:const} lights",
                    "when my ${p_name:const} lights are switched ${p_power}",
                    "when I switch ${p_power} my ${p_name:const} lights",
                    "when my ${p_name:const} lights turn ${p_power}"]]
     #[id=54033628]
-    #[name="MonitorPowerByPower"];
+    #[name="MonitorLightBulbPowerStateByPowerName"];
 
-    action (p_name :String, p_power :Enum(on,off)) = @org.thingpedia.iot.light-bulb(name=p_name).set_power(power=p_power)
+    action (p_name :String, p_power :Enum(on,off)) := @org.thingpedia.iot.light-bulb(name=p_name).set_power(power=p_power)
     #_[utterances=["turn ${p_power} my ${p_name:const} light bulb",
                    "turn ${p_power} the ${p_name:const} light",
                    "turn ${p_power} the ${p_name:const} lamp",
-                   "turn ${p_power} the ${p_name:const} lights",
-                   "turn ${p_power} the lights called ${p_name:const}",
-                   "turn ${p_power} the lights in the ${p_name:const}",
-                   "set ${p_power} the ${p_name:const} lights"]]
-    #[id=54033633]
-    #[name="SetPowerWithPower"];
-
-    program (p_name :String, p_power :Enum(on,off)) = @org.thingpedia.iot.light-bulb(name=p_name).set_power(power=p_power)
-    #_[utterances=["light ${p_name:const} ${p_power}",
+                   "turn ${p_power} the light called ${p_name:const}",
+                   "set ${p_power} the ${p_name:const} light",
+                   "light ${p_name:const} ${p_power}",
                    "light bulb ${p_name:const} ${p_power}"]]
-    #[id=54033634]                   
-    #[name="SetPowerWithPower2"];
+    #[id=54033633]
+    #[name="SetPowerWithPowerName"];  
 
-    action (p_name :String, p_power :Enum(on,off)) = @org.thingpedia.iot.light-bulb(all=true, name=p_name).set_power(power=p_power)
-    #_[utterances=["turn ${p_power} all my ${p_name:const} light bulbs",
-                   "turn ${p_power} all the ${p_name:const} light",
-                   "turn ${p_power} all the ${p_name:const} lamps",
-                   "turn ${p_power} all the lights called ${p_name:const}",
-                   "turn ${p_power} all the lights in the ${p_name:const}",
-                   "set ${p_power} all the ${p_name:const} lights"]]
-    #[id=54033635]                   
-    #[name="SetPowerWithPowerAll"];
+    action (p_name :String) := @org.thingpedia.iot.light-bulb(name=p_name).set_power(power=enum(off))
+    #_[utterances=["shut down the ${p_name:const} light"]]
+    #[id=522952757]
+    #[name="SetPowerOnLightBulbWithPowerOffName"];
+    
+    action (p_name :String) := @org.thingpedia.iot.light-bulb(name=p_name).alert_long()
+    #_[utterances=["flash the ${p_name:const} light",
+                   "alert me by flashing the ${p_name:const} light"]]
+    #[id=54033642]
+    #[name="AlertLongName"];
 
-    action (p_name :String, p_color :Enum(white,black,red,orange,yellow,green,blue,purple,pink,brown,gray,chartreuse,cyan,azure,violet,magenta,rose,amber,teal,indigo)) = @org.thingpedia.iot.light-bulb(all=true, name=p_name).set_color(color=p_color)
+    action (p_name :String) := @org.thingpedia.iot.light-bulb(name=p_name).color_loop()
+    #_[utterances=["color loop the ${p_name:const} light",
+                   "loop the color in my ${p_name:const} light bulb",
+                   "start disco lights for my ${p_name:const} light",
+                   "color loop on my ${p_name:const} lamp",
+                   "loop colors on the ${p_name:const} light-bulb"]]
+    #[id=54033639]
+    #[name="ColorLoopName"];
+
+    action (p_name :String, p_color :Enum(white,black,red,orange,yellow,green,blue,purple,pink,brown,gray,chartreuse,cyan,azure,violet,magenta,rose,amber,teal,indigo)) := @org.thingpedia.iot.light-bulb(name=p_name).set_color(color=p_color)
+    #_[utterances=["set ${p_color} the ${p_name:const} light",
+                   "change to ${p_color} color  my ${p_name:const} light bulb",
+                   "color ${p_color} the lights called ${p_name:const}"]]
+    #[name="SingleColorSetName"];
+
+    action (p_name :String, p_color :Enum(white,black,red,orange,yellow,green,blue,purple,pink,brown,gray,chartreuse,cyan,azure,violet,magenta,rose,amber,teal,indigo)) := @org.thingpedia.iot.light-bulb(all=true, name=p_name).set_color(color=p_color)
     #_[utterances=["turn ${p_color} all my ${p_name:const} light bulbs",
                    "turn ${p_color} all the ${p_name:const} lights",
                    "set to ${p_color} all the ${p_name:const} lamps"]]
     #[id=54033636]                   
-    #[name="AllColorSet"];
+    #[name="AllColorSetName"];
 
-    action (p_name :String, p_brt :Number) = @org.thingpedia.iot.light-bulb(all=true, name=p_name).set_brightness(pct=p_brt)
-    #_[utterances=["set all my ${p_name:const} light bulbs brightness to ${p_brt:const} percent",
-                   "turn ${p_brt:const} percent the brightness for all the ${p_name:const} lights",
-                   "set to ${p_brt:const} percent brightness all the ${p_name:const} lamps"]]
+    action (p_name :String, p_brt :Number) := @org.thingpedia.iot.light-bulb(all=true, name=p_name).set_brightness(pct=p_brt)
+    #_[utterances=["set all my ${p_name:const} light bulbs brightness to ${p_brt}",
+                   "turn ${p_brt} brightness for all the ${p_name:const} lights",
+                   "set to ${p_brt} brightness all the ${p_name:const} lamps"]]
     #[id=54033647]                   
-    #[name="AllBrightnessSet"];
+    #[name="AllBrightnessSetName"];
 
-    action (p_name :String) = @org.thingpedia.iot.light-bulb(name=p_name).color_loop()
-    #_[utterances=["color loop the ${p_name:const} lights",
-                   "loop the color in my ${p_name:const} light bulb",
-                   "start disco lights for my ${p_name:const} lights",
-                   "color loop on ${p_name:const}",
-                   "loop colors on ${p_name:const}"]]
-    #[id=5403363923]
-    #[name="ColorLoop"];
+    program (p_name :String) := @org.thingpedia.iot.light-bulb(name=p_name).brightness()
+    #_[utterances=["the level of brightness of the ${p_name:const} lightbulb",
+                   "check the ${p_name:const} light 's brightness level",
+                   "check the brightness amount for the ${p_name:const} lamp"]]
+    #[id=522986763]
+    #[name="LightBulbbrightnessStateThenNotifyName"];
 
-    action  = @org.thingpedia.iot.light-bulb(all=true).color_loop()
-    #_[utterances=["color loop all the lights",
-                   "loop the color of my light bulbs",
-                   "start disco lights for my lights",
-                   "loop colors on all lamps"]]
-    #[id=5229857922]
-    #[name="ColorLoopAll"];
+    query (p_name :String) := @org.thingpedia.iot.light-bulb(name=p_name).brightness()
+    #_[utterances=["whether the ${p_name:const} 's brightness is high or low",
+                   "the brightness state of my ${p_name:const} light-bulb",
+                   "the brightness state of the ${p_name:const} lamp"]]
+    #[id=543398870]
+    #[name="StatebrightnessName"];
 
-    action (p_name :String, p_color :Enum(white,black,red,orange,yellow,green,blue,purple,pink,brown,gray,chartreuse,cyan,azure,violet,magenta,rose,amber,teal,indigo)) = @org.thingpedia.iot.light-bulb(name=p_name).set_color(color=p_color)
-    #_[utterances=["set ${p_color} the ${p_name:const} light",
-                   "change to ${p_color} color  my ${p_name:const} light bulb",
-                   "color ${p_color} the lights called ${p_name:const}"]]
-    #[name="SingleColorSet"];
+    stream (p_name :String) := monitor (@org.thingpedia.iot.light-bulb(name=p_name).brightness())
+    #_[utterances=["when the brightness of my ${p_name:const} light changes",
+                   "whenever the brightness of my ${p_name:const} light-bulb has changed",
+                   "when the brightness of the ${p_name:const} lamp changes"]]
+    #[id=522985975]
+    #[name="MonitorLightBulbbrightnessStateName"];
 
-    action (p_name :String) = @org.thingpedia.iot.light-bulb(name=p_name).alert_long()
-    #_[utterances=["flash the ${p_name:const} lights",
-                   "alert me by flashing the ${p_name:const} lights"]]
-    #[id=54033642]
-    #[name="AlertLong"];
-
-    action  = @org.thingpedia.iot.light-bulb(all=true).alert_long()
-    #_[utterances=["flash all the lights",
-                   "alert me by flashing all the ligh bulbs"]]
-    #[id=540336424]
-    #[name="AlertLongAll"];
-
-    action (p_name :String) = @org.thingpedia.iot.light-bulb(name=p_name).set_power(power=enum(off))
-    #_[utterances=["shut down the ${p_name:const} lights"]]
-    #[id=54033643]
-    #[name="SetPowerWithPowerOff"];
+    action (p_name :String, p_brt :Number) := @org.thingpedia.iot.light-bulb(name=p_name).set_brightness(pct=p_brt)
+    #_[utterances=["set ${p_brt} intensity for the ${p_name:const} light",
+                   "turn to ${p_brt} my ${p_name:const} light bulb brightness",
+                   "set ${p_brt} the ${p_name:const} lamp intensity",
+                   "change to ${p_brt} the brightness of ${p_name:const}",
+                   "set the ${p_name:const} light brightness to ${p_brt}",
+                   "turn my ${p_name:const} light bulb brightness to ${p_brt}",
+                   "turn the ${p_name:const} light intensity to ${p_brt}",
+                   "change the ${p_name:const} lamp luminosity to ${p_brt}",
+                   "set to ${p_brt} the ${p_name:const} light",
+                   "set the ${p_name:const} 's brightness to ${p_brt}"]]
+    #[id=522982599]
+    #[name="SetBrigthnessNoChoiceName"];    
 }

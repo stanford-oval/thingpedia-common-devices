@@ -6,68 +6,132 @@ dataset @org.thingpedia.iot.humidity language "en" {
                  "what does my humidity sensor say?",
                  "how humid is it?",
                  "what is the level of humidity?",
-                 "how high is the humidity?"]];
+                 "how high is the humidity?"]]
+  #[id=160001]
+  #[name="StatethenNotify"];
 
-  query (p_name : String) := @org.thingpedia.iot.humidity(name=p_name).humidity()
-  #_[utterances=["what the ${p_name:const} humidity sensor says",
-                 "the value of the ${p_name:const} humidity sensor",
-                 "the humidity of the ${p_name:const}",
-                 "the humidity in the ${p_name:const}",
-                 "the ${p_name:const} humdity"]];
+  query := @org.thingpedia.iot.humidity.humidity()
+  #_[utterances=["the humidity sensor level",
+                 "the reading of the humidity sensor",
+                 "the level of the humidity",
+                 "the humidity acquired from the humidity sensor",
+                 "the humidity read by the humidity sensor",
+                 "the humidity inside",
+                 "the humidity reported",
+                 "the humidity according to my humidity sensor",
+                 "the level of the humidity according to my humidity sensor"]]
+  #[id=160002]
+  #[name="level"];               
 
   stream := monitor(@org.thingpedia.iot.humidity.humidity())
-  #_[utterances=["when the humidity changes"]];
+  #_[utterances=["when the humidity changes",
+                 "as soon as the humidity level has a variation",
+                 "at humidity values change",
+                 "when the humidity level grow or lower"]]
+  #[id=160003]
+  #[name="monitorLevel"];
 
   stream (p_state : Enum(humid, normal)) := monitor (@org.thingpedia.iot.humidity.humidity()), (state == p_state)
-  #_[utterances=["when the humidity sensor says it is ${p_state}"]];
+  #_[utterances=["when the humidity sensor says it is ${p_state}",
+                 "as soon as the humidity sensor read ${p_state}",
+                 "when it gets ${p_state}",
+                 "when the humidity is ${p_state}"]]
+  #[id=160004]
+  #[name="monitorState"];
 
   stream := monitor (@org.thingpedia.iot.humidity.humidity()), (state == enum(humid))
-  #_[utterances=["when it gets humid",
-                 "when the humidity is high",
+  #_[utterances=["when it is humid",
                  "if it gets very humid",
-                 "when start getting super humid",
-                 "if it is too humid in the area"]];
+                 "when start getting humid",
+                 "if it is too humid inside"]]
+  #[id=160005]
+  #[name="monitorStateHumid"];
 
   stream := monitor (@org.thingpedia.iot.humidity.humidity()), (state == enum(normal))
-  #_[utterances=["when the humidity is normal",
-                "if it is no longer humid",
-                "when it is not humid anymore"]];
+  #_[utterances=["when humidity begin normal",
+                 "if it is no longer humid",
+                 "when it is not humid anymore",
+                 "at normal humidity level"]]
+  #[id=160006]
+  #[name="monitorStateNotHumid"];
 
   stream (p_humidity : Number) := monitor (@org.thingpedia.iot.humidity.humidity()), value >= p_humidity
   #_[utterances=["when the room 's humidity is higher than $p_humidity percent",
-                 "if the humidity goes above $p_humidity percent"]];
+                 "if the humidity goes above $p_humidity percent",
+                 "when the humidity reading is higher than $p_humidity",
+                 "as soon as the humidity level becomes higher than $p_humidity",
+                 "at $p_humidity overcome"]]
+  #[id=160007]
+  #[name="monitorlevelCompareUp"];
 
   stream (p_humidity : Number) := monitor (@org.thingpedia.iot.humidity.humidity()), value <= p_humidity
-  #_[utterances=["when the humidity inside is lower than $p_humidity",
-                 "if the humidity in the area goes below $p_humidity"]];           
+  #_[utterances=["when the room 's humidity is lower than $p_humidity percent",
+                 "if the humidity goes below $p_humidity percent",
+                 "when the humidity reading is lower than $p_humidity",
+                 "as soon as the humidity level becomes lower than $p_humidity"]]
+  #[id=160008]
+  #[name="monitorlevelCompareDown"];
 
   program (p_name : String) := @org.thingpedia.iot.humidity(name=p_name).humidity()
-  #_[utterances=["check if my ${p_name:const} humidity sensor says it is humid",
+  #_[utterances=["check if my ${p_name:const} says it is humid or normal",
                  "what does my ${p_name:const} humidity sensor say?",
-                 "how humid is it according to my ${p_name:const} sensor?"]];
+                 "how humid is it according to my ${p_name:const}?",
+                 "what is the level of humidity read bt ${p_name:const}?"]]
+  #[id=160009]
+  #[name="StateThenNotifyName"];
 
   query (p_name : String) := @org.thingpedia.iot.humidity(name=p_name).humidity()
-  #_[utterances=["the humidity according to my ${p_name:const} sensor"]];
+  #_[utterances=["the reading of the ${p_name:const} humidity sensor ",
+                 "the humidity acquired from ${p_name:const}",
+                 "the humidity read by the ${p_name:const}",
+                 "the ${p_name:const} humidity reported",
+                 "the humidity according to my ${p_name:const}",
+                 "the ${p_name:const} humidity sensor 's level",
+                 "the level of the humidity according to my ${p_name:const}"]]
+  #[id=160010]
+  #[name="levelName"];
 
   stream (p_name : String) := monitor(@org.thingpedia.iot.humidity(name=p_name).humidity())
-  #_[utterances=["when my ${p_name:const} humidity sensor detects a change in the humidity"]];
+  #_[utterances=["when my ${p_name:const} detects a change in the humidity level",
+                 "as soon as the humidity level has a variation read from the ${p_name:const} humidity sensor",
+                 "at ${p_name:const} humidity sensor  reading changes"]]
+  #[id=160011]
+  #[name="monitorLevelName"];
 
   stream (p_name : String, p_state : Enum(humid, normal)) := monitor (@org.thingpedia.iot.humidity(name=p_name).humidity()), (state == p_state)
-  #_[utterances=["when the ${p_name:const} humidity sensor says it is ${p_state}"]];
+  #_[utterances=["when the ${p_name:const} humidity sensor says it is ${p_state}",
+                 "as soon as the ${p_name:const} humidity sensor read ${p_state}",
+                 "when the ${p_name:const} humidity sensor gets ${p_state}",
+                 "when the ${p_name:const} humidity sensor detect ${p_state}",
+                 "if the ${p_name:const} humidity sensor read ${p_state}"]]
+  #[id=160012]
+  #[name="monitorStateName"];              
 
   stream (p_name : String) := monitor (@org.thingpedia.iot.humidity(name=p_name).humidity()), (state == enum(humid))
   #_[utterances=["when my ${p_name:const} humidity sensor says it is humid",
-                 "when the ${p_name:const} sensor detects high humidity"]];
+                 "when the ${p_name:const} humidity sensor detects high humidity"]]
+  #[id=160013]
+  #[name="monitorStateNameHumid"];
 
   stream (p_name : String) := monitor (@org.thingpedia.iot.humidity(name=p_name).humidity()), (state == enum(normal))
   #_[utterances=["when my ${p_name:const} humidity sensor says it is not humid",
-                 "when the ${p_name:const} sensor detects regular humidity"]];
+                 "when the ${p_name:const} humidity sensor detects regular humidity"]]
+  #[id=160014]
+  #[name="monitorStateNameNotHumid"];
 
   stream (p_name : String, p_humidity : Number) := monitor (@org.thingpedia.iot.humidity(name=p_name).humidity()), value >= p_humidity
-  #_[utterances=["when the room 's humidity is higher than ${p_humidity} percent according to my ${p_name:const} sensor",
-                 "if the humidity detected by my ${p_name:const} sensor goes above ${p_humidity} percent"]];
+  #_[utterances=["when the room 's humidity is higher than ${p_humidity} percent according to my ${p_name:const}",
+                 "if the humidity detected by my ${p_name:const} goes above ${p_humidity} percent",
+                 "when the humidity reading by my ${p_name:const} is higher than $p_humidity",
+                 "as soon as the humidity level reported by ${p_name:const} becomes higher than $p_humidity"]]
+  #[id=160015]
+  #[name="monitorlevelCompareUpName"];
 
   stream (p_name : String, p_humidity : Number) := monitor (@org.thingpedia.iot.humidity(name=p_name).humidity()), value <= p_humidity
-  #_[utterances=["when the humidity inside is lower than ${p_humidity} according to my ${p_name:const} sensor",
-                 "if the humidity in the area detected by my ${p_name:const} sensor goes above ${p_humidity} percent"]];
+  #_[utterances=["when the humidity inside is lower than ${p_humidity} according to my ${p_name:const}",
+                 "if the humidity in the area detected by my ${p_name:const} goes below ${p_humidity} percent",
+                 "when the humidity reading by my ${p_name:const} is lower than $p_humidity",
+                 "as soon as the humidity level reported by ${p_name:const} becomes lower than $p_humidity"]]
+  #[id=160016]
+  #[name="monitorlevelCompareDownName"];
 }
