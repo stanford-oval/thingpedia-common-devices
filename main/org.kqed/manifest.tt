@@ -1,0 +1,89 @@
+class @org.kqed extends @org.thingpedia.dialogue-handler
+#_[name="org.kqed"]
+#_[description="TODO add description"]
+#_[thingpedia_name="org.kqed"]
+#_[thingpedia_description="TODO add description"]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="service"] 
+{
+    import loader from @org.thingpedia.v2();
+    import config from @org.thingpedia.config.none();
+
+    entity kqed_podcasts #_[description="podcast episdoes on KQED"];
+
+    list query kqed_podcasts(out id: Entity(org.kqed:kqed_podcasts)
+                             #[unique=true]
+                             #[string_values="org.kqed:podcast"]
+                             #_[canonical={
+                                default="base",
+                                base=["name"]
+                             }],
+                             
+                             out title: String
+                             #[string_values="tt:news_title"]
+                             #_[canonical={
+                                default = "base",
+                                base = ["title", "episode title"],
+                                property = ["title #"]
+                             }]
+                             #[filterable=false],
+     
+                             out description: String
+                             #[string_values="tt:long_free_text"]
+                             #_[canonical={
+                                default = "base",
+                                base = ["description"]
+                             }]
+                             #[filterable=false],
+     
+                             out link: Entity(tt:url)
+                             #[filterable=false]
+                             #_[canonical="link"],
+                             
+                             out date: Date
+                             #_[canonical={
+                                default="passive_verb",
+                                base=["date", "published date", "published year", "published day"],
+                                property=["published date #"],
+                                preposition=["from #"],
+                                passive_verb=["published on #", "released #", "published at #"],
+                                adjective_argmin=["least recent", "oldest", "first"],
+                                adjective_argmax=["most recent", "newest", "latest", "current"],
+                                passive_verb_argmax=["published most recently"],
+                                passive_verb_projection=["published | on", "released | on", "written | on"]
+                             }],
+                             
+                             out duration: Number
+                             #_[canonical={
+                                base=["length", "duration"]
+                             }])
+    #_[canonical=["kqed now"]]
+    #[minimal_projection=["id"]]
+    #[default_projection=["id", "link"]]
+    #_[formatted=[
+        { type="rdl", webCallback="${link}", displayTitle="${title}" },
+        { type="sound", name="news-intro", exclusive=true },
+        // { type="text", text="${description}." },
+        { type="audio", url="${link}" }
+    ]]
+    #_[on_error={
+        no_postcasts_available=["No content is available at the moment."],
+        service_unavailable=["KQED streaming service is currently unavailable"]
+    }]
+    #[doc="search for podcast episdoes on KQED"]
+    #[confirm=false];
+
+    action kqed_play()
+    #_[canonical=[
+        "play kqed now", 
+        "resume kqed now", 
+        "start playing kqed now", 
+        "continue playing kqed now"]]
+    #_[on_error={
+        unsupported_version=["Play KQED is not supported with your current genie version"],
+        service_unavailable=["KQED streaming service is currently unavailable"]
+    }]
+    #[confirm=false]
+    #[doc="play KQED Now on media player"];
+}
