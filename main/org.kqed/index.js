@@ -25,7 +25,9 @@ class KqedDialogueHandler {
      * @param {string} locale
      * @param {string} timezone
      */
-    constructor(locale, timezone) {
+    constructor(engine, platform, locale, timezone) {
+        this._engine = engine;
+        this._platform = platform;
         this._locale = locale;
         this._timezone = timezone;
         this._ = KqedDevice.gettext.gettext;
@@ -73,6 +75,7 @@ class KqedDialogueHandler {
      * @returns {Tp.DialogueHandler.CommandAnalysisResult}
      */
     async analyzeCommand(utterance) {
+        console.log(this._platform.getCapability('audio-player'));
         let ret = { 
             confident: Tp.DialogueHandler.Confidence.OUT_OF_DOMAIN_COMMAND, 
             utterance: utterance, 
@@ -132,7 +135,6 @@ class KqedDialogueHandler {
      * @returns {Tp.DialogueHandler.ReplyResult}
      */
     async getReply(analyzed) {
-        console.log(this._podcasts.length);
         switch (analyzed.answerType) {
         case 'play': {
             const ret = {
@@ -246,7 +248,7 @@ async function preFetchItems() {
         else
             throw new Error(DEVICE_ERROR.service_unavailable);
     });
-    return blob.slice(0 ,3);
+    return blob;
 }
 
 async function* fetchItems() {
@@ -284,7 +286,7 @@ class KqedDevice extends Tp.BaseDevice {
         this.uniqueId = 'org.kqed';
         this.name = "KQED Now";
         this.description = "A daily News podcast from KQED";
-        this._dialogueHandler = new KqedDialogueHandler(this.platform.locale, this.platform.timezone);
+        this._dialogueHandler = new KqedDialogueHandler(engine, this.platform, this.platform.locale, this.platform.timezone);
     }
     
     queryInterface(iface) {
@@ -303,11 +305,6 @@ class KqedDevice extends Tp.BaseDevice {
         } catch(error) {
             throw new Error(DEVICE_ERROR.service_unavailable);
         }
-    }
-
-    pprint() {
-        console.log("here");
-        return "kqed";
     }
 
     async do_kqed_play(env, playable_link) {
