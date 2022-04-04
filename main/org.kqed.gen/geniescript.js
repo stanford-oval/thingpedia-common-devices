@@ -3,7 +3,7 @@
 
 const Tp = require("thingpedia");
 
-export class GeniescriptDlg {
+class GeniescriptDlg {
     constructor(user_target, skill_name) {
         this._user_target = user_target;
         this._skill_name = skill_name;
@@ -52,11 +52,11 @@ export class GeniescriptDlg {
             } else if (input.type === "analyzed") {
                 this._last_analyzed = input.content;
                 let current_func = func_map.get(this._last_branch);
-                if (current_func.constructor.name === "GeneratorFunction") {
+                if (current_func.constructor.name === "GeneratorFunction") 
                     yield * current_func();
-                } else {
+                else 
                     await current_func();
-                }
+                
                 break;
             }
         }
@@ -71,11 +71,10 @@ export class GeniescriptDlg {
     }
 }
 
-export class AbstractGeniescriptHandler {
+class AbstractGeniescriptHandler {
     constructor() {
-        if (this.constructor === AbstractGeniescriptHandler) {
-            throw new Error("Abstract classes can't be instantiated.")
-        }
+        if (this.constructor === AbstractGeniescriptHandler) 
+            throw new Error("Abstract classes can't be instantiated.");
     }
 
     // TODO: Implementation serialization
@@ -101,4 +100,8 @@ export class AbstractGeniescriptHandler {
 
 }
 
+module.exports = {
+    GeniescriptDlg: GeniescriptDlg,
+    AbstractGeniescriptHandler: AbstractGeniescriptHandler
+};
 

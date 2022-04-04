@@ -7,7 +7,7 @@
 // See LICENSE for details
 "use strict";
 
-import {GeniescriptDlg, AbstractGeniescriptHandler} from "./geniescript.mjs"
+const { GeniescriptDlg, AbstractGeniescriptHandler } = require("geniescript");
 
 const Tp = require('thingpedia');
 const TT = require('thingtalk');
@@ -21,7 +21,7 @@ const DEVICE_ERROR = {
     service_unavailable: 'service_unavailable'
 };
 
-class KqedDialogueHandler extends AbstractGeniescriptHandler{
+class KqedDialogueGenHandler extends AbstractGeniescriptHandler {
     /**
      *
      * @param {string} locale
@@ -74,19 +74,20 @@ class KqedDialogueHandler extends AbstractGeniescriptHandler{
         this._askedResume = false;
     }
 
-    * yes_no(yes_action, no_action) {
+    *yes_no(yes_action, no_action) {
         let self = this;
         self.dlg.expect(new Map(Object.entries({
-            "\\b(yes|yeah|yep|sure|go ahead)\\b": async function () {
+            "\\b(yes|yeah|yep|sure|go ahead)\\b": async function() {
                 yes_action();
             },
-            "\\b(no|nah|nope)\\b": async function () {
+            "\\b(no|nah|nope)\\b": async function() {
                 no_action();
             }
-        })))
+        })));
     }
 
     play() {
+        let self = this;
         this.dlg.say([
             self._interp(self._("Play KQED now."), {}),
             {
@@ -102,12 +103,14 @@ class KqedDialogueHandler extends AbstractGeniescriptHandler{
     }
 
     stop() {
+        let self = this;
         self.dlg.say(
             [self._interp(self._("Stop playing."), {})]
-        )
+        );
     }
 
     next() {
+        let self = this;
         self.dlg.say([
             this._interp(this._("Play next."), {}),
             {
@@ -121,10 +124,11 @@ class KqedDialogueHandler extends AbstractGeniescriptHandler{
             },
             // TODO: call do_kqed_play
             this._interp(this._("Play next?"), {}),
-        ])
+        ]);
     }
 
     resume() {
+        let self = this;
         this.dlg.say([
             self._interp(this._("resume playing?"), {})
         ]);
@@ -134,28 +138,28 @@ class KqedDialogueHandler extends AbstractGeniescriptHandler{
         let self = this;
         while (true) {
             self.dlg.expect(new Map(Object.entries({
-                "^\\s*kqed now\\b": (async function * () {
+                "play kqed": (async function*() {
                     if (self._item) {
-                        resume();
+                        self.resume();
                         yield * self.yes_no(
-                            function () {
+                            () => {
                                 self.play();
                             },
-                            function () {
+                            () => {
                                 self.stop();
                             }
-                        )
+                        );
                     } else {
-                        self.play()
+                        self.play();
                         self.dlg.say([
                             // TODO: call do_kqed_play
                             self._interp(self._("Play next?"), {}),
                         ]);
-                        self.yes_no(function () {
-                            self.next()
-                        }, function () {
-                            self.stop()
-                        })
+                        self.yes_no(() => {
+                            self.next();
+                        }, () => {
+                            self.stop();
+                        });
                     }
                 }),
             })));
@@ -220,13 +224,14 @@ async function* fetchItems() {
         yield item;
 }
 
-class KqedDevice extends Tp.BaseDevice {
+class KqedGenDevice extends Tp.BaseDevice {
     constructor(engine, state) {
         super(engine, state);
         this.uniqueId = 'org.kqed';
         this.name = "KQED Now";
         this.description = "A daily News podcast from KQED";
-        this._dialogueHandler = new KqedDialogueHandler(this.platform.locale, this.platform.timezone);
+        this._dialogueHandler = new KqedDialogueGenHandler(this.platform.locale, this.platform.timezone);
+        console.log("kqed gen loaded");
     }
     
     queryInterface(iface) {
@@ -279,4 +284,4 @@ class KqedDevice extends Tp.BaseDevice {
         }
     }
 }
-module.exports = KqedDevice;
+module.exports = KqedGenDevice;

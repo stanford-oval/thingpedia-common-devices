@@ -420,6 +420,7 @@ class BingClass extends Tp.BaseDevice {
     constructor(engine, state) {
         super(engine, state);
         this._dialogueHandler = new BingDialogueHandler(this.platform.locale, this.platform.timezone, this.constructor.metadata.auth.api_key);
+        console.log("bing loaded");
     }
 
     /**
