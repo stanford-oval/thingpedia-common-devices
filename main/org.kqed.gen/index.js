@@ -7,7 +7,7 @@
 // See LICENSE for details
 "use strict";
 
-const { GeniescriptDlg, AbstractGeniescriptHandler } = require("geniescript");
+const { GeniescriptDlg, AbstractGeniescriptHandler } = require("./geniescript");
 
 const Tp = require('thingpedia');
 const TT = require('thingtalk');
@@ -31,14 +31,14 @@ class KqedDialogueGenHandler extends AbstractGeniescriptHandler {
         super();
         this._locale = locale;
         this._timezone = timezone;
-        this._ = KqedDevice.gettext.gettext;
+        this._ = KqedGenDevice.gettext.gettext;
         this._item = 0;
         this._podcasts = [];
         this._askedResume = false;
 
         let user_target = '$dialogue @org.thingpedia.dialogue.transaction.execute;\n' +
             '@org.kqed_gen.kqed_podcasts();';
-        this.dlg = GeniescriptDlg(user_target);
+        this.dlg = new GeniescriptDlg(user_target);
     }
 
     _interp(string, args) {
@@ -61,6 +61,7 @@ class KqedDialogueGenHandler extends AbstractGeniescriptHandler {
     }
 
     async initialize(initialState) {
+        await super.initialize();
         if (initialState)
             this._lastQuerySuggestion = initialState.lastQuerySuggestion;
         this._podcasts = await preFetchItems();
@@ -74,9 +75,9 @@ class KqedDialogueGenHandler extends AbstractGeniescriptHandler {
         this._askedResume = false;
     }
 
-    *yes_no(yes_action, no_action) {
+    async *yes_no(yes_action, no_action) {
         let self = this;
-        self.dlg.expect(new Map(Object.entries({
+        yield * await self.dlg.expect(new Map(Object.entries({
             "\\b(yes|yeah|yep|sure|go ahead)\\b": async function() {
                 yes_action();
             },
@@ -137,7 +138,7 @@ class KqedDialogueGenHandler extends AbstractGeniescriptHandler {
     async *logic() {
         let self = this;
         while (true) {
-            self.dlg.expect(new Map(Object.entries({
+            yield * self.dlg.expect(new Map(Object.entries({
                 "play kqed": (async function*() {
                     if (self._item) {
                         self.resume();

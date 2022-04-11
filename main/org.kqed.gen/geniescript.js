@@ -15,7 +15,7 @@ class GeniescriptDlg {
         this._last_target = null;
     }
 
-    async *expect(func_map) {
+    *expect(func_map) {
         if (this._last_analyzed !== null) {
             this._last_result = {
                 messages: this._last_messages,
@@ -55,7 +55,7 @@ class GeniescriptDlg {
                 if (current_func.constructor.name === "GeneratorFunction") 
                     yield * current_func();
                 else 
-                    await current_func();
+                    current_func();
                 
                 break;
             }
@@ -73,6 +73,8 @@ class GeniescriptDlg {
 
 class AbstractGeniescriptHandler {
     constructor() {
+        console.log("AbstractGeniescriptHandler constructor");
+        this._logic = null;
         if (this.constructor === AbstractGeniescriptHandler) 
             throw new Error("Abstract classes can't be instantiated.");
     }
@@ -88,7 +90,11 @@ class AbstractGeniescriptHandler {
     }
 
     async analyzeCommand(utterance) {
-        return this._logic.next({ type: "utterance", content: utterance }).value;
+
+        console.log("AbstractGeniescriptHandler analyzeCommand");
+        let result = await this._logic.next({ type: "utterance", content: utterance });
+        console.log(result.value);
+        return result.value;
     }
 
     async getReply(analyzed) {
