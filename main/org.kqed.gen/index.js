@@ -37,7 +37,7 @@ class KqedDialogueGenHandler extends AbstractGeniescriptHandler {
         this._askedResume = false;
 
         let user_target = '$dialogue @org.thingpedia.dialogue.transaction.execute;\n' +
-            '@org.kqed_gen.kqed_podcasts();';
+            '@org.kqed.gen.kqed_podcasts();';
         this.dlg = new GeniescriptDlg(user_target);
     }
 
@@ -77,7 +77,7 @@ class KqedDialogueGenHandler extends AbstractGeniescriptHandler {
 
     async *yes_no(yes_action, no_action) {
         let self = this;
-        yield * await self.dlg.expect(new Map(Object.entries({
+        yield * self.dlg.expect(new Map(Object.entries({
             "\\b(yes|yeah|yep|sure|go ahead)\\b": async function() {
                 yes_action();
             },
@@ -139,7 +139,7 @@ class KqedDialogueGenHandler extends AbstractGeniescriptHandler {
         let self = this;
         while (true) {
             yield * self.dlg.expect(new Map(Object.entries({
-                "play kqed": (async function*() {
+                "play kqed": ( async function*() {
                     if (self._item) {
                         self.resume();
                         yield * self.yes_no(
@@ -156,7 +156,7 @@ class KqedDialogueGenHandler extends AbstractGeniescriptHandler {
                             // TODO: call do_kqed_play
                             self._interp(self._("Play next?"), {}),
                         ]);
-                        self.yes_no(() => {
+                        yield * self.yes_no(() => {
                             self.next();
                         }, () => {
                             self.stop();

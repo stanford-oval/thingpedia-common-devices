@@ -2,6 +2,7 @@
 
 
 const Tp = require("thingpedia");
+const TT = require("thingtalk");
 
 class GeniescriptDlg {
     constructor(user_target, skill_name) {
@@ -15,7 +16,7 @@ class GeniescriptDlg {
         this._last_target = null;
     }
 
-    *expect(func_map) {
+    async *expect(func_map) {
         if (this._last_analyzed !== null) {
             this._last_result = {
                 messages: this._last_messages,
@@ -31,6 +32,11 @@ class GeniescriptDlg {
         while (true) {
             let input = yield this._last_result;
             if (input.type === "utterance") {
+                this._last_result = {
+                    confident: Tp.DialogueHandler.Confidence.OUT_OF_DOMAIN_COMMAND,
+                    utterance: input.content,
+                    user_target: ''
+                };
                 for (let func_key of func_map.keys()) {
                     let regExp = new RegExp(func_key, 'i');
                     let match = regExp.exec(input.content);
@@ -44,17 +50,14 @@ class GeniescriptDlg {
                         break;
                     }
                 }
-                this._last_result = {
-                    confident: Tp.DialogueHandler.Confidence.OUT_OF_DOMAIN_COMMAND,
-                    utterance: input.content,
-                    user_target: ''
-                };
             } else if (input.type === "analyzed") {
                 this._last_analyzed = input.content;
                 let current_func = func_map.get(this._last_branch);
-                if (current_func.constructor.name === "GeneratorFunction") 
+                if (current_func.constructor.name === "GeneratorFunction" || current_func.constructor.name ==="AsyncGeneratorFunction")
                     yield * current_func();
-                else 
+                else if (current_func.constructor.name ==="AsyncFunction")
+                    await current_func();
+                else
                     current_func();
                 
                 break;
@@ -98,7 +101,9 @@ class AbstractGeniescriptHandler {
     }
 
     async getReply(analyzed) {
-        return this._logic.next({ type: "analyzed", content: analyzed }).value;
+        let result0 =  this._logic.next({ type: "analyzed", content: analyzed });
+        let result = await result0;
+        return result.value;
     }
 
     async *logic() {
