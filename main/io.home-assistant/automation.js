@@ -7,14 +7,14 @@
 // See LICENSE for details
 "use strict";
 
-const HomeAssistantDevice = require('./base');
+const HomeAssistantSwitch = require('./switch.js');
 
 module.exports = class HomeAssistantAutomation extends HomeAssistantSwitch {
     async get_state() {
         return [{ state: this.state.state,
             mode : this.state.attributes.mode ? this.state.attributes.mode.toLowerCase() : undefined,
             current: this.state.attributes.current ? this.state.attributes.current.toLowerCase() : undefined,
-            last_trigged: this.state.attributes.last_triggered ? this.state.attributes.last_triggered.toLowerCase() : undefined}];
+            last_trigged: this.state.attributes.last_triggered ? this.state.attributes.last_triggered.toLowerCase() : undefined }];
     }
     // note: subscribe_ must NOT be async, or an ImplementationError will occur at runtime
     subscribe_state() {
@@ -22,7 +22,7 @@ module.exports = class HomeAssistantAutomation extends HomeAssistantSwitch {
             return [{ state: this.state.state,
                 mode : this.state.attributes.mode ? this.state.attributes.mode.toLowerCase() : undefined,
                 current: this.state.attributes.current ? this.state.attributes.current.toLowerCase() : undefined,
-                last_trigged: this.state.attributes.last_triggered ? this.state.attributes.last_triggered.toLowerCase() : undefined}];
+                last_trigged: this.state.attributes.last_triggered ? this.state.attributes.last_triggered.toLowerCase() : undefined }];
         });
     }
     async do_set_power({ power }) {
