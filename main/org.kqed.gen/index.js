@@ -7,10 +7,7 @@
 // See LICENSE for details
 "use strict";
 
-const { GeniescriptDlg, AbstractGeniescriptHandler } = require("./geniescript");
-
 const Tp = require('thingpedia');
-const TT = require('thingtalk');
 const interpolate = require('string-interp');
 
 const RSS_URL = "https://www.omnycontent.com/d/playlist/0af137ef-751e-4b19-a055-aaef00d2d578/87fdd794-f90e-4280-920f-ab89016e8062/d72d17c7-e1c8-4763-98eb-ab89016ed36a/podcast.rss";
@@ -21,14 +18,14 @@ const DEVICE_ERROR = {
     service_unavailable: 'service_unavailable'
 };
 
-class KqedDialogueGenHandler extends AbstractGeniescriptHandler {
+class KqedDialogueGenHandler extends Tp.AbstractGeniescriptHandler {
     /**
      *
      * @param {string} locale
      * @param {string} timezone
      */
     constructor(locale, timezone) {
-        super();
+        super(Tp.DialogueHandler.Priority.PRIMARY, 'org.kqed');
         this._locale = locale;
         this._timezone = timezone;
         this._ = KqedGenDevice.gettext.gettext;
@@ -38,7 +35,7 @@ class KqedDialogueGenHandler extends AbstractGeniescriptHandler {
 
         let user_target = '$dialogue @org.thingpedia.dialogue.transaction.execute;\n' +
             '@org.kqed.gen.kqed_podcasts();';
-        this.dlg = new GeniescriptDlg(user_target);
+        this.dlg = new Tp.GeniescriptDlg(user_target, "@org.kqed.gen.kqed_podcasts");
     }
 
     _interp(string, args) {
@@ -48,13 +45,13 @@ class KqedDialogueGenHandler extends AbstractGeniescriptHandler {
         });
     }
 
-    get priority() {
-        return Tp.DialogueHandler.Priority.PRIMARY;
-    }
-
-    get icon() {
-        return 'org.kqed';
-    }
+    // get priority() {
+    //     return Tp.DialogueHandler.Priority.PRIMARY;
+    // }
+    //
+    // get icon() {
+    //     return 'org.kqed';
+    // }
 
     getState() {
         return { lastQuerySuggestion: this._lastQuerySuggestion };
@@ -75,14 +72,14 @@ class KqedDialogueGenHandler extends AbstractGeniescriptHandler {
         this._askedResume = false;
     }
 
-    async *yes_no(yes_action, no_action) {
+    async *yes_no() {
         let self = this;
-        yield * self.dlg.expect(new Map(Object.entries({
+        return yield * self.dlg.expect(new Map(Object.entries({
             "\\b(yes|yeah|yep|sure|go ahead)\\b": async function() {
-                yes_action();
+                return true;
             },
             "\\b(no|nah|nope)\\b": async function() {
-                no_action();
+                return false;
             }
         })));
     }
@@ -129,6 +126,7 @@ class KqedDialogueGenHandler extends AbstractGeniescriptHandler {
     }
 
     resume() {
+        // TODO: make a combined expect and say
         let self = this;
         this.dlg.say([
             self._interp(this._("resume playing?"), {})
@@ -142,25 +140,21 @@ class KqedDialogueGenHandler extends AbstractGeniescriptHandler {
                 "play kqed": ( async function*() {
                     if (self._item) {
                         self.resume();
-                        yield * self.yes_no(
-                            () => {
-                                self.play();
-                            },
-                            () => {
-                                self.stop();
-                            }
-                        );
+                        if (yield * self.yes_no())
+                            self.play();
+                        else
+                            self.stop();
+
                     } else {
                         self.play();
                         self.dlg.say([
                             // TODO: call do_kqed_play
                             self._interp(self._("Play next?"), {}),
                         ]);
-                        yield * self.yes_no(() => {
+                        if (yield * self.yes_no())
                             self.next();
-                        }, () => {
+                        else
                             self.stop();
-                        });
                     }
                 }),
             })));
@@ -278,7 +272,6 @@ class KqedGenDevice extends Tp.BaseDevice {
             // const playable_link = this._http_post(url);
             try {
                 audio_player.play(playable_link);
-                return;
             } catch(e) {
                 throw new Error(DEVICE_ERROR.service_unavailable);
             }
