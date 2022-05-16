@@ -10,6 +10,7 @@
 const Tp = require('thingpedia');
 const TT = require('thingtalk');
 const interpolate = require('string-interp');
+const Genie = require('genie-toolkit');
 
 const RSS_URL = "https://www.omnycontent.com/d/playlist/0af137ef-751e-4b19-a055-aaef00d2d578/87fdd794-f90e-4280-920f-ab89016e8062/d72d17c7-e1c8-4763-98eb-ab89016ed36a/podcast.rss";
 
@@ -25,11 +26,12 @@ class KqedDialogueHandler {
      * @param {string} locale
      * @param {string} timezone
      */
-    constructor(engine, platform, locale, timezone) {
+    constructor(engine, platform, locale, timezone, uniqueId) {
         this._engine = engine;
         this._platform = platform;
         this._locale = locale;
         this._timezone = timezone;
+        this._uniqueId = uniqueId;
         this._ = KqedDevice.gettext.gettext;
         this._item = 0;
         this._podcasts = [];
@@ -75,7 +77,7 @@ class KqedDialogueHandler {
      * @returns {Tp.DialogueHandler.CommandAnalysisResult}
      */
     async analyzeCommand(utterance) {
-        console.log(this._platform.getCapability('audio-player'));
+        // console.log(this._platform.getCapability('audio-player'));
         let ret = { 
             confident: Tp.DialogueHandler.Confidence.OUT_OF_DOMAIN_COMMAND, 
             utterance: utterance, 
@@ -121,6 +123,10 @@ class KqedDialogueHandler {
                     this._item = 0;
                 } else {
                     ret.answerType = 'stop';
+                    // AgentInput invocation
+                    ret.device = 'com.tunein';
+                    const program = new Genie.ThingTalkUtils.ThingtalkComposer(this._engine.schemas, ret.device);
+                    ret.agent_init =  await program.invoke("station");
                     this._lastQuerySuggestion = null;
                 }
                 return ret;
@@ -154,7 +160,7 @@ class KqedDialogueHandler {
                 ],
                 expecting: TT.Type.String,
                 context: analyzed.user_target,
-                agent_target: '@org.kqed.reply'
+                agent_target: '@org.kqed.reply',
             };
             if (++this._item >= this._podcasts.length)
                 this._item = 0;
@@ -286,7 +292,13 @@ class KqedDevice extends Tp.BaseDevice {
         this.uniqueId = 'org.kqed';
         this.name = "KQED Now";
         this.description = "A daily News podcast from KQED";
-        this._dialogueHandler = new KqedDialogueHandler(engine, this.platform, this.platform.locale, this.platform.timezone);
+        this._dialogueHandler = new KqedDialogueHandler(
+            engine,
+            this.platform, 
+            this.platform.locale, 
+            this.platform.timezone,
+            this.uniqueId
+        );
     }
     
     queryInterface(iface) {
