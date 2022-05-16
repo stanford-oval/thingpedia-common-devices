@@ -88,15 +88,6 @@ class KqedDialogueGenHandler extends Tp.AbstractGeniescriptHandler {
         let self = this;
         this.dlg.say([
             self._interp(self._("Play KQED now."), {}),
-            {
-                type: 'rdl',
-                webCallback: `${self._podcasts[self._item].link}::${self._item}`,
-                displayTitle: `${self._podcasts[self._item].title}`,
-            },
-            {
-                type: 'text',
-                text: `${self._podcasts[self._item].description}`
-            }
         ]);
     }
 
@@ -110,18 +101,7 @@ class KqedDialogueGenHandler extends Tp.AbstractGeniescriptHandler {
     next() {
         let self = this;
         self.dlg.say([
-            this._interp(this._("Play next."), {}),
-            {
-                type: 'rdl',
-                webCallback: `${this._podcasts[this._item].link}::${this._item}`,
-                displayTitle: `${this._podcasts[this._item].title}`,
-            },
-            {
-                type: 'text',
-                text: `${this._podcasts[this._item].description}`
-            },
-            // TODO: call do_kqed_play
-            this._interp(this._("Play next?"), {}),
+            this._interp(this._("Play next."), {})
         ]);
     }
 
