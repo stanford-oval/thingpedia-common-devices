@@ -6,14 +6,16 @@ abstract class @org.thingpedia.iot.humidity
 #[license_gplcompatible=true]
 #[subcategory="home"]
 {
-  monitorable query humidity(out state : Enum(humid,normal), out value : Number)
-  #_[canonical=["humidity sensor state",
-                 "the indoor humidity",
-                 "the humidity inside",
-                 "the humidity level",
-                 "whether it is humid",
-                 "whether it is humid in the room",
-                 "if it is humid"]]
+  monitorable query humidity(out state : Enum(humid,normal)
+                                  #_[canonical={
+                                      base=["reading"]
+                                  }],  
+                             out value : Number
+                              #_[canonical={
+                                  base=["level"]
+                              }]
+  )
+  #_[canonical="humidity sensor"]
   #_[confirmation="the humidity from $__device"]
   #_[result=["the humidity level {reported by ${__device}|} is ${value} percent", "it is ${state} in the room {according to ${__device}|}"]]
   #[confirm=false]

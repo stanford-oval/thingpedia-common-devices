@@ -6,8 +6,12 @@ abstract class @org.thingpedia.iot.motion
 #[license_gplcompatible=true]
 #[subcategory="home"]
 {
-  monitorable query motion(out state : Enum(detecting,not_detecting))
-  #_[canonical="motion detection state"]
+  monitorable query motion(out state : Enum(detecting,not_detecting)
+                              #_[canonical={
+                                  base=["state"]
+                              }] 
+  )
+  #_[canonical="motion detection sensor"]
   #_[confirmation="whether $__device detected motion"]
   #[confirm=false]
   #_[result=["the {${__device}|} motion detector is ${state} movement"]];

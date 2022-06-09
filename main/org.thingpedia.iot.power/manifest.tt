@@ -6,11 +6,12 @@ abstract class @org.thingpedia.iot.power
 #[license_gplcompatible=true]
 #[subcategory="home"]
 {
-  monitorable query state(out power : Number )
-  #_[canonical=["the power reading",
-                 "the power measure",
-                 "the power level",
-                 "the power consumption"]]
+  monitorable query state(out power : Number 
+                            #_[canonical={
+                                  base=["reading", "level"]
+                            }]
+  )
+  #_[canonical="power consumption"]
   #_[confirmation="Power readings from $__device"]
   #_[result=["the power absorbed is ${power} watt"]]
   #[confirm=false];

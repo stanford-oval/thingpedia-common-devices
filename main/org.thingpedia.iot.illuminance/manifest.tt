@@ -6,8 +6,12 @@ abstract class @org.thingpedia.iot.illuminance
 #[license_gplcompatible=true]
 #[subcategory="home"]
 {
-  monitorable query illuminance(out value : Measure(lx))
-  #_[canonical="illuminance sensor value"]
+  monitorable query illuminance(out value : Measure(lx)
+                                  #_[canonical={
+                                      base=["reading","level"]
+                                  }]
+  )
+  #_[canonical="illuminance sensor"]
   #_[confirmation="the illuminance from $__device"]
   #[confirm=false]
   #_[result=["the illuminance level {reported by ${__device}|} is ${value}"]];

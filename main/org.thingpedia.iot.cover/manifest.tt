@@ -6,14 +6,60 @@ abstract class @org.thingpedia.iot.cover
 #[license_gplcompatible=true]
 #[subcategory="home"]
 {
-  monitorable query state(out state : Enum(open,opening,closed,closing))
-  #_[canonical="cover state"]
+  monitorable query state(out state : Enum(opening,open,closing,closed)
+                            #_[canonical={
+                              base= ["state"]
+                              }]
+  )
+  #_[canonical=["cover","awning","blind","curtain","damper","door","garage door","gate","shades","shutter","window"]]
   #_[confirmation="the state of $__device"]
   #[confirm=false]
-  #_[result=["the {${__device}|} cover is ${state}"]];
+  #_[result=["the cover is ${state}"]];
 
-  action set_openclose(in req state: Enum(open,close) #_[prompt="Do you want to open or close it?"] #_[canonical="state"])
-  #_[canonical="open or close cover"]
+  action set_openclosestop(in req state: Enum(open,close,stop) 
+                            #_[prompt="Do you want to open, close or stop it?"] 
+                            #_[canonical={
+                              base=["state"],
+                              verb=["is set to"]
+                            }]
+  )
+  #_[canonical=["cover","awning","blind","curtain","damper","door","garage door","gate","shades","shutter","window"]]
   #_[confirmation="$state $__device"]
+  #[confirm=true];
+
+  action set_coverposition(in req position: Number
+                              #[min_number=0]
+                              #[max_number=100]
+                              #_[prompt="Do you want to set the cover position?"] 
+                              #_[canonical={
+                                base=["position"],
+                                verb=["is set to"]
+                              }]
+  )
+  #_[canonical=["cover","awning","blind","curtain","damper","door","garage door","gate","shades","shutter","window"]]
+  #_[confirmation="$__device position set to $position"]
+  #[confirm=true];
+
+  action set_tiltopenclosestop(in req state: Enum(open,close,stop) 
+                              #_[prompt="Do you want to open, close or stop tilt?"] 
+                              #_[canonical={
+                                base=["tilt state"],
+                                verb=["is set to"]
+                              }]
+  )
+  #_[canonical="cover"]
+  #_[confirmation="$state $__device"]
+  #[confirm=true];
+
+  action set_tiltposition(in req position: Number
+                              #[min_number=0]
+                              #[max_number=100]
+                              #_[prompt="Do you want to set the tilt position?"] 
+                              #_[canonical={
+                                base=["tilt position"],
+                                verb=["is set to"]
+                              }])
+  #_[canonical="cover"]
+  #_[confirmation="$__device tilt position set to $position"]
   #[confirm=true];
 }

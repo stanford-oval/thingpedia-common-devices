@@ -6,9 +6,12 @@ abstract class @org.thingpedia.iot.moisture
 #[license_gplcompatible=true]
 #[subcategory="home"]
 {
-  monitorable query state(out value : Number)
-  #_[canonical=["ground moisture percentage",
-                "soil moisture index"]]
+  monitorable query state(out value : Number
+                            #_[canonical={
+                                base=["reading", "value", "index"]
+                            }]
+  )
+  #_[canonical=["soil moisture sensor","ground moisture sensor"]]
   #_[confirmation="the moisture from $__device"]
   #_[result=["the moisture is ${value} percent"]]
   #[confirm=false];

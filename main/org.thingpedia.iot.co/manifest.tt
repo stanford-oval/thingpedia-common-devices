@@ -6,9 +6,16 @@ abstract class @org.thingpedia.iot.co
 #[license_gplcompatible=true]
 #[subcategory="home"]
 {
-  monitorable query state(out co_value : Number, out co_state : Enum(detected,not_detected) )
-  #_[canonical=["carbon monoxide sensor state",
-                "carbon monoxide reading"]]
+  monitorable query state(out co_value : Number
+                        #_[canonical={
+                              base=["amount","reading"]
+                        }],
+                        out co_state : Enum(detected,not_detected)
+                        #_[canonical={
+                              base=["state"]
+                        }]
+  )
+  #_[canonical="carbon monoxide sensor"]
   #_[confirmation="the carbon monoxide index from $__device"]
   #[confirm=false]
   #_[result=["the carbon monoxide reading ${co_value}", "it is ${co_state} CO in the room"]]

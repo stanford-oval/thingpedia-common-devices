@@ -6,9 +6,16 @@ abstract class @org.thingpedia.iot.so2
 #[license_gplcompatible=true]
 #[subcategory="home"]
 {
-  monitorable query state(out so2_value : Number, out so2_state : Enum(detected,not_detected) )
-  #_[canonical=["sulphur dioxide sensor state",
-                "sulphur dioxide reading"]]
+  monitorable query state(out so2_value : Number
+                          #_[canonical={
+                                base=["reading","level"]
+                          }], 
+                          out so2_state : Enum(detected,not_detected) 
+                          #_[canonical={
+                                base=["state"]
+                          }]
+  )
+  #_[canonical="sulphur dioxide sensor"]
   #_[confirmation="the sulphur dioxide index from $__device"]
   #[confirm=false]
   #_[result=["the sulphur dioxide reading ${so2_value}", "it is ${so2_state} SO2 in the room"]]

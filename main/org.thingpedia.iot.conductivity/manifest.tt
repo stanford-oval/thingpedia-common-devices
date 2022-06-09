@@ -6,9 +6,13 @@ abstract class @org.thingpedia.iot.conductivity
 #[license_gplcompatible=true]
 #[subcategory="home"]
 {
-    monitorable query state(out value : Number)
-    #_[canonical=["ground conductivity value",
-                    "soil conductivity index"]]
+    monitorable query state(out value : Number
+                        #_[canonical={
+                              base=["reading", "index"]
+                        }]
+    )
+    #_[canonical=["ground conductivity sensor",
+                    "soil conductivity sensor"]]
     #_[confirmation="the conductivity from $__device"]
     #_[result=["the conductivity is ${value} µS/cm"]]
     #[confirm=false];

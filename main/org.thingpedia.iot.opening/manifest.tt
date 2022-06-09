@@ -6,14 +6,23 @@ abstract class @org.thingpedia.iot.opening
 #[license_gplcompatible=true]
 #[subcategory="home"]
 {
-  monitorable query state(out state : Enum(open,closed))
-  #_[canonical="opening state"]
+  monitorable query state(out state : Enum(open,closed)
+                            #_[canonical={
+                                base=["state"]
+                            }]
+  )
+  #_[canonical="opening sensor"]
   #_[confirmation="the state of $__device"]
   #[confirm=false]
   #_[result=["the {${__device}|} opening is ${state}"]];
 
-  action set_state(in req state: Enum(open,close) #_[prompt="Do you want to open or close?"] #_[canonical="state"])
-  #_[canonical="open or close"]
+  action set_state(in req state: Enum(open,close) 
+                      #_[prompt="Do you want to open or close?"] 
+                      #_[canonical={
+                        preposition = ["to"]
+                      }]
+  )
+  #_[canonical="set opening"]
   #_[confirmation="$state $__device"]
   #[confirm=true];
 }

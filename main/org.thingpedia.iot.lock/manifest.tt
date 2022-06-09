@@ -6,14 +6,23 @@ abstract class @org.thingpedia.iot.lock
 #[license_gplcompatible=true]
 #[subcategory="home"]
 {
-  monitorable query state(out state : Enum(unlocked,locked))
-  #_[canonical="lock state"]
+  monitorable query state(out state : Enum(unlocked,locked)
+                            #_[canonical={
+                                base=["state"]
+                            }] 
+  )
+  #_[canonical="lock"]
   #_[confirmation="the state of $__device"]
   #[confirm=false]
   #_[result=["the {${__device}|} lock is ${state}"]];
 
-  action set_state(in req state: Enum(lock,unlock) #_[prompt="Do you want to lock or unlock?"] #_[canonical="state"])
-  #_[canonical="lock or unlock"]
+  action set_state(in req state: Enum(lock,unlock) 
+                      #_[prompt="Do you want to lock or unlock?"] 
+                      #_[canonical={
+                        preposition = ["to"]
+                      }]
+  )
+  #_[canonical="set lock"]
   #_[confirmation="$state $__device"]
   #[confirm=true];
 }

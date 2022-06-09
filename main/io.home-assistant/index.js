@@ -41,21 +41,35 @@ const DOMAIN_TO_TP_KIND = {
     //'media_player_tv': 'org.thingpedia.iot.tv',
 
     // sensors and binary sensors (implemented by HomeAssistantSensor)
-    //'sensor_air': 'org.thingpedia.iot.air',
+    'sensor_aqi': 'org.thingpedia.iot.aqi',
     'sensor_battery': 'org.thingpedia.iot.battery',
+    'sensor_co': 'org.thingpedia.iot.co',
+    'sensor_co2': 'org.thingpedia.iot.co2',
+    'sensor_current': 'org.thingpedia.iot.current',
     'sensor_door': 'org.thingpedia.iot.door',
+    'sensor_energy': 'org.thingpedia.iot.energy',
     'sensor_flood': 'org.thingpedia.iot.flood',
+    'sensor_gas': 'org.thingpedia.iot.gas',
     'sensor_humidity': 'org.thingpedia.iot.humidity',
     'sensor_illuminance': 'org.thingpedia.iot.illuminance',
+    'sensor_moisture': 'org.thingpedia.iot.moisture',
     'sensor_motion': 'org.thingpedia.iot.motion',
-    //'sensor_smoke': 'org.thingpedia.iot.smoke',
+    'sensor_n2o': 'org.thingpedia.iot.n2o',
+    'sensor_no': 'org.thingpedia.iot.no',
+    'sensor_no2': 'org.thingpedia.iot.no2',
+    'sensor_o3': 'org.thingpedia.iot.o3',
+    'sensor_occupancy': 'org.thingpedia.iot.occupancy',
+    'sensor_opening': 'org.thingpedia.iot.opening',
+    'sensor_pm01': 'org.thingpedia.iot.pm01',
+    'sensor_pm10': 'org.thingpedia.iot.pm10',
+    'sensor_pm25': 'org.thingpedia.iot.pm25',
+    'sensor_power': 'org.thingpedia.iot.power',
+    'sensor_smoke': 'org.thingpedia.iot.smoke',
+    'sensor_so2': 'org.thingpedia.iot.so2',
     'sensor_temperature': 'org.thingpedia.iot.temperature',
     'sensor_uv': 'org.thingpedia.iot.uv'
-
-    //'sensor_heat': 'org.thingpedia.iot.heat',
-    //'sensor_moisture': 'org.thingpedia.iot.moisture',
+    
     //'sensor_plug': 'org.thingpedia.iot.plug',
-    //'sensor_occupancy': 'org.thingpedia.iot.occupancy',
     //'sensor_sound': 'org.thingpedia.iot.sound',
 };
 

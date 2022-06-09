@@ -6,14 +6,16 @@ abstract class @org.thingpedia.iot.temperature
 #[license_gplcompatible=true]
 #[subcategory="home"]
 {
-  monitorable query temperature(out state : Enum(warm,cold), out value : Measure(C))
-  #_[canonical=["temperature sensor state",
-                "the state of the room temperature",
-                "the temperature inside",
-                "the room temperature",
-                "if the inside temperature is warm or cold",
-                "whether the home temperature is warm or cold",
-                "the temperature in the room"]]
+  monitorable query temperature(out state : Enum(warm,cold)
+                                  #_[canonical={
+                                      base=["reading"]
+                                  }], 
+                                out value : Measure(C)
+                                  #_[canonical={
+                                      base=["level"]
+                                  }]
+  )
+  #_[canonical="temperature sensor"]
   #_[confirmation="the temperature from $__device"]
   #_[result=["the temperature is ${value}", "it is ${state} in the room"]]
   #[confirm=false]

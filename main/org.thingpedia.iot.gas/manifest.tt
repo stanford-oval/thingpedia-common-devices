@@ -6,9 +6,16 @@ abstract class @org.thingpedia.iot.gas
 #[license_gplcompatible=true]
 #[subcategory="home"]
 {
-  monitorable query state(out gas_value : Number, out gas_state : Enum(detected,not_detected) )
-  #_[canonical=["gas sensor state",
-                "gas reading"]]
+  monitorable query state(out gas_value : Number
+                            #_[canonical={
+                                base=["reading","level"]
+                            }], 
+                          out gas_state : Enum(detected,not_detected)
+                            #_[canonical={
+                                base=["state"]
+                            }] 
+  )
+  #_[canonical="gas sensor"]
   #_[confirmation="the gas index from $__device"]
   #[confirm=false]
   #_[result=["the gas reading ${gas_value}", "it is ${gas_state} gas in the room"]]

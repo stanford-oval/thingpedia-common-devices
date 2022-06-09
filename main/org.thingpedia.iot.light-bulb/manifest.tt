@@ -5,11 +5,12 @@ abstract class @org.thingpedia.iot.light-bulb extends @org.thingpedia.iot.switch
 #[license_gplcompatible=true]
 #[subcategory="home"]
 {
-  monitorable query power(out power : Enum(on,off))
-  #_[canonical=["the power state of the light bulb",
-                "the power state of my lights",
-                "whether the lights are on or off",
-                "light state"]]
+  monitorable query power(out power : Enum(on,off)
+                              #_[canonical={
+                                  base=["power state"]
+                              }]
+  )
+  #_[canonical="light"]
   #_[confirmation="the power state of ${__device}"]
   #[confirm=false]
   #_[result=["your {${__device}|} lights are ${power}"]];
@@ -29,34 +30,45 @@ abstract class @org.thingpedia.iot.light-bulb extends @org.thingpedia.iot.switch
   #_[confirmation="flash alerts on ${__device}"]
   #[confirm=false];
 
-
   action set_power(in req power: Enum(on,off)
                    #_[prompt="do you want to turn it on or off"]
-                   #_[canonical="power"])
-  #_[canonical=["set the power on the lights", "set the power on the lamp"]]
+                   #_[canonical={
+                        preposition = ["to"]
+                   }]
+  )
+  #_[canonical="set light power"]
   #_[confirmation="turn $power ${__device}"]
   #[confirm=false];
 
   action set_color(in req color: Enum(white,black,red,orange,yellow,green,blue,purple,pink,brown,gray,chartreuse,cyan,azure,violet,magenta,rose,amber,teal,indigo)
                    #_[prompt="do you want to change color to the light"]
-                   #_[canonical="color"])
-  #_[canonical=["set the color on the lights", "change the color of the lights"]]
+                   #_[canonical="color"]
+                   #_[canonical={
+                        preposition = ["to"]
+                   }]
+  )
+  #_[canonical="set light color"]
   #_[confirmation="set ${__device} $color"]
   #[confirm=false];
 
-  monitorable query brightness(out brightness : Number)
-  #_[canonical=["the brightness of the light bulb",
-                "the intensity of my light"]]
+  monitorable query brightness(out brightness : Number
+                                #_[canonical={
+                                    base=["level"]
+                                }]
+  )
+  #_[canonical="brightness"]
   #_[confirmation="the brightness state of ${__device}"]
   #[confirm=false]
   #_[result=["your {${__device}|} light brightness is ${brightness} %"]];
 
-  action set_brightness(in req pct: Number #_[prompt="from 0 to 100, which brightness do you want to set"]
+  action set_brightness(in req pct: Number 
+                    #_[prompt="from 0 to 100, which brightness do you want to set"]
                     #_[canonical={
-                      base=["brightness", "value"],
+                      base=["value"],
                       preposition=["to # %"]
-                    }])
-  #_[canonical=["change the brightness of the light", "set the brightness on the lamp"]]
+                    }]
+  )
+  #_[canonical="set brightness"]
   #_[confirmation="set ${__device} $pct percent"]
   #[min_number=0]
   #[max_number=100]
@@ -71,5 +83,4 @@ abstract class @org.thingpedia.iot.light-bulb extends @org.thingpedia.iot.switch
   #_[canonical=["lower the light brightness", "decrease the brightness of the lamp"]]
   #_[confirmation="lower brightness on ${__device}"]
   #[confirm=false];
-
 }

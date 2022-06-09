@@ -25,15 +25,49 @@ module.exports = class HomeAssistantCover extends HomeAssistantSensor {
         return super.subscribe_state();
     }
 
-    async do_set_openclose({ state }) {
+    async do_set_openclosestop({ state }) {
         if (this.domain === 'cover') {
             if (state === 'open')
                 await this._callService("cover", "open_cover");
-            else
+            else if (state === 'close')
                 await this._callService("cover", "close_cover");
+            else
+                await this._callService("cover", "stop_cover");
         } else {
             // For Binary Sensor - Window
             throw new Error(`I regret to inform you that your device does not have an automated ${state} function. You have to open it yourself.`);
+        }
+    }
+
+    async do_set_coverposition({ state }) {
+        if (this.domain === 'cover') {
+            await this._callService('cover', 'set_position', { position: state });
+        } else {
+            // For Binary Sensor - Window
+            throw new Error(`I regret to inform you that your device does not have an automated function to set the cover position to ${state}. You have to do it manually.`);
+        }
+    }
+
+    async do_set_tiltopenclosestop({ state }) {
+        if (this.domain === 'cover') {
+            if (state === 'open')
+                await this._callService("cover", "open_cover_tilt");
+            else if (state === 'close')
+                await this._callService("cover", "close_cover_tilt");
+            else
+                await this._callService("cover", "stop_cover_tilt");
+        } else {
+            // For Binary Sensor - Window
+            throw new Error(`I regret to inform you that your device does not have an automated ${state} function. You have to open it yourself.`);
+        }
+    }
+
+    async do_set_tiltposition({ state }) {
+        if (this.domain === 'cover') {
+            await this._callService('cover', 'tilt_position', { position: state });
+        } else {
+            // For Binary Sensor - Window
+            throw new Error(`I regret to inform you that your device does not have an automated function to set the tilt position to ${state}. You have to do it manually.`);
         }
     }
 };

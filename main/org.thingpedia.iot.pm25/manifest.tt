@@ -6,9 +6,16 @@ abstract class @org.thingpedia.iot.pm25
 #[license_gplcompatible=true]
 #[subcategory="home"]
 {
-  monitorable query state(out pm25_value : Number, out pm25_state : Enum(detected,not_detected) )
-  #_[canonical=["particulate matter 2.5 sensor state",
-                "particulate matter 2.5 reading"]]
+  monitorable query state(out pm25_value : Number
+                            #_[canonical={
+                                base=["reading","level"]
+                            }], 
+                          out pm25_state : Enum(detected,not_detected) 
+                            #_[canonical={
+                                base=["reading","level"]
+                            }]
+  )
+  #_[canonical="pm 2.5 sensor"]
   #_[confirmation="the particulate matter 2.5 index from $__device"]
   #[confirm=false]
   #_[result=["the particulate matter 2.5 reading ${pm25_value}", "it is ${pm25_state} PM2.5 in the room"]]

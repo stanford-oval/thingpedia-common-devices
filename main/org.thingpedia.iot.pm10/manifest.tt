@@ -1,16 +1,23 @@
 abstract class @org.thingpedia.iot.pm10
-#_[thingpedia_name="Particulate Matter 1.0 Sensor"]
-#_[thingpedia_description="Interface for Particulate Matter 1.0 Sensor."]
-#_[description="Interface for Particulate Matter 1.0 Sensor."]
+#_[thingpedia_name="Particulate Matter 10 Sensor"]
+#_[thingpedia_description="Interface for Particulate Matter 10 Sensor."]
+#_[description="Interface for Particulate Matter 10 Sensor."]
 #[license="BSD-3-Clause"]
 #[license_gplcompatible=true]
 #[subcategory="home"]
 {
-  monitorable query state(out pm10_value : Number, out pm10_state : Enum(detected,not_detected) )
-  #_[canonical=["particulate matter 1.0 sensor state",
-                "particulate matter 1.0 reading"]]
-  #_[confirmation="the particulate matter 1.0 index from $__device"]
+  monitorable query state(out pm10_value : Number
+                            #_[canonical={
+                                base=["reading","level"]
+                            }], 
+                          out pm10_state : Enum(detected,not_detected) 
+                            #_[canonical={
+                                base=["state"]
+                            }] 
+  )
+  #_[canonical="pm 10 sensor"]
+  #_[confirmation="the particulate matter 10 index from $__device"]
   #[confirm=false]
-  #_[result=["the particulate matter 1.0 reading ${pm10_value}", "it is ${pm10_state} PM1.0 in the room"]]
+  #_[result=["the particulate matter 10 reading ${pm10_value}", "it is ${pm10_state} PM10 in the room"]]
   #[minimal_projection=["pm10_state","pm10_value"]];
 }

@@ -6,13 +6,16 @@ abstract class @org.thingpedia.iot.smoke
 #[license_gplcompatible=true]
 #[subcategory="home"]
 {
-  monitorable query state(out state : Enum(detecting,nothing), out value : Number)
-  #_[canonical=["smoke sensor state",
-                 "the indoor smoke presence",
-                 "smoke inside",
-                 "the smoke level",
-                 "whether there is smoke",
-                 "whether it is smoky in the room"]]
+  monitorable query state(out state : Enum(detecting,nothing)
+                            #_[canonical={
+                                base=["state"]
+                            }],
+                          out value : Number
+                            #_[canonical={
+                                base=["reading","level"]
+                            }]
+  )
+  #_[canonical="smoke sensor"]
   #_[confirmation="the smoke alarm from $__device"]
   #_[result=["the smoke level is ${value} percent", "there is  smoke ${state} in the room"]]
   #[confirm=false]

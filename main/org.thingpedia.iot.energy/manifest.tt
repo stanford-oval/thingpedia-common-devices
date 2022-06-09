@@ -6,11 +6,12 @@ abstract class @org.thingpedia.iot.energy
 #[license_gplcompatible=true]
 #[subcategory="home"]
 {
-    monitorable query state(out energy : Number )
-    #_[canonical=["the energy reading",
-                    "the energy measure",
-                    "the energy level",
-                    "the energy consumption"]]
+    monitorable query state(out energy : Number 
+                        #_[canonical={
+                              base=["reading", "measure"]
+                        }]
+    )
+    #_[canonical="energy consumption"]
     #_[confirmation="Total energy reading from $__device"]
     #_[result=["the energy consumption is ${energy} Kwh"]]
     #[confirm=false];

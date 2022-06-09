@@ -6,9 +6,16 @@ abstract class @org.thingpedia.iot.n2o
 #[license_gplcompatible=true]
 #[subcategory="home"]
 {
-  monitorable query state(out n2o_value : Number, out n2o_state : Enum(detected,not_detected) )
-  #_[canonical=["nitrogen oxide sensor state",
-                "nitrogen oxide reading"]]
+  monitorable query state(out n2o_value : Number
+                            #_[canonical={
+                                base=["reading","level"]
+                            }], 
+                          out n2o_state : Enum(detected,not_detected) 
+                            #_[canonical={
+                                base=["state"]
+                            }]
+  )
+  #_[canonical="nitrogen oxide sensor"]
   #_[confirmation="the nitrogen oxide index from $__device"]
   #[confirm=false]
   #_[result=["the nitrogen oxide reading ${n2o_value}", "it is ${n2o_state} N2O in the room"]]

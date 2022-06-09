@@ -6,9 +6,16 @@ abstract class @org.thingpedia.iot.co2
 #[license_gplcompatible=true]
 #[subcategory="home"]
 {
-  monitorable query state(out co2_value : Number, out co2_state : Enum(detected,not_detected) )
-  #_[canonical=["carbon dioxide sensor state",
-                "carbon dioxide reading"]]
+  monitorable query state(out co2_value : Number
+                        #_[canonical={
+                              base=["amount","reading"]
+                        }],
+                        out co2_state : Enum(detected,not_detected) 
+                        #_[canonical={
+                              base=["state"]
+                        }]
+  )
+  #_[canonical="carbon dioxide sensor"]
   #_[confirmation="the carbon dioxide index from $__device"]
   #[confirm=false]
   #_[result=["the carbon dioxide reading ${co2_value}", "it is ${co2_state} CO2 in the room"]]

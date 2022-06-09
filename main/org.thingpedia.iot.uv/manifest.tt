@@ -6,8 +6,12 @@ abstract class @org.thingpedia.iot.uv
 #[license_gplcompatible=true]
 #[subcategory="home"]
 {
-  monitorable query uv(out value : Number)
-  #_[canonical="uv sensor state"]
+  monitorable query uv(out value : Number
+                        #_[canonical={
+                                base=["reading","level"]
+                        }]
+  )
+  #_[canonical="uv sensor"]
   #_[confirmation="the uv from $__device"]
   #[confirm=false]
   #_[result=["the uv level {reported by ${__device}|} is ${value} uv"]];

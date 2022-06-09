@@ -6,8 +6,12 @@ abstract class @org.thingpedia.iot.occupancy
 #[license_gplcompatible=true]
 #[subcategory="home"]
 {
-  monitorable query occupancy(out state : Enum(detecting,not_detecting))
-  #_[canonical="occupancy state"]
+  monitorable query occupancy(out state : Enum(detecting,not_detecting)
+                              #_[canonical={
+                                  verb = ["is"]
+                              }]
+  )
+  #_[canonical="occupancy sensor"]
   #_[confirmation="whether $__device detected someone"]
   #_[result=["it is ${state} someone"]];
 }

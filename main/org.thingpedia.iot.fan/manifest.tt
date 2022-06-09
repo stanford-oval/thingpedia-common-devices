@@ -6,24 +6,39 @@ abstract class @org.thingpedia.iot.fan
 #[license_gplcompatible=true]
 #[subcategory="home"]
 {
-  monitorable query state(out state : Enum(on,off))
-  #_[canonical="fan state"]
+  monitorable query state(out state : Enum(on,off)
+                            #_[canonical={
+                                base=["state"]
+                            }] 
+  )
+  #_[canonical="fan"]
   #_[confirmation="the state of $__device"]
   #_[result=["the {${__device}|} fan is $state"]];
 
-  action set_power(in req power: Enum(on,off) #_[prompt="Do you want to turn it on or off?"] #_[canonical="power"])
-  #_[canonical="set power on fan"]
+  action set_power(in req power: Enum(on,off) 
+                    #_[prompt="Do you want to turn it on or off?"] 
+                    #_[canonical={
+                        preposition = ["to"]
+                    }]
+  )
+  #_[canonical="set power"]
   #_[confirmation="turn $power $__device"]
   #[confirm=true];
   
-  monitorable query current_speed(out percentage : Number)
-  #_[canonical=["the speed of the fan"]]
+  monitorable query current_speed(out percentage : Number
+                                    #_[canonical={
+                                        base=["reading", "value"]
+                                    }]
+  )
+  #_[canonical="fan speed"]
   #_[confirmation="the speed of ${__device}"]
   #[confirm=false]
   #_[result=["your ${__device} fan speed is ${percentage}"]];
 
-  monitorable query speed_count(out speeds : Number)
-  #_[canonical=["the speed available of the fan"]]
+  monitorable query speed_count(out speeds : Number
+  
+  )
+  #_[canonical="available fan speed"]
   #_[confirmation="the speed available for ${__device}"]
   #[confirm=false]
   #_[result=["your ${__device} fan has ${speeds} available"]];
@@ -38,34 +53,61 @@ abstract class @org.thingpedia.iot.fan
   #_[confirmation="lower speed on ${__device}"]
   #[confirm=true];
 
-  monitorable query oscillation(out state : Enum(oscillating,not_oscillating))
-  #_[canonical="fan oscillation state"]
+  monitorable query oscillation(out state : Enum(oscillating,not_oscillating)
+                                    #_[canonical={
+                                        base=["state"]
+                                    }]
+  )
+  #_[canonical="fan oscillation"]
   #_[confirmation="the oscillation of $__device"]
   #_[result=["the {${__device}|} fan is ${state:enum}"]];
 
-  action set_oscillation(in req oscillation: Enum(on,off) #_[prompt="Do you want to turn oscillation on or off?"] #_[canonical="oscillation"])
-  #_[canonical="set oscillation on fan"]
+  action set_oscillation(in req oscillation: Enum(on,off) 
+                            #_[prompt="Do you want to turn oscillation on or off?"] 
+                            #_[canonical={
+                              preposition = ["to"]
+                            }]
+  )
+  #_[canonical="set oscillation"]
   #_[confirmation="turn $oscillation oscillation for $__device"]
   #[confirm=true];
 
-  action set_direction(in req direction: Enum(forward,reverse))
+  action set_direction(in req direction: Enum(forward,reverse)
+                          #_[canonical={
+                            preposition = ["to"]
+                          }]
+  )
   #_[canonical="set fan direction"]
   #_[confirmation="set your fan direction to $direction"]
   #[confirm=true];
 
-  action set_preset_mode(in req preset: Enum(auto,smart,whoosh,eco,breeze))
+  action set_preset_mode(in req preset: Enum(auto,smart,whoosh,eco,breeze)
+                          #_[canonical={
+                            preposition = ["to"]
+                          }]
+  )
   #_[canonical="set fan mode"]
   #_[confirmation="set your fan mode to $preset"]
   #[confirm=true];
 
-  monitorable query preset_mode(out preset : Enum(none,auto,smart,whoosh,eco,breeze))
-  #_[canonical="running fan presets"]
+  monitorable query preset_mode(out preset : Enum(none,auto,smart,whoosh,eco,breeze)
+                                    #_[canonical={
+                                        base=["preset"],
+                                        verb=["running"]
+                                    }] 
+  )
+  #_[canonical="fan"]
   #_[confirmation="the preset of your fan"]
   #[confirm=false]
   #_[result=["the current preset {on ${__device}|} fan is ${preset}"]];
 
-  monitorable query preset_modes_aval(out preset : Enum(none,auto,smart,whoosh,eco,breeze))
-  #_[canonical="available fan presets"]
+  monitorable query preset_modes_aval(out preset : Enum(none,auto,smart,whoosh,eco,breeze)
+                                    #_[canonical={
+                                        base=["preset"],
+                                        adjective=["available mode"]
+                                    }]
+  )
+  #_[canonical="fan"]
   #_[confirmation="the presets available for your fan"]
   #[confirm=false]
   #_[result=["the available presets {on ${__device}|} fan are ${preset}"]];

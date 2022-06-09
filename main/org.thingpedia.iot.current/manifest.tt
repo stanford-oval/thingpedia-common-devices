@@ -6,11 +6,13 @@ abstract class @org.thingpedia.iot.current
 #[license_gplcompatible=true]
 #[subcategory="home"]
 {
-    monitorable query state(out current : Number)
-    #_[canonical=["the current reading",
-                    "the current consumption",
-                    "the current level"]]
-    #_[confirmation="Current consumption reading from $__device"]
+    monitorable query state(out current : Number
+                        #_[canonical={
+                              base=["reading", "level"]
+                        }]
+    )
+    #_[canonical="current consumption"]
+    #_[confirmation="current consumption reading from $__device"]
     #_[result=["the current consumption is ${current} ampere"]]
     #[confirm=false];
 }
