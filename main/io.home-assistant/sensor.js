@@ -149,17 +149,57 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
                     on: 'low',
                     off: 'normal'
                 },
+                battery_charging: {
+                    on: 'charging',
+                    off: 'not_charging'
+                },
+                particulate_matter_2_5: {
+                    on: 'detected',
+                    off: 'not_detected'
+                },
+                particulate_matter_10: {
+                    on: 'detected',
+                    off: 'not_detected'
+                },
+                particulate_matter_0_1: {
+                    on: 'detected',
+                    off: 'not_detected'
+                },
+                ozone: {
+                    on: 'detected',
+                    off: 'not_detected'
+                },
                 carbon_monoxide: {
-                    on: 'detecting',
-                    off: 'not_detecting'
+                    on: 'detected',
+                    off: 'not_detected'
+                },
+                co: {
+                    on: 'detected',
+                    off: 'not_detected'
                 },
                 carbon_dioxide: {
-                    on: 'detecting',
-                    off: 'not_detecting'
+                    on: 'detected',
+                    off: 'not_detected'
                 },
-                cold: {
-                    on: 'cold',
-                    off: 'normal'
+                sulphur_dioxide: {
+                    on: 'detected',
+                    off: 'not_detected'
+                },
+                nitrogen_oxide: {
+                    on: 'detected',
+                    off: 'not_detected'
+                },
+                nitrogen_monoxide: {
+                    on: 'detected',
+                    off: 'not_detected'
+                },
+                nitrogen_dioxide: {
+                    on: 'detected',
+                    off: 'not_detected'
+                },
+                volatile_organic_compounds: {
+                    on: 'detected',
+                    off: 'not_detected'
                 },
                 connectivity: {
                     on: 'connected',
@@ -182,8 +222,20 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
                     off: 'closed'
                 },
                 gas: {
-                    on: 'detecting',
-                    off: 'not_detecting'
+                    on: 'detected',
+                    off: 'not_detected'
+                },
+                light: {
+                    on: 'detected',
+                    off: 'not_detected'
+                },
+                lock: {
+                    on: 'locked',
+                    off: 'unlocked'
+                },
+                cold: {
+                    on: 'cold',
+                    off: 'normal'
                 },
                 heat: {
                     on: 'hot',
@@ -198,24 +250,60 @@ module.exports = class HomeAssistantSensor extends HomeAssistantDevice {
                     off: 'dry'
                 },
                 motion: {
-                    on: 'detecting',
-                    off: 'not_detecting'
+                    on: 'detected',
+                    off: 'not_detected'
+                },
+                moving: {
+                    on: 'moving',
+                    off: 'not_moving'
                 },
                 occupancy: {
                     on: 'detecting',
                     off: 'not_detecting'
                 },
+                opening: {
+                    on: 'open',
+                    off: 'closed'
+                },
                 plug: {
                     on: 'plugged',
                     off: 'unplugged'
                 },
-                sound: {
-                    on: 'detecting',
-                    off: 'not_detecting'
+                power: {
+                    on: 'detected',
+                    off: 'not_detected'
+                },
+                presence: {
+                    on: 'home',
+                    off: 'away'
+                },
+                problem: {
+                    on: 'detected',
+                    off: 'not_detected'
+                },
+                running: {
+                    on: 'running',
+                    off: 'not_running'
+                },
+                safety: {
+                    on: 'safe',
+                    off: 'unsafe'
                 },
                 smoke: {
-                    on: 'detecting',
+                    on: 'detected',
                     off: 'nothing'
+                },
+                sound: {
+                    on: 'sound',
+                    off: 'not_sound'
+                },
+                tamper: {
+                    on: 'tampering',
+                    off: 'not_tampering'
+                },
+                vibration: {
+                    on: 'detected',
+                    off: 'not_detected'
                 },
                 window: {
                     on: 'open',
