@@ -1,17 +1,34 @@
 [{
-    "a_id": "airquality",
+    "a_id": "gaslevel",
     "ha": {
         "domain": "sensor",
-        "entity_id": "air_quality_state",
+        "entity_id": "gas_level",
         "init_call": {
             "i_state": {
-                "rng": "gas,PM01,PM25,PM10,AQI,O3,CO,CO2,SO2,N2O,NO,NO2,nothing",
+                "rng": "0,100",
+                "k": "number"
+            },
+            "attrib": {
+                "friendly_name": "Gas sensor level",
+                "device_class": "gas",
+                "unique_id": "gas_sensor_level"
+            }
+        }
+    }
+}, {
+    "a_id": "gasstate",
+    "ha": {
+        "domain": "sensor",
+        "entity_id": "gas_state",
+        "init_call": {
+            "i_state": {
+                "rng": "gas,nothing",
                 "k": "state"
             },
             "attrib": {
-                "friendly_name": "Air quality sensor",
-                "device_class": "carbon_monoxide",
-                "unique_id": "air_quality_sensor"
+                "friendly_name": "Gas sensor state",
+                "device_class": "gas",
+                "unique_id": "gas_sensor_state"
             }
         }
     }
