@@ -1,0 +1,23 @@
+abstract class @org.thingpedia.iot.voc
+#_[thingpedia_name="Volatile Organic Compounds Sensor"]
+#_[thingpedia_description="Interface for Volatile Organic Compounds Sensor."]
+#_[description="Interface for Volatile Organic Compounds Sensor."]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="home"]
+{
+  monitorable query state(out voc_value : Number
+                            #_[canonical={
+                                base=["reading","level"]
+                            }], 
+                          out voc_state : Enum(detected,not_detected) 
+                            #_[canonical={
+                                base=["reading","level"]
+                            }]
+  )
+  #_[canonical="voc sensor"]
+  #_[confirmation="the volatile organic compounds index from $__device"]
+  #[confirm=false]
+  #_[result=["the volatile organic compounds reading ${voc_value}", "it is ${voc_state} VOC in the room"]]
+  #[minimal_projection=["voc_state","voc_value"]];
+}

@@ -1,0 +1,115 @@
+dataset @org.thingpedia.iot.voc language "en" {
+    program := @org.thingpedia.iot.voc.state() 
+    #_[utterances=["is there any volatile organic compounds?",
+                   "check if there is any volatile organic compounds",
+                   "check whether VOC is detected",
+                   "is there any volatile organic compounds?",
+                   "check if the sensor is detecting any volatile organic compounds",
+                   "do you smell VOC?",
+                   "is there a VOC leak?",
+                   "is there volatile organic compounds?",
+                   "there is presence of volatile organic compounds?"]]
+    #[id=54304068]
+    #[name="StateThenNotify"];
+
+    query := @org.thingpedia.iot.voc.state()
+    #_[utterances=["if the sensor is detecting any VOC",
+                   "whether the sensor is detecting volatile organic compounds",
+                   "if the VOC detector is catching any volatile organic compounds",
+                   "if the volatile organic compounds sensor is detecting something",
+                   "whether the volatile organic compounds sensor is detecting anything",
+                   "whether there is any VOC"]]
+    #[id=54304077]
+    #[name="State"];
+
+    stream := monitor (@org.thingpedia.iot.voc.state())
+    #_[utterances=["when the volatile organic compounds detector starts or stops detecting something",
+                   "when the VOC detector starts or stops detecting volatile organic compounds",
+                   "when the volatile organic compounds detector starts or stops detecting any VOC",
+                   "when the quality of the air is affected by presence of any volatile organic compounds",
+                   "when my sensor starts detecting volatile organic compounds",
+                   "when my detector is detecting VOC",
+                   "the moment my sensor detects volatile organic compounds"]]
+    #[id=54304085]
+    #[name="MonitorState"];
+
+    stream (p_state :Enum(detected,not_detected)) := monitor (@org.thingpedia.iot.voc.state()), (voc_state == p_state)
+    #_[utterances=["when VOC is ${p_state}",
+                   "when volatile organic compounds is ${p_state}",
+                   "as soon as VOC is ${p_state}",
+                   "when volatile organic compounds is ${p_state} in the air"]]
+    #[id=5430049116]
+    #[name="MonitorStateByStatePM25"];
+
+    stream := monitor (@org.thingpedia.iot.voc.state()), voc_state == enum(detected)
+    #_[utterances=["when VOC is detected",
+                   "when there is volatile organic compounds",
+                   "when you smell VOC",
+                   "when volatile organic compounds appears",
+                   "when there is volatile organic compounds in the air"]]
+    #[id=5430049116]
+    #[name="MonitordetectedPM25"];
+
+    stream := monitor (@org.thingpedia.iot.voc.state()), voc_state == enum(not_detected)
+    #_[utterances=["when no volatile organic compounds is detected",
+                   "when VOC is not detected anymore",
+                   "when there is no VOC",
+                   "when volatile organic compounds clears",
+                   "when the volatile organic compounds goes away",
+                   "when the VOC is gone",
+                   "when there is no more volatile organic compounds"]]
+    #[id=543040251]
+    #[name="Monitornot_detectedNothing"];
+
+    program (p_name : String) := @org.thingpedia.iot.voc(name=p_name).state() 
+    #_[utterances=["check the ${p_name:const} volatile organic compounds sensor reading",
+                   "check whether ${p_name:const} VOC sensor detects",
+                   "check if the ${p_name:const} sensor is detecting any volatile organic compounds",
+                   "the ${p_name:const} smells VOC?"]]
+    #[id=54304168]
+    #[name="StateThenNotifyName"];
+
+    query (p_name : String) := @org.thingpedia.iot.voc(name=p_name).state()
+    #_[utterances=["if the ${p_name:const} sensor is detecting any VOC",
+                   "whether the ${p_name:const} sensor is detecting volatile organic compounds",
+                   "if the ${p_name:const} VOC detector is catching any volatile organic compounds",
+                   "if the ${p_name:const} volatile organic compounds sensor is detecting something",
+                   "whether the ${p_name:const} volatile organic compounds sensor is detecting anything"]]
+    #[id=54304277]
+    #[name="StateName"];
+
+    stream (p_name : String) := monitor (@org.thingpedia.iot.voc(name=p_name).state())
+    #_[utterances=["when the ${p_name:const} volatile organic compounds detector starts or stops detecting something",
+                   "when the ${p_name:const} VOC detector starts or stops detecting volatile organic compounds",
+                   "when the ${p_name:const} volatile organic compounds detector starts or stops detecting any VOC",
+                   "when my ${p_name:const} sensor starts detecting volatile organic compounds",
+                   "when my ${p_name:const} detector is detecting VOC",
+                   "the moment my ${p_name:const} sensor detects volatile organic compounds"]]
+    #[id=54304385]
+    #[name="MonitorStateName"];
+
+    stream (p_name : String, p_state :Enum(detected,not_detected)) := monitor (@org.thingpedia.iot.voc(name=p_name).state()), (voc_state == p_state)
+    #_[utterances=["when ${p_name:const} sensor says VOC is ${p_state}",
+                   "when ${p_name:const} detector read that volatile organic compounds is ${p_state}",
+                   "as soon as ${p_name:const} sensor says VOC is ${p_state}"]]
+    #[id=5430044116]
+    #[name="MonitorStateByStatePM25Name"];
+
+    stream (p_name : String) := monitor (@org.thingpedia.iot.voc.state()), voc_state == enum(detected)
+    #_[utterances=["when VOC is detected by ${p_name:const}",
+                   "when the ${p_name:const} sensor says that there is volatile organic compounds",
+                   "when ${p_name:const} sensor smell VOC",
+                   "when volatile organic compounds appears on ${p_name:const} sensor",
+                   "when there is volatile organic compounds in the air detected by ${p_name:const} VOC sensor"]]
+    #[id=5430045116]
+    #[name="MonitordetectedPM25Name"];
+
+    stream (p_name : String) := monitor (@org.thingpedia.iot.voc.state()), voc_state == enum(not_detected)
+    #_[utterances=["when no volatile organic compounds is detected by ${p_name:const}",
+                   "when VOC is not detected anymore by ${p_name:const}",
+                   "when there is no VOC detected by ${p_name:const}",
+                   "when ${p_name:const} says that volatile organic compounds clears",
+                   "when there is no more volatile organic compounds in the air detected by ${p_name:const} VOC sensor"]]
+    #[id=543046251]
+    #[name="Monitornot_detectedNothingName"];
+}
