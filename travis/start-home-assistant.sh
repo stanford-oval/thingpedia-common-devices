@@ -10,7 +10,7 @@ mkdir -p ./tmp
 test -d ./tmp/homeassistant-venv || virtualenv --py $(pyenv which python3) ./tmp/homeassistant-venv
 . ./tmp/homeassistant-venv/bin/activate
 python3 --version
-pip3 install 'homeassistant==2021.6.3'
+pip3 install 'homeassistant==2021.6.6'
 deactivate
 
 ./scripts/run-home-assistant.sh &
