@@ -1,0 +1,1 @@
+"""The Twitch component."""
