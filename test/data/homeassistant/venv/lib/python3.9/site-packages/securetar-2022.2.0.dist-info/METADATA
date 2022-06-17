@@ -1,0 +1,47 @@
+Metadata-Version: 2.1
+Name: securetar
+Version: 2022.2.0
+Summary: Python module to handle tarfile backups.
+Home-page: https://github.com/pvizeli/securetar
+Author: Pascal Vizeli
+Author-email: pvizeli@syshack.ch
+License: Apache License 2.0
+Platform: any
+Classifier: Intended Audience :: Developers
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: cryptography
+
+# Secure Tar
+Secure Tarfile library
+
+It's a streaming wrapper around python tarfile and allow secure handling files and support encryption.
+
+
+```python
+
+with SecureTarFile("test.tar", "w") as tar_file:
+        atomic_contents_add(
+            tar_file,
+            temp_orig,
+            excludes=[],
+            arcname=".",
+        )
+
+with SecureTarFile("test.tar", "w", b"AES128_KEY_SIZE") as tar_file:
+        atomic_contents_add(
+            tar_file,
+            temp_orig,
+            excludes=[],
+            arcname=".",
+        )
+
+```
+
+
+
