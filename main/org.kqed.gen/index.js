@@ -9,6 +9,7 @@
 
 const Tp = require('thingpedia');
 const interpolate = require('string-interp');
+const Genie = require('genie-toolkit');
 
 const RSS_URL = "https://www.omnycontent.com/d/playlist/0af137ef-751e-4b19-a055-aaef00d2d578/87fdd794-f90e-4280-920f-ab89016e8062/d72d17c7-e1c8-4763-98eb-ab89016ed36a/podcast.rss";
 
@@ -18,7 +19,7 @@ const DEVICE_ERROR = {
     service_unavailable: 'service_unavailable'
 };
 
-class KqedDialogueGenHandler extends Tp.AbstractGeniescriptHandler {
+class KqedDialogueGenHandler extends Genie.DialogueAgent.Geniescript.GeniescriptAgent {
     /**
      *
      * @param {string} locale
@@ -35,7 +36,7 @@ class KqedDialogueGenHandler extends Tp.AbstractGeniescriptHandler {
 
         let user_target = '$dialogue @org.thingpedia.dialogue.transaction.execute;\n' +
             '@org.kqed.gen.kqed_podcasts();';
-        this.dlg = new Tp.GeniescriptDlg(user_target, "@org.kqed.gen.kqed_podcasts");
+        this.dlg = new Genie.DialogueAgent.Geniescript.AgentDialog(user_target, "@org.kqed.gen.kqed_podcasts");
     }
 
     _interp(string, args) {
@@ -91,8 +92,15 @@ class KqedDialogueGenHandler extends Tp.AbstractGeniescriptHandler {
         ]);
     }
 
-    stop() {
+    async stop() {
         let self = this;
+        const device = 'com.tunein';
+        const program = new Genie.ThingTalkUtils.ThingtalkComposer(this._engine.schemas, device);
+        const agent_init =  await program.invoke("station");
+        self.dlg.execute(
+            agent_init,
+            device
+        );
         self.dlg.say(
             [self._interp(self._("Stop playing."), {})]
         );
@@ -118,6 +126,8 @@ class KqedDialogueGenHandler extends Tp.AbstractGeniescriptHandler {
         while (true) {
             yield * self.dlg.expect(new Map(Object.entries({
                 "play kqed": ( async function*() {
+                    const result = yield * self.dlg.execute("$dialogue @org.thingpedia.dialogue.transaction.execute; @org.thingpedia.weather.current();");
+                    console.log(result);
                     if (self._item) {
                         self.resume();
                         if (yield * self.yes_no())
