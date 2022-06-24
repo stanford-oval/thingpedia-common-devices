@@ -199,7 +199,8 @@ class KqedDialogueHandler {
         case 'stop': {
             return {
                 messages: [
-                    this._interp(this._("Stop playing."), {})
+                    this._interp(this._("Stop playing."), {}),
+                    this._interp(this._("Getting Today's weather for you."), {}),
                 ],
                 expecting: null,
                 context: analyzed.user_target,
