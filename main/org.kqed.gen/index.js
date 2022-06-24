@@ -19,7 +19,7 @@ const DEVICE_ERROR = {
     service_unavailable: 'service_unavailable'
 };
 
-class KqedDialogueGenHandler extends Genie.DialogueAgent.Geniescript.GeniescriptAgent {
+class KqedGenDialogueGenHandler extends Genie.DialogueAgent.Geniescript.GeniescriptAgent {
     /**
      *
      * @param {string} locale
@@ -126,7 +126,8 @@ class KqedDialogueGenHandler extends Genie.DialogueAgent.Geniescript.Geniescript
         while (true) {
             yield * self.dlg.expect(new Map(Object.entries({
                 "play kqed": ( async function*() {
-                    const result = yield * self.dlg.execute("$dialogue @org.thingpedia.dialogue.transaction.execute; @org.thingpedia.weather.current();");
+                    const prog = "$dialogue @org.thingpedia.dialogue.transaction.execute; @org.thingpedia.weather.current();";
+                    const result = yield * self.dlg.execute(prog);
                     console.log(result);
                     if (self._item) {
                         self.resume();
@@ -215,7 +216,7 @@ class KqedGenDevice extends Tp.BaseDevice {
         this.uniqueId = 'org.kqed';
         this.name = "KQED Now";
         this.description = "A daily News podcast from KQED";
-        this._dialogueHandler = new KqedDialogueGenHandler(this.platform.locale, this.platform.timezone);
+        this._dialogueHandler = new KqedGenDialogueGenHandler(this.platform.locale, this.platform.timezone);
         console.log("kqed gen loaded");
     }
     

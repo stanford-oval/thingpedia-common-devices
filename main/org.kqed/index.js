@@ -203,7 +203,8 @@ class KqedDialogueHandler {
                 ],
                 expecting: null,
                 context: analyzed.user_target,
-                agent_target: '@org.kqed.reply'
+                agent_target: '@org.kqed.reply',
+                program: "@org.thingpedia.weather.current(location=$?);"
             };
         }
 
