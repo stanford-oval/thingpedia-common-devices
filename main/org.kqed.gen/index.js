@@ -26,17 +26,15 @@ class KqedGenDialogueGenHandler extends Genie.DialogueAgent.Geniescript.Geniescr
      * @param {string} timezone
      */
     constructor(locale, timezone) {
-        super(Tp.DialogueHandler.Priority.PRIMARY, 'org.kqed');
+        let user_target = '$dialogue @org.thingpedia.dialogue.transaction.execute;\n' +
+            '@org.kqed.gen.kqed_podcasts();';
+        super(Tp.DialogueHandler.Priority.PRIMARY, 'org.kqed.gen', user_target, "org.kqed.gen");
         this._locale = locale;
         this._timezone = timezone;
         this._ = KqedGenDevice.gettext.gettext;
         this._item = 0;
         this._podcasts = [];
         this._askedResume = false;
-
-        let user_target = '$dialogue @org.thingpedia.dialogue.transaction.execute;\n' +
-            '@org.kqed.gen.kqed_podcasts();';
-        this.dlg = new Genie.DialogueAgent.Geniescript.AgentDialog(user_target, "@org.kqed.gen.kqed_podcasts");
     }
 
     _interp(string, args) {
@@ -73,7 +71,7 @@ class KqedGenDialogueGenHandler extends Genie.DialogueAgent.Geniescript.Geniescr
         this._askedResume = false;
     }
 
-    async *yes_no() {
+    async *yes_no(prompt) {
         let self = this;
         return yield * self.dlg.expect(new Map(Object.entries({
             "\\b(yes|yeah|yep|sure|go ahead)\\b": async function() {
@@ -82,7 +80,7 @@ class KqedGenDialogueGenHandler extends Genie.DialogueAgent.Geniescript.Geniescr
             "\\b(no|nah|nope)\\b": async function() {
                 return false;
             }
-        })));
+        })), prompt);
     }
 
     play() {
@@ -131,7 +129,7 @@ class KqedGenDialogueGenHandler extends Genie.DialogueAgent.Geniescript.Geniescr
                     console.log(result);
                     if (self._item) {
                         self.resume();
-                        if (yield * self.yes_no())
+                        if (yield * self.yes_no("Do you want to play another one?"))
                             self.play();
                         else
                             self.stop();
@@ -142,13 +140,13 @@ class KqedGenDialogueGenHandler extends Genie.DialogueAgent.Geniescript.Geniescr
                             // TODO: call do_kqed_play
                             self._interp(self._("Play next?"), {}),
                         ]);
-                        if (yield * self.yes_no())
+                        if (yield * self.yes_no("Do you want to play another one?"))
                             self.next();
                         else
                             self.stop();
                     }
-                }),
-            })));
+                })
+            })), "I'm KQED bot. What do you want me to do?");
         }
     }
 }
@@ -213,13 +211,13 @@ async function* fetchItems() {
 class KqedGenDevice extends Tp.BaseDevice {
     constructor(engine, state) {
         super(engine, state);
-        this.uniqueId = 'org.kqed';
+        this.uniqueId = 'org.kqed.gen';
         this.name = "KQED Now";
         this.description = "A daily News podcast from KQED";
         this._dialogueHandler = new KqedGenDialogueGenHandler(this.platform.locale, this.platform.timezone);
         console.log("kqed gen loaded");
     }
-    
+
     queryInterface(iface) {
         switch (iface) {
         case 'dialogue-handler':
@@ -229,7 +227,7 @@ class KqedGenDevice extends Tp.BaseDevice {
             return super.queryInterface(iface);
         }
     }
-    
+
     async *get_kqed_podcasts() {
         try {
             yield* fetchItems();
