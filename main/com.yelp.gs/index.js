@@ -183,7 +183,7 @@ class YelpGSDialogueGenHandler extends Genie.DialogueAgent.Geniescript.Geniescri
         let self = this;
         return yield * self.yes_no(pStr);
     }
-
+    
     next(q_str) {
         let self = this;
         switch (q_str.toLowerCase()) {
@@ -211,25 +211,25 @@ class YelpGSDialogueGenHandler extends Genie.DialogueAgent.Geniescript.Geniescri
         // }
         while (true) {
             yield * self.dlg.expect(new Map(Object.entries({
-                "find.* a restaurant": ( async function*() {
-                    const prog = "$dialogue @org.thingpedia.dialogue.transaction.execute; @com.yelp.gs.restaurant();";
+                "find.* restaurant": ( async function*() {
+                    const prog = "@com.yelp.gs.restaurant();";
                     yield * self.dlg.execute(prog);
                     if (yield * self.yes_no("Do you like any of them?"))
                         self.next("Do you want me to book it?");
                     else
                         self.stop();
                 }),
-                "any.* restaurant nearby": ( async function*() {
+                "any.* (restaurant|food) nearby": ( async function*() {
                     const key = self.dlg._last_result.utterance.match(/any\s(\w.+)restaurant nearby/i);
                     let prog;
                     if (["good", "great"].includes(key[1].trim()))
-                        prog = "$dialogue @org.thingpedia.dialogue.transaction.execute; @com.yelp.restaurant() filter geo == $location.current_location && rating >= 3.5;";
+                        prog = "@com.yelp.restaurant() filter geo == $location.current_location && rating >= 3.5;";
                     yield * self.dlg.execute(prog);
-                    if (yield * self.yes_no("Do you want me to book it?"))
+                    if (yield * self.yes_no("Do you want me to book it?")) {
                         self.bookIt();
-                    else {
+                    } else {
                         if (yield * self.proposeAnother("Would you like to see another restaurant?")) {
-                            const prog = "$dialogue @org.thingpedia.dialogue.transaction.execute; @com.yelp.gs.restaurant()[1];";
+                            const prog = "@com.yelp.gs.restaurant()[1];";
                             yield * self.dlg.execute(prog);
                         } else {
                             self.stop();
