@@ -172,10 +172,26 @@ class YelpGSDialogueGenHandler extends Genie.DialogueAgent.Geniescript.Geniescri
         );
     }
 
-    bookIt() {
+    async *bookIt() {
         let self = this;
+        yield * self.dlg.expect(new Map(Object.entries({
+            ".*": ( async function*() {
+                self.dlg.say(
+                    [self._interp(self._("OK."), {})]
+                );
+            })
+        })), "At what time?");
+
+        yield * self.dlg.expect(new Map(Object.entries({
+            ".*": ( async function*() {
+                self.dlg.say(
+                    [self._interp(self._("OK."), {})]
+                );
+            })
+        })), "For how many people?");
+
         self.dlg.say(
-            [self._interp(self._("Booking."), {})]
+            [self._interp(self._("Booked it."), {})]
         );
     }
 
@@ -183,12 +199,30 @@ class YelpGSDialogueGenHandler extends Genie.DialogueAgent.Geniescript.Geniescri
         let self = this;
         return yield * self.yes_no(pStr);
     }
+
+    async *callAnotherSkill(device, func, in_param_name, in_param_value) {
+        let prog, self = this;
+        if (in_param_name && in_param_value)
+            prog = `@${device}.${func}(${in_param_name}=${in_param_value});`;
+        else
+            prog = `@${device}.${func}();`;
+        yield * self.dlg.execute(prog);
+    }
     
-    next(q_str) {
+    async *next(q_str, args) {
         let self = this;
         switch (q_str.toLowerCase()) {
             case "do you want me to book it?":
-                self.stop();
+                if (yield * self.yes_no(q_str)) {
+                    yield * self.bookIt();
+                    if (yield * self.proposeAnother("Shall we check the weather there?")) {
+                        if (args && args.loc)
+                            yield * self.callAnotherSkill('org.thingpedia.weather', 'current', 'location', `new Location("${args.loc}")`);
+                    } else
+                        self.stop();
+                } else {
+                    self.stop();
+                }
                 break;
             default:
                 self.stop();
@@ -215,18 +249,27 @@ class YelpGSDialogueGenHandler extends Genie.DialogueAgent.Geniescript.Geniescri
                     const prog = "@com.yelp.gs.restaurant();";
                     yield * self.dlg.execute(prog);
                     if (yield * self.yes_no("Do you like any of them?"))
-                        self.next("Do you want me to book it?");
+                        yield * self.next("Do you want me to book it?");
                     else
                         self.stop();
                 }),
-                "any.* (restaurant|food) nearby": ( async function*() {
+                "restaurant(s?) in.*": ( async function*() {
+                    const loc = self.dlg._last_result.utterance.match(/restaurant in\s(\w.+)/i)[1].trim();
+                    const prog = `@com.yelp.restaurant() filter geo == new Location("${loc}");`;
+                    yield * self.dlg.execute(prog);
+                    if (yield * self.yes_no("Do you like any of them?"))
+                        yield * self.next("Do you want me to book it?", {loc: loc});
+                    else
+                        self.stop();
+                }),
+                "any.* (restaurant(s)?|food) nearby": ( async function*() {
                     const key = self.dlg._last_result.utterance.match(/any\s(\w.+)restaurant nearby/i);
                     let prog;
                     if (["good", "great"].includes(key[1].trim()))
                         prog = "@com.yelp.restaurant() filter geo == $location.current_location && rating >= 3.5;";
                     yield * self.dlg.execute(prog);
                     if (yield * self.yes_no("Do you want me to book it?")) {
-                        self.bookIt();
+                        yield * self.bookIt();
                     } else {
                         if (yield * self.proposeAnother("Would you like to see another restaurant?")) {
                             const prog = "@com.yelp.gs.restaurant()[1];";
