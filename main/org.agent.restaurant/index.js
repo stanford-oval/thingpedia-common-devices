@@ -22,6 +22,7 @@ class RestaurantAgentDialogueGenHandler extends Genie.DialogueAgent.Geniescript.
         this._locale = locale;
         this._timezone = timezone;
         this._ = RestaurantAgent.gettext.gettext;
+        this._reply = "I'm your restaurant booking helper. would you like to find a restaurant?";
     }
 
     _interp(string, args) {
@@ -73,20 +74,77 @@ class RestaurantAgentDialogueGenHandler extends Genie.DialogueAgent.Geniescript.
         })), prompt);
     }
 
+    _generate_followup(reply) {
+        if (reply.raw_results && Object.keys(reply.raw_results).length) {
+            const [appCall, blob] = reply.raw_results[0];
+            const [appName, funcName] = appCall.split(":");
+            console.log(blob);
+            if (appName.includes("yelp")) {
+                switch (funcName) {
+                    case "restaurant": {
+                        if (blob.review_count > 500 && blob.rating >= 3)
+                            this._reply = "They seem very popular, which one would you like to book?";
+                        else if (blob.geo)
+                            this._reply = "Would you like to book your Uber ride to get there?";
+                        else
+                            this._reply = "Which restaurant would you like to book?";
+                        break;
+                    }
+                    default: {
+                        this._reply = "I'm your restaurant booking helper. Would you like to find a restaurant?";
+                        break;
+                    }
+                }
+            } else if (appName.includes("weather")) {
+                switch (funcName) {
+                    case "current": {
+                        this._reply = "Would you like to find a restaurant there?";
+                        break;
+                    }
+                    default: {
+                        this._reply = "I'm your restaurant booking helper. Would you like to find a restaurant?";
+                        break;
+                    }
+                }
+            } else {
+                return false;
+            }
+            return true;
+        } else 
+            return false;
+    }
+
     async *logic() {
         let self = this;
         yield * self.dlg.expect(new Map(Object.entries({
-            ".*": ( async function*() {
-                if (yield * self.yes_no("Do you want me to book it?"))
-                    self.dlg.say(
-                        [self._interp(self._("what restaurant would you like?"), {})]
-                    );
-                else
-                    self.dlg.say(
-                        [self._interp(self._("OK. Let me know if you need any help."), {})]
-                    );
-            })
-        })), "Hi there! I'm your restaurant finder. What do you want me to do?");
+
+        })), 
+        new Map([
+            [
+                (reply) => reply === null,
+                (
+                    async function*() {
+                        self.dlg.say(self._reply);
+                    }
+                )
+            ],
+            [
+                (reply) => this._generate_followup(reply),
+                (
+                    async function*() {
+                        self.dlg.say(self._reply);
+                    }
+                )
+            ],
+            [
+                (reply) => true,
+                (
+                    async function*() {
+                        self.dlg.say(self._reply);
+                    }
+                )
+            ],
+        ]));
     }
 }
 
