@@ -55,7 +55,7 @@ class RestaurantAgentDialogueGenHandler extends Genie.DialogueAgent.Geniescript.
         while (true)
             yield * self.dlg.expect(
                 new Map([]),
-                Genie.ThingTalkUtils.isKind('yelp', 'restaurant'),
+                Genie.ThingTalkUtils.isOutputType('yelp', 'restaurant'),
                 (reply) => reply,
                 "I'm your restaurant booking helper. Would you like to find a restaurant?"
             );
