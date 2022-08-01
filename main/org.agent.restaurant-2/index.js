@@ -1,6 +1,6 @@
 // -*- mode: js; indent-tabs-mode: nil; js-basic-offset: 4 -*-
 //
-// This file is part of org.kqed
+// This file is part of org.agent.restaurant-2
 //
 // Copyright 2022 undefined <undefined>
 //
@@ -18,7 +18,7 @@ class RestaurantAgentDialogueGenHandler2 extends Genie.DialogueAgent.Geniescript
      * @param {string} timezone
      */
     constructor(locale, timezone) {
-        super(Tp.DialogueHandler.Priority.PRIMARY, 'org.agent.restaurant2', '', 'org.agent.restaurant2');
+        super(Tp.DialogueHandler.Priority.PRIMARY, 'org.agent.restaurant-2', '', 'org.agent.restaurant-2');
         this._locale = locale;
         this._timezone = timezone;
         this._ = RestaurantAgent2.gettext.gettext;
@@ -75,10 +75,11 @@ class RestaurantAgentDialogueGenHandler2 extends Genie.DialogueAgent.Geniescript
                         ["\\b(yes|yeah|yep|sure|go ahead)\\b", function * () { return true }], 
                         ["\\b(no|nah|nope)\\b", function * () { return false }]
                     ]));
-                    // TODO: agent initiates uber request. Use weather as example for now.
                     if (consent) {
-                        // Use a specific location to avoid slot-filling
-                        blob.program = `@org.thingpedia.weather.current(location=new Location("palo alto"));`;
+                        // agent initiates uber request.
+                        const lat = places[0].geo.x;
+                        const lon = places[0].geo.y;
+                        blob.program = `@com.uber.mock.request(start=$location.current_location, end=new Location(${lat}, ${lon}));`;
                         yield * self.dlg.execute(blob.program);
                     } else {
                         // Need this line if we want the phrase to be repeated
@@ -99,11 +100,11 @@ class RestaurantAgentDialogueGenHandler2 extends Genie.DialogueAgent.Geniescript
 class RestaurantAgent2 extends Tp.BaseDevice {
     constructor(engine, state) {
         super(engine, state);
-        this.uniqueId = 'org.agent.restaurant2';
+        this.uniqueId = 'org.agent.restaurant-2';
         this.name = "Restaurant Agent";
         this.description = "Restaurant Search Agent";
         this._dialogueHandler = new RestaurantAgentDialogueGenHandler2(this.platform.locale, this.platform.timezone);
-        console.log("restaurant2 agent loaded");
+        console.log("restaurant-2 agent loaded");
     }
 
     queryInterface(iface) {

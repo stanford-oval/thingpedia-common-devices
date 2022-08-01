@@ -1,6 +1,6 @@
 // -*- mode: js; indent-tabs-mode: nil; js-basic-offset: 4 -*-
 //
-// This file is part of org.kqed
+// This file is part of org.agent.restaurant
 //
 // Copyright 2022 undefined <undefined>
 //
