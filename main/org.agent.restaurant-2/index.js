@@ -25,6 +25,7 @@ class RestaurantAgentDialogueGenHandler2 extends Genie.DialogueAgent.Geniescript
         this._introMsg = "Hello there! I'm your restaurant booking helper. How may I help you?\n" + 
         "You can say things like 'find me a restaurant', " +
         "'I want chinese food' or 'give me a good restaurant nearby'.";
+        this._prompt = "Would you like to find a restaurant?";
     }
 
     _interp(string, args) {
@@ -55,43 +56,33 @@ class RestaurantAgentDialogueGenHandler2 extends Genie.DialogueAgent.Geniescript
         while (true) {
             let blob = yield * self.dlg.expect(
                 new Map([]), 
-                (reply) => (
-                    Genie.ThingTalkUtils.isOutputType('yelp', 'restaurant')(reply) || 
-                    Genie.ThingTalkUtils.isOutputType('weather', 'current')(reply)
-                ),
+                (reply) => Genie.ThingTalkUtils.isOutputType('yelp', 'restaurant')(reply),
                 (reply) => reply,
-                "I'm your restaurant booking helper. Would you like to find a restaurant?"
+                this._prompt
             );
             if (Genie.ThingTalkUtils.isOutputType('yelp', 'restaurant')(blob)) {
-                const count = blob.result_values.filter((item) => item.review_count >= 9000 && item.rating >= 4).length;
                 const places = blob.result_values.map((item) => { return {id: item.id.display, geo: item.geo }});
-                if (count === blob.result_values.length) {
-                    self.dlg.say([`They all seem very popular, which one would you like to book?`]);
-                    continue;
-                }
-                if (places) {
-                    self.dlg.say(["Would you like to book an Uber ride to get there?"]);
-                    const consent = yield * self.dlg.expect(new Map([
-                        ["\\b(yes|yeah|yep|sure|go ahead)\\b", function * () { return true }], 
-                        ["\\b(no|nah|nope)\\b", function * () { return false }]
-                    ]));
+                for (const place of places) {
+                    self.dlg.say([`Would you like an Uber ride to ${place.id}?`]);
+                    const consent = yield * self.dlg.expect(
+                        new Map([
+                            ["\\b(yes|yeah|yep|sure|go ahead)\\b", function * () { return true }], 
+                            ["\\b(no|nah|nope)\\b", function * () { return false }]
+                        ]), 
+                        null, 
+                        null, 
+                        `Would you like an Uber ride to ${place.id}?`);
                     if (consent) {
                         // agent initiates uber request.
-                        const lat = places[0].geo.x;
-                        const lon = places[0].geo.y;
+                        const lat = place.geo.x;
+                        const lon = place.geo.y;
                         blob.program = `@com.uber.mock.request(start=$location.current_location, end=new Location(${lat}, ${lon}));`;
-                        yield * self.dlg.execute(blob.program);
-                    } else {
-                        // Need this line if we want the phrase to be repeated
-                        self.dlg.say(["I'm your restaurant booking helper. Would you like to find a restaurant?"]);
+                        const ret = yield * self.dlg.execute(blob.program);
+                        if (ret)
+                            break;
                     }
                 }
-            } else if (Genie.ThingTalkUtils.isOutputType('weather', 'current')(blob)) {
-                const regex = /rain/ig;
-                if (!blob.messages[0].match(regex)) {
-                    const loc = blob.result_values[0].location.display;
-                    self.dlg.say([`Weather in ${loc} is not too bad, how about we find a place to eat?`]);
-                }
+                self.dlg.say([this._prompt]);
             }
         }
     }
