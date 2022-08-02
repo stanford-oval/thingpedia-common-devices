@@ -25,7 +25,7 @@ class RestaurantAgentDialogueGenHandler2 extends Genie.DialogueAgent.Geniescript
         this._introMsg = "Hello there! I'm your restaurant booking helper. How may I help you?\n" + 
         "You can say things like 'find me a restaurant', " +
         "'I want chinese food' or 'give me a good restaurant nearby'.";
-        this._prompt = "Would you like to find a restaurant?";
+        this._prompt = "I can help you find a restaurant. Is there a particular cuisine you are looking for?";
     }
 
     _interp(string, args) {

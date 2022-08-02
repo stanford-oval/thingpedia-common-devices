@@ -57,7 +57,7 @@ class RestaurantAgentDialogueGenHandler extends Genie.DialogueAgent.Geniescript.
                 new Map([]),
                 Genie.ThingTalkUtils.isOutputType('yelp', 'restaurant'),
                 (reply) => reply,
-                "Would you like to find a restaurant?"
+                "I can help you find a restaurant. Is there a particular cuisine you are looking for?"
             );
     }
 }
