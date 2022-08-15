@@ -33,28 +33,9 @@
 
 
 const Tp = require("thingpedia");
-const Url = require('url');
-const querystring = require("querystring");
 
-
-const NEWS_DB_URL = "http://news.api.genie.stanford.edu:5000/news";
-// const NEWS_DB_URL = "http://192.168.50.183:5000/news";
-
-
-function s3_to_http(url) {
-    const parsed = Url.parse(url);
-    if (parsed.protocol !== "s3:")
-        return url;
-    parsed.protocol = "https:";
-    if (parsed.host === "oval-project")
-        parsed.host = parsed.hostname = "oval-project.s3-ap-northeast-1.amazonaws.com";
-    else if (parsed.host === "en-us-oval-project")
-        parsed.host = parsed.hostname = "en-us-oval-project.s3-us-west-1.amazonaws.com";
-    else
-        parsed.host = parsed.hostname = parsed.host + ".s3.amazonaws.com";
-    return Url.format(parsed);
-}
-
+const BASE_URL = "https://newsapi.org/v2";
+const API_KEY = process.env.NEWS_APIKEY;
 
 class UnavailableError extends Error {
     constructor(message) {
@@ -64,42 +45,43 @@ class UnavailableError extends Error {
 }
 
 
+async function fetch_sources() {
+    const url = `${BASE_URL}/sources?country=us&apiKey=${API_KEY}`;
+    const sources = JSON.parse(await Tp.Helpers.Http.get(url)).sources;
+    return sources.map((item) => { return {
+        id: item.id,
+        name: item.name,
+        category: item.category,
+        language: item.language,
+        country: item.country
+    }});
+}
+
 const MAX_ARTICLES = 5;
 
-async function* fetch_articles(args) {
-    const url = `${NEWS_DB_URL}?${querystring.stringify(args)}`;
-    const news_blob = JSON.parse(await Tp.Helpers.Http.get(url)).items;
-    if (!news_blob || (news_blob.length === 0)) {
-        if (args.start_date && args.end_date) {
-            const start_date = new Date(args.start_date * 1000).toISOString();
-            const end_date = new Date(args.end_date * 1000).toISOString();
-            throw new UnavailableError(`news not available yet for ${start_date} and ${end_date}`);
-        } else if (args.start_date) {
-            const date = new Date(args.start_date * 1000).toISOString();
-            throw new UnavailableError(`news not available yet for ${date}`);
-        } else if (args.end_date) {
-            const date = new Date(args.end_date * 1000).toISOString();
-            throw new UnavailableError(`news not available yet for ${date}`);
-        } else {
+async function* fetch_articles(source_list) {
+    const url = `${BASE_URL}/top-headlines?country=us&apiKey=${API_KEY}`;
+    console.log(url);
+    const articles = JSON.parse(await Tp.Helpers.Http.get(url)).articles;
+    if (!articles || (articles.length === 0))
             throw new UnavailableError("news service not available");
-        }
-    }
 
     let counter = MAX_ARTICLES;
-    for (const article of news_blob) {
-        const category = article.category.map((cat) => new Tp.Value.Entity(`${cat.toLowerCase()}`, cat.toLowerCase()));
+    for (const article of articles) {
+        let category = null;
+        if (article.source.id)
+            category = source_list.filter((item) => {
+                return item.id.toLowerCase() === article.source.id.toLowerCase()
+            });
         yield {
-            id: new Tp.Value.Entity(String(article.link_id), null),
-            title: article.headline,
+            id: new Tp.Value.Entity(article.title, article.title),
+            title: article.title,
             author: article.author ? article.author : null,
-            source: article.source ? article.source : null,
-            summary: article.summary,
-            link: article.link,
-            category,
-            date: new Date(article.publish_timestamp * 1000),
-            mention: article.entity_mentions,
-            headline_audio_url: s3_to_http(article.headline_audio_s3),
-            summary_audio_url: s3_to_http(article.summary_audio_s3)
+            source: article.source ? article.source.name : null,
+            summary: article.publishedAt,
+            link: article.url,
+            category: category,
+            date: new Date(article.publishedAt),
         };
         counter--;
         if (counter === 0)
@@ -117,6 +99,7 @@ module.exports = class SmartNewsDevice extends Tp.BaseDevice {
     }
 
     async *get_article({ keyword="" }, hints) {
+        const source_list = await fetch_sources();
         let args = {};
         if (hints && hints.filter) {
             for (let [pname, op, value] of hints.filter) {
@@ -139,7 +122,7 @@ module.exports = class SmartNewsDevice extends Tp.BaseDevice {
         if (keyword)
             args.keyword = keyword;
         try {
-            yield* fetch_articles(args);
+            yield* fetch_articles(source_list);
         } catch(error) {
             if (!(error instanceof UnavailableError))
                 throw new UnavailableError("news service not available");
