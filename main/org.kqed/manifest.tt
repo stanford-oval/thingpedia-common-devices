@@ -1,4 +1,4 @@
-class @org.kqed extends @org.thingpedia.dialogue-handler
+class @org.kqed
 #_[name="org.kqed"]
 #_[description="TODO add description"]
 #_[thingpedia_name="org.kqed"]
@@ -12,9 +12,19 @@ class @org.kqed extends @org.thingpedia.dialogue-handler
 
     entity kqed_podcasts #_[description="podcast episdoes on KQED"];
 
-    list query kqed_podcasts(out id: Entity(org.kqed:kqed_podcasts)
+    action kqed_play()
+    #_[canonical=[
+        "play-kqed"]]
+    #_[on_error={
+        unsupported_version=["Play KQED is not supported with your current genie version"],
+        service_unavailable=["KQED streaming service is currently unavailable"]
+    }]
+    #[confirm=false]
+    #[doc="play KQED Now on media player"];
+
+    list query kqed_podcasts(out id: Entity(org.kqed.gen:kqed_podcasts)
                              #[unique=true]
-                             #[string_values="org.kqed:podcast"]
+                             #[string_values="org.kqed.gen:podcast"]
                              #_[canonical={
                                 default="base",
                                 base=["name"]
@@ -58,32 +68,17 @@ class @org.kqed extends @org.thingpedia.dialogue-handler
                              #_[canonical={
                                 base=["length", "duration"]
                              }])
-    #_[canonical=["kqed now"]]
+    #_[canonical=["kqed-shows"]]
     #[minimal_projection=["id"]]
     #[default_projection=["id", "link"]]
     #_[formatted=[
-        { type="rdl", webCallback="${link}", displayTitle="${title}" },
-        { type="sound", name="news-intro", exclusive=true },
-        // { type="text", text="${description}." },
-        { type="audio", url="${link}" }
+        // { type="rdl", webCallback="${link}", displayTitle="${title}" },
+        { type="text", text="${description}." }
     ]]
     #_[on_error={
         no_postcasts_available=["No content is available at the moment."],
         service_unavailable=["KQED streaming service is currently unavailable"]
     }]
-    #[doc="search for podcast episdoes on KQED"]
+    #[doc="search podcast episdoes on KQED"]
     #[confirm=false];
-
-    action kqed_play()
-    #_[canonical=[
-        "play kqed now", 
-        "resume kqed now", 
-        "start playing kqed now", 
-        "continue playing kqed now"]]
-    #_[on_error={
-        unsupported_version=["Play KQED is not supported with your current genie version"],
-        service_unavailable=["KQED streaming service is currently unavailable"]
-    }]
-    #[confirm=false]
-    #[doc="play KQED Now on media player"];
 }

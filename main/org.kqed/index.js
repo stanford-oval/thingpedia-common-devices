@@ -8,8 +8,6 @@
 "use strict";
 
 const Tp = require('thingpedia');
-const TT = require('thingtalk');
-const interpolate = require('string-interp');
 
 const RSS_URL = "https://www.omnycontent.com/d/playlist/0af137ef-751e-4b19-a055-aaef00d2d578/87fdd794-f90e-4280-920f-ab89016e8062/d72d17c7-e1c8-4763-98eb-ab89016ed36a/podcast.rss";
 
@@ -19,211 +17,11 @@ const DEVICE_ERROR = {
     service_unavailable: 'service_unavailable'
 };
 
-class KqedDialogueHandler {
-    /**
-     *
-     * @param {string} locale
-     * @param {string} timezone
-     */
-    constructor(locale, timezone) {
-        this._locale = locale;
-        this._timezone = timezone;
-        this._ = KqedDevice.gettext.gettext;
-        this._item = 0;
-        this._podcasts = [];
-        this._askedResume = false;
-    }
-
-    _interp(string, args) {
-        return interpolate(string, args, {
-            locale: this._locale,
-            timezone: this._timezone,
-        });
-    }
-
-    get priority() {
-        return Tp.DialogueHandler.Priority.PRIMARY;
-    }
-
-    get icon() {
-        return 'org.kqed';
-    }
-
-    getState() {
-        return { lastQuerySuggestion: this._lastQuerySuggestion };
-    }
-
-    async initialize(initialState) {
-        if (initialState)
-            this._lastQuerySuggestion = initialState.lastQuerySuggestion;
-        this._podcasts = await preFetchItems();
-        return null;
-    }
-
-    reset() {
-        this._lastQuerySuggestion = null;
-        this._item = 0;
-        this._podcasts = [];
-        this._askedResume = false;
-    }
-
-    /**
-     *
-     * @param {string} command
-     * @returns {Tp.DialogueHandler.CommandAnalysisResult}
-     */
-    async analyzeCommand(utterance) {
-        let ret = { 
-            confident: Tp.DialogueHandler.Confidence.OUT_OF_DOMAIN_COMMAND, 
-            utterance: utterance, 
-            user_target: ''
-        };
-        const prefixRegExp = new RegExp(this._("^\\s*kqed now\\b"), 'i');
-        const prefixMatch = prefixRegExp.exec(utterance);
-        if (prefixMatch) {
-            ret.confident = Tp.DialogueHandler.Confidence.EXACT_IN_DOMAIN_COMMAND;
-            ret.user_target = '$dialogue @org.thingpedia.dialogue.transaction.execute;\n' +
-                              '@org.kqed.kqed_podcasts();';
-            if (this._item)
-                ret.answerType = 'continue';
-            else
-                ret.answerType = 'play';
-            this._lastQuerySuggestion = utterance;
-            return ret;
-        }
-        
-        if (this._lastQuerySuggestion) {
-            const yesRegExp = new RegExp(this._("\\b(yes|yeah|yep|sure|go ahead)\\b"));
-            const yesMatch = yesRegExp.exec(utterance);
-            if (yesMatch) {
-                ret.confident = Tp.DialogueHandler.Confidence.EXACT_IN_DOMAIN_FOLLOWUP;
-                ret.user_target = '$dialogue @org.thingpedia.dialogue.transaction.execute;\n' +
-                                  '@org.kqed.kqed_podcasts();';
-                if (this._askedResume)
-                    ret.answerType = 'play';
-                else
-                    ret.answerType = 'next';
-                this._askedResume = false;
-                return ret;
-            }
-            const noRegExp = new RegExp(this._("\\b(no|nah|nope)\\b"));
-            const noMatch = noRegExp.exec(utterance);
-            if (noMatch) {
-                ret.confident = Tp.DialogueHandler.Confidence.EXACT_IN_DOMAIN_FOLLOWUP;
-                ret.user_target = '$dialogue @org.thingpedia.dialogue.transaction.execute;\n' +
-                                  '@org.kqed.kqed_podcasts();';
-                if (this._askedResume) {
-                    ret.answerType = 'play';
-                    this._askedResume = false;
-                    this._item = 0;
-                } else {
-                    ret.answerType = 'stop';
-                    this._lastQuerySuggestion = null;
-                }
-                return ret;
-            }
-        }
-        return ret;
-    }
-
-    /**
-     *
-     * @param {Tp.DialogueHandler.CommandAnalysisResult} analysis
-     * @returns {Tp.DialogueHandler.ReplyResult}
-     */
-    async getReply(analyzed) {
-        console.log(this._podcasts.length);
-        switch (analyzed.answerType) {
-        case 'play': {
-            const ret = {
-                messages: [
-                    this._interp(this._("Play KQED now."), {}),
-                    {
-                        type: 'rdl',
-                        webCallback: `${this._podcasts[this._item].link}::${this._item}`,
-                        displayTitle: `${this._podcasts[this._item].title}`,
-                    },
-                    {
-                        type: 'text',
-                        text: `${this._podcasts[this._item].description}`
-                    },
-                    // TODO: call do_kqed_play
-                    this._interp(this._("Play next?"), {}),
-                ],
-                expecting: TT.Type.String,
-                context: analyzed.user_target,
-                agent_target: '@org.kqed.reply'
-            };
-            if (++this._item >= this._podcasts.length)
-                this._item = 0;
-            return ret;
-        }
-
-        case 'continue': {
-            this._askedResume = true;
-            return {
-                messages: [
-                    this._interp(this._("resume playing?"), {})
-                ],
-                expecting: TT.Type.String,
-                context: analyzed.user_target,
-                agent_target: '@org.kqed.reply'
-            };
-        }
-
-        case 'next': {
-            const ret = {
-                messages: [
-                    this._interp(this._("Play next."), {}),
-                    {
-                        type: 'rdl',
-                        webCallback: `${this._podcasts[this._item].link}::${this._item}`,
-                        displayTitle: `${this._podcasts[this._item].title}`,
-                    },
-                    {
-                        type: 'text',
-                        text: `${this._podcasts[this._item].description}`
-                    },
-                    // TODO: call do_kqed_play
-                    this._interp(this._("Play next?"), {}),
-                ],
-                expecting: TT.Type.String,
-                context: analyzed.user_target,
-                agent_target: '@org.kqed.reply'
-            };
-            if (++this._item >= this._podcasts.length)
-                this._item = 0;
-            return ret;
-        }
-
-        case 'stop': {
-            return {
-                messages: [
-                    this._interp(this._("Stop playing."), {}),
-                    this._interp(this._("Getting Today's weather for you."), {}),
-                ],
-                expecting: null,
-                context: analyzed.user_target,
-                agent_target: '@org.kqed.reply',
-                program: "@org.thingpedia.weather.current(location=$?);"
-            };
-        }
-
-        default:
-            console.log(`Unexpected answer type`, analyzed);
-            return {
-                messages: [
-                    this._("Sorry, I don't know this one.")
-                ],
-                expecting: null,
-                context: analyzed.user_target,
-                agent_target: '@org.kqed.reply_fail'
-            };
-        }
-    }
+function _removeHtmlCode(str) {
+    return str.replace(/<[^>]*>?/gm, '');
 }
 
-async function preFetchItems() {
+async function fetchContent() {
     const blob = await Tp.Helpers.Http.get(RSS_URL).then(
         (result) => Tp.Helpers.Xml.parseString(result)
     ).then(
@@ -232,12 +30,13 @@ async function preFetchItems() {
             if (podcasts.item === undefined)
                 throw new Error(DEVICE_ERROR.no_postcast_available);
             return podcasts.item.map((item) => {
+                const title = _removeHtmlCode(item.title[0]);
                 return ({
-                    id: new Tp.Value.Entity(item.guid[0]['_'], null),
-                    title: item.title[0],
-                    description: item.description[0],
+                    // id: new Tp.Value.Entity(item.guid[0]['_'], null),
+                    id: new Tp.Value.Entity(title, null),
+                    title: title,
+                    description: _removeHtmlCode(item.description[0]),
                     link: item['media:content'][0]['$'].url,
-                    // link: item.enclosure[0]['$'].url,
                     date: new Date(item.pubDate[0]),
                     duration: Number(item['itunes:duration'][0])
                 });
@@ -248,84 +47,102 @@ async function preFetchItems() {
         else
             throw new Error(DEVICE_ERROR.service_unavailable);
     });
-    return blob.slice(0 ,3);
+    return blob;
 }
 
-async function* fetchItems() {
-    const items = await Tp.Helpers.Http.get(RSS_URL).then(
-        (result) => Tp.Helpers.Xml.parseString(result)
-    ).then(
-        (parsed) => {
-            const podcasts = parsed.rss.channel[0];
-            if (podcasts.item === undefined)
-                throw new Error(DEVICE_ERROR.no_postcast_available);
-            return podcasts.item.map((item) => {
-                return ({
-                    id: new Tp.Value.Entity(item.guid[0]['_'], null),
-                    title: item.title[0],
-                    description: item.description[0],
-                    link: item['media:content'][0]['$'].url,
-                    // link: item.enclosure[0]['$'].url,
-                    date: new Date(item.pubDate[0]),
-                    duration: Number(item['itunes:duration'][0])
-                });
-            });
-        }).catch((err) => {
-        if (err.code === 404)
-            throw new Error("Invalid URL");
-        else
-            throw new Error(DEVICE_ERROR.service_unavailable);
-    });
-    for (const item of items)
-        yield item;
-}
-
-class KqedDevice extends Tp.BaseDevice {
+module.exports = class KqedDevice extends Tp.BaseDevice {
     constructor(engine, state) {
         super(engine, state);
-        this.uniqueId = 'org.kqed';
-        this.name = "KQED Now";
-        this.description = "A daily News podcast from KQED";
-        this._dialogueHandler = new KqedDialogueHandler(this.platform.locale, this.platform.timezone);
+        this._playedItems = new Set();
+        /**
+          * @type {{ uniqueId: string, timestamp: number }|null}
+          */
+        this._lastPlay = null;
     }
-    
-    queryInterface(iface) {
-        switch (iface) {
-        case 'dialogue-handler':
-            return this._dialogueHandler;
 
-        default:
-            return super.queryInterface(iface);
+    _testMode() {
+        return process.env.TEST_MODE === '1';
+    }
+
+    /**
+     *
+     * @param {string} blob
+     * @returns
+     */
+    async _resolveShoutcastURL(blob) {
+        const line = blob.split('\n').find((x) => x.startsWith('File'));
+        if (!line) {
+            console.log(`failed to parse shoutcast`, blob);
+            throw new Error(`Cannot parse Shoutcast playlist`);
+        }
+        return line.replace(/^File[^=+]=/, '');
+    }
+
+    async _resolvePlayableURL(uriList) {
+        const url = uriList.trim().split('\n')[0];
+        // HACK...
+        if (url.endsWith('m3u'))
+            return this._resolvePlayableURL(await Tp.Helpers.Http.get(url));
+        if (url.endsWith('pls'))
+            return this._resolveShoutcastURL(await Tp.Helpers.Http.get(url));
+        return url;
+    }
+
+    async _get_content() {
+        const contents = await fetchContent();
+        let url = "";
+        let duration = 0;
+        for (const item of contents) {
+            if (!this._playedItems.has(item)) {
+                this._playedItems.add(item);
+                url = item.link;
+                duration = item.duration;
+                break;
+            }
+        }
+        if (url.length) {
+            return {url: url, duration: duration};
+        } else {
+            throw new Error(DEVICE_ERROR.no_postcasts_available);
         }
     }
-    
-    async *get_kqed_podcasts() {
-        try {
-            yield* fetchItems();
-        } catch(error) {
-            throw new Error(DEVICE_ERROR.service_unavailable);
+
+    async do_kqed_play({}, env) {
+        // HACK: prevent repeated calls to play from the same program
+        // (generated by something like "play the radio")
+        const now = Date.now();
+        if (this._lastPlay && this._lastPlay.uniqueId === env.app.uniqueId && now - this._lastPlay.timestamp < 300000) {
+            this._lastPlay.timestamp = now;
+            return;
         }
-    }
+        this._lastPlay = {
+            uniqueId: env.app.uniqueId,
+            timestamp: now
+        };
 
-    pprint() {
-        console.log("here");
-        return "kqed";
-    }
+        const item = await this._get_content();
 
-    async do_kqed_play(env, playable_link) {
+        // const playable_link = await this._resolvePlayableURL(await Tp.Helpers.Http.get(item.url));
+        const playable_link = item.url;
+        console.log(`Playing from ${playable_link}`);
+
+        if (this._testMode()) return;
+
         const engine = this.engine;
         if (engine.audio && engine.audio.playURLs) {
             if (!await engine.audio.checkCustomPlayer({ type: 'url' }, env.conversation))
                 throw new Error(DEVICE_ERROR.unsupported_version);
+
             // play asynchronously: playing will call requestAudio on the audio controller,
             // which will wait until the agent is done speaking, so we must return here
-            engine.audio.playURLs(this, [playable_link], env.conversation).catch((e) => {
-                console.error(`Failed to play radio URL`, e);
+            engine.audio.playURLs(this, [playable_link], env.conversation).catch((err) => {
+                console.error(`Failed to play URL`, err);
             });
             return;
         }
 
         const audio_player = this.platform.getCapability('audio-player');
+        console.log("audio-player");
         if (!audio_player) {
             throw new Error(DEVICE_ERROR.unsupported_version);
         } else {
@@ -333,10 +150,19 @@ class KqedDevice extends Tp.BaseDevice {
             try {
                 audio_player.play(playable_link);
                 return;
-            } catch(e) {
+            } catch(err) {
                 throw new Error(DEVICE_ERROR.service_unavailable);
             }
         }
     }
-}
-module.exports = KqedDevice;
+
+    async *get_kqed_podcasts() {
+        try {
+            const contents = await fetchContent();
+            for (const item of contents)
+                yield item;
+        } catch(error) {
+            throw new Error(DEVICE_ERROR.service_unavailable);
+        }
+    }
+};
