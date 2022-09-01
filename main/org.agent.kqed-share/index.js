@@ -69,7 +69,7 @@ class KqedShareAgentDialogueGenHandler extends Genie.DialogueAgent.Geniescript.G
             );
             const output = blob !== undefined ? blob : results;
             if (Genie.ThingTalkUtils.isOutputType('kqed', 'action/kqed_play')(output)) {
-                output.program = `@com.twitter.send_direct_message(message="test", to="jmhw0123"^^tt:username);`;
+                output.program = `@com.twitter.send_direct_message(message=$?, to=$?);`;
                 const ret = yield * self.dlg.execute(output.program);
                 if (ret)
                     break;
