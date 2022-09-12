@@ -1,0 +1,41 @@
+dataset @com.gmail language "en" {
+
+    action (p_to :Entity(tt:email_address), p_subject :String, p_message :String)  := @com.gmail.send_email(to=p_to, subject=p_subject, message=p_message)
+    #_[utterances=["send an email to $p_to with subject $p_subject with message $p_message using my gmail",
+                   "send an email to $p_to with subject $p_subject with message $p_message",
+                   "email $p_to with subject $p_subject and message $p_message"]]
+    #[id=27925336]
+    #[name=""];
+
+    action (p_to :Entity(tt:email_address))  := @com.gmail.send_email(to=p_to, subject=$?, message=$?)
+    #_[utterances=["send an email to $p_to using my gmail",
+                   "email $p_to",
+                   "reply to ${p_to}"]]
+    #[id=27925342]
+    #[name=""];
+
+    action  := @com.gmail.send_email(to=$?, subject=$?, message=$?)
+    #_[utterances=["send an email to somebody"]]
+    #[id=27925345]
+    #[name=""];
+
+    action (p_subject :String)  := @com.gmail.send_email(to=$?, subject=p_subject, message=$?)
+    #_[utterances=["send an email with subject $p_subject"]]
+    #[id=27925346]
+    #[name=""];
+
+    action (p_to :Entity(tt:email_address), p_message :String)  := @com.gmail.send_email(to=p_to, message=p_message, subject=$?)
+    #_[utterances=["reply to ${p_to} saying ${p_message}",
+                   "send $p_message to $p_to"]]
+    #[id=27925356]
+    #[name=""];
+
+    action (p_message :String)  := @com.gmail.send_email(message=p_message, to=$?, subject=$?)
+    #_[utterances=["send $p_message via email",
+                   "send $p_message via gmail",
+                   "send $p_message by email",
+                   "send $p_message by gmail"]]
+    #[id=27925364]
+    #[name=""];
+
+}
