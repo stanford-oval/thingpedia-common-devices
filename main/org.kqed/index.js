@@ -9,20 +9,80 @@
 
 const Tp = require('thingpedia');
 
-const RSS_URL = "https://www.omnycontent.com/d/playlist/0af137ef-751e-4b19-a055-aaef00d2d578/87fdd794-f90e-4280-920f-ab89016e8062/d72d17c7-e1c8-4763-98eb-ab89016ed36a/podcast.rss";
+const AUDIO_PROGRAM_URLS = {
+    // now: 'https://www.omnycontent.com/d/playlist/0af137ef-751e-4b19-a055-aaef00d2d578/87fdd794-f90e-4280-920f-ab89016e8062/d72d17c7-e1c8-4763-98eb-ab89016ed36a/podcast.rss',
+    // on_our_watch: 'https://feeds.npr.org/510360/podcast.xml',
+    mindshift: 'https://feeds.megaphone.fm/KQINC5764600429',
+    // soldout: 'https://feeds.megaphone.fm/soldout',
+    bay_curious: 'https://ww2.kqed.org/news/category/bay-curious-podcast/feed/podcast',
+    // right_nowish: 'https://ww2.kqed.org/arts/programs/rightnowish/feed/podcast',
+    // the_bay: 'https://feeds.megaphone.fm/KQINC8259786327',
+    forum: 'https://feeds.megaphone.fm/KQINC9557381633',
+    // the_california_report: 'https://ww2.kqed.org/news/tag/tcram/feed/podcast',
+    // the_california_report_magazine: 'https://ww2.kqed.org/news/tag/tcrmag/feed/podcast',
+    // political_breakdown: 'https://ww2.kqed.org/news/tag/political-breakdown/feed/podcast',
+    // american_suburb: 'https://ww2.kqed.org/news/series/american-suburb-podcast/feed/podcast',
+    // the_leap: 'https://ww2.kqed.org/news/programs/the-leap/feed/podcast',
+    // perspectives: 'https://ww2.kqed.org/perspectives/category/perspectives/feed/',
+    // political_mind_of_jerry_brown: 'https://ww2.kqed.org/news/series/jerrybrown/feed/podcast/',
+    science_news: 'https://ww2.kqed.org/science/category/science-podcast/feed/podcast',
+
+    // one_a: 'https://feeds.npr.org/510316/podcast.xml',
+    // bbc_world_series: 'https://podcasts.files.bbci.co.uk/p02nq0gn.rss',
+    // city_arts_lectures: 'https://www.cityarts.net/feed/',
+    // code_switch_life_kit: 'https://feeds.npr.org/510312/podcast.xml',
+    // freakonomics_radio: 'https://feeds.feedburner.com/freakonomicsradio',
+    // fresh_air: 'https://feeds.npr.org/381444908/podcast.xml',
+    // hidden_brain: 'https://feeds.npr.org/510308/podcast.xml',
+    // how_i_built_this_with_guy_raz: 'https://feeds.npr.org/510313/podcast.xml',
+    // inside_europe: 'https://partner.dw.com/xml/podcast_inside-europe',
+    // latino_usa: 'https://feeds.npr.org/510016/podcast.xml',
+    // live_from_here: 'https://feeds.publicradio.org/public_feeds/a-prairie-home-companion-highlights/rss/rss',
+    // marketplace: 'https://feeds.publicradio.org/public_feeds/marketplace-pm/rss/rss',
+    // masters_of_scale: 'https://rss.art19.com/masters-of-scale',
+    // moth_radio_hour: 'http://feeds.themoth.org/themothpodcast',
+    // new_yorker_radio_hour: 'https://feeds.feedburner.com/newyorkerradiohour',
+    // on_the_media: 'http://feeds.wnyc.org/onthemedia',
+    // our_body_politic: 'https://feeds.simplecast.com/_xaPhs1s',
+    // pbs_news_hour: 'https://www.pbs.org/newshour/feeds/rss/podcasts/show',
+    // perspectives: 'https://feeds.megaphone.fm/KQINC5187828231',
+    // planet_money: 'https://feeds.npr.org/510289/podcast.xml',
+    // pris_the_world: 'http://feeds.feedburner.com/pri/theworld',
+    // radiolab: 'https://feeds.wnyc.org/radiolab',
+    // reveal: 'http://feeds.revealradio.org/revealpodcast',
+    // says_you: 'https://saysyou.libsyn.com/rss',
+    // science_friday: 'http://feeds.wnyc.org/science-friday',
+    // selected_shorts: 'https://feeds.megaphone.fm/selectedshorts',
+    // snap_judgment: 'https://feeds.feedburner.com/snapjudgment-wnyc',
+    // tech_nation: 'https://technation.podomatic.com/rss2.xml',
+    // ted_radio_hour: 'https://feeds.npr.org/510298/podcast.xml',
+    // the_takeaway: 'https://feeds.feedburner.com/takeawaypodcast',
+    // this_american_life: 'https://www.thisamericanlife.org/podcast/rss.xml',
+    // wait_wait_dont_tell_me: 'https://feeds.npr.org/344098539/podcast.xml',
+    // washington_week: 'http://feeds.pbs.org/pbs/weta/washingtonweek-audio',
+    // white_lies: 'https://feeds.npr.org/510343/podcast.xml',
+    // world_affairs: 'https://worldaffairs.libsyn.com/rss'
+}
+
 
 const DEVICE_ERROR = {
     no_postcasts_available: 'no_podcasts_available',
-    unsupported_version: 'unsupported_version',
-    service_unavailable: 'service_unavailable'
+    unsupported_version: 'unsupported_version'
 };
 
 function _removeHtmlCode(str) {
     return str.replace(/<[^>]*>?/gm, '');
 }
 
-async function fetchContent() {
-    const blob = await Tp.Helpers.Http.get(RSS_URL).then(
+function _trimExtraWords(str) {
+    const rmStr1 = "Additional Reading:";
+    const rmStr2 = "With Disruptive Classroom Behaviors on the Rise, Restorative Justice Practices Can Help";
+    const rmStr3 = "Sign up for the MindShift email newsletter. You can show your love by donating!";
+    return str.replace(rmStr1, '').replace(rmStr2, '').replace(rmStr3, '').replace(/(\r\n|\n|\r)/gm, '');
+}
+
+async function fetchContent(url) {
+    return Tp.Helpers.Http.get(url).then(
         (result) => Tp.Helpers.Xml.parseString(result)
     ).then(
         (parsed) => {
@@ -30,24 +90,21 @@ async function fetchContent() {
             if (podcasts.item === undefined)
                 throw new Error(DEVICE_ERROR.no_postcast_available);
             return podcasts.item.map((item) => {
-                const title = _removeHtmlCode(item.title[0]);
                 return ({
-                    // id: new Tp.Value.Entity(item.guid[0]['_'], null),
-                    id: new Tp.Value.Entity(title, null),
-                    title: title,
-                    description: _removeHtmlCode(item.description[0]),
-                    link: item['media:content'][0]['$'].url,
+                    title: _removeHtmlCode(item.title[0]),
+                    description:_trimExtraWords(_removeHtmlCode(item.description[0])),
+                    author: item['itunes:author'][0] || "",
+                    link: item['enclosure'][0]['$'].url,
                     date: new Date(item.pubDate[0]),
-                    duration: Number(item['itunes:duration'][0])
+                    duration: parseInt(item['itunes:duration'][0])
                 });
             });
         }).catch((err) => {
         if (err.code === 404)
             throw new Error("Invalid URL");
         else
-            throw new Error(DEVICE_ERROR.service_unavailable);
+            throw err;
     });
-    return blob;
 }
 
 module.exports = class KqedDevice extends Tp.BaseDevice {
@@ -156,9 +213,12 @@ module.exports = class KqedDevice extends Tp.BaseDevice {
         }
     }
 
-    async *get_kqed_podcasts() {
+    async *get_podcasts({ program }) {
         try {
-            const contents = await fetchContent();
+            if (!program)
+                program = 'mindshift';
+            const url = AUDIO_PROGRAM_URLS[program];
+            const contents = await fetchContent(url);
             for (const item of contents)
                 yield item;
         } catch(error) {

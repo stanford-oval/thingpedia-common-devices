@@ -73,7 +73,7 @@ class KqedShareAgentDialogueGenHandler extends Genie.DialogueAgent.Geniescript.G
                 const ret = yield * self.dlg.execute(output.program);
                 if (ret)
                     break;
-            } else if (Genie.ThingTalkUtils.isOutputType('kqed', 'kqed_podcasts')(output)) { 
+            } else if (Genie.ThingTalkUtils.isOutputType('kqed', 'podcasts')(output)) { 
                 self.dlg.say([this._prompt]);
             }
         }
