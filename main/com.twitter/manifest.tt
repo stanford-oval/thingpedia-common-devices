@@ -58,4 +58,19 @@ class @com.twitter
   #_[canonical="send dm on twitter"]
   #_[confirmation="send a direct message on Twitter to $to saying $message"]
   #[doc="send a direct message"];
+
+  action post(in req status: String
+              #_[prompt=["what do you want to tweet", "what do you want to post"]]
+              #_[canonical={
+                 base=["status", "text", "content"],
+                 preposition=["saying #"]
+              }]
+              #[string_values="tt:long_free_text"])
+  #_[canonical=["tweet",
+                "post on twitter",
+                "make a tweet",
+                "make a twitter post",
+                "tweet something"]]
+  #_[confirmation="tweet $status"]
+  #[doc="post a tweet; use # to include a hashtag and @ to reply"];
 }
