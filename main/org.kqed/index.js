@@ -10,14 +10,16 @@
 const Tp = require('thingpedia');
 
 const AUDIO_PROGRAM_URLS = {
+    // newscast: 'https://www.omnycontent.com/d/playlist/0af137ef-751e-4b19-a055-aaef00d2d578/ffca7e9f-6831-41c5-bcaf-aaef00f5a073/4a2649d7-e8af-4a0d-b374-aaf0016ca5af/podcast.rss'
+    newscast: 'https://apifeeds.kqed.org/feeds/newscast/'
     // now: 'https://www.omnycontent.com/d/playlist/0af137ef-751e-4b19-a055-aaef00d2d578/87fdd794-f90e-4280-920f-ab89016e8062/d72d17c7-e1c8-4763-98eb-ab89016ed36a/podcast.rss',
     // on_our_watch: 'https://feeds.npr.org/510360/podcast.xml',
-    mindshift: 'https://feeds.megaphone.fm/KQINC5764600429',
+    // mindshift: 'https://feeds.megaphone.fm/KQINC5764600429',
     // soldout: 'https://feeds.megaphone.fm/soldout',
-    bay_curious: 'https://ww2.kqed.org/news/category/bay-curious-podcast/feed/podcast',
+    // bay_curious: 'https://ww2.kqed.org/news/category/bay-curious-podcast/feed/podcast',
     // right_nowish: 'https://ww2.kqed.org/arts/programs/rightnowish/feed/podcast',
     // the_bay: 'https://feeds.megaphone.fm/KQINC8259786327',
-    forum: 'https://feeds.megaphone.fm/KQINC9557381633',
+    // forum: 'https://feeds.megaphone.fm/KQINC9557381633',
     // the_california_report: 'https://ww2.kqed.org/news/tag/tcram/feed/podcast',
     // the_california_report_magazine: 'https://ww2.kqed.org/news/tag/tcrmag/feed/podcast',
     // political_breakdown: 'https://ww2.kqed.org/news/tag/political-breakdown/feed/podcast',
@@ -25,7 +27,7 @@ const AUDIO_PROGRAM_URLS = {
     // the_leap: 'https://ww2.kqed.org/news/programs/the-leap/feed/podcast',
     // perspectives: 'https://ww2.kqed.org/perspectives/category/perspectives/feed/',
     // political_mind_of_jerry_brown: 'https://ww2.kqed.org/news/series/jerrybrown/feed/podcast/',
-    science_news: 'https://ww2.kqed.org/science/category/science-podcast/feed/podcast',
+    // science_news: 'https://ww2.kqed.org/science/category/science-podcast/feed/podcast',
 
     // one_a: 'https://feeds.npr.org/510316/podcast.xml',
     // bbc_world_series: 'https://podcasts.files.bbci.co.uk/p02nq0gn.rss',
