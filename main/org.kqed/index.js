@@ -10,8 +10,8 @@
 const Tp = require('thingpedia');
 
 const AUDIO_PROGRAM_URLS = {
-    // newscast: 'https://www.omnycontent.com/d/playlist/0af137ef-751e-4b19-a055-aaef00d2d578/ffca7e9f-6831-41c5-bcaf-aaef00f5a073/4a2649d7-e8af-4a0d-b374-aaf0016ca5af/podcast.rss'
-    newscast: 'https://apifeeds.kqed.org/feeds/newscast/'
+    newscast: 'https://www.omnycontent.com/d/playlist/0af137ef-751e-4b19-a055-aaef00d2d578/ffca7e9f-6831-41c5-bcaf-aaef00f5a073/4a2649d7-e8af-4a0d-b374-aaf0016ca5af/podcast.rss'
+    // newscast: 'https://apifeeds.kqed.org/feeds/newscast/'
     // now: 'https://www.omnycontent.com/d/playlist/0af137ef-751e-4b19-a055-aaef00d2d578/87fdd794-f90e-4280-920f-ab89016e8062/d72d17c7-e1c8-4763-98eb-ab89016ed36a/podcast.rss',
     // on_our_watch: 'https://feeds.npr.org/510360/podcast.xml',
     // mindshift: 'https://feeds.megaphone.fm/KQINC5764600429',
