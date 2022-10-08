@@ -148,4 +148,27 @@ class @com.yelp
   }]
   #[doc="search for restaurants on Yelp"]
   #[confirm=false];
+
+  action book_restaurant(in req restaurant: Entity(com.yelp:restaurant)
+                          #_[prompt="Which restauarant do you like to book?"],
+                 
+                          in req date: Location 
+                          #_[prompt="Which date would you like to book?"],
+
+                          in req time: Time
+                          #_[prompt="What time would you like to book?"],
+
+                          in req people: Number
+                          #_[prompt="How many people are coming?"],
+
+                          out confirmation: Number
+                          #_[canonical={
+                          default="property",
+                          base=["confirmation number"],
+                          verb=["confirmed as #"]
+                          }]
+  )
+  #_[canonical="book a restauarant"]
+  #_[confirmation="a table for $people at $restaurant on $date at $time"]
+  #[doc="Book a restaurant - test skill"];
 }
