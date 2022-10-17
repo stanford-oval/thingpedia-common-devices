@@ -10,6 +10,7 @@
 const Tp = require('thingpedia');
 const interpolate = require('string-interp');
 const Genie = require('genie-toolkit');
+const { DLGResultStatus } = require('genie-toolkit/dist/lib/dialogue-agent/geniescript');
 
 class RestaurantAgentDialogueGenHandler3 extends Genie.DialogueAgent.Geniescript.GeniescriptAgent {
     /**
@@ -22,9 +23,7 @@ class RestaurantAgentDialogueGenHandler3 extends Genie.DialogueAgent.Geniescript
         this._locale = locale;
         this._timezone = timezone;
         this._ = RestaurantAgent3.gettext.gettext;
-        this._introMsg = "Hello there! I'm your restaurant booking helper. How may I help you?\n" + 
-        "You can say things like 'find me a restaurant', " +
-        "'I want chinese food' or 'give me a good restaurant nearby'.";
+        this._introMsg = "Hello there! I'm Genie. Everyone is Genie :)\n";
     }
 
     _interp(string, args) {
@@ -52,16 +51,11 @@ class RestaurantAgentDialogueGenHandler3 extends Genie.DialogueAgent.Geniescript
     async *logic() {
         let self = this;
         self.dlg.say(this._introMsg);
-        while (true) {
-            let blob = yield * self.dlg.proposeQuery(
-                '@com.yelp.restaurant() filter contains(cuisines, "chinese"^^com.yelp:restaurant_cuisine("Chinese"));',
-                'Would you like to search for a Chinese restaurant?',
-                ['yelp', 'restaurant']);
-            const places = blob.result_values.map((item) => { return {id: item.id.display, geo: item.geo }});
-            const place = places[0];
-            yield * self.dlg.proposeAndExecuteAction(
-                `@com.uber.mock.request(start=$location.current_location, end=new Location(${place.geo.x}, ${place.geo.y}));`,
-                `Would you like a uber ride to ${place.id}`);
+        let result = yield * self.dlg.initiateQuery('give me a french restaurant', 'Would you like to search for a French restaurant?');
+        console.log(result);
+        if (result.status === DLGResultStatus.SUCCESS ) {
+            const place = result.result.value.id.display
+            yield * self.dlg.initiateAction(`I'd like to book ${place});`, `Would you like to book ${place}?`);
         }
     }
 }
