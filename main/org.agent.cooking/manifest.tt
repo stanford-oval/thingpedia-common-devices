@@ -1,0 +1,150 @@
+class @org.agent.cooking extends @org.thingpedia.dialogue-handler
+#_[name="org.agent.cooking"]
+#_[description="TODO add description"]
+#_[thingpedia_name="org.agent.cooking"]
+#_[thingpedia_description="TODO add description"]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="service"]
+{
+    import loader from @org.thingpedia.v2();
+    import config from @org.thingpedia.config.none();
+
+    entity recipe #_[description="recipe in a database"];
+    entity ingredient #_[description="ingredient in a database"];
+    entity instruction #_[description="instruction in a database"];
+
+    list query recipe(
+                      out id: Entity(org.agent.cooking:recipe)
+                      #_[canonical={
+                          default="base",
+                          base=["recipe", "food", "dish"],
+                          property=["name", "title", "recipe name", "recipe title"],
+                          preposition=["of", "for"]
+                      }],
+                      out name: String
+                      // for ingredients
+                      #_[canonical={
+                          default="base",
+                          base=["ingredient", "food", "dish"],
+                          property=["#", "# as ingredient"],
+                          adjective=["#", "# 's"],
+                          reverse_property=["# dish", "# food"],
+                          verb=["has #", "contains #", "using #"]
+                      }],
+                      out ingredients: Array(Entity(org.agent.cooking:ingredient))
+                      #_[canonical={
+                          default="base",
+                          base=["ingredient", "food", "dish"],
+                          property=["#", "# as ingredient"],
+                          adjective=["#", "# 's"],
+                          reverse_property=["# dish", "# food"],
+                          verb=["has #", "contains #", "using #"]
+                      }],
+                      out instructions: Array(Entity(org.agent.cooking:instruction))
+    );
+
+
+    query instruction (
+                      out id: Entity(org.agent.cooking:instruction),
+                      in req index: Number
+                      #_[canonical={
+                          default="base",
+                          base=["instruction", "step", "direction"],
+                          property=["#", "# as instruction"],
+                          reverse_property=["# dish", "# food"],
+                          verb=["has #", "contains #", "using #"]
+                      }],
+                      in req recipe: Entity(org.agent.cooking:recipe),
+                      out instruction: String
+                      #_[canonical={
+                          default="base",
+                          base=["direction"]
+                      }],
+                      out cook_method: String
+                      #_[canonical={
+                          default="base",
+                          base=["method", "way", "style"],
+                          property=["method", "way", "style"],
+                          reverse_property=["method of", "way of", "style of"],
+                          verb=["has method", "has way", "has style"]
+                      }],
+                      out ingredient: Entity(org.agent.cooking:ingredient)
+                      #_[canonical={
+                          default="base",
+                          base=["ingredient", "food", "dish"],
+                          property=["#", "# as ingredient"],
+                          adjective=["#", "# 's"],
+                          reverse_property=["# dish", "# food"],
+                          verb=["has #", "contains #", "using #"]
+                      }]
+    );
+
+    list query ingredient (
+                      out id: Entity(org.agent.cooking:ingredient),
+                      out ingredient: String
+                      #_[canonical={
+                          default="base",
+                          base=["ingredient"],
+                      }],
+                      out quantity: String
+                      #_[canonical={
+                          default="base",
+                          base=["quantity"],
+                      }],
+                      out unit: String
+                      #_[canonical={
+                          default="base",
+                          base=["unit"],
+                      }]
+    );
+
+    query unit_conversion (
+      in req ingredient: Entity(org.agent.cooking:ingredient)
+      #_[canonical={
+          default="base",
+          base=["ingredient"],
+      }],
+      in req unit: String
+      #_[canonical={
+          default="base",
+          base=["unit"],
+      }],
+      out converted_quantity: String
+      #_[canonical={
+          default="base",
+          base=["quantity"],
+      }]
+    )
+    #_[canonical=["convert to"]]; // Generate sentences like "how many cups is that?"
+
+    action current_step(
+                      out step: Entity(org.agent.cooking:instruction)
+                      #_[canonical={
+                          default="base",
+                          base=["current step"],
+                      }]
+    )
+    #_[canonical=["get the current step"]]
+    #[confirm=enum(auto)];
+
+    action next_step(
+                      out step: Entity(org.agent.cooking:instruction)
+                      #_[canonical={
+                          default="base",
+                          base=["next step"],
+                      }]
+    )
+    #_[canonical=["get the next step"]]
+    #[confirm=enum(auto)];
+
+    action previous_step(
+                      out step: Entity(org.agent.cooking:instruction)
+                      #_[canonical={
+                          default="base",
+                          base=["previous step"],
+                      }]
+    )
+    #_[canonical=["get the previous step"]]
+    #[confirm=enum(auto)];
+}
