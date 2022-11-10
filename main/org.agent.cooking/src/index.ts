@@ -1,9 +1,7 @@
-import {DialogueAgent} from "genie-toolkit";
-import {BaseDevice, DialogueHandler} from "thingpedia";
-import {DLGResultStatus} from "genie-toolkit/dist/lib/dialogue-agent/geniescript";
+import {BaseDevice, Value} from "thingpedia";
 
-// import ./generated_recipe.json default
 import generatedRecipes from "./generated_recipe.json";
+export const AllRecipes = generatedRecipes;
 
 //{
 //    "recipes": [
@@ -47,90 +45,16 @@ import generatedRecipes from "./generated_recipe.json";
 //    ]
 
 
-class CookingAgentDialogueGenHandler extends DialogueAgent.Geniescript.GeniescriptAgent {
-    uniqueId: string = 'org.agent.cooking';
-    _locale: string;
-    _timezone: string;
-    _introMsg: string;
-    _prompt: string;
-    _lastQuerySuggestion: string = null;
-
-    constructor(locale: string, timezone: string) {
-        super(DialogueHandler.Priority.PRIMARY, "org.agent.cooking", null, "Recipe Helper");
-        this._locale = locale;
-        this._timezone = timezone;
-        this._introMsg = "Hi, I am your recipe helper. I guide you through the cooking process.";
-    }
-
-    getState(): any {
-        return {lastQuerySuggestion: this._lastQuerySuggestion};
-    }
-
-    async initialize() {
-        await super.initialize();
-        return null;
-    }
-
-    async *logic() {
-        const _self = this
-        _self.dlg.say([this._introMsg]);
-        let recipeResult = yield * this.dlg.initiateQuery(
-            "Give me a recipe",
-            "What dish do you want to cook?"
-        );
-        let recipe = recipeResult.result.value; // not sure what's the type
-        while (true) {
-            if (recipe !== null) {
-
-            } else {
-                _self.dlg.say(["OK. Just let me know if you need me."]);
-                // how to check if thisis the right type?
-                recipe = _self.dlg.expect(
-                    new Map(),
-                    (reply) => reply.result_type === "org.agent.cooking:recipe",
-                    null,
-                    null
-                )
-                break;
-            }
-        }
-        // make sure instructions are list of strings
-        let idx = 0
-        _self.dlg.say([recipe["instructions"][idx]]);
-        while(true) {
-            // alternatively, how do I capture thingtalk actions?
-            _self.dlg.expect(
-                new Map({
-                    "next": (message: string) =>{
-                        idx += 1;
-                        _self.dlg.say([recipe["instructions"][idx]]);
-                    }
-                }),
-            )
-        }
-    }
-}
-
-export default class CookingAgent extends BaseDevice {
-    _dialogueAgent: CookingAgentDialogueGenHandler;
+export default class CookingAgentSkill extends BaseDevice {
+    static instructionIndex = 0;
+    static currentRecipe = null;
 
     constructor(engine, state) {
         super(engine, state);
         this.uniqueId = 'org.agent.cooking';
         this.name = "Cooking Recipe Helper";
         this.description = "A cooking recipe helper";
-        this._dialogueAgent =
-            new CookingAgentDialogueGenHandler(this.engine.platform.locale, this.engine.platform.timezone);
         console.log("CookingAgent created");
-    }
-
-    queryInterface(iface: string|number) {
-        switch (iface) {
-            case 'dialogue-handler':
-                return this._dialogueAgent;
-            default:
-                return null;
-        }
     }
 
     async get_recipe(params, hints, env) {
@@ -141,7 +65,7 @@ export default class CookingAgent extends BaseDevice {
                     if (op === '==') {
                         recipes = recipes.filter((r) => r.name === value);
                     } else if (op === '=~') {
-                        recipes = recipes.filter((r) => r.name.match(value));
+                        recipes = recipes.filter((r) => r.name.toLowerCase().match(value.toLowerCase()));
                     }
                 } else if (pname === 'ingredients') {
                     // not sure how to do this, it's a subquery
@@ -152,7 +76,22 @@ export default class CookingAgent extends BaseDevice {
                 }
             }
         }
-        return recipes
+        // replace all instructions in the recipe with the actual instruction
+        // for (let recipe of recipes) {
+        //     recipe.instructions =
+        //         recipe.instructions.map((instructionId) => new Value.Entity(instructionId, instructionId));
+        // }
+        const newRecipes = [];
+        for (let recipe of recipes) {
+            const newRecipe = {
+                id: recipe.id,
+                name: recipe.name,
+                ingredients: recipe.ingredients.map((ingredientId) => new Value.Entity(ingredientId, ingredientId)),
+                instructions: recipe.instructions.map((instructionId) => new Value.Entity(instructionId, instructionId))
+            };
+            newRecipes.push(newRecipe);
+        }
+        return newRecipes
     }
 
     async get_ingredient(params, hints, env) {
@@ -163,19 +102,19 @@ export default class CookingAgent extends BaseDevice {
                     if (op === '==') {
                         ingredients = ingredients.filter((r) => r.ingredient === value);
                     } else if (op === '=~') {
-                        ingredients = ingredients.filter((r) => r.ingredient.match(value));
+                        ingredients = ingredients.filter((r) => r.ingredient.toLowerCase().match(value.toLowerCase()));
                     }
                 } else if (pname === 'quantity') {
                     if (op === '==') {
                         ingredients = ingredients.filter((r) => r.quantity === value);
                     } else if (op === '=~') {
-                        ingredients = ingredients.filter((r) => r.quantity.match(value));
+                        ingredients = ingredients.filter((r) => r.quantity.toLowerCase().match(value.toLowerCase()));
                     }
                 } else if (pname === 'unit') {
                     if (op === '==') {
                         ingredients = ingredients.filter((r) => r.unit === value);
                     } else if (op === '=~') {
-                        ingredients = ingredients.filter((r) => r.unit.match(value));
+                        ingredients = ingredients.filter((r) => r.unit.toLowerCase().match(value.toLowerCase()));
                     }
                 } else {
                     throw new Error('Unsupported filter on ingredient');
@@ -193,13 +132,13 @@ export default class CookingAgent extends BaseDevice {
                     if (op === '==') {
                         instructions = instructions.filter((r) => r.instruction === value);
                     } else if (op === '=~') {
-                        instructions = instructions.filter((r) => r.instruction.match(value));
+                        instructions = instructions.filter((r) => r.instruction.toLowerCase().match(value.toLowerCase()));
                     }
                 } else if (pname === 'cook_method') {
                     if (op === '==') {
                         instructions = instructions.filter((r) => r.cook_method === value);
                     } else if (op === '=~') {
-                        instructions = instructions.filter((r) => r.cook_method.match(value));
+                        instructions = instructions.filter((r) => r.cook_method.toLowerCase().match(value.toLowerCase()));
                     }
                 } else {
                     throw new Error('Unsupported filter on instruction');
@@ -291,6 +230,42 @@ export default class CookingAgent extends BaseDevice {
             converted_quantity: target_amount,
             unit: unit,
             ingredient: ingredient
+        }
+    }
+    
+    async do_current_step() {
+        const recipe = CookingAgentSkill.currentRecipe;
+        const step = recipe[CookingAgentSkill.instructionIndex];
+        return {
+            step: step
+        }
+    }
+
+    async do_next_step() {
+        const recipe = CookingAgentSkill.currentRecipe;
+        CookingAgentSkill.instructionIndex++;
+        if (CookingAgentSkill.instructionIndex >= recipe.length) {
+            CookingAgentSkill.instructionIndex = recipe.length;
+        }
+        const step = recipe[CookingAgentSkill.instructionIndex];
+        return {
+            step: step
+        };
+    }
+
+    async do_previous_step() {
+        const recipe = CookingAgentSkill.currentRecipe;
+        CookingAgentSkill.instructionIndex--;
+        if (CookingAgentSkill.instructionIndex < 0) {
+            CookingAgentSkill.instructionIndex = 0;
+            return {
+                step: "You are at the beginning of the recipe."
+            }
+        } else {
+            const step = recipe[CookingAgentSkill.instructionIndex];
+            return {
+                step: step
+            };
         }
     }
 }
