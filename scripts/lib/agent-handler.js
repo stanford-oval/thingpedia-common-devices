@@ -1,6 +1,6 @@
 "use strict";
 
-const Tp = require('thingpedia');
+const Tp = require('genie-toolkit/node_modules/thingpedia');
 const interpolate = require('string-interp');
 const Genie = require('genie-toolkit');
 
