@@ -18,133 +18,121 @@ class @org.agent.cooking
                       out id: Entity(org.agent.cooking:recipe)
                       #_[canonical={
                           default="base",
-                          base=["recipe", "food", "dish"],
+                          base=["name", "title", "dish"],
                           property=["name", "title", "recipe name", "recipe title"],
+                          reverse_property=["#", "# dish"],
+                          passive_verb=["named #", "called #", "titled #"],
                           preposition=["of", "for"]
-                      }],
-                      out name: String
-                      // for ingredients
-                      #_[canonical={
-                          default="base",
-                          base=["ingredient", "food", "dish"],
-                          property=["#", "# as ingredient"],
-                          adjective=["#", "# 's"],
-                          reverse_property=["# dish", "# food"],
-                          verb=["has #", "contains #", "using #"]
                       }],
                       out ingredients: Array(Entity(org.agent.cooking:ingredient))
                       #_[canonical={
                           default="base",
-                          base=["ingredient", "food", "dish"],
+                          base=["ingredient", "food", "item"],
                           property=["#", "# as ingredient"],
                           adjective=["#", "# 's"],
-                          reverse_property=["# dish", "# food"],
-                          verb=["has #", "contains #", "using #"]
+                          reverse_property=["#", "# dish", "# food"],
+                          verb=["has #", "contains #", "uses #", "takes #"]
                       }],
                       out instructions: Array(Entity(org.agent.cooking:instruction))
-    );
+    )
+    #_[canonical=["recipe", "cooking recipe"]]
+    #_[canonical_short=["recipe"]]
+    #[minimal_projection=["id"]]
+    #[confirm=false]
+    ;
 
 
     query instruction (
-                      out id: Entity(org.agent.cooking:instruction),
-                      in req index: Number
-                      #_[canonical={
-                          default="base",
-                          base=["instruction", "step", "direction"],
-                          property=["#", "# as instruction"],
-                          reverse_property=["# dish", "# food"],
-                          verb=["has #", "contains #", "using #"]
-                      }],
                       in req recipe: Entity(org.agent.cooking:recipe),
-                      out instruction: String
+                      in req index: Number,
+                      out id: Entity(org.agent.cooking:instruction)
                       #_[canonical={
                           default="base",
-                          base=["direction"]
+                          base=["step", "next step", "direction", "task", "action"],
+                          property=["#", "# as instruction"],
+                          verb=["has #", "contains #", "uses #", "takes #"]
                       }],
                       out cook_method: String
                       #_[canonical={
                           default="base",
-                          base=["method", "way", "style"],
-                          property=["method", "way", "style"],
-                          reverse_property=["method of", "way of", "style of"],
-                          verb=["has method", "has way", "has style"]
+                          base=["method", "way", "approach"],
+                          property=["method", "way", "approach"],
+                          reverse_property=["method of", "way of", "approach of"],
+                          verb=["has method", "has way", "has approach"]
                       }],
                       out ingredient: Entity(org.agent.cooking:ingredient)
                       #_[canonical={
                           default="base",
-                          base=["ingredient", "food", "dish"],
+                          base=["ingredient", "food", "item"],
                           property=["#", "# as ingredient"],
                           adjective=["#", "# 's"],
-                          reverse_property=["# dish", "# food"],
-                          verb=["has #", "contains #", "using #"]
+                          reverse_property=["#", "# dish", "# food"],
+                          verb=["has #", "contains #", "uses #", "takes #"],
+                          passive_verb=["contained #", "has #"]
                       }]
-    );
+    )
+    #_[canonical=["instruction", "cooking instruction"]]
+    #[minimal_projection=["id"]]
+    #[confirm=false]
+    ;
 
     list query ingredient (
-                      out id: Entity(org.agent.cooking:ingredient),
-                      out ingredient: String
+                      out id: Entity(org.agent.cooking:ingredient)
                       #_[canonical={
                           default="base",
-                          base=["ingredient"],
+                          base=["item"],
+                          property=["item"],
+                          passive_verb=["contained #", "has #"],
+                          preposition=["of", "for"]
                       }],
                       out quantity: String
                       #_[canonical={
                           default="base",
-                          base=["quantity"],
+                          base=["quantity", "amount", "measurement", "measure", "value", "number", "weight", "volume", "size"],
                       }],
                       out unit: String
                       #_[canonical={
                           default="base",
-                          base=["unit"],
+                          base=["unit", "measurement", "measure"],
                       }]
-    );
+    )
+    #_[canonical=["ingredient", "cooking ingredient"]]
+    #[minimal_projection=["id"]]
+    #[confirm=false]
+    ;
 
     query unit_conversion (
-      in req ingredient: Entity(org.agent.cooking:ingredient)
-      #_[canonical={
-          default="base",
-          base=["ingredient"],
-      }],
-      in req unit: String
-      #_[canonical={
-          default="base",
-          base=["unit"],
-      }],
-      out converted_quantity: String
-      #_[canonical={
-          default="base",
-          base=["quantity"],
-      }]
+                    in req ingredient: Entity(org.agent.cooking:ingredient),
+                    in req unit: String,
+                    out converted_quantity: String
+                    #_[canonical={
+                        default="base",
+                        base=["quantity", "amount", "measurement", "measure", "value", "number", "weight", "volume", "size"],
+                    }]
     )
-    #_[canonical=["convert to"]]; // Generate sentences like "how many cups is that?"
-
-    action current_step(
-                      out step: Entity(org.agent.cooking:instruction)
-                      #_[canonical={
-                          default="base",
-                          base=["current step"],
-                      }]
-    )
-    #_[canonical=["get the current step"]]
-    #[confirm=enum(auto)];
+    #_[canonical=["conversion", "measure in"]]
+    #[confirm=false]
+    ; // Generate sentences like "how many cups is that?"
 
     action next_step(
                       out step: Entity(org.agent.cooking:instruction)
                       #_[canonical={
                           default="base",
-                          base=["next step"],
+                          base=["next", "next step"],
                       }]
     )
     #_[canonical=["get the next step"]]
-    #[confirm=enum(auto)];
+    #[confirm=enum(auto)]
+    ;
 
     action previous_step(
                       out step: Entity(org.agent.cooking:instruction)
                       #_[canonical={
                           default="base",
-                          base=["previous step"],
+                          base=["last step", "previous step"],
                       }]
     )
     #_[canonical=["get the previous step"]]
-    #[confirm=enum(auto)];
+    #[confirm=enum(auto)]
+    ;
 }
