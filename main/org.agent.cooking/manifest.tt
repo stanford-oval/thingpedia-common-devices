@@ -34,17 +34,26 @@ class @org.agent.cooking
                           verb=["has #", "contains #", "uses #", "takes #"]
                       }],
                       out instructions: Array(Entity(org.agent.cooking:instruction))
+                      #_[canonical={
+                          default="base",
+                          base=["step", "next step", "direction", "task", "action"],
+                          property=["#", "# as instruction"],
+                          verb=["has #", "contains #", "uses #", "takes #"]
+                      }]
     )
     #_[canonical=["recipe", "cooking recipe"]]
     #_[canonical_short=["recipe"]]
+    #[default_projection=["id"]]
     #[minimal_projection=["id"]]
-    #[confirm=false]
     ;
 
 
     query instruction (
-                      in req recipe: Entity(org.agent.cooking:recipe),
+                      in req recipe: Entity(org.agent.cooking:recipe)
+                      #[string_values="org.agent.cooking:recipe:id"]
+                      #_[prompt="which recipe?"],
                       in req index: Number,
+                      #_[prompt="which step"],
                       out id: Entity(org.agent.cooking:instruction)
                       #_[canonical={
                           default="base",
@@ -73,7 +82,7 @@ class @org.agent.cooking
     )
     #_[canonical=["instruction", "cooking instruction"]]
     #[minimal_projection=["id"]]
-    #[confirm=false]
+    #[default_projection=["id"]]
     ;
 
     list query ingredient (
@@ -98,12 +107,14 @@ class @org.agent.cooking
     )
     #_[canonical=["ingredient", "cooking ingredient"]]
     #[minimal_projection=["id"]]
-    #[confirm=false]
+    #[default_projection=["id"]]
     ;
 
     query unit_conversion (
                     in req ingredient: Entity(org.agent.cooking:ingredient),
+                    #_[prompt="which ingredient?"],
                     in req unit: String,
+                    #_[prompt="which unit?"],
                     out converted_quantity: String
                     #_[canonical={
                         default="base",
@@ -111,8 +122,7 @@ class @org.agent.cooking
                     }]
     )
     #_[canonical=["unit conversion", "measure in", "conversion"]]
-    #[confirm=false]
-    ; // Generate sentences like "how many cups is that?"
+    ;
 
     action next_step(
                       out step: Entity(org.agent.cooking:instruction)
