@@ -1,0 +1,25 @@
+dataset @org.thingpedia.media-source language "en" {
+
+    query (p_song :String, p_artist :Entity(org.thingpedia.media-source:artist)) := @org.thingpedia.media-source.playable(), id =~ p_song && contains(artists, p_artist)
+    #_[utterances=["${p_song:no-undefined} by ${p_artist}",
+                   "${p_song:no-undefined} from ${p_artist}"]];
+
+    stream (p_artist :Entity(org.thingpedia.media-source:artist)) := monitor(id of @org.thingpedia.media-source.playable(), contains(artists, p_artist))
+    #_[utterances=["when ${p_artist} releases new music",
+                   "when ${p_artist} releases something new"]];
+    stream (p_artist :Entity(org.thingpedia.media-source:artist)) := monitor(id of @org.thingpedia.media-source.album(), contains(artists, p_artist))
+    #_[utterances=["when ${p_artist} releases a new album"]];
+
+    query (p_artist :Entity(org.thingpedia.media-source:artist)) := sort(popularity desc of @org.thingpedia.media-source.playable(), contains(artists, p_artist))
+    #_[utterances=[/*"${p_artist}'s greatest hits",*/
+                   "popular music by ${p_artist:no-undefined}"]];
+
+    query (p_artist :Entity(org.thingpedia.media-source:artist)) := sort(release_date desc of @org.thingpedia.media-source.playable(), contains(artists, p_artist))
+    #_[utterances=["new ${p_artist:no-undefined}", "new music from ${p_artist:no-undefined}",
+                   "${p_artist:no-undefined} by the new first"]];
+
+    program := @org.thingpedia.media-source.get_currently_playing()
+    #_[utterances=["what song is playing?", "what music is playing?", "what is playing?", "what song is currently on?"]]
+    ;
+
+}

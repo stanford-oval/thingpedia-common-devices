@@ -1,0 +1,38 @@
+# 1-basic
+U: What's the weather in San Francisco?
+A: (The (current )?weather in San Francisco, California is (partly )?(sunny|cloudy|raining|drizzling|foggy)\.( The temperature is -?[0-9\.]+ degrees Fahrenheit and the humidity is [0-9\.]+ ?%\.)?|It is (partly )?(sunny|cloudy|raining|drizzling|foggy) today in San Francisco, California and the temperature is -?[0-9\.]+ degrees Fahrenheit\.)
+A: >> expecting = null
+
+====
+# 2-with-slot-fill
+U: What's the weather today?
+A: Where are you now\?
+A: >> expecting = location
+
+U: Redwood City, California
+A: (The (current )?weather in Redwood City, California is (partly )?(sunny|cloudy|raining|drizzling|foggy)\.( The temperature is -?[0-9\.]+ degrees Fahrenheit and the humidity is [0-9\.]+ ?%\.)?|It is (partly )?(sunny|cloudy|raining|drizzling|foggy) today in Redwood City, California and the temperature is -?[0-9\.]+ degrees Fahrenheit\.)
+A: >> expecting = null
+
+====
+# 3-basic-forecast
+U: \t @org.thingpedia.weather.forecast();
+A: It will be (partly )?(sunny|cloudy|raining|drizzling|foggy) tomorrow( at [23]:00 PM)? in Redwood City, California and the temperature will be -?[0-9\.]+ degrees Fahrenheit\.
+A: >> expecting = null
+
+====
+# 4-time-based-forecast
+U: \t @org.thingpedia.weather.forecast(date=new Date(enum sunday));
+A: It will be (partly )?(sunny|cloudy|raining|drizzling|foggy) (tomorrow|on Sunday)( at [0-9]{1,2}:00 [AP]M)? in Redwood City, California and the temperature will be -?[0-9\.]+ degrees Fahrenheit\.
+A: >> expecting = null
+
+====
+# 5-future-too-far-off
+U: \t @org.thingpedia.weather.forecast(date=new Date(2032, 1, 1));
+A: Sorry, the forecast for January 1, 2032 is not available yet\.
+A: >> expecting = null
+
+====
+# 6-past-date
+U: \t @org.thingpedia.weather.forecast(date=new Date(2021, 3, 4));
+A: Sorry, I cannot retrieve weather forecasts in the past\.
+A: >> expecting = null

@@ -57,7 +57,7 @@ class RestaurantBookingAgent extends AgentDialogueGenHandler {
             'com.yelp:restaurant', true);
         if (result.status === DlgStatus.SUCCESS ) {
             const place = result.results[0].id.display;
-            yield * dlg.propose(`I'd like to book ${place});`, `Would you like to book ${place}?`);
+            yield * dlg.propose(`I'd like to book ${place});`, `Would you like to book ${place}?`, 'com.yelp:restaurant', false);
         }
     }
 }

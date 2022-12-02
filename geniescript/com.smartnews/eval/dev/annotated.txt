@@ -1,0 +1,745 @@
+====
+# log/92543
+U: get top news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log/81352
+U: get smartnews
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log/80152
+U: show me the news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log/81333
+U: get news summaries
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log/74544
+U: read me the news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log/86637
+U: whats in the news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log/93581
+U: get smart news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log/79791
+U: top news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log/73396
+U: tell me the news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log/86032
+U: get breaking news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log/122534
+U: what are the news today?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log/66222
+U: current news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log/112314
+U: get news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log/99592
+U: get 3 smartnews
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article()[1 : 3];
+====
+# log/93623
+U: get smart use
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log/95835
+U: get 2 smartnews
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article()[1 : 2];
+====
+# log/79781
+U: smartnews
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log/7616
+U: what is the news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# recording/3d8ce8a090118b4c43d0559e9fa5e947
+U: give me the latest news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(date desc of @com.smartnews.article())[1];
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: sort(date desc of @com.smartnews.article())[1]
+C: #[results=[
+C:   { id="4258479298903550993"^^com.smartnews:article, title="Cuomo advisers reportedly altered Covid nursing-homes report", date=new Date("2021-03-05T05:05:10.000Z"), source="The Hill", url="https://thehill.com/homenews/state-watch/541760-cuomo-advisers-altered-covid-19-nursing-homes-report-wsj" }
+C: ]];
+A: The title is Cuomo advisers reportedly altered Covid nursing-homes report.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: give me the latest news from the new york times
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(date desc of @com.smartnews.article() filter source =~ "new york times")[1];
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: sort(date desc of @com.smartnews.article())[1]
+C: #[results=[
+C:   { id="4258479298903550993"^^com.smartnews:article, title="Cuomo advisers reportedly altered Covid nursing-homes report", date=new Date("2021-03-05T05:05:10.000Z"), source="The Hill", url="https://thehill.com/homenews/state-watch/541760-cuomo-advisers-altered-covid-19-nursing-homes-report-wsj" }
+C: ]];
+C: sort(date desc of @com.smartnews.article() filter source =~ "new york times")[1]
+C: #[results=[]];
+A: Sorry, there are no news articles matching your request.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_empty_search;
+U: give me the latest news from the hill
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(date desc of @com.smartnews.article() filter source =~ "hill")[1];
+====
+# recording/d80b4d81b173398cf89c252678058895
+U: get new stories
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.smartnews.article()
+C: #[results=[
+C:   { id="4257671252782613860"^^com.smartnews:article, title="A billionaire partied through Covid-19. His workers died.", date=new Date("2021-03-08T00:30:31.000Z"), source="BuzzFeed News", url="https://www.buzzfeednews.com/article/karlazabludovsky/ricardo-salinas-pliego-billionaire-mexico-workers-covid" },
+C:   { id="4259440554858785353"^^com.smartnews:article, title="French billionaire politician Olivier Dassault killed in helicopter crash", date=new Date("2021-03-07T18:32:06.000Z"), source="Reuters", author="Reuters Staff", url="https://www.reuters.com/article/uk-people-dassault-idUKKBN2AZ0MB" },
+C:   { id="4258381467706463356"^^com.smartnews:article, title="If These Apps Are Still on Your Phone, Someone May Be Spying on You", date=new Date("2021-03-04T21:00:07.000Z"), source="Reader's Digest", author="Leah Campbell", url="https://www.rd.com/list/phone-apps-spying-on-you/" },
+C:   { id="4258999974420808064"^^com.smartnews:article, title="How Much Were Meghan And Harry Paid For Their Oprah Interview?", date=new Date("2021-03-06T14:21:42.000Z"), source="Nicki Swift", author="Effie Orfanides", url="https://www.nickiswift.com/349250/how-much-were-meghan-and-harry-paid-for-their-oprah-interview/?zsource=smartnews" },
+C:   { id="4258780678323185263"^^com.smartnews:article, title="First Pics from Nicolas Cage's 5th Marriage, to 26-Year-Old in Las Vegas", date=new Date("2021-03-05T23:53:58.000Z"), source="TMZ", url="https://www.tmz.com/2021/03/05/nicolas-cage-married-fifth-time-wedding-las-vegas/" },
+C:   { id="4259053279473830032"^^com.smartnews:article, title="This Is Where You've Seen The New Jake From State Farm Before", date=new Date("2021-03-06T17:52:25.000Z"), source="The List", author="Lindsay Cronin", url="https://www.thelist.com/349353/this-is-where-youve-seen-the-new-jake-from-state-farm-before/?zsource=smartnews" },
+C:   { id="4259469581875158747"^^com.smartnews:article, title="USS Nimitz completes a 99,000-mile journey likely not done since WWII", date=new Date("2021-03-07T21:26:28.000Z"), source="USA TODAY", author="Josh Farley, Kitsap Sun", url="https://www.usatoday.com/story/news/nation/2021/03/07/uss-nimitz-returns-to-us-bremerton-washington-99000-miles/4620329001/" },
+C:   { id="4259336735651012786"^^com.smartnews:article, title="Don't Do This the Night Before Your Vaccine Appointment, Experts Say", date=new Date("2021-03-07T12:29:16.000Z"), source="Best Life", author="Lauren Gray", url="https://bestlifeonline.com/news-vaccine-alcohol/" },
+C:   { id="4259435828356327666"^^com.smartnews:article, title="Sharon Stone stuns in black bustier ahead of her 63rd birthday: 'Va va voom'", date=new Date("2021-03-07T19:16:14.000Z"), source="Yahoo Lifestyle", author="Megan Johnson", url="https://www.yahoo.com/lifestyle/sharon-stone-stuns-dolce-gabbana-bustier-age-62-191614263.html" },
+C:   { id="4258719275369368285"^^com.smartnews:article, title="Katy Perry and Orlando Bloom vacation in Hawaii with baby Daisy Dove", date=new Date("2021-03-05T19:16:05.000Z"), source="Page Six", author="Eileen Reslen", url="https://pagesix.com/2021/03/05/katy-perry-and-orlando-bloom-vacation-with-daisy-dove/" }
+C: ]]
+C: #[count=34];
+A: The latest news is A billionaire partied through Covid-19. His workers died. It is a new articles from BuzzFeed News published on 3/7/2021, 4:30:31 PM.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: tell me more
+UT: $dialogue @org.thingpedia.dialogue.transaction.learn_more;
+====
+# log-dev/7635
+U: give me the latest news from the hill
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(date desc of @com.smartnews.article() filter source =~ "hill")[1];
+====
+# log-dev/7634
+U: give me the latest news from the new york times
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(date desc of @com.smartnews.article() filter source =~ "new york times")[1];
+====
+# log-dev/7619
+U: get the news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# recording/7104b531b300b5fd54265979a92a0fae
+U: 10 latest news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(date desc of @com.smartnews.article())[1 : 10];
+====
+# log/158290
+U: what are the top news stories?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# manual/4
+U: get news about coronavirus
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="coronavirus");
+====
+# manual/5
+U: get news from yesterday
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter date >= $start_of(day) - 1day && date <= $start_of(day);
+====
+# manual/6
+U: get news in the last 3 hours
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter date >= $now - 3h && date <= $now;
+====
+# manual/7
+U: get news from the guardian
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter source =~ "guardian";
+====
+# recording/204ad84fc61241eba6cdb64582a72c60
+U: what is in the news today?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# recording/a8bda39b52777501334b399c85b69962
+U: where can I get the news from?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log-dev/8637
+U: tell me covid news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="covid");
+====
+# log-dev/6979
+U: another news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log-dev/199
+U: show me news about trump
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="trump");
+====
+# recording/f1784ac77befceceb99cc2c6068a7648
+U: let me know whenever there is news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(id of @com.smartnews.article());
+====
+# log-dev/13033
+U: smart news.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log-dev/12367
+U: tell me news about vaccines.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="vaccines");
+====
+# log-dev/12049
+U: no. you could ask about news.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log-dev/11921
+U: play the news.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log-dev/11884
+U: get the news.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log-dev/11871
+U: read me the news.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# manual/0
+U: show me news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# manual/2
+U: breaking stories
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# manual/3
+U: breaking stories
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# manual/4
+U: A roundup of the latest news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(date desc of @com.smartnews.article())[1];
+====
+# manual/5
+U: news on anti-corruption
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="anti-corruption");
+====
+# manual/6
+U: news on air pollution
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="air pollution");
+====
+# manual/7
+U: baseball news from espn
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "baseball"^^com.smartnews:category("baseball")) && source =~ "espn";
+====
+# manual/8
+U: national top headlines
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "national"^^com.smartnews:category("national"));
+====
+# manual/9
+U: give me 5 top news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article()[1 : 5];
+====
+# manual/10
+U: read out 3 news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article()[1 : 3];
+====
+# manual/11
+U: some news on real-estate
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="real-estate");
+====
+# manual/12
+U: any news on finance
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "finance"^^com.smartnews:category("finance"));
+====
+# manual/13
+U: give me 1 news released on October 10
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: (@com.smartnews.article() filter date == new Date("2021-10-10T07:00:00.000Z"))[1];
+====
+# manual/14
+U: 3 most recent news on weather
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(date desc of @com.smartnews.article(keyword="weather"))[1:3];
+====
+# manual/15
+U: tell me news about celebrity
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="celebrity");
+====
+# manual/16
+U: consumer electronics news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "consumer electronics"^^com.smartnews:category("consumer electronics"));
+====
+# manual/17
+U: news feeds
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# manual/18
+U: business headlines
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "business"^^com.smartnews:category("business"));
+====
+# manual/19
+U: read tennis news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "tennis"^^com.smartnews:category("tennis"));
+====
+# manual/20
+U: updates on boxing news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "boxing"^^com.smartnews:category("boxing"));
+====
+# manual/21
+U: what is happening in eastasia
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "eastasia"^^com.smartnews:category("eastasia"));
+====
+# manual/22
+U: football news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "football"^^com.smartnews:category("football"));
+====
+# manual/23
+U: what's new in mexico
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "mexico"^^com.smartnews:category("mexico"));
+====
+# manual/24
+U: world news please
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "world"^^com.smartnews:category("world"));
+====
+# manual/25
+U: give me some news on the election
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="election");
+====
+# manual/26
+U: npr news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter source =~ "npr";
+====
+# manual/27
+U: read news from musicradar
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter source =~ "musicradar";
+====
+# manual/28
+U: news related to android
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="android");
+====
+# manual/29
+U: give me news containing google pixel
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="google pixel");
+====
+# manual/30
+U: top technology news on october 10
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "technology"^^com.smartnews:category("technology")) && date == new Date("2021-10-10T07:00:00.000Z");
+====
+# manual/31
+U: news on mother's day
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="mother's day");
+====
+# manual/32
+U: news on halloween
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="halloween");
+====
+# manual/33
+U: news on fake news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="fake news");
+====
+# manual/34
+U: news on the topic of crime
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "crime"^^com.smartnews:category("crime"));
+====
+# manual/35
+U: news in education
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "education"^^com.smartnews:category("education"));
+====
+# manual/36
+U: latest news on cars
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(date desc of @com.smartnews.article(keyword="cars"))[1];
+====
+# manual/37
+U: news on horseracing
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="horseracing");
+====
+# manual/38
+U: news on football
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="football");
+====
+# manual/39
+U: latest news on etfs
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(date desc of @com.smartnews.article(keyword="etfs"))[1];
+====
+# manual/40
+U: finance news from bloomberg
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "finance"^^com.smartnews:category("finance")) && source =~ "bloomberg";
+====
+# manual/41
+U: latest breaking news on election
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(date desc of @com.smartnews.article() filter contains(category, "election"^^com.smartnews:category("election")))[1];
+====
+# manual/42
+U: latest news on the facebook outage from reuters
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(date desc of @com.smartnews.article(keyword="facebook outage") filter source =~ "reuters")[1];
+====
+# manual/43
+U: latest news on google announcement
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(date desc of @com.smartnews.article(keyword="google announcement"))[1];
+====
+# manual/44
+U: show me yesterday's news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter date <= $start_of(day) && date >= $start_of(day) - 1day;
+====
+# manual/45
+U: latest news on iphone
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(date desc of @com.smartnews.article(keyword="iphone"))[1];
+====
+# manual/46
+U: technology news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "technology"^^com.smartnews:category("technology"));
+====
+# manual/47
+U: news related to netflix
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="netflix");
+====
+# manual/48
+U: news in bitcoin
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="bitcoin");
+====
+# manual/49
+U: news containing cryptocurrency
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="cryptocurrency");
+====
+# manual/50
+U: news about star wars
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="star wars");
+====
+# manual/51
+U: news about the academy award
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="academy award");
+====
+# manual/52
+U: latest news about the grammys
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(date desc of @com.smartnews.article(keyword="grammys"))[1];
+====
+# manual/53
+U: some news about grammys nominations
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="grammys nominations");
+====
+# manual/54
+U: top news on the cannes festival
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="cannes festival");
+====
+# manual/55
+U: recent news about the mtv award
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="mtv award");
+====
+# manual/56
+U: smart news about investment
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="investment");
+====
+# manual/57
+U: national news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "national"^^com.smartnews:category("national"));
+====
+# manual/58
+U: news in the space category
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "space"^^com.smartnews:category("space"));
+====
+# manual/59
+U: news of the health category
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "health"^^com.smartnews:category("health"));
+====
+# manual/60
+U: soccer news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "soccer"^^com.smartnews:category("soccer"));
+====
+# manual/61
+U: australia news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "australia"^^com.smartnews:category("australia"));
+====
+# manual/62
+U: south america news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "south america"^^com.smartnews:category("south america"));
+====
+# manual/63
+U: travel news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "travel"^^com.smartnews:category("travel"));
+====
+# manual/64
+U: whitehouse news from the washington post
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "whitehouse"^^com.smartnews:category("whitehouse")) && source =~ "washington post";
+====
+# manual/65
+U: news from people
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter source =~ "people";
+====
+# manual/66
+U: recent news published by new york post
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter source =~ "new york post";
+====
+# manual/67
+U: news released by new york daily news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter source =~ "new york daily news";
+====
+# manual/68
+U: news from nfl draft bible
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter source =~ "nfl draft bible";
+====
+# manual/69
+U: football news published by dodge city daily globe
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "football"^^com.smartnews:category("football")) && source =~ "dodge city daily globe";
+====
+# manual/70
+U: alright, give me some news from digital trends
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter source =~ "digital trends";
+====
+# manual/71
+U: news from the last 2 days
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter date <= $now && date >= $now - 2day;
+====
+# manual/72
+U: today's news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter date >= $start_of(day);
+====
+# manual/73
+U: what's happening in the middle east
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, "middle east"^^com.smartnews:category("middle east"));
+====
+# manual/74
+U: what's new today
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# recording/8f973e12f34fba55ca028e4a9ad881d5
+U: Tell me the news.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# recording/0b48631bebd0c42a21ff7d370f5c07d1
+U: tell me the news.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# recording/0aae7d0f67c1385c73e3f6a47dd7cf0d
+U: play the news from KQED.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter source =~ "kqed";
+====
+# recording/b4dc8bd20d08338cc0f3aaff9d46ef96
+U: tell me the news.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.smartnews.article()
+C: #[results=[
+C:   { id="4346322844225900000"^^com.smartnews:article, title="COVID-19 still rages, but some U.S. states reject federal funds to help", author="Andy Sullivan", source="Reuters", summary=" Idaho health officials say they don't have enough tests to track the disease's spread . The state's Republican-led legislature voted down $40 million in federal aid available for COVID-19 testing in schools . Another $1.8 billion in pandemic-related federal assistance is sitting idle in the state treasury .", link="https://www.reuters.com/world/us/covid-19-still-rages-some-us-states-reject-federal-funds-help-2021-11-02/"^^tt:url, category=["national"^^com.smartnews:category("national")], date=new Date("2021-11-02T13:20:01.000Z"), mention=["idaho", "united states", "reuters", "washington state", "nampa idaho"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/headline_4346322844225899885.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/summary_4346322844225899885.mp3"^^tt:url },
+C:   { id="4346297019824876500"^^com.smartnews:article, title="Headlining U.S. elections, Virginia governor’s race is a dead heat", author="Jason Lange", source="Reuters", summary=" Democrat Terry McAuliffe has seen his lead over Republican businessman Glenn Youngkin in opinion polls evaporate . A McAuliffe loss in Virginia, which President Joe Biden won by a double-digit margin over former President Donald Trump last year, would sound alarm bells for national Democrats . Cultural issues have dominated the gubernatorial race, with Youngkin promising to give parents more control over how public schools handle race, gender and COVID-19 protocols .", link="https://www.reuters.com/world/us/too-close-to-call-virginia-governors-race-headlines-us-elections-2021-11-02/"^^tt:url, category=["national"^^com.smartnews:category("national")], date=new Date("2021-11-02T10:10:50.000Z"), mention=["virginia", "terry mcauliffe", "reuters", "glenn youngkin", "joe biden"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/headline_4346297019824876637.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/summary_4346297019824876637.mp3"^^tt:url },
+C:   { id="4346271737340503600"^^com.smartnews:article, title="‘We all bear a burden’: How gun violence costs America $280 billion a year", source="ABC News", summary=" \"Rethinking Gun Violence\" looks at the level of gun violence in the U.S. Advocates estimate gun violence costs America almost $300 billion a year .", link="https://abcnews.go.com/US/bear-burden-gun-violence-costs-america-280-billion/story?id=80245349"^^tt:url, category=["national"^^com.smartnews:category("national")], date=new Date("2021-11-02T10:02:23.000Z"), mention=["abc news", "united states"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/headline_4346271737340503781.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/summary_4346271737340503781.mp3"^^tt:url },
+C:   { id="4346239411327872000"^^com.smartnews:article, title="Backlash over US police vaccine mandates has not fueled crime surge, experts say", source="The Guardian", summary=" The Seattle police department has been short staffed since October . The city began enforcing a mandate requiring officers to get vaccinated against Covid-19 .", link="https://www.theguardian.com/us-news/2021/nov/02/police-vaccine-mandate-protest"^^tt:url, category=["national"^^com.smartnews:category("national")], date=new Date("2021-11-02T08:00:02.000Z"), mention=["seattle", "united states", "covid 19"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/headline_4346239411327872162.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/summary_4346239411327872162.mp3"^^tt:url },
+C:   { id="4346143368003193000"^^com.smartnews:article, title="SFPD could be short 533 officers amid staffing strains from vaccine mandate", source="ABC7 Bay Area", summary=" 836 employees reported to be unvaccinated, which is 2.8 percent of the city's entire workforce . That group includes city workers, police officers, fire department staff, sheriff's deputies, and SFMTA personnel . 100 transit operators were unable to work due to being non-compliant with the mandate .", link="https://abc7news.com/san-francisco-vaccine-mandate-sfpd-sf-city-workers-on-leave/11188916/"^^tt:url, category=["national"^^com.smartnews:category("national")], date=new Date("2021-11-02T01:40:57.000Z"), mention=["san francisco", "san francisco police department", "california", "san francisco municipal transportation agency", "covid 19"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/headline_4346143368003192936.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/summary_4346143368003192936.mp3"^^tt:url }
+C: ]];
+A: Here is the news.
+A: COVID-19 still rages, but some U.S. states reject federal funds to help.
+A: Headlining U.S. elections, Virginia governor’s race is a dead heat.
+A: ‘We all bear a burden’: How gun violence costs America $280 billion a year.
+A: Backlash over US police vaccine mandates has not fueled crime surge, experts say.
+A: SFPD could be short 533 officers amid staffing strains from vaccine mandate.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_many;
+U: What's the news in San Francisco?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="san francisco");
+====
+# recording/189554a62aef3754ea74b68acbfbe6e8
+U: sports news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article() filter contains(category, null^^com.smartnews:category("sports"));
+====
+# recording/2219da4eb679a5bebaa8be4b0f5a0f49
+U: what's the news in San Francisco?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="san francisco");
+====
+# recording/73c9918bb07a3717f56812402703c566
+U: what's the latest music news?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(date desc of @com.smartnews.article() filter contains(category, null^^com.smartnews:category("music")))[1];
+====
+# recording/6978e0f339079c58abebe12f69ed2eca
+U: Get the news about San Francisco.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="san francisco");
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.smartnews.article(keyword="san francisco")
+C: #[results=[
+C:   { id="4346366314462315500"^^com.smartnews:article, title="Source: Texans Trading Charles Omenihu to 49ers; 5 More Names Being Shopped, Per Rumor - NFL Tracker", author="Texans Daily Staff", source="Texans Daily", summary=" The Houston Texans have agreed to trade defensive end Charles Omenihu to the San Francisco 49ers . Omenihu is a former fifth-round draft pick from the University of Texas . The Texans will receive a future late-round draft pick .", link="https://www.si.com/nfl/texans/news/houston-texans-deadline-names-espn-rumor-deshaun-watson-source-houston-texans-trade-charles-omenihu-49ers-news"^^tt:url, category=["sports"^^com.smartnews:category("sports"), "football"^^com.smartnews:category("football")], date=new Date("2021-11-02T16:16:08.000Z"), mention=["houston texans", "defensive end", "charles omenihu", "san francisco 49ers"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/headline_4346366314462315296.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/summary_4346366314462315296.mp3"^^tt:url, keyword="san francisco" },
+C:   { id="4346280472377042000"^^com.smartnews:article, title="Robots Hit the Streets as Demand for Food Delivery Grows", author="Asharq Al-Awsat", source="Asharq Al-Awsat", summary=" Hundreds of little robots are now delivering food on college campuses and city sidewalks . Pandemic-related labor shortages and a growing preference for contactless delivery have accelerated their deployment . Starship Technologies has more than 1,000 robots in its fleet, up from just 250 in 2019 .", link="https://english.aawsat.com/home/article/3280766/robots-hit-streets-demand-food-delivery-grows"^^tt:url, category=["roboticai"^^com.smartnews:category("roboticai"), "technology"^^com.smartnews:category("technology")], date=new Date("2021-11-02T10:38:46.000Z"), mention=["starship technologies", "alastair westgarth", "united kingdom", "united states"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/headline_4346280472377041776.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/summary_4346280472377041776.mp3"^^tt:url, keyword="san francisco" },
+C:   { id="4346273378131258000"^^com.smartnews:article, title="Chiefs, Browns among the NFL’s biggest disappointments of 2021", author="Mike Jones, USA TODAY", source="USA TODAY", summary=" The NFL billed this 2021 campaign as the 'Biggest Season Ever' given the expansion from 16 to 17 regular-season games . But 'The Wackiest Season Ever' could have served as an equally fitting slogan . The AFC and NFC remain very much open, as no team has managed to take commanding lead on the field . Several teams and players who entered the year with great expectations have struggled during the same period .", link="https://www.usatoday.com/story/sports/nfl/columnist/mike-jones/2021/11/02/nfl-biggest-disappointments-browns-chiefs-dolphins/6237882001/"^^tt:url, category=["sports"^^com.smartnews:category("sports"), "football"^^com.smartnews:category("football")], date=new Date("2021-11-02T10:13:59.000Z"), mention=["cleveland browns", "slogan", "kansas city chiefs", "national football league", "american football conference"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/headline_4346273378131257705.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/summary_4346273378131257705.mp3"^^tt:url, keyword="san francisco" },
+C:   { id="4346212373544045000"^^com.smartnews:article, title="Kansas City Chiefs salvage win over Giants, but Patrick Mahomes continues to puzzle", author="Vahe Gregorian", source="The Kansas City Star", summary=" Twenty-one months ago, the Chiefs won their first Super Bowl in half a century . The prevailing mindset was that it was a nice start . Then again, suddenly anything seemed possible with a young nucleus .", link="https://www.kansascity.com/sports/spt-columns-blogs/vahe-gregorian/article255462261.html"^^tt:url, category=["sports"^^com.smartnews:category("sports"), "football"^^com.smartnews:category("football")], date=new Date("2021-11-02T06:14:30.000Z"), mention=["super bowl", "patrick mahomes", "kansas city chiefs", "new york giants", "super bowl lv"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/headline_4346212373544045198.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/summary_4346212373544045198.mp3"^^tt:url, keyword="san francisco" },
+C:   { id="4346189694057321000"^^com.smartnews:article, title="Giants fans donated money to Alzheimer’s research every time Mike Yastrzemski hit a home run", source="ABC7 Bay Area", summary=" A Giants fan wanted to raise money for his friend battling Alzheimer's . Terry Raymond offered to donate $100 for every home run Mike Yastrzemski hit this season . That donation would soon be matched by Pam's husband Bob .", link="https://abc7news.com/mike-yastrzemski-san-francisco-giants-sf-home-runs/11189035/"^^tt:url, category=["sports"^^com.smartnews:category("sports"), "baseball"^^com.smartnews:category("baseball")], date=new Date("2021-11-02T04:44:14.000Z"), mention=["mike yastrzemski", "pam montana", "san francisco giants", "bob linscheid"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/headline_4346189694057320965.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/summary_4346189694057320965.mp3"^^tt:url, keyword="san francisco" },
+C:   { id="4346143368003193000"^^com.smartnews:article, title="SFPD could be short 533 officers amid staffing strains from vaccine mandate", source="ABC7 Bay Area", summary=" 836 employees reported to be unvaccinated, which is 2.8 percent of the city's entire workforce . That group includes city workers, police officers, fire department staff, sheriff's deputies, and SFMTA personnel . 100 transit operators were unable to work due to being non-compliant with the mandate .", link="https://abc7news.com/san-francisco-vaccine-mandate-sfpd-sf-city-workers-on-leave/11188916/"^^tt:url, category=["national"^^com.smartnews:category("national")], date=new Date("2021-11-02T01:40:57.000Z"), mention=["san francisco police department", "san francisco municipal transportation agency", "covid 19"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/headline_4346143368003192936.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/summary_4346143368003192936.mp3"^^tt:url, keyword="san francisco" },
+C:   { id="4346046790739435500"^^com.smartnews:article, title="Marin County lifts indoor mask mandate for businesses", source="ABC7 Bay Area", summary=" Marin County is lifting its mask mandate for most public places. Masks will no longer be required indoors at spaces such as restaurants, bars and retail establishments. Health officials say the number of COVID cases is low enough that the rate of spread is now considered in the moderate category.", link="https://abc7news.com/marin-county-indoor-face-masks-mask-mandates-bay-area-north-restrictions-coronavirus/11188255/"^^tt:url, category=["health"^^com.smartnews:category("health")], date=new Date("2021-11-01T19:18:13.000Z"), mention=["san francisco bay area", "marin county california", "covid 19", "intensive care unit"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/headline_4346046790739435457.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/summary_4346046790739435457.mp3"^^tt:url, keyword="san francisco" },
+C:   { id="4346066083766081500"^^com.smartnews:article, title="Elon Musk warns Austin, Texas not to become a ‘San Francisco copycat’", source="Daily Mail", summary=" The world's richest man tweeted in response to an article about Austin police budget cuts . The report was about a proposal in Austin to expand the city's police department amid the city's record homicides in 2021 . 'Proposition A' would require there to be at least two Austin police officers for every 1,000 residents .", link="https://www.dailymail.co.uk/news/article-10152663/Elon-Musk-warns-Austin-Texas-not-San-Francisco-copycat.html"^^tt:url, category=["business"^^com.smartnews:category("business"), "personalities"^^com.smartnews:category("personalities")], date=new Date("2021-11-01T16:51:36.000Z"), mention=["elon musk", "black lives matter"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/headline_4346066083766081745.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/summary_4346066083766081745.mp3"^^tt:url, keyword="san francisco" },
+C:   { id="4345977591446907000"^^com.smartnews:article, title="Elon Musk Makes One Request for New Texas Hometown", author="Jennifer Shea", source="Outsider", summary=" Elon Musk is moving Tesla’s headquarters from the Bay Area to Austin, Texas . The move comes after a fight with local officials over the reopening of Tesla’s factory . Musk tweeted that Austin should be its own city, not a San Francisco copycat .", link="https://outsider.com/news/trending/elon-musk-makes-one-request-new-texas-hometown/"^^tt:url, category=["business"^^com.smartnews:category("business"), "personalities"^^com.smartnews:category("personalities")], date=new Date("2021-11-01T14:27:16.000Z"), mention=["elon musk", "austin texas"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/headline_4345977591446906978.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/summary_4345977591446906978.mp3"^^tt:url, keyword="san francisco" },
+C:   { id="4345916169052492000"^^com.smartnews:article, title="Opinion: Astros ‘keep fighting,’ delay Atlanta’s party plans with decisive Game 5 win", author="Bob Nightengale, USA TODAY", source="USA TODAY", summary=" The Houston Astros beat the Atlanta Braves 9-5 on Sunday night to force the World Series back to Houston . The Astros will host Game 6 on Tuesday night at Minute Maid Park .", link="https://www.usatoday.com/story/sports/mlb/columnist/bob-nightengale/2021/11/01/world-series-astros-win-delay-atlantas-party/6230366001/"^^tt:url, category=["baseball"^^com.smartnews:category("baseball"), "sports"^^com.smartnews:category("sports")], date=new Date("2021-11-01T10:37:53.000Z"), mention=["world series", "houston astros", "minute maid park"], headline_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/headline_4345916169052491894.mp3"^^tt:url, summary_audio_url="https://oval-project.s3-ap-northeast-1.amazonaws.com/data/211102/voice/summary_4345916169052491894.mp3"^^tt:url, keyword="san francisco" }
+C: ]]
+C: #[count=19];
+A: Here is the news.
+A: Source: Texans Trading Charles Omenihu to 49ers; 5 More Names Being Shopped, Per Rumor - NFL Tracker.
+A: Robots Hit the Streets as Demand for Food Delivery Grows.
+A: Chiefs, Browns among the NFL’s biggest disappointments of 2021.
+A: Kansas City Chiefs salvage win over Giants, but Patrick Mahomes continues to puzzle.
+A: Giants fans donated money to Alzheimer’s research every time Mike Yastrzemski hit a home run.
+A: SFPD could be short 533 officers amid staffing strains from vaccine mandate.
+A: Marin County lifts indoor mask mandate for businesses.
+A: Elon Musk warns Austin, Texas not to become a ‘San Francisco copycat’.
+A: Elon Musk Makes One Request for New Texas Hometown.
+A: Opinion: Astros ‘keep fighting,’ delay Atlanta’s party plans with decisive Game 5 win.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_many;
+U: On Saturday morning, tell me the news about San Francisco.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @com.smartnews.article(keyword="san francisco");
+====
+# recording/b4937ca1c9a8df1efe7f1f25c5f6ed7d
+U: what's the news?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# recording/0936754b2811e14d2b5014212dc4bef5
+U: on Saturday morning tell me the news about San Francisco.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: ontimer(date=[new Date(enum saturday)]) => @com.smartnews.article(keyword="san francisco");
+====
+# recording/e4dc5240f72961d5247c1e0d504796e6
+U: what's the news?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# recording/80d4a279a044e18ac89b997886a9fceb
+U: what's the news?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log/185170
+U: read the latest news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(date desc of @com.smartnews.article())[1];
+====
+# log/185151
+U: breaking news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article();
+====
+# log/184888
+U: monitor the news
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: monitor(@com.smartnews.article());
+====
+# log/184122
+U: how is covid 19 today
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.smartnews.article(keyword="covid 19");

@@ -1,0 +1,144 @@
+abstract class @org.thingpedia.media-player
+#_[thingpedia_name="Music Player"]
+#_[thingpedia_description="General interface for music players."]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="home"]
+
+{
+    entity device #_[description="Output device ID"];
+
+    action player_play()
+    #_[canonical=["resume the music",
+                  "start playing music again",
+                  "resume music playback",
+                  "continue playing music"]]
+    #_[on_error={
+      no_active_device=["you must open the spotify app first", "no spotify player is active"],
+      disallowed_action=["music is already playing"],
+      player_error=["failed to play: try manually resuming"],
+      non_premium_account=["you need a spotify premium account to do this"],
+      rate_limit_error=["spotify is temporarily unavailable"]
+    }]
+    #[doc="resume playback"]
+    #[confirm=false];
+
+    action player_pause()
+    #_[canonical=["stop the music",
+                  "pause my spotify",
+                  "pause the music"]]
+    #_[on_error={
+      no_active_device=["you must open the spotify app first", "no spotify player is active"],
+      disallowed_action=["music is already paused"],
+      non_premium_account=["you need a spotify premium account to do this"],
+      rate_limit_error=["spotify is temporarily unavailable"]
+    }]
+    #[doc="pause playback"]
+    #[confirm=false];
+
+    action player_next()
+    #_[canonical=["play the next song",
+                  "go to the next song",
+                  "skip this song",
+                  "next song",
+                  "next track",
+                  "listen to the next song",
+                  "play the next episode",
+                  "skip this episode"]]
+    #_[confirmation="go to the next song"]
+    #_[on_error={no_active_device=["you must open the spotify app first", "no spotify player is active"],
+    disallowed_action=["there's no next song"],
+    non_premium_account=["you need a spotify premium account to do this"],
+    rate_limit_error=["spotify is temporarily unavailable"]
+    }]
+    #[doc="go to the next song"]
+    #[confirm=false];
+
+    action player_previous()
+    #_[canonical=["play the previous song",
+                  "go back",
+                  "play the last song",
+                  "go back to the last song",
+                  "go to the previous song",
+                  "listen to the previous song",
+                  "previous song",
+                  "previous track",
+                  "go back a song",
+                  "play the previous episode",
+                  "go back an episode"]]
+    #_[confirmation="go to the previous song"]
+    #_[on_error={no_active_device=["you must open the spotify app first", "no spotify player is active"],
+    disallowed_action=["there's no previous song"],
+    non_premium_account=["you need a spotify premium account to do this"],
+    rate_limit_error=["spotify is temporarily unavailable"]
+    }]
+    #[doc="go to the previous song"]
+    #[confirm=false];
+
+    action player_shuffle(in req shuffle: Enum(on,off)
+                          #_[prompt="should we set the shuffle state to on or off"]
+                          #_[canonical={
+                            base=["shuffle"],
+                            preposition=["to"]
+                          }])
+    #_[canonical="set the shuffle state"]
+    #_[confirmation="set the shuffle state"]
+    #_[confirmation_remote="set the shuffle state"]
+    #_[on_error={no_active_device=["you must open the spotify app first", "no spotify player is active"],
+    disallowed_action=["failed to change shuffle state: try playing from the spotify app"],
+    non_premium_account=["you need a spotify premium account to do this"],
+    rate_limit_error=["spotify is temporarily unavailable"]
+    }]
+    #[doc="set the shuffle state"]
+    #[confirm=false];
+
+    action player_repeat(in req repeat: Enum(track,context,off)
+                         #_[prompt="should we set the repeat state to track, context, or off"]
+                         #_[canonical={
+                           base=["repeat"],
+                           preposition=["to"]
+                         }])
+    #_[canonical="set the repeat state"]
+    #_[confirmation="set the repeat state"]
+    #_[confirmation_remote="set the repeat state"]
+    #_[on_error={no_active_device=["you must open the spotify app first", "no spotify player is active"],
+    disallowed_action=["failed to change repeat state: try playing from the spotify app"],
+    non_premium_account=["you need a spotify premium account to do this"],
+    rate_limit_error=["spotify is temporarily unavailable"]
+    }]
+    #[doc="set the repeat state"]
+    #[confirm=false];
+
+    action play (in req playable: Entity(org.thingpedia.media-source:playable)
+                #[string_values="tt:song_name"]
+                #_[prompt=["what song do you want to play"]]
+                #_[canonical={
+                  default="base",
+                  base=["name"],
+                  // FIXME: actions must use "preposition" not "passive_verb"
+                  preposition=["named #", "called #", "titled #"],
+                  property=["name #", "title #"]
+                }],
+                out device : Entity(org.thingpedia.media-player:device)
+                #_[canonical={
+                  default="preposition",
+                  base=["device", "player", "app"], // "can you tell me the app"?
+                  preposition=["on"]
+                }])
+  #_[canonical=["play music",
+                // i would like to...
+                "listen to music"]]
+  #_[confirmation="play the song $song"]
+  #_[on_error={
+    no_active_device=["you must open the spotify app first", "no spotify player is active"],
+    disallowed_action=["failed to play: you must first click play from inside the spotify app , and then i will play songs for you"],
+    player_error=["failed to play: you must first click play from inside the spotify app , and then i will play songs for you"],
+    dailymix_error=["spotify doesn't support daily mix playlists at this time"],
+    non_premium_account=["you need a spotify premium account to play music"],
+    rate_limit_error=["spotify is temporarily unavailable"]
+  }]
+  #[confirm=enum(auto)];
+
+
+}
+

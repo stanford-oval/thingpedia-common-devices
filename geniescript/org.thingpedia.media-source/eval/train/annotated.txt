@@ -1,0 +1,156 @@
+====
+# recording/6e899dcf23f97a84a6d4c78f7b4e4363
+U: find me a playlist
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playlist();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playlist()
+C: #[results=[
+C:   { id="spotify:playlist:4e36iSHdNaSDaIfOKmCvXd"^^org.thingpedia.media-source:playlist("2021 HITS VIRAL ? ( Best Hits 2021 & Top Global 2021 Hits) ?"), __device="XXXXXXXX"^^tt:device_id },
+C:   { id="spotify:playlist:37i9dQZF1DWZjqjZMudx9T"^^org.thingpedia.media-source:playlist("MANSIÓN REGGAETÓN"), __device="XXXXXXXX"^^tt:device_id },
+C:   { id="spotify:playlist:6Tyhahqm1EJ2IHOytwMYDq"^^org.thingpedia.media-source:playlist("2021 summer camp songs clean/appropriate "), __device="XXXXXXXX"^^tt:device_id },
+C:   { id="spotify:playlist:37i9dQZF1DX0FOF1IUWK1W"^^org.thingpedia.media-source:playlist("Top Brasil"), __device="XXXXXXXX"^^tt:device_id },
+C:   { id="spotify:playlist:2bVT90Ef2VV4tRypIQGMaX"^^org.thingpedia.media-source:playlist("2021 Rap & Hiphop "), __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: Did you mean Get playlist?
+A: I see 2021 HITS VIRAL ? ( Best Hits 2021 & Top Global 2021 Hits) ?, MANSIÓN REGGAETÓN, and 2021 summer camp songs clean/appropriate .
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_three;
+U: another one
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playlist();
+====
+# recording/66a6c8c670d228e7e23fd96e2f0a1f17
+U: when was clocks by coldplay released
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [release_date] of @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("coldplay")) && id =~ "clocks";
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: [release_date] of @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).playable() filter contains(artists, "spotify:artist:4gzpq5DPGxSnKTe4SA8HAU"^^org.thingpedia.media-source:artist("Coldplay")) && id =~ "clocks"
+C: #[results=[
+C:   { id="spotify:track:0BCPKOYdS2jbQ8iyB56Zns"^^org.thingpedia.media-source:playable("Clocks"), release_date=new Date("2002-08-08T00:00:00.000Z") },
+C:   { id="spotify:track:4cHZ7W5R81upaIGZfqWxbB"^^org.thingpedia.media-source:playable("Clocks - Live in Buenos Aires"), release_date=new Date("2018-12-07T00:00:00.000Z") },
+C:   { id="spotify:track:7LIQNY8P7ZGxilKVX88MF1"^^org.thingpedia.media-source:playable("Clocks - Live"), release_date=new Date("2012-11-19T00:00:00.000Z") }
+C: ]];
+A: Did you mean get the date of music by coldplay and has name clocks?
+A: Clocks is a music released in August 7, 2002.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: cancel
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# recording/0487b23449a941d5b3ec3d7d0ac36c08
+U: what's the latest album by taylor swift
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(release_date desc of @org.thingpedia.media-source.album() filter contains(artists, null^^org.thingpedia.media-source:artist("taylor swift")))[1];
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: sort(release_date desc of @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).album() filter contains(artists, "spotify:artist:06HL4z0CvFAxyc27GXpf02"^^org.thingpedia.media-source:artist("Taylor Swift")))[1]
+C: #[results=[
+C:   { id="spotify:album:4hDok0OAJd57SGIT8xuWJH"^^org.thingpedia.media-source:album("Fearless (Taylor's Version)"), artists=["spotify:artist:06HL4z0CvFAxyc27GXpf02"^^org.thingpedia.media-source:artist("Taylor Swift")], release_date=new Date("2021-04-09T00:00:00.000Z"), popularity=80, __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: The most recent album is Fearless (Taylor's Version). It is an album by Taylor Swift.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: cancel
+UT: $dialogue @org.thingpedia.dialogue.transaction.cancel;
+====
+# recording/1483ad5a554bf9aabb5c1f92720c63a8
+U: what is currently playing
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.get_currently_playing();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).get_currently_playing()
+C: #[results=[
+C:   { id="spotify:track:0LThjFY2iTtNdd4wviwVV2"^^org.thingpedia.media-source:song("Permission to Dance"), artists=["spotify:artist:3Nrfpe0tUJi4K4DXYWgMUX"^^org.thingpedia.media-source:artist("BTS")], album="spotify:album:1iLUfFVZF8bltkBkONumgG"^^org.thingpedia.media-source:album("Butter / Permission to Dance"), genres=["k-pop", "k-pop boy group"], release_date=new Date("2021-07-09T00:00:00.000Z"), popularity=95, energy=74.1, danceability=70.19999999999999, __device="XXXXXXXX"^^tt:device_id }
+C: ]];
+A: Currently playing Permission to Dance.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_display_result;
+U: who is the artist
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [artists] of @org.thingpedia.media-source(id="com.spotify-XXXXXXXX"^^tt:device_id).get_currently_playing();
+====
+# recording/e713465b371b8dce19ad2283d5d369bc
+U: what's the latest by charlie xcx
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(release_date desc of @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("charlie xcx")))[1];
+====
+# log-dev/12293
+U: what's playing?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.get_currently_playing();
+====
+# log-dev/12291
+U: what's playing
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.get_currently_playing();
+====
+# log-dev/12289
+U: who is the artist of the currently playing track?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [artists] of @org.thingpedia.media-source.get_currently_playing();
+====
+# recording/8e62c473a821e7b3a926e35e44c8e517
+U: find me a playlist
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playlist();
+====
+# recording/7d8b83c4350cd297dca6843338eafd64
+U: Find me, shake it off by Taylor Swift.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter contains(artists, null^^org.thingpedia.media-source:artist("taylor swift")) && id =~ "shake it off";
+====
+# recording/75c0f6c6cbf56b995450972f4fd346fb
+U: what's the most popular podcast?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(popularity desc of @org.thingpedia.media-source.show())[1];
+====
+# recording/8165a1c40fca35f560d70431a7a0884b
+U: find the song, shake it off.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.song() filter id =~ "shake it off";
+====
+# recording/37e2944a16fa32e2b17507fd232e49a8
+U: What are some podcasts about cars?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.show() filter id =~ "cars";
+====
+# log/181778
+U: what is the name of this song
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.get_currently_playing();
+====
+# recording/a2d6d96dceaf4e3c544252763a3a87ef
+U: find me songs by bob marley
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.song() filter contains(artists, null^^org.thingpedia.media-source:artist("bob marley"));
+====
+# recording/5a67b556182c3c4cdc93b4d9bd0f38d5
+U: find me songs by bob marley
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.song() filter contains(artists, null^^org.thingpedia.media-source:artist("bob marley"));
+====
+# recording/d2bc961b633a3c160a27e17c5c8efc27
+U: never gonna give you up
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable() filter id =~ "never gonna give you up";
+====
+# recording/1fd1285fadb9200c8e547128810132e9
+U: find me songs by taylor swift
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.song() filter contains(artists, null^^org.thingpedia.media-source:artist("taylor swift"));
+====
+# recording/3a4b09be8539079d28fe7ad0fe9b4efb
+U: what's taylor swift's latest album
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(release_date desc of @org.thingpedia.media-source.album() filter contains(artists, null^^org.thingpedia.media-source:artist("taylor swift")))[1];
+====
+# recording/50b7bd4cdb2641583e8e90686d7de630
+U: what is the latest album by taylor swift
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(release_date desc of @org.thingpedia.media-source.album() filter contains(artists, null^^org.thingpedia.media-source:artist("taylor swift")))[1];
+====
+# recording/114063f88edc16abd4b226106ba34d51
+U: who is led zeppelin
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.artist() filter id =~ "led zeppelin";
+====
+# log/183829
+U: what music do you know
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @org.thingpedia.media-source.playable();

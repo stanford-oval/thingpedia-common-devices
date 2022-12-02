@@ -1,0 +1,63 @@
+// Copyright 2020-2021 SmartNews Inc.
+//           2021 The Board of Trustees of the Leland Stanford Junior University
+//
+// Redistribution and use in source and binary forms, with or
+// without modification, are permitted provided that the following
+// conditions are met:
+//
+// 1. Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+// 2. Redistributions in binary form must reproduce the above
+//    copyright notice, this list of conditions and the following
+//    disclaimer in the documentation and/or other materials
+//    provided with the distribution.
+// 3. Neither the name of the copyright holder nor the names of its
+//    contributors may be used to endorse or promote products derived
+//    from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+// OF THE POSSIBILITY OF SUCH DAMAGE.
+
+dataset @com.smartnews language "en" {
+    /*  It causes a bug in synthesis. Need to check if that bug was fixed in Genie.
+    query (p_count :Number) := @com.smartnews.article()[1 : p_count]
+    #_[utterances=["${p_count:const} news",
+                   "${p_count:const} top news",
+                   "${p_count:const} headlines",
+                   "${p_count:const} breaking news",
+                   "${p_count:const} important news",
+                   "${p_count:const} global news",
+                   "${p_count:const} hot topic",
+                   "${p_count:const} news articles",
+                   "${p_count:const} news feeds",
+                   "${p_count:const} news sotry",
+                   "${p_count:const} news report",
+                   "${p_count:const} articles",
+                   "${p_count:const} story"
+                   ]]
+    #[name="ArticlesWithCount"];
+    */
+
+    query (p_keyword :String) = @com.smartnews.article(keyword=p_keyword)
+    #_[utterances=["${p_keyword:const} news",
+                   "news related to $p_keyword"]]
+    #[name="NewsWithKeyword"];
+
+    stream  := monitor (id of @com.smartnews.article())
+    #_[utterances=["when they publish something", "when there is news"]]
+    #[name="MonitorNewsId"];
+
+    stream (p_source : String) := monitor (id of @com.smartnews.article(), id =~ p_source)
+    #_[utterances=["when ${p_source} publishes something", "when ${p_source} publishes a new article"]]
+    #[name="MonitorNewsIdWithSource"];
+}

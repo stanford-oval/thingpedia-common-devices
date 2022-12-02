@@ -1,0 +1,17 @@
+====
+# 1-basic
+U: tell me a joke.
+# It's a joke, so anything goes...
+A: .*
+====
+# 2-by-query
+#U: tell me a joke about ice cream.
+U: \t @com.icanhazdadjoke.get(query="ice cream");
+A: .ice cream.*
+====
+# 3-by-query-missing
+#U: tell me a joke about sex.
+U: \t @com.icanhazdadjoke.get(query="sex");
+# The API is very clean, no sex/scat/race jokes
+A: Sorry, I don't have any joke about sex.
+A: >> expecting = null
