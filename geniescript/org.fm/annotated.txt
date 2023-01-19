@@ -1,0 +1,700 @@
+
+#  0
+U: Show me assets made by Paco.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter asset_tag == true && manufacturer == null^^org.fm:manufacturer("paco");
+
+====
+
+#  1
+U: Show me assets made by Trane on the first floor.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter asset_tag == true && manufacturer == null^^org.fm:manufacturer("trane") && floor == null^^org.fm:floor("first floor");
+
+====
+
+#  2
+U: Show me domestic cold water system on the sixth floor.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter contains(bld_system, null^^org.fm:building_system2("domestic cold water")) && floor == null^^org.fm:floor("sixth floor");
+
+====
+
+#  3
+U: Show me domestic cold water system in room 470.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter contains(bld_system, null^^org.fm:building_system2("domestic cold water")) && room_id == null^^org.fm:room_id("470");
+
+====
+
+#  4
+U: Highlight all variable air volume units on the second floor.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter obj_type == null^^org.fm:obj_type1("variable air volume units") && floor == null^^org.fm:floor("second floor");
+
+====
+
+#  5
+U: Highlight all smoke detectors in Patient room 400.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter obj_type == null^^org.fm:obj_type1("smoke detectors") && room_type == null^^org.fm:room_type1("patient") && room_id == null^^org.fm:room_id("400");
+
+====
+
+#  6
+U: I want to see return air system on 6th floor
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter contains(bld_system, null^^org.fm:building_system2("return air")) && floor == null^^org.fm:floor("6th floor");
+
+====
+
+#  7
+U: Show me equipment made by GE.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter manufacturer == null^^org.fm:manufacturer("ge");
+
+====
+
+#  8
+U: Show me equipment made by Eaton on Lv 1.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter manufacturer == null^^org.fm:manufacturer("eaton") && floor == null^^org.fm:floor("lv 1");
+
+====
+
+#  9
+U: Show me all hydronic supply system on Floor 5.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter contains(bld_system, null^^org.fm:building_system2("hydronic supply")) && floor == null^^org.fm:floor("floor 5");
+
+====
+
+#  10
+U: Show me air handling units in room 205.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter obj_type == null^^org.fm:obj_type1("air handling units") && room_id == null^^org.fm:room_id("205");
+
+====
+
+#  11
+U: Highlight all important assets on L1.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter asset_tag == true && floor == null^^org.fm:floor("l1");
+
+====
+
+#  12
+U: Highlight all equipment in Patient room 400.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter room_type == null^^org.fm:room_type1("patient") && room_id == null^^org.fm:room_id("400");
+
+====
+
+#  13
+U: I want to see supply air system on 6th floor
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter contains(bld_system, null^^org.fm:building_system2("supply air")) && floor == null^^org.fm:floor("6th floor");
+
+====
+
+#  14
+U: How many air ducts on the 6th floor?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue ount(@org.fm.building_object1() filter obj_type == null^^org.fm:obj_type1("air ducts") && floor == null^^org.fm:floor("6th floor"));
+
+====
+
+#  15
+U: Find me some objects
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1();
+
+====
+
+#  16
+U: show me the full building
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.forge_model();
+
+====
+
+#  17
+U: find me building object 6171
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter id =~ "6171";
+
+====
+
+#  18
+U: show me the building component 42270
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter id =~ "42270";
+
+====
+
+#  19
+U: Highlight me electrical panel 42270
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter id =~ "42270" && obj_type == null^^org.fm:obj_type1("electrical panel");
+
+====
+
+#  20
+U: show me critical equipment
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter asset_tag == true;
+
+====
+
+#  21
+U: list some assests
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter asset_tag == true;
+
+====
+
+#  22
+U: show me building components on the second floor
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter floor == null^^org.fm:floor("second floor");
+
+====
+
+#  23
+U: find me devices made by trane
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter manufacturer == null^^org.fm:manufacturer("trane");
+
+====
+
+#  24
+U: show me equipment from AMTROL
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter manufacturer == null^^org.fm:manufacturer("amtrol");
+
+====
+
+#  25
+U: find me equipment in ANEST room
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter room_type == null^^org.fm:room_type1("anest");
+
+====
+
+#  26
+U: find me building objects in corridor
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter room_type == null^^org.fm:room_type1("corridor");
+
+====
+
+#  27
+U: Highlight all the pumps
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter obj_type == null^^org.fm:obj_type1("pumps");
+
+====
+
+#  28
+U: search for chiller
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter obj_type == null^^org.fm:obj_type1("chiller");
+
+====
+
+#  29
+U: find me fire alarm equipment
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter contains(bld_system, null^^org.fm:building_system2("fire alarm"));
+
+====
+
+#  30
+U: I want to see equipment in the supply air system
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter contains(bld_system, null^^org.fm:building_system2("supply air"));
+
+====
+
+#  31
+U: find me equipment in system SA 8
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter contains(system_name, null^^org.fm:system_name("sa 8"));
+
+====
+
+#  32
+U: Which floor is electrical panel 37802 located?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue floor] of @org.fm.building_object1() filter id =~ "37802" && obj_type == null^^org.fm:obj_type1("electrical panel");
+
+====
+
+#  33
+U: Which company produced building object 37802?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue manufacturer] of @org.fm.building_object1() filter id =~ "37802";
+
+====
+
+#  34
+U: Where is smoke detector 43914?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue room_type, room_id] of @org.fm.building_object1() filter id =~ "43914" && obj_type == null^^org.fm:obj_type1("smoke detector");
+
+====
+
+#  35
+U: Which building system is variable air volume unit 6171 in?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue bld_system] of @org.fm.building_object1() filter id =~ "6171" && obj_type == null^^org.fm:obj_type1("variable air volume unit");
+
+====
+
+#  36
+U: What's the serial number of building component 37802?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue model] of @org.fm.building_object1() filter id =~ "37802";
+
+====
+
+#  37
+U: What's the system name of variable air volume unit 6171?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue system_name] of @org.fm.building_object1() filter id =~ "6171" && obj_type == null^^org.fm:obj_type1("variable air volume unit");
+
+====
+
+#  38
+U: find me an asset in system sa 30
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter contains(system_name, null^^org.fm:system_name("sa 30")) && asset_tag == true;
+
+====
+
+#  39
+U: show me equipment that were produced by PACO or by Beacon Medaes.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter in_array(manufacturer, [null^^org.fm:manufacturer("beacon medaes"), null^^org.fm:manufacturer("paco")]);
+
+====
+
+#  40
+U: search for equipment in the hydronic return system and the sanitary system
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter contains(bld_system, null^^org.fm:building_system2("hydronic return")) && contains(bld_system, null^^org.fm:building_system2("sanitary"));
+
+====
+
+#  41
+U: how many centrifugal fans are there in the building?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue ount(@org.fm.building_object1() filter obj_type == null^^org.fm:obj_type1("centrifugal fans"));
+
+====
+
+#  42
+U: how many air terminal are there on the fifth floor?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue ount(@org.fm.building_object1() filter obj_type == null^^org.fm:obj_type1("air terminal") && floor == null^^org.fm:floor("fifth floor"));
+
+====
+
+#  43
+U: launch the forge model
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.forge_model();
+
+====
+
+#  44
+U: present me the first floor
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.forge_model() filter floor == null^^org.fm:floor("first floor");
+
+====
+
+#  45
+U: I'd like to see L3
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.forge_model() filter floor == null^^org.fm:floor("l3");
+
+====
+
+#  46
+U: Show me the third floor model
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.forge_model() filter floor == null^^org.fm:floor("third floor");
+
+====
+
+#  47
+U: how many fire alarm terminal cabinets are there in the building?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue ount(@org.fm.building_object1() filter obj_type == null^^org.fm:obj_type1("fire alarm terminal cabinets"));
+
+====
+
+#  48
+U: how many variable air volume units are there in the second floor?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue ount(@org.fm.building_object1() filter obj_type == null^^org.fm:obj_type1("variable air volume units") && floor == null^^org.fm:floor("second floor"));
+
+====
+
+#  49
+U: find me an asset in system CTR 1
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter contains(system_name, null^^org.fm:system_name("ctr 1")) && asset_tag == true;
+
+====
+
+#  50
+U: What is the manufacturer of equipment 6171
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue manufacturer] of @org.fm.building_object1() filter id =~ "6171";
+
+====
+
+#  51
+U: Which room is variable air volume unit 6171 located?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue room_type] of @org.fm.building_object1() filter id =~ "6171" && obj_type == null^^org.fm:obj_type1("variable air volume unit");
+
+====
+
+#  52
+U: What floor is air terminal 4732 on?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue floor] of @org.fm.building_object1() filter id =~ "4732" && obj_type == null^^org.fm:obj_type1("air terminal");
+
+====
+
+#  53
+U: What are the manufacturer and serial number of building object 42255?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue manufacturer, model] of @org.fm.building_object1() filter id =~ "42255";
+
+====
+
+#  54
+U: What is the product number of electrical panel 42255?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue model] of @org.fm.building_object1() filter id =~ "42255" && obj_type == null^^org.fm:obj_type1("electrical panel");
+
+====
+
+#  55
+U: search for equipment in the sanitary system.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter contains(bld_system, null^^org.fm:building_system2("sanitary"));
+
+====
+
+#  56
+U: search for equipment in the control system on floor 4.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter contains(bld_system, null^^org.fm:building_system2("control")) && floor == null^^org.fm:floor("floor 4");
+
+====
+
+#  57
+U: Highlight objects in Specimen room 109
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter room_type == null^^org.fm:room_type1("specimen") && room_id == null^^org.fm:room_id("109");
+
+====
+
+#  58
+U: Highlight equipment in office room 55
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter room_type == null^^org.fm:room_type1("office") && room_id == null^^org.fm:room_id("55");
+
+====
+
+#  59
+U: list all the electrical panels
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter obj_type == null^^org.fm:obj_type1("electrical panels");
+
+====
+
+#  60
+U: Find me some medical gas outlets on the second floor.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter obj_type == null^^org.fm:obj_type1("medical gas outlets") && floor == null^^org.fm:floor("second floor");
+
+====
+
+#  61
+U: Find me the equipment that in both supply air and return air systems
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter contains(bld_system, null^^org.fm:building_system2("supply air")) && contains(bld_system, null^^org.fm:building_system2("return air"));
+
+====
+
+#  62
+U: list equipment in MAMMOGRAM room
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter room_type == null^^org.fm:room_type1("mammogram");
+
+====
+
+#  63
+U: list building component in TRIAGE REG
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter room_type == null^^org.fm:room_type1("triage reg");
+
+====
+
+#  64
+U: Which floor is STERILE PREP located?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue floor] of @org.fm.building_object1() filter room_type == null^^org.fm:room_type1("sterile prep");
+
+====
+
+#  65
+U: What's the room number for OR?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue room_id] of @org.fm.building_object1() filter room_type == null^^org.fm:room_type1("OR");
+
+====
+
+#  66
+U: list equipment in system VAV 1-10
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter contains(system_name, null^^org.fm:system_name("vav 1-10"));
+
+====
+
+#  67
+U: search for assets from TEC Systems
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter asset_tag == true && manufacturer == null^^org.fm:manufacturer("tec systems");
+
+====
+
+#  68
+U: list all product models from Air Enterprise
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue model] of @org.fm.building_object1() filter asset_tag == true && manufacturer == null^^org.fm:manufacturer("air enterprise");
+
+====
+
+#  69
+U: Find me the system specification for equipment 42255
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue equip_spec] of @org.fm.building_object1() filter id =~ "42255";
+
+====
+
+#  70
+U: Find me the spec for equipment 37802
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue equip_spec] of @org.fm.building_object1() filter id =~ "37802";
+
+====
+
+#  71
+U: I need the user manual for equipment with serial number "32-64-02-5001"
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue equip_spec] of @org.fm.building_object1() filter model =~ "32-64-02-5001";
+
+====
+
+#  72
+U: Find me equipment in MRI
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter room_type == null^^org.fm:room_type1("mri");
+
+====
+
+#  73
+U: search for the room number for virology lab
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue room_id] of @org.fm.building_object1() filter room_type == null^^org.fm:room_type1("virology");
+
+====
+
+#  74
+U: Which floor is CHEM HEMA on?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue floor] of @org.fm.building_object1() filter room_type == null^^org.fm:room_type1("chem hema");
+
+====
+
+#  75
+U: show me the system name for equipment in the admin room?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue bld_system] of @org.fm.building_object1() filter room_type == null^^org.fm:room_type1("admin");
+
+====
+
+#  76
+U: highlight the fan for the CHANGING room
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter room_type == null^^org.fm:room_type1("changing") && obj_type == null^^org.fm:obj_type1("fan");
+
+====
+
+#  77
+U: find me the fire alarm horn strobe on the floor 2
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter obj_type == null^^org.fm:obj_type1("fire alarm horn strobe") && floor == null^^org.fm:floor("floor 2");
+
+====
+
+#  78
+U: search for building components from Carrier
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter manufacturer == null^^org.fm:manufacturer("carrier");
+
+====
+
+#  79
+U: search for spec for Greenheck equipment
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue equip_spec] of @org.fm.building_object1() filter manufacturer == null^^org.fm:manufacturer("greenheck");
+
+====
+
+#  80
+U: find me building components made by Honeywell
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter manufacturer == null^^org.fm:manufacturer("honeywell");
+
+====
+
+#  81
+U: search for user manual for Space Age Electronics equipment
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue equip_spec] of @org.fm.building_object1() filter manufacturer == null^^org.fm:manufacturer("space age electronics");
+
+====
+
+#  82
+U: I'm looking for building objects produced by TITUS
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter manufacturer == null^^org.fm:manufacturer("titus");
+
+====
+
+#  83
+U: Is there any equipment from USA Coil?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter manufacturer == null^^org.fm:manufacturer("usa coil");
+
+====
+
+#  84
+U: list equipment in system OX 30
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter contains(system_name, null^^org.fm:system_name("OX 30"));
+
+====
+
+#  85
+U: I want to search for equipment in the CONSULT room
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter room_type == null^^org.fm:room_type1("consult");
+
+====
+
+#  86
+U: I want to search for equipment in the consultation room
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter room_type == null^^org.fm:room_type1("consultation");
+
+====
+
+#  87
+U: I want to search for equipment in ICU
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter room_type == null^^org.fm:room_type1("icu");
+
+====
+
+#  88
+U: search for building equipment in the ultrasound room
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter room_type == null^^org.fm:room_type1("ultrasound");
+
+====
+
+#  89
+U: search for building equipment in the vestibule room
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter room_type == null^^org.fm:room_type1("vestibule");
+
+====
+
+#  90
+U: search for building equipment in the radiography room
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter room_type == null^^org.fm:room_type1("radiography");
+
+====
+
+#  91
+U: search for building equipment in the saiting room
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter room_type == null^^org.fm:room_type1("saiting");
+
+====
+
+#  92
+U: search for building equipment in the mechanical pent room
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter room_type == null^^org.fm:room_type1("mechanical pent");
+
+====
+
+#  93
+U: i'd like to find a list of all assets.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter asset_tag == true;
+
+====
+
+#  94
+U: how many building system are there in the building
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue count(bld_system)] of @org.fm.building_object1();
+
+====
+
+#  95
+U: count the asset in room 471
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue ount(@org.fm.building_object1() filter asset_tag == true && room_id == null^^org.fm:room_id("471"));
+
+====
+
+#  96
+U: i'd like a list of all equipment included in domestic cold water system
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter contains(bld_system, null^^org.fm:building_system2("domestic cold water"));
+
+====
+
+#  97
+U: i want anything included in CWR 1
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.building_object1() filter contains(system_name, null^^org.fm:system_name("cwr 1"));
+
+====
+
+#  98
+U: Load 1F model
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.forge_model() filter floor == null^^org.fm:floor("1F");
+
+====
+
+#  99
+U: Open forge L3 model
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: $continue org.fm.forge_model() filter floor == null^^org.fm:floor("L3");
+
+====

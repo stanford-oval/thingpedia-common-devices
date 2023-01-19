@@ -1,0 +1,139 @@
+class @org.wikiart
+#_[thingpedia_name="Wikiart"]
+#_[thingpedia_description="Search for artists and paintings on Wikiart"]
+#_[canonical="wikiart"]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="service"]
+{
+  import loader from @org.thingpedia.v2();
+  import config from @org.thingpedia.config.none();
+  
+  entity painting #_[description="Paintings on Wikiart"];
+  entity artist #_[description="Artists on Wikiart"];
+  
+  list query painting(out id: Entity(org.wikiart:painting) // should I be using json_key = "[val]"
+                        #[conflict_filter=["artist"]]
+                        #[unique=true]
+                        #_[canonical={
+                          default="base",
+                          base=["title"],
+                          passive_verb=["called #", "titled #"],
+                          base_projection=["painting", "painting name", "painting title", "work", "piece", "creation"]
+                        }]
+                        #_[string_values="org.wikiart:painting"],
+                        out image_url: Entity(tt:picture) // FORMAT INSIDE PARENTHESES?, how do I guarantee it displays?
+                        #[filterable=false]
+                        #_[canonical={
+                          default="base",
+                          base=["picture", "image", "photo", "painting"]
+                        }],
+				                out artist: Entity(org.wikiart:artist)
+                        #[conflict_filter=["id"]]
+                        #_[canonical={
+                          default="base",
+                          base=["artist"],
+                          passive_verb=["painted by #", "made by #", "created by #"],
+                          base_projection=["artist", "painter", "creator", "artist"]
+                        }],
+				                out year: Number
+                        #[filterable=false]
+                        #_[canonical={
+                          default="base",
+                          base=["completion year"],
+                          passive_verb=["finished in #", "completed in #"],
+                          base_projection=["year"]
+                        }],
+                        out content_id: String
+                        #[filterable=false]
+				        // out style: Entity(org.wikiart:style)
+                        // #[unique=true]
+                        // #_[canonical={
+                        //   default="base",
+                        //   base=["style"],
+                        //   base_projection=["painting style", "genre"] // Do I also include style types (I.e. abstract) here?
+                        // }],
+                        // out painting_entry_link: Entity(tt:url)
+                        // #[filterable=false]
+                        // #_[canonical="link"],
+                        // out artist_entry_link: Entity(tt:url)
+                        // #[filterable=false]
+                        // #_[canonical="link"],   
+                        // }]
+                        )
+  #_[canonical=["art", "creation", "piece", "painting"]]
+  #_[confirmation="paintings on WikiArt"]
+  #[minimal_projection=["id", "artist"]]
+  #[default_projection=["id", "artist", "year", "image_url", "content_id"]]
+  #_[on_error={
+    unavailable=["the WikiArt service is not available at the moment"]
+  }]
+  #[doc="search for paintings on WikiArt"]
+  #[confirm=false]
+  #_[formatted=[{
+    type="rdl",
+    displayTitle="${id}",
+    webCallback="${image_url}",
+    pictureUrl="${image_url}"
+  }]];
+
+  list query artist(out id: Entity(org.wikiart:artist) // should I be using json_key = "[val]"
+                        #[conflict_filter=["painting"]]
+                        #[unique=true]
+                        #_[canonical={
+                          default="base",
+                          base=["name"],
+                          passive_verb=["painted by #", "made by #", "created by #"],
+                          base_projection=["name", "artist", "painter", "maker", "creator"]
+                        }]
+                        #_[string_values="org.wikiart:artist"],
+                        out image_url: Entity(tt:picture) // image of artist
+                        #[filterable=false]
+                        #_[canonical={
+                          default="base",
+                          base=["picture", "image", "photo", "painting"]
+                        }],
+				                out gender: String
+                        #_[canonical={
+                          default="base",
+                          base=["gender"],
+                          base_projection=["gender", "sex"]
+                        }],
+				                out birthday: String
+                        #_[canonical={
+                          default="base",
+                          base=["birthday"],
+                          passive_verb=["born on #"],
+                          base_projection=["birthday", "date of birth"]
+                        }],
+                        out death_date: String
+                        #_[canonical={
+                          default="base",
+                          base=["death day"],
+                          passive_verb=["died on #", "passed away on #"],
+                          base_projection=["date of death"]
+                        }],
+                        out years_active: String
+                        #_[canonical={
+                          default="base",
+                          base=["years active"],
+                          passive_verb=["worked from # until #"],
+                          base_projection=["years worked", "years painted", "years active"]
+                        }],
+                        out biography: String
+                        #_[canonical={
+                          default="base",
+                          base=["biography"],
+                          base_projection=["story", "biography", "description"]
+                        }]
+                        )
+  #_[canonical=["artist", "painter", "creator", "maker"]]
+  #_[confirmation="artists on WikiArt"]
+  #[minimal_projection=["id"]]
+  #[default_projection=["id", "gender", "birthday", "death_date", "years_active", "biography", "image_url"]]
+  #_[on_error={
+    unavailable=["the WikiArt service is not available at the moment"]
+  }]
+  #[doc="search for artists on WikiArt"]
+  #[confirm=false];
+}
