@@ -1,0 +1,132 @@
+class @org.fm
+#_[name="org.fm"]
+#_[description="Retrieve facility management information"]
+#_[thingpedia_name="org.fm"]
+#_[thingpedia_description="facility management assistant"]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="service"]
+{
+  import loader from @org.thingpedia.v2();
+  import config from @org.thingpedia.config.none();
+  
+  entity building_object1 #_[description="objects in the building"] #[has_ner=true];
+  entity manufacturer #_[description="manufacturer"] #[has_ner=true];
+  entity floor #_[description="floor"] #[has_ner=true];
+  entity obj_type1 #_[description="object type"] #[has_ner=true];
+  entity room_type1 #_[description="room type"] #[has_ner=true];
+  entity room_id #_[description="room number"] #[has_ner=true];
+  entity building_system2 #_[description="building system"] #[has_ner=true];
+  entity system_name #_[description="system name"] #[has_ner=true];
+  
+  list query building_object1(out id: Entity(org.fm:building_object1)
+                        #[unique=true]
+                        #[conflict_filter=["asset_tag", "floor", "manufacturer", "room_id", "room_type", "bld_system", "system_name", "obj_type"]]
+                        #_[canonical={
+                          base=["id"]
+                        }],
+                      out asset_tag: Boolean
+                        #[conflict_filter=["id"]]
+                        #_[canonical={
+                          default="reverse_property",
+                          reverse_property_true=["asset", "assets"],
+                          reverse_property_false=["not an asset", "not assets"],
+                          adjective_true=["important", "critical", "essential"]
+                        }],
+                      out equip_spec: String
+                        #[filterable=false]
+                        #[string_values="org.fm:equip_spec"]
+                        #_[canonical={
+                          base=["spec", "specification", "user manual"],
+                          passive_verb=["stored in", "located in"]
+                        }],
+                      out floor: Entity(org.fm:floor)
+                        #[conflict_filter=["id"]]
+                        #_[canonical={
+                          default="preposition",
+                          base=["floor"],
+                          passive_verb=["located on the #"],
+                          preposition=["on the #"]
+                        }],
+                      out manufacturer: Entity(org.fm:manufacturer)
+                        #[conflict_filter=["id"]]
+                        #_[canonical={
+                          default="passive_verb",
+                          base=["manufacturer", "maker", "producer"],
+                          reverse_property=["# product", "# device", "# equipment"],
+                          passive_verb=["made by #","manufactured by #", "produced by #", "fabricated by #"],
+                          preposition=["from"]
+                        }],
+                      out model: String
+                        #[string_values="org.fm:obj_model"]
+                        #[filterable=false]
+                        #_[canonical={
+                          base=["serial number", "product number", "product id", "model"],
+                          property=["serial number #"]
+                        }],
+                      out room_id: Entity(org.fm:room_id)
+                        #[conflict_filter=["id", "room_type"]]
+                        #_[canonical={
+                          default="preposition",
+                          base=["room number"],
+                          property=["room number #"],
+                          verb=["serve for room #"],
+                          passive_verb=["located in room #", "installed in room #"],
+                          preposition=["in room #", "at room #"]
+                        }],
+                      out room_type: Entity(org.fm:room_type1)
+                        #[conflict_filter=["id", "room_id"]]
+                        #_[canonical={
+                          default="preposition",
+                          base=["room"],
+                          passive_verb=["located in # room"],
+                          preposition=["in # room", "at # room", "for # room"],
+                          base_projection=["space"],
+                          reverse_verb_projection=["has", "contains", "includes"],
+                          passive_verb_projection=["installed | in", "installed | at"]
+                        }],
+                      out bld_system: Array(Entity(org.fm:building_system2))
+                        #[conflict_filter=["system_name", "id"]]
+                        #_[canonical={
+                          default="reverse_property",
+                          base=["building system"],
+                          reverse_property=["# system equipment", "# system device"],
+                          verb=["function as # system", "serve for # system"],
+                          passive_verb=["included in # system"],
+                          preposition=["for", "in", "part of"]
+                        }],
+                      out system_name: Array(Entity(org.fm:system_name))
+                        #[conflict_filter=["bld_system", "id"]]
+                        #_[canonical={
+                          default="preposition",
+                          base=["system name"],
+                          passive_verb=["included in #", "belonged to #"],
+                          preposition=["for", "in", "part of"]
+                        }],
+                      out obj_type: Entity(org.fm:obj_type1)
+                        #[conflict_filter=["id"]]
+                        #_[canonical={
+                          default="reverse_property",
+                          base=["object type"],
+                          reverse_property=["#"]
+                        }]
+                    )
+    #_[canonical=["building objects", "equipment", "building components"]]
+    #_[result=["this is ${obj_type} ${id} on the ${floor}",
+              "The manufacturer for ${obj_type} ${id} is ${manufacturer}",
+              "the equipment spec for ${obj_type} ${id} is stored in ${equip_spec}",
+              "${obj_type} ${id} is in ${room_type}",
+              "The serial number of ${obj_type} ${id} is ${model}",
+              "${obj_type} ${id} is in room ${room_id}",
+              "${obj_type} ${id} is ${bld_system} system equipment",
+              "${obj_type} ${id} is part of system ${system_name}"
+              ]
+      ]
+    #[minimum_projection=["id", "obj_type"]]
+    #[default_projection=["id", "obj_type", "bld_system", "room_type"]]
+    #_[on_error={
+      unavailable=["the building object is not available"]
+    }]
+    #[doc="retrieve building objects"]
+    #[confirm=false];
+}

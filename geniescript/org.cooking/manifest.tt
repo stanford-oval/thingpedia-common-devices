@@ -1,0 +1,148 @@
+class @org.cooking
+#_[name="org.cooking"]
+#_[description="TODO add description"]
+#_[thingpedia_name="org.cooking"]
+#_[thingpedia_description="TODO add description"]
+#[license="BSD-3-Clause"]
+#[license_gplcompatible=true]
+#[subcategory="service"]
+{
+    import loader from @org.thingpedia.v2();
+    import config from @org.thingpedia.config.none();
+
+    entity recipe #_[description="recipe in a database"];
+    entity ingredient #_[description="ingredient in a database"];
+    entity instruction #_[description="instruction in a database"];
+
+    list query recipe(
+                      out id: Entity(org.cooking:recipe)
+                      #_[canonical={
+                          default="base",
+                          base=["name", "title", "dish"],
+                          property=["name", "title", "recipe name", "recipe title"],
+                          reverse_property=["#", "# dish"],
+                          passive_verb=["named #", "called #", "titled #"],
+                          preposition=["of", "for"]
+                      }],
+                      out ingredients: Array(Entity(org.cooking:ingredient))
+                      #_[canonical={
+                          default="base",
+                          base=["ingredient", "food", "item"],
+                          property=["#", "# as ingredient"],
+                          adjective=["#", "# 's"],
+                          reverse_property=["#", "# dish", "# food"],
+                          verb=["has #", "contains #", "uses #", "takes #"]
+                      }],
+                      out instructions: Array(Entity(org.cooking:instruction))
+                      #_[canonical={
+                          default="base",
+                          base=["step", "next step", "direction", "task", "action"],
+                          property=["#", "# as instruction"],
+                          verb=["has #", "contains #", "uses #", "takes #"]
+                      }]
+    )
+    #_[canonical=["recipe", "cooking recipe"]]
+    #_[canonical_short=["recipe"]]
+    #[default_projection=["id"]]
+    #[minimal_projection=["id"]]
+    ;
+
+
+    query instruction (
+                      in req recipe: Entity(org.cooking:recipe)
+                      #[string_values="org.cooking:recipe:id"]
+                      #_[prompt="which recipe?"],
+                      in req index: Number
+                      #_[prompt="which step"],
+                      out id: Entity(org.cooking:instruction)
+                      #_[canonical={
+                          default="base",
+                          base=["step", "next step", "direction", "task", "action"],
+                          property=["#", "# as instruction"],
+                          verb=["has #", "contains #", "uses #", "takes #"]
+                      }],
+                      out cook_method: String
+                      #_[canonical={
+                          default="base",
+                          base=["method", "way", "approach"],
+                          property=["method", "way", "approach"],
+                          reverse_property=["method of", "way of", "approach of"],
+                          verb=["has method", "has way", "has approach"]
+                      }],
+                      out ingredient: Entity(org.cooking:ingredient)
+                      #_[canonical={
+                          default="base",
+                          base=["ingredient", "food", "item"],
+                          property=["#", "# as ingredient"],
+                          adjective=["#", "# 's"],
+                          reverse_property=["#", "# dish", "# food"],
+                          verb=["has #", "contains #", "uses #", "takes #"],
+                          passive_verb=["contained #", "has #"]
+                      }]
+    )
+    #_[canonical=["instruction", "cooking instruction"]]
+    #[minimal_projection=["id"]]
+    #[default_projection=["id"]]
+    ;
+
+    list query ingredient (
+                      out id: Entity(org.cooking:ingredient)
+                      #_[canonical={
+                          default="base",
+                          base=["item"],
+                          property=["item"],
+                          passive_verb=["contained #", "has #"],
+                          preposition=["of", "for"]
+                      }],
+                      out quantity: String
+                      #_[canonical={
+                          default="base",
+                          base=["quantity", "amount", "measurement", "measure", "value", "number", "weight", "volume", "size"],
+                      }],
+                      out unit: String
+                      #_[canonical={
+                          default="base",
+                          base=["unit", "measurement", "measure"],
+                      }]
+    )
+    #_[canonical=["ingredient", "cooking ingredient"]]
+    #[minimal_projection=["id"]]
+    #[default_projection=["id"]]
+    ;
+
+    query unit_conversion (
+                    in req ingredient: Entity(org.cooking:ingredient)
+                    #_[prompt="which ingredient?"],
+                    in req unit: String
+                    #_[prompt="which unit?"],
+                    out converted_quantity: String
+                    #_[canonical={
+                        default="base",
+                        base=["quantity", "amount", "measurement", "measure", "value", "number", "weight", "volume", "size"],
+                    }]
+    )
+    #_[canonical=["unit conversion", "measure in", "conversion"]]
+    ;
+
+    action next_step(
+                      out step: Entity(org.cooking:instruction)
+                      #_[canonical={
+                          default="base",
+                          base=["next", "next step"],
+                      }]
+    )
+    #_[canonical=["get the next step"]]
+    #[confirm=enum(auto)]
+    ;
+
+    action previous_step(
+                      out step: Entity(org.cooking:instruction)
+                      #_[canonical={
+                          default="base",
+                          base=["last step", "previous step"],
+                      }]
+    )
+    #_[canonical=["get the previous step"]]
+    #[confirm=enum(auto)]
+    ;
+}

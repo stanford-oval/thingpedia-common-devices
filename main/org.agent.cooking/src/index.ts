@@ -59,93 +59,51 @@ export default class CookingAgentSkill extends BaseDevice {
 
     async get_recipe(params, hints, env) {
         let recipes = generatedRecipes.recipes;
-        if (hints && hints.filter) {
-            for (let [pname, op, value] of hints.filter) {
-                if (pname === 'name') {
-                    if (op === '==') {
-                        recipes = recipes.filter((r) => r.name === value);
-                    } else if (op === '=~') {
-                        recipes = recipes.filter((r) => r.name.toLowerCase().match(value.toLowerCase()));
-                    }
-                } else if (pname === 'ingredients') {
-                    // not sure how to do this, it's a subquery
-                } else if (pname === 'instructions') {
-                    // not sure how to do this, it's a subquery
-                } else {
-                    throw new Error('Unsupported filter on recipe');
-                }
-            }
-        }
-        // replace all instructions in the recipe with the actual instruction
-        // for (let recipe of recipes) {
-        //     recipe.instructions =
-        //         recipe.instructions.map((instructionId) => new Value.Entity(instructionId, instructionId));
-        // }
         const newRecipes = [];
         for (let recipe of recipes) {
             const newRecipe = {
-                id: recipe.id,
-                name: recipe.name,
+                id: new Value.Entity(recipe.id, recipe.id),
                 ingredients: recipe.ingredients.map((ingredientId) => new Value.Entity(ingredientId, ingredientId)),
                 instructions: recipe.instructions.map((instructionId) => new Value.Entity(instructionId, instructionId))
             };
             newRecipes.push(newRecipe);
         }
-        return newRecipes
+        return newRecipes;
     }
 
     async get_ingredient(params, hints, env) {
         let ingredients = generatedRecipes.ingredients;
-        if (hints && hints.filter) {
-            for (let [pname, op, value] of hints.filter) {
-                if (pname === 'ingredient') {
-                    if (op === '==') {
-                        ingredients = ingredients.filter((r) => r.ingredient === value);
-                    } else if (op === '=~') {
-                        ingredients = ingredients.filter((r) => r.ingredient.toLowerCase().match(value.toLowerCase()));
-                    }
-                } else if (pname === 'quantity') {
-                    if (op === '==') {
-                        ingredients = ingredients.filter((r) => r.quantity === value);
-                    } else if (op === '=~') {
-                        ingredients = ingredients.filter((r) => r.quantity.toLowerCase().match(value.toLowerCase()));
-                    }
-                } else if (pname === 'unit') {
-                    if (op === '==') {
-                        ingredients = ingredients.filter((r) => r.unit === value);
-                    } else if (op === '=~') {
-                        ingredients = ingredients.filter((r) => r.unit.toLowerCase().match(value.toLowerCase()));
-                    }
-                } else {
-                    throw new Error('Unsupported filter on ingredient');
-                }
-            }
+        const newIngredients = [];
+        for (let ingredient of ingredients) {
+            const newIngredient = {
+                id: new Value.Entity(ingredient.id, ingredient.ingredient),
+                quantity: String(ingredient.quantity),
+                unit: String(ingredient.unit)
+            };
+            newIngredients.push(newIngredient);
         }
-        return ingredients
+        return newIngredients;
     }
 
     async get_instruction(params, hints, env) {
-        let instructions = generatedRecipes.instructions;
-        if (hints && hints.filter) {
-            for (let [pname, op, value] of hints.filter) {
-                if (pname === 'instruction') {
-                    if (op === '==') {
-                        instructions = instructions.filter((r) => r.instruction === value);
-                    } else if (op === '=~') {
-                        instructions = instructions.filter((r) => r.instruction.toLowerCase().match(value.toLowerCase()));
-                    }
-                } else if (pname === 'cook_method') {
-                    if (op === '==') {
-                        instructions = instructions.filter((r) => r.cook_method === value);
-                    } else if (op === '=~') {
-                        instructions = instructions.filter((r) => r.cook_method.toLowerCase().match(value.toLowerCase()));
-                    }
-                } else {
-                    throw new Error('Unsupported filter on instruction');
-                }
+        const recipe = generatedRecipes.recipes.filter((item) => {
+            return item.name.toLowerCase() === params.recipe.display.toLowerCase();
+        })[0];
+        const instructions = generatedRecipes.instructions.filter((item) => {
+            return (item.index === params.index) && (item.recipe === recipe.id);
+        });
+        const newInstructions = [];
+        for (let instruction of instructions) {
+            const ingredientId = 'ingredient_' + instruction.id.split('_')[1];
+            const ingredient = generatedRecipes.ingredients.filter((item) => item.id === ingredientId)[0];
+            const newInstruction = {
+                id: new Value.Entity(instruction.id, instruction.instruction),
+                cook_method: instruction.cook_method,
+                ingredient: new Value.Entity(ingredient.ingredient, ingredient.ingredient)
             }
+            newInstructions.push(newInstruction);
         }
-        return instructions
+        return newInstructions;
     }
 
     async get_unit_conversion(params, hints, env) {
@@ -233,14 +191,6 @@ export default class CookingAgentSkill extends BaseDevice {
         }
     }
     
-    async do_current_step() {
-        const recipe = CookingAgentSkill.currentRecipe;
-        const step = recipe[CookingAgentSkill.instructionIndex];
-        return {
-            step: step
-        }
-    }
-
     async do_next_step() {
         const recipe = CookingAgentSkill.currentRecipe;
         CookingAgentSkill.instructionIndex++;
