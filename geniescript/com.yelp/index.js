@@ -265,10 +265,10 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
             if (!query.location)
                 query.location = { display: 'palo alto' };
         }
-        // if (query.location.lat && query.location.lat)
-        //     url += `&latitude=${query.location.lat}&longitude=${query.location.lon}`;
-        // else
-        url += `&location=${encodeURIComponent(query.location.display)}`;
+        if (query.location.lat && query.location.lat)
+            url += `&latitude=${query.location.lat}&longitude=${query.location.lon}`;
+        else
+            url += `&location=${encodeURIComponent(query.location.display)}`;
         if (query.term)
             url += `&term=${encodeURIComponent(query.term.trim())}`;
         if (query.categories)
@@ -291,7 +291,7 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                 const cuisines = b.categories.filter((cat) => CUISINES.has(cat.alias))
                     .map((cat) => new Tp.Value.Entity(cat.alias, cat.alias === 'creperies' ? "Crepes" : cat.title));
 
-                const geo = new Tp.Value.Location(-1, -1,
+                const geo = new Tp.Value.Location(b.coordinates.latitude, b.coordinates.longitude,
                     prettyprintAddress(b.location));
 
                 const data = {

@@ -1,0 +1,1002 @@
+====
+# schemaorg/5
+U: Show me the closest McDonald's
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(distance(geo, $location.current_location) asc of @com.yelp.restaurant() filter id =~ "mcdonald 's")[1];
+====
+# schemaorg/8
+U: What is the phone number for Noodle Nirvana?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [phone] of @com.yelp.restaurant() filter id =~ "noodle nirvana";
+====
+# schemaorg/11
+U: Search for vegetarian restaurants with 4 star reviews or better.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("vegetarian")) && rating >= 4;
+====
+# schemaorg/12
+U: Search for Italian restaurants with at least 50 reviews.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("italian")) && review_count >= 50;
+====
+# schemaorg/13
+U: List Italian restaurants with higher ratings that 4 stars.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("italian")) && rating >= 4;
+====
+# schemaorg/14
+U: Look for a Japanese restaurant that is the closest to me.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(distance(geo, $location.current_location) asc of @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("japanese")))[1];
+====
+# schemaorg/15
+U: What's the telephone number of the Arby's on Sherman in Muskegon, MI?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [phone] of @com.yelp.restaurant() filter geo == new Location("sherman in muskegon , mi") && id =~ "arby 's";
+====
+# schemaorg/38
+U: Can you show me all the 4 star restaurants in the area?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == $location.current_location && rating == 4;
+====
+# schemaorg/40
+U: What is the phone number for the nearest Wendy's?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [phone] of sort(distance(geo, $location.current_location) asc of @com.yelp.restaurant() filter id =~ "wendy 's")[1];
+====
+# schemaorg/44
+U: Find Mexican restaurants with at least 4 star rating.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("mexican")) && rating >= 4;
+====
+# schemaorg/64
+U: where is the closest Starbucks?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [geo] of sort(distance(geo, $location.current_location) asc of @com.yelp.restaurant() filter id =~ "starbucks")[1];
+====
+# schemaorg/68
+U: Can you tell me where the closest Pizza Hut is?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [geo] of sort(distance(geo, $location.current_location) asc of @com.yelp.restaurant() filter id =~ "pizza hut")[1];
+====
+# schemaorg/77
+U: What is the telephone number for the nearest Chinese restaurant?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [phone] of sort(distance(geo, $location.current_location) asc of @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese")))[1];
+====
+# schemaorg/82
+U: How close am I to Art's Deli or Carnegie Deli?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [distance(geo, $location.current_location)] of @com.yelp.restaurant() filter in_array~(id, ["art 's deli", "carnegie deli"]);
+====
+# schemaorg/95
+U: What is the address of the Panda Express in Grand Rapids, Michigan?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [geo] of @com.yelp.restaurant() filter geo == new Location("grand rapids , michigan") && id =~ "panda express";
+====
+# schemaorg/sf2
+U: Can you look for a restaurant with a rating of 5?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter rating == 5;
+====
+# schemaorg/sf5
+U: Search for Bayshore Bean.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter id =~ "bayshore bean";
+====
+# schemaorg/sf8
+U: Find all the bakeries.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("bakeries"));
+====
+# schemaorg/sf9
+U: Show me all restaurants rated with exactly 3 stars.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter rating == 3;
+====
+# schemaorg/sf11
+U: Find Thai restaurants.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("thai"));
+====
+# schemaorg/sf12
+U: Show me Cook Out.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter id =~ "cook out";
+====
+# schemaorg/sf14
+U: Find restaurants with more than 10 reviews.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter review_count >= 10;
+====
+# schemaorg/sf17
+U: Does the lone star steakhouse in Dallas NC have a review yet?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [review_count] of @com.yelp.restaurant() filter geo == new Location("dallas nc") && id =~ "lone star steakhouse";
+====
+# schemaorg/sf21
+U: Can you find the restaurant nearest to my location?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(distance(geo, $location.current_location) asc of @com.yelp.restaurant())[1];
+====
+# schemaorg/sf23
+U: Find me a restaurant on Main St. please.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("main st.");
+====
+# schemaorg/sf30
+U: How many reviews does the place have?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [review_count] of @com.yelp.restaurant();
+====
+# schemaorg/sf34
+U: Give me all the italian places.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("italian"));
+====
+# schemaorg/sf40
+U: Is there a restaurant named China King?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter id =~ "china king";
+====
+# schemaorg/sf46
+U: What is the highest rated restaurant?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating desc of @com.yelp.restaurant())[1];
+====
+# schemaorg/sf52
+U: show me all 5 star restaurants
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter rating == 5;
+====
+# schemaorg/sf66
+U: Show me a sushi restaurant.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("sushi"));
+====
+# schemaorg/sf67
+U: Find all 5 star BBQ places.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("bbq")) && rating == 5;
+====
+# schemaorg/sf68
+U: Show me Italian restaurants.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("italian"));
+====
+# schemaorg/sf75
+U: Show me restaurants with a rating of 5.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter rating == 5;
+====
+# schemaorg/sf77
+U: Search for hamburger joints.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("hamburger"));
+====
+# schemaorg/sf80
+U: Look for American restaurants close by.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("american")) && geo == $location.current_location;
+====
+# schemaorg/sf82
+U: Find all of the restaurants that have a rating about 4.5.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter rating == 4.5;
+====
+# schemaorg/sf86
+U: Find all restaurants in my downtown area.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == $location.current_location;
+====
+# schemaorg/sf92
+U: Show me sushi restaurants.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("sushi"));
+====
+# schemaorg/sf95
+U: Search for Luby's cafeteria.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter id =~ "luby 's cafeteria";
+====
+# schemaorg/sf104
+U: Display any restaurants with overall rating of 4 or above.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter rating >= 4;
+====
+# schemaorg/sf105
+U: I want to see some Indian restaurants.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("indian"));
+====
+# schemaorg/sf108
+U: Search for burger king.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter id =~ "burger king";
+====
+# schemaorg/sf115
+U: I would like to find Brenda's French Soul Food.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter id =~ "brenda 's french soul food";
+====
+# schemaorg/sf120
+U: Look for Mai Lee.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter id =~ "mai lee";
+====
+# schemaorg/sf121
+U: Find the Vietnamese restaurants.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("vietnamese"));
+====
+# schemaorg/sf127
+U: I want to see the top Mexican restaurants.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating desc of @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("mexican")))[1];
+====
+# schemaorg/sf133
+U: Look up restaurants in Las Vegas
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("las vegas");
+====
+# schemaorg/sf136
+U: Find restaurants with at least 100 reviews.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter review_count >= 100;
+====
+# schemaorg/sf143
+U: Show me the restaurant with the most reviews
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(review_count desc of @com.yelp.restaurant())[1];
+====
+# schemaorg/sf150
+U: Show me Ethiopian restaurants.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("ethiopian"));
+====
+# schemaorg/sf151
+U: Show me restaurants with more than 100 reviews.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter review_count >= 100;
+====
+# schemaorg/sf152
+U: Find all the restaurants rated higher than 3.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter rating >= 3;
+====
+# schemaorg/sf154
+U: Show me Mexican restaurants.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("mexican"));
+====
+# schemaorg/sf156
+U: List all the restaurants with higher than 3 stars.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter rating >= 3;
+====
+# schemaorg/sf167
+U: How many reviews have been posted for Old Town Doughnuts?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [review_count] of @com.yelp.restaurant() filter id =~ "old town doughnuts";
+====
+# schemaorg/sf168
+U: How many restaurants have an average rating above 4.8?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: count(@com.yelp.restaurant() filter rating >= 4.8);
+====
+# schemaorg/sf172
+U: I'd like any food with more than 200 reviews.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter review_count >= 200;
+====
+# schemaorg/sf178
+U: Show me Los Dos Amigos
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter id =~ "los dos amigos";
+====
+# schemaorg/sf179
+U: Show me restaurants with the most reviews.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(review_count desc of @com.yelp.restaurant())[1];
+====
+# schemaorg/sf180
+U: Show me Mexican restaurants.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("mexican"));
+====
+# schemaorg/sf190
+U: Search for Dairy Queen.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter id =~ "dairy queen";
+====
+# schemaorg/sf194
+U: Show me restaurants with more than 50 posted reviews.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter review_count >= 50;
+====
+# schemaorg/rerun1f199
+U: Find restaurants with more than 100 reviews.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter review_count >= 100;
+====
+# schemaorg/rerun1f19
+U: Show me White Castle
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter id =~ "white castle";
+====
+# schemaorg/rerun1f110
+U: Show me Mexican restaurants.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("mexican"));
+====
+# schemaorg/rerun1f122
+U: I want to see restaurants with more than 20 reviews.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter review_count >= 20;
+====
+# schemaorg/rerun1f44
+U: Show me the highest rated restaurant.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating desc of @com.yelp.restaurant())[1];
+====
+# schemaorg/rerun2f57
+U: Where is the nearest McDonald's?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [geo] of sort(distance(geo, $location.current_location) asc of @com.yelp.restaurant() filter id =~ "mcdonald 's")[1];
+====
+# schemaorg/rerun1f2
+U: Find all restaurants rated higher than 3
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter rating >= 3;
+====
+# schemaorg/rerun1f97
+U: What is Ramen Nagi's rating?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [rating] of @com.yelp.restaurant() filter id =~ "ramen nagi";
+====
+# schemaorg/rerun2f188
+U: Show me Italian restaurants nearby.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("italian")) && geo == $location.current_location;
+====
+# schemaorg/rerun2f11
+U: What is the phone number for Sampan?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [phone] of @com.yelp.restaurant() filter id =~ "sampan";
+====
+# schemaorg/rerun1f163
+U: Please tell me the location of Dave's Seafood Shack.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [geo] of @com.yelp.restaurant() filter id =~ "dave 's seafood shack";
+====
+# schemaorg/rerun1f154
+U: Show restaurants in San Francisco.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("san francisco");
+====
+# schemaorg/rerun1f180
+U: Find all Mexican restaurants.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("mexican"));
+====
+# schemaorg/rerun1f13
+U: Show me restaurants with the most reviews.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(review_count desc of @com.yelp.restaurant())[1];
+====
+# schemaorg/rerun2f182
+U: What is the phone number for Ginger China?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [phone] of @com.yelp.restaurant() filter id =~ "ginger china";
+====
+# schemaorg/rerun1f35
+U: Find me In-N-Out Burger.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter id =~ "in-n-out burger";
+====
+# schemaorg/200rerun1f2
+U: Find all restaurants rated higher than 3
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter rating >= 3;
+====
+# schemaorg/rerun1f193
+U: Search for a Mexican restaurant.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("mexican"));
+====
+# schemaorg/rerun1f150
+U: Show me all Italian restaurants.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("italian"));
+====
+# schemaorg/rerun2f55
+U: Show me a Chinese restaurant with a rating of 5.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese")) && rating == 5;
+====
+# schemaorg/rerun2f77
+U: What is the price range for Ramen Nagi?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [price] of @com.yelp.restaurant() filter id =~ "ramen nagi";
+====
+# schemaorg/rerun2f105
+U: Find Italian restaurants with at least 100 reviews.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("italian")) && review_count >= 100;
+====
+# schemaorg/rerun1f192
+U: Find all restaurants in Chicago.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("chicago");
+====
+# schemaorg/rerun1f16
+U: I'm looking for Armenian restaurants
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("armenian"));
+====
+# schemaorg/rerun1f32
+U: Show me all of the 5 star restaurants nearby.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == $location.current_location && rating == 5;
+====
+# schemaorg/rerun2f133
+U: Show me Mexican restaurants with at least a 4 star rating.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("mexican")) && rating >= 4;
+====
+# schemaorg/rerun2f115
+U: Search for Sushi King restaurant for me.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter id =~ "sushi king";
+====
+# schemaorg/rerun1f134
+U: Show me restaurants on Main street.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("main street");
+====
+# schemaorg/rerun2f194
+U: What is the phone number of the nearest Pizza Hut?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [phone] of sort(distance(geo, $location.current_location) asc of @com.yelp.restaurant() filter id =~ "pizza hut")[1];
+====
+# log/48007
+U: get 13 star restaurants with category includes chinese at palo alto
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese")) && geo == new Location("palo alto") && rating == 13;
+====
+# log/125402
+U: yelp
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant();
+====
+# log-dev/3704
+U: find chinese restaurants
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese"));
+====
+# log-dev/3680
+U: find restaurants nearby
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == $location.current_location;
+====
+# log-dev/5700
+U: find me a restaurant
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant();
+====
+# log-dev/3689
+U: show me nearby starbucks
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == $location.current_location && id =~ "starbucks";
+====
+# log-dev/2822
+U: restaurants with cuisine chinese
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese"));
+====
+# log-dev/3235
+U: what is the highest rated chinese restaurant in hawaii?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating desc of @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese")) && geo == new Location("hawaii"))[1];
+====
+# log-dev/3248
+U: show me restaurants in taiwan rated 13 stars and above
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("taiwan") && rating >= 13;
+====
+# log-dev/3457
+U: what's the highest rated restaurant in san francisco
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating desc of @com.yelp.restaurant() filter geo == new Location("san francisco"))[1];
+====
+# log-dev/3633
+U: search for restaurant in honolulu
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("honolulu");
+====
+# log-dev/7296
+U: i'm hungry, what should i have for lunch?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant();
+====
+# log-dev/7293
+U: almonds. can you find a russian restaurant near me?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("russian")) && geo == $location.current_location;
+====
+# log-dev/3478
+U: show me the highest rated restaurant in palo alto
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating desc of @com.yelp.restaurant() filter geo == new Location("palo alto"))[1];
+====
+# log-dev/5655
+U: find me an italian restaurant
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("italian"));
+====
+# log-dev/5738
+U: get restaurant
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant();
+====
+# log-dev/2198
+U: get chinese restaurants with 13 or more stars
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese")) && rating >= 13;
+====
+# recording/a264c47812712ba9a2d14434956fe2c2
+U: find chinese restaurant near me
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese")) && geo == $location.current_location;
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.yelp.restaurant() filter contains(cuisines, "chinese"^^com.yelp:restaurant_cuisine("Chinese")) && geo == new Location(37.4863239, -122.232523, "Redwood City, California")
+C: #[results=[
+C:   { id="dLbBSJeyN85FIzHxb6oYtg"^^com.yelp:restaurant("Crouching Tiger Restaurant & Bar"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/ve7XevVMUGbqXg3eZtRpgw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/crouching-tiger-restaurant-and-bar-redwood-city?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["chinese"^^com.yelp:restaurant_cuisine("Chinese")], price=enum moderate, rating=4, review_count=957, geo=new Location(37.48640133, -122.23424633, "2644 Broadway St, Redwood City, CA 94063"), phone="+16502988881"^^tt:phone_number },
+C:   { id="aRu3VeiAZu4YKN9PvYvpYw"^^com.yelp:restaurant("I Dumpling"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/IEWkD6_T6CdQWBAS3HR76Q/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/i-dumpling-redwood-city?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["chinese"^^com.yelp:restaurant_cuisine("Chinese"), "taiwanese"^^com.yelp:restaurant_cuisine("Taiwanese"), "asianfusion"^^com.yelp:restaurant_cuisine("Asian Fusion")], price=enum cheap, rating=4, review_count=730, geo=new Location(37.48645, -122.23472, "2660 Broadway St, Redwood City, CA 94063"), phone="+16505689789"^^tt:phone_number },
+C:   { id="7WLVcOSqcBJZG36_rdI3CA"^^com.yelp:restaurant("Redwood Bistro"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/bFk3Em8GMnVqpRwCkZfW7A/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/redwood-bistro-redwood-city?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["chinese"^^com.yelp:restaurant_cuisine("Chinese")], price=enum moderate, rating=4.5, review_count=329, geo=new Location(37.48712, -122.23548, "711 El Camino Real, Redwood City, CA 94063"), phone="+16502169988"^^tt:phone_number },
+C:   { id="uMu3grYWk3ERsw8fXlFGvw"^^com.yelp:restaurant("Panda Dumpling"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/Qheysge21koMREg8aTOCJA/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/panda-dumpling-san-carlos?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["chinese"^^com.yelp:restaurant_cuisine("Chinese")], price=enum moderate, rating=4, review_count=631, geo=new Location(37.49904, -122.25199, "1195 Laurel St, San Carlos, CA 94070"), phone="+16505938888"^^tt:phone_number },
+C:   { id="a6YM6lvO5ATmvnX3Ozdq9Q"^^com.yelp:restaurant("Hot Wok Bistro Too"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/JeGbwhkzpWZ2kkHUzFGaTQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/hot-wok-bistro-too-san-carlos-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["chinese"^^com.yelp:restaurant_cuisine("Chinese")], price=enum cheap, rating=4, review_count=263, geo=new Location(37.4957223292802, -122.248010847522, "1541 Laurel St, San Carlos, CA 94070"), phone="+16506224979"^^tt:phone_number },
+C:   { id="S8ecMU_Sx0esyI7YDC_5Yw"^^com.yelp:restaurant("Amazing Wok"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/PwbTj_RDUipr1ENVNMuyKA/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/amazing-wok-san-carlos?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["chinese"^^com.yelp:restaurant_cuisine("Chinese")], price=enum moderate, rating=4, review_count=327, geo=new Location(37.49475, -122.24667, "1653 Laurel St, San Carlos, CA 94070"), phone="+16505952031"^^tt:phone_number },
+C:   { id="bnKsZLJChHEnFV9g7mkxnA"^^com.yelp:restaurant("Yan's Garden"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/gwmPoE50BMxQFyV9SlJ5bw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/yans-garden-san-carlos?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["chinese"^^com.yelp:restaurant_cuisine("Chinese")], price=enum moderate, rating=4, review_count=372, geo=new Location(37.5028084428936, -122.256572279751, "885 Laurel St, San Carlos, CA 94070"), phone="+16505939777"^^tt:phone_number },
+C:   { id="cYCXa_lfNmj-E7RiT11u6Q"^^com.yelp:restaurant("Red Hot Chilli Pepper"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/PUmvsVPC5g7GefjCcsz14A/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/red-hot-chilli-pepper-san-carlos?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["chinese"^^com.yelp:restaurant_cuisine("Chinese"), "asianfusion"^^com.yelp:restaurant_cuisine("Asian Fusion"), "indpak"^^com.yelp:restaurant_cuisine("Indian")], price=enum moderate, rating=3.5, review_count=1241, geo=new Location(37.506844238722685, -122.26054660000001, "1125 San Carlos Ave, San Carlos, CA 94070"), phone="+16504533055"^^tt:phone_number },
+C:   { id="NhrRXDU6LaTf1wwwuU0Odg"^^com.yelp:restaurant("Seapot 海中锅"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/xKaXHOTfFgH9Don6nCOwFw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/seapot-%E6%B5%B7%E4%B8%AD%E9%94%85-san-mateo?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["seafood"^^com.yelp:restaurant_cuisine("Seafood"), "hotpot"^^com.yelp:restaurant_cuisine("Hot Pot"), "chinese"^^com.yelp:restaurant_cuisine("Chinese")], price=enum moderate, rating=4, review_count=1397, geo=new Location(37.54851, -122.31128, "1952 S El Camino Real, San Mateo, CA 94403"), phone="+16503152827"^^tt:phone_number },
+C:   { id="4Bn7z4IPxBk9dF3EpTqMQg"^^com.yelp:restaurant("Happy Lamb Hot Pot"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/OlAyxorRckAHQTmusBWi2Q/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/happy-lamb-hot-pot-san-mateo?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["chinese"^^com.yelp:restaurant_cuisine("Chinese"), "mongolian"^^com.yelp:restaurant_cuisine("Mongolian"), "hotpot"^^com.yelp:restaurant_cuisine("Hot Pot")], price=enum moderate, rating=4, review_count=1508, geo=new Location(37.5656637, -122.3237292, "215 S Ellsworth Ave, San Mateo, CA 94401"), phone="+16503432566"^^tt:phone_number }
+C: ]]
+C: #[count=38];
+A: I have found Crouching Tiger Restaurant & Bar or I Dumpling. They're restaurants rated 4 star having Chinese food.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_two;
+U: how many reviews do they have
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [review_count] of @com.yelp.restaurant() filter contains(cuisines, "chinese"^^com.yelp:restaurant_cuisine("Chinese")) && geo == new Location(37.4863239, -122.232523, "Redwood City, California");
+====
+# recording/a2700073a62a8eeb0a2e28a3e5d2d476
+U: what are the best 3 restaurants in redwood city
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating desc of @com.yelp.restaurant() filter geo == new Location("redwood city"))[1 : 3];
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: sort(rating desc of @com.yelp.restaurant() filter geo == new Location(37.4863239, -122.232523, "Redwood City, California"))[1 : 3]
+C: #[results=[
+C:   { id="HahGa2zjrNsZ-vEuYPBxcA"^^com.yelp:restaurant("Falafelle"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/8Rr6daL7NXjAk8U7pLDoLw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/falafelle-belmont?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["vegan"^^com.yelp:restaurant_cuisine("Vegan"), "mideastern"^^com.yelp:restaurant_cuisine("Middle Eastern"), "falafel"^^com.yelp:restaurant_cuisine("Falafel")], price=enum cheap, rating=5, review_count=724, geo=new Location(37.51881584188606, -122.27742557949001, "1035 Ralston Ave, Belmont, CA 94002"), phone="+16507291222"^^tt:phone_number },
+C:   { id="kn7uvNMFhmrg3xCXOihVUw"^^com.yelp:restaurant("V&V Delicious Crepes"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/aeSPdOsPdOguEv_wGxC87g/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/v-and-v-delicious-crepes-san-carlos-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["creperies"^^com.yelp:restaurant_cuisine("Crepes"), "vegan"^^com.yelp:restaurant_cuisine("Vegan"), "vegetarian"^^com.yelp:restaurant_cuisine("Vegetarian")], price=enum moderate, rating=5, review_count=173, geo=new Location(37.507795230408, -122.259395867586, "601 Old County Rd, San Carlos, CA 94070"), phone="+16504861251"^^tt:phone_number },
+C:   { id="ig90VggWkyvxdOn47vzmwA"^^com.yelp:restaurant("Falafel and Things"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/xt69z9UoISBfYucpicUsUw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/falafel-and-things-redwood-city-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["falafel"^^com.yelp:restaurant_cuisine("Falafel"), "mideastern"^^com.yelp:restaurant_cuisine("Middle Eastern")], price=enum moderate, rating=5, review_count=71, geo=new Location(37.483465, -122.2056157, "2766 Bay Rd, Redwood City, CA 94063"), phone="+15103616207"^^tt:phone_number }
+C: ]];
+A: I have Falafelle, V&V Delicious Crepes and Falafel and Things. They're restaurants rated 5 star.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_three;
+U: anything chinese
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating desc of @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese")) && geo == new Location(37.4863239, -122.232523, "Redwood City, California"))[1 : 3];
+====
+# recording/eea6bf210f40aa66e5b20f76063bf854
+U: what is a good restaurant around here
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == $location.current_location;
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.yelp.restaurant() filter geo == new Location(37.4519671, -122.1779927, "Menlo Park")
+C: #[results=[
+C:   { id="1vMgajRAI3lYwuCeGX58oQ"^^com.yelp:restaurant("Evvia Estiatorio"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/GGqRQbLqoDMBktLA5iqZZQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/evvia-estiatorio-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["greek"^^com.yelp:restaurant_cuisine("Greek")], price=enum expensive, rating=4.5, reviewCount=2427, geo=new Location(37.445077, -122.163778, "420 Emerson St, Palo Alto, CA 94301"), phone="+16503260983"^^tt:phone_number },
+C:   { id="vhfPni9pci29SEHrN1OtRg"^^com.yelp:restaurant("Ramen Nagi"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/gxSfnCdg13rWle8DcjmT6w/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/ramen-nagi-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["ramen"^^com.yelp:restaurant_cuisine("Ramen"), "noodles"^^com.yelp:restaurant_cuisine("Noodles")], price=enum moderate, rating=4.5, reviewCount=1768, geo=new Location(37.445523, -122.1607073261, "541 Bryant St, Palo Alto, CA 94301"), phone=""^^tt:phone_number },
+C:   { id="KyU7XWDPclmZ3BpdIsd_0Q"^^com.yelp:restaurant("Oren's Hummus"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/hZ9fx8ifFPt9Xj9utnd0TA/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/orens-hummus-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mediterranean"^^com.yelp:restaurant_cuisine("Mediterranean"), "mideastern"^^com.yelp:restaurant_cuisine("Middle Eastern")], price=enum moderate, rating=4, reviewCount=2293, geo=new Location(37.445717, -122.162173, "261 University Ave, Palo Alto, CA 94301"), phone="+16507526492"^^tt:phone_number },
+C:   { id="6i3eOYhboqTPEHThTOxgfg"^^com.yelp:restaurant("The Refuge"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/yDxywFUX7iBwY556Q-7y6w/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/the-refuge-menlo-park?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["sandwiches"^^com.yelp:restaurant_cuisine("Sandwiches"), "burgers"^^com.yelp:restaurant_cuisine("Burgers"), "gastropubs"^^com.yelp:restaurant_cuisine("Gastropubs")], price=enum moderate, rating=4, reviewCount=832, geo=new Location(37.451286315918, -122.185943603516, "1143 Crane St, Menlo Park, CA 94025"), phone="+16503198197"^^tt:phone_number },
+C:   { id="BkwTtLkb0MImKsZ8H1nCAg"^^com.yelp:restaurant("Back A Yard Caribbean American Grill"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/Uqcb2bvNWKEMZVQmkj_Rhg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/back-a-yard-caribbean-american-grill-menlo-park?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["tradamerican"^^com.yelp:restaurant_cuisine("American (Traditional)"), "caribbean"^^com.yelp:restaurant_cuisine("Caribbean"), "bbq"^^com.yelp:restaurant_cuisine("Barbeque")], price=enum moderate, rating=4.5, reviewCount=2231, geo=new Location(37.4729, -122.154948, "1189 Willow Rd, Menlo Park, CA 94025"), phone="+16503234244"^^tt:phone_number },
+C:   { id="0WDM3JlNBvk2MeOTlu03mg"^^com.yelp:restaurant("Coconuts Caribbean Restaurant & Bar"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/gVksndAr5BsNfHaO2ilaSQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/coconuts-caribbean-restaurant-and-bar-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["caribbean"^^com.yelp:restaurant_cuisine("Caribbean")], price=enum moderate, rating=4, reviewCount=2266, geo=new Location(37.44381, -122.16027, "642 Ramona St, Palo Alto, CA 94301"), phone="+16503299533"^^tt:phone_number },
+C:   { id="_mkNOTiQ-kbc1kJHo9RoVA"^^com.yelp:restaurant("Tamarine Restaurant"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/u6KX5WLtw23IMcIJgOSSCw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/tamarine-restaurant-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["vietnamese"^^com.yelp:restaurant_cuisine("Vietnamese")], price=enum expensive, rating=4, reviewCount=1854, geo=new Location(37.44881, -122.15833, "546 University Ave, Palo Alto, CA 94301"), phone="+16503258500"^^tt:phone_number },
+C:   { id="T7EzfBA_AC3ys-S1McYsKA"^^com.yelp:restaurant("True Food Kitchen"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/mVmwaJWAs2Fbdsc56UDocw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/true-food-kitchen-palo-alto-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["newamerican"^^com.yelp:restaurant_cuisine("American (New)"), "pizza"^^com.yelp:restaurant_cuisine("Pizza")], price=enum moderate, rating=4, reviewCount=1145, geo=new Location(37.443921, -122.170323, "180 El Camino Real, Palo Alto, CA 94304"), phone="+16502725157"^^tt:phone_number },
+C:   { id="d_IBp5wNVn5wDlNkblAL8w"^^com.yelp:restaurant("Fleming's Prime Steakhouse & Wine Bar"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/sdrmyH66gPwp9T5FjgS4Gw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/flemings-prime-steakhouse-and-wine-bar-palo-alto-6?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["steak"^^com.yelp:restaurant_cuisine("Steakhouses"), "seafood"^^com.yelp:restaurant_cuisine("Seafood")], price=enum expensive, rating=3.5, reviewCount=1397, geo=new Location(37.44492, -122.16955, "180 El Camino Real, Ste 2, Palo Alto, CA 94304"), phone="+16503298457"^^tt:phone_number },
+C:   { id="TtYbsOqn7vLKhva0AuKQQQ"^^com.yelp:restaurant("Philz Coffee"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/pJ_oxEFNyWFVltj_jK767A/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/philz-coffee-palo-alto-6?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch")], price=enum cheap, rating=4.5, reviewCount=805, geo=new Location(37.442174, -122.161583, "101 Forest Ave, Palo Alto, CA 94301"), phone="+16503212161"^^tt:phone_number }
+C: ]]
+C: #[count=50];
+A: Where are you now?
+A: I have Evvia Estiatorio and Ramen Nagi. All of them are restaurants rated 4.5 star.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_two;
+U: What's a good chinese restaurant here
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese")) && geo == $location.current_location;
+====
+# recording/99c963c2ee83f494b06ad16d885e540d
+U: can you show me chinese restaurants with rating below 3.5?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese")) && rating <= 3.5;
+====
+# recording/0ef19bdf494026dca983c6a76477a495
+U: show me the restaurants around berkeley
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("berkeley");
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.yelp.restaurant() filter geo == new Location(37.8708393, -122.2728639, "Berkeley, California")
+C: #[results=[
+C:   { id="uvCBQevs26owAL7KW2_VIA"^^com.yelp:restaurant("Cheese Board Pizza"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/S-5Nn8BJufkVNKJ281D6FQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/cheese-board-pizza-berkeley?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["pizza"^^com.yelp:restaurant_cuisine("Pizza")], price=enum cheap, rating=4.5, review_count=5367, geo=new Location(37.8801315387818, -122.269357296486, "1512 Shattuck Ave, Berkeley, CA 94709"), phone="+15105493183"^^tt:phone_number },
+C:   { id="Q4o6ySw2V6r0UbK-aCAfng"^^com.yelp:restaurant("Angeline's Louisiana Kitchen"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/7JmU5f54Ga5mGEdmLwKt2A/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/angelines-louisiana-kitchen-berkeley?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["cajun"^^com.yelp:restaurant_cuisine("Cajun/Creole"), "southern"^^com.yelp:restaurant_cuisine("Southern"), "seafood"^^com.yelp:restaurant_cuisine("Seafood")], price=enum moderate, rating=4, review_count=4318, geo=new Location(37.868282, -122.267555, "2261 Shattuck Ave, Berkeley, CA 94704"), phone="+15105486900"^^tt:phone_number },
+C:   { id="2u4DSD6F8RyFXp-Crhj8OA"^^com.yelp:restaurant("Cinnaholic"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/ztLLRhCIvdIWS8j3WujXPw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/cinnaholic-berkeley-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["vegan"^^com.yelp:restaurant_cuisine("Vegan")], price=enum cheap, rating=4.5, review_count=1686, geo=new Location(37.870305, -122.266062498093, "2132 Oxford St, Berkeley, CA 94704"), phone="+15106478684"^^tt:phone_number },
+C:   { id="KoZtPdlNO2jMJ7Zc7I9JVg"^^com.yelp:restaurant("Jupiter"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/Tt3T3_pk5u0i6iDJjt4UIQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/jupiter-berkeley?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["pizza"^^com.yelp:restaurant_cuisine("Pizza"), "chicken_wings"^^com.yelp:restaurant_cuisine("Chicken Wings")], price=enum moderate, rating=4, review_count=3184, geo=new Location(37.869817, -122.267597, "2181 Shattuck Ave, Berkeley, CA 94704"), phone="+15108438277"^^tt:phone_number },
+C:   { id="dmZS7KKxE8GHfIHzsenqUQ"^^com.yelp:restaurant("La Note"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/JALkbjMGELKBg8l3dIHqQg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/la-note-berkeley-5?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["french"^^com.yelp:restaurant_cuisine("French"), "breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch")], price=enum moderate, rating=4, review_count=3668, geo=new Location(37.8662142064674, -122.267341609173, "2377 Shattuck Ave, Berkeley, CA 94704"), phone="+15108431525"^^tt:phone_number },
+C:   { id="Se9nvLiXHWI5ltMSo8klCw"^^com.yelp:restaurant("The Butchers Son"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/BjmhM0KqCJB_NwyAQxavAw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/the-butchers-son-berkeley?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["salad"^^com.yelp:restaurant_cuisine("Salad"), "tradamerican"^^com.yelp:restaurant_cuisine("American (Traditional)")], price=enum moderate, rating=4, review_count=1345, geo=new Location(37.8715428393541, -122.271646200946, "1954 University Ave, Berkeley, CA 94704"), phone="+15109840818"^^tt:phone_number },
+C:   { id="cMyf8e6frO9PIutPvXpjow"^^com.yelp:restaurant("Chez Panisse"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/LDM_1qIyYMuI1Z9jgWSGrg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/chez-panisse-berkeley?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["newamerican"^^com.yelp:restaurant_cuisine("American (New)"), "french"^^com.yelp:restaurant_cuisine("French")], price=enum luxury, rating=4, review_count=2845, geo=new Location(37.879664, -122.26894, "1517 Shattuck Ave, Berkeley, CA 94709"), phone="+15105485525"^^tt:phone_number },
+C:   { id="sKnjZ4bb-0AWxWqJv7cHOw"^^com.yelp:restaurant("Grégoire"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/zVNybiotkBeVGWFjSNFnWw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/gregoire-berkeley?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["french"^^com.yelp:restaurant_cuisine("French"), "sandwiches"^^com.yelp:restaurant_cuisine("Sandwiches")], price=enum moderate, rating=4, review_count=2277, geo=new Location(37.8785970706384, -122.268645902327, "2109 Cedar St, Berkeley, CA 94709"), phone="+15108831893"^^tt:phone_number },
+C:   { id="oqyeLUSC2Z3Aczzh_4-4Yw"^^com.yelp:restaurant("Berkeley Social Club"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/31M_26DVjqn7EWndAwmVeQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/berkeley-social-club-berkeley?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch"), "korean"^^com.yelp:restaurant_cuisine("Korean")], price=enum moderate, rating=4, review_count=1333, geo=new Location(37.8718158, -122.2696171, "2050 University Ave, Berkeley, CA 94704"), phone="+15109005858"^^tt:phone_number },
+C:   { id="uBuIZ8Pdk9HegYSAU0EsKA"^^com.yelp:restaurant("Great China"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/QpXekbyL5oYjoC-XWdgzxQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/great-china-berkeley?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["chinese"^^com.yelp:restaurant_cuisine("Chinese")], price=enum moderate, rating=4, review_count=2186, geo=new Location(37.8676818865786, -122.26615783488, "2190 Bancroft Way, Berkeley, CA 94704"), phone="+15108437996"^^tt:phone_number }
+C: ]]
+C: #[count=50];
+A: I have found Cheese Board Pizza. It is a cheap restaurant near Berkeley, California.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: what is the address?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [geo] of @com.yelp.restaurant() filter geo == new Location(37.8708393, -122.2728639, "Berkeley, California") && id == "uvCBQevs26owAL7KW2_VIA"^^com.yelp:restaurant("Cheese Board Pizza");
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.yelp.restaurant() filter geo == new Location(37.8708393, -122.2728639, "Berkeley, California")
+C: #[results=[
+C:   { id="uvCBQevs26owAL7KW2_VIA"^^com.yelp:restaurant("Cheese Board Pizza"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/S-5Nn8BJufkVNKJ281D6FQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/cheese-board-pizza-berkeley?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["pizza"^^com.yelp:restaurant_cuisine("Pizza")], price=enum cheap, rating=4.5, review_count=5367, geo=new Location(37.8801315387818, -122.269357296486, "1512 Shattuck Ave, Berkeley, CA 94709"), phone="+15105493183"^^tt:phone_number },
+C:   { id="Q4o6ySw2V6r0UbK-aCAfng"^^com.yelp:restaurant("Angeline's Louisiana Kitchen"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/7JmU5f54Ga5mGEdmLwKt2A/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/angelines-louisiana-kitchen-berkeley?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["cajun"^^com.yelp:restaurant_cuisine("Cajun/Creole"), "southern"^^com.yelp:restaurant_cuisine("Southern"), "seafood"^^com.yelp:restaurant_cuisine("Seafood")], price=enum moderate, rating=4, review_count=4318, geo=new Location(37.868282, -122.267555, "2261 Shattuck Ave, Berkeley, CA 94704"), phone="+15105486900"^^tt:phone_number },
+C:   { id="2u4DSD6F8RyFXp-Crhj8OA"^^com.yelp:restaurant("Cinnaholic"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/ztLLRhCIvdIWS8j3WujXPw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/cinnaholic-berkeley-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["vegan"^^com.yelp:restaurant_cuisine("Vegan")], price=enum cheap, rating=4.5, review_count=1686, geo=new Location(37.870305, -122.266062498093, "2132 Oxford St, Berkeley, CA 94704"), phone="+15106478684"^^tt:phone_number },
+C:   { id="KoZtPdlNO2jMJ7Zc7I9JVg"^^com.yelp:restaurant("Jupiter"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/Tt3T3_pk5u0i6iDJjt4UIQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/jupiter-berkeley?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["pizza"^^com.yelp:restaurant_cuisine("Pizza"), "chicken_wings"^^com.yelp:restaurant_cuisine("Chicken Wings")], price=enum moderate, rating=4, review_count=3184, geo=new Location(37.869817, -122.267597, "2181 Shattuck Ave, Berkeley, CA 94704"), phone="+15108438277"^^tt:phone_number },
+C:   { id="dmZS7KKxE8GHfIHzsenqUQ"^^com.yelp:restaurant("La Note"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/JALkbjMGELKBg8l3dIHqQg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/la-note-berkeley-5?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["french"^^com.yelp:restaurant_cuisine("French"), "breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch")], price=enum moderate, rating=4, review_count=3668, geo=new Location(37.8662142064674, -122.267341609173, "2377 Shattuck Ave, Berkeley, CA 94704"), phone="+15108431525"^^tt:phone_number },
+C:   { id="Se9nvLiXHWI5ltMSo8klCw"^^com.yelp:restaurant("The Butchers Son"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/BjmhM0KqCJB_NwyAQxavAw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/the-butchers-son-berkeley?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["salad"^^com.yelp:restaurant_cuisine("Salad"), "tradamerican"^^com.yelp:restaurant_cuisine("American (Traditional)")], price=enum moderate, rating=4, review_count=1345, geo=new Location(37.8715428393541, -122.271646200946, "1954 University Ave, Berkeley, CA 94704"), phone="+15109840818"^^tt:phone_number },
+C:   { id="cMyf8e6frO9PIutPvXpjow"^^com.yelp:restaurant("Chez Panisse"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/LDM_1qIyYMuI1Z9jgWSGrg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/chez-panisse-berkeley?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["newamerican"^^com.yelp:restaurant_cuisine("American (New)"), "french"^^com.yelp:restaurant_cuisine("French")], price=enum luxury, rating=4, review_count=2845, geo=new Location(37.879664, -122.26894, "1517 Shattuck Ave, Berkeley, CA 94709"), phone="+15105485525"^^tt:phone_number },
+C:   { id="sKnjZ4bb-0AWxWqJv7cHOw"^^com.yelp:restaurant("Grégoire"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/zVNybiotkBeVGWFjSNFnWw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/gregoire-berkeley?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["french"^^com.yelp:restaurant_cuisine("French"), "sandwiches"^^com.yelp:restaurant_cuisine("Sandwiches")], price=enum moderate, rating=4, review_count=2277, geo=new Location(37.8785970706384, -122.268645902327, "2109 Cedar St, Berkeley, CA 94709"), phone="+15108831893"^^tt:phone_number },
+C:   { id="oqyeLUSC2Z3Aczzh_4-4Yw"^^com.yelp:restaurant("Berkeley Social Club"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/31M_26DVjqn7EWndAwmVeQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/berkeley-social-club-berkeley?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch"), "korean"^^com.yelp:restaurant_cuisine("Korean")], price=enum moderate, rating=4, review_count=1333, geo=new Location(37.8718158, -122.2696171, "2050 University Ave, Berkeley, CA 94704"), phone="+15109005858"^^tt:phone_number },
+C:   { id="uBuIZ8Pdk9HegYSAU0EsKA"^^com.yelp:restaurant("Great China"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/QpXekbyL5oYjoC-XWdgzxQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/great-china-berkeley?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["chinese"^^com.yelp:restaurant_cuisine("Chinese")], price=enum moderate, rating=4, review_count=2186, geo=new Location(37.8676818865786, -122.26615783488, "2190 Bancroft Way, Berkeley, CA 94704"), phone="+15108437996"^^tt:phone_number }
+C: ]]
+C: #[count=50];
+C: [geo] of @com.yelp.restaurant() filter geo == new Location(37.8708393, -122.2728639, "Berkeley, California") && id == "uvCBQevs26owAL7KW2_VIA"^^com.yelp:restaurant("Cheese Board Pizza")
+C: #[results=[
+C:   { id="uvCBQevs26owAL7KW2_VIA"^^com.yelp:restaurant("Cheese Board Pizza"), geo=new Location(37.8801315387818, -122.269357296486, "1512 Shattuck Ave, Berkeley, CA 94709") }
+C: ]];
+A: Cheese Board Pizza is a restaurant near Berkeley, California.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: show me restaurants in Canada
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [geo] of @com.yelp.restaurant() filter geo == new Location("canada");
+====
+# recording/b7dcaa84a8314f16bf82bf8a5b6c6a12
+U: show me nearby restaurants
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == $location.current_location;
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.yelp.restaurant() filter geo == new Location(37.433014400000005, -122.17087506623025, "Cantor Arts Center")
+C: #[results=[
+C:   { id="1vMgajRAI3lYwuCeGX58oQ"^^com.yelp:restaurant("Evvia Estiatorio"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/GGqRQbLqoDMBktLA5iqZZQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/evvia-estiatorio-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["greek"^^com.yelp:restaurant_cuisine("Greek")], price=enum expensive, rating=4.5, review_count=2427, geo=new Location(37.445077, -122.163778, "420 Emerson St, Palo Alto, CA 94301"), phone="+16503260983"^^tt:phone_number },
+C:   { id="vhfPni9pci29SEHrN1OtRg"^^com.yelp:restaurant("Ramen Nagi"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/gxSfnCdg13rWle8DcjmT6w/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/ramen-nagi-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["ramen"^^com.yelp:restaurant_cuisine("Ramen"), "noodles"^^com.yelp:restaurant_cuisine("Noodles")], price=enum moderate, rating=4.5, review_count=1768, geo=new Location(37.445523, -122.1607073261, "541 Bryant St, Palo Alto, CA 94301"), phone=""^^tt:phone_number },
+C:   { id="KyU7XWDPclmZ3BpdIsd_0Q"^^com.yelp:restaurant("Oren's Hummus"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/hZ9fx8ifFPt9Xj9utnd0TA/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/orens-hummus-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mediterranean"^^com.yelp:restaurant_cuisine("Mediterranean"), "mideastern"^^com.yelp:restaurant_cuisine("Middle Eastern")], price=enum moderate, rating=4, review_count=2293, geo=new Location(37.445717, -122.162173, "261 University Ave, Palo Alto, CA 94301"), phone="+16507526492"^^tt:phone_number },
+C:   { id="0WDM3JlNBvk2MeOTlu03mg"^^com.yelp:restaurant("Coconuts Caribbean Restaurant & Bar"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/gVksndAr5BsNfHaO2ilaSQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/coconuts-caribbean-restaurant-and-bar-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["caribbean"^^com.yelp:restaurant_cuisine("Caribbean")], price=enum moderate, rating=4, review_count=2266, geo=new Location(37.44381, -122.16027, "642 Ramona St, Palo Alto, CA 94301"), phone="+16503299533"^^tt:phone_number },
+C:   { id="TtYbsOqn7vLKhva0AuKQQQ"^^com.yelp:restaurant("Philz Coffee"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/pJ_oxEFNyWFVltj_jK767A/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/philz-coffee-palo-alto-6?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch")], price=enum cheap, rating=4.5, review_count=805, geo=new Location(37.442174, -122.161583, "101 Forest Ave, Palo Alto, CA 94301"), phone="+16503212161"^^tt:phone_number },
+C:   { id="3b0yY-kCOG-1Eq9oamlSzw"^^com.yelp:restaurant("Zareen's"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/o5_yGi3Qpk89hEQw1g-22Q/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/zareens-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["indpak"^^com.yelp:restaurant_cuisine("Indian"), "halal"^^com.yelp:restaurant_cuisine("Halal"), "pakistani"^^com.yelp:restaurant_cuisine("Pakistani")], price=enum moderate, rating=4.5, review_count=1306, geo=new Location(37.426764, -122.144079, "365 S California Ave, Palo Alto, CA 94306"), phone="+16506008438"^^tt:phone_number },
+C:   { id="_mkNOTiQ-kbc1kJHo9RoVA"^^com.yelp:restaurant("Tamarine Restaurant"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/u6KX5WLtw23IMcIJgOSSCw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/tamarine-restaurant-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["vietnamese"^^com.yelp:restaurant_cuisine("Vietnamese")], price=enum expensive, rating=4, review_count=1854, geo=new Location(37.44881, -122.15833, "546 University Ave, Palo Alto, CA 94301"), phone="+16503258500"^^tt:phone_number },
+C:   { id="T7EzfBA_AC3ys-S1McYsKA"^^com.yelp:restaurant("True Food Kitchen"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/mVmwaJWAs2Fbdsc56UDocw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/true-food-kitchen-palo-alto-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["newamerican"^^com.yelp:restaurant_cuisine("American (New)"), "pizza"^^com.yelp:restaurant_cuisine("Pizza")], price=enum moderate, rating=4, review_count=1145, geo=new Location(37.443921, -122.170323, "180 El Camino Real, Palo Alto, CA 94304"), phone="+16502725157"^^tt:phone_number },
+C:   { id="gYZbQe-zYyMpd9z1ud0T0w"^^com.yelp:restaurant("La Bodeguita Del Medio"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/VgcxHqaS0NBm1r8CE41upg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/la-bodeguita-del-medio-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["cuban"^^com.yelp:restaurant_cuisine("Cuban"), "sandwiches"^^com.yelp:restaurant_cuisine("Sandwiches")], price=enum moderate, rating=4, review_count=1928, geo=new Location(37.42539, -122.1451, "463 S California Ave, Palo Alto, CA 94306"), phone="+16503267762"^^tt:phone_number },
+C:   { id="3XwVZr6Jj2DnZ8B2W3RboQ"^^com.yelp:restaurant("Tootsies"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/sBP0ZGba2MU3dt18H1bxIg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/tootsies-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["italian"^^com.yelp:restaurant_cuisine("Italian"), "breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch")], price=enum moderate, rating=4, review_count=616, geo=new Location(37.43754, -122.17303, "700 Welch Rd, Palo Alto, CA 94305"), phone="+16505210254"^^tt:phone_number }
+C: ]]
+C: #[count=50];
+A: Where are you now?
+A: I see Evvia Estiatorio and Ramen Nagi. They're restaurants rated 4.5 star.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_two;
+U: can you show me the worst ones?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating asc of @com.yelp.restaurant())[1];
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.yelp.restaurant() filter geo == new Location(37.433014400000005, -122.17087506623025, "Cantor Arts Center")
+C: #[results=[
+C:   { id="1vMgajRAI3lYwuCeGX58oQ"^^com.yelp:restaurant("Evvia Estiatorio"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/GGqRQbLqoDMBktLA5iqZZQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/evvia-estiatorio-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["greek"^^com.yelp:restaurant_cuisine("Greek")], price=enum expensive, rating=4.5, review_count=2427, geo=new Location(37.445077, -122.163778, "420 Emerson St, Palo Alto, CA 94301"), phone="+16503260983"^^tt:phone_number },
+C:   { id="vhfPni9pci29SEHrN1OtRg"^^com.yelp:restaurant("Ramen Nagi"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/gxSfnCdg13rWle8DcjmT6w/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/ramen-nagi-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["ramen"^^com.yelp:restaurant_cuisine("Ramen"), "noodles"^^com.yelp:restaurant_cuisine("Noodles")], price=enum moderate, rating=4.5, review_count=1768, geo=new Location(37.445523, -122.1607073261, "541 Bryant St, Palo Alto, CA 94301"), phone=""^^tt:phone_number },
+C:   { id="KyU7XWDPclmZ3BpdIsd_0Q"^^com.yelp:restaurant("Oren's Hummus"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/hZ9fx8ifFPt9Xj9utnd0TA/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/orens-hummus-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mediterranean"^^com.yelp:restaurant_cuisine("Mediterranean"), "mideastern"^^com.yelp:restaurant_cuisine("Middle Eastern")], price=enum moderate, rating=4, review_count=2293, geo=new Location(37.445717, -122.162173, "261 University Ave, Palo Alto, CA 94301"), phone="+16507526492"^^tt:phone_number },
+C:   { id="0WDM3JlNBvk2MeOTlu03mg"^^com.yelp:restaurant("Coconuts Caribbean Restaurant & Bar"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/gVksndAr5BsNfHaO2ilaSQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/coconuts-caribbean-restaurant-and-bar-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["caribbean"^^com.yelp:restaurant_cuisine("Caribbean")], price=enum moderate, rating=4, review_count=2266, geo=new Location(37.44381, -122.16027, "642 Ramona St, Palo Alto, CA 94301"), phone="+16503299533"^^tt:phone_number },
+C:   { id="TtYbsOqn7vLKhva0AuKQQQ"^^com.yelp:restaurant("Philz Coffee"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/pJ_oxEFNyWFVltj_jK767A/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/philz-coffee-palo-alto-6?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch")], price=enum cheap, rating=4.5, review_count=805, geo=new Location(37.442174, -122.161583, "101 Forest Ave, Palo Alto, CA 94301"), phone="+16503212161"^^tt:phone_number },
+C:   { id="3b0yY-kCOG-1Eq9oamlSzw"^^com.yelp:restaurant("Zareen's"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/o5_yGi3Qpk89hEQw1g-22Q/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/zareens-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["indpak"^^com.yelp:restaurant_cuisine("Indian"), "halal"^^com.yelp:restaurant_cuisine("Halal"), "pakistani"^^com.yelp:restaurant_cuisine("Pakistani")], price=enum moderate, rating=4.5, review_count=1306, geo=new Location(37.426764, -122.144079, "365 S California Ave, Palo Alto, CA 94306"), phone="+16506008438"^^tt:phone_number },
+C:   { id="_mkNOTiQ-kbc1kJHo9RoVA"^^com.yelp:restaurant("Tamarine Restaurant"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/u6KX5WLtw23IMcIJgOSSCw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/tamarine-restaurant-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["vietnamese"^^com.yelp:restaurant_cuisine("Vietnamese")], price=enum expensive, rating=4, review_count=1854, geo=new Location(37.44881, -122.15833, "546 University Ave, Palo Alto, CA 94301"), phone="+16503258500"^^tt:phone_number },
+C:   { id="T7EzfBA_AC3ys-S1McYsKA"^^com.yelp:restaurant("True Food Kitchen"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/mVmwaJWAs2Fbdsc56UDocw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/true-food-kitchen-palo-alto-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["newamerican"^^com.yelp:restaurant_cuisine("American (New)"), "pizza"^^com.yelp:restaurant_cuisine("Pizza")], price=enum moderate, rating=4, review_count=1145, geo=new Location(37.443921, -122.170323, "180 El Camino Real, Palo Alto, CA 94304"), phone="+16502725157"^^tt:phone_number },
+C:   { id="gYZbQe-zYyMpd9z1ud0T0w"^^com.yelp:restaurant("La Bodeguita Del Medio"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/VgcxHqaS0NBm1r8CE41upg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/la-bodeguita-del-medio-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["cuban"^^com.yelp:restaurant_cuisine("Cuban"), "sandwiches"^^com.yelp:restaurant_cuisine("Sandwiches")], price=enum moderate, rating=4, review_count=1928, geo=new Location(37.42539, -122.1451, "463 S California Ave, Palo Alto, CA 94306"), phone="+16503267762"^^tt:phone_number },
+C:   { id="3XwVZr6Jj2DnZ8B2W3RboQ"^^com.yelp:restaurant("Tootsies"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/sBP0ZGba2MU3dt18H1bxIg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/tootsies-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["italian"^^com.yelp:restaurant_cuisine("Italian"), "breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch")], price=enum moderate, rating=4, review_count=616, geo=new Location(37.43754, -122.17303, "700 Welch Rd, Palo Alto, CA 94305"), phone="+16505210254"^^tt:phone_number }
+C: ]]
+C: #[count=50];
+C: sort(rating asc of @com.yelp.restaurant())[1]
+C: #[results=[
+C:   { id="vStWaPrdP4ysnKpj0WoHJQ"^^com.yelp:restaurant("Rangoon Ruby"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/RMhejnIuiCMDmT9NaOKCAw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/rangoon-ruby-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["asianfusion"^^com.yelp:restaurant_cuisine("Asian Fusion"), "burmese"^^com.yelp:restaurant_cuisine("Burmese")], price=enum moderate, rating=3.5, review_count=1599, geo=new Location(37.44514, -122.16305, "445 Emerson St, Palo Alto, CA 94301"), phone="+16503236543"^^tt:phone_number }
+C: ]];
+A: The worst rated restaurant is Rangoon Ruby. It is a moderate restaurant near 420 Emerson St, Palo Alto, CA 94301.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: what is its rating?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [rating] of sort(rating asc of @com.yelp.restaurant() filter id == "vStWaPrdP4ysnKpj0WoHJQ"^^com.yelp:restaurant("Rangoon Ruby"))[1];
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.yelp.restaurant() filter geo == new Location(37.433014400000005, -122.17087506623025, "Cantor Arts Center")
+C: #[results=[
+C:   { id="1vMgajRAI3lYwuCeGX58oQ"^^com.yelp:restaurant("Evvia Estiatorio"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/GGqRQbLqoDMBktLA5iqZZQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/evvia-estiatorio-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["greek"^^com.yelp:restaurant_cuisine("Greek")], price=enum expensive, rating=4.5, review_count=2427, geo=new Location(37.445077, -122.163778, "420 Emerson St, Palo Alto, CA 94301"), phone="+16503260983"^^tt:phone_number },
+C:   { id="vhfPni9pci29SEHrN1OtRg"^^com.yelp:restaurant("Ramen Nagi"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/gxSfnCdg13rWle8DcjmT6w/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/ramen-nagi-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["ramen"^^com.yelp:restaurant_cuisine("Ramen"), "noodles"^^com.yelp:restaurant_cuisine("Noodles")], price=enum moderate, rating=4.5, review_count=1768, geo=new Location(37.445523, -122.1607073261, "541 Bryant St, Palo Alto, CA 94301"), phone=""^^tt:phone_number },
+C:   { id="KyU7XWDPclmZ3BpdIsd_0Q"^^com.yelp:restaurant("Oren's Hummus"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/hZ9fx8ifFPt9Xj9utnd0TA/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/orens-hummus-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mediterranean"^^com.yelp:restaurant_cuisine("Mediterranean"), "mideastern"^^com.yelp:restaurant_cuisine("Middle Eastern")], price=enum moderate, rating=4, review_count=2293, geo=new Location(37.445717, -122.162173, "261 University Ave, Palo Alto, CA 94301"), phone="+16507526492"^^tt:phone_number },
+C:   { id="0WDM3JlNBvk2MeOTlu03mg"^^com.yelp:restaurant("Coconuts Caribbean Restaurant & Bar"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/gVksndAr5BsNfHaO2ilaSQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/coconuts-caribbean-restaurant-and-bar-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["caribbean"^^com.yelp:restaurant_cuisine("Caribbean")], price=enum moderate, rating=4, review_count=2266, geo=new Location(37.44381, -122.16027, "642 Ramona St, Palo Alto, CA 94301"), phone="+16503299533"^^tt:phone_number },
+C:   { id="TtYbsOqn7vLKhva0AuKQQQ"^^com.yelp:restaurant("Philz Coffee"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/pJ_oxEFNyWFVltj_jK767A/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/philz-coffee-palo-alto-6?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch")], price=enum cheap, rating=4.5, review_count=805, geo=new Location(37.442174, -122.161583, "101 Forest Ave, Palo Alto, CA 94301"), phone="+16503212161"^^tt:phone_number },
+C:   { id="3b0yY-kCOG-1Eq9oamlSzw"^^com.yelp:restaurant("Zareen's"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/o5_yGi3Qpk89hEQw1g-22Q/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/zareens-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["indpak"^^com.yelp:restaurant_cuisine("Indian"), "halal"^^com.yelp:restaurant_cuisine("Halal"), "pakistani"^^com.yelp:restaurant_cuisine("Pakistani")], price=enum moderate, rating=4.5, review_count=1306, geo=new Location(37.426764, -122.144079, "365 S California Ave, Palo Alto, CA 94306"), phone="+16506008438"^^tt:phone_number },
+C:   { id="_mkNOTiQ-kbc1kJHo9RoVA"^^com.yelp:restaurant("Tamarine Restaurant"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/u6KX5WLtw23IMcIJgOSSCw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/tamarine-restaurant-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["vietnamese"^^com.yelp:restaurant_cuisine("Vietnamese")], price=enum expensive, rating=4, review_count=1854, geo=new Location(37.44881, -122.15833, "546 University Ave, Palo Alto, CA 94301"), phone="+16503258500"^^tt:phone_number },
+C:   { id="T7EzfBA_AC3ys-S1McYsKA"^^com.yelp:restaurant("True Food Kitchen"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/mVmwaJWAs2Fbdsc56UDocw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/true-food-kitchen-palo-alto-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["newamerican"^^com.yelp:restaurant_cuisine("American (New)"), "pizza"^^com.yelp:restaurant_cuisine("Pizza")], price=enum moderate, rating=4, review_count=1145, geo=new Location(37.443921, -122.170323, "180 El Camino Real, Palo Alto, CA 94304"), phone="+16502725157"^^tt:phone_number },
+C:   { id="gYZbQe-zYyMpd9z1ud0T0w"^^com.yelp:restaurant("La Bodeguita Del Medio"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/VgcxHqaS0NBm1r8CE41upg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/la-bodeguita-del-medio-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["cuban"^^com.yelp:restaurant_cuisine("Cuban"), "sandwiches"^^com.yelp:restaurant_cuisine("Sandwiches")], price=enum moderate, rating=4, review_count=1928, geo=new Location(37.42539, -122.1451, "463 S California Ave, Palo Alto, CA 94306"), phone="+16503267762"^^tt:phone_number },
+C:   { id="3XwVZr6Jj2DnZ8B2W3RboQ"^^com.yelp:restaurant("Tootsies"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/sBP0ZGba2MU3dt18H1bxIg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/tootsies-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["italian"^^com.yelp:restaurant_cuisine("Italian"), "breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch")], price=enum moderate, rating=4, review_count=616, geo=new Location(37.43754, -122.17303, "700 Welch Rd, Palo Alto, CA 94305"), phone="+16505210254"^^tt:phone_number }
+C: ]]
+C: #[count=50];
+C: sort(rating asc of @com.yelp.restaurant())[1]
+C: #[results=[
+C:   { id="vStWaPrdP4ysnKpj0WoHJQ"^^com.yelp:restaurant("Rangoon Ruby"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/RMhejnIuiCMDmT9NaOKCAw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/rangoon-ruby-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["asianfusion"^^com.yelp:restaurant_cuisine("Asian Fusion"), "burmese"^^com.yelp:restaurant_cuisine("Burmese")], price=enum moderate, rating=3.5, review_count=1599, geo=new Location(37.44514, -122.16305, "445 Emerson St, Palo Alto, CA 94301"), phone="+16503236543"^^tt:phone_number }
+C: ]];
+C: [rating] of sort(rating asc of @com.yelp.restaurant() filter id == "vStWaPrdP4ysnKpj0WoHJQ"^^com.yelp:restaurant("Rangoon Ruby"))[1]
+C: #[results=[
+C:   { id="vStWaPrdP4ysnKpj0WoHJQ"^^com.yelp:restaurant("Rangoon Ruby"), rating=3.5 }
+C: ]];
+A: Rangoon Ruby is a restaurant rated 3.5 star.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: do you have anything lower than 3.5 stars?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [rating] of sort(rating asc of @com.yelp.restaurant() filter rating <= 3.5)[1];
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.yelp.restaurant() filter geo == new Location(37.433014400000005, -122.17087506623025, "Cantor Arts Center")
+C: #[results=[
+C:   { id="1vMgajRAI3lYwuCeGX58oQ"^^com.yelp:restaurant("Evvia Estiatorio"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/GGqRQbLqoDMBktLA5iqZZQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/evvia-estiatorio-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["greek"^^com.yelp:restaurant_cuisine("Greek")], price=enum expensive, rating=4.5, review_count=2427, geo=new Location(37.445077, -122.163778, "420 Emerson St, Palo Alto, CA 94301"), phone="+16503260983"^^tt:phone_number },
+C:   { id="vhfPni9pci29SEHrN1OtRg"^^com.yelp:restaurant("Ramen Nagi"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/gxSfnCdg13rWle8DcjmT6w/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/ramen-nagi-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["ramen"^^com.yelp:restaurant_cuisine("Ramen"), "noodles"^^com.yelp:restaurant_cuisine("Noodles")], price=enum moderate, rating=4.5, review_count=1768, geo=new Location(37.445523, -122.1607073261, "541 Bryant St, Palo Alto, CA 94301"), phone=""^^tt:phone_number },
+C:   { id="KyU7XWDPclmZ3BpdIsd_0Q"^^com.yelp:restaurant("Oren's Hummus"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/hZ9fx8ifFPt9Xj9utnd0TA/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/orens-hummus-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mediterranean"^^com.yelp:restaurant_cuisine("Mediterranean"), "mideastern"^^com.yelp:restaurant_cuisine("Middle Eastern")], price=enum moderate, rating=4, review_count=2293, geo=new Location(37.445717, -122.162173, "261 University Ave, Palo Alto, CA 94301"), phone="+16507526492"^^tt:phone_number },
+C:   { id="0WDM3JlNBvk2MeOTlu03mg"^^com.yelp:restaurant("Coconuts Caribbean Restaurant & Bar"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/gVksndAr5BsNfHaO2ilaSQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/coconuts-caribbean-restaurant-and-bar-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["caribbean"^^com.yelp:restaurant_cuisine("Caribbean")], price=enum moderate, rating=4, review_count=2266, geo=new Location(37.44381, -122.16027, "642 Ramona St, Palo Alto, CA 94301"), phone="+16503299533"^^tt:phone_number },
+C:   { id="TtYbsOqn7vLKhva0AuKQQQ"^^com.yelp:restaurant("Philz Coffee"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/pJ_oxEFNyWFVltj_jK767A/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/philz-coffee-palo-alto-6?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch")], price=enum cheap, rating=4.5, review_count=805, geo=new Location(37.442174, -122.161583, "101 Forest Ave, Palo Alto, CA 94301"), phone="+16503212161"^^tt:phone_number },
+C:   { id="3b0yY-kCOG-1Eq9oamlSzw"^^com.yelp:restaurant("Zareen's"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/o5_yGi3Qpk89hEQw1g-22Q/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/zareens-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["indpak"^^com.yelp:restaurant_cuisine("Indian"), "halal"^^com.yelp:restaurant_cuisine("Halal"), "pakistani"^^com.yelp:restaurant_cuisine("Pakistani")], price=enum moderate, rating=4.5, review_count=1306, geo=new Location(37.426764, -122.144079, "365 S California Ave, Palo Alto, CA 94306"), phone="+16506008438"^^tt:phone_number },
+C:   { id="_mkNOTiQ-kbc1kJHo9RoVA"^^com.yelp:restaurant("Tamarine Restaurant"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/u6KX5WLtw23IMcIJgOSSCw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/tamarine-restaurant-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["vietnamese"^^com.yelp:restaurant_cuisine("Vietnamese")], price=enum expensive, rating=4, review_count=1854, geo=new Location(37.44881, -122.15833, "546 University Ave, Palo Alto, CA 94301"), phone="+16503258500"^^tt:phone_number },
+C:   { id="T7EzfBA_AC3ys-S1McYsKA"^^com.yelp:restaurant("True Food Kitchen"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/mVmwaJWAs2Fbdsc56UDocw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/true-food-kitchen-palo-alto-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["newamerican"^^com.yelp:restaurant_cuisine("American (New)"), "pizza"^^com.yelp:restaurant_cuisine("Pizza")], price=enum moderate, rating=4, review_count=1145, geo=new Location(37.443921, -122.170323, "180 El Camino Real, Palo Alto, CA 94304"), phone="+16502725157"^^tt:phone_number },
+C:   { id="gYZbQe-zYyMpd9z1ud0T0w"^^com.yelp:restaurant("La Bodeguita Del Medio"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/VgcxHqaS0NBm1r8CE41upg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/la-bodeguita-del-medio-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["cuban"^^com.yelp:restaurant_cuisine("Cuban"), "sandwiches"^^com.yelp:restaurant_cuisine("Sandwiches")], price=enum moderate, rating=4, review_count=1928, geo=new Location(37.42539, -122.1451, "463 S California Ave, Palo Alto, CA 94306"), phone="+16503267762"^^tt:phone_number },
+C:   { id="3XwVZr6Jj2DnZ8B2W3RboQ"^^com.yelp:restaurant("Tootsies"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/sBP0ZGba2MU3dt18H1bxIg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/tootsies-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["italian"^^com.yelp:restaurant_cuisine("Italian"), "breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch")], price=enum moderate, rating=4, review_count=616, geo=new Location(37.43754, -122.17303, "700 Welch Rd, Palo Alto, CA 94305"), phone="+16505210254"^^tt:phone_number }
+C: ]]
+C: #[count=50];
+C: sort(rating asc of @com.yelp.restaurant())[1]
+C: #[results=[
+C:   { id="vStWaPrdP4ysnKpj0WoHJQ"^^com.yelp:restaurant("Rangoon Ruby"), image_url="https://s3-media1.fl.yelpcdn.com/bphoto/RMhejnIuiCMDmT9NaOKCAw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/rangoon-ruby-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["asianfusion"^^com.yelp:restaurant_cuisine("Asian Fusion"), "burmese"^^com.yelp:restaurant_cuisine("Burmese")], price=enum moderate, rating=3.5, review_count=1599, geo=new Location(37.44514, -122.16305, "445 Emerson St, Palo Alto, CA 94301"), phone="+16503236543"^^tt:phone_number }
+C: ]];
+C: [rating] of sort(rating asc of @com.yelp.restaurant() filter id == "vStWaPrdP4ysnKpj0WoHJQ"^^com.yelp:restaurant("Rangoon Ruby"))[1]
+C: #[results=[
+C:   { id="vStWaPrdP4ysnKpj0WoHJQ"^^com.yelp:restaurant("Rangoon Ruby"), rating=3.5 }
+C: ]];
+C: [rating] of sort(rating asc of @com.yelp.restaurant() filter rating <= 3.5)[1]
+C: #[results=[
+C:   { id="vStWaPrdP4ysnKpj0WoHJQ"^^com.yelp:restaurant("Rangoon Ruby"), rating=3.5 }
+C: ]];
+A: The worst rated restaurant is Rangoon Ruby. It is a restaurant rated 3.5 star.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: how about chinese ones?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [rating] of sort(rating asc of @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese")) && rating <= 3.5)[1];
+====
+# recording/f611129df536391a695cd8f554a12e04
+U: where is the sakoon restaurant?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [geo] of @com.yelp.restaurant() filter id =~ "sakoon";
+====
+# recording/ee7fcb34461c662ef26678434f54b3d0
+U: where is sakoon restaurant
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [geo] of @com.yelp.restaurant() filter id =~ "sakoon";
+====
+# log-dev/7641
+U: computer find a restaurant.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant();
+====
+# log-dev/7394
+U: get restaurant with high rating for indian food
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("indian"));
+====
+# recording/cc36bdeefb26f581cfaab42ca28a82b5
+U: show me restaurants around here.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == $location.current_location;
+====
+# recording/05aacf2d14f6b87ddc8b468588d53d2c
+U: show me restaurants
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.yelp.restaurant()
+C: #[results=[
+C:   { id="vhfPni9pci29SEHrN1OtRg"^^com.yelp:restaurant("Ramen Nagi"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/gxSfnCdg13rWle8DcjmT6w/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/ramen-nagi-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["ramen"^^com.yelp:restaurant_cuisine("Ramen"), "noodles"^^com.yelp:restaurant_cuisine("Noodles")], price=enum moderate, rating=4.5, review_count=1792, geo=new Location(37.445523, -122.1607073261, "541 Bryant St, Palo Alto, CA 94301"), phone=""^^tt:phone_number },
+C:   { id="1vMgajRAI3lYwuCeGX58oQ"^^com.yelp:restaurant("Evvia Estiatorio"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/GGqRQbLqoDMBktLA5iqZZQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/evvia-estiatorio-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["greek"^^com.yelp:restaurant_cuisine("Greek")], price=enum expensive, rating=4.5, review_count=2432, geo=new Location(37.445077, -122.163778, "420 Emerson St, Palo Alto, CA 94301"), phone="+16503260983"^^tt:phone_number },
+C:   { id="3b0yY-kCOG-1Eq9oamlSzw"^^com.yelp:restaurant("Zareen's"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/o5_yGi3Qpk89hEQw1g-22Q/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/zareens-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["indpak"^^com.yelp:restaurant_cuisine("Indian"), "halal"^^com.yelp:restaurant_cuisine("Halal"), "pakistani"^^com.yelp:restaurant_cuisine("Pakistani")], price=enum moderate, rating=4.5, review_count=1324, geo=new Location(37.426764, -122.144079, "365 S California Ave, Palo Alto, CA 94306"), phone="+16506008438"^^tt:phone_number },
+C:   { id="_YDK0w05YAO99aQudHGpkA"^^com.yelp:restaurant("Philz Coffee"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/ThwUPBTjqTpNBEmc6CvIWQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/philz-coffee-palo-alto-5?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch")], price=enum cheap, rating=4.5, review_count=1155, geo=new Location(37.429495, -122.12274, "3191 Middlefield Rd, Palo Alto, CA 94303"), phone="+16502519798"^^tt:phone_number },
+C:   { id="KyU7XWDPclmZ3BpdIsd_0Q"^^com.yelp:restaurant("Oren's Hummus"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/hZ9fx8ifFPt9Xj9utnd0TA/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/orens-hummus-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mediterranean"^^com.yelp:restaurant_cuisine("Mediterranean"), "mideastern"^^com.yelp:restaurant_cuisine("Middle Eastern")], price=enum moderate, rating=4, review_count=2303, geo=new Location(37.445717, -122.162173, "261 University Ave, Palo Alto, CA 94301"), phone="+16507526492"^^tt:phone_number },
+C:   { id="gYZbQe-zYyMpd9z1ud0T0w"^^com.yelp:restaurant("La Bodeguita Del Medio"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/VgcxHqaS0NBm1r8CE41upg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/la-bodeguita-del-medio-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["cuban"^^com.yelp:restaurant_cuisine("Cuban"), "sandwiches"^^com.yelp:restaurant_cuisine("Sandwiches")], price=enum moderate, rating=4, review_count=1926, geo=new Location(37.42539, -122.1451, "463 S California Ave, Palo Alto, CA 94306"), phone="+16503267762"^^tt:phone_number },
+C:   { id="pLqiFFz1JScp8wMMyXcx-w"^^com.yelp:restaurant("Terún"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/w1yuXOCOAFcL_TVkoFed4Q/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/ter%C3%BAn-palo-alto-3?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["pizza"^^com.yelp:restaurant_cuisine("Pizza"), "italian"^^com.yelp:restaurant_cuisine("Italian")], price=enum moderate, rating=4, review_count=1572, geo=new Location(37.425993, -122.145453, "448 S California Ave, Palo Alto, CA 94306"), phone="+16506008310"^^tt:phone_number },
+C:   { id="0WDM3JlNBvk2MeOTlu03mg"^^com.yelp:restaurant("Coconuts Caribbean Restaurant & Bar"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/gVksndAr5BsNfHaO2ilaSQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/coconuts-caribbean-restaurant-and-bar-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["caribbean"^^com.yelp:restaurant_cuisine("Caribbean")], price=enum moderate, rating=4, review_count=2266, geo=new Location(37.44381, -122.16027, "642 Ramona St, Palo Alto, CA 94301"), phone="+16503299533"^^tt:phone_number },
+C:   { id="_mkNOTiQ-kbc1kJHo9RoVA"^^com.yelp:restaurant("Tamarine Restaurant"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/u6KX5WLtw23IMcIJgOSSCw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/tamarine-restaurant-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["vietnamese"^^com.yelp:restaurant_cuisine("Vietnamese")], price=enum expensive, rating=4, review_count=1854, geo=new Location(37.44881, -122.15833, "546 University Ave, Palo Alto, CA 94301"), phone="+16503258500"^^tt:phone_number },
+C:   { id="jwaXc3VVGDFQu1aCoiXwdw"^^com.yelp:restaurant("NOLA Restaurant & Bar"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/aFbcuzteoQ4yN5R9R5-XAg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/nola-restaurant-and-bar-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["cajun"^^com.yelp:restaurant_cuisine("Cajun/Creole"), "newamerican"^^com.yelp:restaurant_cuisine("American (New)")], price=enum expensive, rating=3.5, review_count=2837, geo=new Location(37.4450225830078, -122.161323547363, "535 Ramona St, Palo Alto, CA 94301"), phone="+16503282722"^^tt:phone_number }
+C: ]]
+C: #[count=50];
+A: I have Ramen Nagi, Evvia Estiatorio or Zareen's. They're 4.5 star restaurants.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_three;
+U: where is ramen nagi?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [geo] of @com.yelp.restaurant() filter id == null^^com.yelp:restaurant("ramen nagi");
+====
+# recording/225b30806320c4073c5ba32d9449956c
+U: hi
+UT: $dialogue @org.thingpedia.dialogue.transaction.greet;
+C: $dialogue @org.thingpedia.dialogue.transaction.greet;
+A: Hi, what can I do for you?
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_greet;
+U: who has the best chinese food out here?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating desc of @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese")) && geo == $location.current_location)[1];
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: sort(rating desc of @com.yelp.restaurant() filter contains(cuisines, "chinese"^^com.yelp:restaurant_cuisine("Chinese")) && geo == new Location(37.426540700000004, -122.17029258409187, "Stanford, Palo Alto"))[1]
+C: #[results=[
+C:   { id="OFUQHchaV2uqjJmO-EuVlA"^^com.yelp:restaurant("Veggie Garden"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/lXh0FX6kfTa7IXuGew5etQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/veggie-garden-mountain-view?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["vegan"^^com.yelp:restaurant_cuisine("Vegan"), "vegetarian"^^com.yelp:restaurant_cuisine("Vegetarian"), "chinese"^^com.yelp:restaurant_cuisine("Chinese")], price=enum moderate, rating=4.5, review_count=488, geo=new Location(37.399226131236, -122.1086273955, "2464 W El Camino Real, Ste C, Mountain View, CA 94040"), phone="+16509616888"^^tt:phone_number }
+C: ]];
+A: The top rated restaurant is Veggie Garden. It is a moderate restaurant near 2464 W El Camino Real, Ste C, Mountain View, CA 94040.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: what else do you have?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, "chinese"^^com.yelp:restaurant_cuisine("Chinese")) && geo == new Location(37.426540700000004, -122.17029258409187, "Stanford, Palo Alto");
+====
+# recording/a0e4834ced1d1844907ca23d8ecf68d5
+U: can you show me some restaurants?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant();
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.yelp.restaurant()
+C: #[results=[
+C:   { id="vhfPni9pci29SEHrN1OtRg"^^com.yelp:restaurant("Ramen Nagi"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/gxSfnCdg13rWle8DcjmT6w/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/ramen-nagi-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["ramen"^^com.yelp:restaurant_cuisine("Ramen"), "noodles"^^com.yelp:restaurant_cuisine("Noodles")], price=enum moderate, rating=4.5, review_count=1802, geo=new Location(37.445523, -122.1607073261, "541 Bryant St, Palo Alto, CA 94301"), phone=""^^tt:phone_number },
+C:   { id="1vMgajRAI3lYwuCeGX58oQ"^^com.yelp:restaurant("Evvia Estiatorio"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/GGqRQbLqoDMBktLA5iqZZQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/evvia-estiatorio-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["greek"^^com.yelp:restaurant_cuisine("Greek")], price=enum expensive, rating=4.5, review_count=2433, geo=new Location(37.445077, -122.163778, "420 Emerson St, Palo Alto, CA 94301"), phone="+16503260983"^^tt:phone_number },
+C:   { id="3b0yY-kCOG-1Eq9oamlSzw"^^com.yelp:restaurant("Zareen's"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/o5_yGi3Qpk89hEQw1g-22Q/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/zareens-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["indpak"^^com.yelp:restaurant_cuisine("Indian"), "halal"^^com.yelp:restaurant_cuisine("Halal"), "pakistani"^^com.yelp:restaurant_cuisine("Pakistani")], price=enum moderate, rating=4.5, review_count=1328, geo=new Location(37.426764, -122.144079, "365 S California Ave, Palo Alto, CA 94306"), phone="+16506008438"^^tt:phone_number },
+C:   { id="_YDK0w05YAO99aQudHGpkA"^^com.yelp:restaurant("Philz Coffee"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/ThwUPBTjqTpNBEmc6CvIWQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/philz-coffee-palo-alto-5?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["breakfast_brunch"^^com.yelp:restaurant_cuisine("Breakfast & Brunch")], price=enum cheap, rating=4.5, review_count=1157, geo=new Location(37.429495, -122.12274, "3191 Middlefield Rd, Palo Alto, CA 94303"), phone="+16502519798"^^tt:phone_number },
+C:   { id="KyU7XWDPclmZ3BpdIsd_0Q"^^com.yelp:restaurant("Oren's Hummus"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/hZ9fx8ifFPt9Xj9utnd0TA/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/orens-hummus-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["mediterranean"^^com.yelp:restaurant_cuisine("Mediterranean"), "mideastern"^^com.yelp:restaurant_cuisine("Middle Eastern")], price=enum moderate, rating=4, review_count=2306, geo=new Location(37.445717, -122.162173, "261 University Ave, Palo Alto, CA 94301"), phone="+16507526492"^^tt:phone_number },
+C:   { id="gYZbQe-zYyMpd9z1ud0T0w"^^com.yelp:restaurant("La Bodeguita Del Medio"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/VgcxHqaS0NBm1r8CE41upg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/la-bodeguita-del-medio-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["cuban"^^com.yelp:restaurant_cuisine("Cuban"), "sandwiches"^^com.yelp:restaurant_cuisine("Sandwiches")], price=enum moderate, rating=4, review_count=1927, geo=new Location(37.42539, -122.1451, "463 S California Ave, Palo Alto, CA 94306"), phone="+16503267762"^^tt:phone_number },
+C:   { id="pLqiFFz1JScp8wMMyXcx-w"^^com.yelp:restaurant("Terún"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/w1yuXOCOAFcL_TVkoFed4Q/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/ter%C3%BAn-palo-alto-3?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["pizza"^^com.yelp:restaurant_cuisine("Pizza"), "italian"^^com.yelp:restaurant_cuisine("Italian")], price=enum moderate, rating=4, review_count=1575, geo=new Location(37.425993, -122.145453, "448 S California Ave, Palo Alto, CA 94306"), phone="+16506008310"^^tt:phone_number },
+C:   { id="0WDM3JlNBvk2MeOTlu03mg"^^com.yelp:restaurant("Coconuts Caribbean Restaurant & Bar"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/gVksndAr5BsNfHaO2ilaSQ/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/coconuts-caribbean-restaurant-and-bar-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["caribbean"^^com.yelp:restaurant_cuisine("Caribbean")], price=enum moderate, rating=4, review_count=2266, geo=new Location(37.44381, -122.16027, "642 Ramona St, Palo Alto, CA 94301"), phone="+16503299533"^^tt:phone_number },
+C:   { id="_mkNOTiQ-kbc1kJHo9RoVA"^^com.yelp:restaurant("Tamarine Restaurant"), image_url="https://s3-media3.fl.yelpcdn.com/bphoto/u6KX5WLtw23IMcIJgOSSCw/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/tamarine-restaurant-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["vietnamese"^^com.yelp:restaurant_cuisine("Vietnamese")], price=enum expensive, rating=4, review_count=1853, geo=new Location(37.44881, -122.15833, "546 University Ave, Palo Alto, CA 94301"), phone="+16503258500"^^tt:phone_number },
+C:   { id="jwaXc3VVGDFQu1aCoiXwdw"^^com.yelp:restaurant("NOLA Restaurant & Bar"), image_url="https://s3-media4.fl.yelpcdn.com/bphoto/aFbcuzteoQ4yN5R9R5-XAg/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/nola-restaurant-and-bar-palo-alto?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["cajun"^^com.yelp:restaurant_cuisine("Cajun/Creole"), "newamerican"^^com.yelp:restaurant_cuisine("American (New)")], price=enum expensive, rating=3.5, review_count=2839, geo=new Location(37.4450225830078, -122.161323547363, "535 Ramona St, Palo Alto, CA 94301"), phone="+16503282722"^^tt:phone_number }
+C: ]]
+C: #[count=50];
+A: I have Ramen Nagi, Evvia Estiatorio or Zareen's. They're 4.5 star restaurants.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_three;
+U: can you show me two most rated restaurants?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating desc of @com.yelp.restaurant())[1 : 2];
+====
+# recording/b4e08ad0e579badd10faa3d9c77246b8
+U: I'm hungry
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant();
+====
+# log-dev/3119
+U: show me restaurants in taiwan rated at least 13 stars
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("taiwan") && rating >= 13;
+====
+# log-dev/3636
+U: show me restaurants in new york city rated at least 13 stars
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("new york city") && rating >= 13;
+====
+# log-dev/4491
+U: show me restaurants in seattle
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("seattle");
+====
+# log-dev/3093
+U: show restaurants in taipei rated higher than 13
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("taipei") && rating >= 13;
+====
+# log-dev/3683
+U: find restaurants
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant();
+====
+# log-dev/2140
+U: what's the best restaurant in palo alto
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating desc of @com.yelp.restaurant() filter geo == new Location("palo alto"))[1];
+====
+# log-dev/3359
+U: show restaurants in taiwan rated higher than 13
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("taiwan") && rating >= 13;
+====
+# log-dev/8072
+U: help search for restaurant in san ramon.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("san ramon");
+====
+# log-dev/2167
+U: what s the top-rated restaurant in palo alto
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(rating desc of @com.yelp.restaurant() filter geo == new Location("palo alto"))[1];
+====
+# log-dev/621
+U: search on yelp
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant();
+====
+# recording/d74a8277899d89205d5fee37240bc7f1
+U: I want to eat chinese food.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese"));
+====
+# recording/d33b3deb3cfbee3f21bfc99a873c17ce
+U: I like chinese food.
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("chinese"));
+====
+# recording/1fba1cf45334d2eb1d7e65d77ab03e3a
+U: show me restaurants with "box" in their name
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter id =~ "box";
+====
+# recording/da3427ae1bae714c674a6e194df1b219
+U: restaurants in saratoga
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter geo == new Location("saratoga");
+====
+# recording/803d3afb5b4723c1489d1bea6331f87f
+U: where is taverna?
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [geo] of @com.yelp.restaurant() filter id =~ "taverna";
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: [geo] of @com.yelp.restaurant() filter id =~ "taverna"
+C: #[results=[
+C:   { id="Z9zQYvlCLXw9x0AV4dYVng"^^com.yelp:restaurant("TAVERNA"), geo=new Location(37.44205, -122.15894, "800 Emerson St, Palo Alto, CA 94301") }
+C: ]];
+A: TAVERNA is a restaurant near 800 Emerson St, Palo Alto, CA 94301.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: suggest a pizzeria in palo alto
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [geo] of @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("pizzeria")) && geo == new Location("palo alto");
+====
+# recording/2f73b694538e33c6ea0a096afd27178a
+U: can you tell me a good japanese restaurant
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("japanese"));
+====
+# recording/794840d511e9106270ee55e5a9433572
+U: show me restaurants with "box" in their name
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter id =~ "box";
+====
+# recording/6d63c954ce2ef96bd74d607b0a2e244f
+U: find me indo restaurant & lounge
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter id =~ "indo restaurant & lounge";
+====
+# recording/fb064f84c7d397bc34b0538f65db925a
+U: show me the number of review
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [review_count] of @com.yelp.restaurant();
+====
+# recording/58e7ee7d8f37c9003c8c8206c755e151
+U: find me the restaurant named indo restaurant & lounge
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: @com.yelp.restaurant() filter id =~ "indo restaurant & lounge";
+C: $dialogue @org.thingpedia.dialogue.transaction.execute;
+C: @com.yelp.restaurant() filter id =~ "indo restaurant & lounge"
+C: #[results=[
+C:   { id="-gjBoypvDfv9UhagceRsvw"^^com.yelp:restaurant("INDO Restaurant & Lounge"), image_url="https://s3-media2.fl.yelpcdn.com/bphoto/fnkiIbVnSh9eCsgQzuz5og/o.jpg"^^tt:picture, link="https://www.yelp.com/biz/indo-restaurant-and-lounge-palo-alto-2?adjust_creative=hejPBQRox5iXtqGPiDw4dg&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=hejPBQRox5iXtqGPiDw4dg"^^tt:url, cuisines=["indonesian"^^com.yelp:restaurant_cuisine("Indonesian")], price=enum moderate, rating=4, review_count=1085, geo=new Location(37.42086, -122.13699, "3295 El Camino Real, Palo Alto, CA 94306"), phone="+16504947168"^^tt:phone_number }
+C: ]];
+A: INDO Restaurant & Lounge is a restaurant near 3295 El Camino Real, Palo Alto, CA 94306 rated 4 star.
+AT: $dialogue @org.thingpedia.dialogue.transaction.sys_recommend_one;
+U: how many people rated it
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: [review_count] of @com.yelp.restaurant() filter id == "-gjBoypvDfv9UhagceRsvw"^^com.yelp:restaurant("INDO Restaurant & Lounge");
+====
+# recording/f32a6ad5aa6748696dd55d19e48100e1
+U: what's the nearest pizza i can get to
+UT: $dialogue @org.thingpedia.dialogue.transaction.execute;
+UT: sort(distance(geo, $location.current_location) asc of @com.yelp.restaurant() filter contains(cuisines, null^^com.yelp:restaurant_cuisine("pizza")))[1];
