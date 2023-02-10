@@ -151,40 +151,20 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
 
     async _get(url) {
         const log = this.log.childFor(this._get);
-        const profiler = log.startTimer();
         log.debug("Start GET request...", { url });
 
-        let fromCache = false;
         const key = `com.yelp:${url}`;
         const cached = await this._getCached(key);
         let data;
         if (cached === null) {
-            const httpProfiler = log.startTimer();
             data = await Tp.Helpers.Http.get(url, {
-                auth: 'Bearer ' + this.constructor.metadata.auth.api_key
+                auth: 'Bearer ' + process.env.YELP_API_KEY
             });
-            const httpLogInfo = {
-                level: "http",
-                message: "Yelp API request complete",
-                url,
-            };
-            if (log.isLevelEnabled("debug")) httpLogInfo.data = data;
-            httpProfiler.done(httpLogInfo);
             this._setCached(key, data);
         } else {
-            fromCache = true;
             data = cached;
         }
         const response = JSON.parse(data);
-
-        const logInfo = {
-            level: "info",
-            message: "Request complete",
-            fromCache,
-            url,
-        };
-        if (log.isLevelEnabled("debug")) logInfo.response = response;
-        profiler.done(logInfo);
 
         return response;
     }
@@ -215,7 +195,6 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                 sortBy = 'rating';
         }
 
-        console.log(`need fields`, hints.projection);
         const needsBusinessDetails = hints.projection.includes('opening_hours');
 
         let url = `${URL}/search?limit=${limit}&sort_by=${sortBy}&locale=${this.platform.locale.replace('-', '_')}`;
@@ -281,11 +260,8 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
             url += `&radius=${params.radius.value}`;
         */
 
-        console.log(url);
-
         try {
             const parsed = await this._get(url);
-            console.log(`yelp API returns results: ${parsed}`);
             return await Promise.all(parsed.businesses.filter((b) => !b.is_closed).map(async (b) => {
                 const id = new Tp.Value.Entity(b.id, b.name);
                 const cuisines = b.categories.filter((cat) => CUISINES.has(cat.alias))
@@ -326,6 +302,8 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
     }
 
     async do_book_restaurant(params, hints, env) {
-        return {confirmation: 12345678};
+        return {
+            confirmation: 12345678
+        };
     }
 };
