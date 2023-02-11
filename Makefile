@@ -430,3 +430,6 @@ eval/$(release)/models/%/best.pth:
       else
 	  aws s3 sync --no-progress --exclude '*/dataset/*' --exclude '*/cache/*' --exclude 'iteration_*.pth' --exclude '*_optim.pth' $(s3_model_dir) eval/$(release)/models/$*/
       endif
+
+geniescript_install:
+	$(foreach file, $(wildcard $(shell pwd)/geniescript/*), cd $(file); npm install)
