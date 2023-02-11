@@ -433,3 +433,7 @@ eval/$(release)/models/%/best.pth:
 
 geniescript_install:
 	$(foreach file, $(wildcard $(shell pwd)/geniescript/*), cd $(file); npm install)
+
+# TODO: installation method above does not work. A temp solution for yelp
+geniescript_install_2:
+	cd geniescript/com.yelp; npm install
