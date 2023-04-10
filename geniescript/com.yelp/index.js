@@ -244,7 +244,7 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
             if (!query.location)
                 query.location = { display: 'palo alto' };
         }
-        if (query.location.lat && query.location.lat)
+        if (!(query.location.lat === -1 && query.location.lat === -1))
             url += `&latitude=${query.location.lat}&longitude=${query.location.lon}`;
         else
             url += `&location=${encodeURIComponent(query.location.display)}`;
