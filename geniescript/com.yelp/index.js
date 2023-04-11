@@ -187,6 +187,7 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
     async get_restaurant(params, hints, env) {
         let sortBy = 'best_match';
         let limit = 20;
+        let locationFailure = false;
         // NOTE sort by is not strict, so we cannot use the limit hint
         if (hints && hints.sort) {
             if (hints.sort[0] === 'reviewCount' && hints.sort[1] === 'desc')
@@ -244,10 +245,12 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
             if (!query.location)
                 query.location = { display: 'palo alto' };
         }
-        if (!(query.location.lat === -1 && query.location.lat === -1))
-            url += `&latitude=${query.location.lat}&longitude=${query.location.lon}`;
-        else
+        if (query.location.lat === -1 || query.location.lat === undefined) {
             url += `&location=${encodeURIComponent(query.location.display)}`;
+            locationFailure = true;
+        } else {
+            url += `&latitude=${query.location.lat}&longitude=${query.location.lon}`;
+        }
         if (query.term)
             url += `&term=${encodeURIComponent(query.term.trim())}`;
         if (query.categories)
@@ -267,8 +270,14 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                 const cuisines = b.categories.filter((cat) => CUISINES.has(cat.alias))
                     .map((cat) => new Tp.Value.Entity(cat.alias, cat.alias === 'creperies' ? "Crepes" : cat.title));
 
-                const geo = new Tp.Value.Location(b.coordinates.latitude, b.coordinates.longitude,
-                    prettyprintAddress(b.location));
+                let geo;
+                if (locationFailure) {
+                    geo = new Tp.Value.Location(-1, -1,
+                        prettyprintAddress(b.location));
+                } else {
+                    geo = new Tp.Value.Location(b.coordinates.latitude, b.coordinates.longitude,
+                        prettyprintAddress(b.location));
+                }
 
                 const data = {
                     id,
