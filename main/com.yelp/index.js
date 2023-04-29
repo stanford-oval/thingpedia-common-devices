@@ -215,7 +215,7 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                 sortBy = 'rating';
         }
 
-        console.log(`need fields`, hints.projection);
+        // console.log(`need fields`, hints.projection);
         const needsBusinessDetails = hints.projection.includes('opening_hours');
 
         let url = `${URL}/search?limit=${limit}&sort_by=${sortBy}&locale=${this.platform.locale.replace('-', '_')}`;
@@ -281,7 +281,7 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
             url += `&radius=${params.radius.value}`;
         */
 
-        console.log(url);
+        // console.log(url);
 
         try {
             const parsed = await this._get(url);

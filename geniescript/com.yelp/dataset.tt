@@ -1,1 +1,12 @@
-dataset @com.yelp {}
+dataset @com.yelp {
+    query := @com.yelp.restaurant()
+    #_[preprocessed=["restaurant"]];
+
+    action := @com.yelp.book_restaurant()
+    #_[preprocessed=["book the restaurant"]];
+    
+    action (p_id : Entity(com.yelp:restaurant)) :=
+    @com.yelp.book_restaurant(id=p_id)
+    #_[preprocessed=["book ${p_id}",
+                     "reserve ${p_id}"]];
+}
