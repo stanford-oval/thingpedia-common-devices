@@ -53,6 +53,7 @@ const LogFactory = new Logging.Factory({
 const LOG = LogFactory.get(__filename);
 const URL = "https://api.yelp.com/v3/businesses";
 const CACHE_TTL_SECONDS = 60 * 60 * 24; // 1 day
+const REVIEW_SERVER = "http://127.0.0.1:8500/query";
 
 const CUISINES = new Set(require('./cuisines.json').data.map((d) => d.value));
 
@@ -208,6 +209,7 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
             open_at: undefined
         };
         const addedCategories = new Set;
+        let review_keyword = "";
 
         if (hints && hints.filter) {
             for (let [pname, op, value] of hints.filter) {
@@ -233,6 +235,8 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                 } else if (pname === 'opening_hours' && op === 'contains') {
                     const date = (value instanceof Tp.Value.Time ? todayAt(value, this.platform.timezone) : value);
                     query.open_at = Math.round(date.getTime()/1000);
+                } else if (pname === 'reviews') {
+                    review_keyword += value;
                 }
             }
         }
@@ -265,7 +269,44 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
 
         try {
             const parsed = await this._get(url);
-            return await Promise.all(parsed.businesses.filter((b) => !b.is_closed).map(async (b) => {
+            let res = parsed.businesses.filter((b) => !b.is_closed);
+            let review_result;
+            if (review_keyword.length !== 0) {
+                const options = {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        "keyword": review_keyword,
+                        "restaurant_ids": res.map((b) => (b.id))
+                    })
+                };
+                await fetch(REVIEW_SERVER, options)
+                    .then((response) => response.json())
+                    .then((responseData) => {
+                        review_result = responseData;
+                    })
+                    .catch((error) => {
+                        console.error('Fetching review server error:', error);
+                    });
+
+                // filter based on what restaurants were returned by the review server
+                res = res.filter((item) => review_result.map((x) => x[1]).includes(item.id));
+                // store reviews for these restaurants in the reviews field
+                for (const entry of review_result) {
+                    for (const restaurant of res) {
+                        if (restaurant.id === entry[1]) {
+                            if (!restaurant.reviews || restaurant.reviews.length === 0)
+                                restaurant.reviews = entry[0];
+                            else
+                                restaurant.reviews += "\t" + entry[0];
+
+                        }
+                    }
+                }
+            }
+            return await Promise.all(res.map(async (b) => {
                 const id = new Tp.Value.Entity(b.id, b.name);
                 const cuisines = b.categories.filter((cat) => CUISINES.has(cat.alias))
                     .map((cat) => new Tp.Value.Entity(cat.alias, cat.alias === 'creperies' ? "Crepes" : cat.title));
@@ -289,7 +330,9 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                     review_count: b.review_count,
                     geo,
                     phone: b.phone || undefined,
+                    reviews: review_keyword + b.reviews || undefined
                 };
+                console.log(data);
                 if (!needsBusinessDetails)
                     return data;
 
