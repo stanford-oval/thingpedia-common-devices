@@ -53,7 +53,7 @@ const LogFactory = new Logging.Factory({
 const LOG = LogFactory.get(__filename);
 const URL = "https://api.yelp.com/v3/businesses";
 const CACHE_TTL_SECONDS = 60 * 60 * 24; // 1 day
-const REVIEW_SERVER = "http://127.0.0.1:8500/query";
+const REVIEW_SERVER = "http://127.0.0.1:8500";
 
 const CUISINES = new Set(require('./cuisines.json').data.map((d) => d.value));
 
@@ -282,7 +282,7 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                         "restaurant_ids": res.map((b) => (b.id))
                     })
                 };
-                await fetch(REVIEW_SERVER, options)
+                await fetch(REVIEW_SERVER + "/query", options)
                     .then((response) => response.json())
                     .then((responseData) => {
                         review_result = responseData;
@@ -305,6 +305,26 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                         }
                     }
                 }
+            } else {
+                const options = {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        "restaurant_ids": res.map((b) => (b.id))
+                    })
+                };
+                await fetch(REVIEW_SERVER + "/getReviews", options)
+                    .then((response) => response.json())
+                    .then((responseData) => {
+                        review_result = responseData;
+                    })
+                    .catch((error) => {
+                        console.error('Fetching review server error:', error);
+                    });
+                for (const restaurant of res)
+                    restaurant.reviews = review_result[restaurant["id"]];
             }
             return await Promise.all(res.map(async (b) => {
                 const id = new Tp.Value.Entity(b.id, b.name);
@@ -332,7 +352,6 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                     phone: b.phone || undefined,
                     reviews: review_keyword + "\t" + b.reviews || undefined
                 };
-                console.log(data);
                 if (!needsBusinessDetails)
                     return data;
 
