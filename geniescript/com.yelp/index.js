@@ -187,7 +187,7 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
 
     async get_restaurant(params, hints, env) {
         let sortBy = 'best_match';
-        let limit = 20;
+        let limit = 50;
         let locationFailure = false;
         // NOTE sort by is not strict, so we cannot use the limit hint
         if (hints && hints.sort) {
@@ -294,6 +294,7 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                 // filter based on what restaurants were returned by the review server
                 res = res.filter((item) => review_result.map((x) => x[1]).includes(item.id));
                 // store reviews for these restaurants in the reviews field
+                let newRes = [];
                 for (const entry of review_result) {
                     for (const restaurant of res) {
                         if (restaurant.id === entry[1]) {
@@ -301,10 +302,11 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                                 restaurant.reviews = entry[0];
                             else
                                 restaurant.reviews += "\t" + entry[0];
-
                         }
+                        newRes.push(restaurant);
                     }
                 }
+                res = newRes;
             } else {
                 const options = {
                     method: 'POST',
