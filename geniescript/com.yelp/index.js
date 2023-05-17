@@ -271,6 +271,8 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
             const parsed = await this._get(url);
             let res = parsed.businesses.filter((b) => !b.is_closed);
             let review_result;
+
+            // if there is a review keyword, then it is filtering by reviews
             if (review_keyword.length !== 0) {
                 const options = {
                     method: 'POST',
@@ -292,22 +294,35 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                     });
 
                 // filter based on what restaurants were returned by the review server
-                res = res.filter((item) => review_result.map((x) => x[1]).includes(item.id));
+                res = res.filter((item) => review_result.map((x) => x[2]).includes(item.id));
                 // store reviews for these restaurants in the reviews field
                 let newRes = [];
                 for (const entry of review_result) {
                     for (const restaurant of res) {
-                        if (restaurant.id === entry[1]) {
+                        if (restaurant.id === entry[2]) {
                             if (!restaurant.reviews || restaurant.reviews.length === 0)
                                 restaurant.reviews = entry[0];
                             else
                                 restaurant.reviews += "\t" + entry[0];
+                            
+                            let foundInNewRes = false;
+                            for (let i = 0; i < newRes.length; i ++) {
+                                if (newRes[i].id === restaurant.id) {
+                                    newRes[i] = restaurant;
+                                    foundInNewRes= true;
+                                    break;
+                                }
+                            }
+                            if (!foundInNewRes)
+                                newRes.push(restaurant);
+
+                            break;
                         }
-                        newRes.push(restaurant);
                     }
                 }
                 res = newRes;
             } else {
+                // if no, then we just return available reviews together
                 const options = {
                     method: 'POST',
                     headers: {
@@ -328,6 +343,29 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                 for (const restaurant of res)
                     restaurant.reviews = review_result[restaurant["id"]];
             }
+
+            // also fetch menu information
+            const options = {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "restaurant_ids": res.map((b) => (b.id))
+                })
+            };
+            let menu_result;
+            await fetch(REVIEW_SERVER + "/getMenus", options)
+                .then((response) => response.json())
+                .then((responseData) => {
+                    menu_result = responseData;
+                })
+                .catch((error) => {
+                    console.error('Fetching menu server error:', error);
+                });
+            for (const restaurant of res)
+                restaurant.menu = menu_result[restaurant["id"]];
+
             return await Promise.all(res.map(async (b) => {
                 const id = new Tp.Value.Entity(b.id, b.name);
                 const cuisines = b.categories.filter((cat) => CUISINES.has(cat.alias))
@@ -352,7 +390,8 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                     review_count: b.review_count,
                     geo,
                     phone: b.phone || undefined,
-                    reviews: review_keyword + "\t" + b.reviews || undefined
+                    reviews: review_keyword + "\t" + b.reviews || undefined,
+                    menu: b.menu || undefined
                 };
                 if (!needsBusinessDetails)
                     return data;
