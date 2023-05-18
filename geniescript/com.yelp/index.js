@@ -218,9 +218,9 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                         query.term += ' ' + value.display;
                     else
                         query.term += ' ' + value;
-                } else if (pname === 'geo' && (op === '==' || op === '=~')) {
+                } else if (pname === 'location' && (op === '==' || op === '=~')) {
                     query.location = value;
-                } else if (pname === 'distance' && op === 'geo') {
+                } else if (pname === 'distance' && op === 'location') {
                     query.location = value;
                 } else if (pname === 'cuisines' && op === 'contains') {
                     if (addedCategories.has(String(value)))
@@ -371,12 +371,12 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                 const cuisines = b.categories.filter((cat) => CUISINES.has(cat.alias))
                     .map((cat) => new Tp.Value.Entity(cat.alias, cat.alias === 'creperies' ? "Crepes" : cat.title));
 
-                let geo;
+                let location;
                 if (locationFailure) {
-                    geo = new Tp.Value.Location(-1, -1,
+                    location = new Tp.Value.Location(-1, -1,
                         prettyprintAddress(b.location));
                 } else {
-                    geo = new Tp.Value.Location(b.coordinates.latitude, b.coordinates.longitude,
+                    location = new Tp.Value.Location(b.coordinates.latitude, b.coordinates.longitude,
                         prettyprintAddress(b.location));
                 }
 
@@ -388,7 +388,7 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                     price: b.price ? (PRICE_RANGE_MAP[b.price] || /* convert weird currency symbols to $*/ PRICE_RANGE_MAP['$'.repeat(b.price.length)]) : undefined,
                     rating: Number(b.rating),
                     review_count: b.review_count,
-                    geo,
+                    location,
                     phone: b.phone || undefined,
                     reviews: review_keyword + "\t" + b.reviews || undefined,
                     menu: b.menu || undefined
