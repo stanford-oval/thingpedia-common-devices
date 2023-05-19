@@ -344,7 +344,7 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                     restaurant.reviews = review_result[restaurant["id"]];
             }
 
-            // also fetch menu information
+            // also fetch popular_dishes information
             const options = {
                 method: 'POST',
                 headers: {
@@ -361,10 +361,10 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                     menu_result = responseData;
                 })
                 .catch((error) => {
-                    console.error('Fetching menu server error:', error);
+                    console.error('Fetching popular_dishes server error:', error);
                 });
             for (const restaurant of res)
-                restaurant.menu = menu_result[restaurant["id"]];
+                restaurant.popular_dishes = menu_result[restaurant["id"]];
 
             return await Promise.all(res.map(async (b) => {
                 const id = new Tp.Value.Entity(b.id, b.name);
@@ -391,7 +391,7 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                     location,
                     phone: b.phone || undefined,
                     reviews: review_keyword + "\t" + b.reviews || undefined,
-                    menu: b.menu || undefined
+                    popular_dishes: b.popular_dishes || undefined
                 };
                 if (!needsBusinessDetails)
                     return data;
