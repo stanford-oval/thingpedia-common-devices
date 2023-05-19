@@ -387,7 +387,7 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                     cuisines,
                     price: b.price ? (PRICE_RANGE_MAP[b.price] || /* convert weird currency symbols to $*/ PRICE_RANGE_MAP['$'.repeat(b.price.length)]) : undefined,
                     rating: Number(b.rating),
-                    review_count: b.review_count,
+                    num_reviews: b.num_reviews,
                     location,
                     phone: b.phone || undefined,
                     reviews: review_keyword + "\t" + b.reviews || undefined,
