@@ -340,8 +340,10 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                     .catch((error) => {
                         console.error('Fetching review server error:', error);
                     });
-                for (const restaurant of res)
-                    restaurant.reviews = review_result[restaurant["id"]];
+                if (review_result) {
+                    for (const restaurant of res)
+                        restaurant.reviews = review_result[restaurant["id"]];
+                }
             }
 
             // also fetch popular_dishes information
@@ -363,8 +365,10 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                 .catch((error) => {
                     console.error('Fetching popular_dishes server error:', error);
                 });
-            for (const restaurant of res)
-                restaurant.popular_dishes = menu_result[restaurant["id"]];
+            if (menu_result) {
+                for (const restaurant of res)
+                    restaurant.popular_dishes = menu_result[restaurant["id"]];
+            }
 
             return await Promise.all(res.map(async (b) => {
                 const id = new Tp.Value.Entity(b.id, b.name);
@@ -387,7 +391,7 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                     cuisines,
                     price: b.price ? (PRICE_RANGE_MAP[b.price] || /* convert weird currency symbols to $*/ PRICE_RANGE_MAP['$'.repeat(b.price.length)]) : undefined,
                     rating: Number(b.rating),
-                    num_reviews: b.num_reviews,
+                    num_reviews: b.review_count,
                     location,
                     phone: b.phone || undefined,
                     reviews: review_keyword + "\t" + b.reviews || undefined,
