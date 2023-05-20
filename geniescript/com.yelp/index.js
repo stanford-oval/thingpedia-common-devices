@@ -301,9 +301,9 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                     for (const restaurant of res) {
                         if (restaurant.id === entry[2]) {
                             if (!restaurant.reviews || restaurant.reviews.length === 0)
-                                restaurant.reviews = entry[0];
+                                restaurant.reviews = [entry[0]];
                             else
-                                restaurant.reviews += "\t" + entry[0];
+                                restaurant.reviews.push(entry[0]);
                             
                             let foundInNewRes = false;
                             for (let i = 0; i < newRes.length; i ++) {
@@ -383,9 +383,6 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                     location = new Tp.Value.Location(b.coordinates.latitude, b.coordinates.longitude,
                         prettyprintAddress(b.location));
                 }
-
-                if (!b.reviews)
-                    b.reviews = "";
                 
                 const data = {
                     id,
