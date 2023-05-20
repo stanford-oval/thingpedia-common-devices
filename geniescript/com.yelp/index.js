@@ -394,7 +394,7 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                     num_reviews: b.review_count,
                     location,
                     phone: b.phone || undefined,
-                    reviews: review_keyword + "\t" + b.reviews || undefined,
+                    reviews: review_keyword + "\t" + b.reviews.join('\t') || undefined,
                     popular_dishes: b.popular_dishes || undefined
                 };
                 if (!needsBusinessDetails)
