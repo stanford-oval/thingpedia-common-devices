@@ -385,7 +385,7 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                 }
 
                 if (!b.reviews)
-                    b.review = "";
+                    b.reviews = "";
                 
                 const data = {
                     id,
