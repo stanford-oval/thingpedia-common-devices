@@ -384,6 +384,9 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                         prettyprintAddress(b.location));
                 }
 
+                if (!b.reviews)
+                    b.review = "";
+                
                 const data = {
                     id,
                     image_url: b.image_url,
