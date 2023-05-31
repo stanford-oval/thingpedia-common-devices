@@ -240,6 +240,10 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                 }
             }
         }
+
+        // location now is an explicit slot-fill
+        query.location = params.location;
+        
         if (!query.categories)
             query.categories = 'restaurants';
         if (!query.location) {
