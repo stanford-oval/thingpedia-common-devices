@@ -276,82 +276,31 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
             let res = parsed.businesses.filter((b) => !b.is_closed);
             let review_result;
 
-            // if there is a review keyword, then it is filtering by reviews
-            if (review_keyword.length !== 0) {
-                const options = {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        "keyword": review_keyword,
-                        "restaurant_ids": res.map((b) => (b.id))
-                    })
-                };
-                await fetch(REVIEW_SERVER + "/query", options)
-                    .then((response) => response.json())
-                    .then((responseData) => {
-                        review_result = responseData;
-                    })
-                    .catch((error) => {
-                        console.error('Fetching review server error:', error);
-                    });
-
-                // filter based on what restaurants were returned by the review server
-                res = res.filter((item) => review_result.map((x) => x[2]).includes(item.id));
-                // store reviews for these restaurants in the reviews field
-                let newRes = [];
-                for (const entry of review_result) {
-                    for (const restaurant of res) {
-                        if (restaurant.id === entry[2]) {
-                            if (!restaurant.reviews || restaurant.reviews.length === 0)
-                                restaurant.reviews = [entry[0]];
-                            else
-                                restaurant.reviews.push(entry[0]);
-                            
-                            let foundInNewRes = false;
-                            for (let i = 0; i < newRes.length; i ++) {
-                                if (newRes[i].id === restaurant.id) {
-                                    newRes[i] = restaurant;
-                                    foundInNewRes= true;
-                                    break;
-                                }
-                            }
-                            if (!foundInNewRes)
-                                newRes.push(restaurant);
-
-                            break;
-                        }
-                    }
-                }
-                res = newRes;
-            } else {
-                // if no, then we just return available reviews together
-                const options = {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        "restaurant_ids": res.map((b) => (b.id))
-                    })
-                };
-                await fetch(REVIEW_SERVER + "/getReviews", options)
-                    .then((response) => response.json())
-                    .then((responseData) => {
-                        review_result = responseData;
-                    })
-                    .catch((error) => {
-                        console.error('Fetching review server error:', error);
-                    });
-                if (review_result) {
-                    for (const restaurant of res)
-                        restaurant.reviews = review_result[restaurant["id"]];
-                }
+            let options = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "restaurant_ids": res.map((b) => (b.id))
+                })
+            };
+            await fetch(REVIEW_SERVER + "/getReviews", options)
+                .then((response) => response.json())
+                .then((responseData) => {
+                    review_result = responseData;
+                })
+                .catch((error) => {
+                    console.error('Fetching review server error:', error);
+                });
+            if (review_result) {
+                for (const restaurant of res)
+                    restaurant.reviews = review_result[restaurant["id"]];
             }
+            // }
 
             // also fetch popular_dishes information
-            const options = {
+            options = {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json'
@@ -396,9 +345,9 @@ module.exports = class YelpDevice extends Tp.BaseDevice {
                     price: b.price ? (PRICE_RANGE_MAP[b.price] || /* convert weird currency symbols to $*/ PRICE_RANGE_MAP['$'.repeat(b.price.length)]) : undefined,
                     rating: Number(b.rating),
                     num_reviews: b.review_count,
-                    location,
+                    address: location,
                     phone: b.phone || undefined,
-                    reviews: review_keyword + "\t" + b.reviews.join('\t') || undefined,
+                    reviews: b.reviews || undefined,
                     popular_dishes: b.popular_dishes || undefined
                 };
                 if (!needsBusinessDetails)

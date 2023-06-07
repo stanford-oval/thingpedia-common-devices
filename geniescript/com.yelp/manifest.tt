@@ -115,8 +115,13 @@ class @com.yelp
                           default="preposition",
                           base=["address", "location"],
                           preposition=["at #", "near #", "in #", "around #"]
-                        }]
-                        #_[prompt="Where are you searching for?"],
+                        }],
+                        out address: Location
+                        #_[canonical={
+                          default="preposition",
+                          base=["address", "location"],
+                          preposition=["at #", "near #", "in #", "around #"]
+                        }],
                         out phone: Entity(tt:phone_number)
                         #[filterable=false]
                         #_[canonical={
@@ -131,7 +136,7 @@ class @com.yelp
                           base=["opening hours", "business hours", "hours"],
                           verb=["opens #"]
                         }],
-                        out reviews: String,
+                        out reviews: Array(String),
                         out popular_dishes: Array(String)
                         )
   #_[canonical=["restaurant", "eatery", "place to eat", "food place"]]
@@ -139,7 +144,7 @@ class @com.yelp
   #[minimal_projection=["id"]]
   // everything but opening_hours is returned, unless we really need to
   #[default_projection=["id", "image_url", "link", "cuisines", "price", "rating", "num_reviews",
-                        "location", "phone", "reviews", "popular_dishes"]]
+                        "address", "phone", "reviews", "popular_dishes"]]
   #_[formatted=[{
     type="rdl",
     displayTitle="${id}",
